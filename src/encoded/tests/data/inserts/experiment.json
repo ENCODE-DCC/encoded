@@ -14,7 +14,8 @@
         "date_released": "2016-01-01",
         "internal_tags":["DREAM", "ENTEx", "ENCORE"],
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
+        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "shared biosample",
@@ -31,7 +32,8 @@
         "supersedes": ["ENCSR000AES"],
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
+        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "shared biosample",
@@ -47,7 +49,8 @@
         "status": "archived",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
+        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "control chip-seq with files",
@@ -153,6 +156,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
         "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
+        "experiment_class": "functional genomics assay",
         "submitter_comment": "The lab plant died and everyone was sad that week so it may have affected the results."
     },
     {
@@ -352,7 +356,8 @@
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-human",
-        "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78"
+        "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "ENCODE 2 pipeline ChIP-seq",
@@ -376,7 +381,8 @@
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "EBF1-human",
-        "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
+        "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "treatment control",
@@ -412,7 +418,8 @@
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919",
-        "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing."
+        "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing.",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "treatment time series 2",
@@ -430,7 +437,8 @@
         "date_submitted": "2015-10-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
+        "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed",
+        "experiment_class": "functional genomics assay"
     },
     {
         "_test": "treatment time series 3 missing possible_controls",
