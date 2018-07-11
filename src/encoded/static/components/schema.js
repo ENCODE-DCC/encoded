@@ -641,13 +641,13 @@ const AllSchemasPage = (props, reactContext) => {
         <Panel>
             <PanelBody>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-12 block-text">
                         <p>
-                            Schemas, or profiles, are the <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a> format
-                            structures for each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
-                            To support ENCODE Project submitters and public users alike,
-                            we&rsquo;ve provided a user-friendly method to visualize our schemas
-                            in hopes others might understand how the DCC organizes each object.
+                            Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
+                            structures defining each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
+                            To support ENCODE Project submitters and public users alike, this page
+                            provides a user-friendly visualization method for our schemas to help
+                            organize and understand the data.
                         </p>
                         <p>
                             The links below lead to pages describing each schema ENCODE supports.
