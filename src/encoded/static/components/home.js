@@ -59,9 +59,9 @@ class EncodeSearch extends React.Component {
         return (
             <div className="site-search__encode">
                 <div className="site-search__controls">
-                    <a href="/about/contributors/" role="button" className="site-search__control-element site-search__control-element--33-width">About ENCODE</a>
-                    <a href="/help/getting-started/" role="button" className="site-search__control-element site-search__control-element--33-width">Get Started</a>
-                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__control-element site-search__control-element--33-width">Experiment Data</a>
+                    <a href="/about/contributors/" role="button" className="site-search__control-element">About ENCODE Project</a>
+                    <a href="/help/getting-started/" role="button" className="site-search__control-element">Get Started</a>
+                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__control-element">Experiment Data</a>
                 </div>
                 <form action="/search/">
                     <fieldset className="site-search__encode">
@@ -461,7 +461,7 @@ class ScreenSearch extends React.Component {
             <div className="site-search__screen">
                 <div className="site-search__controls">
                     <a href="/data/annotations/" role="button" className="site-search__control-element site-search__control-element--50-width">About Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+regulatory+elements" role="button" className="site-search__control-element site-search__control-element--50-width">Encyclopedia Data</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+regulatory+elements" role="button" className="site-search__control-element site-search__control-element--50-width">Encyclopedia Annotations</a>
                 </div>
                 <form>
                     <fieldset className="site-search__screen">
