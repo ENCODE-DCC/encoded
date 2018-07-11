@@ -234,10 +234,11 @@
                 "organoid"
             ]
         },
-        "experiment_class": {
-            "title": "Experiment class",
+        "experiment_classification": {
+            "title": "Experiment classification",
             "description": "The categorization of the experiment.",
             "type": "string",
+            "permission": "import_items",
             "enum" : [
                 "functional genomics assay",
                 "functional characterization assay"
