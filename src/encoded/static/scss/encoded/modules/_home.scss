@@ -383,32 +383,35 @@
 }
 
 
-// Contains buttons for the home page site search.
-.site-search__controls {
+// Contains buttons for the home page buttons leading to other pages.
+.site-search__reference {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 0 -5px;
+
+    &-element {
+        @extend .btn;
+        @extend .btn-info;
+        @extend .btn-xs;
+        margin: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        flex: 1 1 auto;
+    }
 }
 
 
-// Buttons within site-search__controls.
-.site-search__control-element {
-    @extend .btn;
-    @extend .btn-info;
-    margin: 5px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    flex: 1 1 auto;
+// Contains buttons to perform searches.
+.site-search__submit {
+    @extend .site-search__reference;
+    justify-content: flex-start;
 
-    @media screen and (min-width: $screen-lg-min) {
-        &--33-width {
-            flex: 0 0 30%;
-        }
-
-        &--50-width {
-            flex: 0 0 47.5%;
-        }
+    &-element {
+        @extend .site-search__reference-element;
+        flex: 0 1 auto;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
 

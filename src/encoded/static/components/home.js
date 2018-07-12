@@ -58,13 +58,13 @@ class EncodeSearch extends React.Component {
     render() {
         return (
             <div className="site-search__encode">
-                <div className="site-search__controls">
-                    <a href="/about/contributors/" role="button" className="site-search__control-element">About ENCODE Project</a>
-                    <a href="/help/getting-started/" role="button" className="site-search__control-element">Get Started</a>
-                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__control-element">Experiment Data</a>
+                <div className="site-search__reference">
+                    <a href="/about/contributors/" role="button" className="site-search__reference-element">About ENCODE Project</a>
+                    <a href="/help/getting-started/" role="button" className="site-search__reference-element">Getting Started</a>
+                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__reference-element">Experiments</a>
                 </div>
                 <form action="/search/">
-                    <fieldset className="site-search__encode">
+                    <fieldset>
                         <legend className="sr-only">Encode search</legend>
                         <div className="site-search__input">
                             <label htmlFor="encode-search">Search ENCODE portal</label>
@@ -74,7 +74,7 @@ class EncodeSearch extends React.Component {
                             <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
                         </div>
                         <div className="site-search__submit">
-                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info">ENCODE <i className="icon icon-search" /></button>
+                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">ENCODE <i className="icon icon-search" /></button>
                         </div>
                     </fieldset>
                 </form>
@@ -459,12 +459,12 @@ class ScreenSearch extends React.Component {
         const disabledSearch = this.state.currSearchTerm.length === 0;
         return (
             <div className="site-search__screen">
-                <div className="site-search__controls">
-                    <a href="/data/annotations/" role="button" className="site-search__control-element site-search__control-element--50-width">About Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+regulatory+elements" role="button" className="site-search__control-element site-search__control-element--50-width">Encyclopedia Annotations</a>
+                <div className="site-search__reference">
+                    <a href="/data/annotations/" role="button" className="site-search__reference-element">About ENCODE Encyclopedia</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+regulatory+elements" role="button" className="site-search__reference-element">Candidate Regulatory Elements</a>
                 </div>
                 <form>
-                    <fieldset className="site-search__screen">
+                    <fieldset>
                         <legend className="sr-only">Screen search</legend>
                         <div className="site-search__input">
                             <label htmlFor="screen-search" id="screen-search-label">
@@ -487,8 +487,8 @@ class ScreenSearch extends React.Component {
                             />
                         </div>
                         <div className="site-search__submit">
-                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
-                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
+                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
                         </div>
                     </fieldset>
                 </form>
