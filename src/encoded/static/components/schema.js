@@ -586,7 +586,7 @@ const SchemaPage = (props) => {
     // If schemaName happened to be null (which it realistically can't), <BreadCrumbs> would
     // harmlessly display nothing in the second element.
     const crumbs = [
-        { id: 'Profiles', uri: '/profiles/', wholeTip: 'All schemas' },
+        { id: 'Schemas', uri: '/profiles/', wholeTip: 'All schemas' },
         { id: schemaName },
     ];
 
@@ -638,26 +638,48 @@ const AllSchemasPage = (props, reactContext) => {
     ));
 
     return (
-        <Panel>
-            <PanelBody>
-                <div className="schema-list">
-                    {objectNames.map((objectName) => {
-                        // `objectName` is the @type of each objects e.g. GeneticModification
-                        // `schemaName` is the system name of the objects e.g. genetic_modification
-                        // `schemaPath` is the schema page path e.g. /profiles/genetic_modification
-                        const schemaName = schemaIdToName(context[objectName].id);
-                        const schemaPath = schemaIdToPage(context[objectName].id);
-
-                        return (
-                            <div className="schema-list__item" key={objectName}>
-                                {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
-                                <a href={schemaPath} title={context[objectName].description}>{objectName}</a>
-                            </div>
-                        );
-                    })}
+        <div className={globals.itemClass(context, 'view-item')}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>Schemas</h2>
                 </div>
-            </PanelBody>
-        </Panel>
+            </header>
+            <Panel>
+                <PanelBody>
+                    <div className="row">
+                        <div className="col-md-12 block-text">
+                            <p>
+                                Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
+                                structures defining each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
+                                To support ENCODE Project submitters and public users alike, this page
+                                provides a user-friendly visualization method for our schemas to help
+                                organize and understand the data.
+                            </p>
+                            <p>
+                                The links below lead to pages describing each schema ENCODE supports.
+                            </p>
+                        </div>
+                    </div>
+                    <hr />
+                    <div className="schema-list">
+                        {objectNames.map((objectName) => {
+                            // `objectName` is the @type of each objects e.g. GeneticModification
+                            // `schemaName` is the system name of the objects e.g. genetic_modification
+                            // `schemaPath` is the schema page path e.g. /profiles/genetic_modification
+                            const schemaName = schemaIdToName(context[objectName].id);
+                            const schemaPath = schemaIdToPage(context[objectName].id);
+
+                            return (
+                                <div className="schema-list__item" key={objectName}>
+                                    {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
+                                    <a href={schemaPath} title={context[objectName].description}>{objectName}</a>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </PanelBody>
+            </Panel>
+        </div>
     );
 };
 

@@ -1,5 +1,9 @@
 ## Changelog for mad_quality_metric.json
 
+### Minor changes since schema version 6
+
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
+
 ### Schema version 6
 
 * *status* property was restricted to one of  

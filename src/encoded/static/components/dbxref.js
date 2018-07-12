@@ -97,7 +97,7 @@ export const dbxrefPrefixMap = {
         pattern: 'https://web.expasy.org/cellosaurus/{0}',
     },
     FlyBase: {
-        pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}',
+        pattern: 'http://flybase.org/search/symbol/{0}',
         preprocessor: (context) => {
             // If a target displays its dbxrefs, use the fly stock URL.
             if (context['@type'][0] !== 'Target') {
@@ -180,6 +180,9 @@ export const dbxrefPrefixMap = {
     },
     TRiP: {
         pattern: 'http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname={0}',
+    },
+    DGGR: {
+        pattern: 'https://kyotofly.kit.jp/cgi-bin/stocks/search_res_det.cgi?DB_NUM=1&DG_NUM={0}',
     },
 };
 

@@ -22,6 +22,9 @@
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
         "aliases": ["bloomington:38626"],
+        "external_ids": [
+            "DGGR:109027"
+        ],
         "strain_background": "VK00033",
         "genetic_modifications": ["ENCGM162RDA"],
         "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",

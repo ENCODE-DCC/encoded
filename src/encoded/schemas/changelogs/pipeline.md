@@ -1,5 +1,9 @@
 ## Changelog for pipeline.json
 
+### Minor changes since schema version 9
+
+* *pipeline_version* was set to have a minimum of 1.
+
 ### Schema version 9
 
 Add *revoked* to possible statuses and change *active* to *released*.
