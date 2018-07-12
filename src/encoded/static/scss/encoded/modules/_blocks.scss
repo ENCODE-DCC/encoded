@@ -362,3 +362,20 @@ img.fig-align-center {
 .teaser-font-13 p { font-size: 0.9rem; }
 .teaser-font-12 p { font-size: 0.85rem; }
 .teaser-font-11 p { font-size: 0.8rem; }
+
+
+// Used for paragraphs of text used outside of Page @types.
+.block-text {
+    p {
+        margin: 1rem 0;
+        line-height: 1.6;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
