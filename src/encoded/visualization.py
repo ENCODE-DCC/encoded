@@ -11,7 +11,7 @@ from urllib.parse import (
     urlencode,
 )
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
-from .vis_defines import (
+from snovault.vis_defines import (
     ASSEMBLY_TO_UCSC_ID,
     VISIBLE_DATASET_STATUSES,
     VISIBLE_FILE_FORMATS,

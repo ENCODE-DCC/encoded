@@ -31,7 +31,7 @@ from snovault.elasticsearch.indexer_state import (
     SEARCH_MAX
 )
 
-from .vis_defines import (
+from snovault.vis_defines import (
     VISIBLE_DATASET_TYPES_LC,
     VIS_CACHE_INDEX
 )

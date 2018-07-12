@@ -1,10 +1,171 @@
 # Use workbook fixture from BDD tests (including elasticsearch)
-from .features.conftest import app_settings, app, workbook
-from webob.multidict import MultiDict
 import pytest
+from collections import OrderedDict
+from webob.multidict import MultiDict
+from snovault import TYPES
+from encoded.tests.features.conftest import app_settings, app, workbook
+from snovault.helpers.helper import (
+    set_filters,
+    set_facets,
+    format_facets,
+    sort_query,
+    get_pagination,
+    prepare_search_term,
+    set_sort_order,
+    get_search_fields,
+    list_visible_columns_for_schemas,
+    list_result_fields,
+    build_terms_filter,
+    build_aggregation,
+    normalize_query
+)
+
+
+# Unit tests
+
+class FakeRequest(object):
+    path = '/search/'
+
+    def __init__(self, params):
+        self.params = MultiDict(params)
+        self.permissions = {}
+
+    def set_permission(self, perm_key, perm_value=False):
+        self.permissions[perm_key] = perm_value
+
+    def has_permission(self, perm_key):
+        if perm_key in self.permissions and self.permissions[perm_key] is True:
+            return True
+        return False
+
+
+@pytest.fixture
+def sort_query_item():
+    item = {'filter': {'bool':
+                       {'must_not': [],
+                        'must': [{'terms': {'embedded.@type': ['Experiment']}},
+                                 {'terms': {'embedded.status': ['released']}}]}},
+            'aggs': 'assay_slims',
+            'terms': ''}
+    return item
+
+
+@pytest.fixture
+def get_pagination_item():
+    requests = {FakeRequest((('from', '0'), ('limit', '25'))): ('0', 25),
+                FakeRequest((('from', '10'), ('limit', '50'))): ('10', 50),
+                FakeRequest((('from', '0'),)): ('0', 25),
+                FakeRequest((('limit', '50'),)): (0, 50),
+                FakeRequest((('key', 'value'),)): (0, 25)}
+    return requests
+
+
+@pytest.fixture
+def prepare_search_term_item():
+    requests = {FakeRequest((('type', 'Page'),
+                             ('news', 'true'),
+                             ('status', 'released'),
+                             ('limit', '5'))): '*',
+                FakeRequest((('searchTerm', 'chip'),)): 'chip',
+                FakeRequest((('searchTerm', '/assay/'),)): '\\/assay\\/',
+                FakeRequest((('searchTerm', '@type:field'),)): 'embedded.@type:field',
+                FakeRequest((('searchTerm', 'type:s'),)): 'type\:s',
+                FakeRequest((('searchTerm', ' '),)): '*',
+                FakeRequest((('searchTerm', '@type'),)): '@type'}
+    return requests
+
+
+@pytest.fixture
+def set_sort_order_item():
+    requests = {FakeRequest((('type', 'Experiment'), ('sort', 'assay_title'))): ['*', True],
+                FakeRequest((('type', 'Experiment'), ('sort', '-assay_title'))): ['*', True],
+                FakeRequest((('type', 'Experiment'), ('sort', None))): ['*', True],
+                FakeRequest((('type', 'Experiment'), ('sort', None))): ['search', False],
+                FakeRequest((('type', 'Experiment'), ('sort', '-accession'))): ['search', True]}
+    return requests
+
+
+@pytest.fixture
+def list_visible_columns_item():
+    requests = [FakeRequest((('type', 'Experiment'), ('field', '@id'))),
+                FakeRequest((('type', 'Experiment'), ('field', 'assay_title'))),
+                FakeRequest((('type', 'Experiment'), ('field', '@id'), ('field', 'assay_title'))),
+                FakeRequest((('type', 'Experiment'), ('field', ' '))),
+                FakeRequest((('type', 'Experiment'), ('field', 'random'))),
+                FakeRequest((('type', 'Experiment'),))]
+    return requests
+
+
+@pytest.fixture
+def list_result_fields_item():
+    requests = {FakeRequest((('type', 'Experiment'),)): {},
+                FakeRequest((('type', 'Experiment'), ('frame', 'object'))): ['object.*'],
+                FakeRequest((('type', 'Experiment'), ('frame', 'embedded'))): ['embedded.*'],
+                FakeRequest((('type', 'Experiment'), ('frame', 'random'))): {},
+                FakeRequest((('type', 'Experiment'), ('field', '@id'))): {'embedded.@id',
+                                                                          'embedded.@type'},
+                FakeRequest((('type', 'Experiment'),
+                             ('field', 'assay_title'),
+                             ('frame', 'embedded'))): {'embedded.@id',
+                                                       'embedded.assay_title',
+                                                       'embedded.@type'}}
+    return requests
+
+
+@pytest.fixture
+def build_terms_filter_item():
+    arguments = {('status', 'released'): {'must_not': [],
+                                          'must': [{'terms': {'embedded.status': ['released']}}]},
+                 ('status!', 'archived'): {'must_not': [{'terms': {'embedded.status': ['archived']}}],
+                                           'must': []},
+                 ('status', '*'): {'must': [{'exists': {'field': 'embedded.status'}}],
+                                   'must_not': []},
+                 ('status!', '*'): {'must': [],
+                                    'must_not': [{'exists': {'field': 'embedded.status'}}]}}
+
+    return arguments
+
+
+@pytest.fixture
+def build_aggregation_item():
+    arguments = [('replication_type', {'title': 'Replication types'}),
+                 ('type', {'title': 'Replication'}),
+                 ('audit', {'audit': 'value'}),
+                 ('replic_type', {'type': 'exists'})]
+
+    validate = [{'terms': {'field': 'embedded.replication_type',
+                           'min_doc_count': 0,
+                           'size': 200}},
+                {'terms': {'field': 'embedded.@type',
+                           'exclude': ['Item'],
+                           'min_doc_count': 0,
+                           'size': 200}},
+                {'terms': {'field': 'audit',
+                           'min_doc_count': 0,
+                           'size': 200}},
+                {'filters': {'filters': {'no':
+                                         {'bool':
+                                          {'must_not': {'exists': {'field':
+                                                                   'embedded.replic_type'}}}},
+                                         'yes':
+                                         {'bool':
+                                          {'must': {'exists': {'field':
+                                                               'embedded.replic_type'}}}}}}}]
+
+    return (arguments, validate)
+
+
+@pytest.fixture
+def normalize_query_item():
+    requests = {FakeRequest((('type', 'Experiment'),)): '?type=Experiment',
+                FakeRequest((('', ''),)): '?=',
+                FakeRequest((('key', 'value'),)): '?key=value',
+                FakeRequest((('key1', 'value1'), ('key2', 'value2'))): '?key1=value1&key2=value2'}
+    return requests
 
 
 # Integration tests
+
 
 def test_search_view(workbook, testapp):
     res = testapp.get('/search/').json
@@ -59,21 +220,10 @@ def test_matrix_view(workbook, testapp):
     assert len(res['matrix']['y'][
         'biosample_type']['buckets']) > 0
     assert len(res['matrix']['y'][
-        'biosample_type']['buckets'][0][
-        'biosample_term_name']['buckets']) > 0
-
-
-# Unit tests
-
-class FakeRequest(object):
-    path = '/search/'
-
-    def __init__(self, params):
-        self.params = MultiDict(params)
+        'biosample_type']['buckets'][0]['biosample_term_name']['buckets']) > 0
 
 
 def test_set_filters():
-    from encoded.search import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
@@ -122,7 +272,6 @@ def test_set_filters():
 
 
 def test_set_filters_searchTerm():
-    from encoded.search import set_filters
 
     request = FakeRequest((
         ('searchTerm', 'value1'),
@@ -163,12 +312,12 @@ def test_set_filters_searchTerm():
         ]
     }
 
+
 # Reserved params should NOT act as filters
 @pytest.mark.parametrize('param', [
     'type', 'limit', 'mode',
     'format', 'frame', 'datastore', 'field', 'sort', 'from', 'referrer'])
 def test_set_filters_reserved_params(param):
-    from encoded.search import set_filters
 
     request = FakeRequest((
         (param, 'foo'),
@@ -205,7 +354,6 @@ def test_set_filters_reserved_params(param):
 
 
 def test_set_filters_multivalued():
-    from encoded.search import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
@@ -260,7 +408,6 @@ def test_set_filters_multivalued():
 
 
 def test_set_filters_negated():
-    from encoded.search import set_filters
 
     request = FakeRequest((
         ('field1!', 'value1'),
@@ -309,7 +456,6 @@ def test_set_filters_negated():
 
 
 def test_set_filters_audit():
-    from encoded.search import set_filters
 
     request = FakeRequest((
         ('audit.foo', 'value1'),
@@ -358,7 +504,6 @@ def test_set_filters_audit():
 
 
 def test_set_filters_exists_missing():
-    from encoded.search import set_filters
 
     request = FakeRequest((
         ('field1', '*'),
@@ -425,8 +570,6 @@ def test_set_filters_exists_missing():
 
 
 def test_set_facets():
-    from collections import OrderedDict
-    from encoded.search import set_facets
     facets = [
         ('type', {'title': 'Type'}),
         ('audit.foo', {'title': 'Audit'}),
@@ -507,12 +650,10 @@ def test_set_facets():
             },
         }
     }
-    assert(expected == aggs)
+    assert expected == aggs
 
 
 def test_set_facets_negated_filter():
-    from collections import OrderedDict
-    from encoded.search import set_facets
     facets = [
         ('facet1', {'title': 'Facet 1'}),
     ]
@@ -550,8 +691,6 @@ def test_set_facets_negated_filter():
 
 
 def test_set_facets_type_exists():
-    from collections import OrderedDict
-    from encoded.search import set_facets
     facets = [
         ('field1', {'title': 'Facet 1', 'type': 'exists'}),
         ('field2', {'title': 'Facet 2', 'type': 'exists'}),
@@ -638,7 +777,6 @@ def test_set_facets_type_exists():
 
 
 def test_format_facets():
-    from encoded.search import format_facets
     es_result = {
         'aggregations': {
             'field1': {
@@ -687,13 +825,11 @@ def test_format_facets():
 
 
 def test_format_facets_no_aggregations():
-    from encoded.search import format_facets
     result = format_facets({}, [], [], [], 0, [])
     assert result == []
 
 
 def test_format_facets_skips_zero_bucket_facets():
-    from encoded.search import format_facets
     es_result = {
         'aggregations': {
             'field1': {
@@ -714,7 +850,7 @@ def test_format_facets_skips_zero_bucket_facets():
     ]
     used_filters = {}
     schemas = []
-    total = 42 
+    total = 42
     principals = []
     result = format_facets(
         es_result, facets, used_filters, schemas, total, principals)
@@ -723,7 +859,6 @@ def test_format_facets_skips_zero_bucket_facets():
 
 
 def test_format_facets_adds_pseudo_facet_for_extra_filters():
-    from encoded.search import format_facets
     es_result = {
         'aggregations': {},
     }
@@ -753,3 +888,115 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
         ],
         'total': 42,
     }]
+
+
+def test_sort_query(sort_query_item):
+
+    sorted_query = sort_query(sort_query_item)
+    assert isinstance(sorted_query, OrderedDict) is True
+    for key in sort_query_item:
+        assert sort_query_item[key] == sorted_query[key]
+
+
+def test_get_pagination(get_pagination_item):
+
+    for request, validate in get_pagination_item.items():
+        from_, size = get_pagination(request)
+        assert from_ == validate[0]
+        assert size == validate[1]
+
+
+def test_prepare_search_term(prepare_search_term_item):
+
+    for request, validate in prepare_search_term_item.items():
+        search_term = prepare_search_term(request)
+        assert search_term == validate
+
+
+def test_set_sort_order(set_sort_order_item):
+
+    doc_types = ['Experiment']
+    types = {'Experiment': FakeRequest((('key', 'value'),))}
+    types['Experiment'].schema = {}
+    types['Experiment'].schema['sort_by'] = {'sort': {'sort': 'asc'}}
+    query = {}
+    result = {}
+    for request, inputs in set_sort_order_item.items():
+        search_term = inputs[0]
+        validate = inputs[1]
+        res = set_sort_order(request,
+                             search_term,
+                             types,
+                             doc_types,
+                             query,
+                             result)
+        assert res == validate
+
+
+def test_get_search_fields(registry):
+
+    request = FakeRequest((('key', 'value'),))
+    request.registry = registry
+    doc_types = [['Experiment']]
+    for doc_type in doc_types:
+        fields, highlights = get_search_fields(request, doc_type)
+        assert isinstance(highlights, dict) is True
+        assert isinstance(fields, list) is True
+
+
+def test_list_visible_columns_for_schemas(list_visible_columns_item, registry):
+
+    types = registry[TYPES]
+    doc_types = ['Experiment']
+    schemas = [types[doc_type].schema for doc_type in doc_types]
+    for request in list_visible_columns_item:
+        columns = list_visible_columns_for_schemas(request, schemas)
+        for param, value in request.params.items():
+            if param != 'type':
+                assert (value in columns) is True
+        assert isinstance(columns, dict) is True
+
+
+def test_list_result_fields(list_result_fields_item, registry):
+
+    doc_types = ['Experiment']
+    for request, validate in list_result_fields_item.items():
+        request.set_permission('search_audit')
+        request.registry = registry
+        request.__parent__ = None
+
+        fields = list_result_fields(request, doc_types)
+        assert (isinstance(fields, dict) or
+                isinstance(fields, list) or
+                isinstance(fields, set)) is True
+        if validate:
+            assert fields == validate
+        else:
+            assert len(fields) > 1
+
+
+def test_build_terms_filter(build_terms_filter_item):
+
+    for key, value in build_terms_filter_item.items():
+        query_filters = {'must': [],
+                         'must_not': []}
+        build_terms_filter(query_filters, key[0], [key[1]], None)
+        assert query_filters == value
+
+
+def test_build_aggregation(build_aggregation_item):
+
+    args = build_aggregation_item[0]
+    validate = build_aggregation_item[1]
+    for index, arg in enumerate(args):
+        actual = validate[index]
+        agg_name, agg = build_aggregation(arg[0], arg[1])
+        assert agg == actual
+
+
+def test_normalize_query(normalize_query_item, registry):
+
+    for request, validate in normalize_query_item.items():
+        request.registry = registry
+        query = normalize_query(request)
+        assert query == validate
