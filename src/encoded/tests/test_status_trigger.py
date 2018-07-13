@@ -236,3 +236,28 @@ def test_set_status_raise_other_error(mocker, testapp, file):
     # Should raise error.
     with pytest.raises(ClientError):
         testapp.patch_json(file['@id'] + '@@release', {})
+
+
+@mock_sts
+@mock_s3
+def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_request, root):
+    # Create mock bucket.
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Pub mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress'})
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'in progress'
+    submitter_testapp.patch_json(file['@id'] + '@@release', {}, status=422)
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'in progress'
