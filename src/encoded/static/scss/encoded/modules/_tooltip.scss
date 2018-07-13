@@ -96,3 +96,22 @@ $tooltip-color: #000;
     bottom: 0;
     left: 0;
 }
+
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+
+    .tooltip {
+        position: absolute;
+        visibility: visible;
+        opacity: 1;
+        font-weight: normal;
+    }
+
+    @at-root #{&}__trigger {
+        padding: 0;
+        border: none;
+        background: none;
+    }
+}
