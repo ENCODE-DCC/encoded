@@ -11,7 +11,11 @@ from pyramid.traversal import (
     find_root,
     traverse,
 )
+from pyramid.view import (
+    view_config
+)
 import snovault
+from snovault.validators import validate_item_content_patch
 
 
 @lru_cache()
@@ -63,6 +67,11 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', ['add']),
 ]
 
+# New status must contain current status in list to be valid transition.
+STATUS_TRANSITION_TABLE = {
+    'released': ['in progress'],
+    'in progress': ['released', 'archived', 'deleted', 'revoked']
+}
 
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
@@ -169,6 +178,10 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
+    def set_status(self, new_status, request, parent=True):
+        # Not implemented by default.
+        pass
+
 
 class SharedItem(Item):
     ''' An Item visible to all authenticated users while "in progress".
@@ -214,3 +227,17 @@ def edit_json(context, request):
             'profile': '/profiles/{ti.name}.json'.format(ti=context.type_info),
             'href': '{item_uri}#!edit-json'.format(item_uri=request.resource_path(context)),
         }
+
+
+@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
+             name='release', validators=[validate_item_content_patch])
+def item_release(context, request):
+    new_status = 'released'
+    context.set_status(new_status, request)
+
+
+@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
+             name='unrelease', validators=[validate_item_content_patch])
+def item_unrelease(context, request):
+    new_status = 'in progress'
+    context.set_status(new_status, request)

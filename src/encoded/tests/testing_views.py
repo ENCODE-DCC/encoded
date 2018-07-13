@@ -9,6 +9,7 @@ from snovault import (
 )
 from ..types.base import paths_filtered_by_status
 from snovault.attachment import ItemWithAttachment
+from encoded.types.base import Item as EncodedItem
 
 
 def includeme(config):
@@ -291,3 +292,48 @@ def testing_retry(context, request):
         'attempt': request._attempt,
         'detached': inspect(model).detached,
     }
+
+
+@collection(
+    name='test-encode-items',
+    properties={
+        'title': 'Test Encode Item',
+        'description': 'Item to test for set_status properties',
+    },
+    unique_key='accession',
+)
+class TestingEncodeItem(EncodedItem):
+    item_type = 'test-encode-item'
+    schema = {
+        '$schema': 'http://json-schema.org/draft-04/schema#',
+        'type': 'object',
+        'properties': {
+            'description': {
+                'type': 'string',
+            },
+            'accession': {
+                'title': 'Accession',
+                'description': '',
+                'type': 'string',
+                'format': 'accession',
+                'serverDefault': 'accession',
+                'permission': 'import_items',
+                'accessionType': 'FF',
+            },
+            'status': {
+                'title': 'Status',
+                'type': 'string',
+                'permission': 'import_items',
+                'default': 'in progress',
+                'description': 'The status of the metadata object.',
+                'enum': [
+                    'in progress',
+                    'released',
+                    'deleted',
+                    'replaced',
+                    'revoked'
+                ]
+            }
+        }
+    }
+    name_key = 'accession'
