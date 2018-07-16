@@ -111,6 +111,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 if failures:
                     for f in failures:
                         yield f
+                    return
                 else:
                     control_depth = get_chip_seq_bam_read_depth(bam_file)
                     if not control_depth:
