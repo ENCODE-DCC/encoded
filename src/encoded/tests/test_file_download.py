@@ -23,8 +23,10 @@ def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
 
 @mock_sts
 def test_external_creds():
-    from encoded.types.file import external_creds
-    creds = external_creds('mock_bucket', 'mock_object', 'mock_name')
+    from helpers import UploadCredentials
+    bucket, key, name = ('mock_bucket', 'mock_object', 'mock_name')
+    upload_creds = UploadCredentials(bucket, key, name)
+    creds = upload_creds.external_creds()
     assert 'upload_credentials' in creds
     assert creds['bucket'] == 'mock_bucket'
     assert creds['key'] == 'mock_object'
