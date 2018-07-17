@@ -345,6 +345,10 @@ class File(Item):
 
             profile_name = registry.settings.get('file_upload_profile_name')
             upload_creds = UploadCredentials(bucket, key, name, profile_name)
+            upload_creds.check_external_policy(
+                allow=registry.settings['external_aws_s3_transfer_allow'],
+                bucket_list_path=registry.settings['external_aws_s3_transfer_buckets'],
+            )
             sheets['external'] = upload_creds.external_creds()
         return super(File, cls).create(registry, uuid, properties, sheets)
 
@@ -452,6 +456,10 @@ def post_upload(context, request):
         time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
     upload_creds = UploadCredentials(bucket, key, name, profile_name)
+    upload_creds.check_external_policy(
+        registry.settings['external_aws_s3_transfer_allow'],
+        registry.settings['external_aws_s3_transfer_buckets']
+    )
     creds = upload_creds.external_creds()
 
     new_properties = None
