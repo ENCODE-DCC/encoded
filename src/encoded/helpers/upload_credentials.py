@@ -96,9 +96,10 @@ class UploadCredentials(object):
             bucket=self._bucket,
             key=self._key
         )
+        self._resource_string = "arn:aws:s3:::{}".format(self._file_url)
+        self._external_policy = None
 
     def _get_base_policy(self):
-        resource_string = "arn:aws:s3:::{}".format(self._file_url)
         return {
             'Version': '2012-10-17',
             'Statement': [
