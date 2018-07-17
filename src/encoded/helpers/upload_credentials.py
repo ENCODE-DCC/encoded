@@ -7,7 +7,7 @@ import boto3
 
 
 class UploadCredentials(object):
-    def __init__(self, bucket, key, name, profile_name='default'):
+    def __init__(self, bucket, key, name, profile_name=None):
         self._bucket = bucket
         self._key = key
         self._name = name
