@@ -399,6 +399,12 @@ def main():
     if ec2_client is None:
         sys.exit(20)
     run_args = _get_run_args(main_args, instances_tag_data)
+    if main_args.dry_run_aws:
+        print('Dry Run AWS')
+        print('main_args', main_args.keys())
+        print('run_args', run_args.keys())
+        print('Dry Run AWS')
+        sys.exit(30)
     # Run Cases
     if main_args.check_price:
         print("check_price")
@@ -510,6 +516,7 @@ def parse_args():
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
+    parser.add_argument('--dry-run-aws', action='store_true', help="Abort before ec2 requests.")
     parser.add_argument('--single-data-master', action='store_true',
             help="Create a single data master node.")
     parser.add_argument('--check-price', action='store_true', help="Check price on spot instances")
