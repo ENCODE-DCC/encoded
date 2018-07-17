@@ -119,7 +119,7 @@ class UploadCredentials(object):
 
     def _get_token(self, policy):
         conn = boto3.Session(profile_name=self._profile_name).client('sts')
-        return = conn.get_federation_token(
+        return conn.get_federation_token(
             Name=self._name,
             Policy=json.dumps(policy)
         )
