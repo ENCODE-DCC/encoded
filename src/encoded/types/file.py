@@ -41,22 +41,8 @@ def show_upload_credentials(request=None, context=None, status=None):
     return request.has_permission('edit', context)
 
 
-def get_external_bucket_policy():
-    iam = boto3.client('iam')
-    arn = 'arn:aws:iam::618537831167:policy/direct-external-s3-to-encode-upload'
-    policy = iam.get_policy(
-        PolicyArn=arn,
-    )
-    policy_version = iam.get_policy_version(
-        PolicyArn=arn,
-        VersionId=policy['Policy']['DefaultVersionId'],
-    )
-    policy_json = policy_version['PolicyVersion']['Document']
-    return policy_json
-
-
-def get_encode_upload_policy(bucket, key):
-    return {
+def external_creds(bucket, key, name, profile_name=None):
+    policy = {
         'Version': '2012-10-17',
         'Statement': [
             {
@@ -66,14 +52,6 @@ def get_encode_upload_policy(bucket, key):
             }
         ]
     }
-
-
-def external_creds(bucket, key, name, profile_name=None):
-    policy = get_encode_upload_policy(bucket, key)
-    if policy and 'Statement' in policy:
-        external_policy = get_external_bucket_policy()
-        if external_policy and external_policy.get('Statement'):
-            policy['Statement'].append(external_policy['Statement'][0])
     conn = boto3.Session(profile_name=profile_name).client('sts')
     token = conn.get_federation_token(
         Name=name,
