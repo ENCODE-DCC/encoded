@@ -34,7 +34,7 @@ import json
 import pytz
 import time
 
-from encoded.helpers import external_creds
+from encoded.helpers import UploadCredentials
 
 
 def show_upload_credentials(request=None, context=None, status=None):
@@ -344,7 +344,13 @@ class File(Item):
                 time=time.time(), **properties)[:32]  # max 32 chars
 
             profile_name = registry.settings.get('file_upload_profile_name')
-            sheets['external'] = external_creds(bucket, key, name, profile_name)
+            upload_creds = UploadCredentials(
+                bucket,
+                key,
+                name,
+                profile_name=profile_name,
+            )
+            sheets['external'] = upload_creds.external_creds()
         return super(File, cls).create(registry, uuid, properties, sheets)
 
     def _get_external_sheet(self):
@@ -450,8 +456,13 @@ def post_upload(context, request):
         accession_or_external=accession_or_external,
         time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
-    creds = external_creds(bucket, key, name, profile_name)
-
+    upload_creds = UploadCredentials(
+        bucket,
+        key,
+        name,
+        profile_name=profile_name,
+    )
+    creds = upload_creds.external_creds()
     new_properties = None
     if properties['status'] == 'upload failed':
         new_properties = properties.copy()

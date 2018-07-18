@@ -1,1 +1,1 @@
-from .upload_credentials import external_creds
+from .upload_credentials import UploadCredentials
