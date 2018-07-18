@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import json
 
 
@@ -9,43 +10,58 @@ class UploadCredentials(object):
         self._key = key
         self._name = name
         self._profile_name = profile_name
+        file_url = "{bucket}/{key}".format(
+            bucket=self._bucket,
+            key=self._key
+        )
+        self._resource_string = "arn:aws:s3:::{}".format(file_url)
+        self._upload_url = "s3://{}".format(file_url)
 
-    def external_creds(self):
-        bucket = self._bucket
-        key = self._key
-        name = self._name
-        profile_name = self._profile_name
+    def _get_policy(self):
         policy = {
             'Version': '2012-10-17',
             'Statement': [
                 {
                     'Effect': 'Allow',
                     'Action': 's3:PutObject',
-                    'Resource': 'arn:aws:s3:::{bucket}/{key}'.format(bucket=bucket, key=key),
+                    'Resource': self._resource_string,
                 }
             ]
         }
-        conn = boto3.Session(profile_name=profile_name).client('sts')
-        token = conn.get_federation_token(
-            Name=name,
-            Policy=json.dumps(policy)
-        )
-        # 'access_key' 'secret_key' 'expiration' 'session_token'
-        creds = token.get('Credentials', {})
-        # Maintain boto field names.
+        return policy
+
+    def _get_token(self, policy):
+        try:
+            conn = boto3.Session(profile_name=self._profile_name).client('sts')
+        except botocore.exceptions.ProfileNotFound as ecp:
+            print('Warning: ', ecp)
+            return None
+        try:
+            token = conn.get_federation_token(
+                Name=self._name,
+                Policy=json.dumps(policy)
+            )
+            return token
+        except botocore.exceptions.ClientError as ecp:
+            print('Warning: ', ecp)
+            return None
+
+    def external_creds(self):
+        policy = self._get_policy()
+        token = self._get_token(policy)
         credentials = {
-            'session_token': creds.get('SessionToken'),
-            'access_key': creds.get('AccessKeyId'),
-            'expiration': creds.get('Expiration').isoformat(),
-            'secret_key': creds.get('SecretAccessKey'),
-            'upload_url': 's3://{bucket}/{key}'.format(bucket=bucket, key=key),
+            'session_token': token.get('Credentials', {}).get('SessionToken'),
+            'access_key': token.get('Credentials', {}).get('AccessKeyId'),
+            'expiration': token.get('Credentials', {}).get('Expiration').isoformat(),
+            'secret_key': token.get('Credentials', {}).get('SecretAccessKey'),
+            'upload_url': self._upload_url,
             'federated_user_arn': token.get('FederatedUser', {}).get('Arn'),
             'federated_user_id': token.get('FederatedUser', {}).get('FederatedUserId'),
             'request_id': token.get('ResponseMetadata', {}).get('RequestId')
         }
         return {
             'service': 's3',
-            'bucket': bucket,
-            'key': key,
+            'bucket': self._bucket,
+            'key': self._key,
             'upload_credentials': credentials,
         }
