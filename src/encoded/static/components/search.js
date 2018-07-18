@@ -1208,8 +1208,9 @@ export class ResultTable extends React.Component {
         return (
             <div>
                 <div className="row">
-                    {facets.length ?
-                        <div className="col-sm-5 col-md-4 col-lg-3">
+                    <div className="col-sm-5 col-md-4 col-lg-3">
+                        <h3 style={{ marginTop: 0 }}>Experiment {context.title}</h3>
+                        {facets.length ?
                             <FacetList
                                 {...this.props}
                                 facets={facets}
@@ -1217,8 +1218,8 @@ export class ResultTable extends React.Component {
                                 searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
                                 onFilter={this.onFilter}
                             />
-                        </div>
-                    : ''}
+                            : ''}
+                    </div>
                     <div className="col-sm-7 col-md-8 col-lg-9">
 
                         {context.notification === 'Success' ?
