@@ -344,13 +344,11 @@ class File(Item):
                 time=time.time(), **properties)[:32]  # max 32 chars
 
             profile_name = registry.settings.get('file_upload_profile_name')
-            upload_creds = UploadCredentials(
-                bucket,
-                key,
-                name,
-                profile_name=profile_name,
+            upload_creds = UploadCredentials(bucket, key, name, profile_name=profile_name)
+            sheets['external'] = upload_creds.external_creds(
+                allow=registry.settings.get('external_aws_s3_transfer_allow', False),
+                bucket_list_path=registry.settings.get('external_aws_s3_transfer_buckets'),
             )
-            sheets['external'] = upload_creds.external_creds()
         return super(File, cls).create(registry, uuid, properties, sheets)
 
     def _get_external_sheet(self):
@@ -456,13 +454,11 @@ def post_upload(context, request):
         accession_or_external=accession_or_external,
         time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
-    upload_creds = UploadCredentials(
-        bucket,
-        key,
-        name,
-        profile_name=profile_name,
+    upload_creds = UploadCredentials(bucket, key, name, profile_name=profile_name)
+    creds = upload_creds.external_creds(
+        allow=request.registry.settings.get('external_aws_s3_transfer_allow', False),
+        bucket_list_path=request.registry.settings.get('external_aws_s3_transfer_buckets'),
     )
-    creds = upload_creds.external_creds()
     new_properties = None
     if properties['status'] == 'upload failed':
         new_properties = properties.copy()

@@ -1,6 +1,86 @@
 import boto3
 import botocore
+import copy
 import json
+
+
+EXTERNAL_BUCKET_STATEMENTS = [
+    {
+        'Action': 's3:GetObject',
+        'Resource': lambda s: 'arn:aws:s3:::%s/*' % s,
+        'Effect': 'Allow',
+    },
+    {
+        'Action': 's3:ListBucket',
+        'Resource': lambda s: 'arn:aws:s3:::%s' % s,
+        'Effect': 'Allow',
+    },
+    {
+        'Action': 's3:GetObjectAcl',
+        'Resource': lambda s: 'arn:aws:s3:::%s/*' % s,
+        'Effect': 'Allow',
+    }
+]
+
+
+def _compile_statements_from_list(buckets_list):
+    statements = []
+    if buckets_list:
+        for ext_policy in EXTERNAL_BUCKET_STATEMENTS:
+            new_policy = copy.copy(ext_policy)
+            new_policy['Resource'] = []
+            for line in buckets_list:
+                line = line.strip()
+                if line:
+                    line = line.strip()
+                    new_policy['Resource'].append(ext_policy['Resource'](line))
+            statements.append(new_policy)
+    return statements
+
+
+def _save_policy_json(policy_json, file_path):
+    with open(file_path + '.json', 'w') as file_handler:
+        json.dump(policy_json, file_handler)
+
+
+def _build_external_bucket_json(file_path):
+    try:
+        with open(file_path) as file_handler:
+            policy_json = {
+                'Version': '2012-10-17',
+                'Statement': [],
+            }
+            buckets_list = [item.strip() for item in file_handler.readlines()]
+            statements = _compile_statements_from_list(buckets_list)
+            if statements:
+                policy_json['Statement'] = statements
+                _save_policy_json(policy_json, file_path)
+    except FileNotFoundError:
+        print(
+            'encoded.types.file.py.get_external_bucket_policy: '
+            'Could not load external bucket policy list.'
+        )
+
+
+def _get_external_bucket_policy(file_path, retry=False):
+    '''
+    Returns a compiled json of external s3 access policies for federated users
+    Checks if the policy json was already compiled on this instance.  If not,
+    looks for the bucket list to compile and create the policy json.
+    Returns
+        -A policy json with EXTERNAL_BUCKET_STATEMENTS statements for each
+        external bucket in the buckt list.
+        -A policy json with zero statements if neither file is found
+    Can be updated on the fly.  Just append bucket names to file_path
+    and delete the created json file.
+    '''
+    try:
+        with open(file_path + '.json', 'r') as file_handler:
+            return json.loads(file_handler.read())
+    except FileNotFoundError:
+        if retry:
+            _build_external_bucket_json(file_path)
+            return _get_external_bucket_policy(file_path)
 
 
 class UploadCredentials(object):
@@ -16,8 +96,9 @@ class UploadCredentials(object):
         )
         self._resource_string = "arn:aws:s3:::{}".format(file_url)
         self._upload_url = "s3://{}".format(file_url)
+        self._external_policy = {}
 
-    def _get_policy(self):
+    def _get_base_policy(self):
         policy = {
             'Version': '2012-10-17',
             'Statement': [
@@ -28,6 +109,17 @@ class UploadCredentials(object):
                 }
             ]
         }
+        return policy
+
+    def _get_policy(self):
+        policy = self._get_base_policy()
+        if (
+                self._external_policy and
+                self._external_policy.get('Statement') and
+                isinstance(self._external_policy['Statement'], list)
+        ):
+            for statement in self._external_policy['Statement']:
+                policy['Statement'].append(statement)
         return policy
 
     def _get_token(self, policy):
@@ -46,7 +138,17 @@ class UploadCredentials(object):
             print('Warning: ', ecp)
             return None
 
-    def external_creds(self):
+    def _check_external_policy(self, allow, bucket_list_path):
+        if allow and bucket_list_path:
+            external_policy = _get_external_bucket_policy(
+                bucket_list_path,
+                retry=True
+            )
+            if external_policy:
+                self._external_policy = external_policy
+
+    def external_creds(self, allow=False, bucket_list_path=None):
+        self._check_external_policy(allow, bucket_list_path)
         policy = self._get_policy()
         token = self._get_token(policy)
         credentials = {
