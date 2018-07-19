@@ -1,7 +1,11 @@
-import boto3
-import botocore
+"""
+Helper class to create user credentials to upload files to s3
+"""
 import copy
 import json
+
+import boto3
+import botocore
 
 
 EXTERNAL_BUCKET_STATEMENTS = [
@@ -55,7 +59,7 @@ def _build_external_bucket_json(file_path):
             if statements:
                 policy_json['Statement'] = statements
                 _save_policy_json(policy_json, file_path)
-    except FileNotFoundError:
+    except FileNotFoundError:  # pylint: disable=undefined-variable
         print(
             'encoded.types.file.py.get_external_bucket_policy: '
             'Could not load external bucket policy list.'
@@ -77,14 +81,17 @@ def _get_external_bucket_policy(file_path, retry=False):
     try:
         with open(file_path + '.json', 'r') as file_handler:
             return json.loads(file_handler.read())
-    except FileNotFoundError:
+    except FileNotFoundError:  # pylint: disable=undefined-variable
         if retry:
             _build_external_bucket_json(file_path)
             return _get_external_bucket_policy(file_path)
 
 
 class UploadCredentials(object):
-
+    # pylint: disable=too-few-public-methods
+    '''
+    Build and distribute federate aws credentials for submitting files
+    '''
     def __init__(self, bucket, key, name, profile_name=None):
         self._bucket = bucket
         self._key = key
@@ -148,6 +155,11 @@ class UploadCredentials(object):
                 self._external_policy = external_policy
 
     def external_creds(self, allow=False, bucket_list_path=None):
+        '''
+        Used to get the federate user credentials
+
+        If external s3 buckets exist they will be added to the policy.
+        '''
         self._check_external_policy(allow, bucket_list_path)
         policy = self._get_policy()
         token = self._get_token(policy)

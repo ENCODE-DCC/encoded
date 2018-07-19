@@ -1,8 +1,12 @@
+# pylint: disable=protected-access
+"""
+Tests for upload_credential.py
+"""
 from unittest import TestCase
 
-import pytest
+import pytest  # pylint: disable=import-error, unused-import
 
-from moto import mock_sts
+from moto import mock_sts  # pylint: disable=import-error, unused-import
 
 from encoded.helpers import UploadCredentials
 from encoded.helpers import EXTERNAL_BUCKET_STATEMENTS
@@ -12,7 +16,11 @@ from . import HELPERS_DATA_PATH
 
 @mock_sts
 def test_external_creds():
-    from encoded.helpers import UploadCredentials
+    '''
+    Original test from file.py for test_external_creds
+
+    I do not think the mock works here.
+    '''
     upload_creds = UploadCredentials(
         'mock_bucket',
         'mock_object',
@@ -27,7 +35,9 @@ def test_external_creds():
 
 
 class TestUploadCredentials(TestCase):
-
+    '''
+    UploadCredentials test class
+    '''
     @classmethod
     def setUpClass(cls):
         cls._upload_creds_attrs = [
@@ -42,7 +52,7 @@ class TestUploadCredentials(TestCase):
         cls._external_creds_keys = ['service', 'bucket', 'key', 'upload_credentials']
         cls._credentials_keys = [
             'session_token', 'access_key', 'expiration', 'secret_key',
-            'upload_url', 'federated_user_arn', 'federated_user_id','request_id',
+            'upload_url', 'federated_user_arn', 'federated_user_id', 'request_id',
         ]
         cls._test_bucket = 'mock_bucket'
         cls._test_key = 'mock_key'
@@ -56,10 +66,16 @@ class TestUploadCredentials(TestCase):
         )
 
     def test_init_attributes_missing(self):
+        '''
+        Test UploadCredentials has needed attributes
+        '''
         for attribute in self._upload_creds_attrs:
             self.assertTrue(hasattr(self._default_upload_creds, attribute))
 
     def test_init_attribute_values(self):
+        '''
+        Test UploadCredentials attributes have correct inital values
+        '''
         self.assertEqual(self._test_bucket, self._default_upload_creds._bucket)
         self.assertEqual(self._test_key, self._default_upload_creds._key)
         self.assertEqual(self._test_name, self._default_upload_creds._name)
@@ -80,6 +96,9 @@ class TestUploadCredentials(TestCase):
         )
 
     def test_init_profile_name_none(self):
+        '''
+        Test UploadCredentials profile_name defaults to None
+        '''
         upload_creds = UploadCredentials(
             self._test_bucket,
             self._test_key,
@@ -88,26 +107,35 @@ class TestUploadCredentials(TestCase):
         self.assertIsNone(upload_creds._profile_name)
 
     def test_init_external_policy_empty(self):
+        '''
+        Test UploadCredentials profile_name defaults to empty dict
+        '''
         upload_creds = UploadCredentials(self._test_bucket, self._test_key, self._test_name)
         self.assertTrue(isinstance(upload_creds._external_policy, dict))
         self.assertFalse(upload_creds._external_policy)
 
-    def test_get_policy(self):
-        test_result = self._default_upload_creds._get_policy()
+    def test_get_base_policy(self):
+        '''
+        Test UploadCredentials _get_base_policy
+        '''
+        test_result = self._default_upload_creds._get_base_policy()
         self.assertTrue(isinstance(test_result, dict))
         self.assertTrue('Statement' in test_result)
         statements = test_result['Statement']
         self.assertTrue(isinstance(statements, list))
         self.assertEqual(len(statements), 1)
         statement_item = statements[0]
-        self.assertEqual('Allow',  statement_item.get('Effect'))
-        self.assertEqual('s3:PutObject',  statement_item.get('Action'))
+        self.assertEqual('Allow', statement_item.get('Effect'))
+        self.assertEqual('s3:PutObject', statement_item.get('Action'))
         self.assertEqual(
             self._default_upload_creds._resource_string,
             statement_item.get('Resource')
         )
 
     def test_get_policy_no_external(self):
+        '''
+        Test UploadCredentials _get_policy if no external statements
+        '''
         upload_creds = UploadCredentials(
             self._test_bucket,
             self._test_key,
@@ -120,13 +148,16 @@ class TestUploadCredentials(TestCase):
         )
 
     def test_get_policy_no_statement(self):
+        '''
+        Test UploadCredentials _get_policy if statements are bad
+        '''
         upload_creds = UploadCredentials(self._test_bucket, self._test_key, self._test_name)
         for item in [
-            {'NotStatement': ['a']},
-            {'Statement': {}},
-            {'Statement': []},
-            {'Statement': None},
-            {'Statement': 'a'},
+                {'NotStatement': ['a']},
+                {'Statement': {}},
+                {'Statement': []},
+                {'Statement': None},
+                {'Statement': 'a'},
         ]:
             upload_creds._external_policy = item
             self.assertDictEqual(
@@ -134,11 +165,14 @@ class TestUploadCredentials(TestCase):
                 upload_creds._get_policy(),
             )
 
-    def test_get_policy_external_statement(self):
+    def test_get_policy_ext_statements(self):
+        '''
+        Test UploadCredentials _get_policy if 1 or more good statements
+        '''
         upload_creds = UploadCredentials(self._test_bucket, self._test_key, self._test_name)
         for policy in [
-            {'Statement': ['a']},
-            {'Statement': ['a', 'b', 'c']},
+                {'Statement': ['a']},
+                {'Statement': ['a', 'b', 'c']},
         ]:
             upload_creds._external_policy = policy
             base = upload_creds._get_base_policy()
@@ -150,11 +184,19 @@ class TestUploadCredentials(TestCase):
             )
 
     def test_get_token_mock(self):
+        '''
+        Test UploadCredentials _get_token with bad profile_name
+        '''
         policy = self._default_upload_creds._get_policy()
         token = self._default_upload_creds._get_token(policy)
         self.assertIsNone(token)
 
     def test_get_token_default(self):
+        '''
+        Test UploadCredentials _get_token with good profile_name
+
+        -Test how this works on travis
+        '''
         upload_creds = UploadCredentials(
             self._test_bucket,
             self._test_key,
@@ -166,6 +208,9 @@ class TestUploadCredentials(TestCase):
         self.assertTrue(isinstance(token, dict))
 
     def test_check_external_policy_zero(self):
+        '''
+        Test UploadCredentials _check_external_policy no statements in file
+        '''
         upload_creds = UploadCredentials(
             self._test_bucket,
             self._test_key,
@@ -187,7 +232,7 @@ class TestUploadCredentials(TestCase):
 
     def test_external_bucket_policies(self):
         '''
-        Placed here for debugging, should exist outside class
+        Test UploadCredentials EXTERNAL_BUCKET_STATEMENTS
         '''
         expected_actions = ['s3:GetObject', 's3:ListBucket', 's3:GetObjectAcl']
         result_actions = []
@@ -204,6 +249,9 @@ class TestUploadCredentials(TestCase):
         self.assertListEqual(expected_actions, result_actions)
 
     def test_check_external_policy_one(self):
+        '''
+        Test UploadCredentials _check_external_policy one statement in file
+        '''
         import os
         expected_bucket_names = ['test-bucket-one']
         upload_creds = UploadCredentials(
@@ -243,6 +291,9 @@ class TestUploadCredentials(TestCase):
                 )
 
     def test_check_external_policy_many(self):
+        '''
+        Test UploadCredentials _check_external_policy many statements in file
+        '''
         import os
         expected_bucket_names = [
             'test-bucket-one',
@@ -286,6 +337,9 @@ class TestUploadCredentials(TestCase):
                 )
 
     def test_external_creds_keys(self):
+        '''
+        Test UploadCredentials external_creds returns correct keys
+        '''
         upload_creds = UploadCredentials(
             self._test_bucket,
             self._test_key,
@@ -305,6 +359,9 @@ class TestUploadCredentials(TestCase):
         )
 
     def test_external_creds_values(self):
+        '''
+        Test UploadCredentials external_creds returns correct values
+        '''
         upload_creds = UploadCredentials(
             self._test_bucket,
             self._test_key,
