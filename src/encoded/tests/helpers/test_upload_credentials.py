@@ -5,6 +5,9 @@ import pytest
 from moto import mock_sts
 
 from encoded.helpers import UploadCredentials
+from encoded.helpers import EXTERNAL_BUCKET_STATEMENTS
+
+from . import HELPERS_DATA_PATH
 
 
 @mock_sts
@@ -34,6 +37,7 @@ class TestUploadCredentials(TestCase):
             '_profile_name',
             '_resource_string',
             '_upload_url',
+            '_external_policy',
         ]
         cls._external_creds_keys = ['service', 'bucket', 'key', 'upload_credentials']
         cls._credentials_keys = [
@@ -83,6 +87,11 @@ class TestUploadCredentials(TestCase):
         )
         self.assertIsNone(upload_creds._profile_name)
 
+    def test_init_external_policy_empty(self):
+        upload_creds = UploadCredentials(self._test_bucket, self._test_key, self._test_name)
+        self.assertTrue(isinstance(upload_creds._external_policy, dict))
+        self.assertFalse(upload_creds._external_policy)
+
     def test_get_policy(self):
         test_result = self._default_upload_creds._get_policy()
         self.assertTrue(isinstance(test_result, dict))
@@ -97,6 +106,48 @@ class TestUploadCredentials(TestCase):
             self._default_upload_creds._resource_string,
             statement_item.get('Resource')
         )
+
+    def test_get_policy_no_external(self):
+        upload_creds = UploadCredentials(
+            self._test_bucket,
+            self._test_key,
+            self._test_name,
+            self._test_profile_name,
+        )
+        self.assertDictEqual(
+            upload_creds._get_base_policy(),
+            upload_creds._get_policy()
+        )
+
+    def test_get_policy_no_statement(self):
+        upload_creds = UploadCredentials(self._test_bucket, self._test_key, self._test_name)
+        for item in [
+            {'NotStatement': ['a']},
+            {'Statement': {}},
+            {'Statement': []},
+            {'Statement': None},
+            {'Statement': 'a'},
+        ]:
+            upload_creds._external_policy = item
+            self.assertDictEqual(
+                upload_creds._get_base_policy(),
+                upload_creds._get_policy(),
+            )
+
+    def test_get_policy_external_statement(self):
+        upload_creds = UploadCredentials(self._test_bucket, self._test_key, self._test_name)
+        for policy in [
+            {'Statement': ['a']},
+            {'Statement': ['a', 'b', 'c']},
+        ]:
+            upload_creds._external_policy = policy
+            base = upload_creds._get_base_policy()
+            for statement in policy['Statement']:
+                base['Statement'].append(statement)
+            self.assertDictEqual(
+                base,
+                upload_creds._get_policy(),
+            )
 
     def test_get_token_mock(self):
         policy = self._default_upload_creds._get_policy()
@@ -113,6 +164,126 @@ class TestUploadCredentials(TestCase):
         policy = upload_creds._get_policy()
         token = upload_creds._get_token(policy)
         self.assertTrue(isinstance(token, dict))
+
+    def test_check_external_policy_zero(self):
+        upload_creds = UploadCredentials(
+            self._test_bucket,
+            self._test_key,
+            self._test_name,
+            self._test_profile_name,
+        )
+        for allow, bucket_list_path in [
+                (False, None),
+                (True, None),
+                (False, 'some-path'),
+                (True, 'bad-path'),
+                (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_empty'),
+        ]:
+            upload_creds._check_external_policy(
+                allow=allow,
+                bucket_list_path=bucket_list_path
+            )
+            self.assertDictEqual(upload_creds._external_policy, {})
+
+    def test_external_bucket_policies(self):
+        '''
+        Placed here for debugging, should exist outside class
+        '''
+        expected_actions = ['s3:GetObject', 's3:ListBucket', 's3:GetObjectAcl']
+        result_actions = []
+        for statement in EXTERNAL_BUCKET_STATEMENTS:
+            self.assertTrue('Action' in statement)
+            self.assertTrue(isinstance(statement['Action'], str))
+            result_actions.append(statement['Action'])
+            self.assertTrue('Resource' in statement)
+            self.assertTrue(callable(statement['Resource']))
+            resource_str = statement['Resource']('some-bucket-name')
+            self.assertTrue(isinstance(resource_str, str))
+            self.assertTrue('Effect' in statement)
+            self.assertEqual(statement['Effect'], 'Allow')
+        self.assertListEqual(expected_actions, result_actions)
+
+    def test_check_external_policy_one(self):
+        import os
+        expected_bucket_names = ['test-bucket-one']
+        upload_creds = UploadCredentials(
+            self._test_bucket,
+            self._test_key,
+            self._test_name,
+            self._test_profile_name,
+        )
+        for allow, bucket_list_path in [
+                (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'),
+        ]:
+            upload_creds._check_external_policy(
+                allow=allow,
+                bucket_list_path=bucket_list_path
+            )
+            os.remove(bucket_list_path + '.json')
+            expected_resources = {
+                's3:GetObject': [
+                    'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
+                ],
+                's3:ListBucket': [
+                    'arn:aws:s3:::%s' % item for item in expected_bucket_names
+                ],
+                's3:GetObjectAcl': [
+                    'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
+                ],
+            }
+            result_statements = upload_creds._external_policy['Statement']
+            self.assertEqual(len(result_statements), len(EXTERNAL_BUCKET_STATEMENTS))
+            for result_statement in result_statements:
+                resources = result_statement['Resource']
+                self.assertTrue(isinstance(resources, list))
+                self.assertEqual(len(resources), 1)
+                self.assertListEqual(
+                    expected_resources[result_statement['Action']],
+                    result_statement['Resource']
+                )
+
+    def test_check_external_policy_many(self):
+        import os
+        expected_bucket_names = [
+            'test-bucket-one',
+            'test-bucket-two',
+            'test-bucket-three',
+        ]
+        upload_creds = UploadCredentials(
+            self._test_bucket,
+            self._test_key,
+            self._test_name,
+            self._test_profile_name,
+        )
+        for allow, bucket_list_path in [
+                (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_many'),
+        ]:
+            upload_creds._check_external_policy(
+                allow=allow,
+                bucket_list_path=bucket_list_path
+            )
+            os.remove(bucket_list_path + '.json')
+            expected_resources = {
+                's3:GetObject': [
+                    'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
+                ],
+                's3:ListBucket': [
+                    'arn:aws:s3:::%s' % item for item in expected_bucket_names
+                ],
+                's3:GetObjectAcl': [
+                    'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
+                ],
+            }
+            result_statements = upload_creds._external_policy['Statement']
+            self.assertEqual(len(result_statements), len(EXTERNAL_BUCKET_STATEMENTS))
+            for result_statement in result_statements:
+                resources = result_statement['Resource']
+                self.assertTrue(isinstance(resources, list))
+                self.assertEqual(len(resources), 3)
+                self.assertListEqual(
+                    expected_resources[result_statement['Action']],
+                    result_statement['Resource']
+                )
 
     def test_external_creds_keys(self):
         upload_creds = UploadCredentials(
