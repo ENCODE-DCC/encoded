@@ -18,13 +18,12 @@ from . import HELPERS_DATA_PATH
 def test_external_creds():
     '''
     Original test from file.py for test_external_creds
-
-    I do not think the mock works here.
     '''
     upload_creds = UploadCredentials(
         'mock_bucket',
         'mock_object',
         'mock_name',
+        profile_name='default',
     )
     creds = upload_creds.external_creds()
     assert 'upload_credentials' in creds
@@ -40,6 +39,8 @@ class TestUploadCredentials(TestCase):
     '''
     @classmethod
     def setUpClass(cls):
+        cls.mock_sts = mock_sts()
+        cls.mock_sts.start()
         cls._upload_creds_attrs = [
             '_bucket',
             '_key',
@@ -64,6 +65,10 @@ class TestUploadCredentials(TestCase):
             cls._test_name,
             cls._test_profile_name,
         )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.mock_sts.stop()
 
     def test_init_attributes_missing(self):
         '''
