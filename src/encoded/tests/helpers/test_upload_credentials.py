@@ -23,7 +23,7 @@ def test_external_creds():
         'mock_bucket',
         'mock_object',
         'mock_name',
-        profile_name='default',
+        # profile_name='default',
     )
     creds = upload_creds.external_creds()
     assert 'upload_credentials' in creds
@@ -206,7 +206,7 @@ class TestUploadCredentials(TestCase):
             self._test_bucket,
             self._test_key,
             self._test_name,
-            profile_name='default',
+            # profile_name='default',
         )
         policy = upload_creds._get_policy()
         token = upload_creds._get_token(policy)
@@ -349,7 +349,7 @@ class TestUploadCredentials(TestCase):
             self._test_bucket,
             self._test_key,
             self._test_name,
-            profile_name='default',
+            # profile_name='default',
         )
         creds_dict = upload_creds.external_creds()
         self.assertListEqual(
@@ -371,7 +371,7 @@ class TestUploadCredentials(TestCase):
             self._test_bucket,
             self._test_key,
             self._test_name,
-            profile_name='default',
+            # profile_name='default',
         )
         creds_dict = upload_creds.external_creds()
         self.assertEqual(creds_dict['service'], 's3')
