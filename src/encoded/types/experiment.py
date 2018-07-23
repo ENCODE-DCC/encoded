@@ -95,6 +95,15 @@ class Experiment(Dataset,
         'replicates.library.treatments',
         'target.organism',
     ]
+    set_status_up = [
+        'original_files'
+        'replicates',
+        'documents',
+        'target'
+    ]
+    set_status_down = [
+        'original_files'
+    ]
     rev = Dataset.rev.copy()
     rev.update({
         'replicates': ('Replicate', 'experiment'),
