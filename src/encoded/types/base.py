@@ -10,6 +10,7 @@ from pyramid.security import (
 from pyramid.traversal import (
     find_root,
     traverse,
+    resource_path
 )
 from pyramid.view import (
     view_config
@@ -18,6 +19,10 @@ import snovault
 from snovault.validators import validate_item_content_patch
 from snovault.validation import ValidationFailure
 from snovault.auditor import traversed_path_ids
+from snovault import (
+    AfterModified,
+    BeforeModified
+)
 
 
 @lru_cache()
@@ -71,12 +76,16 @@ ALLOW_SUBMITTER_ADD = [
 
 # New status must contain current status in list to be valid transition.
 STATUS_TRANSITION_TABLE = {
-    'released': ['in progress'],
+    'released': ['in progress', 'released'],
     'in progress': ['released', 'archived', 'deleted', 'revoked']
 }
 
 # Used to calculate whether new_status is more or less than current_status.
 STATUS_HIERARCHY = {
+    'released': 30,
+    'deleted': 0,
+    'revoked': 5,
+    'in progress': 10
 }
 
 
@@ -190,7 +199,12 @@ class Item(snovault.Item):
         return keys
 
     def set_status(self, new_status, request, force=False, parent=True, changed=set()):
-        current_status = self.properties.get('status')
+        root = find_root(self)
+        properties = self.upgrade_properties()
+        item_id = resource_path(self)
+        if not item_id:
+            raise ValidationFailure('body', ['status'], 'No property @id')
+        current_status = properties.get('status')
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
         # Is valid transition?
@@ -205,6 +219,35 @@ class Item(snovault.Item):
             # Do nothing if this is child object.
             else:
                 return
+        properties['status'] = new_status
+        request.registry.notify(BeforeModified(self, request))
+        self.update(properties)
+        request.registry.notify(AfterModified(self, request))
+        changed.add(item_id)
+        # List of child_paths depends on if status is going up or down.
+        if STATUS_HIERARCHY[new_status] >= STATUS_HIERARCHY[current_status]:
+            child_paths = self.set_status_up
+        else:
+            child_paths = self.set_status_down
+        related_objects = set()
+        embedded_properties = request.embed(item_id, '@@embedded')
+        for path in child_paths:
+            for child_id in traversed_path_ids(request, embedded_properties, path):
+                related_objects.add(child_id)
+        for child_id in related_objects:
+            # Avoid cycles.
+            if child_id in changed:
+                pass
+            else:
+                child_uuid = request.embed(child_id).get('uuid')
+                encoded_item = root.get_by_uuid(child_uuid)
+                changed.add(child_id)
+                encoded_item.set_status(
+                    new_status,
+                    request,
+                    parent=False,
+                    changed=changed.union(related_objects)
+                )
 
 
 class SharedItem(Item):
