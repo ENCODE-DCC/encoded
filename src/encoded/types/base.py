@@ -193,6 +193,18 @@ class Item(snovault.Item):
         current_status = self.properties.get('status')
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
+        # Is valid transition?
+        if current_status not in STATUS_TRANSITION_TABLE[new_status]:
+            # Raise failure if this is primary object.
+            if parent:
+                msg = 'Status transition {} to {} not allowed'.format(
+                    current_status,
+                    new_status
+                )
+                raise ValidationFailure('body', ['status'], msg)
+            # Do nothing if this is child object.
+            else:
+                return
 
 
 class SharedItem(Item):
