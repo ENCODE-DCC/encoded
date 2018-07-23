@@ -218,7 +218,7 @@ class Item(snovault.Item):
                 raise ValidationFailure('body', ['status'], msg)
             # Do nothing if this is child object.
             else:
-                return
+                return False
         properties['status'] = new_status
         request.registry.notify(BeforeModified(self, request))
         self.update(properties)
@@ -248,6 +248,7 @@ class Item(snovault.Item):
                     parent=False,
                     changed=changed.union(related_objects)
                 )
+        return True
 
 
 class SharedItem(Item):

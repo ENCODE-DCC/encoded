@@ -87,7 +87,7 @@ def test_item_set_status_invalid_transition_child(testapp, content, root, reques
     encode_item_id = res.json['@graph'][0]['@id']
     testapp.patch_json(encode_item_id, {'status': 'deleted'}, status=200)
     encode_item = root.get_by_uuid(encode_item_uuid)
-    assert encode_item.set_status('released', request, parent=False) is None
+    assert encode_item.set_status('released', request, parent=False) is False
 
 
 def test_item_release_endpoint_calls_set_status(testapp, content, mocker):

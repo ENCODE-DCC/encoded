@@ -403,25 +403,17 @@ class File(Item):
             external['key']
         ).put(ACL='private')
 
-    def set_status(self, new_status, request, parent=True):
-        properties = self.upgrade_properties()
-        status = properties.get('status')
-        # Is valid transition?
-        if status not in STATUS_TRANSITION_TABLE[new_status]:
-            # Raise failure if this is primary object.
-            if parent:
-                msg = 'Status transition {} to {} not allowed'.format(
-                    status,
-                    new_status
-                )
-                raise ValidationFailure('body', ['status'], msg)
-            # Do nothing if this is child object.
-            else:
-                return
-        properties['status'] = new_status
-        request.registry.notify(BeforeModified(self, request))
-        self.update(properties)
-        request.registry.notify(AfterModified(self, request))
+    def set_status(self, new_status, request, force=False, parent=True, changed=set()):
+        status_set = super(File, self).set_status(
+            new_status,
+            request,
+            force=force,
+            parent=parent,
+            changed=changed
+        )
+        # Failed to set?
+        if not status_set:
+            return
         # Change permission in S3.
         try:
             if new_status == 'released':
