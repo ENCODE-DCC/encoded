@@ -53,6 +53,20 @@ def test_item_set_status_up_down_lists_exists(testapp, content, root):
     assert isinstance(encode_item.set_status_down, list)
 
 
+def test_item_set_status_no_status_validation_error(testapp, content, root):
+    res = testapp.get('/test-encode-items/')
+    encode_item_uuid = res.json['@graph'][0]['uuid']
+    encode_item_id = res.json['@graph'][0]['@id']
+    encode_item = root.get_by_uuid(encode_item_uuid)
+    encode_item_properties = encode_item.properties
+    encode_item_properties.pop('status')
+    encode_item.update(encode_item_properties)
+    res = testapp.get(encode_item_id)
+    assert 'status' not in res.json
+    res = testapp.patch_json(encode_item_id + '@@release', {}, status=422)
+    assert res.json['errors'][0]['description'] == 'No property status'
+
+
 def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
     from encoded.types.base import Item
     res = testapp.get('/test-encode-items/')

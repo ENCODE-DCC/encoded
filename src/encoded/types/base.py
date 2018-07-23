@@ -16,6 +16,8 @@ from pyramid.view import (
 )
 import snovault
 from snovault.validators import validate_item_content_patch
+from snovault.validation import ValidationFailure
+from snovault.auditor import traversed_path_ids
 
 
 @lru_cache()
@@ -187,9 +189,10 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
-    def set_status(self, new_status, request, parent=True):
-        # Not implemented by default.
-        pass
+    def set_status(self, new_status, request, force=False, parent=True, changed=set()):
+        current_status = self.properties.get('status')
+        if not current_status:
+            raise ValidationFailure('body', ['status'], 'No property status')
 
 
 class SharedItem(Item):
