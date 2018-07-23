@@ -96,7 +96,7 @@ class Experiment(Dataset,
         'target.organism',
     ]
     set_status_up = [
-        'original_files'
+        'original_files',
         'replicates',
         'documents',
         'target'
