@@ -143,7 +143,12 @@ class File(Item):
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software'
     ]
-
+    set_status_up = [
+        'quality_metrics'
+    ]
+    set_status_down = [
+        
+    ]
     @property
     def __name__(self):
         properties = self.upgrade_properties()
