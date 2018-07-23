@@ -73,6 +73,10 @@ STATUS_TRANSITION_TABLE = {
     'in progress': ['released', 'archived', 'deleted', 'revoked']
 }
 
+# Used to calculate whether new_status is more or less than current_status.
+STATUS_HIERARCHY = {
+}
+
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
     if include is not None:
@@ -140,6 +144,11 @@ class Item(snovault.Item):
 
         'archived': ALLOW_CURRENT,
     }
+
+    # Empty by default. Children objects to iterate through when changing status
+    # of parent object.
+    set_status_up = []
+    set_status_down = []
 
     @property
     def __name__(self):

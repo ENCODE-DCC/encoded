@@ -43,6 +43,16 @@ def test_item_set_status_method_exists(testapp, content, root):
     assert callable(set_status_method)
 
 
+def test_item_set_status_up_down_lists_exists(testapp, content, root):
+    res = testapp.get('/test-encode-items/')
+    encode_item_uuid = res.json['@graph'][0]['uuid']
+    encode_item = root.get_by_uuid(encode_item_uuid)
+    assert hasattr(encode_item, 'set_status_up')
+    assert hasattr(encode_item, 'set_status_down')
+    assert isinstance(encode_item.set_status_up, list)
+    assert isinstance(encode_item.set_status_down, list)
+
+
 def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
     from encoded.types.base import Item
     res = testapp.get('/test-encode-items/')
