@@ -67,7 +67,7 @@ def test_item_set_status_no_status_validation_error(testapp, content, root):
     assert res.json['errors'][0]['description'] == 'No property status'
 
 
-def test_item_set_status_invalid_transition(testapp, content, root, request):
+def test_item_set_status_invalid_transition_parent(testapp, content, root, request):
     # Can't go from deleted to released.
     from snovault.validation import ValidationFailure
     res = testapp.get('/test-encode-items/')
@@ -78,6 +78,16 @@ def test_item_set_status_invalid_transition(testapp, content, root, request):
     with pytest.raises(ValidationFailure) as e:
         encode_item.set_status('released', request)
     assert e.value.detail['description'] == 'Status transition deleted to released not allowed'
+
+
+def test_item_set_status_invalid_transition_child(testapp, content, root, request):
+    # Don't raise error if invalid transition on child object.
+    res = testapp.get('/test-encode-items/')
+    encode_item_uuid = res.json['@graph'][0]['uuid']
+    encode_item_id = res.json['@graph'][0]['@id']
+    testapp.patch_json(encode_item_id, {'status': 'deleted'}, status=200)
+    encode_item = root.get_by_uuid(encode_item_uuid)
+    assert encode_item.set_status('released', request, parent=False) is None
 
 
 def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
