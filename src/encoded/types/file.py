@@ -406,7 +406,7 @@ class File(Item):
             external['key']
         ).put(ACL='private')
 
-    def set_status(self, new_status, request, force=False, parent=True, changed=set()):
+    def set_status(self, new_status, request, force=False, parent=True, changed=None):
         status_set = super(File, self).set_status(
             new_status,
             request,
