@@ -4,6 +4,8 @@ from moto import (
     mock_sts
 )
 from pyramid.httpexceptions import HTTPNotFound
+from datetime import datetime
+
 
 items = [
     {'description': 'item0'},
@@ -305,7 +307,7 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
-    submitter_testapp.patch_json(file['@id'] + '@@release', {}, status=403)
+    submitter_testapp.patch_json(file['@id'] + '@@release', {}, status=422)
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
 
@@ -373,3 +375,22 @@ def test_set_status_endpoint_released_experiment(testapp, experiment, dummy_requ
     testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'in progress'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
+
+
+def test_set_status_endpoint_release_experiment_has_date_released(testapp, experiment, dummy_request):
+    res = testapp.get(experiment['@id'])
+    assert res.json['status'] == 'in progress'
+    assert 'date_released' not in res.json
+    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    res = testapp.get(experiment['@id'])
+    assert res.json['status'] == 'released'
+    assert 'date_released' in res.json
+
+
+def test_set_status_endpoint_experiment_date_released_remains_same(testapp, experiment, dummy_request):
+    dt = datetime.now().date()
+    dt = str(dt.replace(year=dt.year - 10))
+    testapp.patch_json(experiment['@id'], {'date_released': dt})
+    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    res = testapp.get(experiment['@id'])
+    assert res.json['date_released'] == dt

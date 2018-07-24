@@ -23,6 +23,7 @@ from snovault import (
     AfterModified,
     BeforeModified
 )
+from datetime import datetime
 
 
 @lru_cache()
@@ -208,6 +209,7 @@ class Item(snovault.Item):
         if changed is None:
             changed = set()
         root = find_root(self)
+        schema = self.type_info.schema
         properties = self.upgrade_properties()
         item_id = resource_path(self)
         if not item_id:
@@ -228,6 +230,11 @@ class Item(snovault.Item):
             else:
                 return False
         properties['status'] = new_status
+        # Some release specific functionality.
+        if new_status == 'released':
+            # This won't be reassigned if you rerelease something.
+            if 'date_released' in schema['properties'] and 'date_released' not in properties:
+                properties['date_released'] = str(datetime.now().date())
         request.registry.notify(BeforeModified(self, request))
         self.update(properties)
         request.registry.notify(AfterModified(self, request))
@@ -313,14 +320,14 @@ def item_release(context, request):
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='unrelease')
-def item_unrelease(context, request, validators=[validate_item_content_patch]):
+             name='unrelease', validators=[validate_item_content_patch])
+def item_unrelease(context, request):
     new_status = 'in progress'
     context.set_status(new_status, request)
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='set_status', validators=[validate_item_content_patch])
+             name='set_status')
 def item_set_status(context, request):
     new_status = request.json_body.get('status')
     if not new_status:
