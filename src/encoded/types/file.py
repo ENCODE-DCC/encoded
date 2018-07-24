@@ -8,11 +8,9 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
-from snovault.validation import ValidationFailure
 from .base import (
     Item,
-    paths_filtered_by_status,
-    STATUS_TRANSITION_TABLE
+    paths_filtered_by_status
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,

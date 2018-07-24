@@ -305,6 +305,71 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
-    submitter_testapp.patch_json(file['@id'] + '@@release', {}, status=422)
+    submitter_testapp.patch_json(file['@id'] + '@@release', {}, status=403)
     res = testapp.get(file['@id'])
+    assert res.json['status'] == 'in progress'
+
+
+@mock_sts
+@mock_s3
+def test_set_status_in_progress_experiment(testapp, root, experiment, replicate, file, award, lab, dummy_request):
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Pub mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress'})
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'in progress'
+    for encode_item in [experiment, file, replicate]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'in progress'
+    # Release experiment.
+    res = testapp.patch_json(experiment['@id'] + '@@release', {})
+    # File, exp, and rep now released.
+    for encode_item in [experiment, file, replicate]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'released'
+    # Unrelease experiment.
+    res = testapp.patch_json(experiment['@id'] + '@@unrelease', {})
+    # File and exp now in progress.
+    for encode_item in [experiment, file]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'in progress'
+    # Replicate remains released.
+    res = testapp.get(replicate['@id'])
+    assert res.json['status'] == 'released'
+
+
+def test_set_status_endpoint_status_not_specified(testapp, experiment, dummy_request):
+    res = testapp.patch_json(experiment['@id'] + '@@set_status', {}, status=422)
+    assert res.json['errors'][0]['description'] == 'Status not specified'
+
+
+def test_set_status_endpoint_status_specified(testapp, experiment, dummy_request):
+    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'}, status=200)
+
+
+def test_set_status_endpoint_in_progress_experiment(testapp, experiment, dummy_request):
+    res = testapp.get(experiment['@id'])
+    assert res.json['status'] == 'in progress'
+    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    res = testapp.get(experiment['@id'])
+    assert res.json['status'] == 'released'
+
+
+def test_set_status_endpoint_released_experiment(testapp, experiment, dummy_request):
+    res = testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    res = testapp.get(experiment['@id'])
+    assert res.json['status'] == 'released'
+    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'in progress'})
+    res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
