@@ -6,7 +6,6 @@ from snovault.helpers.helper import (
     get_search_fields,
     set_filters,
     set_facets,
-    format_facets
 )
 
 
@@ -100,7 +99,10 @@ class MatrixView(BaseView):
         # we collect them for use in aggregations later.
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
-        self.used_filters = set_filters(self.request, filter_collector, self.result)
+        filter_exclusion = ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome',
+                     'sort', 'from', 'referrer']
+        self.used_filters = set_filters(self.request, filter_collector, self.result, None, filter_exclusion)
         filters = filter_collector['post_filter']['bool']['must']
 
         if view_type == 'matrix':
@@ -184,7 +186,7 @@ class MatrixView(BaseView):
         return es_results
 
     def construct_facets(self, es_results, total):
-        facets = format_facets(es_results,
+        facets = self.format_facets(es_results,
                                self.facets,
                                self.used_filters,
                                (self.schema,),
@@ -241,7 +243,7 @@ class MatrixView(BaseView):
         self.result['matrix']['max_cell_doc_count'] = 0
 
         # Format facets for results
-        self.result['facets'] = format_facets(es_results,
+        self.result['facets'] = self.format_facets(es_results,
                                               self.facets,
                                               self.used_filters,
                                               (self.schema,),

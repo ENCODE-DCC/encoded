@@ -1,7 +1,6 @@
 import copy
 from encoded.viewconfigs.matrix import MatrixView
 from encoded.helpers.helper import search_result_actions
-from snovault.helpers.helper import format_facets
 
 
 class AuditView(MatrixView):
@@ -292,7 +291,7 @@ class AuditView(MatrixView):
         self.result['matrix']['max_cell_doc_count'] = 0
 
         # Format facets for results
-        self.result['facets'] = format_facets(es_results,
+        self.result['facets'] = self.format_facets(es_results,
                                               self.facets,
                                               self.used_filters,
                                               (self.schema,),

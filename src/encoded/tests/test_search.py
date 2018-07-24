@@ -3,11 +3,11 @@ import pytest
 from collections import OrderedDict
 from webob.multidict import MultiDict
 from snovault import TYPES
+from snovault.viewconfigs.base_view import BaseView
 from encoded.tests.features.conftest import app_settings, app, workbook
 from snovault.helpers.helper import (
     set_filters,
     set_facets,
-    format_facets,
     sort_query,
     get_pagination,
     prepare_search_term,
@@ -803,7 +803,7 @@ def test_format_facets():
     schemas = []
     total = 42
     principals = []
-    result = format_facets(
+    result = BaseView.format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == [{
@@ -825,7 +825,7 @@ def test_format_facets():
 
 
 def test_format_facets_no_aggregations():
-    result = format_facets({}, [], [], [], 0, [])
+    result = BaseView.format_facets({}, [], [], [], 0, [])
     assert result == []
 
 
@@ -852,7 +852,7 @@ def test_format_facets_skips_zero_bucket_facets():
     schemas = []
     total = 42
     principals = []
-    result = format_facets(
+    result = BaseView.format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == []
@@ -875,7 +875,7 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
     }]
     total = 42
     principals = []
-    result = format_facets(
+    result = BaseView.format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == [{
