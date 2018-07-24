@@ -306,7 +306,7 @@ def edit_json(context, request):
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='release')
+             name='release', validators=[validate_item_content_patch])
 def item_release(context, request):
     new_status = 'released'
     context.set_status(new_status, request)
@@ -314,13 +314,13 @@ def item_release(context, request):
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
              name='unrelease')
-def item_unrelease(context, request):
+def item_unrelease(context, request, validators=[validate_item_content_patch]):
     new_status = 'in progress'
     context.set_status(new_status, request)
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='set_status')
+             name='set_status', validators=[validate_item_content_patch])
 def item_set_status(context, request):
     new_status = request.json_body.get('status')
     if not new_status:
