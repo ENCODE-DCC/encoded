@@ -9,9 +9,59 @@ import pytest  # pylint: disable=import-error, unused-import
 from moto import mock_sts  # pylint: disable=import-error, unused-import
 
 from encoded.helpers import UploadCredentials
-from encoded.helpers import EXTERNAL_BUCKET_STATEMENTS
+from encoded.helpers.upload_credentials import EXTERNAL_BUCKET_STATEMENTS
+from encoded.helpers.upload_credentials import _build_external_bucket_json
+from encoded.helpers.upload_credentials import _get_external_bucket_policy
+from encoded.helpers.upload_credentials import _save_policy_json
+
 
 from . import HELPERS_DATA_PATH
+
+
+def test_save_policy_json():
+    '''
+    Tests the save json functionality
+    '''
+    import os.path
+    from os import remove
+    bucket_path = HELPERS_DATA_PATH + '/' + 'test-save-policy-delete-me'
+    bucket_path_json = bucket_path + '.json'
+    _save_policy_json({'test': 'testing'}, bucket_path)
+    if os.path.isfile(bucket_path_json):
+        remove(bucket_path_json)
+    else:
+        assert False
+
+
+def test_build_external_bucket_json():
+    '''
+    Tests the functionality to build the bucket json from bucket list path
+    '''
+    import os.path
+    from os import remove
+    bucket_path = HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'
+    bucket_path_json = bucket_path + '.json'
+    if os.path.isfile(bucket_path_json):
+        remove(bucket_path_json)
+    _build_external_bucket_json(bucket_path)
+    if os.path.isfile(bucket_path_json):
+        remove(bucket_path_json)
+    else:
+        assert False
+
+
+def test_get_external_bucket_policy():
+    '''
+    Tests that get_external_bucket_policy return json dict or none
+    '''
+    from os import remove
+    bucket_path = HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'
+    result = _get_external_bucket_policy(bucket_path)
+    assert result is None
+    _build_external_bucket_json(bucket_path)
+    result = _get_external_bucket_policy(bucket_path)
+    assert isinstance(result, dict)
+    remove(bucket_path + '.json')
 
 
 @mock_sts
@@ -261,7 +311,7 @@ class TestUploadCredentials(TestCase):
         '''
         Test UploadCredentials _check_external_policy one statement in file
         '''
-        import os
+        from os import remove
         expected_bucket_names = ['test-bucket-one']
         upload_creds = UploadCredentials(
             self._test_bucket,
@@ -276,7 +326,7 @@ class TestUploadCredentials(TestCase):
                 s3_transfer_allow=s3_transfer_allow,
                 s3_transfer_buckets=s3_transfer_buckets
             )
-            os.remove(s3_transfer_buckets + '.json')
+            remove(s3_transfer_buckets + '.json')
             expected_resources = {
                 's3:GetObject': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names

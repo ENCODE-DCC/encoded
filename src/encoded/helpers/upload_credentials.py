@@ -60,26 +60,15 @@ def _build_external_bucket_json(file_path):
             'Could not load external bucket policy list.'
         )
 
-
-def _get_external_bucket_policy(file_path, retry=False):
-    '''
-    Returns a compiled json of external s3 access policies for federated users
-    Checks if the policy json was already compiled on this instance.  If not,
-    looks for the bucket list to compile and create the policy json.
-    Returns
-        -A policy json with EXTERNAL_BUCKET_STATEMENTS statements for each
-        external bucket in the buckt list.
-        -A policy json with zero statements if neither file is found.
-    Can be updated on the fly.  Just append bucket names to file_path
-    and delete the created json file.
-    '''
-    try:
-        with open(file_path + '.json', 'r') as file_handler:
-            return json.loads(file_handler.read())
-    except FileNotFoundError:  # pylint: disable=undefined-variable
-        if retry:
-            _build_external_bucket_json(file_path)
-            return _get_external_bucket_policy(file_path)
+def _get_external_bucket_policy(file_path):
+        '''
+        Returns a compiled json of external s3 access policies for federated users
+        '''
+        try:
+            with open(file_path + '.json', 'r') as file_handler:
+                return json.loads(file_handler.read())
+        except FileNotFoundError:  # pylint: disable=undefined-variable
+            return None
 
 
 class UploadCredentials(object):
@@ -142,10 +131,10 @@ class UploadCredentials(object):
 
     def _check_external_policy(self, s3_transfer_allow, s3_transfer_buckets):
         if s3_transfer_allow and s3_transfer_buckets:
-            external_policy = _get_external_bucket_policy(
-                s3_transfer_buckets,
-                retry=True
-            )
+            external_policy = _get_external_bucket_policy(s3_transfer_buckets)
+            if not isinstance(external_policy, dict):
+                _build_external_bucket_json(s3_transfer_buckets)
+                external_policy = _get_external_bucket_policy(s3_transfer_buckets)
             if external_policy:
                 self._external_policy = external_policy
 
