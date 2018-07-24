@@ -73,7 +73,7 @@
 
 # @view_config(route_name='search', request_method='GET', permission='search')
 # def search(context, request, search_type=None, return_generator=False):
-#     """
+#      """
 #     Search view connects to ElasticSearch and returns the results
 #     """
 #     # sets up ES and checks permissions/principles
