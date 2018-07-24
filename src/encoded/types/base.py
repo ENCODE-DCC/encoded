@@ -205,19 +205,7 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
-    def set_status(self, new_status, request, force=False, parent=True, changed=None):
-        if changed is None:
-            changed = set()
-        root = find_root(self)
-        schema = self.type_info.schema
-        properties = self.upgrade_properties()
-        item_id = resource_path(self)
-        if not item_id:
-            raise ValidationFailure('body', ['status'], 'No property @id')
-        current_status = properties.get('status')
-        if not current_status:
-            raise ValidationFailure('body', ['status'], 'No property status')
-        # Is valid status?
+    def _valid_status(self, new_status, schema, parent):
         valid_statuses = schema.get('properties', {}).get('status', {}).get('enum', [])
         if new_status not in valid_statuses:
             # Raise failure if this is primary object.
@@ -230,7 +218,9 @@ class Item(snovault.Item):
             # Do nothing if this is child object.
             else:
                 return False
-        # Is valid transition?
+        return True
+
+    def _valid_transition(self, current_status, new_status, parent):
         if current_status not in STATUS_TRANSITION_TABLE[new_status]:
             # Raise failure if this is primary object.
             if parent:
@@ -242,6 +232,9 @@ class Item(snovault.Item):
             # Do nothing if this is child object.
             else:
                 return False
+        return True
+
+    def _update_status(self, new_status, properties, schema, request):
         properties['status'] = new_status
         # Some release specific functionality.
         if new_status == 'released':
@@ -251,17 +244,23 @@ class Item(snovault.Item):
         request.registry.notify(BeforeModified(self, request))
         self.update(properties)
         request.registry.notify(AfterModified(self, request))
-        changed.add(item_id)
+
+    def _get_child_paths(self, current_status, new_status):
         # List of child_paths depends on if status is going up or down.
         if STATUS_HIERARCHY[new_status] >= STATUS_HIERARCHY[current_status]:
             child_paths = self.set_status_up
         else:
             child_paths = self.set_status_down
+        return child_paths
+
+    def _get_related_object(self, child_paths, embedded_properties, request):
         related_objects = set()
-        embedded_properties = request.embed(item_id, '@@embedded')
         for path in child_paths:
             for child_id in traversed_path_ids(request, embedded_properties, path):
                 related_objects.add(child_id)
+        return related_objects
+
+    def _set_status_on_related_objects(self, new_status, related_objects, changed, root, request):
         for child_id in related_objects:
             # Avoid cycles.
             if child_id in changed:
@@ -276,6 +275,29 @@ class Item(snovault.Item):
                     parent=False,
                     changed=changed.union(related_objects)
                 )
+
+    def set_status(self, new_status, request, force=False, parent=True, changed=None):
+        if changed is None:
+            changed = set()
+        root = find_root(self)
+        item_id = resource_path(self)
+        schema = self.type_info.schema
+        properties = self.upgrade_properties()
+        if not item_id:
+            raise ValidationFailure('body', ['status'], 'No property @id')
+        current_status = properties.get('status')
+        if not current_status:
+            raise ValidationFailure('body', ['status'], 'No property status')
+        if not self._valid_status(new_status, schema, parent):
+            return False
+        if not self._valid_transition(current_status, new_status, parent):
+            return False
+        self._update_status(new_status, properties, schema, request)
+        changed.add(item_id)
+        child_paths = self._get_child_paths(current_status, new_status)
+        embedded_properties = request.embed(item_id, '@@embedded')
+        related_objects = self._get_related_object(child_paths, embedded_properties, request)
+        self._set_status_on_related_objects(new_status, related_objects, changed, root, request)
         return True
 
 
