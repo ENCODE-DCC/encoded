@@ -15,15 +15,10 @@ EXTERNAL_BUCKET_STATEMENTS = [
         'Effect': 'Allow',
     },
     {
-        'Action': 's3:ListBucket',
-        'Resource': lambda s: 'arn:aws:s3:::%s' % s,
-        'Effect': 'Allow',
-    },
-    {
         'Action': 's3:GetObjectAcl',
         'Resource': lambda s: 'arn:aws:s3:::%s/*' % s,
         'Effect': 'Allow',
-    }
+    },
 ]
 
 

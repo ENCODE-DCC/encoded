@@ -238,8 +238,12 @@ class TestUploadCredentials(TestCase):
     def test_external_bucket_policies(self):
         '''
         Test UploadCredentials EXTERNAL_BUCKET_STATEMENTS
+
+        For testing it may be needed to add 's3:ListBucket' to the policy.
+        This test should catch that also with making sure the expected ones
+        exist.
         '''
-        expected_actions = ['s3:GetObject', 's3:ListBucket', 's3:GetObjectAcl']
+        expected_actions = ['s3:GetObject', 's3:GetObjectAcl']
         result_actions = []
         for statement in EXTERNAL_BUCKET_STATEMENTS:
             self.assertTrue('Action' in statement)
@@ -276,9 +280,6 @@ class TestUploadCredentials(TestCase):
             expected_resources = {
                 's3:GetObject': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
-                ],
-                's3:ListBucket': [
-                    'arn:aws:s3:::%s' % item for item in expected_bucket_names
                 ],
                 's3:GetObjectAcl': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
@@ -322,9 +323,6 @@ class TestUploadCredentials(TestCase):
             expected_resources = {
                 's3:GetObject': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
-                ],
-                's3:ListBucket': [
-                    'arn:aws:s3:::%s' % item for item in expected_bucket_names
                 ],
                 's3:GetObjectAcl': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
