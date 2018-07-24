@@ -140,22 +140,22 @@ class UploadCredentials(object):
             print('Warning: ', ecp)
             return None
 
-    def _check_external_policy(self, allow, bucket_list_path):
-        if allow and bucket_list_path:
+    def _check_external_policy(self, s3_transfer_allow, s3_transfer_buckets):
+        if s3_transfer_allow and s3_transfer_buckets:
             external_policy = _get_external_bucket_policy(
-                bucket_list_path,
+                s3_transfer_buckets,
                 retry=True
             )
             if external_policy:
                 self._external_policy = external_policy
 
-    def external_creds(self, allow=False, bucket_list_path=None):
+    def external_creds(self, s3_transfer_allow=False, s3_transfer_buckets=None):
         '''
         Used to get the federate user credentials
 
         If external s3 buckets exist they will be added to the policy.
         '''
-        self._check_external_policy(allow, bucket_list_path)
+        self._check_external_policy(s3_transfer_allow, s3_transfer_buckets)
         policy = self._get_policy()
         token = self._get_token(policy)
         credentials = {

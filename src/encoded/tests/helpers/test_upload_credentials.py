@@ -222,7 +222,7 @@ class TestUploadCredentials(TestCase):
             self._test_name,
             self._test_profile_name,
         )
-        for allow, bucket_list_path in [
+        for s3_transfer_allow, s3_transfer_buckets in [
                 (False, None),
                 (True, None),
                 (False, 'some-path'),
@@ -230,8 +230,8 @@ class TestUploadCredentials(TestCase):
                 (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_empty'),
         ]:
             upload_creds._check_external_policy(
-                allow=allow,
-                bucket_list_path=bucket_list_path
+                s3_transfer_allow=s3_transfer_allow,
+                s3_transfer_buckets=s3_transfer_buckets
             )
             self.assertDictEqual(upload_creds._external_policy, {})
 
@@ -269,14 +269,14 @@ class TestUploadCredentials(TestCase):
             self._test_name,
             self._test_profile_name,
         )
-        for allow, bucket_list_path in [
+        for s3_transfer_allow, s3_transfer_buckets in [
                 (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'),
         ]:
             upload_creds._check_external_policy(
-                allow=allow,
-                bucket_list_path=bucket_list_path
+                s3_transfer_allow=s3_transfer_allow,
+                s3_transfer_buckets=s3_transfer_buckets
             )
-            os.remove(bucket_list_path + '.json')
+            os.remove(s3_transfer_buckets + '.json')
             expected_resources = {
                 's3:GetObject': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
@@ -312,14 +312,14 @@ class TestUploadCredentials(TestCase):
             self._test_name,
             self._test_profile_name,
         )
-        for allow, bucket_list_path in [
+        for s3_transfer_allow, s3_transfer_buckets in [
                 (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_many'),
         ]:
             upload_creds._check_external_policy(
-                allow=allow,
-                bucket_list_path=bucket_list_path
+                s3_transfer_allow=s3_transfer_allow,
+                s3_transfer_buckets=s3_transfer_buckets
             )
-            os.remove(bucket_list_path + '.json')
+            os.remove(s3_transfer_buckets + '.json')
             expected_resources = {
                 's3:GetObject': [
                     'arn:aws:s3:::%s/*' % item for item in expected_bucket_names
