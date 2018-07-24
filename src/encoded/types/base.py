@@ -198,7 +198,9 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
-    def set_status(self, new_status, request, force=False, parent=True, changed=set()):
+    def set_status(self, new_status, request, force=False, parent=True, changed=None):
+        if changed is None:
+            changed = set()
         root = find_root(self)
         properties = self.upgrade_properties()
         item_id = resource_path(self)
@@ -298,14 +300,23 @@ def edit_json(context, request):
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='release', validators=[validate_item_content_patch])
+             name='release')
 def item_release(context, request):
     new_status = 'released'
     context.set_status(new_status, request)
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='unrelease', validators=[validate_item_content_patch])
+             name='unrelease')
 def item_unrelease(context, request):
     new_status = 'in progress'
+    context.set_status(new_status, request)
+
+
+@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
+             name='set_status')
+def item_set_status(context, request):
+    new_status = request.json_body.get('status')
+    if not new_status:
+        raise ValidationFailure('body', ['status'], 'Status not specified')
     context.set_status(new_status, request)
