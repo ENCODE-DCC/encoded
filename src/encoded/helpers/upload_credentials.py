@@ -69,7 +69,7 @@ def _get_external_bucket_policy(file_path, retry=False):
     Returns
         -A policy json with EXTERNAL_BUCKET_STATEMENTS statements for each
         external bucket in the buckt list.
-        -A policy json with zero statements if neither file is found
+        -A policy json with zero statements if neither file is found.
     Can be updated on the fly.  Just append bucket names to file_path
     and delete the created json file.
     '''
