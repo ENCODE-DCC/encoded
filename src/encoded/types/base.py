@@ -217,6 +217,19 @@ class Item(snovault.Item):
         current_status = properties.get('status')
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
+        # Is valid status?
+        valid_statuses = schema.get('properties', {}).get('status', {}).get('enum', [])
+        if new_status not in valid_statuses:
+            # Raise failure if this is primary object.
+            if parent:
+                msg = '{} not one of {}'.format(
+                    new_status,
+                    valid_statuses
+                )
+                raise ValidationFailure('body', ['status'], msg)
+            # Do nothing if this is child object.
+            else:
+                return False
         # Is valid transition?
         if current_status not in STATUS_TRANSITION_TABLE[new_status]:
             # Raise failure if this is primary object.

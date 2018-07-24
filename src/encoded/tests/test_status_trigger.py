@@ -394,3 +394,13 @@ def test_set_status_endpoint_experiment_date_released_remains_same(testapp, expe
     testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['date_released'] == dt
+
+
+def test_set_status_invalid_status_validation_failure(file, root, testapp, request):
+    # Can't go from deleted to released.
+    from snovault.validation import ValidationFailure
+    testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
+    file_item = root.get_by_uuid(file['uuid'])
+    with pytest.raises(ValidationFailure) as e:
+        file_item.set_status('submitted', request)
+    assert 'submitted not one of' in e.value.detail['description']
