@@ -76,8 +76,12 @@ ALLOW_SUBMITTER_ADD = [
 
 # New status must contain current status in list to be valid transition.
 STATUS_TRANSITION_TABLE = {
-    'released': ['in progress', 'released'],
-    'in progress': ['released', 'archived', 'deleted', 'revoked']
+    'released': ['released', 'in progress'],
+    'in progress': ['in progress', 'released'],
+    'deleted': ['deleted', 'released'],
+    'revoked': ['revoked', 'released'],
+    'archived': ['archived', 'released'],
+    'submitted': ['submitted', 'in progress']
 }
 
 # Used to calculate whether new_status is more or less than current_status.
@@ -85,7 +89,9 @@ STATUS_HIERARCHY = {
     'released': 30,
     'deleted': 0,
     'revoked': 5,
-    'in progress': 10
+    'in progress': 10,
+    'submitted': 8,
+    'archived': 7
 }
 
 
