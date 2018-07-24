@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 7
+
+* A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
+
 ### Schema version 7
 
 * *purpose* property "validation" was renamed to "characterization", and "screening" was also added to the list of enums

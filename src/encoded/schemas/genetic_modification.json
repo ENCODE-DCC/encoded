@@ -449,12 +449,14 @@
                 "start": {
                     "title": "Start",
                     "description": "The starting coordinate.",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "end": {
                     "title": "End",
                     "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },
