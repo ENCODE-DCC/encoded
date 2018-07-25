@@ -349,6 +349,7 @@ div.meta-status {
 
     .pull-right {
         position: relative;
+        z-index: 2;
     }
 
     &.result-table-tabbed {
