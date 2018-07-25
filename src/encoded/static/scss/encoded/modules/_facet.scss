@@ -348,7 +348,7 @@ div.meta-status {
 
     .pull-right {
         position: relative;
-        z-index: 2;
+        z-index: 2000; // Empirical; meant to be a larger than LHS
     }
 
     &.result-table-tabbed {
