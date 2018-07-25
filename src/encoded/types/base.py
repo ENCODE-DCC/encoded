@@ -24,6 +24,7 @@ from snovault import (
     BeforeModified
 )
 from datetime import datetime
+import logging
 
 
 @lru_cache()
@@ -294,6 +295,9 @@ class Item(snovault.Item):
             return False
         self._update_status(new_status, properties, schema, request)
         changed.add(item_id)
+        logging.warn(
+            'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
+        )
         child_paths = self._get_child_paths(current_status, new_status)
         embedded_properties = request.embed(item_id, '@@embedded')
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
