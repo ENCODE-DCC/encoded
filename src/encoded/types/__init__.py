@@ -139,6 +139,11 @@ class Library(Item):
         'biosample.donor',
         'biosample.donor.organism',
     ]
+    set_status_up = [
+        'biosample',
+        'documents'
+    ]
+    set_status_down = []
 
     @calculated_property(condition='nucleic_acid_term_name', schema={
         "title": "nucleic_acid_term_id",

@@ -508,6 +508,11 @@ class Replicate(Item):
         'library.biosample.donor',
         'library.biosample.donor.organism',
     ]
+    set_status_up = [
+        'library',
+        'antibody'
+    ]
+    set_status_down = []
 
     def unique_keys(self, properties):
         keys = super(Replicate, self).unique_keys(properties)

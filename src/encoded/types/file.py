@@ -142,7 +142,9 @@ class File(Item):
         'analysis_step_version.software_versions.software'
     ]
     set_status_up = [
-        'quality_metrics'
+        'quality_metrics',
+        'platform',
+        'step_run'
     ]
     set_status_down = [
         
