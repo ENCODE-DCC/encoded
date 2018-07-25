@@ -454,7 +454,7 @@
                 },
                 "end": {
                     "title": "End",
-                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "description": "The ending coordinate.",
                     "type": "integer",
                     "minimum": 0
                 }
