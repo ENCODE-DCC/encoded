@@ -80,20 +80,25 @@ ALLOW_SUBMITTER_ADD = [
 STATUS_TRANSITION_TABLE = {
     'released': ['released', 'in progress', 'submitted'],
     'in progress': ['in progress', 'released'],
-    'deleted': ['deleted', 'released'],
+    'deleted': ['deleted', 'released', 'current'],
     'revoked': ['revoked', 'released'],
     'archived': ['archived', 'released'],
-    'submitted': ['submitted', 'in progress']
+    'submitted': ['submitted', 'in progress'],
+    'replaced': ['released'],
+    'disabled': ['current']
 }
 
 # Used to calculate whether new_status is more or less than current_status.
 STATUS_HIERARCHY = {
     'released': 30,
+    'current': 30,
     'deleted': 0,
+    'disabled': 1,
     'revoked': 5,
     'in progress': 10,
     'submitted': 8,
-    'archived': 7
+    'archived': 7,
+    'replaced': -1
 }
 
 
