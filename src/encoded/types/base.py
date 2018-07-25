@@ -270,7 +270,7 @@ class Item(snovault.Item):
         for child_id in related_objects:
             # Avoid cycles.
             if child_id in changed:
-                pass
+                continue
             else:
                 child_uuid = request.embed(child_id).get('uuid')
                 encoded_item = root.get_by_uuid(child_uuid)
