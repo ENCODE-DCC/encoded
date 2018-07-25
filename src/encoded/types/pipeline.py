@@ -42,6 +42,10 @@ class Pipeline(Item):
         'award.pi.lab',
         'standards_page'
     ]
+    set_status_up = [
+        'analysis_steps'
+    ]
+    set_status_down = []
 
 
 @collection(

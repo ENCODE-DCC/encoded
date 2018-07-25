@@ -32,6 +32,10 @@ class Donor(Item):
         'documents.submitted_by',
         'lab'
     ]
+    set_status_up = [
+        'characterizations'
+    ]
+    set_status_down = []
     name_key = 'accession'
     rev = {
         'characterizations': ('DonorCharacterization', 'characterizes')
