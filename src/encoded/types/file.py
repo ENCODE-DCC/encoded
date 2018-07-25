@@ -147,6 +147,7 @@ class File(Item):
         'step_run'
     ]
     set_status_down = []
+
     @property
     def __name__(self):
         properties = self.upgrade_properties()
