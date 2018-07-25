@@ -219,6 +219,7 @@
     font-size: 1.2rem;
     font-weight: bold;
     z-index: 1000;
+    width:70%;
 
     a {
         &:hover {
@@ -348,7 +349,6 @@ div.meta-status {
 
     .pull-right {
         position: relative;
-        z-index: 2000; // Empirical; meant to be a larger than LHS
     }
 
     &.result-table-tabbed {
