@@ -69,7 +69,7 @@ def test_item_set_status_no_status_validation_error(testapp, content, root):
     assert res.json['errors'][0]['description'] == 'No property status'
 
 
-def test_item_set_status_invalid_transition_parent(testapp, content, root, request):
+def test_item_set_status_invalid_transition_parent(testapp, content, root, dummy_request):
     # Can't go from deleted to released.
     from snovault.validation import ValidationFailure
     res = testapp.get('/test-encode-items/')
@@ -78,18 +78,18 @@ def test_item_set_status_invalid_transition_parent(testapp, content, root, reque
     testapp.patch_json(encode_item_id, {'status': 'deleted'}, status=200)
     encode_item = root.get_by_uuid(encode_item_uuid)
     with pytest.raises(ValidationFailure) as e:
-        encode_item.set_status('released', request)
+        encode_item.set_status('released', dummy_request)
     assert e.value.detail['description'] == 'Status transition deleted to released not allowed'
 
 
-def test_item_set_status_invalid_transition_child(testapp, content, root, request):
+def test_item_set_status_invalid_transition_child(testapp, content, root, dummy_request):
     # Don't raise error if invalid transition on child object.
     res = testapp.get('/test-encode-items/')
     encode_item_uuid = res.json['@graph'][0]['uuid']
     encode_item_id = res.json['@graph'][0]['@id']
     testapp.patch_json(encode_item_id, {'status': 'deleted'}, status=200)
     encode_item = root.get_by_uuid(encode_item_uuid)
-    assert encode_item.set_status('released', request, parent=False) is False
+    assert encode_item.set_status('released', dummy_request, parent=False)[0] is False
 
 
 def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
@@ -225,22 +225,22 @@ def test_set_private_s3_calls_boto(mocker, testapp, uploading_file, dummy_reques
     assert boto3.resource.call_count == 1
 
 
-def test_set_status_parent_validation_failure(file, root, testapp, request):
+def test_set_status_parent_validation_failure(file, root, testapp, dummy_request):
     # Can't go from deleted to released.
     from snovault.validation import ValidationFailure
     testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
     file_item = root.get_by_uuid(file['uuid'])
     with pytest.raises(ValidationFailure) as e:
-        file_item.set_status('released', request)
+        file_item.set_status('released', dummy_request)
     assert e.value.detail['description'] == 'Status transition deleted to released not allowed'
 
 
-def test_set_status_child_return(file, root, testapp, request):
+def test_set_status_child_return(file, root, testapp, dummy_request):
     # Can't go from deleted to released.
     testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
     file_item = root.get_by_uuid(file['uuid'])
-    res = file_item.set_status('released', request, parent=False)
-    assert not res
+    res = file_item.set_status('released', dummy_request, parent=False)
+    assert not res[0]
 
 
 def test_set_status_catch_access_denied_error(mocker, testapp, file):
@@ -263,7 +263,7 @@ def test_set_status_catch_access_denied_error(mocker, testapp, file):
     mocker.patch('encoded.types.file.logging.warn')
     testapp.patch_json(file['@id'] + '@@release', {})
     # Should log AccessDenied error but shouldn't raise error.
-    assert logging.warn.call_count == 1
+    assert logging.warn.call_count == 2
 
 
 def test_set_status_raise_other_error(mocker, testapp, file):

@@ -408,28 +408,27 @@ class File(Item):
         ).put(ACL='private')
 
     def set_status(self, new_status, request, force=False, parent=True, changed=None):
-        status_set = super(File, self).set_status(
+        status_set, new_changed = super(File, self).set_status(
             new_status,
             request,
             force=force,
             parent=parent,
             changed=changed
         )
-        # Failed to set?
-        if not status_set:
-            return
-        # Change permission in S3.
-        try:
-            if new_status == 'released':
-                self.set_public_s3()
-            elif new_status == 'in progress':
-                self.set_private_s3()
-        except ClientError as e:
-            # Demo trying to set ACL on production object?
-            if e.response['Error']['Code'] == 'AccessDenied':
-                logging.warn(e)
-            else:
-                raise e
+        if status_set:
+            # Change permission in S3.
+            try:
+                if new_status == 'released':
+                    self.set_public_s3()
+                elif new_status == 'in progress':
+                    self.set_private_s3()
+            except ClientError as e:
+                # Demo trying to set ACL on production object?
+                if e.response['Error']['Code'] == 'AccessDenied':
+                    logging.warn(e)
+                else:
+                    raise e
+        return status_set, new_changed.union(changed or set())
 
 
 @view_config(name='upload', context=File, request_method='GET',

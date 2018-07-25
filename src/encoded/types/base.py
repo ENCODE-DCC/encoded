@@ -271,6 +271,7 @@ class Item(snovault.Item):
         return related_objects
 
     def _set_status_on_related_objects(self, new_status, related_objects, changed, root, request):
+        children_new_changed = set()
         for child_id in related_objects:
             # Avoid cycles.
             if child_id in changed:
@@ -279,18 +280,20 @@ class Item(snovault.Item):
                 child_uuid = request.embed(child_id).get('uuid')
                 encoded_item = root.get_by_uuid(child_uuid)
                 changed.add(child_id)
-                encoded_item.set_status(
+                _, new_changed = encoded_item.set_status(
                     new_status,
                     request,
                     parent=False,
                     changed=changed.union(related_objects)
                 )
+                children_new_changed = children_new_changed.union(new_changed)
+        return True, changed.union(children_new_changed)
 
     def set_status(self, new_status, request, force=False, parent=True, changed=None):
         if changed is None:
             changed = set()
         root = find_root(self)
-        item_id = resource_path(self)
+        item_id = '{}/'.format(resource_path(self))
         schema = self.type_info.schema
         properties = self.upgrade_properties()
         if not item_id:
@@ -299,10 +302,10 @@ class Item(snovault.Item):
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
         if not self._valid_status(new_status, schema, parent):
-            return False
+            return False, changed
         force_transition = asbool(request.params.get('force_transition'))
         if not self._valid_transition(current_status, new_status, parent, force_transition):
-            return False
+            return False, changed
         self._update_status(new_status, current_status, properties, schema, request)
         changed.add(item_id)
         logging.warn(
@@ -311,8 +314,15 @@ class Item(snovault.Item):
         child_paths = self._get_child_paths(current_status, new_status)
         embedded_properties = request.embed(item_id, '@@embedded')
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
-        self._set_status_on_related_objects(new_status, related_objects, changed, root, request)
-        return True
+        _, new_changed = self._set_status_on_related_objects(
+            new_status,
+            related_objects,
+            changed,
+            root,
+            request
+        )
+        changed = changed.union(new_changed)
+        return True, changed
 
 
 class SharedItem(Item):
@@ -381,4 +391,9 @@ def item_set_status(context, request):
     new_status = request.json_body.get('status')
     if not new_status:
         raise ValidationFailure('body', ['status'], 'Status not specified')
-    context.set_status(new_status, request)
+    _, changed = context.set_status(new_status, request)
+    return {
+        'status': 'success',
+        '@type': ['result'],
+        '@graph': changed
+    }
