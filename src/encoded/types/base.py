@@ -15,6 +15,7 @@ from pyramid.traversal import (
 from pyramid.view import (
     view_config
 )
+from pyramid.settings import asbool
 import snovault
 from snovault.validators import validate_item_content_patch
 from snovault.validation import ValidationFailure
@@ -226,8 +227,8 @@ class Item(snovault.Item):
                 return False
         return True
 
-    def _valid_transition(self, current_status, new_status, parent):
-        if current_status not in STATUS_TRANSITION_TABLE[new_status]:
+    def _valid_transition(self, current_status, new_status, parent, force_transition):
+        if current_status not in STATUS_TRANSITION_TABLE[new_status] and not force_transition:
             # Raise failure if this is primary object.
             if parent:
                 msg = 'Status transition {} to {} not allowed'.format(
@@ -240,7 +241,10 @@ class Item(snovault.Item):
                 return False
         return True
 
-    def _update_status(self, new_status, properties, schema, request):
+    def _update_status(self, new_status, current_status, properties, schema, request):
+        # Don't actually patch if the same.
+        if new_status == current_status:
+            return
         properties['status'] = new_status
         # Some release specific functionality.
         if new_status == 'released':
@@ -296,9 +300,10 @@ class Item(snovault.Item):
             raise ValidationFailure('body', ['status'], 'No property status')
         if not self._valid_status(new_status, schema, parent):
             return False
-        if not self._valid_transition(current_status, new_status, parent):
+        force_transition = asbool(request.params.get('force_transition'))
+        if not self._valid_transition(current_status, new_status, parent, force_transition):
             return False
-        self._update_status(new_status, properties, schema, request)
+        self._update_status(new_status, current_status, properties, schema, request)
         changed.add(item_id)
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
