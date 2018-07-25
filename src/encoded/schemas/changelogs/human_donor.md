@@ -1,5 +1,9 @@
 ## Changelog for human_donor.json
 
+### Minor changes since schema version 11
+
+* added "White" to *ethnicity* enum
+
 ### Schema version 11
 
 * *genetic_modifications* was removed, it was accidentally added in the previous release.
