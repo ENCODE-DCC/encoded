@@ -89,6 +89,11 @@ class Treatment(Item):
     embedded = [
         'lab',
     ]
+    set_status_up = [
+        'biosamples_used',
+        'antibodies_used'
+    ]
+    set_status_down = []
 
 
 @collection(
