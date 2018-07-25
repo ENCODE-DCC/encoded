@@ -395,5 +395,5 @@ def item_set_status(context, request):
     return {
         'status': 'success',
         '@type': ['result'],
-        '@graph': changed
+        'changed': changed
     }
