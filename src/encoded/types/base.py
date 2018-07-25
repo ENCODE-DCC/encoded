@@ -81,7 +81,7 @@ ALLOW_SUBMITTER_ADD = [
 STATUS_TRANSITION_TABLE = {
     'released': ['released', 'in progress', 'submitted'],
     'in progress': ['in progress', 'released'],
-    'deleted': ['deleted', 'released', 'current'],
+    'deleted': ['deleted', 'in progress', 'current'],
     'revoked': ['revoked', 'released'],
     'archived': ['archived', 'released'],
     'submitted': ['submitted', 'in progress'],
