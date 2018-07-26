@@ -276,28 +276,23 @@ class Item(snovault.Item):
                 related_objects.add(child_id)
         return related_objects
 
-    def _set_status_on_related_objects(self, new_status, related_objects, considered, root, request):
-        children_new_considered = set()
+    def _set_status_on_related_objects(self, new_status, related_objects, root, request):
         for child_id in related_objects:
             # Avoid cycles.
-            if child_id in request._set_status_changed_paths:
+            if child_id in request._set_status_changed_paths.union(request._set_status_considered_paths):
                 continue
             else:
                 child_uuid = request.embed(child_id).get('uuid')
                 encoded_item = root.get_by_uuid(child_uuid)
-                considered.add(child_id)
-                _, new_considered = encoded_item.set_status(
+                request._set_status_considered_paths.add(child_id)
+                _ = encoded_item.set_status(
                     new_status,
                     request,
-                    parent=False,
-                    considered=considered.union(related_objects)
+                    parent=False
                 )
-                children_new_considered = children_new_considered.union(new_considered)
-        return True, considered.union(children_new_considered)
+        return True
 
-    def set_status(self, new_status, request, force=False, parent=True, considered=None):
-        if considered is None:
-            considered = set()
+    def set_status(self, new_status, request, force=False, parent=True):
         root = find_root(self)
         schema = self.type_info.schema
         properties = self.upgrade_properties()
@@ -306,27 +301,20 @@ class Item(snovault.Item):
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
         if not self._valid_status(new_status, schema, parent):
-            return False, considered
+            return False
         force_transition = asbool(request.params.get('force_transition'))
         if not self._valid_transition(current_status, new_status, parent, force_transition):
-            return False, considered
+            return False
         self._update_status(new_status, current_status, properties, schema, request, item_id)
-        considered.add(item_id)
+        request._set_status_considered_paths.add(item_id)
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
         child_paths = self._get_child_paths(current_status, new_status)
         embedded_properties = request.embed(item_id, '@@embedded')
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
-        _, new_changed = self._set_status_on_related_objects(
-            new_status,
-            related_objects,
-            considered,
-            root,
-            request
-        )
-        considered = considered.union(new_changed)
-        return True, considered
+        _ = self._set_status_on_related_objects(new_status, related_objects, root, request)
+        return True
 
 
 class SharedItem(Item):
@@ -395,10 +383,10 @@ def item_set_status(context, request):
     new_status = request.json_body.get('status')
     if not new_status:
         raise ValidationFailure('body', ['status'], 'Status not specified')
-    _, considered = context.set_status(new_status, request)
+    _ = context.set_status(new_status, request)
     return {
         'status': 'success',
         '@type': ['result'],
         'changed': request._set_status_changed_paths,
-        'considered': considered
+        'considered': request._set_status_considered_paths
     }

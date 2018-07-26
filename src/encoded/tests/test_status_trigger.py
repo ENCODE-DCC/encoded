@@ -89,7 +89,7 @@ def test_item_set_status_invalid_transition_child(testapp, content, root, dummy_
     encode_item_id = res.json['@graph'][0]['@id']
     testapp.patch_json(encode_item_id, {'status': 'deleted'}, status=200)
     encode_item = root.get_by_uuid(encode_item_uuid)
-    assert encode_item.set_status('released', dummy_request, parent=False)[0] is False
+    assert encode_item.set_status('released', dummy_request, parent=False) is False
 
 
 def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
@@ -240,7 +240,7 @@ def test_set_status_child_return(file, root, testapp, dummy_request):
     testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
     file_item = root.get_by_uuid(file['uuid'])
     res = file_item.set_status('released', dummy_request, parent=False)
-    assert not res[0]
+    assert not res
 
 
 def test_set_status_catch_access_denied_error(mocker, testapp, file):
