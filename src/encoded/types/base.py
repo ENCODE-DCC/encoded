@@ -77,16 +77,21 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', ['add']),
 ]
 
-# New status must contain current status in list to be valid transition.
+# Key is new status. Value is list of current statuses that can transition to the new status.
+# For example, a released, in progress, or submitted experiment can transition to released.
+# Transitioning to the same status (released -> released) allows for the child objects to be crawled
+# without actually making a patch if the new and current statuses are the same.
 STATUS_TRANSITION_TABLE = {
     'released': ['released', 'in progress', 'submitted'],
     'in progress': ['in progress', 'released'],
-    'deleted': ['deleted', 'in progress', 'current'],
+    'deleted': ['deleted', 'in progress', 'current', 'submitted'],
     'revoked': ['revoked', 'released'],
     'archived': ['archived', 'released'],
     'submitted': ['submitted', 'in progress'],
     'replaced': ['released'],
-    'disabled': ['current']
+    'disabled': ['disabled', 'current'],
+    'current': ['current'],
+    'uploading': ['uploading', 'upload failed', 'content error']
 }
 
 # Used to calculate whether new_status is more or less than current_status.
