@@ -298,11 +298,12 @@ class Item(snovault.Item):
         if changed is None:
             changed = set()
         root = find_root(self)
-        item_id = '{}/'.format(resource_path(self))
         schema = self.type_info.schema
         properties = self.upgrade_properties()
+        item_id = resource_path(self)
         if not item_id:
             raise ValidationFailure('body', ['status'], 'No property @id')
+        item_id = '{}/'.format(item_id)
         current_status = properties.get('status')
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
