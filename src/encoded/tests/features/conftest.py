@@ -39,6 +39,8 @@ def workbook(app):
     cursor.close()
 
     from webtest import TestApp
+    import pytest
+    log_level = pytest.config.getoption("--log")
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST',
@@ -49,7 +51,7 @@ def workbook(app):
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
+    load_all(testapp, inserts, docsdir, log_level=log_level)
 
     testapp.post_json('/index', {})
     yield
