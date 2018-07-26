@@ -246,7 +246,7 @@ class Item(snovault.Item):
                 return False
         return True
 
-    def _update_status(self, new_status, current_status, properties, schema, request):
+    def _update_status(self, new_status, current_status, properties, schema, request, item_id):
         # Don't actually patch if the same.
         if new_status == current_status:
             return
@@ -259,6 +259,7 @@ class Item(snovault.Item):
         request.registry.notify(BeforeModified(self, request))
         self.update(properties)
         request.registry.notify(AfterModified(self, request))
+        request._set_status_changed_paths.add(item_id)
 
     def _get_child_paths(self, current_status, new_status):
         # List of child_paths depends on if status is going up or down.
@@ -275,44 +276,42 @@ class Item(snovault.Item):
                 related_objects.add(child_id)
         return related_objects
 
-    def _set_status_on_related_objects(self, new_status, related_objects, changed, root, request):
-        children_new_changed = set()
+    def _set_status_on_related_objects(self, new_status, related_objects, considered, root, request):
+        children_new_considered = set()
         for child_id in related_objects:
             # Avoid cycles.
-            if child_id in changed:
+            if child_id in request._set_status_changed_paths:
                 continue
             else:
                 child_uuid = request.embed(child_id).get('uuid')
                 encoded_item = root.get_by_uuid(child_uuid)
-                changed.add(child_id)
-                _, new_changed = encoded_item.set_status(
+                considered.add(child_id)
+                _, new_considered = encoded_item.set_status(
                     new_status,
                     request,
                     parent=False,
-                    changed=changed.union(related_objects)
+                    considered=considered.union(related_objects)
                 )
-                children_new_changed = children_new_changed.union(new_changed)
-        return True, changed.union(children_new_changed)
+                children_new_considered = children_new_considered.union(new_considered)
+        return True, considered.union(children_new_considered)
 
-    def set_status(self, new_status, request, force=False, parent=True, changed=None):
-        if changed is None:
-            changed = set()
+    def set_status(self, new_status, request, force=False, parent=True, considered=None):
+        if considered is None:
+            considered = set()
         root = find_root(self)
         schema = self.type_info.schema
         properties = self.upgrade_properties()
-        item_id = resource_path(self)
-        if not item_id:
-            raise ValidationFailure('body', ['status'], 'No property @id')
+        item_id = '{}/'.format(resource_path(self))
         current_status = properties.get('status')
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
         if not self._valid_status(new_status, schema, parent):
-            return False, changed
+            return False, considered
         force_transition = asbool(request.params.get('force_transition'))
         if not self._valid_transition(current_status, new_status, parent, force_transition):
-            return False, changed
-        self._update_status(new_status, current_status, properties, schema, request)
-        changed.add('{}/'.format(item_id))
+            return False, considered
+        self._update_status(new_status, current_status, properties, schema, request, item_id)
+        considered.add(item_id)
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
@@ -322,12 +321,12 @@ class Item(snovault.Item):
         _, new_changed = self._set_status_on_related_objects(
             new_status,
             related_objects,
-            changed,
+            considered,
             root,
             request
         )
-        changed = changed.union(new_changed)
-        return True, changed
+        considered = considered.union(new_changed)
+        return True, considered
 
 
 class SharedItem(Item):
@@ -396,9 +395,10 @@ def item_set_status(context, request):
     new_status = request.json_body.get('status')
     if not new_status:
         raise ValidationFailure('body', ['status'], 'Status not specified')
-    _, changed = context.set_status(new_status, request)
+    _, considered = context.set_status(new_status, request)
     return {
         'status': 'success',
         '@type': ['result'],
-        'changed': changed
+        'changed': request._set_status_changed_paths,
+        'considered': considered
     }

@@ -15,6 +15,7 @@ from .base import (
 
 def includeme(config):
     config.scan()
+    config.add_request_method(lambda request: set(), '_set_status_changed_paths', reify=True)
 
 
 @collection(

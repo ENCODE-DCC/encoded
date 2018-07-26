@@ -407,13 +407,13 @@ class File(Item):
             external['key']
         ).put(ACL='private')
 
-    def set_status(self, new_status, request, force=False, parent=True, changed=None):
-        status_set, new_changed = super(File, self).set_status(
+    def set_status(self, new_status, request, force=False, parent=True, considered=None):
+        status_set, new_considered = super(File, self).set_status(
             new_status,
             request,
             force=force,
             parent=parent,
-            changed=changed
+            considered=considered
         )
         if status_set:
             # Change permission in S3.
@@ -428,7 +428,7 @@ class File(Item):
                     logging.warn(e)
                 else:
                     raise e
-        return status_set, new_changed.union(changed or set())
+        return status_set, new_considered.union(considered or set())
 
 
 @view_config(name='upload', context=File, request_method='GET',
