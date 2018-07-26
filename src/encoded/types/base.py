@@ -303,7 +303,6 @@ class Item(snovault.Item):
         item_id = resource_path(self)
         if not item_id:
             raise ValidationFailure('body', ['status'], 'No property @id')
-        item_id = '{}/'.format(item_id)
         current_status = properties.get('status')
         if not current_status:
             raise ValidationFailure('body', ['status'], 'No property status')
@@ -313,7 +312,7 @@ class Item(snovault.Item):
         if not self._valid_transition(current_status, new_status, parent, force_transition):
             return False, changed
         self._update_status(new_status, current_status, properties, schema, request)
-        changed.add(item_id)
+        changed.add('{}/'.format(item_id))
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
