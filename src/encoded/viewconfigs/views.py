@@ -1,11 +1,11 @@
 from pyramid.view import view_config
 from snovault.viewconfigs.searchview import SearchView
 from snovault.viewconfigs.report import ReportView
-from snovault.viewconfigs.searchpageview import SearchPageView
 from encoded.viewconfigs.news import NewsView
 from encoded.viewconfigs.matrix import MatrixView
 from encoded.viewconfigs.auditview import AuditView
 from encoded.viewconfigs.summary import SummaryView
+from encoded.viewconfigs.searchpage import SearchPageView 
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
