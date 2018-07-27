@@ -164,7 +164,7 @@ def test_file_release_in_progress_file(testapp, file, dummy_request, root):
     # Get bucket name and key.
     file_item = root.get_by_uuid(file['uuid'])
     external = file_item._get_external_sheet()
-    # Pub mock object in bucket.
+    # Put mock object in bucket.
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
@@ -189,7 +189,7 @@ def test_file_unrelease_released_file(testapp, file, dummy_request, root):
     # Get bucket name and key.
     file_item = root.get_by_uuid(file['uuid'])
     external = file_item._get_external_sheet()
-    # Pub mock object in bucket.
+    # Put mock object in bucket.
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Manually release.
     testapp.patch_json(file['@id'], {'status': 'released'})
@@ -301,7 +301,7 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
     # Get bucket name and key.
     file_item = root.get_by_uuid(file['uuid'])
     external = file_item._get_external_sheet()
-    # Pub mock object in bucket.
+    # Put mock object in bucket.
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
@@ -325,7 +325,7 @@ def test_set_status_in_progress_experiment(testapp, root, experiment, replicate,
     # Get bucket name and key.
     file_item = root.get_by_uuid(file['uuid'])
     external = file_item._get_external_sheet()
-    # Pub mock object in bucket.
+    # Put mock object in bucket.
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
@@ -422,7 +422,7 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
     # Get bucket name and key.
     file_item = root.get_by_uuid(file['uuid'])
     external = file_item._get_external_sheet()
-    # Pub mock object in bucket.
+    # Put mock object in bucket.
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
@@ -444,7 +444,7 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     # Get bucket name and key.
     file_item = root.get_by_uuid(file['uuid'])
     external = file_item._get_external_sheet()
-    # Pub mock object in bucket.
+    # Put mock object in bucket.
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'released'})
