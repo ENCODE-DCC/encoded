@@ -428,7 +428,7 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
-    assert len(res.json_body['considered']) == 5
+    assert len(res.json_body['considered']) == 6
 
 
 @mock_sts
@@ -450,4 +450,4 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     testapp.patch_json(file['@id'], {'status': 'released'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 4
-    assert len(res.json_body['considered']) == 5
+    assert len(res.json_body['considered']) == 6
