@@ -276,6 +276,17 @@ class Item(snovault.Item):
                 related_objects.add(child_id)
         return related_objects
 
+    def _block_on_audits(self, item_id, force_audit, request, parent):
+        if not parent or force_audit:
+            return
+        audits = request.embed(item_id, '@@audit')
+        if audits and audits.get('audit', {}).get('ERROR'):
+            raise ValidationFailure(
+                'body',
+                ['status'],
+                'ERROR audit on parent object. Must use ?force_audit=true to change status.'
+            )
+
     def _set_status_on_related_objects(self, new_status, related_objects, root, request):
         for child_id in related_objects:
             # Avoid cycles.
@@ -310,6 +321,8 @@ class Item(snovault.Item):
         force_transition = asbool(request.params.get('force_transition'))
         if not self._valid_transition(current_status, new_status, parent, force_transition):
             return False
+        force_audit = asbool(request.params.get('force_audit'))
+        self._block_on_audits(item_id, force_audit, request, parent)
         self._update_status(new_status, current_status, properties, schema, request, item_id)
         request._set_status_considered_paths.add((item_id, current_status, new_status))
         logging.warn(
