@@ -335,13 +335,13 @@ def test_set_status_in_progress_experiment(testapp, root, experiment, replicate,
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'in progress'
     # Release experiment.
-    res = testapp.patch_json(experiment['@id'] + '@@release', {})
+    res = testapp.patch_json(experiment['@id'] + '@@release?force_audit=true', {})
     # File, exp, and rep now released.
     for encode_item in [experiment, file, replicate]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'released'
     # Unrelease experiment.
-    res = testapp.patch_json(experiment['@id'] + '@@unrelease', {})
+    res = testapp.patch_json(experiment['@id'] + '@@unrelease?force_audit=true', {})
     # File and exp now in progress.
     for encode_item in [experiment, file]:
         res = testapp.get(encode_item['@id'])
@@ -426,7 +426,7 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 5
 
@@ -448,6 +448,6 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'released'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 4
     assert len(res.json_body['considered']) == 5
