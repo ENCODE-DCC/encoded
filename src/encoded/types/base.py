@@ -259,7 +259,7 @@ class Item(snovault.Item):
         request.registry.notify(BeforeModified(self, request))
         self.update(properties)
         request.registry.notify(AfterModified(self, request))
-        request._set_status_changed_paths.add(item_id)
+        request._set_status_changed_paths.add((item_id, current_status, new_status))
 
     def _get_child_paths(self, current_status, new_status):
         # List of child_paths depends on if status is going up or down.
@@ -279,12 +279,17 @@ class Item(snovault.Item):
     def _set_status_on_related_objects(self, new_status, related_objects, root, request):
         for child_id in related_objects:
             # Avoid cycles.
-            if child_id in request._set_status_changed_paths.union(request._set_status_considered_paths):
+            visited_children = [
+                x[0]
+                for x in request._set_status_changed_paths.union(
+                        request._set_status_considered_paths
+                )
+            ]
+            if child_id in visited_children:
                 continue
             else:
                 child_uuid = request.embed(child_id).get('uuid')
                 encoded_item = root.get_by_uuid(child_uuid)
-                request._set_status_considered_paths.add(child_id)
                 _ = encoded_item.set_status(
                     new_status,
                     request,
@@ -306,7 +311,7 @@ class Item(snovault.Item):
         if not self._valid_transition(current_status, new_status, parent, force_transition):
             return False
         self._update_status(new_status, current_status, properties, schema, request, item_id)
-        request._set_status_considered_paths.add(item_id)
+        request._set_status_considered_paths.add((item_id, current_status, new_status))
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
@@ -384,6 +389,7 @@ def item_set_status(context, request):
     if not new_status:
         raise ValidationFailure('body', ['status'], 'Status not specified')
     _ = context.set_status(new_status, request)
+    # Returns changed and considered lists of tuples: (item, current_status, new_status).
     return {
         'status': 'success',
         '@type': ['result'],
