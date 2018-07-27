@@ -75,6 +75,11 @@ class MouseDonor(Donor):
                                  'genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
                                  'genetic_modifications.treatments']
+    set_status_up = [
+        'characterizations',
+        'source'
+    ]
+    set_status_down = []
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
@@ -96,6 +101,11 @@ class FlyDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id',
                                  'genetic_modifications.treatments', 
                                  'characterizations']
+    set_status_up = [
+        'characterizations',
+        'source'
+    ]
+    set_status_down = []
 
 
 @collection(
@@ -112,6 +122,11 @@ class WormDonor(Donor):
                                  'genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
                                  'genetic_modifications.treatments']
+    set_status_up = [
+        'characterizations',
+        'source'
+    ]
+    set_status_down = []
 
 
 @collection(
