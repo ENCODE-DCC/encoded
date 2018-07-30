@@ -217,7 +217,8 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
-    def _valid_status(self, new_status, schema, parent):
+    @staticmethod
+    def _valid_status(new_status, schema, parent):
         valid_statuses = schema.get('properties', {}).get('status', {}).get('enum', [])
         if new_status not in valid_statuses:
             # Raise failure if this is primary object.
@@ -231,8 +232,9 @@ class Item(snovault.Item):
             else:
                 return False
         return True
-
-    def _valid_transition(self, current_status, new_status, parent, force_transition):
+    
+    @staticmethod
+    def _valid_transition(current_status, new_status, parent, force_transition):
         if current_status not in STATUS_TRANSITION_TABLE[new_status] and not force_transition:
             # Raise failure if this is primary object.
             if parent:
@@ -269,14 +271,16 @@ class Item(snovault.Item):
             child_paths = self.set_status_down
         return child_paths
 
-    def _get_related_object(self, child_paths, embedded_properties, request):
+    @staticmethod
+    def _get_related_object(child_paths, embedded_properties, request):
         related_objects = set()
         for path in child_paths:
             for child_id in traversed_path_ids(request, embedded_properties, path):
                 related_objects.add(child_id)
         return related_objects
 
-    def _block_on_audits(self, item_id, force_audit, request, parent):
+    @staticmethod
+    def _block_on_audits(item_id, force_audit, request, parent):
         if not parent or force_audit:
             return
         audits = request.embed(item_id, '@@audit')
@@ -287,7 +291,8 @@ class Item(snovault.Item):
                 'ERROR audit on parent object. Must use ?force_audit=true to change status.'
             )
 
-    def _set_status_on_related_objects(self, new_status, related_objects, root, request):
+    @staticmethod
+    def _set_status_on_related_objects(new_status, related_objects, root, request):
         for child_id in related_objects:
             # Avoid cycles.
             visited_children = [
