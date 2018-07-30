@@ -43,7 +43,8 @@ class Pipeline(Item):
         'standards_page'
     ]
     set_status_up = [
-        'analysis_steps'
+        'analysis_steps',
+        'documents'
     ]
     set_status_down = []
 
