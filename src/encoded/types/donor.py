@@ -77,7 +77,9 @@ class MouseDonor(Donor):
                                  'genetic_modifications.treatments']
     set_status_up = [
         'characterizations',
-        'source'
+        'source',
+        'genetic_modifications',
+        'parent_strains'
     ]
     set_status_down = []
 
@@ -103,7 +105,9 @@ class FlyDonor(Donor):
                                  'characterizations']
     set_status_up = [
         'characterizations',
-        'source'
+        'source',
+        'genetic_modifications',
+        'parent_strains'
     ]
     set_status_down = []
 
@@ -124,7 +128,9 @@ class WormDonor(Donor):
                                  'genetic_modifications.treatments']
     set_status_up = [
         'characterizations',
-        'source'
+        'source',
+        'genetic_modifications',
+        'parent_strains'
     ]
     set_status_down = []
 
