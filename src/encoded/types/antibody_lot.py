@@ -53,7 +53,8 @@ class AntibodyLot(SharedItem):
         'lot_reviews.organisms'
     ]
     set_status_up = [
-        'source'
+        'source',
+        'targets'
     ]
     set_status_down = []
 
