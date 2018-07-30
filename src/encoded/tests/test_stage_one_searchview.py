@@ -3,6 +3,9 @@ Testing for defining search pre refactor
 """
 # pylint: disable=unused-import, unused-argument, redefined-outer-name
 import copy
+import pytest
+from .. import search
+
 
 from .features.conftest import app_settings, app, workbook
 
@@ -16,7 +19,6 @@ def _get_types_url(search_types):
     if search_types:
         return "type={}".format('&type='.join(search_types))
     return ''
-
 
 def _get_filters_data(
         testapp,
@@ -52,6 +54,25 @@ def _get_filters_data(
             res_types.add(res_filter['term'])
     return url, len(res.json['filters']), res.json['clear_filters'], res_terms, res_types
 
+
+def test_ensure_default_doc_types_is_valid():
+    default_doc_types = search.DEFAULT_DOC_TYPES
+
+
+    assert 1 == 1
+
+def test_sort_query():
+    item = {'filter': {'bool':
+                       {'must_not': [],
+                        'must': [{'terms': {'embedded.@type': ['Experiment']}},
+                                 {'terms': {'embedded.status': ['released']}}]}},
+            'aggs': 'assay_slims',
+            'terms': ''}
+
+    sorted_query = search.sort_query(item)
+  
+    for key in item:
+        assert item[key] == sorted_query[key]
 
 def test_search_doc_types_one(workbook, testapp):
     '''
