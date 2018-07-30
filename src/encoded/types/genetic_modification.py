@@ -30,7 +30,9 @@ class GeneticModification(Item):
     ]
     set_status_up = [
         'reagents.source',
-        'characterizations'
+        'characterizations',
+        'modified_site_by_target_id',
+        'treatments'
     ]
     set_status_down = []
 
