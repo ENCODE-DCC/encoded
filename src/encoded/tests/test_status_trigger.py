@@ -49,7 +49,7 @@ def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
     encode_item_id = res.json['@graph'][0]['@id']
     mocker.patch('encoded.types.base.Item.set_status')
     testapp.patch_json(encode_item_id + '@@release', {})
-    Item.set_status.call_count == 1
+    assert Item.set_status.call_count == 1
 
 
 def test_item_release_endpoint_triggers_set_status(testapp, content, mocker):
@@ -67,7 +67,7 @@ def test_item_unrelease_endpoint_calls_set_status(testapp, content, mocker):
     encode_item_id = res.json['@graph'][0]['@id']
     mocker.patch('encoded.types.base.Item.set_status')
     testapp.patch_json(encode_item_id + '@@unrelease', {})
-    Item.set_status.call_count == 1
+    assert Item.set_status.call_count == 1
 
 
 @mock_s3
@@ -75,7 +75,7 @@ def test_file_release_endpoint_calls_file_set_status(testapp, file, mocker):
     from encoded.types.file import File
     mocker.patch('encoded.types.file.File.set_status')
     testapp.patch_json(file['@id'] + '@@release', {})
-    File.set_status.call_count == 1
+    assert File.set_status.call_count == 1
 
 
 @mock_sts
@@ -161,7 +161,7 @@ def test_set_public_s3_calls_boto(mocker, testapp, uploading_file, dummy_request
     res = testapp.post_json('/file', uploading_file)
     file_item = root.get_by_uuid(res.json['@graph'][0]['uuid'])
     file_item.set_public_s3()
-    boto3.resource.call_count == 1
+    assert boto3.resource.call_count == 1
 
 
 @mock_sts
@@ -173,7 +173,7 @@ def test_set_private_s3_calls_boto(mocker, testapp, uploading_file, dummy_reques
     res = testapp.post_json('/file', uploading_file)
     file_item = root.get_by_uuid(res.json['@graph'][0]['uuid'])
     file_item.set_private_s3()
-    boto3.resource.call_count == 1
+    assert boto3.resource.call_count == 1
 
 
 def test_set_status_parent_validation_failure(file, root, testapp, request):
