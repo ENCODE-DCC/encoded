@@ -17,3 +17,9 @@ def organism_4_5(value, system):
         value['status'] = 'released'
     elif value.get('status') == 'disabled':
         value['status'] = 'deleted'
+
+
+@upgrade_step('organism', '5', '6')
+def organism_5_6(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4152
+    return
