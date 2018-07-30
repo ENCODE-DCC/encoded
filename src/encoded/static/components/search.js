@@ -23,6 +23,7 @@ const types = {
     antibody_lot: { title: 'Antibodies' },
     biosample: { title: 'Biosamples' },
     experiment: { title: 'Experiments' },
+    gene: { title: 'Genes' },
     target: { title: 'Targets' },
     dataset: { title: 'Datasets' },
     image: { title: 'Images' },

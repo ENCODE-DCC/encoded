@@ -69,6 +69,10 @@ export const dbxrefPrefixMap = {
             if (context['@type'][0] === 'Target' && context.gene_name) {
                 return { altValue: context.gene_name };
             }
+            // If a gene displays its dbxrefs, use HGNC URL as NCBI Entrez does.
+            if (context['@type'][0] === 'Gene') {
+                return { altUrlPattern: 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id={0}' };
+            }
             return {};
         },
     },
@@ -128,6 +132,9 @@ export const dbxrefPrefixMap = {
     'MGI.D': {
         pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml',
     },
+    MGI: {
+        pattern: 'http://www.informatics.jax.org/marker/{0}',
+    },
     RBPImage: {
         pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',
         postprocessor: (context, dbxref, urlPattern) => (
@@ -183,6 +190,21 @@ export const dbxrefPrefixMap = {
     },
     DGGR: {
         pattern: 'https://kyotofly.kit.jp/cgi-bin/stocks/search_res_det.cgi?DB_NUM=1&DG_NUM={0}',
+    },
+    MIM: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/omim/{0}',
+    },
+    Vega: {
+        pattern: 'http://vega.sanger.ac.uk/id/{0}',
+    },
+    miRBase: {
+        pattern: 'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc={0}',
+    },
+    GO: {
+        pattern: 'http://amigo.geneontology.org/amigo/term/GO:{0}',
+    },
+    'IMGT/GENE-DB': {
+        pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
     },
 };
 
