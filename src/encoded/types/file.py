@@ -34,7 +34,7 @@ import json
 import pytz
 import time
 
-from encoded.helpers import UploadCredentials
+from encoded.upload_credentials import UploadCredentials
 
 
 def show_upload_credentials(request=None, context=None, status=None):
