@@ -5,6 +5,7 @@ Testing for defining search pre refactor
 import copy
 import pytest
 from .. import search
+from mock import Mock
 
 
 from .features.conftest import app_settings, app, workbook
@@ -55,11 +56,139 @@ def _get_filters_data(
     return url, len(res.json['filters']), res.json['clear_filters'], res_terms, res_types
 
 
-def test_ensure_default_doc_types_is_valid():
-    default_doc_types = search.DEFAULT_DOC_TYPES
+def test_ensure_default_doc_types_has_proper_values():
+    expected_default_doc_types = ['AntibodyLot', 'Award', 'Biosample', 'Dataset', 'GeneticModification', 'Page', 'Pipeline', 'Publication','Software', 'Target', ]
+    actual_default_doc_types = search.DEFAULT_DOC_TYPES
+    assert set(expected_default_doc_types) == set(actual_default_doc_types), 'DEFAULT_DOC_TYPES is incorrect. Ensure values and ordering are valid'
 
+def test_ensure_audit_has_proper_values():
+    expected_audit_facets = [
+     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
+     ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
+     ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
+     ('audit.INTERNAL_ACTION.category', {'title': 'Audit category: DCC ACTION'})
+    ]
+    actual_audit_facets = search.audit_facets
+    nonmatches = [i for i, j in zip(expected_audit_facets, actual_audit_facets) if i != j]
 
-    assert 1 == 1
+    assert len(nonmatches) == 0, 'audit_facets is incorrect. Ensure values and ordering are valid'
+
+@pytest.fixture
+def lorem_ipsum_generator():
+    import loremipsum
+    return loremipsum
+
+@pytest.fixture
+def Dummy_Request():
+    from pyramid.testing import DummyRequest
+    return DummyRequest
+
+def test_ensure_get_pagination_returns_proper_values(Dummy_Request):    
+    request = Dummy_Request(params={'from': 5, 'limit': 20})
+    expected_from_ = 5
+    expected_size = 20
+
+    actual_from_, actual_size = search.get_pagination(request)
+
+    assert expected_from_ == actual_from_, 'from_ value is incorrect, for a basic test'
+    assert expected_size == actual_size, 'size value is incorrect, for a basic test'
+
+def test_ensure_get_pagination_returns_default_size(Dummy_Request):    
+    request = Dummy_Request(params={'from': 5, 'limit': 'some_string'})
+    expected_from_ = 5
+    expected_size = 25
+
+    actual_from_, actual_size = search.get_pagination(request)
+
+    assert expected_from_ == actual_from_, 'from_ value is incorrect, for a basic test'
+    assert expected_size == actual_size, 'size value is incorrect, for a basic test'
+
+def test_ensure_get_pagination_returns_none_for_size_equal_all(Dummy_Request):    
+    request = Dummy_Request(params={'from': 5, 'limit': 'all'})
+    expected_from_ = 5
+    expected_size = None
+
+    actual_from_, actual_size = search.get_pagination(request)
+
+    assert expected_from_ == actual_from_, 'from_ value is incorrect, for a basic test'
+    assert expected_size == actual_size, 'size value is incorrect, for a basic test'
+
+def test_ensure_get_pagination_returns_none_for_size_equal_space(Dummy_Request):    
+    request = Dummy_Request(params={'from': 5, 'limit': ''})
+    expected_from_ = 5
+    expected_size = None
+
+    actual_from_, actual_size = search.get_pagination(request)
+
+    assert expected_from_ == actual_from_, 'from_ value is incorrect, for a basic test'
+    assert expected_size == actual_size, 'size value is incorrect, for a basic test'
+
+def test_ensure_get_filtered_query_correcly_maps_query_string(lorem_ipsum_generator):
+    expected_term = lorem_ipsum_generator.generate_sentence()[0]
+    expected_search_fields = lorem_ipsum_generator.generate_sentence()[0]
+    expected_result_fields = [lorem_ipsum_generator.generate_sentence()[0]]
+    expected_principals = lorem_ipsum_generator.generate_sentence()[0]
+    expected_doc_types = lorem_ipsum_generator.generate_sentence()[0]
+    expected_query = {
+        'query_string': {
+                'query': expected_term,
+                'fields': expected_search_fields,
+                'default_operator': 'AND'
+            }    
+    } 
+
+    actual_filtered_query = search.get_filtered_query(expected_term, expected_search_fields, \
+        expected_result_fields, expected_principals, expected_doc_types)
+
+    assert actual_filtered_query['query']['query_string']['query'] == expected_query['query_string']['query']
+    assert actual_filtered_query['query']['query_string']['fields'] == expected_query['query_string']['fields']
+    assert actual_filtered_query['query']['query_string']['default_operator'] == expected_query['query_string']['default_operator']
+    assert len(actual_filtered_query['query']['query_string']) == len(expected_query['query_string'])
+
+def test_ensure_get_filtered_query_correctly_maps_post_filter(lorem_ipsum_generator):
+    expected_term = lorem_ipsum_generator.generate_sentence()[0]
+    expected_search_fields = lorem_ipsum_generator.generate_sentence()[0]
+    expected_result_fields = [lorem_ipsum_generator.generate_sentence()[0]]
+    expected_principals = lorem_ipsum_generator.generate_sentence()[0]
+    expected_doc_types = lorem_ipsum_generator.generate_sentence()[0]
+    expected_post_filter = {
+        'bool': {
+            'must': [
+                {
+                    'terms': {
+                       'principals_allowed.view': expected_principals  
+                    }
+                }, 
+                {
+                    'terms': {
+                        'embedded.@type': expected_doc_types    
+                    }
+                }
+               ], 
+               'must_not': []
+            }
+        }
+    
+    actual_filtered_query = search.get_filtered_query(expected_term, expected_search_fields, \
+        expected_result_fields, expected_principals, expected_doc_types)
+
+    assert expected_post_filter['bool']['must'][0]['terms']['principals_allowed.view'] == actual_filtered_query['post_filter']['bool']['must'][0]['terms']['principals_allowed.view']
+    assert expected_post_filter['bool']['must'][1]['terms']['embedded.@type'] == actual_filtered_query['post_filter']['bool']['must'][1]['terms']['embedded.@type']
+    assert expected_post_filter['bool']['must_not'] ==  actual_filtered_query['post_filter']['bool']['must_not'] 
+
+def test_ensure_get_filtered_query_correctly_maps_source(lorem_ipsum_generator):
+    expected_term = lorem_ipsum_generator.generate_sentence()[0]
+    expected_search_fields = lorem_ipsum_generator.generate_sentence()[0]
+    expected_result_fields = [lorem_ipsum_generator.generate_sentence()[0]]
+    expected_principals = lorem_ipsum_generator.generate_sentence()[0]
+    expected_doc_types = lorem_ipsum_generator.generate_sentence()[0]
+    expected__source = list(expected_result_fields)
+    
+    actual_filtered_query = search.get_filtered_query(expected_term, expected_search_fields, \
+        expected_result_fields, expected_principals, expected_doc_types)
+
+    assert set(expected__source) == set(actual_filtered_query['_source'])
+
 
 def test_sort_query():
     item = {'filter': {'bool':
