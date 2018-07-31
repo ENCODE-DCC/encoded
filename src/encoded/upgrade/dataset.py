@@ -386,7 +386,7 @@ def dataset_20_21(value, system):
     return
 
 @upgrade_step('experiment', '20', '21')
-def dataset_20_21(value, system):
+def dataset_21_22(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4107
     value['experimental_classification']=["functional genomics assay"]
     return
