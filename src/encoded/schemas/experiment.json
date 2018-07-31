@@ -240,7 +240,7 @@
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "type": "String",
+                "type": "string",
                 "enum": [
                     "functional genomics assay",
                     "functional characterization assay"
