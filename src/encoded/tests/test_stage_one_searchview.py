@@ -5,8 +5,8 @@ Testing for defining search pre refactor
 import copy
 import pytest
 from .. import search
-from mock import Mock
-
+from mock import Mock, MagicMock
+from mock import patch
 
 from .features.conftest import app_settings, app, workbook
 
@@ -202,6 +202,15 @@ def test_sort_query():
   
     for key in item:
         assert item[key] == sorted_query[key]
+
+def test_ensure_prepare_search_term_handles_astericks(Dummy_Request):
+    #request = Dummy_Request(params={'from': 5, 'limit': 'some_string'})
+    request_dummy = Dummy_Request(params={'search': '*'})
+    expected_search_term = '*'
+
+    actual_search_term = search.prepare_search_term(request_dummy)
+
+    assert expected_search_term == actual_search_term
 
 def test_search_doc_types_one(workbook, testapp):
     '''
