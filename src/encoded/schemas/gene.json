@@ -85,12 +85,13 @@
             "descrption": "Gene ontology annotations of the gene, including all three aspects: Biological Process, Cellular Component, and Molecular Function.",
             "comment": "Data imported from the Gene Ontology Consortium.",
             "type": "array",
+            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Gene Ontology annotation",
                 "description": "A gene ontology annotation of the gene function.",
                 "type": "object",
-                "required": ["go_id", "go_evidence_code", "go_aspect"],
+                "required": ["go_id", "go_name", "go_evidence_code", "go_aspect"],
                 "properties": {
                     "go_id": {
                         "title": "GO term identifier",
