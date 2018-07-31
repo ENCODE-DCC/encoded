@@ -352,6 +352,8 @@ class RemoteReader(object):
     def snp(row):
         '''Read a SNP from an in memory row and returns chrom and document to index.'''
         chrom, start, end, rsid = row[0], int(row[1]), int(row[2]), row[3]
+        if start == end:
+            end = end + 1
         return (chrom, {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end})
 
     # TODO: support bigBeds
