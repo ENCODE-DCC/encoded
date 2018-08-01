@@ -83,7 +83,7 @@ ALLOW_SUBMITTER_ADD = [
 # without actually making a patch if the new and current statuses are the same.
 STATUS_TRANSITION_TABLE = {
     'released': ['released', 'in progress', 'submitted'],
-    'in progress': ['in progress'],
+    'in progress': ['in progress', 'released'],
     'deleted': ['deleted', 'in progress', 'current', 'submitted'],
     'revoked': ['revoked', 'released', 'archived'],
     'archived': ['archived', 'released'],
@@ -316,7 +316,7 @@ class Item(snovault.Item):
                 )
         return True
 
-    def set_status(self, new_status, request, force=False, parent=True):
+    def set_status(self, new_status, request, parent=True):
         root = find_root(self)
         schema = self.type_info.schema
         properties = self.upgrade_properties()
