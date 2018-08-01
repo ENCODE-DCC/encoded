@@ -451,3 +451,25 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 4
     assert len(res.json_body['considered']) == 6
+
+
+@mock_sts
+@mock_s3
+def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_children(testapp, experiment, file, replicate, dummy_request, root):
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Put mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'released'})
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&block_children=true', {'status': 'released'}, status=200)
+    assert len(res.json_body['changed']) == 1
+    assert len(res.json_body['considered']) == 1
