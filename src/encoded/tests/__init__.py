@@ -12,3 +12,4 @@ def pytest_addoption(parser):
     parser.addoption('--browser-arg', nargs=2, dest='browser_args', action='append', type='string')
     parser.addoption('--browser-arg-int', nargs=2, dest='browser_args', action=AppendInt2, type='string')
     parser.addoption('--wsgi-arg', nargs=2, dest='wsgi_args', action='append', type='string')
+    parser.addoption("--log", action="store", default="INFO", help="set logging level")
