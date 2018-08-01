@@ -2,7 +2,7 @@
 
 ### Schema version 21
 
-* Added *experiment_classification* property with enum "functional genomics assay", "functional characterization assay"
+* Added required property *experiment_classification* with enums "functional genomics assay" and "functional characterization assay"
 
 ### Minor changes since schema version 20
 
