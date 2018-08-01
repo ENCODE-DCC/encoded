@@ -233,7 +233,7 @@ class Item(snovault.Item):
             else:
                 return False
         return True
-    
+
     @staticmethod
     def _valid_transition(current_status, new_status, parent, force_transition):
         if current_status not in STATUS_TRANSITION_TABLE[new_status] and not force_transition:
