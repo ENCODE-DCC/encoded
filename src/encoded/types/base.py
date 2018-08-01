@@ -267,6 +267,9 @@ class Item(snovault.Item):
         # Do not traverse children in parameter specified.
         if block_children:
             return []
+        # Released -> released should trigger up list unlike other identity mappings.
+        if all([x == 'released' for x in [current_status, new_status]]):
+            return self.set_status_up
         # List of child_paths depends on if status is going up or down.
         if STATUS_HIERARCHY[new_status] > STATUS_HIERARCHY[current_status]:
             child_paths = self.set_status_up
