@@ -103,6 +103,7 @@ STATUS_HIERARCHY = {
     'revoked': 5,
     'in progress': 10,
     'submitted': 8,
+    'uploading': 8,
     'archived': 7,
     'replaced': -1
 }
