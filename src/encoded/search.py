@@ -910,7 +910,7 @@ class SearchViews:
                 return graph
             self.result_obj.add_graph(list(graph))
             return self.result_obj.result
-        app_iter = _iter_long_json('@graph', graph, self.result_obj.result)
+        app_iter = iter_long_json('@graph', graph, self.result_obj.result)
         self.request.response.content_type = 'application/json'
         if str is bytes:  # Python 2 vs 3 wsgi differences
             self.request.response.app_iter = app_iter  # Python 2
