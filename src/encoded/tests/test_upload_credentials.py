@@ -8,14 +8,16 @@ import pytest  # pylint: disable=import-error, unused-import
 
 from moto import mock_sts  # pylint: disable=import-error, unused-import
 
-from encoded.helpers import UploadCredentials
-from encoded.helpers.upload_credentials import EXTERNAL_BUCKET_STATEMENTS
-from encoded.helpers.upload_credentials import _build_external_bucket_json
-from encoded.helpers.upload_credentials import _get_external_bucket_policy
-from encoded.helpers.upload_credentials import _save_policy_json
+from encoded.upload_credentials import  (
+    UploadCredentials,
+    EXTERNAL_BUCKET_STATEMENTS,
+    _build_external_bucket_json,
+    _get_external_bucket_policy,
+    _save_policy_json,
+)
 
 
-from encoded.upload_credentials import HELPERS_DATA_PATH
+CREDS_DATA_PATH = 'src/encoded/tests/data/upload_credentials'
 
 
 def test_save_policy_json():
@@ -24,7 +26,7 @@ def test_save_policy_json():
     '''
     import os.path
     from os import remove
-    bucket_path = HELPERS_DATA_PATH + '/' + 'test-save-policy-delete-me'
+    bucket_path = CREDS_DATA_PATH + '/' + 'test-save-policy-delete-me'
     bucket_path_json = bucket_path + '.json'
     _save_policy_json({'test': 'testing'}, bucket_path)
     if os.path.isfile(bucket_path_json):
@@ -39,7 +41,7 @@ def test_build_external_bucket_json():
     '''
     import os.path
     from os import remove
-    bucket_path = HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'
+    bucket_path = CREDS_DATA_PATH + '/' + 'external_bucket_list_one'
     bucket_path_json = bucket_path + '.json'
     if os.path.isfile(bucket_path_json):
         remove(bucket_path_json)
@@ -55,7 +57,7 @@ def test_get_external_bucket_policy():
     Tests that get_external_bucket_policy return json dict or none
     '''
     from os import remove
-    bucket_path = HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'
+    bucket_path = CREDS_DATA_PATH + '/' + 'external_bucket_list_one'
     result = _get_external_bucket_policy(bucket_path)
     assert result is None
     _build_external_bucket_json(bucket_path)
@@ -73,7 +75,6 @@ def test_external_creds():
         'mock_bucket',
         'mock_object',
         'mock_name',
-        # profile_name='default',
     )
     creds = upload_creds.external_creds()
     assert 'upload_credentials' in creds
@@ -256,7 +257,6 @@ class TestUploadCredentials(TestCase):
             self._test_bucket,
             self._test_key,
             self._test_name,
-            # profile_name='default',
         )
         policy = upload_creds._get_policy()
         token = upload_creds._get_token(policy)
@@ -277,7 +277,7 @@ class TestUploadCredentials(TestCase):
                 (True, None),
                 (False, 'some-path'),
                 (True, 'bad-path'),
-                (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_empty'),
+                (True, CREDS_DATA_PATH + '/' + 'external_bucket_list_empty'),
         ]:
             upload_creds._check_external_policy(
                 s3_transfer_allow=s3_transfer_allow,
@@ -320,7 +320,7 @@ class TestUploadCredentials(TestCase):
             self._test_profile_name,
         )
         for s3_transfer_allow, s3_transfer_buckets in [
-                (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_one'),
+                (True, CREDS_DATA_PATH + '/' + 'external_bucket_list_one'),
         ]:
             upload_creds._check_external_policy(
                 s3_transfer_allow=s3_transfer_allow,
@@ -363,7 +363,7 @@ class TestUploadCredentials(TestCase):
             self._test_profile_name,
         )
         for s3_transfer_allow, s3_transfer_buckets in [
-                (True, HELPERS_DATA_PATH + '/' + 'external_bucket_list_many'),
+                (True, CREDS_DATA_PATH + '/' + 'external_bucket_list_many'),
         ]:
             upload_creds._check_external_policy(
                 s3_transfer_allow=s3_transfer_allow,
@@ -397,7 +397,6 @@ class TestUploadCredentials(TestCase):
             self._test_bucket,
             self._test_key,
             self._test_name,
-            # profile_name='default',
         )
         creds_dict = upload_creds.external_creds()
         self.assertListEqual(
@@ -419,7 +418,6 @@ class TestUploadCredentials(TestCase):
             self._test_bucket,
             self._test_key,
             self._test_name,
-            # profile_name='default',
         )
         creds_dict = upload_creds.external_creds()
         self.assertEqual(creds_dict['service'], 's3')

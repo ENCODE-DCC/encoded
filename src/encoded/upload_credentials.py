@@ -61,14 +61,14 @@ def _build_external_bucket_json(file_path):
         )
 
 def _get_external_bucket_policy(file_path):
-        '''
-        Returns a compiled json of external s3 access policies for federated users
-        '''
-        try:
-            with open(file_path + '.json', 'r') as file_handler:
-                return json.loads(file_handler.read())
-        except FileNotFoundError:  # pylint: disable=undefined-variable
-            return None
+    '''
+    Returns a compiled json of external s3 access policies for federated users
+    '''
+    try:
+        with open(file_path + '.json', 'r') as file_handler:
+            return json.loads(file_handler.read())
+    except FileNotFoundError:  # pylint: disable=undefined-variable
+        return None
 
 
 class UploadCredentials(object):
