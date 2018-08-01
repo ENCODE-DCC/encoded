@@ -233,7 +233,7 @@ def experiment(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
-        'experiment_classification': 'functional genomics assay',
+        'experiment_classification': ['functional genomics assay'],
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
@@ -248,7 +248,7 @@ def base_experiment(testapp, lab, award):
         'biosample_term_name': 'heart',
         'biosample_term_id': 'UBERON:349829',
         'status': 'in progress',
-        'experiment_classification': 'functional genomics assay',
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 

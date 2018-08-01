@@ -193,7 +193,7 @@ def ctrl_experiment(testapp, lab, award, control_target):
         'biosample_term_name': 'none',
         'status': 'in progress',
         'assay_term_name': 'ChIP-seq',
-        'experiment_classification': 'functional genomics assay'
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
