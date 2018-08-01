@@ -316,6 +316,14 @@ class Item(snovault.Item):
                 )
         return True
 
+    @staticmethod
+    def _calculate_block_children(request, force_transition):
+        block_children_param = request.params.get('block_children', None)
+        # Block children by default if force_transition is specified and block_children is not.
+        if force_transition and block_children_param is None:
+            return True
+        return asbool(block_children_param)
+
     def set_status(self, new_status, request, parent=True):
         root = find_root(self)
         schema = self.type_info.schema
@@ -336,7 +344,7 @@ class Item(snovault.Item):
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
-        block_children = asbool(request.params.get('block_children'))
+        block_children = self._calculate_block_children(request, force_transition)
         child_paths = self._get_child_paths(current_status, new_status, block_children)
         embedded_properties = request.embed(item_id, '@@embedded')
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
