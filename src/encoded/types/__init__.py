@@ -149,7 +149,8 @@ class Library(Item):
     set_status_up = [
         'biosample',
         'documents',
-        'source'
+        'source',
+        'treatments'
     ]
     set_status_down = []
 
