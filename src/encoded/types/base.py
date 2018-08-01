@@ -263,7 +263,10 @@ class Item(snovault.Item):
         request.registry.notify(AfterModified(self, request))
         request._set_status_changed_paths.add((item_id, current_status, new_status))
 
-    def _get_child_paths(self, current_status, new_status):
+    def _get_child_paths(self, current_status, new_status, block_children):
+        # Do not traverse children in parameter specified.
+        if block_children:
+            return []
         # List of child_paths depends on if status is going up or down.
         if STATUS_HIERARCHY[new_status] > STATUS_HIERARCHY[current_status]:
             child_paths = self.set_status_up
@@ -333,7 +336,8 @@ class Item(snovault.Item):
         logging.warn(
             'Updated {} from status {} to status {}'.format(item_id, current_status, new_status)
         )
-        child_paths = self._get_child_paths(current_status, new_status)
+        block_children = asbool(request.params.get('block_children'))
+        child_paths = self._get_child_paths(current_status, new_status, block_children)
         embedded_properties = request.embed(item_id, '@@embedded')
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
         _ = self._set_status_on_related_objects(new_status, related_objects, root, request)
