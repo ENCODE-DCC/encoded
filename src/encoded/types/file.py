@@ -456,7 +456,7 @@ def post_upload(context, request):
         time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
     upload_creds = UploadCredentials(bucket, key, name, profile_name=profile_name)
-    s3_transfer_allow = registry.settings.get('external_aws_s3_transfer_allow', 'false')
+    s3_transfer_allow = request.registry.settings.get('external_aws_s3_transfer_allow', 'false')
     creds = upload_creds.external_creds(
         s3_transfer_allow=asbool(s3_transfer_allow),
         s3_transfer_buckets=request.registry.settings.get('external_aws_s3_transfer_buckets'),
