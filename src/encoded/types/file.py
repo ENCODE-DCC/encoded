@@ -413,20 +413,21 @@ class File(Item):
             request,
             parent=parent,
         )
-        if status_set:
-            # Change permission in S3.
-            try:
-                if new_status == 'released':
-                    self.set_public_s3()
-                elif new_status == 'in progress':
-                    self.set_private_s3()
-            except ClientError as e:
-                # Demo trying to set ACL on production object?
-                if e.response['Error']['Code'] == 'AccessDenied':
-                    logging.warn(e)
-                else:
-                    raise e
-        return status_set
+        if not status_set:
+            return False
+        # Change permission in S3.
+        try:
+            if new_status in ['released', 'archived', 'revoked']:
+                self.set_public_s3()
+            elif new_status in ['uploading', 'in progress', 'replaced', 'deleted']:
+                self.set_private_s3()
+        except ClientError as e:
+            # Demo trying to set ACL on production object?
+            if e.response['Error']['Code'] == 'AccessDenied':
+                logging.warn(e)
+            else:
+                raise e
+        return True
 
 
 @view_config(name='upload', context=File, request_method='GET',
