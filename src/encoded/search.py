@@ -685,7 +685,9 @@ class SearchViews:
         self.from_ = from_
         self.size = size
 
-        if '*' in request.params.getall('type'):
+        if context.type_info.name:
+            doc_types = [context.type_info.name]
+        elif '*' in request.params.getall('type'):
             doc_types = ['Item']
         else:
             doc_types = request.params.getall('type')
@@ -972,7 +974,7 @@ def collection_view_listing_es(context, request):
     if request.datastore != 'elasticsearch':
         return collection_view_listing_db(context, request)
 
-    search_view = SearchViews(context, request, context.type_info.name)
+    search_view = SearchViews(context, request)
     return search_view.search()
 
 
