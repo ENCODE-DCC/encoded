@@ -265,7 +265,7 @@ class Item(snovault.Item):
 
     def _get_child_paths(self, current_status, new_status):
         # List of child_paths depends on if status is going up or down.
-        if STATUS_HIERARCHY[new_status] >= STATUS_HIERARCHY[current_status]:
+        if STATUS_HIERARCHY[new_status] > STATUS_HIERARCHY[current_status]:
             child_paths = self.set_status_up
         else:
             child_paths = self.set_status_down
