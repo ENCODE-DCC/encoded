@@ -85,7 +85,7 @@ STATUS_TRANSITION_TABLE = {
     'released': ['released', 'in progress', 'submitted'],
     'in progress': ['in progress'],
     'deleted': ['deleted', 'in progress', 'current', 'submitted'],
-    'revoked': ['revoked', 'released'],
+    'revoked': ['revoked', 'released', 'archived'],
     'archived': ['archived', 'released'],
     'submitted': ['submitted', 'in progress'],
     'replaced': [],
