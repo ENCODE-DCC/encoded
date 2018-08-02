@@ -96,16 +96,16 @@ STATUS_TRANSITION_TABLE = {
 
 # Used to calculate whether new_status is more or less than current_status.
 STATUS_HIERARCHY = {
-    'released': 30,
-    'current': 30,
+    'released': 100,
+    'current': 100,
+    'in progress': 90,
+    'submitted': 80,
+    'uploading': 80,
+    'archived': 70,
+    'revoked': 50,
+    'disabled': 10,
     'deleted': 0,
-    'disabled': 1,
-    'revoked': 5,
-    'in progress': 10,
-    'submitted': 8,
-    'uploading': 8,
-    'archived': 7,
-    'replaced': -1
+    'replaced': -10,
 }
 
 
