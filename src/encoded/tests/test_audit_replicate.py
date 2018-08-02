@@ -31,7 +31,8 @@ def non_concord_experiment(testapp, lab, award):
         'assay_term_name': 'RNA-seq',
         'biosample_type': 'cell line',
         'biosample_term_id': 'NTR:000945',
-        'biosample_term_name': 'bad name'
+        'biosample_term_name': 'bad name',
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
