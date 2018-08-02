@@ -222,14 +222,12 @@ class Item(snovault.Item):
     def _valid_status(new_status, schema, parent):
         valid_statuses = schema.get('properties', {}).get('status', {}).get('enum', [])
         if new_status not in valid_statuses:
-            # Raise failure if this is primary object.
             if parent:
                 msg = '{} not one of {}'.format(
                     new_status,
                     valid_statuses
                 )
                 raise ValidationFailure('body', ['status'], msg)
-            # Do nothing if this is child object.
             else:
                 return False
         return True
@@ -237,14 +235,12 @@ class Item(snovault.Item):
     @staticmethod
     def _valid_transition(current_status, new_status, parent, force_transition):
         if current_status not in STATUS_TRANSITION_TABLE[new_status] and not force_transition:
-            # Raise failure if this is primary object.
             if parent:
                 msg = 'Status transition {} to {} not allowed'.format(
                     current_status,
                     new_status
                 )
                 raise ValidationFailure('body', ['status'], msg)
-            # Do nothing if this is child object.
             else:
                 return False
         return True
@@ -268,7 +264,8 @@ class Item(snovault.Item):
         # Do not traverse children in parameter specified.
         if block_children:
             return []
-        # Released -> released should trigger up list unlike other identity mappings.
+        # Only transition released -> released should trigger up list
+        # if new and current statuses the same.
         if all([x == 'released' for x in [current_status, new_status]]):
             return self.set_status_up
         # List of child_paths depends on if status is going up or down.
@@ -323,7 +320,6 @@ class Item(snovault.Item):
     @staticmethod
     def _calculate_block_children(request, force_transition):
         block_children_param = request.params.get('block_children', None)
-        # Block children by default if force_transition is specified and block_children is not.
         if force_transition and block_children_param is None:
             return True
         return asbool(block_children_param)
