@@ -320,7 +320,7 @@ class Item(snovault.Item):
     @staticmethod
     def _calculate_block_children(request, force_transition):
         block_children_param = request.params.get('block_children', None)
-        if force_transition and block_children_param is None:
+        if force_transition:
             return True
         return asbool(block_children_param)
 
