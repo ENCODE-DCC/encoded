@@ -142,6 +142,7 @@
     },
     {
         "name": "synthetic",
+        "scientific_name": "synthetic",
         "taxon_id": "0",
         "uuid": "5d8f172c-2220-4d76-89e2-e26ed08c42e8",
         "status": "released"
