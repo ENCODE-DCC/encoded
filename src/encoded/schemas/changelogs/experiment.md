@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 21
+
+* Added required property *experiment_classification* with enums "functional genomics assay" and "functional characterization assay"
+
 ### Minor changes since schema version 20
 
 * *possible_controls* property allows specification of any type of Dataset as possible control

@@ -5,7 +5,7 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name", "biosample_type"],
+    "required": ["award", "lab", "assay_term_name", "biosample_type", "experiment_classification"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -200,7 +200,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -233,6 +233,19 @@
                 "whole organisms",
                 "organoid"
             ]
+        },
+        "experiment_classification": {
+            "title": "Experiment classification",
+            "description": "The categorization of the experiment.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "functional genomics assay",
+                    "functional characterization assay"
+                ]
+            }    
         },
         "dbxrefs": {
             "@type": "@id",

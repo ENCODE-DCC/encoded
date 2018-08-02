@@ -21,7 +21,8 @@ def base_experiment(testapp, lab, award):
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
         'status': 'submitted',
-        'date_submitted': '2015-07-23'
+        'date_submitted': '2015-07-23',
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 

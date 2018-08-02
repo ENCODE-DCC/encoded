@@ -11,7 +11,8 @@ def experiment_pipeline_error(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
-        'internal_status': 'pipeline error'
+        'internal_status': 'pipeline error',
+        'experiment_classification': ['functional genomics assay']
     }
     return item
 
@@ -25,7 +26,8 @@ def experiment_no_error(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
-        'internal_status': 'release ready'
+        'internal_status': 'release ready',
+        'experiment_classification': ['functional genomics assay']
     }
     return item
 
