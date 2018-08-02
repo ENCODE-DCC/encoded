@@ -310,7 +310,7 @@ class Item(snovault.Item):
             else:
                 child_uuid = request.embed(child_id).get('uuid')
                 encoded_item = root.get_by_uuid(child_uuid)
-                _ = encoded_item.set_status(
+                encoded_item.set_status(
                     new_status,
                     request,
                     parent=False
