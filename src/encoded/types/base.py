@@ -352,7 +352,7 @@ class Item(snovault.Item):
         child_paths = self._get_child_paths(current_status, new_status, block_children)
         embedded_properties = request.embed(item_id, '@@embedded')
         related_objects = self._get_related_object(child_paths, embedded_properties, request)
-        _ = self._set_status_on_related_objects(new_status, related_objects, root, request)
+        self._set_status_on_related_objects(new_status, related_objects, root, request)
         return True
 
 
@@ -422,7 +422,7 @@ def item_set_status(context, request):
     new_status = request.json_body.get('status')
     if not new_status:
         raise ValidationFailure('body', ['status'], 'Status not specified')
-    _ = context.set_status(new_status, request)
+    context.set_status(new_status, request)
     # Returns changed and considered lists of tuples: (item, current_status, new_status).
     return {
         'status': 'success',
