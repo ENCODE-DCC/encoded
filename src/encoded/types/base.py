@@ -83,7 +83,7 @@ ALLOW_SUBMITTER_ADD = [
 # without actually making a patch if the new and current statuses are the same.
 STATUS_TRANSITION_TABLE = {
     'released': ['released', 'in progress', 'submitted'],
-    'in progress': ['in progress', 'released'],
+    'in progress': ['in progress'],
     'deleted': ['deleted', 'in progress', 'current', 'submitted'],
     'revoked': ['revoked', 'released', 'archived'],
     'archived': ['archived', 'released'],
