@@ -4,7 +4,7 @@
     "id": "/profiles/gene.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["geneid", "symbol", "dbxrefs", "organism"],
+    "required": ["geneid", "ncbi_entrez_status", "symbol", "dbxrefs", "organism"],
     "identifyingProperties": ["uuid", "geneid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -22,6 +22,7 @@
             "description": "NCBI Entrez GeneID of official nomenclature approved gene.",
             "comment": "An ENCODE gene (object) needs to have an Entrez GeneID and needs to be approved by (i.e. have an ID and gene symbol from) offical nomenclature such as HGNC, MGI, FlyBase, WormBase.",
             "type": "string",
+            "pattern": "^[1-9][0-9]*$",
             "permission": "import_items",
             "uniqueKey": true
         },

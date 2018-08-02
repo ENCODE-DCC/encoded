@@ -116,8 +116,8 @@ export const dbxrefPrefixMap = {
     WormBase: {
         pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}',
         preprocessor: (context) => {
-            // If a target displays its dbxrefs, use the worm stock URL.
-            if (context['@type'][0] !== 'Target') {
+            // If a target or gene displays its dbxrefs, use the worm stock URL.
+            if (context['@type'][0] !== 'Target' && context['@type'][0] !== 'Gene') {
                 return { altUrlPattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}' };
             }
             return {};
