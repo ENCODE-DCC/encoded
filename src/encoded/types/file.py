@@ -147,6 +147,8 @@ class File(Item):
         'step_run',
     ]
     set_status_down = []
+    public_s3_statuses = ['released', 'archived', 'revoked']
+    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted']
 
     @property
     def __name__(self):
@@ -417,9 +419,9 @@ class File(Item):
             return False
         # Change permission in S3.
         try:
-            if new_status in ['released', 'archived', 'revoked']:
+            if new_status in self.public_s3_statuses:
                 self.set_public_s3()
-            elif new_status in ['uploading', 'in progress', 'replaced', 'deleted']:
+            elif new_status in self.private_s3_statuses:
                 self.set_private_s3()
         except ClientError as e:
             # Demo trying to set ACL on production object?
