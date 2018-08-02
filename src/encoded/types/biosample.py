@@ -106,7 +106,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'treatments',
         'documents',
         'host',
-        'source'
+        'source',
     ]
     set_status_down = []
 

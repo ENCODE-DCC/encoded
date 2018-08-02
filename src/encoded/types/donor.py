@@ -34,7 +34,7 @@ class Donor(Item):
     ]
     set_status_up = [
         'characterizations',
-        'documents'
+        'documents',
     ]
     set_status_down = []
     name_key = 'accession'
@@ -81,7 +81,7 @@ class MouseDonor(Donor):
         'source',
         'genetic_modifications',
         'parent_strains',
-        'documents'
+        'documents',
     ]
     set_status_down = []
 
@@ -110,7 +110,7 @@ class FlyDonor(Donor):
         'source',
         'genetic_modifications',
         'parent_strains',
-        'documents'
+        'documents',
     ]
     set_status_down = []
 
@@ -134,7 +134,7 @@ class WormDonor(Donor):
         'source',
         'genetic_modifications',
         'parent_strains',
-        'documents'
+        'documents',
     ]
     set_status_down = []
 

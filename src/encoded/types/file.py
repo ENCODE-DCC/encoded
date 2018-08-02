@@ -144,7 +144,7 @@ class File(Item):
     set_status_up = [
         'quality_metrics',
         'platform',
-        'step_run'
+        'step_run',
     ]
     set_status_down = []
 

@@ -21,7 +21,7 @@ class Characterization(ItemWithAttachment, Item):
     base_types = ['Characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
     set_status_up = [
-        'documents'
+        'documents',
     ]
     set_status_down = []
 

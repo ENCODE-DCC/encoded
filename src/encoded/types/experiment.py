@@ -99,10 +99,10 @@ class Experiment(Dataset,
         'original_files',
         'replicates',
         'documents',
-        'target'
+        'target',
     ]
     set_status_down = [
-        'original_files'
+        'original_files',
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -510,7 +510,7 @@ class Replicate(Item):
     ]
     set_status_up = [
         'library',
-        'antibody'
+        'antibody',
     ]
     set_status_down = []
 

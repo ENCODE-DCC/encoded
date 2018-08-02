@@ -93,7 +93,7 @@ class Treatment(Item):
     ]
     set_status_up = [
         'biosamples_used',
-        'antibodies_used'
+        'antibodies_used',
     ]
     set_status_down = []
 
@@ -150,7 +150,7 @@ class Library(Item):
         'biosample',
         'documents',
         'source',
-        'treatments'
+        'treatments',
     ]
     set_status_down = []
 

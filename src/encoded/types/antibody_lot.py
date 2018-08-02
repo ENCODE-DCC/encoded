@@ -55,7 +55,7 @@ class AntibodyLot(SharedItem):
     set_status_up = [
         'source',
         'targets',
-        'host_organism'
+        'host_organism',
     ]
     set_status_down = []
 

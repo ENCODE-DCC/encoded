@@ -21,7 +21,7 @@ from .shared_calculated_properties import CalculatedAssayTermID
 class QualityMetric(ItemWithAttachment, CalculatedAssayTermID, Item):
     base_types = ['QualityMetric'] + Item.base_types
     set_status_up = [
-        'step_run'
+        'step_run',
         ]
     set_status_down = []
 

@@ -44,7 +44,7 @@ class Pipeline(Item):
     ]
     set_status_up = [
         'analysis_steps',
-        'documents'
+        'documents',
     ]
     set_status_down = []
 
