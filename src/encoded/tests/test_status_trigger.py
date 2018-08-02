@@ -170,7 +170,7 @@ def test_file_release_in_progress_file(testapp, file, dummy_request, root):
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
-    testapp.patch_json(file['@id'] + '@@release', {})
+    testapp.patch_json(file['@id'] + '@@release?update=true', {})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'released'
 
@@ -196,7 +196,7 @@ def test_file_unrelease_released_file(testapp, file, dummy_request, root):
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'released'
     # Go through unrelease trigger.
-    testapp.patch_json(file['@id'] + '@@unrelease', {})
+    testapp.patch_json(file['@id'] + '@@unrelease?update=true', {})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
 
@@ -261,7 +261,7 @@ def test_set_status_catch_access_denied_error(mocker, testapp, file):
     mocker.patch('encoded.types.file.File._get_external_sheet')
     File._get_external_sheet.return_value = {}
     mocker.patch('encoded.types.file.logging.warn')
-    testapp.patch_json(file['@id'] + '@@release', {})
+    testapp.patch_json(file['@id'] + '@@release?update=true', {})
     # Should log AccessDenied error but shouldn't raise error.
     assert logging.warn.call_count == 2
 
@@ -284,7 +284,7 @@ def test_set_status_raise_other_error(mocker, testapp, file):
     File._get_external_sheet.return_value = {}
     # Should raise error.
     with pytest.raises(ClientError):
-        testapp.patch_json(file['@id'] + '@@release', {})
+        testapp.patch_json(file['@id'] + '@@release?update=true', {})
 
 
 @mock_sts
@@ -335,13 +335,13 @@ def test_set_status_in_progress_experiment(testapp, root, experiment, replicate,
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'in progress'
     # Release experiment.
-    res = testapp.patch_json(experiment['@id'] + '@@release?force_audit=true', {})
+    res = testapp.patch_json(experiment['@id'] + '@@release?force_audit=true&update=true', {})
     # File, exp, and rep now released.
     for encode_item in [experiment, file, replicate]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'released'
     # Unrelease experiment.
-    res = testapp.patch_json(experiment['@id'] + '@@unrelease?force_audit=true', {})
+    res = testapp.patch_json(experiment['@id'] + '@@unrelease?force_audit=true&update=true', {})
     # File and exp now in progress.
     for encode_item in [experiment, file]:
         res = testapp.get(encode_item['@id'])
@@ -352,27 +352,27 @@ def test_set_status_in_progress_experiment(testapp, root, experiment, replicate,
 
 
 def test_set_status_endpoint_status_not_specified(testapp, experiment, dummy_request):
-    res = testapp.patch_json(experiment['@id'] + '@@set_status', {}, status=422)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {}, status=422)
     assert res.json['errors'][0]['description'] == 'Status not specified'
 
 
 def test_set_status_endpoint_status_specified(testapp, experiment, dummy_request):
-    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'}, status=200)
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
 
 
 def test_set_status_endpoint_in_progress_experiment(testapp, experiment, dummy_request):
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
-    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'released'
 
 
 def test_set_status_endpoint_released_experiment(testapp, experiment, dummy_request):
-    res = testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'released'
-    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'in progress'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'in progress'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
 
@@ -381,7 +381,7 @@ def test_set_status_endpoint_release_experiment_has_date_released(testapp, exper
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
     assert 'date_released' not in res.json
-    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'released'
     assert 'date_released' in res.json
@@ -391,7 +391,7 @@ def test_set_status_endpoint_experiment_date_released_remains_same(testapp, expe
     dt = datetime.now().date()
     dt = str(dt.replace(year=dt.year - 10))
     testapp.patch_json(experiment['@id'], {'date_released': dt})
-    testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['date_released'] == dt
 
@@ -405,7 +405,7 @@ def test_set_status_invalid_status_validation_failure(file, root, testapp, reque
 
 
 def test_set_status_changed_paths_experiment(testapp, experiment, dummy_request):
-    res = testapp.patch_json(experiment['@id'] + '@@set_status', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
 
 
@@ -426,7 +426,7 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
 
@@ -448,7 +448,7 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
 
@@ -470,7 +470,7 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_chil
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&block_children=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&block_children=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
     assert len(res.json_body['considered']) == 1
 
@@ -492,7 +492,7 @@ def test_set_status_force_transition_block_children_default(testapp, experiment,
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&force_transition=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&force_transition=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
     assert len(res.json_body['considered']) == 1
 
@@ -514,9 +514,9 @@ def test_set_status_force_transition_block_children_specified(testapp, experimen
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&force_transition=true&block_children=false', {'status': 'replaced'}, status=200)
-    assert len(res.json_body['changed']) == 2
-    assert len(res.json_body['considered']) == 2
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&force_transition=true&block_children=false&update=true', {'status': 'replaced'}, status=200)
+    assert len(res.json_body['changed']) == 1
+    assert len(res.json_body['considered']) == 1
 
 
 @mock_sts
@@ -536,10 +536,10 @@ def test_set_status_released_to_released_triggers_up_list(testapp, experiment, f
     client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
     testapp.patch_json(replicate['@id'], {'status': 'in progress'})
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
     assert len(res.json_body['considered']) == 6
