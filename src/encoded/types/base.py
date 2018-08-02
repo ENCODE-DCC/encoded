@@ -1,4 +1,6 @@
+from datetime import datetime
 from functools import lru_cache
+import logging
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
@@ -24,8 +26,6 @@ from snovault import (
     AfterModified,
     BeforeModified
 )
-from datetime import datetime
-import logging
 
 
 @lru_cache()
