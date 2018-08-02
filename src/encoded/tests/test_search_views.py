@@ -1,0 +1,405 @@
+"""
+Testing for defining search pre refactor
+"""
+# pylint: disable=unused-import, unused-argument, redefined-outer-name
+import copy
+
+from encoded.tests.features.conftest import app_settings, app, workbook
+
+
+def _get_terms_url(search_terms):
+    if search_terms:
+        return "searchTerm={}".format('&searchTerm='.join(search_terms))
+    return ''
+
+def _get_types_url(search_types):
+    if search_types:
+        return "type={}".format('&type='.join(search_types))
+    return ''
+
+
+def _get_filters_data(
+        testapp,
+        search_types,
+        search_terms,
+        status,
+        add_mode_picker=False,
+):
+    url = '/search/'
+    if search_terms:
+        url += '?' + _get_terms_url(search_terms)
+    if search_types:
+        url_types = _get_types_url(search_types)
+        if search_terms:
+            url += "&" + url_types
+        else:
+            url += '?' + url_types
+    if add_mode_picker:
+        if url[-1] == '/':
+            url += '?mode=picker'
+        else:
+            url += '&mode=picker'
+    res = testapp.get(url, status=status)
+    if status > 299 and status < 400:
+        res = res.follow()
+    res_terms = set()
+    res_types = set()
+    for res_filter in res.json['filters']:
+        if res_filter['field'] == "searchTerm":
+            res_terms.add(res_filter['term'])
+        elif res_filter['field'] == "type":
+            res_types.add(res_filter['term'])
+    return url, len(res.json['filters']), res.json['clear_filters'], res_terms, res_types
+
+
+def test_doc_types_one(workbook, testapp):
+    '''
+    Test search view config valid one doc type
+    '''
+    search_terms = []
+    search_types = ['Experiment']
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    expected_clear_filters = url
+    expected_len_filters = len(search_types)
+    expected_res_terms = []
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_doc_types_many(workbook, testapp):
+    '''
+    Test search view config valid many doc types
+    '''
+    search_terms = []
+    search_types = ['Dataset', 'Experiment', 'ReferenceEpigenome']
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    expected_clear_filters = url
+    expected_len_filters = len(search_types)
+    expected_res_terms = []
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_doc_types_asterisk(workbook, testapp):
+    '''
+    Test search view config with asterisk in request params type
+    '''
+    search_terms = []
+    search_types = ['*']
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 301
+    )
+    expected_clear_filters = '/search/?' + _get_types_url(['Item'])
+    expected_len_filters = len(search_types)
+    expected_res_terms = []
+    expected_res_types = ['Item']
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_type_arg_not_none(workbook, testapp):
+    '''
+    Test search view config search_type argument
+
+    Doesn't seem to be used in the application
+    -How to set search_type?
+    -Is it possible? Is it used?
+    '''
+    assert True
+
+
+def test_doc_types_sorted(workbook, testapp):
+    '''
+    Test search view config valid many doc types
+    '''
+    search_terms = []
+    search_types = ['Experiment', 'Dataset', 'ReferenceEpigenome']
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    sorted_search_types = sorted(search_types)
+    expected_clear_filters = '/search/?' + _get_types_url(sorted_search_types)
+    expected_len_filters = len(search_types)
+    expected_res_terms = []
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_key_error_empty(testapp):
+    '''
+    Test search view config key error with empty type
+    '''
+    bad_types = ['']
+    url = '/search/?' + _get_types_url(bad_types)
+    excepted_description = 'Invalid type: {}'.format(', '.join(bad_types))
+    res = testapp.get(url, status=400)
+    assert res.json['description'] == excepted_description
+
+
+def test_key_error_one(testapp):
+    '''
+    Test search view config key error with one bad type
+    '''
+    bad_types = ['bad-type-1']
+    url = '/search/?' + _get_types_url(bad_types)
+    excepted_description = 'Invalid type: {}'.format(', '.join(bad_types))
+    res = testapp.get(url, status=400)
+    assert res.json['description'] == excepted_description
+
+
+def test_key_error_many(testapp):
+    '''
+    Test search view config key error with many bad type
+    '''
+    bad_types = ['bad-type-1', 'bad-type-2', 'bad-type-3']
+    url = '/search/?' + _get_types_url(bad_types)
+    excepted_description = "Invalid type: {}".format(', '.join(bad_types))
+    res = testapp.get(url, status=400)
+    assert res.json['description'] == excepted_description
+
+
+def test_key_error_mixed(testapp):
+    '''
+    Test search view config key error with bad and good types
+    '''
+    bad_types = ['bad-type-1', 'bad-type-2']
+    all_types = ['Experiment']
+    all_types.extend(bad_types)
+    url = '/search/?' + _get_types_url(all_types)
+    excepted_description = "Invalid type: {}".format(', '.join(bad_types))
+    res = testapp.get(url, status=400)
+    assert res.json['description'] == excepted_description
+
+
+def test_term_only_one(workbook, testapp):
+    '''
+    Test search view config one valid search term
+    '''
+    search_terms = ['ChIP-seq']
+    search_types = []
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    expected_clear_filters = url
+    expected_len_filters = len(search_terms)
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_term_only_many(workbook, testapp):
+    '''
+    Test search view config many valid search terms
+    '''
+    search_terms = ['ChIP-seq', 'eCLIP', 'DNase-seq']
+    search_types = []
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    expected_clear_filters = url
+    # Why is the filters the square of the search terms?  Seems like a bug.
+    # https://www.encodeproject.org/search/?searchTerm=ChIP-seq&searchTerm=eCLIP&searchTerm=DNase-seq&format=json
+    expected_len_filters = len(search_terms) * len(search_terms)
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_term_many_and_type(workbook, testapp):
+    '''
+    Test search view config many valid search terms with one type
+    '''
+    search_terms = ['ChIP-seq', 'eCLIP', 'DNase-seq']
+    search_types = ['Experiment']
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    expected_clear_filters = '/search/?' + _get_terms_url(search_terms)
+    expected_len_filters = len(search_types) + len(search_terms) * len(search_terms)
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_term_many_and_types(workbook, testapp):
+    '''
+    Test search view config many valid search terms with many types
+    '''
+    search_terms = ['ChIP-seq', 'eCLIP', 'DNase-seq']
+    search_types = ['Experiment', 'Dataset']
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200
+    )
+    expected_clear_filters = '/search/?' + _get_terms_url(search_terms)
+    expected_len_filters = len(search_types) + len(search_terms) * len(search_terms)
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_no_types_no_terms(workbook, testapp):
+    '''
+    Test search view config with no types or terms
+    '''
+    search_terms = []
+    search_types = []
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200, add_mode_picker=False
+    )
+    expected_clear_filters = url
+    expected_len_filters = 0
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_mode_picker(workbook, testapp):
+    '''
+    Test search view config with no types or terms but mode picker
+    '''
+    search_terms = []
+    search_types = []
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200, add_mode_picker=True
+    )
+    expected_clear_filters = '/search/'
+    expected_len_filters = 0
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_term_mode_picker(workbook, testapp):
+    '''
+    Test search view config with no types or terms but mode picker
+    '''
+    # search_terms = ['ChIP-seq', 'eCLIP', 'DNase-seq']
+    search_terms = ['ChIP-seq']
+    search_types = []
+    # pylint: disable=unused-variable
+    url, len_filters, clear_filters, res_terms, res_types = _get_filters_data(
+        testapp, search_types, search_terms, 200, add_mode_picker=True
+    )
+    expected_clear_filters = '/search/?' + _get_terms_url(search_terms)
+    expected_len_filters = len(search_types) + len(search_terms) * len(search_terms)
+    expected_res_terms = copy.copy(search_terms)
+    expected_res_types = copy.copy(search_types)
+    assert clear_filters == expected_clear_filters
+    assert len_filters == expected_len_filters
+    assert sorted(list(res_terms)) == sorted(expected_res_terms)
+    assert sorted(list(res_types)) == sorted(expected_res_types)
+
+
+def test_views_many(workbook, testapp):
+    '''
+    Test search view config does NOT add result views if many doc types
+    '''
+    search_types = ['Experiment', 'Dataset', 'ReferenceEpigenome']
+    url = '/search/?' + _get_types_url(search_types)
+    res = testapp.get(url, status=200)
+    assert res.json.get('views') is None
+
+
+def test_views_one_a(workbook, testapp):
+    '''
+    Test search view config does adds one result views for certain doc types
+    '''
+    search_types = ['Dataset']
+    url = '/search/?' + _get_types_url(search_types)
+    res = testapp.get(url, status=200)
+    views = res.json.get('views')
+    assert len(views) == 1
+
+
+def test_views_one_b(workbook, testapp):
+    '''
+    Test search view config does add 3 result views for other doc types
+    '''
+    search_types = ['Experiment']
+    url = '/search/?' + _get_types_url(search_types)
+    res = testapp.get(url, status=200)
+    views = res.json.get('views')
+    assert len(views) == 3
+
+
+def test_views_zero(workbook, testapp):
+    '''
+    Test search view config does NOT add result views if zero doc types
+    '''
+    search_types = []
+    url = '/search/' + _get_types_url(search_types)
+    res = testapp.get(url, status=200)
+    assert res.json.get('views') is None
+
+
+def test_view_return_no_restotal(workbook, testapp):
+    '''
+    Test search view config has correct empty total results
+    '''
+    search_terms = ['asdf']
+    status = 404
+    url = '/search/?' + _get_terms_url(search_terms)
+    res = testapp.get(url, status=status)
+    result = res.json
+    assert isinstance(result, dict)
+    assert result.get('notification') == 'No results found'
+    assert result.get('@graph') == []
+
+
+def test_view_return_not_doscan(workbook, testapp):
+    '''
+    Test search view config has correct results when not do_scan
+
+    do_scan is false when size is not None or size < 1000
+    '''
+    limit = 25
+    search_types = ['Experiment']
+    status = 200
+    url = '/search/?limit={}&{}'.format(
+        limit,
+        _get_types_url(search_types),
+    )
+    res = testapp.get(url, status=status)
+    result = res.json
+    assert isinstance(result.get('@graph'), list)
+    assert len(result['@graph']) == limit
+    assert result['notification'] == 'Success'
