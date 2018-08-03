@@ -19,7 +19,6 @@ from pyramid.view import (
 )
 from pyramid.settings import asbool
 import snovault
-from snovault.validators import validate_item_content_patch
 from snovault.validation import ValidationFailure
 from snovault.auditor import traversed_path_ids
 from snovault import (
@@ -287,7 +286,9 @@ class Item(snovault.Item):
         return related_objects
 
     @staticmethod
-    def _block_on_audits(item_id, force_audit, request, parent):
+    def _block_on_audits(item_id, force_audit, request, parent, new_status):
+        if new_status != 'released':
+            return
         if not parent or force_audit:
             return
         audits = request.embed(item_id, '@@audit')
@@ -341,7 +342,7 @@ class Item(snovault.Item):
         if not self._valid_transition(current_status, new_status, parent, force_transition):
             return False
         force_audit = asbool(request.params.get('force_audit'))
-        self._block_on_audits(item_id, force_audit, request, parent)
+        self._block_on_audits(item_id, force_audit, request, parent, new_status)
         update = asbool(request.params.get('update'))
         self._update_status(new_status, current_status, properties, schema, request, item_id, update)
         request._set_status_considered_paths.add((item_id, current_status, new_status))
