@@ -4,8 +4,7 @@ from snovault.viewconfigs.report import ReportView
 from encoded.viewconfigs.news import NewsView
 from encoded.viewconfigs.matrix import MatrixView
 from encoded.viewconfigs.auditview import AuditView
-from encoded.viewconfigs.summary import SummaryView
-from encoded.viewconfigs.searchpage import SearchPageView 
+from encoded.viewconfigs.summary import SummaryView 
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
@@ -23,8 +22,19 @@ def iter_search_results(context, request):
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
-
-    search = SearchPageView(context, request, search_type, return_generator)
+    default_doc_types = [
+        'AntibodyLot',
+        'Award',
+        'Biosample',
+        'Dataset',
+        'GeneticModification',
+        'Page',
+        'Pipeline',
+        'Publication',
+        'Software',
+        'Target',
+    ]
+    search = SearchView(context, request, search_type, return_generator, default_doc_types)
     
     return search.preprocess_view()
 
