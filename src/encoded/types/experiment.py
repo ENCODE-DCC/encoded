@@ -95,6 +95,15 @@ class Experiment(Dataset,
         'replicates.library.treatments',
         'target.organism',
     ]
+    set_status_up = [
+        'original_files',
+        'replicates',
+        'documents',
+        'target',
+    ]
+    set_status_down = [
+        'original_files',
+    ]
     rev = Dataset.rev.copy()
     rev.update({
         'replicates': ('Replicate', 'experiment'),
@@ -499,6 +508,11 @@ class Replicate(Item):
         'library.biosample.donor',
         'library.biosample.donor.organism',
     ]
+    set_status_up = [
+        'library',
+        'antibody',
+    ]
+    set_status_down = []
 
     def unique_keys(self, properties):
         keys = super(Replicate, self).unique_keys(properties)

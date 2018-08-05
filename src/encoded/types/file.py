@@ -8,11 +8,9 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
-from snovault.validation import ValidationFailure
 from .base import (
     Item,
-    paths_filtered_by_status,
-    STATUS_TRANSITION_TABLE
+    paths_filtered_by_status
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -108,6 +106,14 @@ class File(Item):
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software'
     ]
+    set_status_up = [
+        'quality_metrics',
+        'platform',
+        'step_run',
+    ]
+    set_status_down = []
+    public_s3_statuses = ['released', 'archived', 'revoked']
+    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted']
 
     @property
     def __name__(self):
@@ -374,29 +380,18 @@ class File(Item):
         ).put(ACL='private')
 
     def set_status(self, new_status, request, parent=True):
-        properties = self.upgrade_properties()
-        status = properties.get('status')
-        # Is valid transition?
-        if status not in STATUS_TRANSITION_TABLE[new_status]:
-            # Raise failure if this is primary object.
-            if parent:
-                msg = 'Status transition {} to {} not allowed'.format(
-                    status,
-                    new_status
-                )
-                raise ValidationFailure('body', ['status'], msg)
-            # Do nothing if this is child object.
-            else:
-                return
-        properties['status'] = new_status
-        request.registry.notify(BeforeModified(self, request))
-        self.update(properties)
-        request.registry.notify(AfterModified(self, request))
+        status_set = super(File, self).set_status(
+            new_status,
+            request,
+            parent=parent,
+        )
+        if not status_set:
+            return False
         # Change permission in S3.
         try:
-            if new_status == 'released':
+            if new_status in self.public_s3_statuses:
                 self.set_public_s3()
-            elif new_status == 'in progress':
+            elif new_status in self.private_s3_statuses:
                 self.set_private_s3()
         except ClientError as e:
             # Demo trying to set ACL on production object?
@@ -404,6 +399,7 @@ class File(Item):
                 logging.warn(e)
             else:
                 raise e
+        return True
 
 
 @view_config(name='upload', context=File, request_method='GET',

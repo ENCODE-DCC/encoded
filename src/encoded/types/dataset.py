@@ -83,6 +83,10 @@ class Dataset(Item):
         'award',
         'documents.lab',
     ]
+    set_status_up = [
+        'documents'
+    ]
+    set_status_down = []
     name_key = 'accession'
     rev = {
         'original_files': ('File', 'dataset'),

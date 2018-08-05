@@ -96,6 +96,19 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'applied_modifications',
         'applied_modifications.modified_site_by_target_id'
     ]
+    set_status_up = [
+        'donor',
+        'part_of',
+        'pooled_from',
+        'originated_from',
+        'genetic_modifications',
+        'characterizations',
+        'treatments',
+        'documents',
+        'host',
+        'source',
+    ]
+    set_status_down = []
 
     @calculated_property(define=True,
                          schema={"title": "Sex",

@@ -15,6 +15,8 @@ from .base import (
 
 def includeme(config):
     config.scan()
+    config.add_request_method(lambda request: set(), '_set_status_changed_paths', reify=True)
+    config.add_request_method(lambda request: set(), '_set_status_considered_paths', reify=True)
 
 
 @collection(
@@ -89,6 +91,11 @@ class Treatment(Item):
     embedded = [
         'lab',
     ]
+    set_status_up = [
+        'biosamples_used',
+        'antibodies_used',
+    ]
+    set_status_down = []
 
 
 @collection(
@@ -139,6 +146,13 @@ class Library(Item):
         'biosample.donor',
         'biosample.donor.organism',
     ]
+    set_status_up = [
+        'biosample',
+        'documents',
+        'source',
+        'treatments',
+    ]
+    set_status_down = []
 
     @calculated_property(condition='nucleic_acid_term_name', schema={
         "title": "nucleic_acid_term_id",

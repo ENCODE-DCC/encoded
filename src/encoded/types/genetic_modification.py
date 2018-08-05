@@ -28,6 +28,14 @@ class GeneticModification(Item):
         'treatments',
         'lab'
     ]
+    set_status_up = [
+        'reagents.source',
+        'characterizations',
+        'modified_site_by_target_id',
+        'treatments',
+        'documents',
+    ]
+    set_status_down = []
 
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),
