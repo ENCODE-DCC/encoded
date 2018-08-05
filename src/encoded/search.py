@@ -50,6 +50,7 @@ DEFAULT_DOC_TYPES = [
     'Pipeline',
     'Publication',
     'Software',
+    'Gene',
     'Target',
 ]
 
