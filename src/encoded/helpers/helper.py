@@ -43,6 +43,59 @@ def format_results(request, hits, result=None):
     if not any_released and result is not None and 'visualize_batch' in result:
         del result['visualize_batch']
 
+def format_facets(es_results, facets, used_filters, schemas, total, principals):
+    result = []
+    # Loading facets in to the results
+    if 'aggregations' not in es_results:
+        return result
+
+    aggregations = es_results['aggregations']
+    used_facets = set()
+    exists_facets = set()
+    for field, options in facets:
+        used_facets.add(field)
+        agg_name = field.replace('.', '-')
+        if agg_name not in aggregations:
+            continue
+        all_buckets_total = aggregations[agg_name]['doc_count']
+        if not all_buckets_total > 0:
+            continue
+        # internal_status exception. Only display for admin users
+        if field == 'internal_status' and 'group.admin' not in principals:
+            continue
+        facet_type = options.get('type', 'terms')
+        terms = aggregations[agg_name][agg_name]['buckets']
+        if facet_type == 'exists':
+            terms = [
+                {'key': 'yes', 'doc_count': terms['yes']['doc_count']},
+                {'key': 'no', 'doc_count': terms['no']['doc_count']},
+            ]
+            exists_facets.add(field)
+        result.append({
+            'type': facet_type,
+            'field': field,
+            'title': options.get('title', field),
+            'terms': terms,
+            'total': all_buckets_total
+        })
+
+    # Show any filters that aren't facets as a fake facet with one entry,
+    # so that the filter can be viewed and removed
+    for field, values in used_filters.items():
+        if field not in used_facets and field.rstrip('!') not in exists_facets:
+            title = field
+            for schema in schemas:
+                if field in schema['properties']:
+                    title = schema['properties'][field].get('title', field)
+                    break
+            result.append({
+                'field': field,
+                'title': title,
+                'terms': [{'key': v} for v in values],
+                'total': total,
+            })
+
+    return result
 
 def search_result_actions(request, doc_types, es_results, position=None):
     actions = {}

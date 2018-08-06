@@ -5,12 +5,12 @@ from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
 from pyramid.security import effective_principals
 from encoded.helpers.helper import (
     format_results,
+    format_facets,
     search_result_actions
 )
 from snovault.helpers.helper import (
     get_filtered_query,
     set_filters,
-    format_facets,
     set_facets
 )
 from .batch_download import get_peak_metadata_links
@@ -362,7 +362,10 @@ def region_search(context, request):
                 'embedded.files.uuid': file_uuids
             }
         })
-        used_filters = set_filters(request, query, result)
+        filter_fields = ['type', 'limit', 'mode', 'annotation',
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome',
+                     'sort', 'from', 'referrer']
+        used_filters = set_filters(request, query, result, filter_fields)
         used_filters['files.uuid'] = file_uuids
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])

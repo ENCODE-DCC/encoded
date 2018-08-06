@@ -1,7 +1,6 @@
 from encoded.viewconfigs.matrix import MatrixView
 from urllib.parse import urlencode
-from snovault.helpers.helper import format_facets
-
+from encoded.helpers.helper import format_facets
 
 class SummaryView(MatrixView):
     def __init__(self, context, request):

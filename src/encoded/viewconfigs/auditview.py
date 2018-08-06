@@ -1,8 +1,6 @@
 import copy
 from encoded.viewconfigs.matrix import MatrixView
-from encoded.helpers.helper import search_result_actions
-from snovault.helpers.helper import format_facets
-
+from encoded.helpers.helper import (search_result_actions, format_facets)
 
 class AuditView(MatrixView):
     def __init__(self, context, request):

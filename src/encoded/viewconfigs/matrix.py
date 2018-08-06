@@ -1,28 +1,24 @@
 from pyramid.httpexceptions import HTTPBadRequest
 from snovault.viewconfigs.base_view import BaseView
-from encoded.helpers.helper import search_result_actions
+from encoded.helpers.helper import (search_result_actions, format_facets)
 from snovault.helpers.helper import (
     get_filtered_query,
     get_search_fields,
     set_filters,
-    set_facets,
-    format_facets
+    set_facets
 )
-
-
-audit_facets = [
-    ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
-    ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
-    ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
-    ('audit.INTERNAL_ACTION.category', {'title': 'Audit category: DCC ACTION'})
-]
-
 
 class MatrixView(BaseView):
     def __init__(self, context, request):
         super(MatrixView, self).__init__(context, request)
         self.result['matrix'] = ''
         self.matrix = ''
+        self.audit_facets = [
+            ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
+            ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
+            ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
+            ('audit.INTERNAL_ACTION.category', {'title': 'Audit category: DCC ACTION'})
+        ]
 
     def validate_items(self):
         if len(self.doc_types) != 1:
@@ -100,7 +96,10 @@ class MatrixView(BaseView):
         # we collect them for use in aggregations later.
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
-        self.used_filters = set_filters(self.request, filter_collector, self.result)
+        filter_fields = ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
+            'format', 'frame', 'datastore', 'field', 'region', 'genome',
+            'sort', 'from', 'referrer']
+        self.used_filters = set_filters(self.request, filter_collector, self.result, filter_fields)
         filters = filter_collector['post_filter']['bool']['must']
 
         if view_type == 'matrix':
@@ -114,7 +113,7 @@ class MatrixView(BaseView):
 
         # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
         if view_type == 'matrix':
-            for audit_facet in audit_facets:
+            for audit_facet in self.audit_facets:
                 if self.search_audit and 'group.submitter' in self.principals or 'INTERNAL_ACTION' not in audit_facet[0]:
                     self.facets.append(audit_facet)
 
