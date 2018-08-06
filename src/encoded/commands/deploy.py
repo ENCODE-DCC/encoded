@@ -453,7 +453,10 @@ def main():
             InstanceInitiatedShutdownBehavior='terminate',
             IamInstanceProfile={
                 "Name": run_args['iam_role'],
-            }
+            },
+            Placement={
+                'AvailabilityZone': main_args.availability_zone,
+            },
         )
         _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
         if 'master_user_data' in run_args and main_args.single_data_master:
@@ -470,7 +473,10 @@ def main():
                     InstanceInitiatedShutdownBehavior='terminate',
                     IamInstanceProfile={
                         "Name": 'encoded-instance',
-                    }
+                    },
+                    Placement={
+                        'AvailabilityZone': main_args.availability_zone,
+                    },
                 )
                 _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
 
@@ -550,6 +556,8 @@ def parse_args():
     parser.add_argument(
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
+    parser.add_argument('--availability-zone', default='us-west-2a',
+        help="Set EC2 availabilty zone")
     return parser.parse_args()
 
 
