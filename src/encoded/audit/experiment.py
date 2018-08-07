@@ -2284,7 +2284,8 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
     else:
         level = 'WARNING'
     if 'replicates' in value:
-        mods = set()
+        mods = []
+        mods_ids = []
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and
                'library' in rep and
@@ -2292,12 +2293,11 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                'biosample' in rep['library'] and
                rep['library']['biosample']['status'] not in excluded_types):
                 biosample = rep['library']['biosample']
-                if 'genetic_modifications' in biosample:
-                    mods.update(biosample['genetic_modifications'])
-                if ('donor' in biosample and
-                   biosample['donor']['status'] not in excluded_types and
-                   'genetic_modifications' in biosample['donor']):
-                    mods.update(biosample['donor']['genetic_modifications'])
+                if 'applied_modifications' in biosample:
+                    for m in biosample['applied_modifications']:
+                        if m['@id'] not in mods_ids:
+                            mods_ids.append(m['@id'])
+                            mods.append(m)
         for modification in mods:
             if (modification['status'] not in excluded_types and
                 modification['purpose'] == 'tagging' and
