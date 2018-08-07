@@ -5,6 +5,9 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - test_eval
     docker:
       - image: circleci/python:3.4-node-browsers
       
