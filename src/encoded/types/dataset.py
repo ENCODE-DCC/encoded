@@ -77,7 +77,7 @@ class Dataset(Item):
     audit_inherit = [
         'original_files',
         'revoked_files',
-        'contributing_files'
+        'contributing_files',
         'submitted_by',
         'lab',
         'award',
