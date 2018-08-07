@@ -482,6 +482,18 @@ def construct_genetic_modification_N(
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
+
+@pytest.fixture
+def gm_characterization(testapp, award, lab, construct_genetic_modification_N, attachment):
+    item = {
+        'characterizes': construct_genetic_modification_N['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+    }
+    return testapp.post_json('/genetic_modification_characterization', item).json['@graph'][0]
+
+
 @pytest.fixture
 def ucsc_browser_composite(testapp, lab, award):
     item = {
