@@ -51,7 +51,6 @@ jobs:
             - develop-eggs/
             - develop/
             - bin/
-            - /usr/local/lib/node_modules
           key: v1-dependencies-{{ checksum "versions.cfg" }}        
 
       - store_artifacts:
