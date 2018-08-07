@@ -100,7 +100,10 @@ class MatrixView(BaseView):
         # we collect them for use in aggregations later.
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
-        self.used_filters = set_filters(self.request, filter_collector, self.result)
+        filter_exclusion = ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome',
+                     'sort', 'from', 'referrer']
+        self.used_filters = set_filters(self.request, filter_collector, self.result, None, filter_exclusion)
         filters = filter_collector['post_filter']['bool']['must']
 
         if view_type == 'matrix':
