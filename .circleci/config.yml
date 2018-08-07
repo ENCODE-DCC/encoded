@@ -51,7 +51,11 @@ jobs:
             - develop-eggs/
             - develop/
             - bin/
-          key: v2-dependencies-{{ checksum "versions.cfg" }}        
+          key: v2-dependencies-{{ checksum "versions.cfg" }}  
+      - run:
+          name: Tests
+          command: |
+            bin/test -m "not bdd"
 
       - store_artifacts:
           path: test-reports
