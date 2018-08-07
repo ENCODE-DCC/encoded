@@ -2278,6 +2278,41 @@ def audit_experiment_technical_replicates_same_library(value, system, excluded_t
     return
 
 
+def audit_experiment_tagging_genetic_modification(value, system, excluded_types):
+    if check_award_condition(value, ["ENCODE4"]):
+        level = 'ERROR'
+    else:
+        level = 'WARNING'
+    if 'replicates' in value:
+        mods = set()
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and
+               'library' in rep and
+               rep['library']['status'] not in excluded_types and
+               'biosample' in rep['library'] and
+               rep['library']['biosample']['status'] not in excluded_types):
+                biosample = rep['library']['biosample']
+                if 'genetic_modifications' in biosample:
+                    mods.update(biosample['genetic_modifications'])
+                if ('donor' in biosample and
+                   biosample['donor']['status'] not in excluded_types and
+                   'genetic_modifications' in biosample['donor']):
+                    mods.update(biosample['donor']['genetic_modifications'])
+        for modification in mods:
+            if (modification['status'] not in excluded_types and
+                modification['purpose'] == 'tagging' and
+                not modification.get('characterizations')):
+                    detail = ('Genetic modification {} performed for the '
+                              'purpose of {} is missing validating characterization.').format(
+                        modification['@id'],
+                        modification['purpose']
+                    )
+                    yield AuditFailure(
+                        'missing genetic modification characterization',
+                        detail,
+                        level)
+
+
 def audit_experiment_replicates_biosample(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -3605,6 +3640,7 @@ def check_award_condition(experiment, awards):
 function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
+    'audit_tagging_genetic_modification_characterization': audit_experiment_tagging_genetic_modification,
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
