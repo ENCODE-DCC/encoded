@@ -263,7 +263,7 @@ class Item(snovault.Item):
         request._set_status_changed_paths.add((item_id, current_status, new_status))
 
     def _get_child_paths(self, current_status, new_status, block_children):
-        # Do not traverse children in parameter specified.
+        # Do not traverse children if parameter specified.
         if block_children:
             return []
         # Only transition released -> released should trigger up list
