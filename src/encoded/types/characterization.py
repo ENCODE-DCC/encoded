@@ -20,6 +20,7 @@ from snovault.attachment import ItemWithAttachment
 class Characterization(ItemWithAttachment, Item):
     base_types = ['Characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
+    audit_inherit = ['*']
     set_status_up = [
         'documents',
     ]
@@ -66,6 +67,7 @@ class AntibodyCharacterization(Characterization, SharedItem):
         'documents',
         'characterizes.targets',
     ]
+    audit_inherit = ['*']
 
     @calculated_property(schema={
         "title": "Characterization method",

@@ -150,6 +150,7 @@ class TestingLinkTarget(Item):
     embedded = [
         'reverse',
     ]
+    audit_inherit = ['*']
 
     @calculated_property(schema={
         "title": "Sources",

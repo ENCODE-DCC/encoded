@@ -31,6 +31,7 @@ class Lab(Item):
     schema = load_schema('encoded:schemas/lab.json')
     name_key = 'name'
     embedded = ['awards']
+    audit_inherit = ['*']
 
 
 @collection(
@@ -45,6 +46,7 @@ class Award(Item):
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
     embedded = ['pi.lab']
+    audit_inherit = ['*']
     STATUS_ACL = {
         'current': ALLOW_CURRENT,
         'deleted': DELETED,
@@ -91,6 +93,7 @@ class Treatment(Item):
     embedded = [
         'lab',
     ]
+    audit_inherit = ['*']
     set_status_up = [
         'biosamples_used',
         'antibodies_used',
@@ -108,6 +111,7 @@ class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
     embedded = ['lab', 'award', 'submitted_by']
+    audit_inherit = ['*']
 
 
 @collection(
@@ -146,6 +150,7 @@ class Library(Item):
         'biosample.donor',
         'biosample.donor.organism',
     ]
+    audit_inherit = ['*']
     set_status_up = [
         'biosample',
         'documents',
@@ -201,6 +206,7 @@ class Publication(Item):
     item_type = 'publication'
     schema = load_schema('encoded:schemas/publication.json')
     embedded = ['datasets']
+    audit_inherit = ['*']
 
     def unique_keys(self, properties):
         keys = super(Publication, self).unique_keys(properties)
@@ -231,6 +237,7 @@ class Software(Item):
         'references',
         'versions'
     ]
+    audit_inherit = ['*']
     rev = {
         'versions': ('SoftwareVersion', 'software')
     }
@@ -257,6 +264,7 @@ class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('encoded:schemas/software_version.json')
     embedded = ['software', 'software.references']
+    audit_inherit = ['*']
 
     def __ac_local_roles__(self):
         # Use lab/award from parent software object for access control.

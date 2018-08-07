@@ -24,6 +24,7 @@ class Image(ItemWithAttachment, Item):
         'image/gif',
     ]
     embedded = ['submitted_by']
+    audit_inherit = ['*']
 
     def unique_keys(self, properties):
         keys = super(Image, self).unique_keys(properties)

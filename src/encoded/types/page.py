@@ -40,6 +40,7 @@ class Page(SharedItem):
         'layout.blocks.image',
         'award',
     ]
+    audit_inherit = ['*']
 
     def unique_keys(self, properties):
         keys = super(Page, self).unique_keys(properties)

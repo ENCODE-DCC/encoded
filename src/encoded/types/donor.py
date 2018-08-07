@@ -32,6 +32,7 @@ class Donor(Item):
         'documents.submitted_by',
         'lab'
     ]
+    audit_inherit = ['*']
     set_status_up = [
         'characterizations',
         'documents',

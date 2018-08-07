@@ -42,6 +42,7 @@ class Pipeline(Item):
         'award.pi.lab',
         'standards_page'
     ]
+    audit_inherit = ['*']
     set_status_up = [
         'analysis_steps',
         'documents',
@@ -69,6 +70,7 @@ class AnalysisStep(Item):
         'current_version.software_versions.software',
         'parents'
     ]
+    audit_inherit = ['*']
 
     def unique_keys(self, properties):
         keys = super(AnalysisStep, self).unique_keys(properties)
@@ -177,5 +179,6 @@ class AnalysisStepRun(Item):
     embedded = [
         'analysis_step_version.analysis_step',
     ]
-    # Avoid using reverse links on this object as invalidating a
+    audit_inherit = ['*']
+   # Avoid using reverse links on this object as invalidating a
     # step_run can cause thousands of objects to be reindexed.

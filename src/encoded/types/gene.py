@@ -20,6 +20,7 @@ class Gene(SharedItem):
     schema = load_schema('encoded:schemas/gene.json')
     name_key = "geneid"
     embedded = ['organism']
+    audit_inherit = ['*']
 
     @calculated_property(schema={
         "title": "Title",

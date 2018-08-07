@@ -28,6 +28,7 @@ class GeneticModification(Item):
         'treatments',
         'lab'
     ]
+    audit_inherit = ['*']
     set_status_up = [
         'reagents.source',
         'characterizations',
