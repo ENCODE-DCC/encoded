@@ -50,7 +50,11 @@ jobs:
             - eggs/
             - develop-eggs/
             - bin/
-          key: v3-dependencies-{{ checksum "versions.cfg" }}  
+          key: v3-dependencies-{{ checksum "versions.cfg" }}
+      - run:
+          name: Dot for graphs
+          command: |
+            sudo apt-get install graphviz
       - run:
           name: Tests
           command: |
