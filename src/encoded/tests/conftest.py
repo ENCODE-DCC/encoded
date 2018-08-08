@@ -59,7 +59,6 @@ def app_settings(request, wsgi_server_host_port, conn, DBSession):
 
 @fixture(scope='session')
 def app(app_settings):
-    print("YCOBM CONFYTEST")
     '''WSGI application level functional testing.
     '''
     from encoded import main
