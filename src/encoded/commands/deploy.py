@@ -401,7 +401,7 @@ def main():
     run_args = _get_run_args(main_args, instances_tag_data)
     if main_args.dry_run_aws:
         print('Dry Run AWS')
-        print('main_args', main_args.keys())
+        print('main_args', main_args)
         print('run_args', run_args.keys())
         print('Dry Run AWS')
         sys.exit(30)
