@@ -29,9 +29,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v2-dependencies-{{ checksum "versions.cfg" }}
+          - v3-dependencies-{{ checksum "versions.cfg" }}
           # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+          - v3-dependencies-
 
       - run:
           name: install dependencies
@@ -49,9 +49,8 @@ jobs:
             - node_modules/
             - eggs/
             - develop-eggs/
-            - develop/
             - bin/
-          key: v2-dependencies-{{ checksum "versions.cfg" }}  
+          key: v3-dependencies-{{ checksum "versions.cfg" }}  
       - run:
           name: Tests
           command: |
