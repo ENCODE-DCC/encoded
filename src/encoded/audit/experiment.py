@@ -2910,18 +2910,14 @@ def audit_RNA_library_RIN(value, system, excluded_types):
     '''
     An RNA library should have a RIN specified.
     '''
-
-    RNAs = ['RNA',
-            'polyadenylated mRNA',
-            'miRNA']
-
+    RNAs = ['RNA', 'polyadenylated mRNA', 'miRNA']
     for rep in value['replicates']:
         if (rep['status'] not in excluded_types and
            'library' in rep and rep['library']['status'] not in excluded_types and
            rep['library']['nucleic_acid_term_name'] in RNAs and
            'rna_integrity_number' not in rep['library']):
-            detail = ('Metadata of RNA library {} lacks specification of ' +
-                     'the rna integrity number.').format(rep['library']['@id'])
+            detail = ('Metadata of RNA library {} lacks specification of '
+                      'the rna integrity number.').format(rep['library']['@id'])
             yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
 
 
