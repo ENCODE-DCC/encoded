@@ -385,7 +385,7 @@ class File(Item):
             request,
             parent=parent,
         )
-        if not status_set:
+        if not status_set or not asbool(request.params.get('update')):
             return False
         # Change permission in S3.
         try:
