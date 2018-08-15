@@ -3864,6 +3864,11 @@
       "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.2.1.tgz",
       "dev": true
     },
+    "hoist-non-react-statics": {
+      "version": "2.5.0",
+      "from": "hoist-non-react-statics@>=2.5.0 <3.0.0",
+      "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz"
+    },
     "home-or-tmp": {
       "version": "2.0.0",
       "from": "home-or-tmp@https://registry.npmjs.org/home-or-tmp/-/home-or-tmp-2.0.0.tgz",
@@ -4052,8 +4057,7 @@
     "invariant": {
       "version": "2.2.4",
       "from": "invariant@>=2.2.2 <3.0.0",
-      "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz",
-      "dev": true
+      "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz"
     },
     "invert-kv": {
       "version": "1.0.0",
@@ -5009,6 +5013,11 @@
       "from": "lodash@https://registry.npmjs.org/lodash/-/lodash-2.4.2.tgz",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-2.4.2.tgz"
     },
+    "lodash-es": {
+      "version": "4.17.10",
+      "from": "lodash-es@>=4.17.5 <5.0.0",
+      "resolved": "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.10.tgz"
+    },
     "lodash._basecopy": {
       "version": "3.0.1",
       "from": "lodash._basecopy@https://registry.npmjs.org/lodash._basecopy/-/lodash._basecopy-3.0.1.tgz",
@@ -5151,6 +5160,12 @@
       "version": "3.0.4",
       "from": "lodash.isequal@https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-3.0.4.tgz",
       "resolved": "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-3.0.4.tgz",
+      "dev": true
+    },
+    "lodash.isplainobject": {
+      "version": "4.0.6",
+      "from": "lodash.isplainobject@>=4.0.6 <5.0.0",
+      "resolved": "https://registry.npmjs.org/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz",
       "dev": true
     },
     "lodash.istypedarray": {
@@ -6715,6 +6730,18 @@
         }
       }
     },
+    "react-redux": {
+      "version": "5.0.7",
+      "from": "react-redux@>=5.0.7 <6.0.0",
+      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-5.0.7.tgz",
+      "dependencies": {
+        "lodash": {
+          "version": "4.17.10",
+          "from": "lodash@>=4.17.5 <5.0.0",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.10.tgz"
+        }
+      }
+    },
     "react-test-renderer": {
       "version": "15.6.2",
       "from": "react-test-renderer@>=15.5.4 <16.0.0",
@@ -6800,6 +6827,29 @@
           "dev": true
         }
       }
+    },
+    "redux": {
+      "version": "3.7.2",
+      "from": "redux@>=3.7.2 <4.0.0",
+      "resolved": "https://registry.npmjs.org/redux/-/redux-3.7.2.tgz",
+      "dependencies": {
+        "lodash": {
+          "version": "4.17.10",
+          "from": "lodash@^4.2.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.10.tgz"
+        }
+      }
+    },
+    "redux-mock-store": {
+      "version": "1.5.1",
+      "from": "redux-mock-store@latest",
+      "resolved": "https://registry.npmjs.org/redux-mock-store/-/redux-mock-store-1.5.1.tgz",
+      "dev": true
+    },
+    "redux-thunk": {
+      "version": "2.3.0",
+      "from": "redux-thunk@latest",
+      "resolved": "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.3.0.tgz"
     },
     "regenerate": {
       "version": "1.3.3",
@@ -7545,6 +7595,11 @@
       "from": "svgo@https://registry.npmjs.org/svgo/-/svgo-0.7.2.tgz",
       "resolved": "https://registry.npmjs.org/svgo/-/svgo-0.7.2.tgz",
       "dev": true
+    },
+    "symbol-observable": {
+      "version": "1.2.0",
+      "from": "symbol-observable@>=1.0.3 <2.0.0",
+      "resolved": "https://registry.npmjs.org/symbol-observable/-/symbol-observable-1.2.0.tgz"
     },
     "symbol-tree": {
       "version": "3.2.2",

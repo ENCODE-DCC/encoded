@@ -693,21 +693,23 @@ class ListingComponent extends React.Component {
 
         return (
             <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">File</p>
-                        <p className="type">{` ${result.title}`}</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <PickerActions {...this.props} />
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">File</p>
+                            <p className="type">{` ${result.title}`}</p>
+                            <Status item={result.status} badgeSize="small" css="result-table__status" />
+                            {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        </div>
+                        <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
+                        <div className="data-row">
+                            <div><strong>Lab: </strong>{result.lab.title}</div>
+                            {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
+                        </div>
                     </div>
-                    <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
-                    <div className="data-row">
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
-                    </div>
-                    {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
                 </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }

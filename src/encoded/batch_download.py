@@ -9,6 +9,9 @@ from urllib.parse import (
     parse_qs,
     urlencode,
 )
+from pyramid.security import (
+    NO_PERMISSION_REQUIRED,
+)
 from .search import iter_search_results
 from .search import list_visible_columns_for_schemas
 import csv
@@ -229,6 +232,17 @@ def metadata_tsv(context, request):
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
         if _tsv_mapping[prop][0].startswith('files'):
             file_attributes = file_attributes + [_tsv_mapping[prop][0]]
+
+    # For cart-generated metadata.tsv, get JSON payload and add "items" array of experiment @ids
+    # to query string.
+    items = None
+    try:
+        items = request.json.get('items')
+    except ValueError:
+        pass
+    else:
+        param_list['@id'] = items
+
     param_list['limit'] = ['all']
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
@@ -285,18 +299,35 @@ def metadata_tsv(context, request):
     )
 
 
-@view_config(route_name='batch_download', request_method='GET')
+@view_config(route_name='batch_download', request_method=('GET', 'POST'))
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = ['files.href', 'files.file_type', 'files']
     param_list['limit'] = ['all']
+
+    # batch download from cart issues POST and includes "item" key
+    if request.method == 'POST':
+        try:
+            items = request.json.get('items')
+        except ValueError:
+            msg = 'Batch download with POST requires JSON "items" key.'
+            raise HTTPBadRequest(explanation=msg)
+        else:
+            param_list['@id'] = items
+            metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"items": [{items_json}]}}\''.format(
+                host_url=request.host_url,
+                search_params=request.matchdict['search_params'],
+                items_json=','.join('"{0}"'.format(item) for item in items)
+            )
+    else:
+        metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+            host_url=request.host_url,
+            search_params=request.matchdict['search_params']
+        )
+
     path = '/search/?%s' % urlencode(param_list, True)
     results = request.embed(path, as_user=True)
-    metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
-        host_url=request.host_url,
-        search_params=request.matchdict['search_params']
-    )
     files = [metadata_link]
 
     exp_files = (
