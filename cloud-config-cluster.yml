@@ -127,6 +127,7 @@ packages:
 - python3-pip
 - python-software-properties
 - python-virtualenv
+- redis-server
 - ruby-dev
 - unattended-upgrades
 - update-notifier-common
@@ -140,6 +141,10 @@ output:
 runcmd:
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
+- cp /etc/redis/redis.conf /etc/redis/redis.conf.default
+- sed -i -e 's/port 6379/port %(REDIS_PORT)s/' /etc/redis/redis.conf
+- sed -i -e 's/bind 127\.0\.0\.1/bind 0\.0\.0\.0/' /etc/redis/redis.conf
+- service redis-server restart
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
@@ -189,6 +194,7 @@ runcmd:
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo pip3 install -U zc.buildout setuptools
+- sudo pip3 install -U redis
 - sudo -u encoded buildout bootstrap
 - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
