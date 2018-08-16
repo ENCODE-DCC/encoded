@@ -39,7 +39,7 @@ apt_sources:
     qPDlGRlOgVTd9xUfHFkzB52c70E=
     =92oX
     -----END PGP PUBLIC KEY BLOCK-----
-- source: "deb https://deb.nodesource.com/node_6.x trusty main"
+- source: "deb https://deb.nodesource.com/node_6.x xenial main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v1
