@@ -1026,6 +1026,7 @@ export class Form extends React.Component {
                         className="btn btn-success"
                         onClick={this.save}
                         disabled={!this.canSave()}
+                        name={this.props.submitLabel.toLowerCase()}
                     >
                         {this.props.submitLabel}
                     </button>

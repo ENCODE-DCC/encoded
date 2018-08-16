@@ -3,8 +3,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ItemStore from './lib/store';
 import { Modal, ModalHeader, ModalBody } from '../libs/bootstrap/modal';
+import { cartRemoveElements } from './cart';
 import { Form } from './form';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
@@ -265,7 +267,7 @@ const ImpersonateUserSchema = {
 };
 
 
-class ImpersonateUserForm extends React.Component {
+class ImpersonateUserFormComponent extends React.Component {
     constructor(props, context) {
         super(props, context);
 
@@ -274,7 +276,8 @@ class ImpersonateUserForm extends React.Component {
     }
 
     finished() {
-        this.context.navigate('/');
+        this.props.clearCart(this.props.cart);
+        this.props.navigate('/');
     }
 
     render() {
@@ -292,6 +295,28 @@ class ImpersonateUserForm extends React.Component {
         );
     }
 }
+
+ImpersonateUserFormComponent.propTypes = {
+    /** Current contents of cart; array of @ids */
+    cart: PropTypes.array.isRequired,
+    /** Function to call to clear the cart from the Redux store */
+    clearCart: PropTypes.func.isRequired,
+    /** navigate callback from <App> context */
+    navigate: PropTypes.func.isRequired,
+};
+
+
+const mapStateToProps = state => ({ cart: state.cart });
+const mapDispatchToProps = dispatch => ({
+    clearCart: elementAtIds => cartRemoveElements(elementAtIds, dispatch),
+});
+
+const ImpersonateUserFormInternal = connect(mapStateToProps, mapDispatchToProps)(ImpersonateUserFormComponent);
+
+
+const ImpersonateUserForm = (props, reactContext) => (
+    <ImpersonateUserFormInternal {...props} navigate={reactContext.navigate} />
+);
 
 ImpersonateUserForm.contextTypes = {
     navigate: PropTypes.func.isRequired,

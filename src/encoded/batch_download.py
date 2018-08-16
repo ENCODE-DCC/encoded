@@ -15,7 +15,9 @@ import csv
 import io
 import json
 import datetime
+import logging
 
+ELEMENT_CHUNK_SIZE = 1000
 currenttime = datetime.datetime.now()
 
 
@@ -71,7 +73,8 @@ _tsv_mapping = OrderedDict([
     ('Assembly', ['files.assembly']),
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
-    ('File Status', ['files.status'])
+    ('File Status', ['files.status']),
+    ('Restricted', ['files.restricted'])
 ])
 
 _audit_mapping = OrderedDict([
@@ -229,6 +232,35 @@ def metadata_tsv(context, request):
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
         if _tsv_mapping[prop][0].startswith('files'):
             file_attributes = file_attributes + [_tsv_mapping[prop][0]]
+
+    # Handle metadata.tsv lines from cart-generated files.txt.
+    if 'cart' in param_list:
+        # metadata.tsv line includes cart UUID, so load the specified cart and
+        # get its "elements" property for a list of items to retrieve.
+        if len(param_list['cart']) != 1:
+            msg = 'Cannot have more than one "cart" query string parameter.'
+            raise HTTPBadRequest(explanation=msg)
+        cart_uuid = param_list['cart'][0]
+        del param_list['cart']
+        try:
+            cart = request.embed(cart_uuid, '@@object')
+        except KeyError:
+            msg = 'No cart with uuid {0}.'.format(cart_uuid)
+            raise HTTPBadRequest(explanation=msg)
+        if len(cart['elements']) > 0:
+            param_list['@id'] = cart['elements']
+    else:
+        # If the metadata.tsv line includes a JSON payload, get its "elements"
+        # property for a list of items to retrieve.
+        try:
+            elements = request.json.get('elements')
+        except ValueError:
+            # No cart UUID nor JSON payload in the metadata.tsv line, so just
+            # use the query string in the line.
+            pass
+        else:
+            param_list['@id'] = elements
+
     param_list['limit'] = ['all']
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
@@ -247,6 +279,8 @@ def metadata_tsv(context, request):
                 if 'files.file_type' in param_list:
                     if f['file_type'] not in param_list['files.file_type']:
                         continue
+                if restricted_files_present(f):
+                    continue
                 f['href'] = request.host_url + f['href']
                 f_row = []
                 for attr in f_attributes:
@@ -285,26 +319,66 @@ def metadata_tsv(context, request):
     )
 
 
-@view_config(route_name='batch_download', request_method='GET')
+@view_config(route_name='batch_download', request_method=('GET', 'POST'))
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type', 'files']
+    param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
     param_list['limit'] = ['all']
-    path = '/search/?%s' % urlencode(param_list, True)
-    results = request.embed(path, as_user=True)
-    metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
-        host_url=request.host_url,
-        search_params=request.matchdict['search_params']
-    )
-    files = [metadata_link]
+
+    if request.method == 'POST':
+        cart_uuid = ''
+
+        # Batch download from cart issues POST and might include "cart" key.
+        if 'cart' in param_list:
+            if len(param_list['cart']) > 1:
+                msg = 'Must have zero or one "cart" query string parameter.'
+                raise HTTPBadRequest(explanation=msg)
+            cart_uuid = param_list['cart'][0]
+
+        try:
+            elements = request.json.get('elements')
+        except ValueError:
+            msg = 'Batch download with POST requires JSON "elements" key.'
+            raise HTTPBadRequest(explanation=msg)
+        else:
+            if cart_uuid:
+                metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+                    host_url=request.host_url,
+                    search_params=request.matchdict['search_params'],
+                )
+            else:
+                metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
+                    host_url=request.host_url,
+                    search_params=request.matchdict['search_params'],
+                    elements_json=','.join('"{0}"'.format(element) for element in elements)
+                )
+
+            # Because of potential number of datasets in the cart, break search
+            # into multiple searches of ELEMENT_CHUNK_SIZE datasets each.
+            experiments = []
+            for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
+                param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
+                path = '/search/?%s' % urlencode(param_list, True)
+                results = request.embed(path, as_user=True)
+                experiments.extend(results['@graph'])
+    else:
+        # Regular batch download has single simple call to request.embed
+        metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+            host_url=request.host_url,
+            search_params=request.matchdict['search_params']
+        )
+        path = '/search/?%s' % urlencode(param_list, True)
+        results = request.embed(path, as_user=True)
+        experiments = results['@graph']
 
     exp_files = (
             exp_file
-            for exp in results['@graph']
+            for exp in experiments
             for exp_file in exp.get('files', [])
     )
 
+    files = [metadata_link]
     for exp_file in exp_files:
         if not file_type_param_list(exp_file, param_list):
             continue

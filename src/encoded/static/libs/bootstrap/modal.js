@@ -107,7 +107,7 @@ export class ModalHeader extends React.Component {
     }
 
     render() {
-        const { title, closeModal, addCss } = this.props;
+        const { title, closeModal, addCss, labelId } = this.props;
         let titleRender = null;
 
         // Handle the string and React component cases for the title
@@ -121,7 +121,7 @@ export class ModalHeader extends React.Component {
         }
 
         return (
-            <div className={`modal-header${addCss ? ` ${addCss}` : ''}`}>
+            <div className={`modal-header${addCss ? ` ${addCss}` : ''}`} id={labelId}>
                 {closeModal ? <button type="button" className="close" aria-label="Close" onClick={this.closeModal}><span aria-hidden="true">&times;</span></button> : null}
                 {titleRender ? <div>{titleRender}</div> : null}
                 {this.props.children}
@@ -140,6 +140,7 @@ ModalHeader.propTypes = {
         PropTypes.bool, // True to display the close button in the header with the built-in handler
         PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
     ]),
+    labelId: PropTypes.string, // id of header element to match aria-labelledby in modal title
     children: PropTypes.node,
     c_closeModal: PropTypes.func, // Auto-added
 };
@@ -148,6 +149,7 @@ ModalHeader.defaultProps = {
     addCss: '',
     title: null,
     closeModal: null,
+    labelId: '',
     children: null,
     c_closeModal: null,
 };
@@ -198,7 +200,7 @@ export class ModalFooter extends React.Component {
     }
 
     render() {
-        const { submitBtn, submitTitle, addCss } = this.props;
+        const { submitBtn, submitTitle, addCss, cancelTitle } = this.props;
         let { closeModal } = this.props;
         let submitBtnComponent = null;
         let closeBtnComponent = null;
@@ -229,7 +231,7 @@ export class ModalFooter extends React.Component {
         // old Javascript characteristic.
         if (closeModal) {
             const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props.c_closeModal : null);
-            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button className="btn btn-info" onClick={closeBtnFunc}>Cancel</button>;
+            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button className="btn btn-info" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
         }
 
         return (
@@ -252,6 +254,7 @@ ModalFooter.propTypes = {
         PropTypes.func, // Function to call when default-rendered Submit button clicked
     ]),
     submitTitle: PropTypes.string, // Title for default submit button
+    cancelTitle: PropTypes.string, // Title for default cancel button
     addCss: PropTypes.string, // CSS classes to add to modal footer
     closeModal: PropTypes.oneOfType([
         PropTypes.bool, // Use default-rendered Cancel button that closes the modal
@@ -259,6 +262,7 @@ ModalFooter.propTypes = {
         PropTypes.func, // Function to call when default-rendered Cancel button clicked
     ]),
     dontClose: PropTypes.bool, // True to *not* close the modal when the user clicks Submit
+    closeId: PropTypes.string, // id to assign to default Close button
     c_closeModal: PropTypes.func, // Auto-add
     children: PropTypes.node,
 };
@@ -266,9 +270,11 @@ ModalFooter.propTypes = {
 ModalFooter.defaultProps = {
     submitBtn: null,
     submitTitle: 'Submit',
+    cancelTitle: 'Cancel',
     addCss: '',
     closeModal: undefined,
     dontClose: false,
+    closeId: '',
     c_closeModal: null,
     children: null,
 };
@@ -299,6 +305,14 @@ export class Modal extends React.Component {
 
         // Have ESC key press close the modal.
         document.addEventListener('keydown', this.handleEsc, false);
+
+        // Focus screen reader on modal's description.
+        if (this.props.focusId) {
+            const focusElement = document.getElementById(this.props.focusId);
+            if (focusElement) {
+                focusElement.focus();
+            }
+        }
     }
 
     componentDidUpdate() {
@@ -314,10 +328,25 @@ export class Modal extends React.Component {
     // Called when the user presses the ESC key.
     handleEsc(e) {
         if ((!this.props.actuator || this.state.modalOpen) && e.keyCode === 27) {
+            // User typed ESC.
             if (this.props.closeModal) {
                 this.props.closeModal();
             } else {
                 this.closeModal();
+            }
+        } else if (e.keyCode === 9) {
+            // User typed TAB.
+            const focusableElements = this.modalEl.querySelectorAll('a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select');
+            const firstFocusableElement = focusableElements[0];
+            const lastFocusableElement = focusableElements[focusableElements.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else if (document.activeElement === lastFocusableElement) {
+                firstFocusableElement.focus();
+                e.preventDefault();
             }
         }
     }
@@ -348,7 +377,7 @@ export class Modal extends React.Component {
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>
                         <div className="modal" style={{ display: 'block' }}>
-                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
+                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`} role="alertdialog" aria-labelledby={this.props.labelId} aria-describedby={this.props.descriptionId}>
                                 <div className="modal-content">
                                     {this.modalChildren}
                                 </div>
@@ -385,6 +414,9 @@ Modal.propTypes = {
     actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
     closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
     addClasses: PropTypes.string, // CSS classes to add to the default
+    labelId: PropTypes.string, // id of modal label element
+    descriptionId: PropTypes.string, // id of modal description element
+    focusId: PropTypes.string, // id of first focusable element
     children: PropTypes.node,
 };
 
@@ -392,5 +424,8 @@ Modal.defaultProps = {
     actuator: null,
     closeModal: null,
     addClasses: '',
+    labelId: '',
+    descriptionId: '',
+    focusId: '',
     children: null,
 };
