@@ -6,7 +6,6 @@ ssh_authorized_keys:
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -109,7 +108,6 @@ packages:
 - awscli
 - bsdtar
 - build-essential
-- elasticsearch
 - git
 - graphviz
 - libapache2-mod-wsgi-py3
@@ -170,6 +168,8 @@ runcmd:
 -    swapon /swapfile
 - fi
 - set -ex
+- wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.9.deb
+- sudo dpkg -i elasticsearch-5.6.9.deb
 - update-rc.d elasticsearch defaults
 - service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf

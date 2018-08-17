@@ -6,7 +6,6 @@ ssh_authorized_keys:
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -52,7 +51,6 @@ bootcmd:
 packages:
 - awscli
 - build-essential
-- elasticsearch
 - libssl-dev
 - oracle-java8-installer
 - oracle-java8-set-default
@@ -108,6 +106,8 @@ runcmd:
 -   fi
 - fi
 - set -ex
+- wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.9.deb
+- sudo dpkg -i elasticsearch-5.6.9.deb
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
