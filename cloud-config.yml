@@ -102,7 +102,7 @@ bootcmd:
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 
 
-package_upgrade: true
+  # package_upgrade: true
 
 packages:
 - apache2-mpm-worker
