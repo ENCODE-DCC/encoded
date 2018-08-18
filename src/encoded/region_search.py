@@ -3,6 +3,7 @@ from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
 from pyramid.security import effective_principals
+from snovault.viewconfigs.base_view import BaseView
 from encoded.helpers.helper import (
     format_results,
     search_result_actions
@@ -10,7 +11,6 @@ from encoded.helpers.helper import (
 from snovault.helpers.helper import (
     get_filtered_query,
     set_filters,
-    format_facets,
     set_facets
 )
 from .batch_download import get_peak_metadata_links
@@ -371,7 +371,7 @@ def region_search(context, request):
         )
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
-        result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
+        result['facets'] = BaseView.format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
         result['peaks'] = list(peak_results['hits']['hits'])
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:

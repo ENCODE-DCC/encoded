@@ -1,6 +1,5 @@
 from encoded.viewconfigs.matrix import MatrixView
 from urllib.parse import urlencode
-from snovault.helpers.helper import format_facets
 
 
 class SummaryView(MatrixView):
@@ -45,7 +44,7 @@ class SummaryView(MatrixView):
         self.result['summary'][summary_groupings[0]] = es_results['aggregations']['summary']
 
         # Format facets for results
-        self.result['facets'] = format_facets(es_results,
+        self.result['facets'] = self.format_facets(es_results,
                                               self.facets,
                                               self.used_filters,
                                               (self.schema,),

@@ -6,7 +6,6 @@ from snovault.helpers.helper import (
     get_search_fields,
     set_filters,
     set_facets,
-    format_facets
 )
 
 
@@ -187,7 +186,7 @@ class MatrixView(BaseView):
         return es_results
 
     def construct_facets(self, es_results, total):
-        facets = format_facets(es_results,
+        facets = self.format_facets(es_results,
                                self.facets,
                                self.used_filters,
                                (self.schema,),
@@ -244,7 +243,7 @@ class MatrixView(BaseView):
         self.result['matrix']['max_cell_doc_count'] = 0
 
         # Format facets for results
-        self.result['facets'] = format_facets(es_results,
+        self.result['facets'] = self.format_facets(es_results,
                                               self.facets,
                                               self.used_filters,
                                               (self.schema,),
