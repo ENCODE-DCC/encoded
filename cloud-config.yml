@@ -292,6 +292,9 @@ write_files:
         index:
             queue_size: 400
     indices.query.bool.max_clause_count: 8192
+    path:
+        data: /var/lib/elasticsearch
+        logs: /var/log/elasticsearch
 
 - path: /etc/elasticsearch/jvm.options
   content: |
