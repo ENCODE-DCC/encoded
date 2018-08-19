@@ -242,17 +242,6 @@ runcmd:
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
 - service apache2 restart
-# - sleep 10
-# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-# - pg_ctlcluster 9.3 main reload
-# - pg_ctlcluster 9.3 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
-# - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
-# - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup
 
 users:
 - default
