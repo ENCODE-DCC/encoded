@@ -7,7 +7,6 @@ ssh_authorized_keys:
 apt_sources:
 - source: "ppa:webupd8team/java"
 - source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
-- source: "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -129,7 +128,6 @@ packages:
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
-- postgresql-9.3
 - pv
 - python2.7-dev
 # python3.4-dev - defaults to 3.5
@@ -152,6 +150,11 @@ output:
 runcmd:
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
+- sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
+- sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+- sudo apt-get update
+- sudo apt-get --yes --force-yes install postgresql-9.3
+- sudo add-apt-repository --remove "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
