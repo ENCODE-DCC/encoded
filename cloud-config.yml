@@ -101,7 +101,6 @@ bootcmd:
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 
-
 package_upgrade: true
 
 packages:
@@ -155,8 +154,6 @@ runcmd:
 - sudo apt-get update
 - sudo apt-get --yes --force-yes install postgresql-9.3
 - sudo add-apt-repository --remove "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
-# Ideally this would build as a different user so encoded only has read
-# permissions
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
@@ -344,7 +341,6 @@ write_files:
     # generate a heap dump when an allocation from the Java heap fails
     # heap dumps are created in the working directory of the JVM
     -XX:+HeapDumpOnOutOfMemoryError
-
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
