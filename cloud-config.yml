@@ -157,15 +157,15 @@ runcmd:
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
--    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
 - elif [ "$MEMGIGS" -gt 12 ]
 - then
+-    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+- else
 -    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
 -    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
-- else
--    echo "-Xms2g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx2g" >> /etc/elasticsearch/jvm.options
 -    sysctl "vm.swappiness=1"
 -    swapon /swapfile
 - fi
@@ -238,17 +238,6 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
-# - sleep 10
-# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-# - pg_ctlcluster 9.3 main reload
-# - pg_ctlcluster 9.3 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
-# - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
-# - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup
 
 users:
 - default
@@ -292,6 +281,8 @@ write_files:
         index:
             queue_size: 400
     indices.query.bool.max_clause_count: 8192
+    index.refresh_interval: -1
+    index.number_of_replicas: 0
 
 - path: /etc/elasticsearch/jvm.options
   content: |
