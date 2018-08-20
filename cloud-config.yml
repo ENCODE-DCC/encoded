@@ -281,8 +281,10 @@ write_files:
         index:
             queue_size: 400
     indices.query.bool.max_clause_count: 8192
-    index.refresh_interval: -1
-    index.number_of_replicas: 0
+    index:
+        refresh_interval: -1
+        number_of_replicas: 0
+    bootstrap.memory_lock: true
 
 - path: /etc/elasticsearch/jvm.options
   content: |
