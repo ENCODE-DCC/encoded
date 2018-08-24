@@ -78,6 +78,13 @@ export const dbxrefPrefixMap = {
     },
     ENSEMBL: {
         pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
+        preprocessor: (context) => {
+            // The URL is for human by default for ENSEMBL dbxrefs.
+            if (context.organism && context.organism.scientific_name === 'Mus musculus') {
+                return { altUrlPattern: 'http://www.ensembl.org/Mus_musculus/Gene/Summary?g={0}' };
+            }
+            return {};
+        },
     },
     GeneID: {
         pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
