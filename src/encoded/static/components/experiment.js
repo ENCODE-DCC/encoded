@@ -188,7 +188,7 @@ class ExperimentComponent extends React.Component {
         this.libraryValues = {
             treatments: { values: {}, value: undefined, component: {}, title: 'Treatments', test: 'treatments' },
             nucleic_acid_term_name: { values: {}, value: undefined, component: {}, title: 'Nucleic acid type', test: 'nucleicacid' },
-            rna_integrity_number: { values: {}, value: undefined, component: {}, title: 'RNA Integrity #', test: 'rnaintegritynumber' },
+            rna_integrity_number: { values: {}, value: undefined, component: {}, title: 'RNA Integrity Number', test: 'rnaintegritynumber' },
             depleted_in_term_name: { values: {}, value: undefined, component: {}, title: 'Depleted in', test: 'depletedin' },
             nucleic_acid_starting_quantity: { values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity' },
             size_range: { values: {}, value: undefined, component: {}, title: 'Size range', test: 'sizerange' },
