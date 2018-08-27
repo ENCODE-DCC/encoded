@@ -1,6 +1,30 @@
 Changes
 =======
 
+74.0 (released)
+-----------------
+1. ENCD-4169 Update to snovault 1.0.15
+2. ENCD-4131 set-status-endpoint (#2363)
+3. ENCD-4168 add-embed-cache-to-ini (#2367)
+4. ENCD-4167 Explicitly set availability zone in deploy script (#2361)
+5. ENCD-4163 Update to snovault 1.0.14 (#2360)
+6. ENCD-3997 Create Gene object (#2307)
+7. ENCD-4083 Allow aws s3 to s3 file transfer (#2358)
+8. ENCD-4162 update snovault 1.0.13 (#2359)
+9. ENCD-4136 Add dry run arg for deployment (#2357)
+10. ENCD-4123 audit chip (#2343)
+11. ENCD-4154 Remove unused search type arg (#2355)
+12. ENCD-4141 Add alias namespaces  (#2344)
+13. ENCD-4152 Make organism scientific_name required (#2354)
+14. ENCD-4107 Added experiment_class to experiment schema (#2330)
+15. ENCD-4134 add RIN number property to Library (#2348)
+16. ENCD-3732 replicate-sorting (#2329)
+17. ENCD-4146 Restore FileDownloadButton constructor (#2352)
+18. ENCD-4149 Allow bin test log arg for workbook loading (#2351)
+19. ENCD-4144 Fix failing impersonation test button size (#2350)
+20. ENCD-4118 set minimum value to 0 for ch coordinates in GM (#2347)
+21. ENCD-4143 Add asserts to status trigger tests
+
 73.0 (released)
 -----------------
 1. ENCD-4129 update-to-snovault-1.0.12 (#2336)

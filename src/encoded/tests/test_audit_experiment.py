@@ -655,6 +655,21 @@ def test_audit_experiment_mixed_libraries(testapp,
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_RNA_library_RIN(testapp,
+                                          base_experiment,
+                                          replicate_1_1,
+                                          library_1):
+    testapp.patch_json(library_1['@id'], {'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing RIN'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(library_1['@id'], {'rna_integrity_number': 7})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing RIN'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_released_with_unreleased_files(testapp, base_experiment, file_fastq):
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01'})
