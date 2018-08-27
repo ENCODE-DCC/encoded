@@ -2303,7 +2303,8 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                 modification['purpose'] == 'tagging' and
                 not modification.get('characterizations')):
                     detail = ('Genetic modification {} performed for the '
-                              'purpose of {} is missing validating characterization.').format(
+                              'purpose of {} is missing validating characterization '
+                              'that is required by ENCODE4 standards.').format(
                         modification['@id'],
                         modification['purpose']
                     )
