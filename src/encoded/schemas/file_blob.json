@@ -6,7 +6,7 @@
     "type": "object",
     "required": ["blob_url"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "blob_url"],
+    "identifyingProperties": ["uuid"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
@@ -22,7 +22,6 @@
             "description": "Path-style URL of a file stored at S3 bucket.",
             "comment": "Unique path-style URL of a file stored at S3 bucket.",
             "type": "string",
-            "uniqueKey": true,
             "pattern": "^s3://encode-files.*$"
         }
     },
