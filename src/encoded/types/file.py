@@ -529,3 +529,16 @@ def download(context, request):
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
+
+
+@collection(
+    name='file_blobs',
+    unique_key='blob_url',
+    properties={
+        'title': 'File blobs',
+        'description': 'S3 file blobs',
+    })
+class FileBlob(Item):
+    item_type = 'file_blob'
+    schema = load_schema('encoded:schemas/file_blob.json')
+    name_key = "blob_url"
