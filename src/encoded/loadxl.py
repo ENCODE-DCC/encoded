@@ -55,6 +55,7 @@ ORDER = [
     'analysis_step',
     'analysis_step_version',
     'pipeline',
+    'pipeline_run',
     'analysis_step_run',
     'file',
     'star_quality_metric',

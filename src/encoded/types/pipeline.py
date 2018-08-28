@@ -50,6 +50,17 @@ class Pipeline(Item):
 
 
 @collection(
+    name='pipeline-runs',
+    properties={
+        'title': 'Pipeline runs',
+        'description': 'Listing of Pipeline Runs',
+    })
+class PipelineRun(Item):
+    item_type = 'pipeline_run'
+    schema = load_schema('encoded:schemas/pipeline_run.json')
+
+
+@collection(
     name='analysis-steps',
     unique_key='analysis_step:name',
     properties={
