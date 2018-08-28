@@ -28,6 +28,32 @@
             "description": "Reference to the analysis step version this pipeline step run is an instantiation of.",
             "type": "string",
             "linkTo": "AnalysisStepVersion"
+        },
+        "inputs": {
+            "title": "Input file blobs",
+            "description": "File blobs used as input for this pipeline step run.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "File blob",
+                "description": "A particular file blob specified as input for this pipeline step run.",
+                "type": "string",
+                "linkTo": "FileBlob"
+            }
+        },
+        "outputs": {
+            "title": "Output file blobs",
+            "description": "File blobs that were produced as output of this pipeline step run.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "File blob",
+                "description": "A particular file blob produced as an output of this pipeline step run.",
+                "type": "string",
+                "linkTo": "FileBlob"
+            }
         }
     },
     "facets": {
