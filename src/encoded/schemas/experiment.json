@@ -210,6 +210,19 @@
             "format": "date",
             "permission": "import_items"
         },
+        "pipeline_runs": {
+            "title": "Pipeline runs",
+            "description": "Reference to the pipeline runs associated with this expriment.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Pipeline run",
+                "description": "Reference to the pipeline run associated with this experiment.",
+                "type": "string",
+                "linkTo": "PipelineRun"
+            }
+        },
         "target": {
             "title": "Target",
             "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",

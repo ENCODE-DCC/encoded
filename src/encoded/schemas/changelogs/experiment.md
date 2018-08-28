@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 21
+
+* *pipeline_runs* property was added to allow specification of any pipeline run associated with this experiment
+
 ### Schema version 21
 
 * Added required property *experiment_classification* with enums "functional genomics assay" and "functional characterization assay"
