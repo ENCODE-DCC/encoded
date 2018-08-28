@@ -58,6 +58,7 @@ ORDER = [
     'pipeline_run',
     'pipeline_step_run',
     'analysis_step_run',
+    'file_blob',
     'file',
     'star_quality_metric',
     'bismark_quality_metric',
