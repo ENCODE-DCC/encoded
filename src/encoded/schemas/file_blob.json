@@ -1,7 +1,7 @@
 {
     "title": "File blob",
     "description": "Schema for reporting a unique instance of S3 blob.",
-    "id": "/profiles/pipeline_step_run.json",
+    "id": "/profiles/file_blob.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["blob_url"],
@@ -22,7 +22,8 @@
             "description": "Path-style URL of a file stored at S3 bucket.",
             "comment": "Unique path-style URL of a file stored at S3 bucket.",
             "type": "string",
-            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
+            "uniqueKey": true,
+            "pattern": "^s3://encode-files.*$"
         }
     },
     "facets": {
