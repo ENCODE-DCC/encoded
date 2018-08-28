@@ -1,0 +1,39 @@
+{
+    "title": "Pipeline step run",
+    "description": "Schema for reporting a specific instance of a pipeline step execution.",
+    "id": "/profiles/pipeline_step_run.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["pipeline_run", "analysis_step_version"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/standard_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "pipeline_run": {
+            "description": "Reference to the pipeline run this step execution is a part of.",
+            "comment": "See pipeline_run.json for available identifiers.",
+            "type": "string",
+            "linkTo": "PipelineRun"
+        },
+        "analysis_step_version": {
+            "title": "Analysis Step Version",
+            "description": "Reference to the analysis step version this pipeline step run is an instantiation of.",
+            "type": "string",
+            "linkTo": "AnalysisStepVersion"
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/pipeline_step_run.md"
+}
