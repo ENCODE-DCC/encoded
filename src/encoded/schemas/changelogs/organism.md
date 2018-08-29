@@ -1,5 +1,9 @@
 ## Changelog for organism.json
 
+### Schema version 6
+
+* *scientific_name* is now a required property. The empty string default value has also been removed.
+
 ### Schema version 5
 
 * *status* property was restricted to one of  

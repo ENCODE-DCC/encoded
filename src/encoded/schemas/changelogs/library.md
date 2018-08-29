@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 8
 
+* *rna_integrity_number* property is added to capture RIN number.
 * *barcode_details* property is added, the property contains barcode details of single cell samples.
 * *construction_platform* property is added, the property contains link to platform used to prepare the library.
 

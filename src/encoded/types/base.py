@@ -1,4 +1,6 @@
+from datetime import datetime
 from functools import lru_cache
+import logging
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
@@ -10,12 +12,19 @@ from pyramid.security import (
 from pyramid.traversal import (
     find_root,
     traverse,
+    resource_path
 )
 from pyramid.view import (
     view_config
 )
+from pyramid.settings import asbool
 import snovault
-from snovault.validators import validate_item_content_patch
+from snovault.validation import ValidationFailure
+from snovault.auditor import traversed_path_ids
+from snovault import (
+    AfterModified,
+    BeforeModified
+)
 
 
 @lru_cache()
@@ -67,10 +76,35 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', ['add']),
 ]
 
-# New status must contain current status in list to be valid transition.
+# Key is new status. Value is list of current statuses that can transition to the new status.
+# For example, a released, in progress, or submitted experiment can transition to released.
+# Transitioning to the same status (released -> released) allows for the child objects to be crawled
+# without actually making a patch if the new and current statuses are the same.
 STATUS_TRANSITION_TABLE = {
-    'released': ['in progress'],
-    'in progress': ['released', 'archived', 'deleted', 'revoked']
+    'released': ['released', 'in progress', 'submitted'],
+    'in progress': ['in progress'],
+    'deleted': ['deleted', 'in progress', 'current', 'submitted'],
+    'revoked': ['revoked', 'released', 'archived'],
+    'archived': ['archived', 'released'],
+    'submitted': ['submitted', 'in progress'],
+    'replaced': [],
+    'disabled': ['disabled', 'current'],
+    'current': ['current'],
+    'uploading': ['uploading', 'upload failed', 'content error']
+}
+
+# Used to calculate whether new_status is more or less than current_status.
+STATUS_HIERARCHY = {
+    'released': 100,
+    'current': 100,
+    'in progress': 90,
+    'submitted': 80,
+    'uploading': 80,
+    'archived': 70,
+    'revoked': 50,
+    'disabled': 10,
+    'deleted': 0,
+    'replaced': -10,
 }
 
 
@@ -141,6 +175,11 @@ class Item(snovault.Item):
         'archived': ALLOW_CURRENT,
     }
 
+    # Empty by default. Children objects to iterate through when changing status
+    # of parent object.
+    set_status_up = []
+    set_status_down = []
+
     @property
     def __name__(self):
         if self.name_key is None:
@@ -178,9 +217,144 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
+    @staticmethod
+    def _valid_status(new_status, schema, parent):
+        valid_statuses = schema.get('properties', {}).get('status', {}).get('enum', [])
+        if new_status not in valid_statuses:
+            if parent:
+                msg = '{} not one of {}'.format(
+                    new_status,
+                    valid_statuses
+                )
+                raise ValidationFailure('body', ['status'], msg)
+            else:
+                return False
+        return True
+
+    @staticmethod
+    def _valid_transition(current_status, new_status, parent, force_transition):
+        if current_status not in STATUS_TRANSITION_TABLE[new_status] and not force_transition:
+            if parent:
+                msg = 'Status transition {} to {} not allowed'.format(
+                    current_status,
+                    new_status
+                )
+                raise ValidationFailure('body', ['status'], msg)
+            else:
+                return False
+        return True
+
+    def _update_status(self, new_status, current_status, properties, schema, request, item_id, update):
+        # Don't update if update parameter not true.
+        if not update:
+            return
+        # Don't actually patch if the same.
+        if new_status == current_status:
+            return
+        properties['status'] = new_status
+        # Some release specific functionality.
+        if new_status == 'released':
+            # This won't be reassigned if you rerelease something.
+            if 'date_released' in schema['properties'] and 'date_released' not in properties:
+                properties['date_released'] = str(datetime.now().date())
+        request.registry.notify(BeforeModified(self, request))
+        self.update(properties)
+        request.registry.notify(AfterModified(self, request))
+        request._set_status_changed_paths.add((item_id, current_status, new_status))
+
+    def _get_child_paths(self, current_status, new_status, block_children):
+        # Do not traverse children if parameter specified.
+        if block_children:
+            return []
+        # Only transition released -> released should trigger up list
+        # if new and current statuses the same.
+        if all([x == 'released' for x in [current_status, new_status]]):
+            return self.set_status_up
+        # List of child_paths depends on if status is going up or down.
+        if STATUS_HIERARCHY[new_status] > STATUS_HIERARCHY[current_status]:
+            child_paths = self.set_status_up
+        else:
+            child_paths = self.set_status_down
+        return child_paths
+
+    @staticmethod
+    def _get_related_object(child_paths, embedded_properties, request):
+        related_objects = set()
+        for path in child_paths:
+            for child_id in traversed_path_ids(request, embedded_properties, path):
+                related_objects.add(child_id)
+        return related_objects
+
+    @staticmethod
+    def _block_on_audits(item_id, force_audit, request, parent, new_status):
+        if new_status != 'released':
+            return
+        if not parent or force_audit:
+            return
+        audits = request.embed(item_id, '@@audit')
+        if audits and audits.get('audit', {}).get('ERROR'):
+            raise ValidationFailure(
+                'body',
+                ['status'],
+                'ERROR audit on parent object. Must use ?force_audit=true to change status.'
+            )
+
+    @staticmethod
+    def _set_status_on_related_objects(new_status, related_objects, root, request):
+        for child_id in related_objects:
+            # Avoid cycles.
+            visited_children = [
+                x[0]
+                for x in request._set_status_changed_paths.union(
+                        request._set_status_considered_paths
+                )
+            ]
+            if child_id in visited_children:
+                continue
+            else:
+                child_uuid = request.embed(child_id).get('uuid')
+                encoded_item = root.get_by_uuid(child_uuid)
+                encoded_item.set_status(
+                    new_status,
+                    request,
+                    parent=False
+                )
+        return True
+
+    @staticmethod
+    def _calculate_block_children(request, force_transition):
+        block_children_param = request.params.get('block_children', None)
+        if force_transition:
+            return True
+        return asbool(block_children_param)
+
     def set_status(self, new_status, request, parent=True):
-        # Not implemented by default.
-        pass
+        root = find_root(self)
+        schema = self.type_info.schema
+        properties = self.upgrade_properties()
+        item_id = '{}/'.format(resource_path(self))
+        current_status = properties.get('status')
+        if not current_status:
+            raise ValidationFailure('body', ['status'], 'No property status')
+        if not self._valid_status(new_status, schema, parent):
+            return False
+        force_transition = asbool(request.params.get('force_transition'))
+        if not self._valid_transition(current_status, new_status, parent, force_transition):
+            return False
+        force_audit = asbool(request.params.get('force_audit'))
+        self._block_on_audits(item_id, force_audit, request, parent, new_status)
+        update = asbool(request.params.get('update'))
+        self._update_status(new_status, current_status, properties, schema, request, item_id, update)
+        request._set_status_considered_paths.add((item_id, current_status, new_status))
+        logging.warn(
+            'Considering {} from status {} to status {}'.format(item_id, current_status, new_status)
+        )
+        block_children = self._calculate_block_children(request, force_transition)
+        child_paths = self._get_child_paths(current_status, new_status, block_children)
+        embedded_properties = request.embed(item_id, '@@embedded')
+        related_objects = self._get_related_object(child_paths, embedded_properties, request)
+        self._set_status_on_related_objects(new_status, related_objects, root, request)
+        return True
 
 
 class SharedItem(Item):
@@ -230,14 +404,16 @@ def edit_json(context, request):
 
 
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='release', validators=[validate_item_content_patch])
-def item_release(context, request):
-    new_status = 'released'
+             name='set_status')
+def item_set_status(context, request):
+    new_status = request.json_body.get('status')
+    if not new_status:
+        raise ValidationFailure('body', ['status'], 'Status not specified')
     context.set_status(new_status, request)
-
-
-@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
-             name='unrelease', validators=[validate_item_content_patch])
-def item_unrelease(context, request):
-    new_status = 'in progress'
-    context.set_status(new_status, request)
+    # Returns changed and considered lists of tuples: (item, current_status, new_status).
+    return {
+        'status': 'success',
+        '@type': ['result'],
+        'changed': request._set_status_changed_paths,
+        'considered': request._set_status_considered_paths
+    }

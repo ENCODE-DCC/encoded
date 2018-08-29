@@ -13,7 +13,8 @@ def file_exp(lab, award, testapp, experiment):
         'biosample_type': 'tissue',
         'possible_controls': [experiment['uuid']],
         'status': 'released',
-        'date_released': '2016-01-01'
+        'date_released': '2016-01-01',
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -38,7 +39,8 @@ def file_exp2(lab, award, testapp):
         'biosample_type': 'tissue',
         'biosample_term_name': 'Some other body part',
         'status': 'released',
-        'date_released': '2016-01-01'
+        'date_released': '2016-01-01',
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 

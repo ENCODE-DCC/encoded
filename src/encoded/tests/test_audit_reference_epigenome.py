@@ -18,7 +18,8 @@ def reference_experiment_RNA_seq(testapp, lab, award):
         'status': 'in progress',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
-        'assay_term_name': 'RNA-seq'
+        'assay_term_name': 'RNA-seq',
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -32,7 +33,8 @@ def reference_experiment_RRBS(testapp, lab, award):
         'status': 'in progress',
         'assay_term_name': 'RRBS',
         'biosample_type': 'tissue',
-        'biosample_term_id': 'UBERON:349829'
+        'biosample_term_id': 'UBERON:349829',
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -46,7 +48,8 @@ def reference_experiment_WGBS(testapp, lab, award):
         'biosample_term_id': 'UBERON:349829',
         'lab': lab['uuid'],
         'status': 'in progress',
-        'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -61,7 +64,8 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control):
         'biosample_term_id': 'UBERON:349829',
         'status': 'in progress',
         'assay_term_name': 'ChIP-seq',
-        'target': target_control['uuid']
+        'target': target_control['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -76,7 +80,8 @@ def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3)
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27me3['uuid']
+        'target': target_H3K27me3['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -91,7 +96,8 @@ def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3)
         'biosample_term_id': 'UBERON:349829',
         'status': 'in progress',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K36me3['uuid']
+        'target': target_H3K36me3['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -106,7 +112,8 @@ def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1):
         'biosample_term_id': 'UBERON:349829',
         'status': 'in progress',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me1['uuid']
+        'target': target_H3K4me1['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -121,7 +128,8 @@ def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3):
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid']
+        'target': target_H3K4me3['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -136,7 +144,8 @@ def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac):
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27ac['uuid']
+        'target': target_H3K27ac['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -151,7 +160,8 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3):
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K9me3['uuid']
+        'target': target_H3K9me3['uuid'],
+        'experiment_classification': ['functional genomics assay']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

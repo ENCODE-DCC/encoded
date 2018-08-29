@@ -7,8 +7,9 @@ import os.path
 
 text = type(u'')
 
+DEFAULT_LOG_LEVEL = logging.INFO
 logger = logging.getLogger('encoded')
-logger.setLevel(logging.INFO)  # doesn't work to shut off sqla INFO
+logger.setLevel(DEFAULT_LOG_LEVEL)  # doesn't work to shut off sqla INFO
 
 
 ORDER = [
@@ -17,6 +18,7 @@ ORDER = [
     'lab',
     'organism',
     'source',
+    'gene',
     'target',
     'publication',
     'document',
@@ -89,6 +91,18 @@ IS_ATTACHMENT = [
     'IDR_parameters_pool_pr',
     'cross_correlation_plot'
 ]
+
+
+def _reset_log_level(log_level):
+    '''
+    Resets the default log level, usually for running bin tests
+    '''
+    if logger and log_level is not DEFAULT_LOG_LEVEL:
+        numeric_level = getattr(logging, log_level.upper(), None)
+        if not isinstance(numeric_level, int):
+            raise ValueError('Invalid log level: %s' % log_level)
+        logger.setLevel(log_level)
+
 
 ##############################################################################
 # Pipeline components
@@ -697,7 +711,9 @@ PHASE2_PIPELINES = {
 }
 
 
-def load_all(testapp, filename, docsdir, test=False):
+def load_all(testapp, filename, docsdir, log_level=None, test=False):
+    if log_level is not None:
+        _reset_log_level(log_level)
     for item_type in ORDER:
         try:
             source = read_single_sheet(filename, item_type)

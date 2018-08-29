@@ -192,7 +192,8 @@ def ctrl_experiment(testapp, lab, award, control_target):
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
         'status': 'in progress',
-        'assay_term_name': 'ChIP-seq'
+        'assay_term_name': 'ChIP-seq',
+        'experiment_classification': ['functional genomics assay']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -2161,7 +2162,7 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
                                              'dataset': base_experiment['@id'],
                                              'file_format_type': 'narrowPeak',
                                              'file_format': 'bed',
-                                             'output_type': 'peaks'})
+                                             'output_type': 'peaks and background as input for IDR'})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id'],

@@ -20,6 +20,7 @@
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
+        "rna_integrity_number": 1.11,
         "dbxrefs": [
             "GEO:GSM433174"
         ]
@@ -42,6 +43,7 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "rna_integrity_number": 2.0,
         "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
     },
     {
@@ -65,6 +67,7 @@
         "size_range": ">200",
         "strand_specificity": true,
         "submitted_by": "dignissim.euismod@amet.habitant",
+        "rna_integrity_number": 7.3,
         "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"
     },
     {

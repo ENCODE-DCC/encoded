@@ -22,17 +22,6 @@ def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
 
 
 @mock_sts
-def test_external_creds():
-    from encoded.types.file import external_creds
-    creds = external_creds('mock_bucket', 'mock_object', 'mock_name')
-    assert 'upload_credentials' in creds
-    assert creds['bucket'] == 'mock_bucket'
-    assert creds['key'] == 'mock_object'
-    assert 'mock_name' in creds['upload_credentials']['federated_user_id']
-    assert creds['service'] == 's3'
-
-
-@mock_sts
 def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
     res = testapp.post_json('/file', uploading_file)

@@ -8,11 +8,9 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
-from snovault.validation import ValidationFailure
 from .base import (
     Item,
-    paths_filtered_by_status,
-    STATUS_TRANSITION_TABLE
+    paths_filtered_by_status
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -34,48 +32,13 @@ import json
 import pytz
 import time
 
+from encoded.upload_credentials import UploadCredentials
+
 
 def show_upload_credentials(request=None, context=None, status=None):
     if request is None or status not in ('uploading', 'upload failed'):
         return False
     return request.has_permission('edit', context)
-
-
-def external_creds(bucket, key, name, profile_name=None):
-    policy = {
-        'Version': '2012-10-17',
-        'Statement': [
-            {
-                'Effect': 'Allow',
-                'Action': 's3:PutObject',
-                'Resource': 'arn:aws:s3:::{bucket}/{key}'.format(bucket=bucket, key=key),
-            }
-        ]
-    }
-    conn = boto3.Session(profile_name=profile_name).client('sts')
-    token = conn.get_federation_token(
-        Name=name,
-        Policy=json.dumps(policy)
-    )
-    # 'access_key' 'secret_key' 'expiration' 'session_token'
-    creds = token.get('Credentials', {})
-    # Maintain boto field names.
-    credentials = {
-        'session_token': creds.get('SessionToken'),
-        'access_key': creds.get('AccessKeyId'),
-        'expiration': creds.get('Expiration').isoformat(),
-        'secret_key': creds.get('SecretAccessKey'),
-        'upload_url': 's3://{bucket}/{key}'.format(bucket=bucket, key=key),
-        'federated_user_arn': token.get('FederatedUser', {}).get('Arn'),
-        'federated_user_id': token.get('FederatedUser', {}).get('FederatedUserId'),
-        'request_id': token.get('ResponseMetadata', {}).get('RequestId')
-    }
-    return {
-        'service': 's3',
-        'bucket': bucket,
-        'key': key,
-        'upload_credentials': credentials,
-    }
 
 
 def property_closure(request, propname, root_uuid):
@@ -143,6 +106,14 @@ class File(Item):
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software'
     ]
+    set_status_up = [
+        'quality_metrics',
+        'platform',
+        'step_run',
+    ]
+    set_status_down = []
+    public_s3_statuses = ['released', 'archived', 'revoked']
+    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted']
 
     @property
     def __name__(self):
@@ -379,7 +350,12 @@ class File(Item):
                 time=time.time(), **properties)[:32]  # max 32 chars
 
             profile_name = registry.settings.get('file_upload_profile_name')
-            sheets['external'] = external_creds(bucket, key, name, profile_name)
+            upload_creds = UploadCredentials(bucket, key, name, profile_name=profile_name)
+            s3_transfer_allow = registry.settings.get('external_aws_s3_transfer_allow', 'false')
+            sheets['external'] = upload_creds.external_creds(
+                s3_transfer_allow=asbool(s3_transfer_allow),
+                s3_transfer_buckets=registry.settings.get('external_aws_s3_transfer_buckets'),
+            )
         return super(File, cls).create(registry, uuid, properties, sheets)
 
     def _get_external_sheet(self):
@@ -404,29 +380,18 @@ class File(Item):
         ).put(ACL='private')
 
     def set_status(self, new_status, request, parent=True):
-        properties = self.upgrade_properties()
-        status = properties.get('status')
-        # Is valid transition?
-        if status not in STATUS_TRANSITION_TABLE[new_status]:
-            # Raise failure if this is primary object.
-            if parent:
-                msg = 'Status transition {} to {} not allowed'.format(
-                    status,
-                    new_status
-                )
-                raise ValidationFailure('body', ['status'], msg)
-            # Do nothing if this is child object.
-            else:
-                return
-        properties['status'] = new_status
-        request.registry.notify(BeforeModified(self, request))
-        self.update(properties)
-        request.registry.notify(AfterModified(self, request))
+        status_set = super(File, self).set_status(
+            new_status,
+            request,
+            parent=parent,
+        )
+        if not status_set or not asbool(request.params.get('update')):
+            return False
         # Change permission in S3.
         try:
-            if new_status == 'released':
+            if new_status in self.public_s3_statuses:
                 self.set_public_s3()
-            elif new_status == 'in progress':
+            elif new_status in self.private_s3_statuses:
                 self.set_private_s3()
         except ClientError as e:
             # Demo trying to set ACL on production object?
@@ -434,6 +399,7 @@ class File(Item):
                 logging.warn(e)
             else:
                 raise e
+        return True
 
 
 @view_config(name='upload', context=File, request_method='GET',
@@ -485,8 +451,12 @@ def post_upload(context, request):
         accession_or_external=accession_or_external,
         time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
-    creds = external_creds(bucket, key, name, profile_name)
-
+    upload_creds = UploadCredentials(bucket, key, name, profile_name=profile_name)
+    s3_transfer_allow = request.registry.settings.get('external_aws_s3_transfer_allow', 'false')
+    creds = upload_creds.external_creds(
+        s3_transfer_allow=asbool(s3_transfer_allow),
+        s3_transfer_buckets=request.registry.settings.get('external_aws_s3_transfer_buckets'),
+    )
     new_properties = None
     if properties['status'] == 'upload failed':
         new_properties = properties.copy()

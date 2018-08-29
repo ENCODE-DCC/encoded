@@ -3354,7 +3354,8 @@ def create_files_mapping(files_list, excluded):
                                                           ] = file_object
 
                 if file_format and file_format == 'bed' and \
-                        file_output and file_output == 'peaks':
+                        file_output and file_output in ['peaks',
+                                                        'peaks and background as input for IDR']:
                     to_return['peaks_files'][file_object['@id']] = file_object
 
                 if file_output and file_output == 'gene quantifications':

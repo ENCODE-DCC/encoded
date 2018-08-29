@@ -243,6 +243,12 @@ DerivedFromFiles.propTypes = {
 
 // Display a file download button.
 class FileDownloadButton extends React.Component {
+    constructor() {
+        super();
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+    }
+
     onMouseEnter() {
         if (this.props.hoverDL) {
             this.props.hoverDL(true);
