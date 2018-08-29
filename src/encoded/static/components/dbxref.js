@@ -133,7 +133,7 @@ export const dbxrefPrefixMap = {
         pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml',
     },
     MGI: {
-        pattern: 'http://www.informatics.jax.org/marker/{0}',
+        pattern: 'http://www.informatics.jax.org/marker/MGI:{0}',
     },
     RBPImage: {
         pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',

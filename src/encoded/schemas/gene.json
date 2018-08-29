@@ -77,7 +77,7 @@
                 "description": "A unique identifier from external resource (e.g. HGNC, MGI, FlyBase, WormBase, ENSEMBL, MIM, UniProtKB, Vega, miRBase).",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^((HGNC:HGNC:\\d+)|(MGI:MGI:\\d+)|(FlyBase:FBgn\\d+)|(WormBase:WBGene\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+))$"
+                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(FlyBase:FBgn\\d+)|(WormBase:WBGene\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+))$"
             },
             "permission": "import_items"
         },
