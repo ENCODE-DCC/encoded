@@ -106,7 +106,7 @@ def tale_replacement(lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'category': 'replacement',
-        'purpose': 'validation',
+        'purpose': 'characterization',
         'method': 'TALEN'
     }
 

@@ -120,7 +120,7 @@ blockquote {
 
 
 .checkbox--right {
-	pointer: normal;
+	cursor: normal;
 
 	label {
 		cursor: default;
@@ -130,4 +130,30 @@ blockquote {
 		float: none;
 		margin-left: 10px;
 	}
+}
+
+
+// Calculate lightness using a smarter algorithm than Sass's `lightness`.
+// https://medium.com/@tonipinel/how-to-get-an-accurate-contrast-color-with-sass-b0ebc01bf17f
+@function re-gamma($n) {
+    @if $n <= 0.0031308 {
+        @return $n * 12.92;
+    } @else {
+        @return 1.055 * pow($n, 1 / 2.4) - 0.055;
+    }
+}
+
+@function de-gamma($n) {
+    @if $n <= 0.04045 {
+        @return $n / 12.92;
+    } @else {
+        @return pow((($n + 0.055) / 1.055), 2.4);
+    }
+}
+
+ @function brightness($c) {
+	$rlin: de-gamma(red($c) / 255);
+	$glin: de-gamma(green($c) / 255);
+	$blin: de-gamma(blue($c) / 255);
+	@return re-gamma(0.2126 * $rlin + 0.7152 * $glin + 0.0722 * $blin) * 100;
 }

@@ -159,3 +159,13 @@ $form-bg: #f3f3f3;
         }
     }
 }
+
+
+// Object stats for each search result table entry.
+.result-table__status {
+    text-align: right;
+
+    .status {
+        display: inline-block;
+    }
+}

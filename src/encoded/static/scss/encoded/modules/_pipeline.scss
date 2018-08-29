@@ -3,18 +3,6 @@ $pipeline-node-types:
     (analysis-step, #D3E9FF),
     (quality-metric, #80ffc0),
     (file-type, #e0e0e0);
-
-$file-statuses:
-    ("uploading", #5880e0),
-    ("content-error", #ee4444),
-    ("upload-failed", #ee4444),
-    ("in-progress", $brand-info),
-    ("deleted", $brand-warning),
-    ("released", $brand-success),
-    ("replaced", #909090),
-    ("revoked", $brand-danger),
-    ("archived", #c0c0c0),
-    ("status-unknown", #ffc0c0);
     
 
 // FUnction to return black for light background colors passed in $color, and white for dark
@@ -79,18 +67,6 @@ $file-statuses:
 
 g.pipeline-node-file-type {
     pointer-events: none;
-}
-
-g.pipeline-node-file {
-    @each $status, $color in $file-statuses {
-        &.#{$status} {
-            fill: $color;
-
-            g.label {
-                fill: node-text-color($color);
-            }
-        }
-    }
 }
 
 g.label {
@@ -185,11 +161,11 @@ g.edgePath {
 }
 
 .btn-orient {
-    width: 50px;
-    height: 30px;
     margin: 2px 4px;
-    padding: 3px 6px;
+    padding: 5px 10px;
+    line-height: 0.9;
     overflow: hidden;
+    fill: white;
 }
 
 g.pipeline-node-qc-metric {
@@ -331,56 +307,24 @@ g.qc-tooltip {
     }
 }
 
+// Special unknown status color.
+$color-unknown: #ffc0c0;
+
 .file-status-legend {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-}
 
-// File status legend styles.
-.file-status-legend__item {
-    flex: 1 1 auto;
-    padding: 5px 10px;
-    margin-right: 1px;
-    margin-bottom: 1px;
-    text-align: center;
-    background-color: #f0f0f0;
+    @at-root #{&}__status {
+        flex: 1 1 auto;
+        margin-right: 1px;
+        margin-bottom: 1px;
+        text-align: center;
+    };
 
-    @each $status, $color in $file-statuses {
-        &.file-status-legend__item--status-#{$status} {
-            & .file-status-legend__icon {
-                margin-right: 5px;
-                color: $color;
-            }
-        }
-    }        
-}
-
-
-@each $status, $color in $file-statuses {
-    .label.file-status-#{$status} {
-        background-color: $color;
-        color: node-text-color($color);
-    }
-}
-
-
-.status-indicator {
-    display: flex;
-    line-height: 1;
-
-    @each $status, $color in $file-statuses {
-        &.status-indicator--status-#{$status} {
-            & .status-indicator__icon {
-                flex: 0 1 auto;
-                margin-right: 3px;
-                color: $color;
-            }
-        }
-    }
-
-    .status-indicator__label {
-        flex: 0 1 auto;
-        white-space: nowrap;
+    .status--status-unknown {
+        fill: label-color($color-unknown);
+        background-color: $color-unknown;
+        box-shadow: inset 0 0 0 1px lighten($color-unknown, 20%);
     }
 }

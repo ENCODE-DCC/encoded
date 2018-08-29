@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 13
+
+* *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only. 
+
 ### Schema version 13
 
 * *run_type* and *read_length* properties should not be specified for FASTQ files produced on PacBio platform. Dependency that enforces that was added.

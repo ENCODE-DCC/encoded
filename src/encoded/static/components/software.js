@@ -6,7 +6,7 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import { auditDecor } from './audit';
 
 
@@ -50,9 +50,6 @@ class SoftwareComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=software" crumbs={crumbs} />
                         <h2>{context.title}</h2>
-                        <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
-                        </div>
                         {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
                     </div>
                 </header>
@@ -60,6 +57,11 @@ class SoftwareComponent extends React.Component {
 
                 <div className="panel">
                     <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} inline /></dd>
+                        </div>
+
                         <div data-test="title">
                             <dt>Title</dt>
                             {context.source_url ?
@@ -179,7 +181,7 @@ class ListingComponent extends React.Component {
                     <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Software</p>
-                        {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">

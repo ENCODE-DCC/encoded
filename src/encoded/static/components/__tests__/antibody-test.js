@@ -42,13 +42,13 @@ describe('Antibody', () => {
         });
 
         test('has a good status panel', () => {
-            const panel = antibody.find('.type-antibody-status');
-            const row = panel.find('.status-organism-row');
-            const element = row.at(0).find('.status-status');
+            const panel = antibody.find('.antibody-status');
+            const row = panel.find('.antibody-status__group');
+            const element = row.at(0).find('.antibody-status__status');
             expect(element).toHaveLength(1);
             expect(element.text()).toEqual('awaiting characterization');
-            expect(row.find('.status-organism').text()).toEqual('Homo sapiens');
-            expect(row.find('.status-terms').text()).toEqual('HeLa-S3');
+            expect(row.find('.antibody-status__organism').text()).toEqual('Homo sapiens');
+            expect(row.find('.antibody-status__terms').text()).toEqual('HeLa-S3');
         });
 
         test('has a good summary panel', () => {

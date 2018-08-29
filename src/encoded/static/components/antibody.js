@@ -12,7 +12,19 @@ import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
 import { AlternateAccession } from './objectutils';
-import { StatusLabel, getObjectStatuses, sessionToAccessLevel } from './statuslabel';
+import { PickerActions } from './search';
+import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
+
+
+// Order that antibody statuses should be displayed.
+const antibodyStatusOrder = [
+    'characterized to standards',
+    'characterized to standards with exemption',
+    'awaiting characterization',
+    'partially characterized',
+    'not pursued',
+    'not characterized to standards',
+];
 
 
 const LotComponent = (props, reactContext) => {
@@ -97,29 +109,23 @@ const LotComponent = (props, reactContext) => {
                             <span>Antibody</span>
                         }
                     </h3>
-                    <div className="status-line">
-                        <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
-                        </div>
-                        {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
-                    </div>
+                    {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
                 </div>
             </header>
             {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}
 
-            {context.lot_reviews && context.lot_reviews.length ?
-                <div className="antibody-statuses">
-                    {antibodyStatuses}
-                </div>
-            :
-                <div className="characterization-status-labels">
-                    <StatusLabel status="Awaiting lab characterization" />
-                </div>
-            }
+            <div className="antibody-statuses">
+                {antibodyStatuses}
+            </div>
 
             <Panel addClasses="data-display">
                 <PanelBody>
                     <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} css="dd-status" title="Antibody status" inline /></dd>
+                        </div>
+
                         <div data-test="source">
                             <dt>Source (vendor)</dt>
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
@@ -247,7 +253,7 @@ const AntibodyStatus = (props) => {
     // Sort the lot reviews by their status according to our predefined order
     // given in the statusOrder array we imported from globals.js.
     const lotReviews = _.sortBy(context.lot_reviews, (lotReview =>
-        globals.statusOrder.indexOf(lotReview.status)
+        antibodyStatusOrder.indexOf(lotReview.status)
     ));
 
     // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
@@ -275,35 +281,33 @@ const AntibodyStatus = (props) => {
     });
 
     return (
-        <section className="type-antibody-status view-detail panel">
-            <div className="row">
-                <div className="col-xs-12">
-                    {Object.keys(statusTree).map((status) => {
-                        const organisms = statusTree[status];
-                        return (
-                            <div key={status} className="row status-status-row">
-                                {Object.keys(organisms).map((organism, i) => {
-                                    const terms = Object.keys(organisms[organism]);
-                                    return (
-                                        <div key={i} className="row status-organism-row">
-                                            <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
-                                                {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')} />{status}</span> : ''}
-                                            </div>
-                                            <div className="col-sm-2 col-sm-pull-3 status-organism">
-                                                {organism}
-                                            </div>
-                                            <div className="col-sm-7 col-sm-pull-3 status-terms">
-                                                {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
-                                            </div>
+        <Panel>
+            <PanelBody>
+                {Object.keys(statusTree).map((status) => {
+                    const organisms = statusTree[status];
+                    return (
+                        <div key={status} className="antibody-status">
+                            {Object.keys(organisms).map((organism, i) => {
+                                const terms = Object.keys(organisms[organism]);
+                                return (
+                                    <div key={i} className="antibody-status__group">
+                                        <div className="antibody-status__organism">
+                                            {organism}
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        </section>
+                                        <div className="antibody-status__terms">
+                                            {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
+                                        </div>
+                                        <div className="antibody-status__status">
+                                            {i === 0 ? <Status item={status} inline /> : null}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    );
+                })}
+            </PanelBody>
+        </Panel>
     );
 };
 
@@ -369,7 +373,7 @@ const CharacterizationFile = (props) => {
 
     return (
         <div className="document__file">
-            <div className="document__characterization-badge"><StatusLabel status={doc.status} /></div>
+            <div className="document__characterization-badge"><Status item={doc} badgeSize="small" inline /></div>
             {detailSwitch ?
                 <button onClick={detailSwitch} className="document__file-detail-switch">
                     {collapseIcon(!detailOpen)}
@@ -490,3 +494,184 @@ globals.documentViews.caption.register(CharacterizationCaption, 'AntibodyCharact
 globals.documentViews.preview.register(DocumentPreview, 'AntibodyCharacterization');
 globals.documentViews.file.register(CharacterizationFile, 'AntibodyCharacterization');
 globals.documentViews.detail.register(CharacterizationDetail, 'AntibodyCharacterization');
+
+
+// Display one antibody status indicator
+class StatusIndicator extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React component state.
+        this.state = {
+            tipOpen: false,
+            tipStyles: {},
+        };
+
+        // Bind `this` to non-React methods.
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+    }
+
+    // Display tooltip on hover
+    onMouseEnter() {
+        function getNextElementSibling(el) {
+            // IE8 doesn't support nextElementSibling
+            return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
+        }
+
+        // Get viewport bounds of result table and of this tooltip
+        let whiteSpace = 'nowrap';
+        const resultBounds = document.getElementById('result-table').getBoundingClientRect();
+        const resultWidth = resultBounds.right - resultBounds.left;
+        const tipBounds = _.clone(getNextElementSibling(this.indicator).getBoundingClientRect());
+        const tipWidth = tipBounds.right - tipBounds.left;
+        let width = tipWidth;
+        if (tipWidth > resultWidth) {
+            // Tooltip wider than result table; set tooltip to result table width and allow text to wrap
+            tipBounds.right = (tipBounds.left + resultWidth) - 2;
+            whiteSpace = 'normal';
+            width = tipBounds.right - tipBounds.left - 2;
+        }
+
+        // Set an inline style to move the tooltip if it runs off right edge of result table
+        const leftOffset = resultBounds.right - tipBounds.right;
+        if (leftOffset < 0) {
+            // Tooltip goes outside right edge of result table; move it to the left
+            this.setState({ tipStyles: { left: `${leftOffset + 10}px`, maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
+        } else {
+            // Tooltip fits inside result table; move it to native position
+            this.setState({ tipStyles: { left: '10px', maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
+        }
+
+        this.setState({ tipOpen: true });
+    }
+
+    // Close tooltip when not hovering
+    onMouseLeave() {
+        this.setState({ tipStyles: { maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px' } }); // Reset position and width
+        this.setState({ tipOpen: false });
+    }
+
+    render() {
+        const classes = `tooltip-status sentence-case${this.state.tipOpen ? ' tooltipopen' : ''}`;
+
+        return (
+            <span className="tooltip-status-trigger">
+                <span ref={(indicator) => { this.indicator = indicator; }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+                    <Status item={this.props.status} badgeSize="small" noLabel inline />
+                </span>
+                <div className={classes} style={this.state.tipStyles}>
+                    {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
+                </div>
+            </span>
+        );
+    }
+}
+
+StatusIndicator.propTypes = {
+    status: PropTypes.string,
+    terms: PropTypes.array.isRequired,
+};
+
+StatusIndicator.defaultProps = {
+    status: '',
+};
+
+
+// Display the status indicators for one target
+const StatusIndicators = (props) => {
+    const { targetTree, target } = props;
+
+    return (
+        <span className="status-indicators">
+            {Object.keys(targetTree[target]).map((status, i) => {
+                if (status !== 'target') {
+                    return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
+                }
+                return null;
+            })}
+        </span>
+    );
+};
+
+StatusIndicators.propTypes = {
+    targetTree: PropTypes.object.isRequired,
+    target: PropTypes.string.isRequired,
+};
+
+
+const ListingComponent = (props, reactContext) => {
+    const result = props.context;
+
+    // Sort the lot reviews by their status according to our predefined order
+    // given in the statusOrder array.
+    const lotReviews = _.sortBy(result.lot_reviews, lotReview => antibodyStatusOrder.indexOf(lotReview.status));
+
+    // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
+    const targetTree = {};
+    lotReviews.forEach((lotReview) => {
+        lotReview.targets.forEach((target) => {
+            // If we haven't seen this target, save it in targetTree along with the
+            // corresponding target and organism structures.
+            if (!targetTree[target.name]) {
+                targetTree[target.name] = { target };
+            }
+            const targetNode = targetTree[target.name];
+
+            // If we haven't seen the status, save it in the targetTree target
+            if (!targetNode[lotReview.status]) {
+                targetNode[lotReview.status] = [];
+            }
+            const statusNode = targetNode[lotReview.status];
+
+            // If we haven't seen the biosample term name, save it in the targetTree target status
+            if (statusNode.indexOf(lotReview.biosample_term_name) === -1) {
+                statusNode.push(lotReview.biosample_term_name);
+            }
+        });
+    });
+
+    return (
+        <li>
+            <div className="clearfix">
+                <PickerActions {...props} />
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">Antibody</p>
+                    <p className="type">{` ${result.accession}`}</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                <div className="accession">
+                    {Object.keys(targetTree).map(target =>
+                        <div key={target}>
+                            <a href={result['@id']}>
+                                {targetTree[target].target.label}
+                                {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
+                            </a>
+                            <StatusIndicators targetTree={targetTree} target={target} />
+                        </div>
+                    )}
+                </div>
+                <div className="data-row">
+                    <div><strong>Source: </strong>{result.source.title}</div>
+                    <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
+
+ListingComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Antibody search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+ListingComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Listing = auditDecor(ListingComponent);
+
+globals.listingViews.register(Listing, 'AntibodyLot');

@@ -8,11 +8,8 @@ import { svgIcon } from '../libs/svg-icons';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
 import { FacetList } from './search';
-import { getObjectStatuses } from './statuslabel';
+import { getObjectStatuses, sessionToAccessLevel } from './status';
 
-
-// Get an array of all possible experiment statuses.
-const experimentStatuses = getObjectStatuses('Experiment');
 
 // Map view icons to svg icons
 const view2svg = {
@@ -74,7 +71,7 @@ SummaryTitle.propTypes = {
 function generateStatusData(buckets, labels) {
     // Fill the array to the proper length with zeroes to start with. Actual non-zero data will
     // overwrite the appropriate entries.
-    const statusData = Array.from({ length: experimentStatuses.length }, (() => 0));
+    const statusData = Array.from({ length: labels.length }, (() => 0));
 
     // Convert statusData to a form createBarChart understands.
     if (buckets && buckets.length) {
@@ -93,7 +90,9 @@ function generateStatusData(buckets, labels) {
 class SummaryStatusChart extends React.Component {
     constructor() {
         super();
+        this.chart = null;
         this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
     }
 
     componentDidMount() {
@@ -103,38 +102,22 @@ class SummaryStatusChart extends React.Component {
     }
 
     componentDidUpdate() {
-        const { chart, props } = this;
-        const { statusData } = props;
-
-        if (chart) {
-            const replicateTypeColors = globals.replicateTypeColors.colorList(globals.replicateTypeList);
-
-            // For each replicate type, extract the data for each status to assign to the existing
-            // chart's dataset.
-            const datasets = [];
-            globals.replicateTypeList.forEach((replicateType, replicateTypeIndex) => {
-                const facetData = statusData.find(facet => facet.key === replicateType);
-                if (facetData) {
-                    // Get an array of replicate data per status from the facet data.
-                    const data = generateStatusData(facetData.status.buckets, experimentStatuses);
-
-                    datasets.push({
-                        backgroundColor: replicateTypeColors[replicateTypeIndex],
-                        data,
-                        label: replicateType,
-                    });
-                }
-            });
-
-            // Update the chart data, then force a redraw of the chart and legend.
-            chart.data.datasets = datasets;
-            chart.update();
-            document.getElementById(`${this.chartId}-legend`).innerHTML = chart.generateLegend();
+        if (this.props.totalStatusData) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.statusData);
+            } else {
+                this.createChart();
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
         }
     }
 
     createChart() {
         const { statusData } = this.props;
+        const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
+        const experimentStatuses = getObjectStatuses('Dataset', accessLevel);
 
         // Initialize data object to pass to createBarChart.
         const data = {
@@ -160,6 +143,35 @@ class SummaryStatusChart extends React.Component {
                 // Save the created chart instance.
                 this.chart = chartInstance;
             });
+    }
+
+    updateChart(chart, statusData) {
+        const replicateTypeColors = globals.replicateTypeColors.colorList(globals.replicateTypeList);
+        const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
+        const experimentStatuses = getObjectStatuses('Dataset', accessLevel);
+
+        // For each replicate type, extract the data for each status to assign to the existing
+        // chart's dataset.
+        const datasets = [];
+        globals.replicateTypeList.forEach((replicateType, replicateTypeIndex) => {
+            const facetData = statusData.find(facet => facet.key === replicateType);
+            if (facetData) {
+                // Get an array of replicate data per status from the facet data.
+                const data = generateStatusData(facetData.status.buckets, experimentStatuses);
+
+                datasets.push({
+                    backgroundColor: replicateTypeColors[replicateTypeIndex],
+                    data,
+                    label: replicateType,
+                });
+            }
+        });
+
+        // Update the chart data, then force a redraw of the chart and legend.
+        chart.data.datasets = datasets;
+        chart.data.labels = experimentStatuses;
+        chart.update();
+        document.getElementById(`${this.chartId}-legend`).innerHTML = chart.generateLegend();
     }
 
     render() {
@@ -195,6 +207,8 @@ SummaryStatusChart.propTypes = {
 };
 
 SummaryStatusChart.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
     navigate: PropTypes.func,
 };
 

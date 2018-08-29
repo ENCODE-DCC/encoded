@@ -67,6 +67,24 @@ def genetic_modification_5(lab, award, crispr):
             }]
     }
 
+@pytest.fixture
+def genetic_modification_6(lab, award, crispr, source):
+    return {
+        'purpose': 'validation',
+        'category': 'deeltion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "placeholder_id",
+                "source": source['uuid']
+            }
+        ]
+    }
+
 
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
@@ -109,3 +127,9 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
     assert value['reagents'][0]['source'] == 'sigma'
     assert value['reagents'][0]['identifier'] == '12345'
 '''
+
+def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_6,
+                             current_version='6', target_version='7')
+    assert value['schema_version'] == '7'
+    assert value.get('purpose') == 'characterization'
