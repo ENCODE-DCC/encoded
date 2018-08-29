@@ -1,6 +1,3 @@
-Test master push
-Test changes 1
-
 Changes
 =======
 
