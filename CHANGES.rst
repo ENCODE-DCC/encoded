@@ -1,6 +1,29 @@
 Changes
 =======
 
+72.0 (released)
+-----------------
+1. ENCD-4103 Fix tests broken by SNO-41 (#2317)
+2. ENCD-4098 Update to snovault 1.0.11 (#2314)
+3. ENCD-4072 Remove es master from deployment (#2302)
+4. ENCD-4086 Analysis-Step schema (#2305)
+5. ENCD-4048 rep-num-in-pub-n-exp (#2311)
+6. ENCD-4093 Fix initial region indexing failure (#2308)
+7. ENCD-3728 Fix build error (#2306)
+8. ENCD-4020 Allowing specification of Sets as controls (#2296)
+9. ENCD-4055 removed-some-styling-on-raw-data (#2277)
+10. ENCD-4057 properly-format-data-on-biosample-page (#2276)
+11. ENCD-4088 Remove extra code added in ENCD-3306 (#2310)
+12. ENCD-4040 vis index replicate conditional (#2294)
+13. ENCD-3718 return-404-when-file-not-found (#2278)
+14. ENCD-4073 Revert accidental blocked dataset status expansion (#2291)
+15. ENCD-4077 Fix deploy volume size type (#2304)
+16. ENCD-3776 move-to-standard-status (#2295)
+17. ENCD-4078 Remove unused statuses (#2293)
+18. ENCD-4058 expanding-matrix-creates-unaligned-header (#2280)
+19. ENCD-4085 Add weiwei as a submitter (#2298)
+20. ENCD-4081 Add Yunhai as a submitter in local test. (#2288)
+
 71.0 (released)
 -----------------
 01. ENCD-4046 update to snovault 1.0.10, add CHANGES (#2275)

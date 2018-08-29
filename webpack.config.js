@@ -49,7 +49,9 @@ const loaders = [
         test: /\.js$/,
         include: [
             PATHS.static,
+            path.resolve(__dirname, 'node_modules/dagre-d3'),
             path.resolve(__dirname, 'node_modules/dalliance'),
+            path.resolve(__dirname, 'node_modules/superagent'),
         ],
         loader: 'babel',
     },

@@ -127,9 +127,7 @@ class Item(snovault.Item):
         'not pursued': ALLOW_CURRENT,
 
         # dataset / experiment
-        'release ready': ALLOW_VIEWING_GROUP_VIEW,
         'revoked': ALLOW_CURRENT,
-        'in review': ALLOW_CURRENT_AND_SUBMITTER_EDIT,
 
         'archived': ALLOW_CURRENT,
     }

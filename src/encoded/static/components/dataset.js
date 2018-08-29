@@ -387,7 +387,7 @@ class PublicationDataComponent extends React.Component {
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} showReplicateNumber={false} hideGraph />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>

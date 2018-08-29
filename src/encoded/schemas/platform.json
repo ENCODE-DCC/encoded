@@ -12,13 +12,13 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/url" },
-        { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "term_id": {
             "@type": "@id",

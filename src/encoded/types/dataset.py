@@ -468,7 +468,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.library.spikeins_used',
         'related_datasets.replicates.library.treatments',
         'related_datasets.possible_controls',
-        'related_datasets.possible_controls.target',
         'related_datasets.possible_controls.lab',
         'related_datasets.target.organism',
         'related_datasets.references',

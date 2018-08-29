@@ -36,3 +36,12 @@ def platform_3_4(value, system):
 
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
+
+
+@upgrade_step('platform', '6', '7')
+def platform_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3776
+    if value.get('status') == 'current':
+        value['status'] = 'released'
+    elif value.get('status') == 'disabled':
+        value['status'] = 'deleted'

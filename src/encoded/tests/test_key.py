@@ -1,13 +1,13 @@
 import pytest
 
 items = [
-    {'name': 'one', 'accession': 'TEST1'},
-    {'name': 'two', 'accession': 'TEST2'},
+    {'name': 'one', 'alias': 'TEST1'},
+    {'name': 'two', 'alias': 'TEST2'},
 ]
 
 bad_items = [
-    {'name': 'one', 'accession': 'BAD1'},
-    {'name': 'bad', 'accession': 'TEST1'},
+    {'name': 'one', 'alias': 'BAD1'},
+    {'name': 'bad', 'alias': 'TEST1'},
 ]
 
 
@@ -20,7 +20,7 @@ def content(testapp):
 
 @pytest.mark.parametrize('item', items)
 def test_unique_key(testapp, content, item):
-    url = '/testing-keys/' + item['accession']
+    url = '/testing-keys/' + item['alias']
     res = testapp.get(url).maybe_follow()
     assert res.json['name'] == item['name']
 
@@ -36,7 +36,7 @@ def test_keys_update(testapp):
     item = items[0]
     res = testapp.post_json(url, item, status=201)
     location = res.location
-    new_item = {'name': 'new_one', 'accession': 'NEW1'}
+    new_item = {'name': 'new_one', 'alias': 'NEW1'}
     testapp.put_json(location, new_item, status=200)
     testapp.post_json(url, item, status=201)
     testapp.put_json(location, item, status=409)

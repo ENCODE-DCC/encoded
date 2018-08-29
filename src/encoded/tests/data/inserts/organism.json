@@ -3,138 +3,161 @@
         "name": "human",
         "scientific_name": "Homo sapiens",
         "taxon_id": "9606",
-        "uuid": "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+        "uuid": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+        "status": "released"
     },
     {
         "name": "rabbit",
         "scientific_name": "Oryctolagus cuniculus",
         "taxon_id": "9986",
-        "uuid": "4f98fd6a-0e61-4988-9032-a5116f6d0607"
+        "uuid": "4f98fd6a-0e61-4988-9032-a5116f6d0607",
+        "status": "released"
     },
     {
         "name": "rat",
         "scientific_name": "Rattus norvegicus",
         "taxon_id": "10116",
-        "uuid": "3aa8d64b-dc44-48b5-926d-60ad2befebe7"
+        "uuid": "3aa8d64b-dc44-48b5-926d-60ad2befebe7",
+        "status": "released"
     },
     {
         "name": "mouse",
         "scientific_name": "Mus musculus",
         "taxon_id": "10090",
-        "uuid": "3413218c-3d86-498b-a0a2-9a406638e786"
+        "uuid": "3413218c-3d86-498b-a0a2-9a406638e786",
+        "status": "released"
     },
     {
         "name": "sheep",
         "scientific_name": "Ovis aries",
         "taxon_id": "9940",
-        "uuid": "2cfcb093-0619-4e52-b6d5-15779860dc49"
+        "uuid": "2cfcb093-0619-4e52-b6d5-15779860dc49",
+        "status": "released"
     },
     {
         "name": "goat",
         "scientific_name": "Capra hircus",
         "taxon_id": "9925",
-        "uuid": "3e4d691d-49b0-40bd-9628-bb4f53d80980"
+        "uuid": "3e4d691d-49b0-40bd-9628-bb4f53d80980",
+        "status": "released"
     },
     {
         "name": "chicken",
         "scientific_name": "Gallus gallus",
         "taxon_id": "9031",
-        "uuid": "c3aff9e7-8460-44b7-8cc2-ed9cade08ead"
+        "uuid": "c3aff9e7-8460-44b7-8cc2-ed9cade08ead",
+        "status": "released"
     },
     {
         "name": "dmelanogaster",
         "scientific_name": "Drosophila melanogaster",
         "taxon_id": "7227",
-        "uuid": "ab546d43-8e2a-4567-8db7-a217e6d6eea0"
+        "uuid": "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+        "status": "released"
     },
     {
         "name": "celegans",
         "scientific_name": "Caenorhabditis elegans",
         "taxon_id": "6239",
-        "uuid": "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20"
+        "uuid": "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
+        "status": "released"
     },
     
     {
         "name": "cbrenneri",
         "scientific_name": "Caenorhabditis brenneri",
         "taxon_id": "135651",
-        "uuid": "e3ec4c1b-a203-4fe7-a013-96c2d45ab242"
+        "uuid": "e3ec4c1b-a203-4fe7-a013-96c2d45ab242",
+        "status": "released"
     },
     {
         "name": "cbriggsae",
         "scientific_name": "Caenorhabditis briggsae",
         "taxon_id": "6238",
-        "uuid": "69efae2b-4df5-4957-81da-346f1b93cb98"
+        "uuid": "69efae2b-4df5-4957-81da-346f1b93cb98",
+        "status": "released"
     },
     {
         "name": "cjaponica",
         "scientific_name": "Caenorhabditis japonica",
         "taxon_id": "281687",
-        "uuid": "a7e711b9-534c-44a3-a782-2a15af620739"
+        "uuid": "a7e711b9-534c-44a3-a782-2a15af620739",
+        "status": "released"
     },
     {
         "name": "cremanei",
         "scientific_name": "Caenorhabditis remanei",
         "taxon_id": "31234",
-        "uuid": "451f9e49-685d-40d5-ad89-760b2512262a"
+        "uuid": "451f9e49-685d-40d5-ad89-760b2512262a",
+        "status": "released"
     },
     {
         "name": "dananassae",
         "scientific_name": "Drosophila ananassae",
         "taxon_id": "7217",
-        "uuid": "5be68469-94ba-4d60-b361-dde8958399ca"
+        "uuid": "5be68469-94ba-4d60-b361-dde8958399ca",
+        "status": "released"
     },
     {
         "name": "dmojavensis",
         "scientific_name": "Drosophila mojavensis",
         "taxon_id": "7230",
-        "uuid": "74144f1f-f3a6-42b9-abfd-186a1ca93198"
+        "uuid": "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+        "status": "released"
     },
     {
         "name": "dpseudoobscura",
         "scientific_name": "Drosophila pseudoobscura",
         "taxon_id": "7237",
-        "uuid": "c3cc08b7-7814-4cae-a363-a16b76883e3f"
+        "uuid": "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+        "status": "released"
     },
     {
         "name": "dsimulans",
         "scientific_name": "Drosophila simulans",
         "taxon_id": "7240",
-        "uuid": "d1072fd2-8374-4f9b-85ce-8bc2c61de122"
+        "uuid": "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+        "status": "released"
     },
     {
         "name": "dvirilis",
         "scientific_name": "Drosophila virilis",
         "taxon_id": "7244",
-        "uuid": "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b"
+        "uuid": "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+        "status": "released"
     },
     {
         "name": "dyakuba",
         "scientific_name": "Drosophila yakuba",
         "taxon_id": "7245",
-        "uuid": "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+        "uuid": "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c",
+        "status": "released"
     },
     {
         "name": "avictoria",
         "scientific_name": "Aequorea victoria",
         "taxon_id": "6100",
-        "uuid": "2ca583ff-71b8-4cf8-bfe3-392b7ddd28a2"
+        "uuid": "2ca583ff-71b8-4cf8-bfe3-392b7ddd28a2",
+        "status": "released"
     },
     {
         "name": "synthetic",
         "taxon_id": "0",
-        "uuid": "5d8f172c-2220-4d76-89e2-e26ed08c42e8"
+        "uuid": "5d8f172c-2220-4d76-89e2-e26ed08c42e8",
+        "status": "released"
     },
     {
         "name": "influenza",
         "taxon_id": "11309",
         "scientific_name": "influenzavirus",
-        "uuid": "7349d69e-04f3-4650-b2c8-963cce2341d6"
+        "uuid": "7349d69e-04f3-4650-b2c8-963cce2341d6",
+        "status": "released"
     },
     {
         "name": "bacteriophage-t7",
         "taxon_id": "10760",
         "scientific_name": "enterobacteria phage t7",
-        "uuid": "e426f5b3-e577-4afb-8bb5-ce57a6d4d050"
+        "uuid": "e426f5b3-e577-4afb-8bb5-ce57a6d4d050",
+        "status": "released"
     }
 ]

@@ -1,5 +1,14 @@
 ## Changelog for source.json
 
+### Schema version 6
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "released",
+        "deleted",
+        "in progress"
+    ]
+
 ### Schema version 5
 
 * *status* property was restricted to one of  
