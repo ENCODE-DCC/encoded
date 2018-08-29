@@ -78,7 +78,8 @@
                 },
                 "size": {
                     "title": "File size",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "md5sum": {
                     "format": "md5sum",

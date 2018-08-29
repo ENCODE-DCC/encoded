@@ -1,6 +1,7 @@
 .aws/
 .coverage
 .gitconfig
+.vscode/
 /.installed.cfg
 /.mr.developer.cfg
 /.cache/

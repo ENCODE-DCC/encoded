@@ -1,3 +1,4 @@
+from botocore.exceptions import ClientError
 from snovault import (
     AfterModified,
     BeforeModified,
@@ -7,9 +8,11 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
+from snovault.validation import ValidationFailure
 from .base import (
     Item,
     paths_filtered_by_status,
+    STATUS_TRANSITION_TABLE
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -26,6 +29,7 @@ from urllib.parse import (
 )
 import boto3
 import datetime
+import logging
 import json
 import pytz
 import time
@@ -377,6 +381,59 @@ class File(Item):
             profile_name = registry.settings.get('file_upload_profile_name')
             sheets['external'] = external_creds(bucket, key, name, profile_name)
         return super(File, cls).create(registry, uuid, properties, sheets)
+
+    def _get_external_sheet(self):
+        external = self.propsheets.get('external', {})
+        if external.get('service') == 's3':
+            return external
+        else:
+            raise HTTPNotFound()
+
+    def set_public_s3(self):
+        external = self._get_external_sheet()
+        boto3.resource('s3').ObjectAcl(
+            external['bucket'],
+            external['key']
+        ).put(ACL='public-read')
+
+    def set_private_s3(self):
+        external = self._get_external_sheet()
+        boto3.resource('s3').ObjectAcl(
+            external['bucket'],
+            external['key']
+        ).put(ACL='private')
+
+    def set_status(self, new_status, request, parent=True):
+        properties = self.upgrade_properties()
+        status = properties.get('status')
+        # Is valid transition?
+        if status not in STATUS_TRANSITION_TABLE[new_status]:
+            # Raise failure if this is primary object.
+            if parent:
+                msg = 'Status transition {} to {} not allowed'.format(
+                    status,
+                    new_status
+                )
+                raise ValidationFailure('body', ['status'], msg)
+            # Do nothing if this is child object.
+            else:
+                return
+        properties['status'] = new_status
+        request.registry.notify(BeforeModified(self, request))
+        self.update(properties)
+        request.registry.notify(AfterModified(self, request))
+        # Change permission in S3.
+        try:
+            if new_status == 'released':
+                self.set_public_s3()
+            elif new_status == 'in progress':
+                self.set_private_s3()
+        except ClientError as e:
+            # Demo trying to set ACL on production object?
+            if e.response['Error']['Code'] == 'AccessDenied':
+                logging.warn(e)
+            else:
+                raise e
 
 
 @view_config(name='upload', context=File, request_method='GET',

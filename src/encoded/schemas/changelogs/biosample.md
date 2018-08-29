@@ -1,5 +1,10 @@
 ## Changelog for biosample.json
 
+### Minor changes since schema version 21
+
+* *passage_number* was set to have a minimum of 0.
+* *PMI* was set to have a minimum of 1.
+
 ### Schema version 21
 
 * Added *organoid* to biosample_type enums.

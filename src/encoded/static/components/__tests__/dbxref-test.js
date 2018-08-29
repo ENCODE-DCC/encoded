@@ -175,8 +175,10 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links for Targets', () => {
             expect(dbxLinksTarget.length).toBe(2);
-            expect(dbxLinksTarget.at(0).prop('href')).toEqual('http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=CG43860');
-            expect(dbxLinksTarget.at(1).prop('href')).toEqual('http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=FBtr0332562');
+            const flybaseSearchUrl = 'http://flybase.org/search/symbol/';
+
+            expect(dbxLinksTarget.at(0).prop('href')).toEqual(`${flybaseSearchUrl}CG43860`);
+            expect(dbxLinksTarget.at(1).prop('href')).toEqual(`${flybaseSearchUrl}FBtr0332562`);
         });
     });
 
@@ -558,6 +560,25 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.length).toBe(2);
             expect(dbxLinks.at(0).prop('href')).toEqual('http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname=HMC04792');
             expect(dbxLinks.at(1).prop('href')).toEqual('http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname=HMC04793');
+        });
+    });
+
+    describe('Test DGGR', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['FlyDonor'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['DGGR:109027', 'DGGR:101084']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://kyotofly.kit.jp/cgi-bin/stocks/search_res_det.cgi?DB_NUM=1&DG_NUM=109027');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://kyotofly.kit.jp/cgi-bin/stocks/search_res_det.cgi?DB_NUM=1&DG_NUM=101084');
         });
     });
 

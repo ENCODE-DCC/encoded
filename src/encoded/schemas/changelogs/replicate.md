@@ -1,5 +1,10 @@
 ## Changelog for replicate.json
 
+### Minor changes since schema version 9
+
+* *biological_replicate_number* and *technical_replicate_number* were set to have a minimum of 1.
+* *rbns_protein_concentration* was set to have a minimum of 0.
+
 ### Schema version 9
 
 * Remove standard_status mixin.

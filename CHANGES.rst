@@ -1,6 +1,21 @@
 Changes
 =======
 
+73.0 (released)
+-----------------
+1. ENCD-4129 update-to-snovault-1.0.12 (#2336)
+2. ENCD-4064 release-endpoint (#2281)
+3. ENCD-4017 Fulfill ECP requests for home page additions. (#2326)
+4. ENCD-4105 Add DGGR dbxref processing (#2325)
+5. ENCD-4108 audit matched (#2324)
+6. ENCD-4089 Deactivated-rep-num-in-annot-table (#2315)
+7. ENCD-4074 toolip-overlay (#2313)
+8. ENCD-4102 changed audit from WARNING to ERROR (#2327)
+9. ENCD-3903 add documentation for schema page (#2332)
+10. ENCD-3563 updated sc replication audit (#2322)
+11. ENCD-4087 fixed-flybase-search (#2312)
+12. ENCD-4051 Change schemas to set minimum int values (#2309)
+
 72.0 (released)
 -----------------
 1. ENCD-4103 Fix tests broken by SNO-41 (#2317)

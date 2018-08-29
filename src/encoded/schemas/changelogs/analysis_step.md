@@ -1,9 +1,10 @@
 ## Changelog for analysis_step.json
 
-### Schema version 7
+### Minor changes since schema version 6
 
 * *input_file_types* and *output_file_types* were updated to have the following three more enum terms to match File schema: "differential expression quantifications", "differential splicing quantifications", "peaks and background as input for IDR".
 
+* *major_version* was set to have a minimum of 1.
 
 ### Schema version 6
 
