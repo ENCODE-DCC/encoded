@@ -139,7 +139,7 @@ class CalculatedFileSetBiosample:
 
 
 class CalculatedFileSetAssay:
-    @calculated_property(condition='files', schema={
+    @calculated_property(define=True, condition='files', schema={
         "title": "Assay term name",
         "type": "array",
         "items": {
@@ -150,16 +150,19 @@ class CalculatedFileSetAssay:
         return request.select_distinct_values(
             'replicate.experiment.assay_term_name', *files)
 
-    @calculated_property(define=True, condition='files', schema={
+    @calculated_property(define=True, condition='assay_term_name', schema={
         "title": "Assay term id",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def assay_term_id(self, request, files):
-        return request.select_distinct_values(
-            'replicate.experiment.assay_term_id', *files)
+    def assay_term_id(self, request, assay_term_name):
+        return [
+            assay_terms.get(x)
+            for x in assay_term_name
+            if assay_terms.get(x)
+        ]
 
 
 class CalculatedSeriesAssay:
