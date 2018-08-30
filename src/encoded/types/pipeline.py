@@ -58,6 +58,20 @@ class Pipeline(Item):
 class PipelineRun(Item):
     item_type = 'pipeline_run'
     schema = load_schema('encoded:schemas/pipeline_run.json')
+    rev = {
+        'steps': ('PipelineStepRun', 'pipeline_run')
+    }
+
+    @calculated_property(schema={
+        "title": "Pipeline Step Runs",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "PipelineStepRun",
+        },
+    })
+    def step_runs(self, request, steps):
+        return paths_filtered_by_status(request, steps)
 
 
 @collection(

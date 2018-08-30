@@ -578,6 +578,12 @@
         "accession": {
             "accessionType": "FF"
         },
+        "file_blob": {
+            "title": "File blob",
+            "description": "A file blob associated with this file object.",
+            "type": "string",
+            "linkTo": "FileBlob"
+        },
         "alternate_accessions": {
             "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
