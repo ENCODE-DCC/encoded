@@ -29,7 +29,7 @@ import datetime
 
 
 def item_is_revoked(request, path):
-    return request.embed(path, '@@object').get('status') == 'revoked'
+    return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
 
 
 def calculate_assembly(request, files_list, status):
@@ -38,7 +38,7 @@ def calculate_assembly(request, files_list, status):
     viewable_file_status = ['released','in progress']
 
     for path in files_list:
-        properties = request.embed(path, '@@object')
+        properties = request.embed(path, '@@object?skip_calculated=true')
         if properties['file_format'] in viewable_file_formats and \
                 properties['status'] in viewable_file_status:
             if 'assembly' in properties:
@@ -115,7 +115,7 @@ class Dataset(Item):
     def contributing_files(self, request, original_files, status):
         derived_from = set()
         for path in original_files:
-            properties = request.embed(path, '@@object')
+            properties = request.embed(path, '@@object?skip_calculated=true')
             derived_from.update(
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
@@ -208,7 +208,7 @@ class FileSet(Dataset):
         files = set(original_files + related_files)
         derived_from = set()
         for path in files:
-            properties = request.embed(path, '@@object')
+            properties = request.embed(path, '@@object?skip_calculated=true')
             derived_from.update(
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
@@ -405,13 +405,13 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
             for idx, path in enumerate(files):
                 # Need to cap this due to the large numbers of files in related_files
                 if idx < 100:
-                    f = request.embed(path, '@@object')
+                    f = request.embed(path, '@@object?skip_calculated=true')
                     if 'replicate' in f:
-                        rep = request.embed(f['replicate'], '@@object')
+                        rep = request.embed(f['replicate'], '@@object?skip_calculated=true')
                         if 'library' in rep:
-                            lib = request.embed(rep['library'], '@@object')
+                            lib = request.embed(rep['library'], '@@object?skip_calculated=true')
                             if 'biosample' in lib:
-                                bio = request.embed(lib['biosample'], '@@object')
+                                bio = request.embed(lib['biosample'], '@@object?skip_calculated=true')
                                 if 'organism' in bio:
                                     organisms.append(bio['organism'])
             if organisms:
@@ -517,7 +517,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         for assembly_from_original_files in calculate_assembly(request, original_files, status):
             combined_assembly.add(assembly_from_original_files)
         for dataset in related_datasets:
-            properties = request.embed(dataset, '@@object')
+            properties = request.embed(dataset, '@@object?skip_calculated=true')
             if properties['status'] not in ('deleted', 'replaced'):
                 for assembly_from_related_dataset in properties['assembly']:
                     combined_assembly.add(assembly_from_related_dataset)
