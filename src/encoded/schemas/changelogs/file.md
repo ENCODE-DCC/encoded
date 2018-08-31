@@ -2,6 +2,25 @@
 
 ### Minor changes since schema version 13
 
+* Added the following new types to output_type enums:
+    "enum" : [
+        "curated binding sites",
+        "curated SNVs",
+        "variant calls",
+        "eQTLs",
+        "dsQTLs",
+        "footprints",
+        "PWMs"
+    ]
+* Added the following key-value pairs to output_type_output_category:
+    {
+      "curated binding sites": "annotation",
+      "curated SNVs": "annotation",
+      "eQTLs": "annotation",
+      "dsQTLs": "annotation",
+      "Footprints": "annotation",
+      "PWMs": "annotation"
+    }
 * *output_type* list was updated to include *mapping quality thresholded chromatin interactions*
 * *read_count*, *file _size*, *read_length*, *mapped_read_length* were set to have a minimum of 0.
 * *barcode_position* in  *flowcell_details* was set to have a minimum of 1.

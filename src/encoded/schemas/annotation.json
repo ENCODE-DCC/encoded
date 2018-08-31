@@ -163,6 +163,7 @@
                 "dsQTLs",
                 "Footprints",
                 "PWMs",
+                "curated SNVs",
                 "variant calls"
             ]
         },

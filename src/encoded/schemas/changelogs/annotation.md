@@ -10,6 +10,15 @@
 
 ### Schema version 19
 
+* Added the following new types to annotation_type enums:
+    "enum" : [
+        "eQTLs",
+        "dsQTLs",
+        "Footprints",
+        "PWMs",
+        "curated SNVs",
+    ]
+
 * Added *organoid* to biosample_type enums.
 
 ### Schema version 18
