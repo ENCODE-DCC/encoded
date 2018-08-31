@@ -14,6 +14,10 @@ const regionGenomes = [
     { value: 'GRCm37', display: 'mm9' },
     { value: 'GRCm38', display: 'mm10' },
 ];
+const regulomeGenomes = [
+    { value: 'GRCh37', display: 'hg19' },
+    { value: 'GRCh38', display: 'GRCh38' },
+];
 
 
 const AutocompleteBox = (props) => {
@@ -198,9 +202,10 @@ class AdvSearch extends React.Component {
         const context = this.props.context;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
+        const genomeAssembly = context.title.startsWith('Regulome') ? regulomeGenomes : regionGenomes;
 
         if (this.state.genome === '') {
-            this.setState({ genome: context.assembly || regionGenomes[0].value });
+            this.setState({ genome: context.assembly || genomeAssembly[0].value });
         }
 
         return (
@@ -220,7 +225,7 @@ class AdvSearch extends React.Component {
                                 : null}
                                 <div className="input-group-addon input-group-select-addon">
                                     <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                        {regionGenomes.map(genomeId =>
+                                        {genomeAssembly.map(genomeId =>
                                             <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
                                         )}
                                     </select>
