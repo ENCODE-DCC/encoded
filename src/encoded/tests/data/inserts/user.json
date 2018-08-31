@@ -96,6 +96,17 @@
         "uuid": "de7f5444-ee87-4e4e-b621-9c136ea1d4b1"
     },
     {
+        "email": "khzlin@stanford.edu",
+        "first_name":"Khine",
+        "last_name":"Lin",
+        "lab": "/labs/j-michael-cherry/",
+        "status": "current",
+        "groups": [
+            "admin"
+        ],
+        "uuid": "6667a92a-d202-493a-8c7d-7a56d1380356"
+    },
+    {
         "email": "massa.porta@varius.mauris",
         "first_name": "J. Michael",
         "job_title": "PI",
