@@ -517,7 +517,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         for assembly_from_original_files in calculate_assembly(request, original_files, status):
             combined_assembly.add(assembly_from_original_files)
         for dataset in related_datasets:
-            properties = request.embed(dataset, '@@object?skip_calculated=true')
+            properties = request.embed(dataset, '@@object')
             if properties['status'] not in ('deleted', 'replaced'):
                 for assembly_from_related_dataset in properties['assembly']:
                     combined_assembly.add(assembly_from_related_dataset)
