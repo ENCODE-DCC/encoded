@@ -399,22 +399,22 @@ def test_set_status_endpoint_status_not_specified(testapp, experiment, dummy_req
 
 
 def test_set_status_endpoint_status_specified(testapp, experiment, dummy_request):
-    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_audit=true', {'status': 'released'}, status=200)
 
 
 def test_set_status_endpoint_in_progress_experiment(testapp, experiment, dummy_request):
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
-    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_audit=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'released'
 
 
 def test_set_status_endpoint_released_experiment(testapp, experiment, dummy_request):
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_audit=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'released'
-    testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_transition=true', {'status': 'in progress'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_transition=true&force_audit=true', {'status': 'in progress'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
 
@@ -423,7 +423,7 @@ def test_set_status_endpoint_release_experiment_has_date_released(testapp, exper
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'in progress'
     assert 'date_released' not in res.json
-    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_audit=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['status'] == 'released'
     assert 'date_released' in res.json
@@ -433,7 +433,7 @@ def test_set_status_endpoint_experiment_date_released_remains_same(testapp, expe
     dt = datetime.now().date()
     dt = str(dt.replace(year=dt.year - 10))
     testapp.patch_json(experiment['@id'], {'date_released': dt})
-    testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'})
+    testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_audit=true', {'status': 'released'})
     res = testapp.get(experiment['@id'])
     assert res.json['date_released'] == dt
 
@@ -447,7 +447,7 @@ def test_set_status_invalid_status_validation_failure(file, root, testapp, reque
 
 
 def test_set_status_changed_paths_experiment(testapp, experiment, dummy_request):
-    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?update=true&force_audit=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
 
 
