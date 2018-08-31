@@ -893,5 +893,65 @@
              "/labs/j-michael-cherry/"
          ],
          "uuid": "97d2dfcd-0919-4a27-9797-a6ef25f470a2"
+    },
+    {
+        "email": "zackm23@stanford.edu",
+        "first_name": "Zachary",
+         "groups": [
+             "admin"
+         ],
+         "job_title": "Data Insert Updater",
+         "lab": "/labs/j-michael-cherry/",
+         "last_name": "Myers",
+         "status": "current",
+         "submits_for": [
+             "/labs/j-michael-cherry/"
+         ],
+         "uuid": "7e944358-625c-426c-975c-7d875e22f753"
+    },
+    {
+        "email": "jahilton@stanford.edu",
+        "first_name": "Jason",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Hilton",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "ENCODE3",
+            "REMC",
+            "GGR",
+            "ENCODE4",
+            "community"
+        ],
+        "uuid": "332d0e03-a907-4f53-8358-bb00118277c8"
+    },
+    {
+        "email": "clitton@stanford.edu",
+        "first_name": "Casey",
+        "groups": [
+            "admin"
+        ],
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Litton",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "ENCODE3",
+            "REMC",
+            "GGR",
+            "ENCODE4",
+            "community"
+        ],
+        "uuid": "75659c39-eaea-47b7-ba26-92e9ff183e6c"
     }
 ]
