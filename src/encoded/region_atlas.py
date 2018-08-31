@@ -262,7 +262,7 @@ class RegulomeAtlas(RegionAtlas):
         '''private: returns one of the categories of evidence that are needed for scoring.'''
         # score categories are slighly different from regulome categories
         collection_type = dataset.get('collection_type')  # resident_regionset dataset
-        if collection_type == 'ChIP-seq':
+        if collection_type in ['ChIP-seq', 'binding sites']:
             return 'ChIP'
         if collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
             return 'DNase'                                       # aka Chromatin_Structure
@@ -270,7 +270,7 @@ class RegulomeAtlas(RegionAtlas):
             return 'PWM'
         if collection_type == 'Footprints':
             return 'Footprint'
-        if collection_type in ['eQTLs', 'dsQTLs']:
+        if collection_type in ['eQTLs', 'dsQTLs', 'curated SNVs']:
             return 'eQTL'
         return None
 
