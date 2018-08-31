@@ -88,6 +88,10 @@ REGULOME_REGION_REQUIREMENTS = {
         'output_type': ['optimal idr thresholded peaks'],
         'file_format': ['bed']
     },
+    'binding sites': {
+        'output_type': ['curated binding sites'],
+        'file_format': ['bed']
+    },
     'DNase-seq': {
         'file_type': ['bed narrowPeak'],
         'file_format': ['bed']
@@ -111,6 +115,10 @@ REGULOME_REGION_REQUIREMENTS = {
         'file_format': ['bed']
     },
     'dsQTLs': {
+        'file_format': ['bed']
+    },
+    'curated SNVs': {
+        'output_type': ['curated SNVs'],
         'file_format': ['bed']
     },
     'index': {  # TODO: reference of variant calls doesn't yet exist.  'index' is temporary
