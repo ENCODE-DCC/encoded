@@ -66,6 +66,25 @@ describe('Test individual dbxref types', () => {
         });
     });
 
+    describe('Test mouse ENSEMBLE', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Gene'], organism: { scientific_name: 'Mus musculus' } };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['ENSEMBL:ENSMUSG00000005698', 'ENSEMBL:ENSMUSG00000017167']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('http://www.ensembl.org/Mus_musculus/Gene/Summary?g=ENSMUSG00000005698');
+            expect(dbxLinks.at(1).prop('href')).toEqual('http://www.ensembl.org/Mus_musculus/Gene/Summary?g=ENSMUSG00000017167');
+        });
+    });
+
     describe('Test GeneID', () => {
         let dbxLinks;
 
