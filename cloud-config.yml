@@ -170,8 +170,9 @@ runcmd:
 - mkdir /srv/encoded
 - chown encoded:encoded /srv/encoded
 - cd /srv/encoded
-- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
-- sudo -u encoded git checkout %(COMMIT)s
+- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git
+- cd /srv/encoded/encoded
+- sudo -u encoded git checkout -b sha-%(COMMIT)s-branch %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
@@ -186,21 +187,21 @@ runcmd:
 - /etc/init.d/postgresql start
 - sudo pip3 install -U zc.buildout setuptools
 - sudo -u encoded buildout bootstrap
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
-- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
+- sudo -u encoded LANG=en_US.UTF-8 /srv/encoded/encoded/bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
+- sudo -u encoded /srv/encoded/encoded/bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws /srv/encoded/.aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/create-mapping production.ini --app-name app
-- sudo -u encoded bin/index-annotations production.ini --app-name app
+- sudo -u encoded /srv/encoded/encoded/bin/create-mapping production.ini --app-name app
+- sudo -u encoded /srv/encoded/encoded/bin/index-annotations production.ini --app-name app
 - if test "%(REGION_INDEX)s" = "False"
 - then
--    sudo -u encoded cp /srv/encoded/etc/encoded-apache.conf /srv/encoded/etc/encoded-apache.conf.original
--    sudo -u encoded sh -c "grep -v encoded\-regionindexer /srv/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/etc/encoded-apache.conf"
--    sudo -u encoded cp /srv/encoded/base.ini /srv/encoded/base.ini.original
--    sudo -u encoded sh -c "sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/base.ini.original > /srv/encoded/base.ini"
+-    sudo -u encoded cp /srv/encoded/encoded/etc/encoded-apache.conf /srv/encoded/encoded/etc/encoded-apache.conf.original
+-    sudo -u encoded sh -c "grep -v encoded\-regionindexer /srv/encoded/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/encoded/etc/encoded-apache.conf"
+-    sudo -u encoded cp /srv/encoded/encoded/base.ini /srv/encoded/encoded/base.ini.original
+-    sudo -u encoded sh -c "sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/encoded/base.ini.original > /srv/encoded/encoded/base.ini"
 - fi
-- ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
-- ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
+- ln -s /srv/encoded/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- ln -s /srv/encoded/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
 - a2enmod proxy_http
 - a2enmod rewrite
@@ -215,7 +216,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
+-   sudo -i -u encoded /srv/encoded/encoded/bin/batchupgrade /srv/encoded/encoded/production.ini --app-name app
 - fi
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 - PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
