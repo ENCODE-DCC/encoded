@@ -7,6 +7,7 @@ import collections
 import json
 import requests
 import os
+from pyramid.settings import asbool
 from pyramid.view import view_config
 from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
@@ -34,6 +35,7 @@ from snovault.elasticsearch.interfaces import (
 
 log = logging.getLogger(__name__)
 
+_REGION_INDEXER_NAME = 'region' + INDEXER
 
 # Region indexer 2.0
 # What it does:
@@ -75,11 +77,14 @@ TESTABLE_FILES = ['ENCFF002COS']  # '/static/test/peak_indexer/ENCFF002COS.bed.g
 
 
 def includeme(config):
+    registry = config.registry
+    is_regionindexer = asbool(registry.settings.get(_REGION_INDEXER_NAME, False))
+    if is_regionindexer and not registry.get(_REGION_INDEXER_NAME):
+        log.warning('Initialized %s', _REGION_INDEXER_NAME)
+        registry[_REGION_INDEXER_NAME] = RegionIndexer(registry)
+    config.add_route('_regionindexer_state', '/_regionindexer_state')
     config.add_route('index_region', '/index_region')
     config.scan(__name__)
-    config.add_route('_regionindexer_state', '/_regionindexer_state')
-    registry = config.registry
-    registry['region'+INDEXER] = RegionIndexer(registry)
 
 def tsvreader(file):
     reader = csv.reader(file, delimiter='\t')
@@ -336,7 +341,7 @@ def index_regions(request):
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
     request.datastore = 'elasticsearch'  # Let's be explicit
     dry_run = request.json.get('dry_run', False)
-    indexer = request.registry['region'+INDEXER]
+    indexer = request.registry[_REGION_INDEXER_NAME]
     uuids = []
 
 
