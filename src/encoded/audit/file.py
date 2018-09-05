@@ -5,6 +5,19 @@ from snovault import (
 
 from .item import STATUS_LEVEL
 
+def check_award_condition(value, awards):
+    return value.get('award') and value.get('award')['rfa'] in awards
+
+def audit_file_processed_step_run(value, system):
+    if value['output_category'] in ['raw data',
+                                    'reference']:
+        return
+    if check_award_condition(value, ['ENCODE3', 'ENCODE4']):
+        if 'step_run' not in value:
+            detail = 'Missing analysis_step_run information.'
+            yield AuditFailure('missing analysis_step_run',
+                            detail, level='ERROR')
+
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
                                     'reference']:
@@ -316,6 +329,7 @@ def audit_duplicate_quality_metrics(value, system):
 
 
 function_dispatcher = {
+    'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
     'audit_assembly': audit_file_assembly,
     'audit_replicate_match': audit_file_replicate_match,
@@ -327,7 +341,8 @@ function_dispatcher = {
 
 
 @audit_checker('File',
-               frame=['derived_from',
+               frame=['award',
+                      'derived_from',
                       'replicate',
                       'paired_with',
                       'file_format_specifications',

@@ -434,6 +434,24 @@ def test_audit_file_assembly(testapp, file6, file7):
                for error in errors_list)
 
 
+def test_audit_file_step_run(testapp, bam_file, analysis_step_run_bam):
+    res = testapp.get(bam_file['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing analysis_step_run'
+               for error in errors_list)
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(bam_file['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing analysis_step_run'
+               for error in errors_list)
+
+
 def test_audit_file_derived_from_empty(testapp, file7):
     res = testapp.get(file7['@id'] + '@@index-data')
     errors = res.json['audit']
