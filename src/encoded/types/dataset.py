@@ -311,6 +311,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 'organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
+                'cell_slims',
                 'award.project',
                 'assembly',
                 'encyclopedia_version'
