@@ -103,7 +103,7 @@ organ_slims = {
     'UBERON:0000996': 'vagina',
     'UBERON:0000992': 'ovary',
     'UBERON:0000473': 'testis',
-    'UBERON:0001637': 'artery',
+    'UBERON:0003509': 'arterial blood vessel',
     'UBERON:0001638': 'vein',
     'UBERON:0000160': 'intestine',
     'UBERON:0002384': 'connective tissue',
@@ -117,6 +117,29 @@ organ_slims = {
     'UBERON:0000483': 'epithelium',
     'UBERON:0002407': 'pericardium',
     'UBERON:0001744': 'lymphoid tissue'
+}
+
+cell_slims = {
+    'CL:0000066': 'epithelial cell',
+    'CL:0000236': 'B cell',
+    'CL:0000192': 'smooth muscle cell',
+    'CL:0000057': 'fibroblast',
+    'CL:0000576': 'monocyte',
+    'CL:0000312': 'keratinocyte',
+    'CL:0000148': 'melanocyte',
+    'CL:0000056': 'myoblast',
+    'CL:0002319': 'neural cell',
+    'CL:0000738': 'leukocyte',
+    'CL:0000084': 'T cell',
+    'CL:0000988': 'hematopoietic cell',
+    'EFO:0001639': 'cancer cell line',
+    'CL:0002494': 'cardiocyte',
+    'CL:0000115': 'endothelial cell',
+    'CL:0000763': 'myeloid cell',
+    'CL:0000669': 'pericyte cell',
+    'EFO:0005214': 'neuroblastoma cell line',
+    'EFO:0005292': 'lymphoblastoid cell line',
+    'EFO:0003040': 'embryonic cell line'
 }
 
 assay_slims = {
@@ -156,6 +179,7 @@ slim_shims = {
         'OBI:0002086': ['DNA methylation']  # TAB-seq
     },
     'organ': {
+        'NTR:0001407': ['brain'],
         'UBERON:0001871': ['brain'],
         'UBERON:0002686': ['brain'],
         'EFO:0005723': ['connective tissue', 'limb', 'skin of body'],
@@ -1009,6 +1033,8 @@ def getSlims(goid, terms, slimType):
         slimTerms = developental_slims
     elif slimType == 'organ':
         slimTerms = organ_slims
+    elif slimType == 'cell':
+        slimTerms = cell_slims
     elif slimType == 'system':
         slimTerms = system_slims
     elif slimType == 'assay':
@@ -1048,6 +1074,7 @@ def getTermStructure():
         'develops_from': [],
         'achieves_planned_objective': [],
         'organs': [],
+        'cell': [],
         'closure': [],
         'slims': [],
         'data': [],
@@ -1164,6 +1191,7 @@ def main():
 
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
+        terms[term]['cells'] = getSlims(term, terms, 'cell')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
         terms[term]['assay'] = getSlims(term, terms, 'assay')
         terms[term]['category'] = getSlims(term, terms, 'category')
