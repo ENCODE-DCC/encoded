@@ -9,12 +9,20 @@ def check_award_condition(value, awards):
     return value.get('award') and value.get('award')['rfa'] in awards
 
 def audit_file_processed_step_run(value, system):
+    if value['status'] in ['replaced',
+                           'deleted',
+                           'revoked'
+                           'uploading',
+                           'content error',
+                           'upload failed']:
+        return
     if value['output_category'] in ['raw data',
                                     'reference']:
         return
     if check_award_condition(value, ['ENCODE3', 'ENCODE4']):
         if 'step_run' not in value:
-            detail = 'Missing analysis_step_run information.'
+            detail = ('Missing analysis_step_run '
+                      'information in {}.').format(value['@id'])
             yield AuditFailure('missing analysis_step_run',
                             detail, level='ERROR')
 
