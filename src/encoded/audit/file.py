@@ -6,12 +6,12 @@ from snovault import (
 from .item import STATUS_LEVEL
 
 def check_award_condition(value, awards):
-    return value.get('award') and value.get('award')['rfa'] in awards
+    return value.get('award', None) and value.get('award')['rfa'] in awards
 
 def audit_file_processed_step_run(value, system):
     if value['status'] in ['replaced',
                            'deleted',
-                           'revoked'
+                           'revoked',
                            'uploading',
                            'content error',
                            'upload failed']:
@@ -19,7 +19,7 @@ def audit_file_processed_step_run(value, system):
     if value['output_category'] in ['raw data',
                                     'reference']:
         return
-    if check_award_condition(value, ['ENCODE3', 'ENCODE4']):
+    if check_award_condition(value.get('dataset'), ['ENCODE3', 'ENCODE4']):
         if 'step_run' not in value:
             detail = ('Missing analysis_step_run '
                       'information in {}.').format(value['@id'])
@@ -349,13 +349,13 @@ function_dispatcher = {
 
 
 @audit_checker('File',
-               frame=['award',
-                      'derived_from',
+               frame=['derived_from',
                       'replicate',
                       'paired_with',
                       'file_format_specifications',
                       'dataset',
                       'dataset.target',
+                      'dataset.award',
                       'platform',
                       'controlled_by',
                       'controlled_by.replicate',
