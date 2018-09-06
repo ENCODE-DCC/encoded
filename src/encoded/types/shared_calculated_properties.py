@@ -25,6 +25,21 @@ class CalculatedBiosampleSlims:
         return list(slims)
 
     @calculated_property(condition='biosample_term_id', schema={
+        "title": "Cell slims",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def cell_slims(self, registry, biosample_term_id):
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['cells'])
+        return list(slims)
+
+    @calculated_property(condition='biosample_term_id', schema={
         "title": "System slims",
         "type": "array",
         "items": {
