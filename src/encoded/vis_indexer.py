@@ -4,6 +4,7 @@ from elasticsearch.exceptions import (
     NotFoundError,
     TransportError,
 )
+from pyramid.settings import asbool
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
 
@@ -37,16 +38,22 @@ from .vis_defines import (
 )
 from .visualization import vis_cache_add
 
+from snovault.elasticsearch.interfaces import INDEXER
+
 
 log = logging.getLogger(__name__)
+_VIS_INDEXER_NAME = 'vis' + INDEXER
 
 
 def includeme(config):
-    config.add_route('index_vis', '/index_vis')
-    config.add_route('_visindexer_state', '/_visindexer_state')
-    config.scan(__name__)
     registry = config.registry
-    registry['vis'+INDEXER] = VisIndexer(registry)
+    is_visindexer = asbool(registry.settings.get(_VIS_INDEXER_NAME, False))
+    if is_visindexer and not registry.get(_VIS_INDEXER_NAME):
+        log.info('Initialized %s', _VIS_INDEXER_NAME)
+        registry[_VIS_INDEXER_NAME] = VisIndexer(registry)
+    config.add_route('_visindexer_state', '/_visindexer_state')
+    config.add_route('index_vis', '/index_vis')
+    config.scan(__name__)
 
 class VisIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and vis_indexer state by cycle.
@@ -181,7 +188,7 @@ def index_vis(request):
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
     es = request.registry[ELASTIC_SEARCH]
-    indexer = request.registry['vis'+INDEXER]
+    indexer = request.registry[_VIS_INDEXER_NAME]
 
     # keeping track of state
     state = VisIndexerState(es, INDEX)
