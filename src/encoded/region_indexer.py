@@ -818,9 +818,9 @@ class RegionIndexer(Indexer):
             if isinstance(target, list):
                 target_labels = []
                 for targ in target:
-                    label = targ.get('label')
+                    label = targ.get('gene_name')
                     if label:
-                        target_labels.append(label)
+                        target_labels.append(label.upper())
                 if len(target_labels) > 0:
                     meta_doc['dataset']['target'] = target_labels
         biosample = dataset.get('biosample_term_name')
