@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -264,8 +266,8 @@ class RegulomeAtlas(RegionAtlas):
         collection_type = dataset.get('collection_type')  # resident_regionset dataset
         if collection_type in ['ChIP-seq', 'binding sites']:
             return 'ChIP'
-        if collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
-            return 'DNase'                                       # aka Chromatin_Structure
+        if collection_type == 'DNase-seq':
+            return 'DNase'
         if collection_type == 'PWMs':
             return 'PWM'
         if collection_type == 'Footprints':
@@ -378,7 +380,7 @@ class RegulomeAtlas(RegionAtlas):
         '''private: returns regulome score from characterization set'''
         if 'eQTL' in charactization:
             if 'ChIP' in charactization:
-                if 'DNase':
+                if 'DNase' in charactization:
                     if 'PWM_matched' in charactization and 'Footprint_matched' in charactization:
                         return '1a'
                     if 'PWM' in charactization and 'Footprint' in charactization:
@@ -393,7 +395,7 @@ class RegulomeAtlas(RegionAtlas):
             if 'DNase' in charactization:
                 return '1f'
         if 'ChIP' in charactization:
-            if 'DNase':
+            if 'DNase' in charactization:
                 if 'PWM_matched' in charactization and 'Footprint_matched' in charactization:
                     return '2a'
                 if 'PWM' in charactization and 'Footprint' in charactization:
@@ -428,7 +430,7 @@ class RegulomeAtlas(RegionAtlas):
         if len(snps) <= window:
             return snps
 
-        # find ix of pos NOTE: luckily these are sorted on start!
+        snps = sorted(snps, key=itemgetter('start', 'end', 'rsid'))
         ix = 0
         for snp in snps:
             if snp['start'] >= center_pos:
