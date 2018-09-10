@@ -85,6 +85,8 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
         )
 
         pipelines_to_check = ['ChIP-seq read mapping', 'Pool and subsample alignments']
+        analysis_steps_to_check = ['Alignment pooling and subsampling step',
+                                   'Control alignment subsampling step']
         for peaks_file in peaks_file_gen:
             derived_from_files = get_derived_from_files_set([peaks_file],
                                                             files_structure,
@@ -97,10 +99,15 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     and
                     derived_from.get('dataset') in controls_files_structures
                     and
-                    check_for_any_pipelines(
+                    (check_for_any_pipelines(
                         pipelines_to_check,
                         derived_from.get('@id'),
-                        controls_files_structures[derived_from.get('dataset')])))
+                        controls_files_structures[derived_from.get('dataset')]) 
+                        or
+                        check_for_analysis_steps(
+                            analysis_steps_to_check,
+                            derived_from.get('@id'),
+                            controls_files_structures[derived_from.get('dataset')]))))
             control_bam_details = []
             cumulative_read_depth = 0
 
@@ -172,6 +179,22 @@ def check_for_any_pipelines(pipeline_titles, control_file_id, file_structure):
     for pipeline_title in pipeline_titles:
         if check_pipeline(pipeline_title, control_file_id, file_structure):
             return True
+    return False
+
+
+def check_for_analysis_steps(analysis_step_titles, control_file_id, file_structure):
+    for analysis_step_title in analysis_step_titles:
+        if check_analysis_step(analysis_step_title, control_file_id, file_structure):
+            return True
+    return False
+
+
+def check_analysis_step(analysis_step_title, control_file_id, file_structure):
+    control_file = file_structure.get('alignments')[control_file_id]
+    if ('analysis_step_version' in control_file and
+            'analysis_step' in control_file.get('analysis_step_version')):
+        title = control_file.get('analysis_step_version').get('analysis_step').get('title')
+        return analysis_step_title == title
     return False
 
 
