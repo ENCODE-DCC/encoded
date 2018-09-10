@@ -102,7 +102,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     (check_for_any_pipelines(
                         pipelines_to_check,
                         derived_from.get('@id'),
-                        controls_files_structures[derived_from.get('dataset')]) 
+                        controls_files_structures[derived_from.get('dataset')])
                         or
                         check_for_analysis_steps(
                             analysis_steps_to_check,
