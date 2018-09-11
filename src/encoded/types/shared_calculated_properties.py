@@ -101,7 +101,7 @@ class CalculatedFileSetBiosample:
     })
     def biosample_term_name(self, request, files):
         return request.select_distinct_values(
-            'replicate.experiment.biosample_term_name', *files)
+            'dataset.biosample_term_name', *files)
 
     @calculated_property(define=True, condition='files', schema={
         "title": "Biosample term id",
@@ -112,7 +112,7 @@ class CalculatedFileSetBiosample:
     })
     def biosample_term_id(self, request, files):
         return request.select_distinct_values(
-            'replicate.experiment.biosample_term_id', *files)
+            'dataset.biosample_term_id', *files)
 
     @calculated_property(condition='files', schema={
         "title": "Biosample type",
@@ -123,7 +123,7 @@ class CalculatedFileSetBiosample:
     })
     def biosample_type(self, request, files):
         return request.select_distinct_values(
-            'replicate.experiment.biosample_type', *files)
+            'dataset.biosample_type', *files)
 
     @calculated_property(condition='files', schema={
         "title": "Organism",
@@ -148,7 +148,7 @@ class CalculatedFileSetAssay:
     })
     def assay_term_name(self, request, files):
         return request.select_distinct_values(
-            'replicate.experiment.assay_term_name', *files)
+            'dataset.assay_term_name', *files)
 
     @calculated_property(define=True, condition='assay_term_name', schema={
         "title": "Assay term id",
