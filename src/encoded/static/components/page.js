@@ -98,7 +98,7 @@ const NewsShareList = (props, reactContext) => {
             <a className="share-twitter" href={`http://twitter.com/intent/tweet?url=${reactContext.location_href}&text=${post.title}&via=EncodeDCC`} target="_blank" rel="noopener noreferrer" title="Share this page on Twitter in a new window" aria-label="Share on Twitter">
                 <span className="sr-only">Twitter</span>
             </a>
-            <a className="share-facebook" href={`https://www.facebook.com/sharer/sharer.php?u={reactContext.location_href}&t=${post.title}`} target="_blank" rel="noopener noreferrer" title="Share this page on Facebook in a new window" aria-label="Share on Facebook">
+            <a className="share-facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${reactContext.location_href}&t=${post.title}`} target="_blank" rel="noopener noreferrer" title="Share this page on Facebook in a new window" aria-label="Share on Facebook">
                 <span className="sr-only">Facebook</span>
             </a>
             <a className="share-googleplus" href={`https://plus.google.com/share?url=${reactContext.location_href}`} target="_blank" rel="noopener noreferrer" title="Share this page on Google Plus in a new window" aria-label="Share on Google+">
