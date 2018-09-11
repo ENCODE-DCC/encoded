@@ -275,33 +275,18 @@ class File(Item):
     })
     def biosamples(self, request, registry, root, replicate=None, dataset=None):
         if replicate is not None:
-            replicate_obj = request.embed(replicate, '@@object?skip_calculated=true')
-            if 'library' in replicate_obj:
-                library_obj = request.embed(replicate_obj['library'], '@@object?skip_calculated=true')
-                if 'biosample' in library_obj:
-                    return [library_obj['biosample']]
-                else:
-                    return []
-        
-        conn = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
-        dataset_uuid = self.__json__(request)['dataset']
-        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        replicates = {
-            props['replicate']
-            for props in obj_props
-            if props['dataset'] == dataset_uuid and 'replicate' in props
-        }
-        libraries = {
-            str(conn.get_by_uuid(uuid).__json__(request)['library'])
-            for uuid in replicates
-        }
-        biosamples = set()
-        for library_uuid in libraries:
-            library_obj = request.embed(library_uuid, '@@object?skip_calculated=true')
-            if 'biosample' in library_obj:
-                biosamples.add(library_obj['biosample'])
-        return list(biosamples)
+            return request.select_distinct_values('library.biosample', replicate)
+        else:
+            conn = registry[CONNECTION]
+            derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+            dataset_uuid = self.__json__(request)['dataset']
+            obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+            replicates = {
+                props['replicate']
+                for props in obj_props
+                if props['dataset'] == dataset_uuid and 'replicate' in props
+            }
+            return request.select_distinct_values('library.biosample', *replicates)
 
 
     @calculated_property(schema={
