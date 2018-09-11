@@ -278,7 +278,10 @@ class File(Item):
             replicate_obj = request.embed(replicate, '@@object?skip_calculated=true')
             if 'library' in replicate_obj:
                 library_obj = request.embed(replicate_obj['library'], '@@object?skip_calculated=true')
-                return [library_obj['biosample']]
+                if 'biosample' in library_obj:
+                    return [library_obj['biosample']]
+                else:
+                    return []
         
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
@@ -296,7 +299,8 @@ class File(Item):
         biosamples = set()
         for library_uuid in libraries:
             library_obj = request.embed(library_uuid, '@@object?skip_calculated=true')
-            biosamples.add(library_obj['biosample'])
+            if 'biosample' in library_obj:
+                biosamples.add(library_obj['biosample'])
         return list(biosamples)
 
 
