@@ -175,7 +175,9 @@ class RegionIndexerState(IndexerState):
            returns (priority_type, uuids).'''
         # Not yet started?
         initialized = self.get_obj("indexing")  # http://localhost:9200/snovault/meta/indexing
+        self.is_reindexing = self._get_is_reindex()
         if not initialized:
+            self.is_initial_indexing = True
             self.delete_objs([self.override])
             staged_count = self.get_count(self.staged_for_regions_list)
             if staged_count > 0:
@@ -270,7 +272,7 @@ class RegionIndexerState(IndexerState):
         state['cycle_took'] = self.elapsed('cycle')
 
         self.put(state)
-
+        self._del_is_reindex()
         return state
 
     def display(self, uuids=None):
@@ -345,7 +347,7 @@ def index_regions(request):
     result = state.get_initial_state()
 
     (uuids, force) = state.get_one_cycle(request)
-
+    state.log_reindex_init_state()
     # Note: if reindex=all_uuids then maybe we should delete the entire index
     # On the otherhand, that should probably be left for extreme cases done by hand
     # curl -XDELETE http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/
