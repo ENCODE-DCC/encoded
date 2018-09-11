@@ -269,6 +269,34 @@ class File(Item):
         }
         return sorted(techreps)
 
+
+    @calculated_property(schema={
+        "title": "Biosamples",
+        "description": "Biosamples the file was derived from.",
+        "comment": "Do not submit.  This field is calculated.",
+        "type": "array",
+        "items": {
+            "title": "Biosample",
+            "description": "Biosample the file was derived from.",
+            "type": "string",
+            "linkTo": "Biosample"
+        }
+    })
+    def biosamples(self, request, replicate=None, dataset=None):
+        if replicate is not None:
+            return request.select_distinct_values('library.biosample', replicate)
+        else:
+            derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+            dataset_uuid = self.__json__(request)['dataset']
+            obj_props = (request.root.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+            replicates = {
+                props['replicate']
+                for props in obj_props
+                if props['dataset'] == dataset_uuid and 'replicate' in props
+            }
+            return request.select_distinct_values('library.biosample', *replicates)
+
+
     @calculated_property(schema={
         "title": "Analysis Step Version",
         "description": "The step version of the pipeline from which this file is an output.",
