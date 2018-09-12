@@ -273,18 +273,17 @@ class File(Item):
             "linkTo": "Biosample"
         }
     })
-    def biosamples(self, request, dataset, replicate=None):
+    def biosamples(self, request, replicate=None, dataset=None):
         if replicate is not None:
             return request.select_distinct_values('library.biosample', replicate)
         else:
-            derived_from_closure_paths = [request.resource_path(request.root.get_by_uuid(uuid)) 
-                                          for uuid in property_closure(request, 'derived_from', self.uuid)]
-            obj_props = (request.embed(path, '@@object?skip_calculated=true') for path in derived_from_closure_paths)
-            
+            derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+            dataset_uuid = self.__json__(request)['dataset']
+            obj_props = (request.root.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
             replicates = {
                 props['replicate']
                 for props in obj_props
-                if props['dataset'] == dataset and 'replicate' in props
+                if props['dataset'] == dataset_uuid and 'replicate' in props
             }
             return request.select_distinct_values('library.biosample', *replicates)
 
