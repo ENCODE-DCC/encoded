@@ -988,5 +988,28 @@
             "ENCORE"
         ],
         "uuid": "473a72c0-6f20-4f81-9093-198e92fee470"
+    },
+    {
+        "email": "emmao@stanford.edu",
+        "first_name": "Emma",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Developer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "O'Neill",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "ENCODE3",
+            "REMC",
+            "GGR",
+            "ENCODE4",
+            "community"
+        ],
+        "uuid": "af989110-67d2-4c8b-87f0-38d9d6d31868"
     }
 ]
