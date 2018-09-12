@@ -1074,7 +1074,7 @@ def getTermStructure():
         'develops_from': [],
         'achieves_planned_objective': [],
         'organs': [],
-        'cell': [],
+        'cells': [],
         'closure': [],
         'slims': [],
         'data': [],
