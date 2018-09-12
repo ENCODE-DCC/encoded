@@ -92,40 +92,40 @@ class CalculatedAssaySynonyms:
 
 
 class CalculatedFileSetBiosample:
-    @calculated_property(condition='files', schema={
+    @calculated_property(condition='related_files', schema={
         "title": "Biosample term name",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def biosample_term_name(self, request, files):
+    def biosample_term_name(self, request, related_files):
         return request.select_distinct_values(
-            'dataset.biosample_term_name', *files)
+            'dataset.biosample_term_name', *related_files)
 
-    @calculated_property(define=True, condition='files', schema={
+    @calculated_property(define=True, condition='related_files', schema={
         "title": "Biosample term id",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def biosample_term_id(self, request, files):
+    def biosample_term_id(self, request, related_files):
         return request.select_distinct_values(
-            'dataset.biosample_term_id', *files)
+            'dataset.biosample_term_id', *related_files)
 
-    @calculated_property(condition='files', schema={
+    @calculated_property(condition='related_files', schema={
         "title": "Biosample type",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def biosample_type(self, request, files):
+    def biosample_type(self, request, related_files):
         return request.select_distinct_values(
-            'dataset.biosample_type', *files)
+            'dataset.biosample_type', *related_files)
 
-    @calculated_property(condition='files', schema={
+    @calculated_property(condition='related_files', schema={
         "title": "Organism",
         "type": "array",
         "items": {
@@ -133,22 +133,22 @@ class CalculatedFileSetBiosample:
             "linkTo": "Organism"
         },
     })
-    def organism(self, request, files):
+    def organism(self, request, related_files):
         return request.select_distinct_values(
-            'replicate.library.biosample.organism', *files)
+            'replicate.library.biosample.organism', *related_files)
 
 
 class CalculatedFileSetAssay:
-    @calculated_property(define=True, condition='files', schema={
+    @calculated_property(define=True, condition='related_files', schema={
         "title": "Assay term name",
         "type": "array",
         "items": {
             "type": 'string',
         },
     })
-    def assay_term_name(self, request, files):
+    def assay_term_name(self, request, related_files):
         return request.select_distinct_values(
-            'dataset.assay_term_name', *files)
+            'dataset.assay_term_name', *related_files)
 
     @calculated_property(define=True, condition='assay_term_name', schema={
         "title": "Assay term id",
