@@ -964,5 +964,29 @@
             "community"
         ],
         "uuid": "75659c39-eaea-47b7-ba26-92e9ff183e6c"
+    },
+    {
+        "email": "2paulsud@gmail.com",
+        "first_name": "Paul",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Associate Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Sud",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "community",
+            "ENCODE3",
+            "ENCODE4",
+            "GGR",
+            "REMC",
+            "ENCORE"
+        ],
+        "uuid": "473a72c0-6f20-4f81-9093-198e92fee470"
     }
 ]
