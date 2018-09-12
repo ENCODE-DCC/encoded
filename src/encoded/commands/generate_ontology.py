@@ -139,7 +139,12 @@ cell_slims = {
     'CL:0000669': 'pericyte cell',
     'EFO:0005214': 'neuroblastoma cell line',
     'EFO:0005292': 'lymphoblastoid cell line',
-    'EFO:0003040': 'embryonic cell line'
+    'EFO:0003040': 'embryonic cell line',
+    'EFO:0001641': 'epithelial cell',
+    'EFO:0001640': 'B cell',
+    'EFO:0005735': 'smooth muscle cell',
+    'EFO:0002009': 'fibroblast',
+    'EFO:0005730': 'endothelial cell'
 }
 
 assay_slims = {
