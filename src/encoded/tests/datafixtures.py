@@ -200,6 +200,24 @@ def organism(human):
 
 
 @pytest.fixture
+def ctcf(testapp):
+    item = {
+        'uuid': 'a9288b44-6ef4-460e-a3d6-464fd625b103',
+        'dbxrefs': ['HGNC:13723'],
+        'geneid': '10664',
+        'symbol': 'CTCF',
+        'ncbi_entrez_status': 'live',
+        'organism': 'human',
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def gene(ctcf):
+    return ctcf
+
+
+@pytest.fixture
 def biosample(testapp, source, lab, award, organism):
     item = {
         'biosample_term_id': 'UBERON:349829',

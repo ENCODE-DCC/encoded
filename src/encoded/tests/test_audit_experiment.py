@@ -59,10 +59,10 @@ def base_replicate_two(testapp, base_experiment):
 
 
 @pytest.fixture
-def base_target(testapp, organism):
+def base_target(testapp, organism, gene):
     item = {
         'organism': organism['uuid'],
-        'gene_name': 'XYZ',
+        'genes': [gene['uuid']],
         'label': 'XYZ',
         'investigated_as': ['transcription factor']
     }
@@ -80,10 +80,10 @@ def tag_target(testapp, organism):
 
 
 @pytest.fixture
-def recombinant_target(testapp, organism):
+def recombinant_target(testapp, organism, gene):
     item = {
         'organism': organism['uuid'],
-        'gene_name': 'CTCF',
+        'genes': [gene['uuid']],
         'label': 'eGFP-CTCF',
         'investigated_as': ['recombinant protein', 'transcription factor']
     }

@@ -106,12 +106,12 @@ def base_antibody(award, lab, source, organism, target):
 
 
 @pytest.fixture
-def recombinant_target(testapp, organism):
+def recombinant_target(testapp, organism, gene):
     item = {
         'organism': organism['uuid'],
         'label': 'HA-ABCD',
         'investigated_as': ['transcription factor', 'recombinant protein'],
-        'gene_name': "ABCD"
+        'genes': [gene['uuid']]
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 

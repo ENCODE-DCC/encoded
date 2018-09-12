@@ -163,9 +163,9 @@ def test_target_upgrade_link_to_gene(upgrader, target_8_no_genes,
     two_genes = upgrader.upgrade(
         'target', target_8_two_genes, current_version='8', target_version='9')
 
-    assert no_genes['schema_version'] == '9'
-    assert one_gene['schema_version'] == '9'
-    assert two_genes['schema_version'] == '9'
+    for new_target in [no_genes, one_gene, two_genes]:
+        assert new_target['schema_version'] == '9'
+        assert 'gene_name' not in new_target
     assert no_genes['genes'] == []
     assert one_gene['genes'] == ['3012']
     assert two_genes['genes'] == ['8335', '3012']

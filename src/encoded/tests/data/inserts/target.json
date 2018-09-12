@@ -6,7 +6,6 @@
             "HGNC:ADNP1",
             "UniProtKB:Q9H2P0"
         ],
-        "gene_name": "ADNP",
         "genes": ["23394"],
         "label": "ADNP",
         "organism": "human",
@@ -48,7 +47,6 @@
             "GeneID:10664",
             "UniProtKB:P49711"
         ],
-        "gene_name": "CTCF",
         "genes": ["10664"],
         "label": "CTCF",
         "organism": "human",
@@ -72,7 +70,6 @@
             "HGNC:5830420C16Rik",
             "UniProtKB:Q9P0U4"
         ],
-        "gene_name": "CXXC1",
         "genes": ["30827"],
         "label": "CXXC1",
         "organism": "human",
@@ -88,7 +85,6 @@
             "HGNC:RBP3",
             "UniProtKB:Q01094"
         ],
-        "gene_name": "E2F1",
         "genes": ["1869"],
         "label": "E2F1",
         "organism": "human",
@@ -104,7 +100,6 @@
             "HGNC:RBP3",
             "UniProtKB:Q01094"
         ],
-        "gene_name": "E2F1",
         "genes": ["1869"],
         "modifications": [{
             "modification": "eGFP",
@@ -125,7 +120,6 @@
             "HGNC:RBP3",
             "UniProtKB:Q01094"
         ],
-        "gene_name": "E2F1",
         "genes": ["1869"],
         "modifications": [{
             "modification": "HA",
@@ -142,7 +136,6 @@
         "dbxref": [
             "UniProtKB:P84228"
         ],
-        "gene_name": "Hist2h3c1",
         "genes": ["15077"],
         "label": "H3K4me3",
         "organism": "mouse",
@@ -154,7 +147,6 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "label": "H3K9ac",
         "organism": "human",
@@ -182,7 +174,6 @@
             "HGNC:hnRNP-A1",
             "UniProtKB:P09651"
         ],
-        "gene_name": "HNRNPA1",
         "genes": ["3178"],
         "label": "HNRNPA1",
         "organism": "human",
@@ -205,7 +196,6 @@
             "HGNC:DYT3/TAF1",
             "UniProtKB:P21675"
         ],
-        "gene_name": "TAF1",
         "genes": ["6872"],
         "label": "TAF1",
         "organism": "human",
@@ -230,7 +220,6 @@
             "HGNC:bHLHb19",
             "UniProtKB:P15884"
         ],
-        "gene_name": "TCF4",
         "genes": ["6925"],
         "label": "TCF4",
         "organism": "human",
@@ -251,7 +240,6 @@
             "HGNC:COUP-TFI",
             "HGNC:TCFCOUP1"
         ],
-        "gene_name": "NR2F1\u00c2",
         "genes": ["7025"],
         "label": "NR2F1\u00c2",
         "organism": "human",
@@ -268,7 +256,6 @@
             "UniProtKB:Q9NH52"
         ],
         "organism": "celegans",
-        "gene_name": "mes-4",
         "genes": ["179824"],
         "investigated_as": ["transcription factor"],
         "status": "released"
@@ -284,7 +271,6 @@
             "UniProtKB:Q7K798"
         ],
         "organism": "celegans",
-        "gene_name": "pab-1",
         "genes": ["172920"],
         "modifications": [{
             "modification": "3xFLAG",
@@ -323,7 +309,6 @@
             "HGNC:OLF1",
             "UniProtKB:Q9UH73"
         ],
-        "gene_name": "EBF1",
         "genes": ["1879"],
         "investigated_as": [
             "transcription factor"
@@ -350,7 +335,6 @@
             "UniProtKB:O17593"
         ],
         "organism": "celegans",
-        "gene_name": "fkh-10",
         "genes": ["182874"],
         "investigated_as": ["transcription factor"],
         "status": "released"
@@ -359,7 +343,6 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "investigated_as": [
             "histone"
@@ -379,7 +362,6 @@
             "UniProtKB:Q71DI3"
         ],
         "status": "released",
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
     },
@@ -393,7 +375,6 @@
         ],
         "organism": "human",
         "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72",
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "status": "released"
     },
@@ -401,7 +382,6 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "organism": "human",
         "label": "H3K27me3",
@@ -414,7 +394,6 @@
     {
         "uuid": "14173a5f-799e-4dae-b155-a142c5b6b566",
         "label": "H3K9me3",
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "organism": "human",
         "investigated_as": [
@@ -428,7 +407,6 @@
     {
         "uuid": "1aa5391a-01f1-4983-bdb6-d93db5f53334",
         "label": "H3K4me1",
-        "gene_name": "HIST2H3C",
         "genes": ["126961"],
         "organism": "human",
         "investigated_as": [
@@ -459,7 +437,6 @@
     },
     {
         "uuid": "e6d8b23f-f6ca-4d77-adab-03ba81b7742a",
-        "gene_name": "FTO",
         "genes": ["79068"],
         "investigated_as": [
             "RNA binding protein"
@@ -499,7 +476,6 @@
             "FlyBase:ab-RB",
             "FlyBase:CG43860-RD"
         ],
-        "gene_name": "ab",
         "genes": ["34560"],
         "modifications": [{
             "modification": "eGFP",

@@ -38,13 +38,6 @@
             "type": "string",
             "linkTo": "Organism"
         },
-        "gene_name": {
-            "title": "Gene name",
-            "description": "HGNC or MGI identifier for the target.",
-            "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
-            "type": "string",
-            "format": "gene_name"
-        },
         "genes": {
             "title": "Targeted genes",
             "description": "List of gene(s) targeted by corrsponding assay or antibody.",
@@ -166,9 +159,9 @@
         },
         "dbxref": {
             "title": "External resources"
-        },
-        "gene_name": {
-            "title": "Gene name"
+        },	
+        "genes.symbol": {	
+            "title": "Gene name"	
         }
     },
     "boost_values": {
