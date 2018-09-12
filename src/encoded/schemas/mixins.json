@@ -285,7 +285,8 @@
             "comment": "Do not submit. A place for the DCC to keep information that does not have a place in the schema.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "permission": "import_items"
+            "permission": "import_items",
+            "formInput": "textarea"
         }
     },
     "submitter_comment": {
@@ -293,7 +294,8 @@
             "title": "Submitter comment",
             "description": "Additional information specified by the submitter to be displayed as a comment on the portal.",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
+            "formInput": "textarea"
         }
     },
     "reviewer_comment": {
@@ -302,7 +304,8 @@
             "description": "Comments from the reviewer to justify the assigned review status of a characterization.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "permission": "import_items"
+            "permission": "import_items",
+            "formInput": "textarea"
         }
     },
     "strains": {
@@ -466,5 +469,5 @@
                 "linkTo": "Document"
             }
         }
-    }    
+    }
 }
