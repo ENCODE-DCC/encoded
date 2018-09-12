@@ -21,7 +21,7 @@ from pyramid.traversal import (
 class Target(SharedItem):
     item_type = 'target'
     schema = load_schema('encoded:schemas/target.json')
-    embedded = ['organism']
+    embedded = ['organism', 'genes']
 
     def unique_keys(self, properties):
         keys = super(Target, self).unique_keys(properties)

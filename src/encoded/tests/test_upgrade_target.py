@@ -49,6 +49,45 @@ def target_6(target):
     return item
 
 
+@pytest.fixture
+def target_8_no_genes(target):
+    item = target.copy()
+    item.update({
+        'schema_version': '8',
+        'dbxref': [
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_one_gene(target_8_no_genes):
+    item = target_8_no_genes.copy()
+    item.update({
+        'gene_name': 'HIST1H2AE',
+        'dbxref': [
+            'GeneID:3012',
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_two_genes(target_8_one_gene):
+    item = target_8_one_gene.copy()
+    item.update({
+        'gene_name': 'Histone H2A',
+        'dbxref': [
+            'GeneID:8335',
+            'GeneID:3012',
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -113,3 +152,20 @@ def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgr
     )
     assert value['schema_version'] == '8'
     assert value['status'] == new_status
+
+
+def test_target_upgrade_link_to_gene(upgrader, target_8_no_genes,
+                                     target_8_one_gene, target_8_two_genes):
+    no_genes = upgrader.upgrade(
+        'target', target_8_no_genes, current_version='8', target_version='9')
+    one_gene = upgrader.upgrade(
+        'target', target_8_one_gene, current_version='8', target_version='9')
+    two_genes = upgrader.upgrade(
+        'target', target_8_two_genes, current_version='8', target_version='9')
+
+    assert no_genes['schema_version'] == '9'
+    assert one_gene['schema_version'] == '9'
+    assert two_genes['schema_version'] == '9'
+    assert no_genes['genes'] == []
+    assert one_gene['genes'] == ['3012']
+    assert two_genes['genes'] == ['8335', '3012']
