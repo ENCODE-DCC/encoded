@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { ExperimentTable } from './dataset';
-import { DbxrefList, dbxrefHref } from './dbxref';
+import { DbxrefList } from './dbxref';
 import { RelatedItems } from './item';
 
 
@@ -13,28 +12,10 @@ class Target extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
-        let geneLink;
-        let geneRef;
-        let baseName;
-        let sep;
 
-        if (context.organism.name === 'human') {
-            geneLink = dbxrefHref('HGNC', context.gene_name);
-        } else if (context.organism.name === 'mouse') {
-            const mgiRef = _(context.dbxref).find(ref => ref.substr(0, 4) === 'MGI:');
-            if (mgiRef) {
-                geneLink = dbxrefHref('MGI', mgiRef);
-            }
-        } else if (context.organism.name === 'dmelanogaster' || context.organism.name === 'celegans') {
-            const organismPrefix = context.organism.name === 'dmelanogaster' ? 'FBgn' : 'WBGene';
-            const baseUrl = context.organism.name === 'dmelanogaster' ? globals.dbxrefPrefixMap.FlyBase : globals.dbxrefPrefixMap.WormBase;
-            geneRef = _.find(context.dbxref, ref => ref.indexOf(organismPrefix) !== -1);
-            if (geneRef) {
-                sep = geneRef.indexOf(':') + 1;
-                baseName = geneRef.substring(sep, geneRef.length);
-                geneLink = baseUrl + baseName;
-            }
-        }
+        const geneIDs = context.genes.map(
+            gene => `GeneID:${gene.geneid}`
+        );
 
         // Set up breadcrumbs
         const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);
@@ -64,10 +45,12 @@ class Target extends React.Component {
                             <dd>{context.label}</dd>
                         </div>
 
-                        {context.gene_name && geneLink ?
+                        {geneIDs.length ?
                             <div data-test="gene">
                                 <dt>Target gene</dt>
-                                <dd><a href={geneLink}>{context.gene_name}</a></dd>
+                                <dd>
+                                    <DbxrefList context={context} dbxrefs={geneIDs} />
+                                </dd>
                             </div>
                         : null}
 

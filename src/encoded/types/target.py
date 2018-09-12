@@ -61,13 +61,3 @@ class Target(SharedItem):
         properties = self.upgrade_properties()
         request._linked_uuids.add(str(properties['organism']))
         return None
-
-    @calculated_property(schema={
-        "title": "Gene Symbols",
-        "type": "string",
-    })
-    def gene_name(self, request, genes):
-        symbols = []
-        for gene in genes:
-            symbols.append(request.embed(gene, '@@object')['symbol'])
-        return '+'.join(symbols)
