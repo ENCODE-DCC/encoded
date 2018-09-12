@@ -1,6 +1,10 @@
 Changes
 =======
 
+75.1 (released)
+-----------------
+1. ENCD-4214 Update to snovault 1.0.17 (#2406)
+
 75.0 (released)
 -----------------
 1. ENCD-4204 Update to snovault 1.0.16 (#2394)
