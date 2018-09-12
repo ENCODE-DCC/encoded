@@ -23,7 +23,8 @@
             "title": "Description",
             "description": "A plain text description of the source.",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
+            "formInput": "textarea"
         },
         "title": {
             "title": "Title of lab or vendor",

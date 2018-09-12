@@ -4,7 +4,7 @@
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "category", "purpose", "method"],  
+    "required": ["lab", "award", "category", "purpose", "method"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -279,7 +279,7 @@
                         }
                     ]
                 },
-                {    
+                {
                     "required": ["reagents"],
                     "comment": "Add back anyOf block with zygosity and RVD_sequence_pairs to the required list after Jason gets metadata",
                     "properties":{
@@ -343,7 +343,7 @@
                 }
             ]
         }
-    },    
+    },
     "properties": {
         "schema_version": {
             "default": "7"
@@ -372,7 +372,8 @@
             "title": "Description",
             "description": "A plain text description of the genetic modification.",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
+            "formInput": "textarea"
         },
         "category": {
             "title": "Category",
@@ -396,7 +397,7 @@
                 "overexpression",
                 "repression",
                 "tagging",
-                "characterization", 
+                "characterization",
                 "screening"
             ]
         },
@@ -531,7 +532,7 @@
             "title": "Introduced sequence",
             "description": "If modification_type = insertion or replacement, the newly introduced sequence via the modification.",
         	"type": "string",
-            "pattern": "^[ACTG]+$"	
+            "pattern": "^[ACTG]+$"
 		},
         "method": {
             "title": "Method",
@@ -550,7 +551,7 @@
                 "transient transfection"
             ]
         },
-        "treatments": { 
+        "treatments": {
             "title": "Treatments",
             "description": "Relevant mutagenesis treatments applied to result in the modification.",
             "type": "array",

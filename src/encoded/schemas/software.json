@@ -167,7 +167,8 @@
             "title": "Description",
             "description": "A plain text description of the software.",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
+            "formInput": "textarea"
         }
     },
     "facets": {
