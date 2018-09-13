@@ -140,11 +140,11 @@ cell_slims = {
     'EFO:0005214': 'neuroblastoma cell line',
     'EFO:0005292': 'lymphoblastoid cell line',
     'EFO:0003040': 'embryonic cell line',
-    'EFO:0001641': 'epithelial cell',
-    'EFO:0001640': 'B cell',
-    'EFO:0005735': 'smooth muscle cell',
-    'EFO:0002009': 'fibroblast',
-    'EFO:0005730': 'endothelial cell'
+    'EFO:0001641': 'epithelial cell', # epithelial cell derived cell line
+    'EFO:0001640': 'B cell',# B cell derived cell line
+    'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
+    'EFO:0002009': 'fibroblast',# fibroblast derived cell line
+    'EFO:0005730': 'endothelial cell' # endothelial cell derived cell line
 }
 
 assay_slims = {
