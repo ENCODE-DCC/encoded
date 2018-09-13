@@ -198,6 +198,7 @@ ContextActions.contextTypes = {
     listActionsFor: PropTypes.func,
 };
 
+
 const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
     const searchTerm = id.query.searchTerm || '';
