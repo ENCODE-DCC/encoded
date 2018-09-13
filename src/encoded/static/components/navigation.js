@@ -89,12 +89,8 @@ export default class Navigation extends React.Component {
                         <GlobalSections />
                         <UserActions />
                         {this.props.isHomePage ? null : <ContextActions />}
-                        <ul className="nav navbar-nav righthand-nav">
-                            <li className="dropdown">
-                                <button className="convert-to-json" onClick={this.clickForJSON}>Convert to JSON</button>
-                            </li>
-                        </ul>
                         <Search />
+                        <button className="convert-to-json" onClick={this.clickForJSON}>JSON</button>
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
