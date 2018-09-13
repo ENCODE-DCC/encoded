@@ -1,16 +1,12 @@
 #cloud-config
-
-# Instance
 ssh_authorized_keys:
   - %(LOCAL_SSH_KEY)s
-
 apt_sources:
 - source: "ppa:webupd8team/java"
 - source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
-
     mQENBFI3HsoBCADXDtbNJnxbPqB1vDNtCsqhe49vFYsZN9IOZsZXgp7aHjh6CJBD
     A+bGFOwyhbd7at35jQjWAw1O3cfYsKAmFy+Ar3LHCMkV3oZspJACTIgCrwnkic/9
     CUliQe324qvObU2QRtP4Fl0zWcfb/S8UYzWXWIFuJqMvE9MaRY1bwUBvzoqavLGZ
@@ -44,7 +40,6 @@ apt_sources:
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v1
     Comment: GPGTools - https://gpgtools.org
-
     mQINBFObJLYBEADkFW8HMjsoYRJQ4nCYC/6Eh0yLWHWfCh+/9ZSIj4w/pOe2V6V+
     W6DHY3kK3a+2bxrax9EqKe7uxkSKf95gfns+I9+R+RJfRpb1qvljURr54y35IZgs
     fMG22Np+TmM2RLgdFCZa18h0+RbH9i0b+ZrB9XPZmLb/h9ou7SowGqQ3wwOtT3Vy
@@ -93,17 +88,13 @@ apt_sources:
     /qiNGs/TKy2/Ujqp/affmIMoMXSozKmga81JSwkADO1JMgUy6dApXz9kP4EE3g==
     =CLGF
     -----END PGP PUBLIC KEY BLOCK-----
-
 bootcmd:
 - set -ex
 - cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-
-
 package_upgrade: true
-
 packages:
 - apache2-mpm-worker
 - awscli
@@ -142,18 +133,13 @@ packages:
 - zlib1g-dev
 - libffi-dev
 - bsd-mailx
-
 power_state:
   mode: reboot
-
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
-
 runcmd:
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
-# Ideally this would build as a different user so encoded only has read
-# permissions
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
@@ -184,8 +170,9 @@ runcmd:
 - mkdir /srv/encoded
 - chown encoded:encoded /srv/encoded
 - cd /srv/encoded
-- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
-- sudo -u encoded git checkout %(COMMIT)s
+- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git
+- cd /srv/encoded/encoded
+- sudo -u encoded git checkout -b sha-%(COMMIT)s-branch %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
@@ -200,21 +187,21 @@ runcmd:
 - /etc/init.d/postgresql start
 - sudo pip3 install -U zc.buildout setuptools
 - sudo -u encoded buildout bootstrap
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
-- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
+- sudo -u encoded LANG=en_US.UTF-8 /srv/encoded/encoded/bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
+- sudo -u encoded /srv/encoded/encoded/bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws /srv/encoded/.aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/create-mapping production.ini --app-name app
-- sudo -u encoded bin/index-annotations production.ini --app-name app
+- sudo -u encoded /srv/encoded/encoded/bin/create-mapping production.ini --app-name app
+- sudo -u encoded /srv/encoded/encoded/bin/index-annotations production.ini --app-name app
 - if test "%(REGION_INDEX)s" = "False"
 - then
--    sudo -u encoded cp /srv/encoded/etc/encoded-apache.conf /srv/encoded/etc/encoded-apache.conf.original
--    sudo -u encoded sh -c "grep -v encoded\-regionindexer /srv/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/etc/encoded-apache.conf"
--    sudo -u encoded cp /srv/encoded/base.ini /srv/encoded/base.ini.original
--    sudo -u encoded sh -c "sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/base.ini.original > /srv/encoded/base.ini"
+-    sudo -u encoded cp /srv/encoded/encoded/etc/encoded-apache.conf /srv/encoded/encoded/etc/encoded-apache.conf.original
+-    sudo -u encoded sh -c "grep -v encoded\-regionindexer /srv/encoded/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/encoded/etc/encoded-apache.conf"
+-    sudo -u encoded cp /srv/encoded/encoded/base.ini /srv/encoded/encoded/base.ini.original
+-    sudo -u encoded sh -c "sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/encoded/base.ini.original > /srv/encoded/encoded/base.ini"
 - fi
-- ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
-- ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
+- ln -s /srv/encoded/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- ln -s /srv/encoded/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
 - a2enmod proxy_http
 - a2enmod rewrite
@@ -229,7 +216,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
+-   sudo -i -u encoded /srv/encoded/encoded/bin/batchupgrade /srv/encoded/encoded/production.ini --app-name app
 - fi
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 - PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
@@ -238,18 +225,6 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
-# - sleep 10
-# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-# - pg_ctlcluster 9.3 main reload
-# - pg_ctlcluster 9.3 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
-# - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
-# - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup
-
 users:
 - default
 - name: build
@@ -260,16 +235,12 @@ users:
   gecos: ENCODE Metadata Database daemon user
   inactive: true
   system: true
-  # Specified homedir must exist
-  # https://github.com/rubygems/rubygems/issues/689
   homedir: /srv/encoded
-
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
   content: |
     APT::Periodic::Update-Package-Lists "1";
     APT::Periodic::Unattended-Upgrade "1";
-
 - path: /etc/apt/apt.conf.d/50unattended-upgrades
   content: |
     Unattended-Upgrade::Allowed-Origins {
@@ -277,11 +248,9 @@ write_files:
     };
     Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
     Unattended-Upgrade::Automatic-Reboot "false";
-
 - path: /etc/cron.d/cloudwatchmon
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
-
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
     http.port: 9201
@@ -292,53 +261,26 @@ write_files:
         index:
             queue_size: 400
     indices.query.bool.max_clause_count: 8192
-
 - path: /etc/elasticsearch/jvm.options
   content: |
-    ## GC configuration
     -XX:+UseConcMarkSweepGC
     -XX:CMSInitiatingOccupancyFraction=75
     -XX:+UseCMSInitiatingOccupancyOnly
-
-    # disable calls to System#gc
     -XX:+DisableExplicitGC
-
-    # pre-touch memory pages used by the JVM during initialization
     -XX:+AlwaysPreTouch
-
-    # force the server VM (remove on 32-bit client JVMs)
     -server
-
-    # explicitly set the stack size (reduce to 320k on 32-bit client JVMs)
     -Xss1m
-
-    # set to headless, just in case
     -Djava.awt.headless=true
-
-    # ensure UTF-8 encoding by default (e.g. filenames)
     -Dfile.encoding=UTF-8
-
-    # use our provided JNA always versus the system one
     -Djna.nosys=true
-
-    # use old-style file permissions on JDK9
     -Djdk.io.permissionsUseCanonicalPath=true
-
-    # flags to configure Netty
     -Dio.netty.noUnsafe=true
     -Dio.netty.noKeySetOptimization=true
     -Dio.netty.recycler.maxCapacityPerThread=0
-
-    # log4j 2
     -Dlog4j.shutdownHookEnabled=false
     -Dlog4j2.disable.jmx=true
     -Dlog4j.skipJansi=true
-
-    # generate a heap dump when an allocation from the Java heap fails
-    # heap dumps are created in the working directory of the JVM
     -XX:+HeapDumpOnOutOfMemoryError
-
-
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
@@ -346,23 +288,17 @@ write_files:
     wal_level = hot_standby
     archive_mode = on
     archive_timeout = 60
-    # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
     checkpoint_timeout = 1h
-
 - path: /etc/postgresql/9.3/main/demo.conf
   content: |
     archive_mode = off
-
 - path: /etc/postgresql/9.3/main/master.conf
   content: |
     archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-push "%%p"'
-
 - path: /etc/postgresql/9.3/main/recovery.conf
   content: |
-    # recovery.conf must be linked into data dir to do anything
     recovery_target_timeline = 'latest'
     restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
     standby_mode = on
-
 - path: /etc/postgresql/9.3/main/wale_s3_prefix
   content: "%(WALE_S3_PREFIX)s"
