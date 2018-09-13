@@ -267,6 +267,12 @@
   }
 }
 
+.righthand-nav {
+    @media (min-width: $grid-float-breakpoint) {
+        float: right;
+    }
+}
+
 
 // Component alignment
 //
@@ -443,6 +449,7 @@
 
   // Dropdown menu items
   .navbar-nav {
+
     // Remove background color from open dropdown
     > .open > a {
       &,

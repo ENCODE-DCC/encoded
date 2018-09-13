@@ -71,6 +71,15 @@ export default class Navigation extends React.Component {
         }
     }
 
+    clickForJSON(e){
+        let window_href = window.location.href;
+        if (window_href.indexOf("?") > -1){
+          window.location.href += "&format=json";
+        } else {
+          window.location.href += "?format=json";
+        }
+    }
+
     render() {
         const portal = this.context.portal;
         return (
@@ -80,6 +89,11 @@ export default class Navigation extends React.Component {
                         <GlobalSections />
                         <UserActions />
                         {this.props.isHomePage ? null : <ContextActions />}
+                        <ul className="nav navbar-nav righthand-nav">
+                            <li className="dropdown">
+                                <button className="convert-to-json" onClick={this.clickForJSON}>Convert to JSON</button>
+                            </li>
+                        </ul>
                         <Search />
                     </Navbar>
                 </div>
@@ -183,7 +197,6 @@ const ContextActions = (props, context) => {
 ContextActions.contextTypes = {
     listActionsFor: PropTypes.func,
 };
-
 
 const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
