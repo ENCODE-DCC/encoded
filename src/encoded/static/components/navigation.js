@@ -71,7 +71,7 @@ export default class Navigation extends React.Component {
         }
     }
 
-    clickForJSON(e){
+    clickForJSON() {
         let window_href = window.location.href;
         if (window_href.indexOf("?") > -1){
           window.location.href += "&format=json";
