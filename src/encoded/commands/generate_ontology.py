@@ -144,7 +144,11 @@ cell_slims = {
     'EFO:0001640': 'B cell',# B cell derived cell line
     'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
     'EFO:0002009': 'fibroblast',# fibroblast derived cell line
-    'EFO:0005730': 'endothelial cell' # endothelial cell derived cell line
+    'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
+    'CL:0000034':'stem cell',
+    'EFO:0002886':'stem cell', # stem cell derived cell line
+    'EFO:0004905':'induced pluripotent stem cell',
+    'EFO:0005740':'induced pluripotent stem cell' # induced pluripotent stem cell derived cell line
 }
 
 assay_slims = {
