@@ -71,15 +71,6 @@ export default class Navigation extends React.Component {
         }
     }
 
-    clickForJSON() {
-        const windowHref = window.location.href;
-        if (windowHref.indexOf('?') > -1) {
-            window.location.href += '&format=json';
-        } else {
-            window.location.href += '?format=json';
-        }
-    }
-
     render() {
         const portal = this.context.portal;
         return (
@@ -90,7 +81,6 @@ export default class Navigation extends React.Component {
                         <UserActions />
                         {this.props.isHomePage ? null : <ContextActions />}
                         <Search />
-                        <button className="convert-to-json" onClick={this.clickForJSON}>JSON</button>
                     </Navbar>
                 </div>
                 {this.state.testWarning ?

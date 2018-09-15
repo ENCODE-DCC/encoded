@@ -5,6 +5,17 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import * as globals from './globals';
 
 
+// Display information on page as JSON formatted data
+export function displayAsJson(){
+    const windowHref = window.location.href;
+    if (windowHref.indexOf('?') > -1) {
+        window.location.href += '&format=json';
+    } else {
+        window.location.href += '?format=json';
+    }
+}
+
+
 // Display a summary sentence for a single treatment.
 export function singleTreatment(treatment) {
     let treatmentText = '';
