@@ -1,4 +1,3 @@
-import urllib3
 import io
 import gzip
 import csv
@@ -7,6 +6,7 @@ import collections
 import json
 import requests
 import os
+from pyramid.request import Request
 from pyramid.view import view_config
 from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
@@ -380,7 +380,6 @@ class RegionIndexer(Indexer):
         self.regions_es    = registry[SNP_SEARCH_ES]
         self.residents_index = RESIDENT_REGIONSET_KEY
         self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
-        self.test_instance = registry.settings.get('testing',False)
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
@@ -459,10 +458,6 @@ class RegionIndexer(Indexer):
             if val is None:
                 return False
             if val not in required[prop]:
-                return False
-
-        if self.test_instance:
-            if afile['accession'] not in TESTABLE_FILES:
                 return False
 
         return True
@@ -568,14 +563,6 @@ class RegionIndexer(Indexer):
             return False
 
         # Special case local instace so that tests can work...
-        if self.test_instance:
-            #if request.host_url == 'http://localhost':
-            # assume we are running in dev-servers
-            #href = request.host_url + ':8000' + afile['submitted_file_name']
-            href = 'http://www.encodeproject.org' + afile['href']
-        else:
-            href = request.host_url + afile['href']
-
         ### Works with localhost:8000
         # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
         #r = requests.get(href)
@@ -605,16 +592,13 @@ class RegionIndexer(Indexer):
         ### Works with http://www.encodeproject.org
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
-        urllib3.disable_warnings()
-        http = urllib3.PoolManager()
-        r = http.request('GET', href)
-        if r.status != 200:
-            log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+        r = request.invoke_subrequest(Request.blank(afile['href']))
+        if r.status_code != 200:
+            log.warn("File (%s or %s) not found" % (afile.get('accession', id), afile['href']))
             return False
         file_in_mem = io.BytesIO()
-        file_in_mem.write(r.data)
+        file_in_mem.write(r.body)
         file_in_mem.seek(0)
-        r.release_conn()
 
         file_data = {}
         if afile['file_format'] == 'bed':

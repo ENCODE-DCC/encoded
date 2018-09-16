@@ -29,6 +29,9 @@ import boto3
 import datetime
 import logging
 import json
+import mimetypes
+import os
+from pkg_resources import resource_filename
 import pytz
 import time
 
@@ -492,7 +495,8 @@ def download(context, request):
     proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers \
                                                 or 'Range' in request.headers
 
-    use_download_proxy = request.client_addr not in request.registry['aws_ipset']
+    use_download_proxy = ((request.client_addr is not None)
+                          and (request.client_addr not in request.registry['aws_ipset']))
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
@@ -507,6 +511,14 @@ def download(context, request):
             ExpiresIn=36*60*60
         )
     else:
+        if request.registry.settings.get('testing', False):
+            filedir = resource_filename('encoded', 'tests/data/documents/')
+            filepath = os.path.join(filedir, filename)
+            if os.path.exists(filepath):
+                mime_type, _ = mimetypes.guess_type(filepath)
+                with open(filepath, 'rb') as f:
+                    return Response(body=f.read(),
+                                    headers={'Content-Type': mime_type})
         raise HTTPNotFound(
             detail='External service {} not expected'.format(external.get('service'))
         )

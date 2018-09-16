@@ -110,8 +110,31 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['title'] == 'region_indexer'
     assert res.json['indexed'] > 0
 
+    # Test primary indexer
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
+
+    # Test region indexer
+    import time
+    time.sleep(1)
+    res = testapp.get('/region-search/?region=chr9%3A1-136133506&genome=GRCh37')
+    assert res.json['title'] == 'Search by region'
+    assert res.json['notification'] == 'Success'
+    assert res.json['coordinates'] == 'chr9:1-136133506'
+    assert len(res.json['@graph']) == 1
+    assert res.json['@graph'][0]['accession'] == 'ENCSR000DZQ'
+    assert len(res.json['@graph'][0]['files']) == 3
+    expected = [
+        'http://localhost/peak_metadata/region=chr9%3A1-136133506&genome=GRCh37/peak_metadata.tsv',
+        'http://localhost/peak_metadata/region=chr9%3A1-136133506&genome=GRCh37/peak_metadata.json'
+    ]
+    assert res.json['download_elements'] == expected
+    expected = {
+        'hg19': {
+            'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/batch_hub/region%3Dchr9%253A1-136133506%2C%2Cgenome%3DGRCh37/hub.txt&db=hg19&position=chr9:-199-136133706'
+        }
+    }
+    assert res.json['visualize_batch'] == expected
 
 
 def test_indexing_simple(testapp, indexer_testapp):
