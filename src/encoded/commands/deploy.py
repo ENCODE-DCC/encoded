@@ -323,6 +323,8 @@ def _get_run_args(main_args, instances_tag_data):
             config_file = ':cloud-config-cluster.yml'
             data_insert['CLUSTER_NAME'] = main_args.cluster_name
             data_insert['REGION_INDEX'] = 'True'
+        elif main_args.es_worker:
+            config_file = ':cloud-config-worker.yml'
         else:
             config_file = ':cloud-config.yml'
         if main_args.set_region_index_to:
@@ -563,6 +565,8 @@ def parse_args():
         help="Deploy to production AWS")
     parser.add_argument('--availability-zone', default='us-west-2a',
         help="Set EC2 availabilty zone")
+    parser.add_argument('--es-worker', action='store_true',
+        help=' Create ElasticSearch worker')
     return parser.parse_args()
 
 

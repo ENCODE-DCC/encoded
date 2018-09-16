@@ -105,6 +105,7 @@ setup(
 
         [paste.composite_factory]
         indexer = snovault.elasticsearch.es_index_listener:composite
+        indexer-worker = snovault.elasticsearch.es_index_listener_worker:composite
         visindexer = snovault.elasticsearch.es_index_listener:composite
         regionindexer = snovault.elasticsearch.es_index_listener:composite
 
