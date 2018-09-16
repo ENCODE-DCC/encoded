@@ -266,6 +266,7 @@ write_files:
         index:
             queue_size: 400
     indices.query.bool.max_clause_count: 8192
+    network.host: 0.0.0.0
 - path: /etc/elasticsearch/jvm.options
   content: |
     -XX:+UseConcMarkSweepGC
@@ -294,6 +295,8 @@ write_files:
     archive_mode = on
     archive_timeout = 60
     checkpoint_timeout = 1h
+    hba_file = '/etc/postgresql/9.3/main/custom_pg_hba.conf'
+    listen_addresses = '0.0.0.0'
 - path: /etc/postgresql/9.3/main/demo.conf
   content: |
     archive_mode = off
@@ -305,5 +308,12 @@ write_files:
     recovery_target_timeline = 'latest'
     restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
     standby_mode = on
+- path: /etc/postgresql/9.3/main/custom_pg_hba.conf
+  content: |
+    local   all             postgres                                peer
+    local   all             all                                     peer
+    host    all             all             127.0.0.1/32            md5
+    host    all             all             ::1/128                 md5
+    host    all             all             0.0.0.0/0               trust
 - path: /etc/postgresql/9.3/main/wale_s3_prefix
   content: "%(WALE_S3_PREFIX)s"
