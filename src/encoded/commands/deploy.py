@@ -314,6 +314,8 @@ def _get_run_args(main_args, instances_tag_data):
             'REGION_INDEX': 'False',
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
+            'REDIS_IP': main_args.redis_ip,
+            'REDIS_PORT': main_args.redis_port,
         }
         if main_args.no_es:
             config_file = ':cloud-config-no-es.yml'
@@ -541,7 +543,8 @@ def parse_args():
                         help="c5.9xlarge for indexing. Switch to a smaller instance (m5.xlarge or c5.xlarge).")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--no-es', action='store_true', help="Use non ES cloud condfig")
-    parser.add_argument('--redis-port', default=9250, help="Open Redis Port.")
+    parser.add_argument('--redis-host', default='localhost', help="Redis Host.")
+    parser.add_argument('--redis-port', default=9250, help="Redis Port.")
     parser.add_argument('--set-region-index-to', type=check_region_index,
                         help="Override region index in yaml to 'True' or 'False'")
     parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
