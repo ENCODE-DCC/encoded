@@ -545,7 +545,7 @@ def parse_args():
                         help="c5.9xlarge for indexing. Switch to a smaller instance (m5.xlarge or c5.xlarge).")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--no-es', action='store_true', help="Use non ES cloud condfig")
-    parser.add_argument('--redis-host', default='localhost', help="Redis Host.")
+    parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=9250, help="Redis Port.")
     parser.add_argument('--set-region-index-to', type=check_region_index,
                         help="Override region index in yaml to 'True' or 'False'")
