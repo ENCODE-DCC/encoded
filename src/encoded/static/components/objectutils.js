@@ -6,7 +6,7 @@ import * as globals from './globals';
 
 
 // Display information on page as JSON formatted data
-export function displayAsJson(){
+export function displayAsJson() {
     const windowHref = window.location.href;
     if (windowHref.indexOf('?') > -1) {
         window.location.href += '&format=json';

@@ -73,9 +73,8 @@ class BiosampleComponent extends React.Component {
                         </h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>JSON</button>
+                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
                     </div>
-
                 </header>
                 {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
