@@ -3,6 +3,12 @@
     border-radius: 5px;
 }
 
+.btn {
+    &.news-keyword {
+        font-weight: normal;
+    }
+}
+
 .btn-link {
     font-weight: normal;
 }
