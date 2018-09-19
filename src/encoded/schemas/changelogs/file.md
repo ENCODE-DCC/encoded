@@ -2,6 +2,8 @@
 
 ### Minor changes since schema version 13
 
+* *dataset* property is no longer required if workflow_run is specified.
+* *workflow_run* property is added to the schema. The property specifies the workflow execution the File object was produced by.
 * *file_blob* property is added to the schema. The property is used to specify s3 file blob corresponding to the file object.
 * *read_count*, *file _size*, *read_length*, *mapped_read_length* were set to have a minimum of 0.
 * *barcode_position* in  *flowcell_details* was set to have a minimum of 1.

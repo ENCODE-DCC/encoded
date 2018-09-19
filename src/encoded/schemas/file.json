@@ -6,6 +6,9 @@
     "type": "object",
     "anyOf":[
         {
+            "required": ["workflow_run", "file_format", "output_type", "award", "lab", "md5sum"]
+        },
+        {
             "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
         },
         {
@@ -577,6 +580,12 @@
         },
         "accession": {
             "accessionType": "FF"
+        },
+        "workflow_run" : {
+            "title": "Workflow run",
+            "description": "A workflow run this file object was produced by.",
+            "type": "string",
+            "linkTo": "WorkflowRun"
         },
         "file_blob": {
             "title": "File blob",
