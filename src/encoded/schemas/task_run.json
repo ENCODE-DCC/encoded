@@ -4,7 +4,7 @@
     "id": "/profiles/task_run.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["pipeline_run", "analysis_step_version"],
+    "required": ["workflow_run", "analysis_step_version"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
