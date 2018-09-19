@@ -11,7 +11,7 @@ import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { requestObjects, AlternateAccession } from './objectutils';
+import { requestObjects, AlternateAccession, displayAsJson } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -618,6 +618,7 @@ class DonorComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
                         {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
+                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
                     </div>
                 </header>
 

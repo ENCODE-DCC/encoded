@@ -10,6 +10,7 @@ import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
+import { displayAsJson } from './objectutils';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
@@ -2142,6 +2143,7 @@ class Award extends React.Component {
                             :
                             <h2>AWARD SUMMARY for ({context.name})</h2>
                         }
+                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
                     </div>
                 </header>
                 <AwardCharts award={context} />

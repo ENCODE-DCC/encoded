@@ -8,6 +8,7 @@ import pubReferenceList from './reference';
 import { PickerActions } from './search';
 import Status from './status';
 import { auditDecor } from './audit';
+import { displayAsJson } from './objectutils';
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -51,6 +52,7 @@ class SoftwareComponent extends React.Component {
                         <Breadcrumbs root="/search/?type=software" crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
+                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}

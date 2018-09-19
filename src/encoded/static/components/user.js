@@ -8,6 +8,7 @@ import { Modal, ModalHeader, ModalBody } from '../libs/bootstrap/modal';
 import { Form } from './form';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
+import { displayAsJson } from './objectutils';
 
 
 class AccessKeyStore extends ItemStore {
@@ -208,6 +209,7 @@ const User = (props) => {
                 <Breadcrumbs root="/search/?type=user" crumbs={crumbs} />
                 <div className="col-sm-12">
                     <h1 className="page-title">{context.title}</h1>
+                    <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
                 </div>
             </header>
             <div className="panel data-display">
