@@ -7,6 +7,7 @@ import { PickerActions } from './search';
 import { auditDecor } from './audit';
 import { displayAsJson } from './objectutils';
 
+
 const Gene = (props) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-detail key-value');
