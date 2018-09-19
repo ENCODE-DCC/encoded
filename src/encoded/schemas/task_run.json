@@ -1,7 +1,7 @@
 {
-    "title": "Pipeline step run",
-    "description": "Schema for reporting a specific instance of a pipeline step execution.",
-    "id": "/profiles/pipeline_step_run.json",
+    "title": "Task run",
+    "description": "Schema for reporting a specific instance of a workflow task execution.",
+    "id": "/profiles/task_run.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["pipeline_run", "analysis_step_version"],
@@ -17,40 +17,40 @@
         "schema_version": {
             "default": "1"
         },
-        "pipeline_run": {
-            "description": "Reference to the pipeline run this step execution is a part of.",
-            "comment": "See pipeline_run.json for available identifiers.",
+        "workflow_run": {
+            "description": "Reference to the workflow run this task execution is a part of.",
+            "comment": "See workflow_run.json for available identifiers.",
             "type": "string",
-            "linkTo": "PipelineRun"
+            "linkTo": "WorkflowRun"
         },
         "analysis_step_version": {
             "title": "Analysis Step Version",
-            "description": "Reference to the analysis step version this pipeline step run is an instantiation of.",
+            "description": "Reference to the analysis step version this task run is an instantiation of.",
             "type": "string",
             "linkTo": "AnalysisStepVersion"
         },
         "inputs": {
             "title": "Input file blobs",
-            "description": "File blobs used as input for this pipeline step run.",
+            "description": "File blobs used as input for this workflow task run.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "File blob",
-                "description": "A particular file blob specified as input for this pipeline step run.",
+                "description": "A particular file blob specified as input for this workflow task run.",
                 "type": "string",
                 "linkTo": "FileBlob"
             }
         },
         "outputs": {
             "title": "Output file blobs",
-            "description": "File blobs that were produced as output of this pipeline step run.",
+            "description": "File blobs that were produced as output of this workflow task run.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "File blob",
-                "description": "A particular file blob produced as an output of this pipeline step run.",
+                "description": "A particular file blob produced as an output of this workflow task run.",
                 "type": "string",
                 "linkTo": "FileBlob"
             }
@@ -61,5 +61,5 @@
             "title": "Status"
         }
     },
-    "changelog": "/profiles/changelogs/pipeline_step_run.md"
+    "changelog": "/profiles/changelogs/task_run.md"
 }
