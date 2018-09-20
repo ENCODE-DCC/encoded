@@ -120,35 +120,34 @@ organ_slims = {
 }
 
 cell_slims = {
-    'CL:0000066': 'epithelial cell',
     'CL:0000236': 'B cell',
-    'CL:0000192': 'smooth muscle cell',
-    'CL:0000057': 'fibroblast',
-    'CL:0000576': 'monocyte',
-    'CL:0000312': 'keratinocyte',
-    'CL:0000148': 'melanocyte',
-    'CL:0000056': 'myoblast',
-    'CL:0002319': 'neural cell',
-    'CL:0000738': 'leukocyte',
-    'CL:0000084': 'T cell',
-    'CL:0000988': 'hematopoietic cell',
-    'EFO:0001639': 'cancer cell line',
+    'EFO:0001640': 'B cell',# B cell derived cell line
+    'EFO:0001639': 'cancer cell', # cancer cell line
     'CL:0002494': 'cardiocyte',
     'CL:0000115': 'endothelial cell',
-    'CL:0000763': 'myeloid cell',
-    'CL:0000669': 'pericyte cell',
-    'EFO:0005214': 'neuroblastoma cell line',
-    'EFO:0005292': 'lymphoblastoid cell line',
-    'EFO:0003040': 'embryonic cell line',
-    'EFO:0001641': 'epithelial cell', # epithelial cell derived cell line
-    'EFO:0001640': 'B cell',# B cell derived cell line
-    'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
-    'EFO:0002009': 'fibroblast',# fibroblast derived cell line
     'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
-    'CL:0000034':'stem cell',
-    'EFO:0002886':'stem cell', # stem cell derived cell line
-    'EFO:0004905':'induced pluripotent stem cell',
-    'EFO:0005740':'induced pluripotent stem cell' # induced pluripotent stem cell derived cell line
+    'CL:0000066': 'epithelial cell',
+    'EFO:0001641': 'epithelial cell', # epithelial cell derived cell line
+    'CL:0000057': 'fibroblast',
+    'EFO:0002009': 'fibroblast',# fibroblast derived cell line
+    'CL:0000988': 'hematopoietic cell',
+    'EFO:0004905': 'induced pluripotent stem cell',
+    'EFO:0005740': 'induced pluripotent stem cell', # induced pluripotent stem cell derived cell line
+    'CL:0000312': 'keratinocyte',
+    'CL:0000738': 'leukocyte',
+    'EFO:0005292': 'lymphoblast', # lymphoblastoid cell line
+    'CL:0000148': 'melanocyte',
+    'CL:0000576': 'monocyte',
+    'CL:0000763': 'myeloid cell',
+    'CL:0000056': 'myoblast',
+    'CL:0002319': 'neural cell',
+    'EFO:0005214': 'neuroblastoma cell', # neuroblastoma cell line
+    'CL:0000669': 'pericyte cell',
+    'CL:0000192': 'smooth muscle cell',
+    'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
+    'CL:0000034': 'stem cell',
+    'EFO:0002886': 'stem cell', # stem cell derived cell line
+    'CL:0000084': 'T cell'
 }
 
 assay_slims = {
