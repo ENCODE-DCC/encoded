@@ -11,18 +11,13 @@ export class DisplayAsJson extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        // Set initial React state.
-        this.state = {
-            currentURL: url.parse(context.location_href),
-        };
-
         // Bind this to non-React methods.
         this.onClick = this.onClick.bind(this);
     }
 
     onClick() {
-        const windowHref = this.state.currentURL.href;
-        if (windowHref.indexOf('?') > -1) {
+        const urlComponents = url.parse(this.context.location_href);
+        if (urlComponents.query !== null) {
             window.location.href += '&format=json';
         } else {
             window.location.href += '?format=json';
@@ -31,9 +26,7 @@ export class DisplayAsJson extends React.Component {
 
     render() {
         return (
-            <div>
-                <button className="convert-to-json" onClick={this.onClick}>&#123; ; &#125;</button>
-            </div>
+            <button className="convert-to-json" onClick={this.onClick}>&#123; ; &#125;</button>
         );
     }
 }
