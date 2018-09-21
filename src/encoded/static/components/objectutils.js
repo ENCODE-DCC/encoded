@@ -8,12 +8,12 @@ import url from 'url';
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
-    constructor(props,context) {
-        super(props,context);
+    constructor(props, context) {
+        super(props, context);
 
         // Set initial React state.
         this.state = {
-            currentURL: url.parse(context.location_href)
+            currentURL: url.parse(context.location_href),
         };
 
         // Bind this to non-React methods.
@@ -39,7 +39,7 @@ export class DisplayAsJson extends React.Component {
 }
 
 DisplayAsJson.contextTypes = {
-    location_href: PropTypes.string
+    location_href: PropTypes.string,
 };
 
 
