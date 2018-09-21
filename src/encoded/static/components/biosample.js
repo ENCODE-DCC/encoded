@@ -10,7 +10,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, displayAsJson } from './objectutils';
+import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, DisplayAsJson } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
@@ -73,7 +73,7 @@ class BiosampleComponent extends React.Component {
                         </h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}

@@ -11,7 +11,7 @@ import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import Status from './status';
 import pubReferenceList from './reference';
-import { donorDiversity, publicDataset, AlternateAccession, displayAsJson } from './objectutils';
+import { donorDiversity, publicDataset, AlternateAccession, DisplayAsJson } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
@@ -93,7 +93,7 @@ class AnnotationComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
                         {this.props.auditIndicators(context.audit, 'annotation-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'annotation-audit', { session: this.context.session, except: context['@id'] })}
@@ -288,7 +288,7 @@ class PublicationDataComponent extends React.Component {
                         <h2>Summary for publication file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'publicationdata-audit', { session: this.context.session, except: context['@id'] })}
@@ -451,7 +451,7 @@ class ReferenceComponent extends React.Component {
                         <h2>Summary for reference file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
@@ -617,7 +617,7 @@ class ProjectComponent extends React.Component {
                         <h2>Summary for project file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session, except: context['@id'] })}
@@ -804,7 +804,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session, except: context['@id'] })}
@@ -1296,7 +1296,7 @@ export class SeriesComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
                         {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}

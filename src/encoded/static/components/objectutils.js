@@ -3,17 +3,44 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import * as globals from './globals';
+import url from 'url';
 
 
 // Display information on page as JSON formatted data
-export function displayAsJson() {
-    const windowHref = window.location.href;
-    if (windowHref.indexOf('?') > -1) {
-        window.location.href += '&format=json';
-    } else {
-        window.location.href += '?format=json';
+export class DisplayAsJson extends React.Component {
+    constructor(props,context) {
+        super(props,context);
+
+        // Set initial React state.
+        this.state = {
+            currentURL: url.parse(context.location_href)
+        };
+
+        // Bind this to non-React methods.
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick() {
+        const windowHref = this.state.currentURL.href;
+        if (windowHref.indexOf('?') > -1) {
+            window.location.href += '&format=json';
+        } else {
+            window.location.href += '?format=json';
+        }
+    }
+
+    render() {
+        return (
+            <div>
+                <button className="convert-to-json" onClick={this.onClick}>&#123; ; &#125;</button>
+            </div>
+        );
     }
 }
+
+DisplayAsJson.contextTypes = {
+    location_href: PropTypes.string
+};
 
 
 // Display a summary sentence for a single treatment.

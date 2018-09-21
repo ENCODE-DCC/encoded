@@ -8,7 +8,7 @@ import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
-import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, AlternateAccession, displayAsJson } from './objectutils';
+import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, AlternateAccession, DisplayAsJson } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { PickerActions } from './search';
@@ -377,7 +377,7 @@ class FileComponent extends React.Component {
                         <Supersede context={context} />
                         {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 <Panel addClasses="data-display">

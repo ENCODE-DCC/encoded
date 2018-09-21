@@ -10,7 +10,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, requestSearch, displayAsJson } from './objectutils';
+import { singleTreatment, requestSearch, DisplayAsJson } from './objectutils';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -518,7 +518,7 @@ class GeneticModificationComponent extends React.Component {
                         <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}

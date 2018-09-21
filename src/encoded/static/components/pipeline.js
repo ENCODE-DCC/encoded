@@ -8,7 +8,7 @@ import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
-import { PanelLookup, displayAsJson } from './objectutils';
+import { PanelLookup, DisplayAsJson } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
 import Status from './status';
@@ -395,7 +395,7 @@ class PipelineComponent extends React.Component {
                         {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} /> : null}
                         <h2>{context.title}</h2>
                         {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, except: context['@id'] })}

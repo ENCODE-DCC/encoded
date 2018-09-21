@@ -12,7 +12,7 @@ import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, AlternateAccession, displayAsJson } from './objectutils';
+import { singleTreatment, AlternateAccession, DisplayAsJson } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -456,7 +456,7 @@ class ExperimentComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
                         {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
-                        <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import * as globals from './globals';
 import DataColors from './datacolors';
-import { displayAsJson } from './objectutils';
+import { DisplayAsJson } from './objectutils';
 
 
 // Maximum number of facet charts to display.
@@ -192,7 +192,7 @@ class Collection extends React.Component {
                         <h2>{context.title}</h2>
                         {context.schema_description ? <h4 className="collection-sub-header">{context.schema_description}</h4> : null}
                     </div>
-                    <button className="convert-to-json" onClick={displayAsJson}>&#123; ; &#125;</button>
+                    <DisplayAsJson />
                 </header>
                 <Panel>
                     <PanelHeading addClasses="collection-heading">
