@@ -8,8 +8,8 @@ import url from 'url';
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor() {
+        super();
 
         // Bind this to non-React methods.
         this.onClick = this.onClick.bind(this);
@@ -26,7 +26,7 @@ export class DisplayAsJson extends React.Component {
 
     render() {
         return (
-            <button className="convert-to-json" onClick={this.onClick}>&#123; ; &#125;</button>
+            <button className="convert-to-json" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
         );
     }
 }
