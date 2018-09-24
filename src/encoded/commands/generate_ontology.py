@@ -142,7 +142,7 @@ cell_slims = {
     'CL:0000056': 'myoblast',
     'CL:0002319': 'neural cell',
     'EFO:0005214': 'neuroblastoma cell', # neuroblastoma cell line
-    'CL:0000669': 'pericyte cell',
+    'CL:0000669': 'pericyte',
     'CL:0000192': 'smooth muscle cell',
     'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
     'CL:0000034': 'stem cell',
