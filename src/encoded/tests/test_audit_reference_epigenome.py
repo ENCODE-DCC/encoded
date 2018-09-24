@@ -171,7 +171,7 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3):
 def target_control(testapp, organism):
     item = {
         'label': 'Control',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['control']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -181,7 +181,7 @@ def target_control(testapp, organism):
 def target_H3K27me3(testapp, organism):
     item = {
         'label': 'H3K27me3',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -191,7 +191,7 @@ def target_H3K27me3(testapp, organism):
 def target_H3K36me3(testapp, organism):
     item = {
         'label': 'H3K36me3',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -201,7 +201,7 @@ def target_H3K36me3(testapp, organism):
 def target_H3K4me1(testapp, organism):
     item = {
         'label': 'H3K4me1',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -211,7 +211,7 @@ def target_H3K4me1(testapp, organism):
 def target_H3K4me3(testapp, organism):
     item = {
         'label': 'H3K4me3',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -221,7 +221,7 @@ def target_H3K4me3(testapp, organism):
 def target_H3K27ac(testapp, organism):
     item = {
         'label': 'H3K27ac',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -231,7 +231,7 @@ def target_H3K27ac(testapp, organism):
 def target_H3K9me3(testapp, organism):
     item = {
         'label': 'H3K9me3',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]

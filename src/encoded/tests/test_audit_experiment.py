@@ -59,10 +59,9 @@ def base_replicate_two(testapp, base_experiment):
 
 
 @pytest.fixture
-def base_target(testapp, organism):
+def base_target(testapp, gene):
     item = {
-        'organism': organism['uuid'],
-        'gene_name': 'XYZ',
+        'genes': [gene['uuid']],
         'label': 'XYZ',
         'investigated_as': ['transcription factor']
     }
@@ -72,7 +71,7 @@ def base_target(testapp, organism):
 @pytest.fixture
 def tag_target(testapp, organism):
     item = {
-        'organism': organism['uuid'],
+        'target_organism': organism['uuid'],
         'label': 'eGFP',
         'investigated_as': ['tag']
     }
@@ -80,10 +79,9 @@ def tag_target(testapp, organism):
 
 
 @pytest.fixture
-def recombinant_target(testapp, organism):
+def recombinant_target(testapp, gene):
     item = {
-        'organism': organism['uuid'],
-        'gene_name': 'CTCF',
+        'genes': [gene['uuid']],
         'label': 'eGFP-CTCF',
         'investigated_as': ['recombinant protein', 'transcription factor']
     }
@@ -103,7 +101,7 @@ def fly_organism(testapp):
 @pytest.fixture
 def mouse_H3K9me3(testapp, mouse):
     item = {
-        'organism': mouse['@id'],
+        'target_organism': mouse['@id'],
         'label': 'H3K9me3',
         'investigated_as': ['histone', 'broad histone mark']
     }
@@ -113,7 +111,7 @@ def mouse_H3K9me3(testapp, mouse):
 @pytest.fixture
 def control_target(testapp, organism):
     item = {
-        'organism': organism['uuid'],
+        'target_organism': organism['uuid'],
         'label': 'Control',
         'investigated_as': ['control']
     }
@@ -822,7 +820,7 @@ def test_audit_experiment_not_tag_antibody(
         testapp, base_experiment, base_replicate, organism, antibody_lot):
     other_target = testapp.post_json(
         '/target',
-        {'organism': organism['uuid'],
+        {'target_organism': organism['uuid'],
             'label': 'eGFP-AVCD',
             'investigated_as': ['recombinant protein']}).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
@@ -837,7 +835,7 @@ def test_audit_experiment_target_tag_antibody(
         testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
     ha_target = testapp.post_json(
         '/target',
-        {'organism': organism['uuid'],
+        {'target_organism': organism['uuid'],
             'label': 'HA-ABCD',
             'investigated_as': ['recombinant protein']}).json['@graph'][0]
     base_antibody['targets'] = [tag_target['@id']]

@@ -29,7 +29,7 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
-            const context = { '@type': ['Target'], gene_name: 'CXXC1' };
+            const context = { '@type': ['Target'], genes: [{ symbol: 'CXXC1' }] };
             const wrapper = mount(
                 <DbxrefList
                     dbxrefs={['HGNC:hCGBP', 'HGNC:ZCGPC1']}
