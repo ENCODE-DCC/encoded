@@ -3,6 +3,7 @@
 ### Minor changes since schema version 7
 
 * *size* in *cross_correlation_plot* was set to have a minimum of 0.
+* *cross_correlation_plot* mime types enums list was extended to allow attachement of PNG images
 
 ### Schema version 7
 
