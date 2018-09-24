@@ -10,12 +10,13 @@ import { RelatedItems } from './item';
 /* eslint-disable react/prefer-stateless-function */
 class Target extends React.Component {
     render() {
+        let geneIDs = [];
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
 
-        const geneIDs = context.genes.map(
-            gene => `GeneID:${gene.geneid}`
-        );
+        if (context.genes) {
+            geneIDs = context.genes.map(gene => `GeneID:${gene.geneid}`);
+        }
 
         // Set up breadcrumbs
         const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);

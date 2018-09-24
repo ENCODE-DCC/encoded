@@ -6,9 +6,8 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 
 @pytest.fixture
-def base_target1(testapp, organism, gene):
+def base_target1(testapp, gene):
     item = {
-        'organism': organism['uuid'],
         'genes': [gene['uuid']],
         'label': 'ABCD',
         'investigated_as': ['transcription factor']
@@ -17,9 +16,8 @@ def base_target1(testapp, organism, gene):
 
 
 @pytest.fixture
-def base_target2(testapp, organism, gene):
+def base_target2(testapp, gene):
     item = {
-        'organism': organism['uuid'],
         'genes': [gene['uuid']],
         'label': 'EFGH',
         'investigated_as': ['transcription factor']
@@ -98,4 +96,3 @@ def test_audit_control_characterizations(testapp, antibody_lot, base_target1):
     errors = res.json['audit']
     print(errors)
     assert 'NOT_COMPLIANT' not in errors
-

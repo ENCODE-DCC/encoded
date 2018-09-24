@@ -67,7 +67,9 @@ const LotComponent = (props, reactContext) => {
     let geneTerms = [];
     targetKeys.forEach((key, i) => {
         const scientificName = targets[key].organism.scientific_name;
-        geneName = targets[key].genes.map(gene => gene.symbol);
+        if (targets[key].genes) {
+            geneName = targets[key].genes.map(gene => gene.symbol);
+        }
 
         // Add to the information on organisms from the targets
         organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>);

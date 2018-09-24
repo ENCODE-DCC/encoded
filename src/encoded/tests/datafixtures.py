@@ -200,14 +200,14 @@ def organism(human):
 
 
 @pytest.fixture
-def ctcf(testapp):
+def ctcf(testapp, organism):
     item = {
         'uuid': 'a9288b44-6ef4-460e-a3d6-464fd625b103',
         'dbxrefs': ['HGNC:13723'],
         'geneid': '10664',
         'symbol': 'CTCF',
         'ncbi_entrez_status': 'live',
-        'organism': 'human',
+        'organism': organism['uuid'],
     }
     return testapp.post_json('/gene', item).json['@graph'][0]
 
@@ -381,7 +381,7 @@ def antibody_lot(testapp, lab, award, source, mouse, target):
 def target(testapp, organism):
     item = {
         'label': 'ATF4',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['transcription factor'],
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -391,7 +391,7 @@ def target(testapp, organism):
 def target_H3K27ac(testapp, organism):
     item = {
         'label': 'H3K27ac',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone',
                             'narrow histone mark']
     }
@@ -402,7 +402,7 @@ def target_H3K27ac(testapp, organism):
 def target_H3K9me3(testapp, organism):
     item = {
         'label': 'H3K9me3',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['histone',
                             'broad histone mark']
     }
@@ -413,7 +413,7 @@ def target_H3K9me3(testapp, organism):
 def target_control(testapp, organism):
     item = {
         'label': 'Control',
-        'organism': organism['@id'],
+        'target_organism': organism['@id'],
         'investigated_as': ['control']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -423,7 +423,7 @@ def target_control(testapp, organism):
 def target_promoter(testapp, fly):
     item = {
         'label': 'daf-2',
-        'organism': fly['@id'],
+        'target_organism': fly['@id'],
         'investigated_as': ['other context']
     }
     return testapp.post_json('/target', item).json['@graph'][0]

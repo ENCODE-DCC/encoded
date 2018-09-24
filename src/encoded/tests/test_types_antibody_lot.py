@@ -47,7 +47,7 @@ def motif_enrichment(mass_spec):
 def mouse_target(testapp, mouse):
     item = {
         'label': 'ATF4',
-        'organism': mouse['@id'],
+        'target_organism': mouse['@id'],
         'investigated_as': ['transcription factor'],
     }
     return testapp.post_json('/target', item).json['@graph'][0]
@@ -57,7 +57,7 @@ def mouse_target(testapp, mouse):
 def mouse_target_H3K9me3(testapp, mouse):
     item = {
         'label': 'H3K9me3',
-        'organism': mouse['@id'],
+        'target_organism': mouse['@id'],
         'investigated_as': ['histone',
                             'broad histone mark']
     }

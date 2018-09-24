@@ -75,7 +75,7 @@ def standards_document(testapp, lab, award):
 @pytest.fixture
 def base_target(testapp, organism):
     item = {
-        'organism': organism['uuid'],
+        'target_organism': organism['uuid'],
         'label': 'TAF1',
         'investigated_as': ['transcription factor']
     }
@@ -85,7 +85,7 @@ def base_target(testapp, organism):
 @pytest.fixture
 def tag_target(testapp, organism):
     item = {
-        'organism': organism['uuid'],
+        'target_organism': organism['uuid'],
         'label': 'eGFP',
         'investigated_as': ['tag']
     }
@@ -106,9 +106,8 @@ def base_antibody(award, lab, source, organism, target):
 
 
 @pytest.fixture
-def recombinant_target(testapp, organism, gene):
+def recombinant_target(testapp, gene):
     item = {
-        'organism': organism['uuid'],
         'label': 'HA-ABCD',
         'investigated_as': ['transcription factor', 'recombinant protein'],
         'genes': [gene['uuid']]

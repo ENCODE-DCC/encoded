@@ -4,6 +4,7 @@
 
 * Move status property to standard_status mixin.
 * Added "genes" property for the list of genes targeted by assay or antibody associated with the target.
+* The "organism" property is now a calculated property. The organism of a target is either specified directly through the new "target_organism" property or defined indirectly by its target genes. The "target_organism" property and the "genes" property are mutually exclusive.
 * Added "modification" property to represent modification(s) made to the corresponding wild-type gene product.
 
 ### Schema version 7

@@ -29,6 +29,26 @@ class Target(SharedItem):
         return keys
 
     @calculated_property(schema={
+        "title": "Organism",
+        "description": "Organism bearing the target.",
+        "comment": "Calculated from either target_organism or genes",
+        "type": "string",
+        "linkTo": "Organism"
+    })
+    def organism(self, properties=None):
+        if properties is None:
+            properties = self.upgrade_properties()
+        if 'target_organism' in properties:
+            return properties['target_organism']
+        else:
+            root = find_root(self)
+            organism_uuids = set(
+                root.get_by_uuid(gene).upgrade_properties()['organism']
+                for gene in properties['genes']
+            )
+            return organism_uuids.pop()
+
+    @calculated_property(schema={
         "title": "Name",
         "type": "string",
     })
@@ -39,7 +59,8 @@ class Target(SharedItem):
         "title": "Title",
         "type": "string",
     })
-    def title(self, request, organism, label):
+    def title(self, request, label):
+        organism = self.organism()
         organism_props = request.embed(organism, '@@object')
         return u'{} ({})'.format(label, organism_props['scientific_name'])
 
@@ -50,7 +71,7 @@ class Target(SharedItem):
 
     def _name(self, properties):
         root = find_root(self)
-        organism = root.get_by_uuid(properties['organism'])
+        organism = root.get_by_uuid(self.organism(properties))
         organism_props = organism.upgrade_properties()
         return u'{}-{}'.format(properties['label'], organism_props['name'])
 
@@ -58,6 +79,5 @@ class Target(SharedItem):
         request._linked_uuids.add(str(self.uuid))
         # Record organism uuid in linked_uuids so linking objects record
         # the rename dependency.
-        properties = self.upgrade_properties()
-        request._linked_uuids.add(str(properties['organism']))
+        request._linked_uuids.add(str(self.organism()))
         return None

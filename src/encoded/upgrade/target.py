@@ -164,8 +164,13 @@ def target_8_9(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3998
     value.pop('gene_name', '')
     gene_id_str = 'GeneID:'
-    value['genes'] = [
+    genes = [
         dbxref.replace(gene_id_str, '', 1)
         for dbxref in value.get('dbxref', [])
         if dbxref.startswith(gene_id_str)
     ]
+    if genes:
+        value['genes'] = genes
+        value.pop('organism')
+    else:
+        value['target_organism'] = value.pop('organism')

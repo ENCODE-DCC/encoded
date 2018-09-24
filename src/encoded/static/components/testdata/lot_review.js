@@ -25,19 +25,6 @@
                     "aliases":[  
 
                     ],
-                    "organism":{  
-                        "status":"released",
-                        "name":"human",
-                        "scientific_name":"Homo sapiens",
-                        "schema_version":"2",
-                        "taxon_id":"9606",
-                        "@id":"/organisms/human/",
-                        "@type":[  
-                            "Organism",
-                            "Item"
-                        ],
-                        "uuid":"7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                    },
                     "schema_version":"3",
                     "label":"HNRNPA1",
                     "investigated_as":[  
