@@ -19,6 +19,7 @@
     * Vega
     * miRBase
     * IMGT/GENE-DB
+    * RefSeq
   - go_annotations: a list of gene ontology annotations of the gene, including all three aspects: Biological Process, Cellular Component, and Molecular Function. Each ontology annotation should include GO ID, ontology term name, annotation evidence code and the aspect of ontology (P: biological process, F: molecular function or C: cellular component).
 
 * Genes on the ENCODE portal are imported from and synced with NCBI Entrez Gene database. Only a subset of genes, which have Entrez GeneID as well as ID and symbol from official nomenclature, are used and maintained here. New genes to be added should comply with this requirement.
