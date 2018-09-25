@@ -110,7 +110,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                             controls_files_structures[derived_from.get('dataset')]))))
             control_bam_details = []
             cumulative_read_depth = 0
-
+            missing_control_quality_metric = False
             for bam_file in derived_from_external_bams_gen:
                 failures = check_control_target_failures(bam_file.get('dataset'),
                     control_objects, bam_file['@id'],
@@ -118,7 +118,6 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 if failures:
                     for f in failures:
                         yield f
-                    return
                 else:
                     control_depth = get_chip_seq_bam_read_depth(bam_file)
                     if not control_depth:
@@ -128,18 +127,19 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                 bam_file['output_type'],
                                 bam_file['@id'])
                         yield AuditFailure('missing control quality metric', detail, level='WARNING')
-                        return
+                        missing_control_quality_metric = True
                     else:
                         cumulative_read_depth += control_depth
                         control_bam_details.append(
                             (bam_file.get('@id'), control_depth, bam_file.get('dataset')))
-            yield from check_control_read_depth_standards(
-                peaks_file.get('@id'),
-                peaks_file.get('assembly'),
-                cumulative_read_depth,
-                control_bam_details,
-                target_name,
-                target_investigated_as)
+            if not missing_control_quality_metric:
+                yield from check_control_read_depth_standards(
+                    peaks_file.get('@id'),
+                    peaks_file.get('assembly'),
+                    cumulative_read_depth,
+                    control_bam_details,
+                    target_name,
+                    target_investigated_as)
 
 
 def check_control_target_failures(control_id, control_objects, bam_id, bam_type):
