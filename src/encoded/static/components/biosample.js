@@ -489,6 +489,8 @@ BiosampleTermId.defaultProps = {
     termId: '',
 };
 
+export default BiosampleTermId;
+
 
 const Treatment = (props) => {
     const context = props.context;
