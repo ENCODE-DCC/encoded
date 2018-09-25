@@ -32,6 +32,7 @@ ORDER = [
     'worm_donor',
     'human_donor',
     'donor_characterization',
+    'biosample_type',
     'biosample',
     'biosample_characterization',
     'platform',
