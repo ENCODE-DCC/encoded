@@ -184,7 +184,9 @@ slim_shims = {
         'OBI:0001863': ['DNA methylation'],  # WGBS
         'OBI:0001862': ['DNA methylation'],  # RRBS
         'OBI:0001861': ['DNA methylation'],  # MRE-seq
-        'OBI:0002086': ['DNA methylation']  # TAB-seq
+        'OBI:0002086': ['DNA methylation'],  # TAB-seq
+        'OBI:0000716': ['DNA binding'], # ChIP-seq
+        'OBI:0001919': ['3D chromatin structure'] # 5C
     },
     'organ': {
         'NTR:0001407': ['brain'],
