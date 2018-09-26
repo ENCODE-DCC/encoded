@@ -6,7 +6,7 @@ from snovault import (
 from .item import STATUS_LEVEL
 
 def check_award_condition(value, awards):
-    return value.get('award', None) and value.get('award')['rfa'] in awards
+    return value.get('award', None) and value.get('award', {}).get('rfa') in awards
 
 def audit_file_processed_step_run(value, system):
     if value['status'] in ['replaced',
