@@ -1,6 +1,9 @@
 .btn {
     font-weight: bold;
     border-radius: 5px;
+    &.news-keyword {
+        font-weight: normal;
+    }
 }
 
 .btn-link {
