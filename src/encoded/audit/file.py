@@ -5,6 +5,27 @@ from snovault import (
 
 from .item import STATUS_LEVEL
 
+def check_award_condition(value, awards):
+    return value.get('award', None) and value.get('award', {}).get('rfa') in awards
+
+def audit_file_processed_step_run(value, system):
+    if value['status'] in ['replaced',
+                           'deleted',
+                           'revoked',
+                           'uploading',
+                           'content error',
+                           'upload failed']:
+        return
+    if value['output_category'] in ['raw data',
+                                    'reference']:
+        return
+    if check_award_condition(value.get('dataset'), ['ENCODE3', 'ENCODE4']):
+        if 'step_run' not in value:
+            detail = ('Missing analysis_step_run '
+                      'information in {}.').format(value['@id'])
+            yield AuditFailure('missing analysis_step_run',
+                            detail, level='ERROR')
+
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
                                     'reference']:
@@ -316,6 +337,7 @@ def audit_duplicate_quality_metrics(value, system):
 
 
 function_dispatcher = {
+    'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
     'audit_assembly': audit_file_assembly,
     'audit_replicate_match': audit_file_replicate_match,
@@ -333,6 +355,7 @@ function_dispatcher = {
                       'file_format_specifications',
                       'dataset',
                       'dataset.target',
+                      'dataset.award',
                       'platform',
                       'controlled_by',
                       'controlled_by.replicate',
