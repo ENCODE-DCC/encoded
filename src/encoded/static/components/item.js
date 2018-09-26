@@ -5,7 +5,7 @@ import Table from './collection';
 import { FetchedData, Param } from './fetched';
 import { JSONSchemaForm } from './form';
 import * as globals from './globals';
-import { AlternateAccession } from './objectutils';
+import { AlternateAccession, DisplayAsJson } from './objectutils';
 
 
 const Fallback = (props, reactContext) => {
@@ -16,6 +16,7 @@ const Fallback = (props, reactContext) => {
             <header className="row">
                 <div className="col-sm-12">
                     <h2>{title}</h2>
+                    <DisplayAsJson />
                 </div>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
@@ -49,6 +50,7 @@ const Item = (props) => {
                 <div className="col-sm-12">
                     <h2>{title}</h2>
                     <AlternateAccession altAcc={context.alternate_accessions} />
+                    <DisplayAsJson />
                 </div>
             </header>
             <div className="row item-row">
@@ -166,6 +168,7 @@ class ItemEdit extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>{title}</h2>
+                        <DisplayAsJson />
                     </div>
                 </header>
                 {fetchedForm}

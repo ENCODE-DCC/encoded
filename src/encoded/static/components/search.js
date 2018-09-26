@@ -11,7 +11,7 @@ import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
-import { BrowserSelector } from './objectutils';
+import { BrowserSelector, DisplayAsJson } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
@@ -1225,6 +1225,7 @@ export class ResultTable extends React.Component {
                         {context.notification === 'Success' ?
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
+                                <DisplayAsJson />
                                 <div className="results-table-control">
                                     {context.views ?
                                         <div className="btn-attached">

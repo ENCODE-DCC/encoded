@@ -5,6 +5,7 @@ import { Breadcrumbs } from './navigation';
 import { DbxrefList, dbxrefHref } from './dbxref';
 import { PickerActions } from './search';
 import { auditDecor } from './audit';
+import { DisplayAsJson } from './objectutils';
 
 
 const Gene = (props) => {
@@ -27,6 +28,7 @@ const Gene = (props) => {
                 <div className="col-sm-12">
                     <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} />
                     <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
+                    <DisplayAsJson />
                 </div>
             </header>
 

@@ -3,6 +3,37 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import * as globals from './globals';
+import url from 'url';
+
+
+// Display information on page as JSON formatted data
+export class DisplayAsJson extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick() {
+        const urlComponents = url.parse(this.context.location_href);
+        if (urlComponents.query !== null) {
+            window.location.href += '&format=json';
+        } else {
+            window.location.href += '?format=json';
+        }
+    }
+
+    render() {
+        return (
+            <button className="convert-to-json" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
+        );
+    }
+}
+
+DisplayAsJson.contextTypes = {
+    location_href: PropTypes.string,
+};
 
 
 // Display a summary sentence for a single treatment.

@@ -6,6 +6,7 @@ import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { PickerActions } from './search';
 import Status from './status';
+import { DisplayAsJson } from './objectutils';
 
 
 // Display a publication object.
@@ -31,6 +32,7 @@ const PublicationComponent = (props, reactContext) => {
             {props.auditIndicators(context.audit, 'publication-audit', { session: reactContext.session })}
             {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, except: context['@id'] })}
             {context.authors ? <div className="authors">{context.authors}.</div> : null}
+            <DisplayAsJson />
             <div className="journal">
                 <Citation {...props} />
             </div>
