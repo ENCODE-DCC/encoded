@@ -57,7 +57,8 @@
                     "no"
                 ]
             },
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
+            "formInput": "textarea"
         },
         "dbxrefs": {
             "@type": "@id",
@@ -132,7 +133,7 @@
         },
         "date_released": {
             "title": "Date released"
-        },  
+        },
         "lab.title": {
             "title": "Lab"
         },
