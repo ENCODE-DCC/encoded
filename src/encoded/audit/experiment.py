@@ -111,11 +111,13 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
             control_bam_details = []
             cumulative_read_depth = 0
             missing_control_quality_metric = False
+            target_failures = False
             for bam_file in derived_from_external_bams_gen:
                 failures = check_control_target_failures(bam_file.get('dataset'),
                     control_objects, bam_file['@id'],
                     bam_file['output_type'])
                 if failures:
+                    target_failures = True
                     for f in failures:
                         yield f
                 else:
@@ -132,7 +134,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                         cumulative_read_depth += control_depth
                         control_bam_details.append(
                             (bam_file.get('@id'), control_depth, bam_file.get('dataset')))
-            if not missing_control_quality_metric:
+            if not missing_control_quality_metric and not target_failures:
                 yield from check_control_read_depth_standards(
                     peaks_file.get('@id'),
                     peaks_file.get('assembly'),
