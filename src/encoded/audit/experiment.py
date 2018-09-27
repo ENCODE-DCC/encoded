@@ -230,7 +230,7 @@ def check_control_read_depth_standards(peaks_file_id,
 
     if not control_bam_details:
         detail = ('The peaks file {} produced by ENCODE uniformly processing '
-                  'ChIP-seq pipeline has no control alignments specified.').format(
+                  'ChIP-seq pipeline has no valid control alignments specified.').format(
                       peaks_file_id
                   )
         yield AuditFailure('missing control alignments', detail, level='ERROR')
