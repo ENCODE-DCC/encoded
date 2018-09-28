@@ -498,29 +498,29 @@ def download(context, request):
     use_download_proxy = request.client_addr and request.client_addr not in request.registry['aws_ipset']
 
     external = context.propsheets.get('external', {})
-    if external.get('service') == 's3':
-        conn = boto3.client('s3')
-        location = conn.generate_presigned_url(
-            ClientMethod='get_object',
-            Params={
-                'Bucket': external['bucket'],
-                'Key': external['key'],
-                'ResponseContentDisposition': 'attachment; filename=' + filename
-            },
-            ExpiresIn=36*60*60
-        )
-    else:
-        if request.registry.settings.get('testing'):
-            filedir = resource_filename('encoded', 'tests/data/files/')
-            filepath = os.path.join(filedir, filename)
-            if os.path.exists(filepath):
-                mime_type, _ = mimetypes.guess_type(filepath)
-                with open(filepath, 'rb') as f:
-                    return Response(body=f.read(),
-                                    headers={'Content-Type': mime_type})
-        raise HTTPNotFound(
-            detail='External service {} not expected'.format(external.get('service'))
-        )
+    if not external.get('service') == 's3':
+        if asbool(request.registry.settings.get('testing')):
+            body, headers = _get_test_file_response(filename)
+            if body:
+                return Response(body=body, headers=headers)
+            else:
+                raise HTTPNotFound(
+                    detail='File download could not get {}.'.format(filename)
+                )
+        else:
+            raise HTTPNotFound(
+                detail='External service {} not expected'.format(external.get('service'))
+            )
+    conn = boto3.client('s3')
+    location = conn.generate_presigned_url(
+        ClientMethod='get_object',
+        Params={
+            'Bucket': external['bucket'],
+            'Key': external['key'],
+            'ResponseContentDisposition': 'attachment; filename=' + filename
+        },
+        ExpiresIn=36*60*60
+    )
 
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
@@ -540,3 +540,18 @@ def download(context, request):
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
+
+
+def _get_test_file_response(filename):
+    '''Look for and return test file response'''
+    filedir = resource_filename('encoded', 'tests/data/files/')
+    filepath = os.path.join(filedir, filename)
+    if os.path.exists(filepath):
+        mime_type, _ = mimetypes.guess_type(filepath)
+    try:
+        with open(filepath, 'rb') as file_handler:
+            body = file_handler.read()
+            headers = {'Content-Type': mime_type}
+            return body, headers
+    except Exception:  # pylint: disable=broad-except
+        return None, None

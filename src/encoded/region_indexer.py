@@ -592,7 +592,12 @@ class RegionIndexer(Indexer):
         ### Works with http://www.encodeproject.org
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
-        r = request.invoke_subrequest(Request.blank(afile['href']))
+        try:
+            r = request.invoke_subrequest(Request.blank(afile['href']))
+        except Exception as e:
+            log.warn(e)
+            log.warn('Fail to get {}.'.format(afile['href']))
+            return False
         if r.status_code != 200:
             log.warn("File (%s or %s) not found" % (afile.get('accession', id), afile['href']))
             return False
