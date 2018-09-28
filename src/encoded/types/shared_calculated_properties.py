@@ -284,7 +284,17 @@ class CalculatedVisualize:
     def visualize(self, request, hub, accession, assembly, status, files):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
-        for assembly_name in assembly:
+        vis_assembly = set()
+        viewable_file_formats = ['bigWig', 'bigBed']
+        viewable_file_status = ['released','in progress']
+
+        for properties in files:
+            if properties['file_format'] in viewable_file_formats and \
+                    properties['status'] in viewable_file_status:
+                if 'assembly' in properties:
+                    vis_assembly.add(properties['assembly'])
+
+        for assembly_name in vis_assembly:
             if assembly_name in viz:
                 continue
             browsers = browsers_available(status, [assembly_name],

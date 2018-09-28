@@ -69,7 +69,7 @@
             "title": "Series status"
         },
         "assembly": {
-            "title": "Genome assembly (visualization)"
+            "title": "Genome assembly"
         },
         "organism.scientific_name": {
             "title": "Organism"
