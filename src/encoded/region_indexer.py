@@ -1,3 +1,4 @@
+import urllib3
 import io
 import gzip
 import csv
@@ -6,7 +7,8 @@ import collections
 import json
 import requests
 import os
-from pyramid.request import Request
+from pkg_resources import resource_filename
+from pyramid.settings import asbool
 from pyramid.view import view_config
 from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
@@ -562,53 +564,63 @@ class RegionIndexer(Indexer):
         if assembly not in SUPPORTED_ASSEMBLIES:
             return False
 
+        file_to_open = io.BytesIO()
         # Special case local instace so that tests can work...
-        ### Works with localhost:8000
-        # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
-        #r = requests.get(href)
-        #if not r or r.status_code != 200:
-        #    log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
-        #    return False
-        #file_in_mem = io.StringIO()
-        #file_in_mem.write(r.text)
-        #file_in_mem.seek(0)
-        #
-        #file_data = {}
-        #if afile['file_format'] == 'bed':
-        #    for row in tsvreader(file_in_mem):
-        #        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-        #        if isinstance(start, int) and isinstance(end, int):
-        #            if chrom in file_data:
-        #                file_data[chrom].append({
-        #                    'start': start + 1,
-        #                    'end': end + 1
-        #                })
-        #            else:
-        #                file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
-        #        else:
-        #            log.warn('positions are not integers, will not index file')
-        ##else:  Other file types?
+        if asbool(request.registry.settings.get('testing')):
+            filedir = resource_filename('encoded', 'tests/data/files/')
+            filename = os.path.basename(afile['href'])
+            file_to_open = os.path.join(filedir, filename)
+            if not os.path.isfile(file_to_open):
+                log.warn("File (%s or %s) not found" % (
+                    afile.get('accession', id), afile['href']
+                ))
+                return False
+        else:
+            href = request.host + afile['href']
 
-        ### Works with http://www.encodeproject.org
-        # Note: this reads the file into an in-memory byte stream.  If files get too large,
-        # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
-        try:
-            r = request.invoke_subrequest(Request.blank(afile['href']))
-        except Exception as e:
-            log.warn(e)
-            log.warn('Fail to get {}.'.format(afile['href']))
-            return False
-        if r.status_code != 200:
-            log.warn("File (%s or %s) not found" % (afile.get('accession', id), afile['href']))
-            return False
-        file_in_mem = io.BytesIO()
-        file_in_mem.write(r.body)
-        file_in_mem.seek(0)
+            ### Works with localhost:8000
+            # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
+            #r = requests.get(href)
+            #if not r or r.status_code != 200:
+            #    log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+            #    return False
+            #file_in_mem = io.StringIO()
+            #file_in_mem.write(r.text)
+            #file_in_mem.seek(0)
+            #
+            #file_data = {}
+            #if afile['file_format'] == 'bed':
+            #    for row in tsvreader(file_in_mem):
+            #        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+            #        if isinstance(start, int) and isinstance(end, int):
+            #            if chrom in file_data:
+            #                file_data[chrom].append({
+            #                    'start': start + 1,
+            #                    'end': end + 1
+            #                })
+            #            else:
+            #                file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+            #        else:
+            #            log.warn('positions are not integers, will not index file')
+            ##else:  Other file types?
+
+            ### Works with http://www.encodeproject.org
+            # Note: this reads the file into an in-memory byte stream.  If files get too large,
+            # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
+            urllib3.disable_warnings()
+            http = urllib3.PoolManager()
+            r = http.request('GET', href)
+            if r.status != 200:
+                log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+                return False
+            file_to_open.write(r.data)
+            file_to_open.seek(0)
+            r.release_conn()
 
         file_data = {}
         if afile['file_format'] == 'bed':
             # NOTE: requests doesn't require gzip but http.request does.
-            with gzip.open(file_in_mem, mode='rt') as file:  # localhost:8000 would not require localhost
+            with gzip.open(file_to_open, mode='rt') as file:  # localhost:8000 would not require localhost
                 for row in tsvreader(file):
                     chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
                     if isinstance(start, int) and isinstance(end, int):
