@@ -8,6 +8,9 @@ import csv
 import logging
 import json
 import requests
+import os
+from pkg_resources import resource_filename
+from pyramid.settings import asbool
 from pyramid.view import view_config
 from shutil import copyfileobj
 from elasticsearch.exceptions import (
@@ -304,20 +307,26 @@ def regulome_collection_type(dataset):
 class RemoteReader(object):
     # Tools for reading remote files
 
-    def __init__(self, test_instance=False):
+    def __init__(self):
         self.temp_file = TEMPORARY_REGIONS_FILE
         self.max_memory = MAX_IN_MEMORY_FILE_SIZE
-        self.test_instance = test_instance
 
     def readable_file(self, request, afile):
         '''returns either an in memory file or a temp file'''
 
         # Special case local instance so that tests can work...
-        if self.test_instance:
-            href = 'http://www.encodeproject.org' + afile['href']  # test files read from production
-        else:
-            href = request.host_url + afile['href']
+        if asbool(request.registry.settings.get('testing')):
+            filedir = resource_filename('encoded', 'tests/data/files/')
+            filename = os.path.basename(afile['href'])
+            file_to_read = os.path.join(filedir, filename)
+            if not os.path.isfile(file_to_read):
+                log.warn("File (%s or %s) not found" % (
+                    afile.get('accession', id), afile['href']
+                ))
+                return False
+            return file_to_read
 
+        href = request.host_url + afile['href']
         # TODO: support for remote access for big files (could do bam and vcf as well)
         # if afile.get('file_format') in ['bigBed', 'bigWig']:
         #     return href
@@ -658,8 +667,7 @@ class RegionIndexer(Indexer):
         self.residents_index = RESIDENT_REGIONSET_KEY
         # WARNING: updating 'state' could lead to race conditions if more than 1 worker
         self.state = RegionIndexerState(self.encoded_es, self.encoded_INDEX)
-        self.test_instance = registry.settings.get('testing', False)
-        self.reader = RemoteReader(self.test_instance)
+        self.reader = RemoteReader()
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
@@ -841,10 +849,6 @@ class RegionIndexer(Indexer):
             return None
         if afile['file_format'] not in ALLOWED_FILE_FORMATS:
             return None
-
-        if self.test_instance:
-            if afile['accession'] not in TESTABLE_FILES:
-                return None
 
         file_status = afile.get('status', 'imagined')
         assembly = afile.get('assembly', 'unknown')
