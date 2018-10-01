@@ -371,7 +371,7 @@ def region_search(context, request):
         )
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
-        result['facets'] = BaseView.format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
+        result['facets'] = BaseView._format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
         result['peaks'] = list(peak_results['hits']['hits'])
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:

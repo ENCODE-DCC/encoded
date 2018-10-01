@@ -8,9 +8,11 @@ Optimized.
 ## Inheritance
 AuditView<-MatrixView<-BaseView
 
-### MatrixView function dependecies
-- set_result_title
-- validate_items
+### MatrixView function dependencies
+- _set_result_title
+- _validate_items
+### BaseView function dependencies
+- _format_facets
 """
 import copy
 
@@ -25,12 +27,12 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 )
 
 
-class AuditView(MatrixView):
-    '''AuditView'''
+class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
+    '''Audit View'''
+    _view_name = 'audit'
+    _factory_name = 'matrix'
     def __init__(self, context, request):
         super(AuditView, self).__init__(context, request)
-        self._facets = []
-        self._schema = None
         self._no_audits_groupings = [
             'no.audit.error',
             'no.audit.not_compliant',
@@ -114,15 +116,15 @@ class AuditView(MatrixView):
 
     def _construct_query(self):
         '''Helper method for preprocessing view'''
-        search_fields, _ = get_search_fields(self.request, self.doc_types)
+        search_fields, _ = get_search_fields(self._request, self._doc_types)
         query = get_filtered_query(
-            self.search_term,
+            self._search_term,
             search_fields,
             [],
-            self.principals,
-            self.doc_types
+            self._principals,
+            self._doc_types
         )
-        if self.search_term == '*':
+        if self._search_term == '*':
             del query['query']['query_string']
         else:
             query['query']['query_string']['fields'].extend(
@@ -139,7 +141,8 @@ class AuditView(MatrixView):
             audit_field_list
         ):
         '''Helper Method for constructing query'''
-        x_grouping = self.matrix['x']['group_by']
+        # pylint: disable=arguments-differ
+        x_grouping = self._matrix['x']['group_by']
         aggs = self._construct_aggs(x_grouping, audit_field_list)
         query['aggs']['matrix'] = {
             "filter": {
@@ -153,14 +156,15 @@ class AuditView(MatrixView):
 
     def _summarize_buckets(self, x_buckets, outer_bucket, audit_field_list):
         '''Helper method for preprocessing view'''
+        # pylint: disable=arguments-differ
         for category in audit_field_list:
             counts = {}
             for bucket in outer_bucket[category]['buckets']:
                 counts = {}
                 for assay in bucket['assay_title']['buckets']:
                     doc_count = assay['doc_count']
-                    if doc_count > self.matrix['max_cell_doc_count']:
-                        self.matrix['max_cell_doc_count'] = doc_count
+                    if doc_count > self._matrix['max_cell_doc_count']:
+                        self._matrix['max_cell_doc_count'] = doc_count
                     if 'key' in assay:
                         counts[assay['key']] = doc_count
                 summary = []
@@ -176,9 +180,9 @@ class AuditView(MatrixView):
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
         used_filters = set_filters(
-            self.request,
+            self._request,
             filter_collector,
-            self.result,
+            self._result,
         )
         filters = filter_collector['post_filter']['bool']['must']
         negative_filters = filter_collector['post_filter']['bool']['must_not']
@@ -186,12 +190,12 @@ class AuditView(MatrixView):
             (field, facet)
             for field, facet in self._schema['facets'].items()
             if (
-                field in self.matrix['x']['facets'] or
-                field in self.matrix['y']['facets']
+                field in self._matrix['x']['facets'] or
+                field in self._matrix['y']['facets']
             )
         ]
-        for audit_facet in self.audit_facets:
-            if (self.search_audit and 'group.submitter' in self.principals or
+        for audit_facet in self._audit_facets:
+            if (self._search_audit and 'group.submitter' in self._principals or
                     'INTERNAL_ACTION' not in audit_facet[0]):
                 self._facets.append(audit_facet)
         audit_field_list_copy = []
@@ -206,8 +210,8 @@ class AuditView(MatrixView):
         query['aggs'] = set_facets(
             self._facets,
             used_filters,
-            self.principals,
-            self.doc_types,
+            self._principals,
+            self._doc_types,
         )
         self._construct_xygroupings(
             query,
@@ -237,8 +241,8 @@ class AuditView(MatrixView):
         counts = {}
         for assay in outer_bucket[group_by]['assay_title']['buckets']:
             doc_count = assay['doc_count']
-            if doc_count > self.matrix['max_cell_doc_count']:
-                self.matrix['max_cell_doc_count'] = doc_count
+            if doc_count > self._matrix['max_cell_doc_count']:
+                self._matrix['max_cell_doc_count'] = doc_count
             if 'key' in assay:
                 counts[assay['key']] = doc_count
         summary = []
@@ -276,52 +280,54 @@ class AuditView(MatrixView):
                 bucket_audit_category_list.append(audit_category_dict)
         bucket_audit_category_dict = {}
         bucket_audit_category_dict['buckets'] = bucket_audit_category_list
-        self.result['matrix']['y']['label'] = "Audit Category"
-        self.result['matrix']['y']['group_by'][0] = "audit_category"
-        self.result['matrix']['y']['group_by'][1] = "audit_label"
-        self.result['matrix']['y']['audit_category'] = bucket_audit_category_dict
-        self.result['matrix']['x'].update(aggregations['matrix']['x'])
+        self._result['matrix']['y']['label'] = "Audit Category"
+        self._result['matrix']['y']['group_by'][0] = "audit_category"
+        self._result['matrix']['y']['group_by'][1] = "audit_label"
+        self._result['matrix']['y']['audit_category'] = bucket_audit_category_dict
+        self._result['matrix']['x'].update(aggregations['matrix']['x'])
 
     def preprocess_view(self):
         '''
         Main function to construct query and build view results json
         * Only publicly accessible function
         '''
-        self.result['@id'] = self.request.route_path('audit', slash='/') + self.search_base
-        self.result['@type'] = ['AuditMatrix']
-        self.result['notification'] = ''
-        type_info = self.types[self.doc_types[0]]
+        audit_route = self._request.route_path('audit', slash='/')
+        self._result['@id'] = audit_route + self._search_base
+        self._result['@type'] = ['AuditMatrix']
+        self._result['notification'] = ''
+        type_info = self._types[self._doc_types[0]]
         self._schema = type_info.schema
-        self.validate_items(type_info)
-        self.result['title'] = self.set_result_title(type_info)
+        self._validate_items(type_info)
+        self._result['title'] = self._set_result_title(type_info)
         # Change in copy mechanism:
         # Oringially: copy.deepcopy(type_info.factory.matrix)
-        self.result['matrix'] = type_info.factory.matrix.copy()
-        self.matrix = self.result['matrix']
-        self.matrix['x']['limit'] = self.request.params.get('x.limit', 20)
-        self.matrix['y']['limit'] = self.request.params.get('y.limit', 5)
-        self.matrix['search_base'] = self.request.route_path('search', slash='/') + self.search_base
-        self.matrix['clear_matrix'] = '{}?type={}'.format(
-            self.request.route_path('matrix', slash='/'),
-            self.doc_types[0],
+        self._result['matrix'] = type_info.factory.matrix.copy()
+        self._matrix = self._result['matrix']
+        self._matrix['x']['limit'] = self._request.params.get('x.limit', 20)
+        self._matrix['y']['limit'] = self._request.params.get('y.limit', 5)
+        search_route = self._request.route_path('search', slash='/')
+        self._matrix['search_base'] = search_route + self._search_base
+        self._matrix['clear_matrix'] = '{}?type={}'.format(
+            self._request.route_path('matrix', slash='/'),
+            self._doc_types[0],
         )
-        self.result['views'] = [
-            self.view_item.result_list,
-            self.view_item.tabular_report
+        self._result['views'] = [
+            self._view_item.result_list,
+            self._view_item.tabular_report
         ]
         query, audit_field_list, used_filters = self._construct_query()
-        es_results = self.elastic_search.search(body=query, index=self.es_index)
+        es_results = self._elastic_search.search(body=query, index=self._es_index)
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']
-        self.result['matrix']['doc_count'] = total
-        self.result['matrix']['max_cell_doc_count'] = 0
-        self.result['facets'] = self.format_facets(
+        self._result['matrix']['doc_count'] = total
+        self._result['matrix']['max_cell_doc_count'] = 0
+        self._result['facets'] = self._format_facets(
             es_results,
             self._facets,
             used_filters,
             (self._schema,),
             total,
-            self.principals
+            self._principals
         )
         self._summarize_buckets(
             aggregations['matrix']['x']['buckets'],
@@ -333,17 +339,17 @@ class AuditView(MatrixView):
             self._no_audits_groupings,
             aggregations['matrix'])
         self._update_aggregations(aggregations)
-        self.result.update(
+        self._result.update(
             search_result_actions(
-                self.request,
-                self.doc_types,
+                self._request,
+                self._doc_types,
                 es_results
             )
         )
-        self.result['total'] = es_results['hits']['total']
-        if self.result['total']:
-            self.result['notification'] = 'Success'
+        self._result['total'] = es_results['hits']['total']
+        if self._result['total']:
+            self._result['notification'] = 'Success'
         else:
-            self.request.response.status_code = 404
-            self.result['notification'] = 'No results found'
-        return self.result
+            self._request.response.status_code = 404
+            self._result['notification'] = 'No results found'
+        return self._result

@@ -28,6 +28,7 @@ DEFAULT_DOC_TYPES = [
     'Pipeline',
     'Publication',
     'Software',
+    'Gene',
     'Target',
 ]
 
@@ -66,35 +67,51 @@ def collection_view_listing_es(context, request):
 
 @view_config(route_name='audit', request_method='GET', permission='search')
 def audit(context, request):
-    '''Audit Page Endpoint'''
+    '''
+    Audit Page Endpoint
+    /audit/?type=Experiment
+    '''
     audit_view = AuditView(context, request)
     return audit_view.preprocess_view()
 
 
 @view_config(route_name='matrix', request_method='GET', permission='search')
 def matrix(context, request):
-    '''Matrix Page Endpoint'''
+    '''
+    Matrix Page Endpoint
+    /matrix/?type=Experiment
+    '''
     matrix_view = MatrixView(context, request)
     return matrix_view.preprocess_view()
 
 
 @view_config(route_name='news', request_method='GET', permission='search')
 def news(context, request):
-    '''News Page Endpoint'''
+    '''
+    News Page Endpoint
+    /news/
+    '''
     news_view = NewsView(context, request)
     return news_view.preprocess_view()
 
 
 @view_config(route_name='report', request_method='GET', permission='search')
 def report(context, request):
-    '''Report Page Endpoint'''
+    '''
+    Report Page Endpoint
+    /report/?type=Experiment
+    '''
     report_view = ReportView(context, request)
     return report_view.preprocess_view()
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
-    '''Search Page Endpoint'''
+    '''
+    Search Page Endpoint
+    /search/?type=Experiment
+    /search/?type=Publication&published_by=mouseENCODE&published_by=modENCODE&published_by=ENCODE
+    '''
     search_view = SearchView(
         context,
         request,
@@ -104,9 +121,11 @@ def search(context, request, search_type=None, return_generator=False):
     )
     doc_types = _get_doc_types(context, request)
     views = []
-    view_item = View_Item(search_view.request, search_view.search_base)
+    # TODO: Fix using protected members
+    # pylint: disable=protected-access
+    view_item = View_Item(search_view._request, search_view._search_base)
     if len(doc_types) == 1:
-        type_info = search_view.types[doc_types[0]]
+        type_info = search_view._types[doc_types[0]]
         views.append(view_item.tabular_report)
         if hasattr(type_info.factory, 'matrix'):
             views.append(view_item.summary_matrix)
@@ -119,7 +138,7 @@ def search(context, request, search_type=None, return_generator=False):
 def summary(context, request):
     '''
     Summary Page Endpoint
-    - /summary/?type=Experiment
+    /summary/?type=Experiment
     '''
     summary_view = SummaryView(context, request)
     return summary_view.preprocess_view()
