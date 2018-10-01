@@ -5,7 +5,7 @@ from snovault.viewconfigs.report import ReportView
 from encoded.viewconfigs.news import NewsView
 from encoded.viewconfigs.matrix import MatrixView
 from encoded.viewconfigs.auditview import AuditView
-from encoded.viewconfigs.summary import SummaryView 
+from encoded.viewconfigs.summary import SummaryView
 from encoded.helpers.helper import (View_Item, search_result_actions)
 from snovault import AbstractCollection
 
@@ -40,7 +40,7 @@ def _get_doc_types(context, request):
     if (hasattr(context, 'type_info') and hasattr(context.type_info, 'name') and context.type_info.name):
         doc_types = [context.type_info.name]
     else:
-        doc_types = request.params.getall('type')    
+        doc_types = request.params.getall('type')
     if '*' in doc_types:
         doc_types = ['Item']
     return doc_types
@@ -57,10 +57,10 @@ def collection_view_listing_es(context, request):
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None, return_generator=False):
     search = SearchView(
-        context, 
-        request, 
-        search_type=search_type,  
-        return_generator=return_generator, 
+        context,
+        request,
+        search_type=search_type,
+        return_generator=return_generator,
         default_doc_types=DEFAULT_DOC_TYPES
     )
     doc_types = _get_doc_types(context, request)
@@ -73,7 +73,7 @@ def search(context, request, search_type=None, return_generator=False):
             views.append(view_item.summary_matrix)
         if hasattr(ti.factory, 'summary_data'):
             views.append(view_item.summary_report)
-    
+
     return search.preprocess_view(views=views, search_result_actions=search_result_actions)
 
 

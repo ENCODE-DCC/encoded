@@ -1,7 +1,7 @@
 from pyramid.httpexceptions import HTTPBadRequest
 from snovault.viewconfigs.base_view import BaseView
 from encoded.helpers.helper import (
-    search_result_actions, 
+    search_result_actions,
     View_Item)
 from snovault.helpers.helper import (
     get_filtered_query,
@@ -11,44 +11,33 @@ from snovault.helpers.helper import (
 )
 
 
-audit_facets = [
-    ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
-    ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
-    ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
-    ('audit.INTERNAL_ACTION.category', {'title': 'Audit category: DCC ACTION'})
-]
-
-
 class MatrixView(BaseView):
     def __init__(self, context, request):
         super(MatrixView, self).__init__(context, request)
         self.result['matrix'] = ''
         self.matrix = ''
         self.view_item = View_Item(self.request, self.search_base)
-        
-    def validate_items(self):
+
+    def validate_items(self, type_info):
+        msg = None
         if len(self.doc_types) != 1:
             msg = 'Search result matrix currently requires specifying a single type.'
-            raise HTTPBadRequest(explanation=msg)
-        item_type = self.doc_types[0]
-        if item_type not in self.types:
-            msg = 'Invalid type: {}'.format(item_type)
-            raise HTTPBadRequest(explanation=msg)
-        if not hasattr(self.type_info.factory, 'matrix'):
-            msg = 'No matrix configured for type: {}'.format(item_type)
+        elif self.doc_types[0] not in self.types:
+            msg = 'Invalid type: {}'.format(self.doc_types[0])
+        elif not hasattr(type_info.factory, 'matrix'):
+            msg = 'No matrix configured for type: {}'.format(self.doc_types[0])
+        if msg:
             raise HTTPBadRequest(explanation=msg)
 
-    def set_result_title(self):
-        if self.type_info.name is 'Annotation':
+    def set_result_title(self, type_info):
+        if type_info.name == 'Annotation':
             title = 'Encyclopedia'
         else:
-            title = self.type_info.name + ' Matrix'
+            title = type_info.name + ' Matrix'
         return title
 
-
-    def construct_result_views(self, matrix=False, summary=False, audit=False ):
+    def construct_result_views(self, matrix=False, summary=False):
         views = []
-    
         if matrix:
             views.extend([self.view_item.result_list, self.view_item.tabular_report])
             if hasattr(self.type_info.factory, 'summary_data'):
@@ -56,10 +45,6 @@ class MatrixView(BaseView):
 
         elif summary:
             views.extend([self.view_item.result_list, self.view_item.tabular_report, self.view_item.summary_matrix])
-
-        elif audit:
-            views.extend([self.view_item.result_list, self.view_item.tabular_report])
-             
         return views
 
 
@@ -110,7 +95,7 @@ class MatrixView(BaseView):
 
         # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
         if view_type == 'matrix':
-            for audit_facet in audit_facets:
+            for audit_facet in self.audit_facets:
                 if self.search_audit and 'group.submitter' in self.principals or 'INTERNAL_ACTION' not in audit_facet[0]:
                     self.facets.append(audit_facet)
 
@@ -175,13 +160,6 @@ class MatrixView(BaseView):
                 "aggs": summary_aggs,
             }
 
-
-    def query_elastic_search(self, query, es_index):
-        # Execute the query
-        es_results = self.elastic_search.search(body=query, index=es_index)
-        return es_results
-
-
     def construct_facets(self, es_results, total):
         facets = self.format_facets(es_results,
                                self.facets,
@@ -190,7 +168,6 @@ class MatrixView(BaseView):
                                total,
                                self.principals)
         return facets
-
 
     def summarize_buckets(self, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
@@ -217,8 +194,8 @@ class MatrixView(BaseView):
         self.result['notification'] = ''
         self.type_info = self.types[self.doc_types[0]]
         self.schema = self.type_info.schema
-        self.validate_items()
-        self.result['title'] = self.set_result_title()
+        self.validate_items(self.type_info)
+        self.result['title'] = self.set_result_title(self.type_info)
         self.result['matrix'] = self.type_info.factory.matrix.copy()
 
         # Populate matrix list
@@ -234,7 +211,7 @@ class MatrixView(BaseView):
         query = self.construct_query(self.matrix)
 
         # Query elastic search
-        es_results = self.query_elastic_search(query, self.es_index)
+        es_results = self.elastic_search.search(body=query, index=self.es_index)
 
         # Format matrix for results
         aggregations = es_results['aggregations']

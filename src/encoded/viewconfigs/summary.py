@@ -17,7 +17,7 @@ class SummaryView(MatrixView):
         self.type_info = self.types[self.doc_types[0]]
         self.schema = self.type_info.schema
 
-        self.validate_items()
+        self.validate_items(self.type_info)
 
         self.type_info = self.types[self.doc_types[0]]
         self.schema = self.type_info.schema
@@ -37,7 +37,7 @@ class SummaryView(MatrixView):
         query = self.construct_query(self.summary, 'summary')
 
         # Query elastic search
-        es_results = self.query_elastic_search(query, self.es_index)
+        es_results = self.elastic_search.search(body=query, index=self.es_index)
         aggregations = es_results['aggregations']
         self.result['summary']['doc_count'] = total = aggregations['summary']['doc_count']
         self.result['summary']['max_cell_doc_count'] = 0
