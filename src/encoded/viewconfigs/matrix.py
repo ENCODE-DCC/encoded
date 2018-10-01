@@ -26,6 +26,7 @@ class MatrixView(BaseView):
         self.matrix = ''
         self.view_item = View_Item(self.request, self.search_base)
         
+
     def validate_items(self):
         if len(self.doc_types) != 1:
             msg = 'Search result matrix currently requires specifying a single type.'
@@ -37,6 +38,7 @@ class MatrixView(BaseView):
         if not hasattr(self.type_info.factory, 'matrix'):
             msg = 'No matrix configured for type: {}'.format(item_type)
             raise HTTPBadRequest(explanation=msg)
+
 
     def set_result_title(self):
         if self.type_info.name is 'Annotation':

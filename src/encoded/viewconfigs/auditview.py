@@ -11,7 +11,7 @@ class AuditView(MatrixView):
         self.no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
 
 
-    def construct_xygroupings(self, query, filters, negative_filters):
+    def construct_xygroupings(self, query, view, view_type, filters, negative_filters=None):
         # To get list of audit categories from facets
         audit_field_list_copy = []
         audit_field_list = []
@@ -130,6 +130,8 @@ class AuditView(MatrixView):
     def summarize_buckets(self, x_buckets, outer_bucket, grouping_fields):
         # Loop through each audit category and get proper search result data and format it
         for category in grouping_fields:  # for each audit category
+            if not category in outer_bucket:
+                continue
             counts = {}
             # Go through each bucket
             for bucket in outer_bucket[category]['buckets']:
@@ -268,7 +270,7 @@ class AuditView(MatrixView):
         self.result['views'] = self.construct_result_views(audit=True)
 
         # Construct query
-        query = self.construct_query()
+        query = self.construct_query(self.matrix)
 
         # Query elastic search
         es_results = self.query_elastic_search(query, self.es_index)
@@ -305,7 +307,7 @@ class AuditView(MatrixView):
         # Add batch actions
         self.result.update(search_result_actions(self.request,
                                                  self.doc_types,
-                                                 self.es_results))
+                                                 es_results))
 
         # Adding total
         self.result['total'] = es_results['hits']['total']
