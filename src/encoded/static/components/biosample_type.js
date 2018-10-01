@@ -9,7 +9,7 @@ import pubReferenceList from './reference';
 import BiosampleTermId from './biosample';
 
 
-const BiosampleType = (props) => {
+const BiosampleTypeComponenet = (props, reactContext) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-detail key-value');
 
@@ -33,9 +33,10 @@ const BiosampleType = (props) => {
                             {context.term_name} / {context.classification}
                         </span>
                     </h2>
+                    {props.auditIndicators(context.audit, 'biosample-type-audit', { session: reactContext.session })}
                 </div>
             </header>
-
+            {props.auditDetail(context.audit, 'biosample-type-audit', { session: reactContext.session, except: context['@id'] })}
             <div className="panel">
                 <dl className="key-value">
                     <div data-test="term-name">
@@ -104,13 +105,17 @@ const BiosampleType = (props) => {
     );
 };
 
-BiosampleType.propTypes = {
-    context: PropTypes.object,
+BiosampleTypeComponenet.propTypes = {
+    context: PropTypes.object.isRequired,
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
-BiosampleType.defaultProps = {
-    context: null,
+BiosampleTypeComponenet.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
 };
+
+const BiosampleType = auditDecor(BiosampleTypeComponenet);
 
 globals.contentViews.register(BiosampleType, 'BiosampleType');
 

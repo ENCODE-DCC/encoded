@@ -151,4 +151,16 @@
     "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
     "term_ids": ["NTR:0000022"],
     "status": "released"
+}, {
+    "_test": "BiosampleType audits",
+    "classification": "single cell",
+    "uuid": "9996c871-33ca-44ef-ba3b-38359170f1ca",
+    "term_name": "heart",
+    "term_ids": [
+        "UBERON:349829",
+        "NTR:0000022",
+        "CL:99999999",
+        "EFO:0002067"
+    ],
+    "status": "released"
 }]
