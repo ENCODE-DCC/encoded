@@ -36,15 +36,12 @@ class MatrixView(BaseView):
             title = type_info.name + ' Matrix'
         return title
 
-    def construct_result_views(self, matrix=False, summary=False):
+    def construct_result_views(self, matrix=False):
         views = []
         if matrix:
             views.extend([self.view_item.result_list, self.view_item.tabular_report])
             if hasattr(self.type_info.factory, 'summary_data'):
                 views.append(self.view_item.summary_report)
-
-        elif summary:
-            views.extend([self.view_item.result_list, self.view_item.tabular_report, self.view_item.summary_matrix])
         return views
 
 
