@@ -1,4 +1,5 @@
 from botocore.exceptions import ClientError
+from botocore.config import Config
 from snovault import (
     AfterModified,
     BeforeModified,
@@ -27,6 +28,7 @@ from urllib.parse import (
 )
 import base64
 import boto3
+import botocore
 import datetime
 import logging
 import json
@@ -351,8 +353,20 @@ class File(Item):
             pass
         if not external:
             return {}
+        conn = boto3.client('s3', config=Config(
+            signature_version=botocore.UNSIGNED,
+            s3={'virtual': True},
+        ))
+        location = conn.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={
+                'Bucket': external['bucket'],
+                'Key': external['key']
+            },
+            ExpiresIn=0
+        )
         return {
-            'url': 'https://encode-files.s3.amazonaws.com/{}'.format(external.get('key', '')),
+            'url': location,
             'md5sum_base64': base64.b64encode(bytes.fromhex(md5sum)).decode("utf-8"),
             'file_size': file_size
         }
