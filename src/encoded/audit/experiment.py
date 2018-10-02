@@ -85,6 +85,8 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
         )
 
         pipelines_to_check = ['ChIP-seq read mapping', 'Pool and subsample alignments']
+        analysis_steps_to_check = ['Alignment pooling and subsampling step',
+                                   'Control alignment subsampling step']
         for peaks_file in peaks_file_gen:
             derived_from_files = get_derived_from_files_set([peaks_file],
                                                             files_structure,
@@ -97,21 +99,27 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     and
                     derived_from.get('dataset') in controls_files_structures
                     and
-                    check_for_any_pipelines(
+                    (check_for_any_pipelines(
                         pipelines_to_check,
                         derived_from.get('@id'),
-                        controls_files_structures[derived_from.get('dataset')])))
+                        controls_files_structures[derived_from.get('dataset')])
+                        or
+                        check_for_analysis_steps(
+                            analysis_steps_to_check,
+                            derived_from.get('@id'),
+                            controls_files_structures[derived_from.get('dataset')]))))
             control_bam_details = []
             cumulative_read_depth = 0
-
+            missing_control_quality_metric = False
+            target_failures = False
             for bam_file in derived_from_external_bams_gen:
                 failures = check_control_target_failures(bam_file.get('dataset'),
                     control_objects, bam_file['@id'],
                     bam_file['output_type'])
                 if failures:
+                    target_failures = True
                     for f in failures:
                         yield f
-                    return
                 else:
                     control_depth = get_chip_seq_bam_read_depth(bam_file)
                     if not control_depth:
@@ -121,18 +129,19 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                 bam_file['output_type'],
                                 bam_file['@id'])
                         yield AuditFailure('missing control quality metric', detail, level='WARNING')
-                        return
+                        missing_control_quality_metric = True
                     else:
                         cumulative_read_depth += control_depth
                         control_bam_details.append(
                             (bam_file.get('@id'), control_depth, bam_file.get('dataset')))
-            yield from check_control_read_depth_standards(
-                peaks_file.get('@id'),
-                peaks_file.get('assembly'),
-                cumulative_read_depth,
-                control_bam_details,
-                target_name,
-                target_investigated_as)
+            if not missing_control_quality_metric and not target_failures:
+                yield from check_control_read_depth_standards(
+                    peaks_file.get('@id'),
+                    peaks_file.get('assembly'),
+                    cumulative_read_depth,
+                    control_bam_details,
+                    target_name,
+                    target_investigated_as)
 
 
 def check_control_target_failures(control_id, control_objects, bam_id, bam_type):
@@ -175,6 +184,22 @@ def check_for_any_pipelines(pipeline_titles, control_file_id, file_structure):
     return False
 
 
+def check_for_analysis_steps(analysis_step_titles, control_file_id, file_structure):
+    for analysis_step_title in analysis_step_titles:
+        if check_analysis_step(analysis_step_title, control_file_id, file_structure):
+            return True
+    return False
+
+
+def check_analysis_step(analysis_step_title, control_file_id, file_structure):
+    control_file = file_structure.get('alignments')[control_file_id]
+    if ('analysis_step_version' in control_file and
+            'analysis_step' in control_file.get('analysis_step_version')):
+        title = control_file.get('analysis_step_version').get('analysis_step').get('title')
+        return analysis_step_title == title
+    return False
+
+
 def check_pipeline(pipeline_title, control_file_id, file_structure):
     control_file = file_structure.get('alignments')[control_file_id]
     if ('analysis_step_version' in control_file and
@@ -207,7 +232,7 @@ def check_control_read_depth_standards(peaks_file_id,
 
     if not control_bam_details:
         detail = ('The peaks file {} produced by ENCODE uniformly processing '
-                  'ChIP-seq pipeline has no control alignments specified.').format(
+                  'ChIP-seq pipeline has no valid control alignments specified.').format(
                       peaks_file_id
                   )
         yield AuditFailure('missing control alignments', detail, level='ERROR')
