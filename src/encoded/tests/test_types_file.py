@@ -78,3 +78,10 @@ def test_private_file_does_not_have_s3_uri(testapp, file_with_external_sheet, fi
     testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' not in res.json
+
+
+def test_public_file_no_external_sheet_blank_s3_uri(testapp, file):
+    testapp.patch_json(file['@id'], {'status': 'released'})
+    res = testapp.get(file['@id'])
+    assert 's3_uri' in res.json
+    assert not res.json['s3_uri']
