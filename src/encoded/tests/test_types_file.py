@@ -23,7 +23,6 @@ def file_with_external_sheet(file, root):
     return file
 
 
-
 @mock_sts
 @mock_s3
 @pytest.mark.parametrize("file_status", [
@@ -57,3 +56,25 @@ def test_public_file_with_no_external_sheet_has_blank_google_transfer_metadata(t
     res = testapp.get(file['@id'])
     assert 'google_transfer' in res.json
     assert not res.json['google_transfer']
+
+
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in File.public_s3_statuses
+])
+def test_public_file_has_s3_uri(testapp, file_with_external_sheet, file_status):
+    testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' in res.json
+    assert res.json['s3_uri'] == 's3://test_file_bucket/xyz.bed'
+
+
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in File.private_s3_statuses
+    if status != 'replaced'
+])
+def test_private_file_does_not_have_s3_uri(testapp, file_with_external_sheet, file_status):
+    testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' not in res.json

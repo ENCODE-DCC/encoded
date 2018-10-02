@@ -356,8 +356,6 @@ class File(Item):
         try:
             external = self._get_external_sheet()
         except HTTPNotFound:
-            pass
-        if not external:
             return {}
         conn = boto3.client('s3', config=Config(
             signature_version=botocore.UNSIGNED,
@@ -375,6 +373,24 @@ class File(Item):
             'md5sum_base64': base64.b64encode(bytes.fromhex(md5sum)).decode("utf-8"),
             'file_size': file_size
         }
+
+    @calculated_property(
+        condition=lambda status=None: status in File.public_s3_statuses,
+        schema={
+            "title": "s3 URI",
+            "description": "The s3 URI of public file objects.",
+            "comment": "Do not submit. Value is calculated from file metadata.",
+            "type": "string",
+            "notSubmittable": True, 
+        }
+    )
+    def s3_uri(self):
+        try:
+            external = self._get_external_sheet()
+        except HTTPNotFound:
+            return ''
+        return 's3://{bucket}/{key}'.format(**external)
+        
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
