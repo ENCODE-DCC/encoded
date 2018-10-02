@@ -9,8 +9,8 @@ from urllib.parse import (
     parse_qs,
     urlencode,
 )
-from .search import iter_search_results
-from .search import list_visible_columns_for_schemas
+from encoded.viewconfigs.views import search
+from snovault.helpers.helper import list_visible_columns_for_schemas
 import csv
 import io
 import json
@@ -399,7 +399,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in iter_search_results(context, request):
+        for item in search(context, request, return_generator=True):
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
