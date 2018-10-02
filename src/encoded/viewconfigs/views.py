@@ -128,13 +128,15 @@ def search(context, request, search_type=None, return_generator=False):
     # TODO: Fix using protected members
     # pylint: disable=protected-access
     view_item = View_Item(search_view._request, search_view._search_base)
+    # TODO: Move into SearchView after doc_types check
     if len(doc_types) == 1:
-        type_info = search_view._types[doc_types[0]]
-        views.append(view_item.tabular_report)
-        if hasattr(type_info.factory, 'matrix'):
-            views.append(view_item.summary_matrix)
-        if hasattr(type_info.factory, 'summary_data'):
-            views.append(view_item.summary_report)
+        if doc_types[0] in search_view._types:
+            type_info = search_view._types[doc_types[0]]
+            views.append(view_item.tabular_report)
+            if hasattr(type_info.factory, 'matrix'):
+                views.append(view_item.summary_matrix)
+            if hasattr(type_info.factory, 'summary_data'):
+                views.append(view_item.summary_report)
     return search_view.preprocess_view(views=views, search_result_actions=search_result_actions)
 
 

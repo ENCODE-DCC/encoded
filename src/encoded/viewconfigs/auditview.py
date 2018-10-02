@@ -295,8 +295,13 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         self._result['@id'] = audit_route + self._search_base
         self._result['@type'] = ['AuditMatrix']
         self._result['notification'] = ''
-        type_info = self._types[self._doc_types[0]]
-        self._schema = type_info.schema
+        # TODO: Validate doc types in base class in one location
+        # Now we do it here and in _validate_items
+        type_info = None
+        if len(self._doc_types) == 1:
+            if self._doc_types[0] in self._types:
+                type_info = self._types[self._doc_types[0]]
+                self._schema = type_info.schema
         self._validate_items(type_info)
         self._result['title'] = self._set_result_title(type_info)
         # Change in copy mechanism:
