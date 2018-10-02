@@ -44,6 +44,12 @@ def show_upload_credentials(request=None, context=None, status=None):
     return request.has_permission('edit', context)
 
 
+def show_google_transfer(status=None, md5sum=None, file_size=None):
+    if not md5sum or not file_size:
+        return False
+    return status in File.public_s3_statuses
+
+
 def property_closure(request, propname, root_uuid):
     # Must avoid cycles
     conn = request.registry[CONNECTION]
@@ -336,7 +342,7 @@ class File(Item):
         return paths_filtered_by_status(request, superseded_by)
 
     @calculated_property(
-        condition=lambda status=None: status in File.public_s3_statuses,
+        condition=show_google_transfer,
         schema={
             "title": "Google transfer",
             "description": "Metadata required by Google Cloud to create transfer TSV.",
