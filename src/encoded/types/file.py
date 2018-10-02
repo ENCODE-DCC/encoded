@@ -25,6 +25,7 @@ from urllib.parse import (
     parse_qs,
     urlparse,
 )
+import base64
 import boto3
 import datetime
 import logging
@@ -343,9 +344,16 @@ class File(Item):
         }
     )
     def google_transfer(self, md5sum, file_size):
+        external = None
+        try:
+            external = self._get_external_sheet()
+        except HTTPNotFound:
+            pass
+        if not external:
+            return {}
         return {
-            'url': 'https:...',
-            'md5sum': md5sum,
+            'url': 'https://encode-files.s3.amazonaws.com/{}'.format(external.get('key', '')),
+            'md5sum_base64': base64.b64encode(bytes.fromhex(md5sum)).decode("utf-8"),
             'file_size': file_size
         }
 
