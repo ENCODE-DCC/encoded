@@ -42,3 +42,10 @@ def test_private_file_does_not_have_google_transfer_metadata(testapp, file_with_
     testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
     assert 'google_transfer' not in res.json
+
+
+def test_public_file_with_no_external_sheet_has_blank_google_transfer_metadata(testapp, file):
+    testapp.patch_json(file['@id'], {'status': 'released'})
+    res = testapp.get(file['@id'])
+    assert 'google_transfer' in res.json
+    assert not res.json['google_transfer']
