@@ -1,5 +1,9 @@
 import pytest
 from encoded.types.file import File
+from moto import (
+    mock_sts,
+    mock_s3
+)
 
 
 @pytest.fixture
@@ -19,6 +23,9 @@ def file_with_external_sheet(file, root):
     return file
 
 
+
+@mock_sts
+@mock_s3
 @pytest.mark.parametrize("file_status", [
     status
     for status in File.public_s3_statuses
@@ -28,7 +35,8 @@ def test_public_file_has_google_transfer_metadata(testapp, file_with_external_sh
     res = testapp.get(file_with_external_sheet['@id'])
     assert 'google_transfer' in res.json
     gtm = res.json['google_transfer']
-    assert gtm['url'] == 'https://s3.us-west-2.amazonaws.com/test_file_bucket/xyz.bed'
+    assert 'test_file_bucket' in gtm['url']
+    assert 'xyz.bed' in gtm['url']
     assert gtm['md5sum_base64'] == '1B2M2Y8AsgTpgAmY7PhCfg=='
     assert gtm['file_size'] == 34
 

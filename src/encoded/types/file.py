@@ -361,7 +361,6 @@ class File(Item):
             return {}
         conn = boto3.client('s3', config=Config(
             signature_version=botocore.UNSIGNED,
-            s3={'virtual': True},
         ))
         location = conn.generate_presigned_url(
             ClientMethod='get_object',
