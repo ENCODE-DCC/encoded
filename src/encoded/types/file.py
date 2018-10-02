@@ -332,6 +332,23 @@ class File(Item):
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
+    @calculated_property(
+        condition=lambda status=None: status in File.public_s3_statuses,
+        schema={
+            "title": "Google transfer",
+            "description": "Metadata required by Google Cloud to create transfer TSV.",
+            "comment": "Do not submit. Values are calculated from file metadata.",
+            "type": "object",
+            "notSubmittable": True,
+        }
+    )
+    def google_transfer(self, md5sum, file_size):
+        return {
+            'url': 'https:...',
+            'md5sum': md5sum,
+            'file_size': file_size
+        }
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
