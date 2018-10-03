@@ -352,7 +352,6 @@ class File(Item):
         }
     )
     def google_transfer(self, md5sum, file_size):
-        external = None
         try:
             external = self._get_external_sheet()
         except HTTPNotFound:
