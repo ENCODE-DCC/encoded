@@ -377,8 +377,8 @@ class File(Item):
     @calculated_property(
         condition=lambda status=None: status in File.public_s3_statuses,
         schema={
-            "title": "s3 URI",
-            "description": "The s3 URI of public file objects.",
+            "title": "S3 URI",
+            "description": "The S3 URI of public file object.",
             "comment": "Do not submit. Value is calculated from file metadata.",
             "type": "string",
             "notSubmittable": True, 
