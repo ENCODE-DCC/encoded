@@ -245,7 +245,11 @@ def main(global_config, **local_config):
         config.include('.region_indexer')
     config.include(static_resources)
     config.include(changelogs)
-    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
+    ontology_tuple = ('ontology', 'ontology_path')
+    if settings.get(ontology_tuple[1]):
+        config.registry[ontology_tuple[0]] = json_from_path(
+            settings.get(ontology_tuple[1]), {}
+        )
     aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
     config.registry['aws_ipset'] = netaddr.IPSet(
         record['ip_prefix'] for record in aws_ip_ranges['prefixes'] if record['service'] == 'AMAZON')
