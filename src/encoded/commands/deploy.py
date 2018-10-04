@@ -319,12 +319,12 @@ def _get_run_args(main_args, instances_tag_data):
         }
         if main_args.no_es:
             config_file = ':cloud-config-no-es.yml'
+        elif main_args.es_worker:
+            config_file = ':cloud-config-worker.yml'
         elif main_args.cluster_name:
             config_file = ':cloud-config-cluster.yml'
             data_insert['CLUSTER_NAME'] = main_args.cluster_name
             data_insert['REGION_INDEX'] = 'True'
-        elif main_args.es_worker:
-            config_file = ':cloud-config-worker.yml'
         else:
             config_file = ':cloud-config.yml'
         if main_args.set_region_index_to:
