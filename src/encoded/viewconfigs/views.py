@@ -57,6 +57,24 @@ def _get_doc_types(context, request):
     return doc_types
 
 
+def _get_search_views(view_instance, context, request):
+    doc_types = _get_doc_types(context, request)
+    views = []
+    # TODO: Fix using protected members
+    # pylint: disable=protected-access
+    view_item = View_Item(view_instance._request, view_instance._search_base)
+    # TODO: Move into SearchView after doc_types check
+    if len(doc_types) == 1:
+        if doc_types[0] in view_instance._types:
+            type_info = view_instance._types[doc_types[0]]
+            views.append(view_item.tabular_report)
+            if hasattr(type_info.factory, 'matrix'):
+                views.append(view_item.summary_matrix)
+            if hasattr(type_info.factory, 'summary_data'):
+                views.append(view_item.summary_report)
+    return views
+
+
 @view_config(context=AbstractCollection, permission='list', request_method='GET', name='listing')
 def collection_view_listing_es(context, request):
     '''Switch to change summary page loading options'''
@@ -102,7 +120,11 @@ def report(context, request):
     /report/?type=Experiment
     '''
     report_view = ReportView(context, request)
-    res = report_view.preprocess_view()
+    views = _get_search_views(report_view, context, request)
+    res = report_view.preprocess_view(
+        views=views,
+        search_result_actions=search_result_actions,
+    )
     # TODO: Fix using protected members
     # pylint: disable=protected-access
     report_download_route = report_view._request.route_path('report_download')
@@ -123,19 +145,11 @@ def search(context, request, search_type=None, return_generator=False):
         return_generator=return_generator,
         default_doc_types=DEFAULT_DOC_TYPES
     )
-    doc_types = _get_doc_types(context, request)
-    views = []
-    # TODO: Fix using protected members
-    # pylint: disable=protected-access
-    view_item = View_Item(search_view._request, search_view._search_base)
-    if len(doc_types) == 1:
-        type_info = search_view._types[doc_types[0]]
-        views.append(view_item.tabular_report)
-        if hasattr(type_info.factory, 'matrix'):
-            views.append(view_item.summary_matrix)
-        if hasattr(type_info.factory, 'summary_data'):
-            views.append(view_item.summary_report)
-    return search_view.preprocess_view(views=views, search_result_actions=search_result_actions)
+    views = _get_search_views(search_view, context, request)
+    return search_view.preprocess_view(
+        views=views,
+        search_result_actions=search_result_actions,
+    )
 
 
 @view_config(route_name='summary', request_method='GET', permission='search')
