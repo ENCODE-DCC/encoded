@@ -177,5 +177,6 @@ class AnalysisStepRun(Item):
     embedded = [
         'analysis_step_version.analysis_step',
     ]
+    audit_inherit = ['*']
     # Avoid using reverse links on this object as invalidating a
     # step_run can cause thousands of objects to be reindexed.
