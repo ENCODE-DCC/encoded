@@ -172,6 +172,7 @@ class RegionAtlas(object):
             peak = peaks.pop(0)
             uuid = peak['_id']
             if uuid in details:
+                peak['resident_detail'] = details[uuid]
                 filtered_peaks.append(peak)
         return (filtered_peaks, details)
 
