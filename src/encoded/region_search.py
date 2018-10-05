@@ -560,6 +560,29 @@ def region_search(context, request):
 
         if peaks_too:
             result['peaks'] = all_hits['peaks']
+            # TODO temperory solution before refatoring region-search
+            if regulome:  # Parse out peak details for frontend presentation
+                peak_details = []
+                for peak in all_hits['peaks']:
+                    # Get peak metadata
+                    dataset = peak['resident_detail']['dataset']
+                    method = (dataset.get('assay_term_name')
+                              or dataset.get('annotation_type', ''))
+                    targets = dataset.get('target', [])
+                    biosample_term_name = dataset.get('biosample_term_name', '')
+                    # Get peak coordinates and assemble details
+                    # assert 'inner_hits' in peak if peaks_too else False
+                    peak_hits = peak['inner_hits']['positions']['hits']['hits']
+                    peak_detail = [{'method': method,
+                                    'targets': targets,
+                                    'biosample_term_name': biosample_term_name,
+                                    'chrom': hit['_index'],
+                                    'start': hit['_source']['start'],
+                                    'end': hit['_source']['end']}
+                                   for hit in peak_hits]
+                    peak_details += peak_detail
+                result['peak_details'] = peak_details
+
         result['download_elements'] = get_peak_metadata_links(request, result['assembly'],
                                                               chromosome, start, end)
         if result['total'] > 0:
