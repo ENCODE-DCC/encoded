@@ -249,6 +249,17 @@ class VisIndexer(PrimaryIndexer):
         '''Returns composite json blob from elastic-search, or None if not found.'''
         return None
 
+    def update_objects(self, request, uuids, xmin):
+        '''Wapper to iterate over update_object'''
+        errors = []
+        for cnt, uuid in enumerate(uuids):
+            error = self.update_object(request, uuid, xmin)
+            if error is not None:
+                errors.append(error)
+            if (cnt + 1) % 50 == 0:
+                log.info('Indexing %d', cnt + 1)
+        return errors
+
     def update_object(self, request, uuid, xmin, restart=False):
 
         last_exc = None
