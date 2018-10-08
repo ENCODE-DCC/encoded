@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import Auth0Lock from 'auth0-lock';
 import serialize from 'form-serialize';
 import ga from 'google-analytics';
+import { Provider } from 'react-redux';
 import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
+import initializeCart, { cartAddElements, cartCacheSaved, cartSave } from './cart';
 import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
@@ -66,6 +68,7 @@ const portal = {
             children: [
                 { id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
+                { id: 'cart', title: 'Cart', url: '/help/cart/' },
                 { id: 'projectoverview', title: 'Project overview', url: '/about/contributors/' },
                 { id: 'tutorials', title: 'Tutorials', url: '/tutorials/' },
                 { id: 'news', title: 'News', url: '/search/?type=Page&news=true&status=released' },
@@ -195,6 +198,8 @@ class App extends React.Component {
             promisePending: false,
         };
 
+        this.cartStore = initializeCart();
+
         this.triggers = {
             login: 'triggerLogin',
             profile: 'triggerProfile',
@@ -231,6 +236,7 @@ class App extends React.Component {
             location_href: this.state.href,
             portal,
             fetch: this.fetch,
+            fetchSessionProperties: this.fetchSessionProperties,
             navigate: this.navigate,
             adviseUnsavedChanges: this.adviseUnsavedChanges,
             session: this.state.session,
@@ -442,6 +448,7 @@ class App extends React.Component {
             return response.json();
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
+            return this.initializeCartFromSessionProperties(sessionProperties);
         });
     }
 
@@ -467,6 +474,8 @@ class App extends React.Component {
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
             this.sessionPropertiesRequest = null;
+            return this.initializeCartFromSessionProperties(sessionProperties);
+        }).then(() => {
             let nextUrl = window.location.href;
             if (window.location.hash === '#logged-out') {
                 nextUrl = window.location.pathname + window.location.search;
@@ -550,6 +559,77 @@ class App extends React.Component {
             exDescription: `${mutatableUri}@${line},${column}: ${msg}`,
             exFatal: true,
             location: window.location.href,
+        });
+    }
+
+    // Retrieve the cart contents for the current logged-in user and add them to the in-memory cart.
+    initializeCartFromSessionProperties(sessionProperties) {
+        // First retrieve all carts without the `elements` array contents so we can grab the first
+        // cart belonging to the current user without too much large-object stress.
+        const savedCartObjPromise = this.fetch('/carts/?datastore=database&remove=elements', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error(response);
+        }).then((thinCartResults) => {
+            // Filter collection results to current ones owned by the current user, then retrieve the cart
+            // object for the first cart in `savedCartResults`.
+            const userAtId = sessionProperties.user ? sessionProperties.user['@id'] : '';
+            const userCarts = (userAtId && thinCartResults['@graph'] && thinCartResults['@graph'].length > 0) ? thinCartResults['@graph'].filter(
+                cartObj => cartObj.submitted_by === userAtId && cartObj.status === 'current'
+            ) : [];
+            return userCarts[0] ? this.fetch(`${userCarts[0]['@id']}?datastore=database`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                },
+            }) : null;
+        }).then((response) => {
+            if (!response) {
+                // No saved cart for the user.
+                return null;
+            }
+            if (response.ok) {
+                // Decode the user's saved cart.
+                return response.json();
+            }
+            throw new Error(response);
+        });
+
+        // Once we have the user's first saved cart object, see if we need to merge it into the
+        // user's in-memory cart, and whether we then have to save the updated cart.
+        savedCartObjPromise.then((savedCartObj) => {
+            const savedCart = (savedCartObj && savedCartObj.elements) || [];
+            let memoryCart = this.cartStore.getState().cart;
+            if (memoryCart.length !== savedCart.length || !_.isEqual(memoryCart, savedCart)) {
+                // We now know the saved and in-memory carts are different somehow. If the user has
+                // a saved cart, merge its contents with the in-memory cart.
+                if (savedCartObj) {
+                    cartAddElements(savedCart, this.cartStore.dispatch);
+                    cartCacheSaved(savedCartObj, this.cartStore.dispatch);
+                }
+
+                // Save the (updated if it got merged with the saved cart) in-memory cart if it had
+                // anything in it on page load.
+                if (memoryCart.length > 0) {
+                    memoryCart = this.cartStore.getState().cart;
+                    return cartSave(memoryCart, savedCartObj, sessionProperties.user, this.fetch).then((updatedSavedCartObj) => {
+                        cartCacheSaved(updatedSavedCartObj, this.cartStore.dispatch);
+                    });
+                }
+            } else if (savedCartObj) {
+                // User has a cart object from before. Cache the user's cart so we know what cart
+                // to save to.
+                cartCacheSaved(savedCartObj, this.cartStore.dispatch);
+            }
+            return savedCartObj;
+        }).catch((err) => {
+            globals.parseAndLogError('Load savedCartObj on page load', err);
         });
     }
 
@@ -715,7 +795,11 @@ class App extends React.Component {
     }
 
     handleBeforeUnload() {
-        if (this.state.unsavedChanges.length) {
+        // Determine if the cart has items in it but no saved cart object exists.
+        const cartState = this.cartStore.getState();
+        const unsavedCart = cartState.cart.length > 0 && Object.keys(cartState.savedCartObj).length === 0;
+
+        if (this.state.unsavedChanges.length || unsavedCart) {
             return 'You have unsaved changes.';
         }
         return undefined;
@@ -747,7 +831,7 @@ class App extends React.Component {
         } catch (exc) {
             decodedHref = mutatableHref;
         }
-        const isDownload = decodedHref.includes('/@@download');
+        const isDownload = decodedHref.includes('/@@download') || decodedHref.includes('/batch_download/');
         if (!this.constructor.historyEnabled() || isDownload) {
             this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
             return null;
@@ -988,12 +1072,16 @@ class App extends React.Component {
                         <div id="application" className={appClass}>
                             <div className="loading-spinner" />
                             <div id="layout">
-                                <Navigation isHomePage={isHomePage} />
-                                <div id="content" className={containerClass} key={key}>
-                                    {content}
-                                </div>
-                                {errors}
-                                <div id="layout-footer" />
+                                <Provider store={this.cartStore}>
+                                    <div>
+                                        <Navigation isHomePage={isHomePage} />
+                                        <div id="content" className={containerClass} key={key}>
+                                            {content}
+                                        </div>
+                                        {errors}
+                                        <div id="layout-footer" />
+                                    </div>
+                                </Provider>
                             </div>
                             <Footer version={this.props.context.app_version} />
                         </div>
@@ -1024,6 +1112,7 @@ App.childContextTypes = {
     currentResource: PropTypes.func,
     location_href: PropTypes.string,
     fetch: PropTypes.func,
+    fetchSessionProperties: PropTypes.func,
     navigate: PropTypes.func,
     portal: PropTypes.object,
     projectColors: PropTypes.object,

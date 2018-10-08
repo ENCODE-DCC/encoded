@@ -40,6 +40,9 @@
         "file_format_type": {
             "title": "Specific file format type"
         },
+        "file_type": {
+            "title": "File type"
+        },
         "platform.term_name": {
             "title": "Platform"
         },

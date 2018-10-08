@@ -1,10 +1,16 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
 import _ from 'underscore';
 
 // Import test component and data.
 import Experiment from '../experiment';
 import context from '../testdata/experiment';
+
+// Create the Redux mock store.
+const initialCart = { cart: [], name: 'Untitled' };
+const mockStore = configureStore();
 
 
 describe('Experiment Page', () => {
@@ -15,8 +21,9 @@ describe('Experiment Page', () => {
         beforeAll(() => {
             const contextMin = _.clone(context);
             contextMin.references = [require('../testdata/publication/PMID16395128'), require('../testdata/publication/PMID23000965')];
+            const store = mockStore(initialCart);
             experiment = mount(
-                <Experiment context={context} />
+                <Provider store={store}><Experiment context={context} /></Provider>
             );
 
             summary = experiment.find('.data-display');
@@ -48,8 +55,9 @@ describe('Experiment Page', () => {
             contextRep.replicates[0].library = require('../testdata/library/sid38806');
             contextRep.replicates[1].library = require('../testdata/library/sid38807');
             contextRep.files = [require('../testdata/file/fastq')[0]];
+            const store = mockStore(initialCart);
             experiment = mount(
-                <Experiment context={contextRep} />
+                <Provider store={store}><Experiment context={contextRep} /></Provider>
             );
             summary = experiment.find('.data-display');
         });
@@ -80,8 +88,9 @@ describe('Experiment Page', () => {
         beforeAll(() => {
             const contextAlt = _.clone(context);
             contextAlt.alternate_accessions = ['ENCSR000ACT', 'ENCSR999NOF'];
+            const store = mockStore(initialCart);
             experiment = mount(
-                <Experiment context={contextAlt} />
+                <Provider store={store}><Experiment context={contextAlt} store={store} /></Provider>
             );
             alt = experiment.find('.repl-acc');
         });
