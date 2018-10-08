@@ -17,8 +17,8 @@ from snovault import DBSESSION, COLLECTIONS
 #from snovault.storage import (
 #    TransactionRecord,
 #)
-from snovault.elasticsearch.indexer import (
-    Indexer
+from snovault.elasticsearch.primary_indexer import (
+    PrimaryIndexer
 )
 from snovault.elasticsearch.indexer_state import (
     SEARCH_MAX,
@@ -372,7 +372,7 @@ def index_regions(request):
     return result
 
 
-class RegionIndexer(Indexer):
+class RegionIndexer(PrimaryIndexer):
     def __init__(self, registry):
         super(RegionIndexer, self).__init__(registry)
         self.encoded_es    = registry[ELASTIC_SEARCH]    # yes this is self.es but we want clarity
