@@ -1,7 +1,6 @@
 from snovault import (
     collection,
     load_schema,
-    calculated_property
 )
 from .base import (
     Item,

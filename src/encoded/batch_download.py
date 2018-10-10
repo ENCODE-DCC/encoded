@@ -15,7 +15,6 @@ import csv
 import io
 import json
 import datetime
-import logging
 
 ELEMENT_CHUNK_SIZE = 1000
 currenttime = datetime.datetime.now()
