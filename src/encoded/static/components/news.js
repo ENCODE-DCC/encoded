@@ -33,7 +33,7 @@ const NewsPreviews = (props) => {
     const { items } = props;
     if (items && items.length) {
         return (
-            <div className="news-listing">
+            <div className="news-listing" data-test="news-listing">
                 {items.map(item => (
                     <NewsPreviewItem key={item['@id']} item={item} />
                 ))}
@@ -334,7 +334,7 @@ const NewsFacets = (props) => {
     }
 
     return (
-        <div className="news-facets">
+        <div className="news-facets" data-test="news-facets">
             {nonEmptyFacets.map((facet) => {
                 const FacetView = globals.facetView.lookup(facet);
 
