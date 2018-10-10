@@ -895,6 +895,7 @@ export class TextFilter extends React.Component {
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
                     onKeyDown={this.onKeyDown}
+                    data-test="filter-search-box"
                 />
             </div>
         );
@@ -1017,7 +1018,7 @@ export const BatchDownload = (props) => {
     const link = props.context.batch_download;
     /* eslint-disable jsx-a11y/anchor-is-valid */
     return (
-        <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
+        <Modal actuator={<button className="btn btn-info btn-sm" data-test="batch-download">Download</button>}>
             <ModalHeader title="Using batch download" closeModal />
             <ModalBody>
                 <p>
