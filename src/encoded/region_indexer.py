@@ -126,22 +126,7 @@ def index_settings():
         }
     }
 
-
-#def all_regionable_dataset_uuids(registry):
-#    # NOTE: this old method needs postgres.  Avoid using postgres
-#    return list(all_uuids(registry, types=["experiment"]))
-
-
-def encoded_regionable_datasets(request, restrict_to_assays=[]):
-    '''return list of all dataset uuids eligible for regions'''
-
-    encoded_es = request.registry[ELASTIC_SEARCH]
-    encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
-
-    # basics... only want uuids of experiments that are released
-    query = '/search/?type=Experiment&field=uuid&status=released&limit=all'
-    # Restrict to just these assays
-    for assay in restrict_to_assays:
+t_to_assays:
         query += '&assay_title=' + assay
     results = request.embed(query)['@graph']
     return [ result['uuid'] for result in results ]
@@ -616,25 +601,13 @@ class RegionIndexer(Indexer):
         file_in_mem.seek(0)
         r.release_conn()
 
-        file_data = {}
-        if afile['file_format'] == 'bed':
             # NOTE: requests doesn't require gzip but http.request does.
             with gzip.open(file_in_mem, mode='rt') as file:  # localhost:8000 would not require localhost
                 for row in tsvreader(file):
-                    chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                    if isinstance(start, int) and isinstance(end, int):
-                        if chrom in file_data:
-                            file_data[chrom].append({
-                                'start': start + 1,
                                 'end': end + 1
                             })
                         else:
                             file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
                     else:
-                        log.warn('positions are not integers, will not index file')
-        #else:  Other file types?
-
-        if file_data:
-            return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, 'encoded')
 
         return False

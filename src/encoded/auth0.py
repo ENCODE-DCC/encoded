@@ -18,10 +18,6 @@ from pyramid.settings import (
     asbool,
     aslist,
 )
-from pyramid.traversal import find_resource
-from pyramid.view import (
-    view_config,
-)
 
 
 _marker = object()
@@ -37,8 +33,6 @@ def includeme(config):
     config.add_route('impersonate-user', 'impersonate-user')
 
 
-class LoginDenied(HTTPForbidden):
-    title = 'Login failure'
 
 
 class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
@@ -67,7 +61,7 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
                     request)
             request._auth0_authenticated = None
             return None
-        
+
         try:
             user_url = "https://{domain}/userinfo?access_token={access_token}" \
                 .format(domain='encode.auth0.com', access_token=access_token)
