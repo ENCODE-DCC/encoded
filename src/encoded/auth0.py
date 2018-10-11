@@ -33,8 +33,6 @@ def includeme(config):
     config.add_route('impersonate-user', 'impersonate-user')
 
 
-class LoginDenied(HTTPForbidden):
-    title = 'Login failure'
 
 
 class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
