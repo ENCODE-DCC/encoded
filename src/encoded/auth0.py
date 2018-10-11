@@ -61,7 +61,7 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
                     request)
             request._auth0_authenticated = None
             return None
-        
+
         try:
             user_url = "https://{domain}/userinfo?access_token={access_token}" \
                 .format(domain='encode.auth0.com', access_token=access_token)
