@@ -18,10 +18,6 @@ from pyramid.settings import (
     asbool,
     aslist,
 )
-from pyramid.traversal import find_resource
-from pyramid.view import (
-    view_config,
-)
 
 
 _marker = object()
