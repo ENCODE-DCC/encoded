@@ -34,13 +34,25 @@ def item_is_revoked(request, path):
 
 def calculate_assembly(request, files_list, status):
     assembly = set()
+    viewable_file_status = ['released','in progress']
+
+    for path in files_list:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        if properties['status'] in viewable_file_status:
+            if 'assembly' in properties:
+                assembly.add(properties['assembly'])
+    return list(assembly)
+
+
+def calculate_visualize_assembly(request, files_list, status):
+    assembly = set()
     viewable_file_formats = ['bigWig', 'bigBed']
     viewable_file_status = ['released','in progress']
 
     for path in files_list:
         properties = request.embed(path, '@@object?skip_calculated=true')
         if properties['file_format'] in viewable_file_formats and \
-                properties['status'] in viewable_file_status:
+            properties['status'] in viewable_file_status:
             if 'assembly' in properties:
                 assembly.add(properties['assembly'])
     return list(assembly)
@@ -175,7 +187,17 @@ class Dataset(Item):
     def assembly(self, request, original_files, status):
         return calculate_assembly(request, original_files, status)
 
-    @calculated_property(condition='assembly', schema={
+    @calculated_property(define=True, schema={
+        "title": "Visualize assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def visualize_assembly(self, request, original_files, status):
+        return calculate_visualize_assembly(request, original_files, status)
+
+    @calculated_property(condition='visualize_assembly', schema={
         "title": "Hub",
         "type": "string",
     })
@@ -267,6 +289,16 @@ class FileSet(Dataset):
     })
     def assembly(self, request, original_files, related_files, status):
         return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
+
+    @calculated_property(define=True, schema={
+        "title": "Visualize assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def visualize_assembly(self, request, original_files, related_files, status):
+        return calculate_visualize_assembly(request, list(chain(original_files, related_files))[:101], status)
 
 
 @collection(
@@ -513,6 +545,24 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         },
     })
     def assembly(self, request, original_files, related_datasets, status):
+        combined_assembly = set()
+        for assembly_from_original_files in calculate_assembly(request, original_files, status):
+            combined_assembly.add(assembly_from_original_files)
+        for dataset in related_datasets:
+            properties = request.embed(dataset, '@@object')
+            if properties['status'] not in ('deleted', 'replaced'):
+                for assembly_from_related_dataset in properties['assembly']:
+                    combined_assembly.add(assembly_from_related_dataset)
+        return list(combined_assembly)
+
+    @calculated_property(define=True, schema={
+        "title": "Visualize assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def visualize_assembly(self, request, original_files, related_datasets, status):
         combined_assembly = set()
         for assembly_from_original_files in calculate_assembly(request, original_files, status):
             combined_assembly.add(assembly_from_original_files)

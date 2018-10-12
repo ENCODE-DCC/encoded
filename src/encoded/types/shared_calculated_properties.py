@@ -281,10 +281,10 @@ class CalculatedVisualize:
         "title": "Visualize Data",
         "type": "string",
     })
-    def visualize(self, request, hub, accession, assembly, status, files):
+    def visualize(self, request, hub, accession, visualize_assembly, status, files):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
-        for assembly_name in assembly:
+        for assembly_name in visualize_assembly:
             if assembly_name in viz:
                 continue
             browsers = browsers_available(status, [assembly_name],
