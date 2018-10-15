@@ -44,8 +44,8 @@ def show_upload_credentials(request=None, context=None, status=None):
     return request.has_permission('edit', context)
 
 
-def show_google_transfer(status=None, md5sum=None, file_size=None):
-    if not md5sum or not file_size:
+def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=None):
+    if restricted or not md5sum or not file_size:
         return False
     return status in File.public_s3_statuses
 
@@ -342,20 +342,20 @@ class File(Item):
         return paths_filtered_by_status(request, superseded_by)
 
     @calculated_property(
-        condition=show_google_transfer,
+        condition=show_cloud_metadata,
         schema={
-            "title": "Google transfer",
-            "description": "Metadata required by Google Cloud to create transfer TSV.",
+            "title": "Cloud metadata",
+            "description": "Metadata required for cloud transfer.",
             "comment": "Do not submit. Values are calculated from file metadata.",
             "type": "object",
             "notSubmittable": True,
         }
     )
-    def google_transfer(self, md5sum, file_size):
+    def cloud_metadata(self, md5sum, file_size):
         try:
             external = self._get_external_sheet()
         except HTTPNotFound:
-            return {}
+            return None
         conn = boto3.client('s3', config=Config(
             signature_version=botocore.UNSIGNED,
         ))
@@ -374,22 +374,21 @@ class File(Item):
         }
 
     @calculated_property(
-        condition=lambda status=None: status in File.public_s3_statuses,
+        condition=show_cloud_metadata,
         schema={
             "title": "S3 URI",
             "description": "The S3 URI of public file object.",
             "comment": "Do not submit. Value is calculated from file metadata.",
             "type": "string",
-            "notSubmittable": True, 
+            "notSubmittable": True,
         }
     )
     def s3_uri(self):
         try:
             external = self._get_external_sheet()
         except HTTPNotFound:
-            return ''
+            return None
         return 's3://{bucket}/{key}'.format(**external)
-        
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

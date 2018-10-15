@@ -29,15 +29,27 @@ def file_with_external_sheet(file, root):
     status
     for status in File.public_s3_statuses
 ])
-def test_public_file_has_google_transfer_metadata(testapp, file_with_external_sheet, file_status):
+def test_public_file_has_cloud_metadata(testapp, file_with_external_sheet, file_status):
     testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
-    assert 'google_transfer' in res.json
-    gtm = res.json['google_transfer']
-    assert 'test_file_bucket' in gtm['url']
-    assert 'xyz.bed' in gtm['url']
-    assert gtm['md5sum_base64'] == '1B2M2Y8AsgTpgAmY7PhCfg=='
-    assert gtm['file_size'] == 34
+    assert 'cloud_metadata' in res.json
+    cm = res.json['cloud_metadata']
+    assert 'test_file_bucket' in cm['url']
+    assert 'xyz.bed' in cm['url']
+    assert cm['md5sum_base64'] == '1B2M2Y8AsgTpgAmY7PhCfg=='
+    assert cm['file_size'] == 34
+
+
+def test_public_restricted_file_does_not_have_cloud_metadata(testapp, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'restricted': True
+        }
+    )
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 'cloud_metadata' not in res.json
 
 
 @pytest.mark.parametrize("file_status", [
@@ -45,17 +57,16 @@ def test_public_file_has_google_transfer_metadata(testapp, file_with_external_sh
     for status in File.private_s3_statuses
     if status != 'replaced'
 ])
-def test_private_file_does_not_have_google_transfer_metadata(testapp, file_with_external_sheet, file_status):
+def test_private_file_does_not_have_cloud_metadata(testapp, file_with_external_sheet, file_status):
     testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
-    assert 'google_transfer' not in res.json
+    assert 'cloud_metadata' not in res.json
 
 
-def test_public_file_with_no_external_sheet_has_blank_google_transfer_metadata(testapp, file):
+def test_public_file_with_no_external_sheet_no_cloud_metadata(testapp, file):
     testapp.patch_json(file['@id'], {'status': 'released'})
     res = testapp.get(file['@id'])
-    assert 'google_transfer' in res.json
-    assert not res.json['google_transfer']
+    assert 'cloud_metadata' not in res.json
 
 
 @pytest.mark.parametrize("file_status", [
@@ -80,8 +91,19 @@ def test_private_file_does_not_have_s3_uri(testapp, file_with_external_sheet, fi
     assert 's3_uri' not in res.json
 
 
-def test_public_file_no_external_sheet_blank_s3_uri(testapp, file):
+def test_public_file_no_external_sheet_no_s3_uri(testapp, file):
     testapp.patch_json(file['@id'], {'status': 'released'})
     res = testapp.get(file['@id'])
-    assert 's3_uri' in res.json
-    assert not res.json['s3_uri']
+    assert 's3_uri' not in res.json
+
+
+def test_public_restricted_file_does_not_have_s3_uri(testapp, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'restricted': True,
+        }
+    )
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' not in res.json
