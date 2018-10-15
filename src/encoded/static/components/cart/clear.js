@@ -59,7 +59,7 @@ class CartClearComponent extends React.Component {
                                 <p id="clear-cart-description">Clearing the cart is not undoable.</p>
                             </ModalBody>
                             <ModalFooter
-                                closeModal={<button id="clear-cart-close" onClick={this.handleCloseClick} className="btn btn-info">Close</button>}
+                                closeModal={<button id="clear-cart-close" onClick={this.handleCloseClick} className="btn btn-info">Cancel</button>}
                                 submitBtn={<button onClick={this.handleConfirmClearClick} className="btn btn-info" id="clear-cart-submit">Clear</button>}
                                 dontClose
                             />

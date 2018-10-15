@@ -451,7 +451,7 @@ class FileFacets extends React.Component {
                         <progress value={this.state.facetLoadProgress} max="100" />
                     </div>
                 : null}
-                {fileCount > 0 ? <div className="cart__facet-file-count">{fileCountFormatted} files selected for download</div> : null}
+                {fileCount > 0 ? <div className="cart__facet-file-count">{fileCountFormatted} {fileCount === 1 ? 'file' : 'files'} selected for download</div> : null}
                 {displayedFacets ?
                     <div>
                         {emptyFacets ?
