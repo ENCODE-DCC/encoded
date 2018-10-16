@@ -58,6 +58,20 @@
             "type": "string",
             "linkTo": "Library"
         },
+        "libraries": {
+            "title": "Libraries",
+            "description": "The nucleic acid libraries used in this replicate.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items" : {
+                "title": "Library",
+                "description": "The nucleic acid library used in this replicate.",
+                "comment": "See library.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Library"
+            }
+        },
         "rbns_protein_concentration": {
             "title": "RBNS protein concentration",
             "description": "For use only with RNA Bind-n-Seq replicates to indicate the protein concentration.",
