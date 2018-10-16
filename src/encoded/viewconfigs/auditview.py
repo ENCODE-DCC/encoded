@@ -304,9 +304,10 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 self._schema = type_info.schema
         self._validate_items(type_info)
         self._result['title'] = self._set_result_title(type_info)
-        # Change in copy mechanism:
-        # Oringially: copy.deepcopy(type_info.factory.matrix)
-        self._result['matrix'] = type_info.factory.matrix.copy()
+        # Because the formatting of the query edits the sub-objects of the matrix, we need to
+        # deepcopy the matrix so the original type_info.factory.matrix is not modified, allowing
+        # /matrix to get the correct data and to not be able to access the /audit data.
+        self._result['matrix'] = copy.deepcopy(type_info.factory.matrix)
         self._matrix = self._result['matrix']
         self._matrix['x']['limit'] = self._request.params.get('x.limit', 20)
         self._matrix['y']['limit'] = self._request.params.get('y.limit', 5)
