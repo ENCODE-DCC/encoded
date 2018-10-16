@@ -118,7 +118,7 @@ export const dbxrefPrefixMap = {
         },
     },
     BDSC: {
-        pattern: 'http://flystocks.bio.indiana.edu/Reports/{0}',
+        pattern: 'http://flystocks.bio.indiana.edu/stocks/{0}',
     },
     WormBase: {
         pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}',
