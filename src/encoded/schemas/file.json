@@ -1118,6 +1118,13 @@
             "type": "string",
             "linkTo": "Replicate"
         },
+        "library": {
+            "title": "Library",
+            "description": "The nucleic acid library sequenced to produce this file.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        },
         "assembly": {
             "title": "Mapping assembly",
             "description": "Genome assembly that files were mapped to.",
