@@ -120,7 +120,7 @@ class Dataset(Item):
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
         outside_files = list(derived_from.difference(original_files))
-        if status in ('release ready', 'released'):
+        if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
                 include=('released',),
@@ -140,7 +140,7 @@ class Dataset(Item):
         },
     })
     def files(self, request, original_files, status):
-        if status in ('release ready', 'released', 'archived'):
+        if status in ('released', 'archived'):
             return paths_filtered_by_status(
                 request, original_files,
                 include=('released', 'archived'),
@@ -213,7 +213,7 @@ class FileSet(Dataset):
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
         outside_files = list(derived_from.difference(files))
-        if status in ('release ready', 'released'):
+        if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
                 include=('released',),
@@ -233,7 +233,7 @@ class FileSet(Dataset):
         },
     })
     def files(self, request, original_files, related_files, status):
-        if status in ('release ready', 'released'):
+        if status in ('released'):
             return paths_filtered_by_status(
                 request, chain(original_files, related_files),
                 include=('released',),
