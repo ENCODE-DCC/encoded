@@ -573,5 +573,16 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB000DAT",
         "uuid": "0f427e79-556e-4125-8102-f6723471807e"
+    },
+    {
+        "_test": "replicate with multiple libraries",
+        "experiment": "/experiments/ENCSR000AAL/",
+        "biological_replicate_number": 3,
+        "technical_replicate_number": 3,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB000DAT",
+        "libraries": ["ENCLB111ABY", "ENCLB112ABY"],
+        "uuid": "e5b23a79-4c9f-48fe-9f0b-9623821bc9a3"
     }
 ]
