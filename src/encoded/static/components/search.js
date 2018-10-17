@@ -822,22 +822,49 @@ Facet.defaultProps = {
 };
 
 
-// Entry field for filtering the results list when search results appear in edit forms.
+/**
+ * Entry field for filtering the results list when search results appear in edit forms.
+ *
+ * @export
+ * @class TextFilter
+ * @extends {React.Component}
+ */
 export class TextFilter extends React.Component {
-    static onChange(e) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
     constructor() {
         super();
 
         // Bind `this` to non-React component methods.
-        this.onBlur = this.onBlur.bind(this);
+        this.performSearch = this.performSearch.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
-    onBlur(e) {
+    /**
+    * Keydown event handler
+    *
+    * @param {object} e Key down event
+    * @memberof TextFilter
+    * @private
+    */
+    onKeyDown(e) {
+        if (e.keyCode === 13) {
+            this.performSearch(e);
+            e.preventDefault();
+        }
+    }
+
+    getValue() {
+        const filter = this.props.filters.filter(f => f.field === 'searchTerm');
+        return filter.length ? filter[0].term : '';
+    }
+
+    /**
+    * Makes call to do search
+    *
+    * @param {object} e Event
+    * @memberof TextFilter
+    * @private
+    */
+    performSearch(e) {
         let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
         const value = e.target.value;
         if (value) {
@@ -848,22 +875,17 @@ export class TextFilter extends React.Component {
         this.props.onChange(searchStr);
     }
 
-    onKeyDown(e) {
-        if (e.keyCode === 13) {
-            this.onBlur(e);
-            e.preventDefault();
-        }
-    }
-
-    getValue() {
-        const filter = this.props.filters.filter(f => f.field === 'searchTerm');
-        return filter.length ? filter[0].term : '';
-    }
-
     shouldUpdateComponent(nextProps) {
         return (this.getValue(this.props) !== this.getValue(nextProps));
     }
 
+    /**
+    * Provides view for @see {@link TextFilter}
+    *
+    * @returns {object} @see {@link TextFilter} React's JSX object
+    * @memberof TextFilter
+    * @public
+    */
     render() {
         return (
             <div className="facet">
@@ -872,8 +894,6 @@ export class TextFilter extends React.Component {
                     className="form-control search-query"
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
-                    onChange={TextFilter.onChange}
-                    onBlur={this.onBlur}
                     onKeyDown={this.onKeyDown}
                 />
             </div>
