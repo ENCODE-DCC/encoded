@@ -23,7 +23,8 @@
         "rna_integrity_number": 1.11,
         "dbxrefs": [
             "GEO:GSM433174"
-        ]
+        ],
+        "antibody": "ENCAB000ALM"
     },
     {
         "accession": "ENCLB310ZZZ",
@@ -44,7 +45,8 @@
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "rna_integrity_number": 2.0,
-        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
+        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
+        "antibody": "ENCAB000ALM"
     },
     {
         "accession": "ENCLB055ZZZ",
@@ -89,7 +91,10 @@
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
-        "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
+        "spikeins_used": [
+            "ENCSR704RSS",
+            "ENCSR013YHQ"
+        ],
         "strand_specificity": true,
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
@@ -208,7 +213,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
+        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
+        "antibody": "ENCAB000AUU"
     },
     {
         "accession": "ENCLB304ZZZ",
@@ -223,7 +229,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "835e166d-0253-41ce-add2-de67429a3612"
+        "uuid": "835e166d-0253-41ce-add2-de67429a3612",
+        "antibody": "ENCAB000AOF"
     },
     {
         "accession": "ENCLB071ZZZ",
@@ -238,7 +245,8 @@
         "nucleic_acid_term_name": "DNA",
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
+        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77",
+        "antibody": "ENCAB000AUU"
     },
     {
         "accession": "ENCLB000ANI",
@@ -366,7 +374,8 @@
         "status": "released",
         "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
+        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26",
+        "antibody": "ENCAB000AFX"
     },
     {
         "accession": "ENCLB209APS",
@@ -377,7 +386,8 @@
         "status": "released",
         "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "de797662-a71b-45d5-96bf-9dd800194907"
+        "uuid": "de797662-a71b-45d5-96bf-9dd800194907",
+        "antibody": "ENCAB000AFX"
     },
     {
         "_test": "Paired set 1 library",
@@ -416,8 +426,12 @@
         "strand_specificity": false,
         "size_range": "350-600",
         "fragmentation_method": "shearing (Covaris generic)",
-        "aliases": ["robert-waterston:library_RB884_80_1_1"],
-        "depleted_in_term_name": ["rRNA"],
+        "aliases": [
+            "robert-waterston:library_RB884_80_1_1"
+        ],
+        "depleted_in_term_name": [
+            "rRNA"
+        ],
         "extraction_method": "Trizol"
     },
     {
@@ -433,8 +447,12 @@
         "strand_specificity": false,
         "size_range": "350-600",
         "fragmentation_method": "shearing (Covaris generic)",
-        "aliases": ["robert-waterston:library_RB884_680_1_1"],
-        "depleted_in_term_name": ["rRNA"],
+        "aliases": [
+            "robert-waterston:library_RB884_680_1_1"
+        ],
+        "depleted_in_term_name": [
+            "rRNA"
+        ],
         "extraction_method": "Trizol"
     },
     {
@@ -446,12 +464,16 @@
         "status": "revoked",
         "nucleic_acid_term_name": "RNA",
         "uuid": "2f98377b-0305-4af2-aa6c-b39d04478817",
-        "aliases": ["robert-waterston:library_RB884_880_1_1"],
+        "aliases": [
+            "robert-waterston:library_RB884_880_1_1"
+        ],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_method": "shearing (Covaris generic)",
-        "depleted_in_term_name": ["rRNA"],
+        "depleted_in_term_name": [
+            "rRNA"
+        ],
         "extraction_method": "Trizol"
     },
     {
@@ -583,7 +605,8 @@
         "size_range": "150-200",
         "accession": "ENCLB003EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89"
+        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me3",
@@ -596,7 +619,8 @@
         "size_range": "150-200",
         "accession": "ENCLB004EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62"
+        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
@@ -609,7 +633,8 @@
         "size_range": "150-200",
         "accession": "ENCLB005EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba"
+        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
@@ -622,7 +647,8 @@
         "size_range": "150-200",
         "accession": "ENCLB006EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa"
+        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Reference epigenome series 1 library H3K27me3",
@@ -635,7 +661,8 @@
         "size_range": "150-200",
         "accession": "ENCLB007EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137"
+        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Reference epigenome series 1 library H3K9me3",
@@ -648,7 +675,8 @@
         "size_range": "150-200",
         "accession": "ENCLB008EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c"
+        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Reference epigenome series 1 library control",
@@ -661,7 +689,8 @@
         "size_range": "150-200",
         "accession": "ENCLB009EPI",
         "biosample": "ENCBS001EPI",
-        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136"
+        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Replication timing series 1 library",
@@ -674,7 +703,8 @@
         "size_range": "150-200",
         "accession": "ENCLB001REP",
         "biosample": "ENCBS001REP",
-        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6"
+        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Replication timing series 2 library",
@@ -687,7 +717,8 @@
         "size_range": "150-250",
         "accession": "ENCLB002REP",
         "biosample": "ENCBS002REP",
-        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970"
+        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "Replication timing series 3 library",
@@ -700,7 +731,8 @@
         "size_range": "170-200",
         "accession": "ENCLB003REP",
         "biosample": "ENCBS003REP",
-        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0"
+        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0",
+        "antibody": "ENCAB000AUU"
     },
     {
         "_test": "RCC files",
