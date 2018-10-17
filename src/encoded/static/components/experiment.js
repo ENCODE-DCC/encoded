@@ -35,7 +35,11 @@ function AssayDetails(replicates, libVals, libSpecials, libComps) {
 
     // Little utility to convert a replicate to a unique index we can use for arrays (like libraryValues below)
     function replicateToIndex(replicate) {
-        return `${replicate.biological_replicate_number}-${replicate.technical_replicate_number}`;
+        if (replicate.technical_replicate_number){
+            return `${replicate.biological_replicate_number}-${replicate.technical_replicate_number}`;
+        } else {
+            return `${replicate.biological_replicate_number}`;
+        }
     }
 
     // No replicates, so no assay entries
@@ -693,10 +697,11 @@ const replicateTableColumns = {
         getValue: condensedReplicate => condensedReplicate[0].biological_replicate_number,
     },
 
-    technical_replicate_number: {
-        title: 'Technical replicate',
-        getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join(),
-    },
+    // I think we can just delete this
+    // technical_replicate_number: {
+    //     title: 'Technical replicate',
+    //     getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join(),
+    // },
 
     summary: {
         title: 'Summary',
