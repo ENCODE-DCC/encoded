@@ -66,6 +66,61 @@
                 "linkTo": "Gene"
             }
         },
+        "modifications": {
+            "title": "Modification to the corresponding gene product.",
+            "description": "List of modifications made to the corresponding gene product of this target.",
+            "comment": "This property will be used to calculate the proper label of the target. See computed_label property for details about automatic label calculation.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Modification",
+                "description": "A modification to the gene product.",
+                "type": "object",
+                "required": ["modification"],
+                "properties": {
+                    "modification": {
+                        "title": "Type of modification",
+                        "description": "One specific modifications listed in the enum.",
+                        "type": "string",
+                        "enum": [
+                            "3xFLAG",
+                            "6XHis",
+                            "DsRed",
+                            "eGFP",
+                            "ER",
+                            "FLAG",
+                            "GFP",
+                            "HA",
+                            "mCherry",
+                            "T2A",
+                            "TRE",
+                            "V5",
+                            "YFP",
+                            "Methylation",
+                            "Monomethylation",
+                            "Dimethylation",
+                            "Trimethylation",
+                            "Acetylation",
+                            "Phosphorylation"
+                        ]
+                    },
+                    "position": {
+                        "title": "Amino acid position",
+                        "description": "The numeric position (one based) of modified amino acid in the protein.",
+                        "comment": "It worth noting that the first Methionine on newly transcribed peptide is usually cleaved through N-terminal methionine excision (NME). Therefore, this cleaved Methionine will not be taken into account and the amino acid right after it is position 1.",
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "amino_acid_code": {
+                        "title": "Modified amino acid",
+                        "description": "One letter IUPAC amino acid code.",
+                        "type": "string",
+                        "pattern": "^[ACDEFGHIKLMNPQRSTVWY]$"
+                    }
+                }
+            }
+        },
         "label": {
             "title": "Common name with modification",
             "description": "Common name for the target including post-translational modifications, if any.",
