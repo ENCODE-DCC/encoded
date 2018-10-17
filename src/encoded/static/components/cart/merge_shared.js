@@ -31,8 +31,8 @@ class CartMergeSharedComponent extends React.Component {
      * in a logged-out user's cart than allowed.
      */
     handleMergeButtonClick() {
-        const { viewableElements, loggedIn } = this.props;
-        if (loggedIn || viewableElements.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
+        const { viewableElements, adminUser } = this.props;
+        if (adminUser || viewableElements.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
             this.setState({ mergeCartDisplayed: true });
         } else {
             this.setState({ overMaximumError: true });
@@ -105,15 +105,15 @@ CartMergeSharedComponent.propTypes = {
     onMergeCartClick: PropTypes.func.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,
-    /** True if user is logged in */
-    loggedIn: PropTypes.bool,
+    /** True if user is logged in as admin */
+    adminUser: PropTypes.bool,
 };
 
 CartMergeSharedComponent.defaultProps = {
     sharedCartObj: {},
     savedCartObj: null,
     viewableElements: null,
-    loggedIn: false,
+    adminUser: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -122,11 +122,11 @@ const mapStateToProps = (state, ownProps) => ({
     inProgress: state.inProgress,
     sharedCartObj: ownProps.sharedCartObj,
     viewableElements: ownProps.viewableElements,
-    loggedIn: ownProps.loggedIn,
+    adminUser: ownProps.adminUser,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.sessionProperties.user, ownProps.fetch)),
+    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.sessionProperties.user, ownProps.sessionProperties.admin, ownProps.fetch)),
 });
 
 const CartMergeSharedInternal = connect(mapStateToProps, mapDispatchToProps)(CartMergeSharedComponent);
@@ -139,7 +139,7 @@ const CartMergeShared = ({ sharedCartObj, viewableElements }, reactContext) => (
     <CartMergeSharedInternal
         sharedCartObj={sharedCartObj}
         viewableElements={viewableElements}
-        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
+        adminUser={!!(reactContext.session_properties && reactContext.session_properties.admin)}
         sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />

@@ -92,7 +92,7 @@ const mapStateToProps = (state, ownProps) => ({
     user: ownProps.sessionProperties,
 });
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, ownProps.sessionProperties.user, ownProps.fetch)),
+    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, ownProps.sessionProperties.user, ownProps.sessionProperties.admin, ownProps.fetch)),
 });
 
 const CartClearInternal = connect(mapStateToProps, mapDispatchToProps)(CartClearComponent);

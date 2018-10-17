@@ -31,13 +31,14 @@ export const addToCart = elementAtId => (
  * cart object in the database.
  * @param {string} elementAtId `@id` of element being added to cart
  * @param {object} user User object from <App> session_properties
+ * @param {bool} adminUser True if `user` has admin privileges.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null if not logged in
  */
-export const addToCartAndSave = (elementAtId, user, fetch) => (
+export const addToCartAndSave = (elementAtId, user, adminUser, fetch) => (
     (dispatch, getState) => {
         dispatch(addToCart(elementAtId));
-        if (user) {
+        if (adminUser) {
             const { cart, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
             return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
@@ -66,13 +67,14 @@ export const addMultipleToCart = elementAtIds => (
  * user's cart object in the database.
  * @param {array} elementAtIds `@ids` of elements being added to cart
  * @param {object} user User object from <App> session_properties
+ * @param {bool} adminUser True if `user` has admin privileges.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null not logged in
  */
-export const addMultipleToCartAndSave = (elementAtIds, user, fetch) => (
+export const addMultipleToCartAndSave = (elementAtIds, user, adminUser, fetch) => (
     (dispatch, getState) => {
         dispatch(addMultipleToCart(elementAtIds));
-        if (user) {
+        if (adminUser) {
             const { cart, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
             return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
@@ -101,13 +103,14 @@ export const removeFromCart = elementAtId => (
  * user's cart object in the database.
  * @param {string} elementAtId `@id` of object being added to cart
  * @param {object} user User object from <App> session_properties
+ * @param {bool} adminUser True if `user` has admin privileges.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null not logged in
  */
-export const removeFromCartAndSave = (elementAtId, user, fetch) => (
+export const removeFromCartAndSave = (elementAtId, user, adminUser, fetch) => (
     (dispatch, getState) => {
         dispatch(removeFromCart(elementAtId));
-        if (user) {
+        if (adminUser) {
             const { cart, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
             return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
@@ -136,13 +139,14 @@ export const removeMultipleFromCart = elementAtIds => (
  * database.
  * @param {array} elementAtIds `@ids` of elements to remove from the cart
  * @param {object} user User object from <App> session_properties
+ * @param {bool} adminUser True if `user` has admin privileges.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null if not logged in
  */
-export const removeMultipleFromCartAndSave = (elementAtIds, user, fetch) => (
+export const removeMultipleFromCartAndSave = (elementAtIds, user, adminUser, fetch) => (
     (dispatch, getState) => {
         dispatch(removeMultipleFromCart(elementAtIds));
-        if (user) {
+        if (adminUser) {
             const { cart, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
             return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
