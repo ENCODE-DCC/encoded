@@ -75,6 +75,7 @@ class MouseDonor(Donor):
     embedded = Donor.embedded + ['references',
                                  'genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
     set_status_up = [
         'characterizations',
@@ -103,6 +104,7 @@ class FlyDonor(Donor):
     embedded = Donor.embedded + ['organism', 
                                  'genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments', 
                                  'characterizations']
     set_status_up = [
@@ -128,6 +130,7 @@ class WormDonor(Donor):
     embedded = Donor.embedded + ['organism',
                                  'genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
     set_status_up = [
         'characterizations',

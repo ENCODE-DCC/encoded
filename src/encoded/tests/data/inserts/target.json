@@ -6,37 +6,36 @@
             "HGNC:ADNP1",
             "UniProtKB:Q9H2P0"
         ],
-        "gene_name": "ADNP",
+        "genes": ["23394"],
         "label": "ADNP",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
         "label": "Control",
-        "organism": "mouse",
+        "target_organism": "mouse",
         "status": "released",
         "investigated_as": ["control"],
         "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
     },
     {
         "label": "mouse-IgG-control",
-        "organism": "human",
+        "target_organism": "human",
         "status": "released",
         "investigated_as": ["control"],
         "uuid": "2e19e501-8f32-4205-8469-2fb593a30595"
     },
     {
         "label": "mouse-IgG-control",
-        "organism": "mouse",
+        "target_organism": "mouse",
         "status": "released",
         "investigated_as": ["control"],
         "uuid": "6fcd4ef8-9a84-4951-958a-828c41a5ffb0"
     },
     {
         "label": "Control",
-        "organism": "human",
+        "target_organism": "human",
         "status": "released",
         "investigated_as": ["control"],
         "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
@@ -47,9 +46,8 @@
             "GeneID:10664",
             "UniProtKB:P49711"
         ],
-        "gene_name": "CTCF",
+        "genes": ["10664"],
         "label": "CTCF",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
@@ -70,9 +68,8 @@
             "HGNC:5830420C16Rik",
             "UniProtKB:Q9P0U4"
         ],
-        "gene_name": "CXXC1",
+        "genes": ["30827"],
         "label": "CXXC1",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
@@ -85,9 +82,8 @@
             "HGNC:RBP3",
             "UniProtKB:Q01094"
         ],
-        "gene_name": "E2F1",
+        "genes": ["1869"],
         "label": "E2F1",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "b39e16c2-b1d7-4690-b92c-e7006e5a8332"
@@ -100,9 +96,13 @@
             "HGNC:RBP3",
             "UniProtKB:Q01094"
         ],
-        "gene_name": "E2F1",
+        "genes": ["1869"],
+        "modifications": [{
+            "modification": "eGFP",
+            "position": 1,
+            "amino_acid_code": "A"
+        }],
         "label": "eGFP-E2F1",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor", "recombinant protein"],
         "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
@@ -115,9 +115,13 @@
             "HGNC:RBP3",
             "UniProtKB:Q01094"
         ],
-        "gene_name": "E2F1",
+        "genes": ["1869"],
+        "modifications": [{
+            "modification": "HA",
+            "position": 1,
+            "amino_acid_code": "A"
+        }],
         "label": "HA-E2F1",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor", "recombinant protein"],
         "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
@@ -126,9 +130,8 @@
         "dbxref": [
             "UniProtKB:P84228"
         ],
-        "gene_name": "Hist2h3c1",
+        "genes": ["15077"],
         "label": "H3K4me3",
-        "organism": "mouse",
         "status": "released",
         "investigated_as": ["histone"],
         "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
@@ -137,22 +140,21 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "gene_name": "HIST2H3C",
+        "genes": ["126961"],
         "label": "H3K9ac",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["histone"],
         "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
     },
     {
-    "dbxref": [
-        "UniProtKB:P84228"
-    ],
-    "investigated_as": ["histone"],
-    "label": "H3K9ac",
-    "organism": "mouse",
-    "status": "released",
-    "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
+        "dbxref": [
+            "UniProtKB:P84228"
+        ],
+        "investigated_as": ["histone"],
+        "genes": ["15077"],
+        "label": "H3K9ac",
+        "status": "released",
+        "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
     },
     {
         "dbxref": [
@@ -163,9 +165,8 @@
             "HGNC:hnRNP-A1",
             "UniProtKB:P09651"
         ],
-        "gene_name": "HNRNPA1",
+        "genes": ["3178"],
         "label": "HNRNPA1",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["RNA binding protein"],
         "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19"
@@ -185,9 +186,8 @@
             "HGNC:DYT3/TAF1",
             "UniProtKB:P21675"
         ],
-        "gene_name": "TAF1",
+        "genes": ["6872"],
         "label": "TAF1",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "993bd05d-a6bd-4718-b51b-abe99f14f8c3"
@@ -209,9 +209,8 @@
             "HGNC:bHLHb19",
             "UniProtKB:P15884"
         ],
-        "gene_name": "TCF4",
+        "genes": ["6925"],
         "label": "TCF4",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "f26cc43c-884a-4aea-9b26-b3517ef6748d"
@@ -229,9 +228,8 @@
             "HGNC:COUP-TFI",
             "HGNC:TCFCOUP1"
         ],
-        "gene_name": "NR2F1\u00c2",
+        "genes": ["7025"],
         "label": "NR2F1\u00c2",
-        "organism": "human",
         "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "618b2122-2a97-44a8-bd6a-f473c1363dd2"
@@ -244,8 +242,7 @@
             "WormBase:Y2H9A.1",
             "UniProtKB:Q9NH52"
         ],
-        "organism": "celegans",
-        "gene_name": "mes-4",
+        "genes": ["179824"],
         "investigated_as": ["transcription factor"],
         "status": "released"
     },
@@ -259,29 +256,33 @@
             "UniProtKB:Q9U302",
             "UniProtKB:Q7K798"
         ],
-        "organism": "celegans",
-        "gene_name": "pab-1",
+        "genes": ["172920"],
+        "modifications": [{
+            "modification": "3xFLAG",
+            "position": 1,
+            "amino_acid_code": "E"
+        }],
         "investigated_as": ["transcription factor", "recombinant protein"],
         "status": "released"
     },
     {
         "uuid": "d7e8b30a-5fde-4201-a287-be53814abca7",
         "label": "eGFP",
-        "organism": "avictoria",
+        "target_organism": "avictoria",
         "investigated_as": ["tag"],
         "status": "released"
     },
     {
         "uuid": "f2d60a72-7b9c-422a-a80e-9493640c1d58",
         "label": "FLAG",
-        "organism": "synthetic",
+        "target_organism": "synthetic",
         "investigated_as": ["tag"],
         "status": "released"
     },
     {
         "uuid": "77d56f5a-e445-4f2c-83ac-65e00ce50ac1",
         "label": "HA",
-        "organism": "influenza",
+        "target_organism": "influenza",
         "investigated_as": ["tag"],
         "status": "released"
     },
@@ -293,19 +294,18 @@
             "HGNC:OLF1",
             "UniProtKB:Q9UH73"
         ],
-        "gene_name": "EBF1",
+        "genes": ["1879"],
         "investigated_as": [
             "transcription factor"
         ],
         "label": "EBF1",
-        "organism": "human",
         "status": "released",
         "uuid": "1fe12114-b9df-4626-a29f-78f3130eb5d2"
     },
     {
         "uuid": "753b99f8-d764-4dea-96de-cf9c6f6ecede",
         "label": "cad",
-        "organism": "dmelanogaster",
+        "genes": ["35341"],
         "investigated_as": ["transcription factor"],
         "status": "released"
     },
@@ -317,8 +317,7 @@
             "WormBase:C25A1.2",
             "UniProtKB:O17593"
         ],
-        "organism": "celegans",
-        "gene_name": "fkh-10",
+        "genes": ["182874"],
         "investigated_as": ["transcription factor"],
         "status": "released"
     },
@@ -326,18 +325,16 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "gene_name": "HIST2H3C",
+        "genes": ["126961"],
         "investigated_as": [
             "histone"
         ],
         "label": "H3K4me3",
-        "organism": "human",
         "status": "released",
         "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
     },
     {
         "label": "H3K27ac",
-        "organism": "human",
         "investigated_as": [
             "histone"
         ],
@@ -345,7 +342,7 @@
             "UniProtKB:Q71DI3"
         ],
         "status": "released",
-        "gene_name": "HIST2H3C",
+        "genes": ["126961"],
         "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
     },
     {
@@ -356,17 +353,15 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "organism": "human",
         "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72",
-        "gene_name": "HIST2H3C",
+        "genes": ["126961"],
         "status": "released"
     },
     {
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "gene_name": "HIST2H3C",
-        "organism": "human",
+        "genes": ["126961"],
         "label": "H3K27me3",
         "status": "released",
         "investigated_as": [
@@ -377,8 +372,7 @@
     {
         "uuid": "14173a5f-799e-4dae-b155-a142c5b6b566",
         "label": "H3K9me3",
-        "gene_name": "HIST2H3C",
-        "organism": "human",
+        "genes": ["126961"],
         "investigated_as": [
             "histone"
         ],
@@ -390,8 +384,7 @@
     {
         "uuid": "1aa5391a-01f1-4983-bdb6-d93db5f53334",
         "label": "H3K4me1",
-        "gene_name": "HIST2H3C",
-        "organism": "human",
+        "genes": ["126961"],
         "investigated_as": [
             "histone"
         ],
@@ -401,13 +394,29 @@
         ]
     },
     {
+        "uuid": "452c5ea6-5880-499d-b8bb-392790fd2b89",
+        "status": "released",
+        "dbxref": [
+            "GeneID:8335",
+            "GeneID:3012",
+            "UniProtKB:P04908"
+        ],
+        "genes": [
+            "8335",
+            "3012"
+        ],
+        "label": "H2AK5ac",
+        "investigated_as": [
+            "histone"
+        ]
+    },
+    {
         "uuid": "e6d8b23f-f6ca-4d77-adab-03ba81b7742a",
-        "gene_name": "FTO",
+        "genes": ["79068"],
         "investigated_as": [
             "RNA binding protein"
         ],
         "label": "FTO",
-        "organism": "human",
         "dbxref": [
             "ENSEMBL:ENSG00000140718",
             "HGNC:24678",
@@ -441,13 +450,17 @@
             "FlyBase:ab-RB",
             "FlyBase:CG43860-RD"
         ],
-        "gene_name": "ab",
+        "genes": ["34560"],
+        "modifications": [{
+            "modification": "eGFP",
+            "position": 1,
+            "amino_acid_code": "T"
+        }],
         "investigated_as": [
             "recombinant protein",
             "transcription factor"
         ],
         "label": "eGFP-ab",
-        "organism": "/organisms/dmelanogaster/",
         "status": "released"
     }
 ]

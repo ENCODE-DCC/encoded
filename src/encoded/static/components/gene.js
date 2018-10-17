@@ -6,6 +6,8 @@ import { DbxrefList, dbxrefHref } from './dbxref';
 import { PickerActions } from './search';
 import { auditDecor } from './audit';
 import { DisplayAsJson } from './objectutils';
+import { ExperimentTable } from './dataset';
+import { RelatedItems } from './item';
 
 
 const Gene = (props) => {
@@ -89,6 +91,12 @@ const Gene = (props) => {
                     : null}
                 </dl>
             </div>
+
+            <RelatedItems
+                title={`Experiments targeting gene ${context.symbol}`}
+                url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
         </div>
     );
 };
