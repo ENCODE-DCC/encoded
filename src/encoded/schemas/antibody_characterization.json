@@ -186,8 +186,7 @@
                                 "properties": {
                                     "biosample_type": {
                                         "enum" : [
-                                            "cell line",
-                                            "induced pluripotent stem cell line"                               
+                                            "cell line"
                                         ]
                                     },
                                     "biosample_term_id":{
@@ -199,7 +198,6 @@
                                 "properties": {
                                     "biosample_type": {
                                         "enum" : [
-                                            "stem cell",
                                             "in vitro differentiated cells"                               
                                         ]
                                     },
@@ -255,9 +253,7 @@
                         "enum" : [
                             "cell line",
                             "in vitro differentiated cells",
-                            "induced pluripotent stem cell line",
                             "primary cell",
-                            "stem cell",
                             "tissue",
                             "whole organisms",
                             "organoid"
