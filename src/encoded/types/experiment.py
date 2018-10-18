@@ -151,7 +151,6 @@ class Experiment(Dataset,
                             biosample_accessions.add(biosampleObject['accession'])
 
                             if biosampleObject.get('biosample_type') in [
-                                    'stem cell',
                                     'in vitro differentiated cells']:
                                 drop_age_sex_flag = True
 
