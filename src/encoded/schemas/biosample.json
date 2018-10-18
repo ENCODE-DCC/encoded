@@ -403,7 +403,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "21"
+            "default": "22"
         },
         "accession": {
             "accessionType": "BS"
