@@ -489,6 +489,68 @@
                 }
             }
         },
+        "file_format": {
+            "comment": "Raw files must have output_category mapping to raw data, and processed files should not have output_category of raw data.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "rcc",
+                                "idat",
+                                "CEL",
+                                "csfasta",
+                                "csqual",
+                                "fastq",
+                                "sra",
+                                "tsv",
+                                "tar",
+                                "fasta"
+                            ]
+                        },
+                        "output_type": {
+                            "enum": [
+                                "idat green channel",
+                                "idat red channel",
+                                "intensity values",
+                                "reads",
+                                "rejected reads",
+                                "raw data",
+                                "reporter code counts"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "file_format": {
+                                "enum": [
+                                    "rcc",
+                                    "idat",
+                                    "CEL",
+                                    "csfasta",
+                                    "csqual",
+                                    "fastq",
+                                    "sra"
+                                ]
+                            },
+                            "output_type": {
+                                "enum": [
+                                    "idat green channel",
+                                    "idat red channel",
+                                    "intensity values",
+                                    "reads",
+                                    "rejected reads",
+                                    "raw data",
+                                    "reporter code counts"
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         "status": {
             "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
