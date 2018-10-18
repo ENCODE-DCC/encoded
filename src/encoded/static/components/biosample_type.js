@@ -27,7 +27,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} />
+                    <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} />
                     <h2>
                         <span className="sentence-case">
                             {context.term_name} / {context.classification}
