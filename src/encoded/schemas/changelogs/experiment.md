@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+###Schema version 22
+
+* Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums.
+
 ### Schema version 21
 
 * Added required property *experiment_classification* with enums "functional genomics assay" and "functional characterization assay"

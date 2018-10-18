@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+### Schema version 14
+
+* Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums in characterization_reviews.
+
 ### Minor changes since schema version 13
 
 * *lane* in *characterization_reviews* was set to have a minimum of 1.
