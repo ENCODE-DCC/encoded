@@ -56,7 +56,7 @@ describe('Software', () => {
         },
     };
 
-    describe('Make a table and verify row and column counts', () => {
+    describe('Make a table with no footer and verify row and column counts', () => {
         let table;
         let tableOutput;
         let rows;
@@ -68,6 +68,36 @@ describe('Software', () => {
             table = mount(
                 <SortTablePanel>
                     <SortTable list={files} columns={tableConfig} />
+                </SortTablePanel>
+            );
+
+            tableOutput = table.find('table');
+            rows = tableOutput.find('tr');
+        });
+
+        it('has the correct number of rows', () => {
+            expect(tableOutput).toHaveLength(1);
+            expect(rows).toHaveLength(2);
+        });
+
+        it('has the correct number of columns', () => {
+            const cells = rows.at(1).find('td');
+            expect(cells).toHaveLength(9);
+        });
+    });
+
+    describe('Make a table with footer and verify row and column counts', () => {
+        let table;
+        let tableOutput;
+        let rows;
+
+        beforeAll(() => {
+            const file0 = require('../testdata/file/fastq.js')[0];
+            file0.replicate = require('../testdata/replicate/human.js');
+            const files = [file0];
+            table = mount(
+                <SortTablePanel>
+                    <SortTable list={files} columns={tableConfig} footer/>
                 </SortTablePanel>
             );
 

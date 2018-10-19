@@ -6,6 +6,7 @@ import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
+import { SortTablePanel, SortTable } from './sorttable';
 
 
 const regionGenomes = [
@@ -199,6 +200,7 @@ class AdvSearch extends React.Component {
         const context = this.props.context;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
+        const searchBase = url.parse(this.context.location_href).search || '';
 
         if (this.state.genome === '') {
             this.setState({ genome: context.assembly || regionGenomes[0].value });
@@ -239,6 +241,21 @@ class AdvSearch extends React.Component {
                     {context.regulome_score ?
                         <p><strong>RegulomeDB score: {context.regulome_score}</strong></p>
                     : null}
+                    {(context.regulome_score  && !context.peak_details) ?
+                        <a
+                            rel="nofollow"
+                            className="btn btn-info btn-sm"
+                            href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
+                        >
+                            See peaks
+                        </a>
+                    : null}
+                    {(context.peak_details !== undefined && context.peak_details !== null) ?
+                        <div className="btn-container">
+                            <a className="btn btn-info btn-sm" href={context.download_elements[0]} data-bypass>Download peak details (TSV)</a>
+                            <a className="btn btn-info btn-sm" href={context.download_elements[1]} data-bypass>Download peak details (JSON)</a>
+                        </div>
+                    : null}
                 </PanelBody>
             </Panel>
         );
@@ -257,6 +274,40 @@ AdvSearch.contextTypes = {
     navigate: PropTypes.func,
 };
 
+const PeakDetails = (props) => {
+
+    const context = props.context;
+    const peaks = context.peak_details;
+
+    const peaksTableColumns = {
+        method: {
+            title: 'Method',
+        },
+
+        chrom: {
+            title: 'Chromosome location',
+            getValue: item => item.chrom+":"+item.start+".."+item.end,
+        },
+
+        biosample_term_name: {
+            title: 'Biosample term name',
+        },
+
+        targets: {
+            title: 'Targets',
+            getValue: item => item.targets.join(', '),
+        },
+    };
+
+    return (
+        <div>
+            <SortTablePanel title="Peak details">
+                <SortTable list={peaks} columns={peaksTableColumns} />
+            </SortTablePanel>
+        </div>
+    );
+
+}
 
 class RegionSearch extends React.Component {
     constructor() {
@@ -358,9 +409,13 @@ class RegionSearch extends React.Component {
                                 <ul className="nav result-table" id="result-table">
                                     {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
                                 </ul>
+
                             </div>
                         </div>
                     </div>
+                : null}
+                {(context.peak_details) ?
+                    <PeakDetails {...this.props} />
                 : null}
             </div>
         );
