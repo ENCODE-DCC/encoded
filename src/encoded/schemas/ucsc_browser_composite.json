@@ -139,7 +139,7 @@
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
         "files.replicate.experiment.target.aliases": 1.0,
-        "files.replicate.experiment.target.gene_name": 1.0,
+        "files.replicate.experiment.target.genes.symbol": 1.0,
         "files.replicate.experiment.target.label": 1.0,
         "files.replicate.experiment.target.dbxref": 1.0,
         "organism.name": 1.0,

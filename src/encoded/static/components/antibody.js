@@ -67,7 +67,10 @@ const LotComponent = (props, reactContext) => {
     const geneTips = [];
     targetKeys.forEach((key, i) => {
         const scientificName = targets[key].organism.scientific_name;
-        const geneName = targets[key].gene_name;
+        let geneName = [];
+        if (targets[key].genes) {
+            geneName = targets[key].genes.map(gene => gene.symbol);
+        }
 
         // Add to the information on organisms from the targets
         organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>);
@@ -75,10 +78,12 @@ const LotComponent = (props, reactContext) => {
         organismTips.push(scientificName);
 
         // Add to the information on gene names from the targets
-        if (geneName && geneName !== 'unknown') {
-            geneComponents.push(<span key={key}>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>);
-            geneTerms.push(`targets.gene_name=${geneName}`);
-            geneTips.push(geneName);
+        if (geneName.length > 0) {
+            geneName.forEach((symbol) => {
+                geneComponents.push(<span key={key + symbol}>{geneComponents.length > 0 ? <span> + {symbol}</span> : <span>{symbol}</span>}</span>);
+                geneTerms.push(`targets.genes.symbol=${symbol}`);
+                geneTips.push(symbol);
+            });
         }
     });
 
@@ -87,7 +92,7 @@ const LotComponent = (props, reactContext) => {
     const crumbs = [
         { id: 'Antibodies' },
         { id: organismComponents, query: organismQuery, tip: organismTips.join(' + ') },
-        { id: geneComponents.length ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ') },
+        { id: geneComponents.length > 0 ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ') },
     ];
 
     return (

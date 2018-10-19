@@ -62,6 +62,7 @@ class Experiment(Dataset,
         'replicates.library.biosample.treatments',
         'replicates.library.treatments',
         'possible_controls',
+        'target.genes',
         'target.organism',
         'references',
     ]

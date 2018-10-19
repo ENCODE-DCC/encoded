@@ -2596,4 +2596,808 @@
     "status": "released",
     "symbol": "WASIR1",
     "synonyms": ["NCRNA00286B"]
+}, {
+    "uuid": "a8e1de0f-e223-4402-9e6e-e9ed37f56bb8",
+    "dbxrefs": ["MIM:611386", "HGNC:15766", "ENSEMBL:ENSG00000101126", "Vega:OTTHUMG00000032737", "UniProtKB:Q9H2P0", "UniProtKB:Q6DHZ8"],
+    "geneid": "23394",
+    "name": "activity dependent neuroprotector homeobox",
+    "ncbi_entrez_status": "live",
+    "organism": "human",
+    "status": "released",
+    "symbol": "ADNP",
+    "synonyms": ["ADNP1", "HVDAS", "MRD28"],
+    "go_annotations": [{
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISM",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003677",
+        "go_name": "DNA binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003682",
+        "go_name": "chromatin binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005507",
+        "go_name": "copper ion binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005515",
+        "go_name": "protein binding",
+        "go_evidence_code": "IPI",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005615",
+        "go_name": "extracellular space",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005634",
+        "go_name": "nucleus",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005737",
+        "go_name": "cytoplasm",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0006351",
+        "go_name": "transcription, DNA-templated",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0006357",
+        "go_name": "regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0007614",
+        "go_name": "short-term memory",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0009743",
+        "go_name": "response to carbohydrate",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0010035",
+        "go_name": "response to inorganic substance",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0010629",
+        "go_name": "negative regulation of gene expression",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0010835",
+        "go_name": "regulation of protein ADP-ribosylation",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0030424",
+        "go_name": "axon",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0030425",
+        "go_name": "dendrite",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0031668",
+        "go_name": "cellular response to extracellular stimulus",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0032091",
+        "go_name": "negative regulation of protein binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0032147",
+        "go_name": "activation of protein kinase activity",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0033484",
+        "go_name": "nitric oxide homeostasis",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0042277",
+        "go_name": "peptide binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0043025",
+        "go_name": "neuronal cell body",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0043524",
+        "go_name": "negative regulation of neuron apoptotic process",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0044849",
+        "go_name": "estrous cycle",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045773",
+        "go_name": "positive regulation of axon extension",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0048487",
+        "go_name": "beta-tubulin binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0050731",
+        "go_name": "positive regulation of peptidyl-tyrosine phosphorylation",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0050805",
+        "go_name": "negative regulation of synaptic transmission",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0051965",
+        "go_name": "positive regulation of synapse assembly",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }]
+}, {
+    "uuid": "5ade49e2-57b1-4198-9915-542579ec3e09",
+    "dbxrefs": ["MIM:189971", "HGNC:3113", "ENSEMBL:ENSG00000101412", "Vega:OTTHUMG00000032265", "UniProtKB:Q01094", "UniProtKB:Q9BSD8"],
+    "geneid": "1869",
+    "name": "E2F transcription factor 1",
+    "ncbi_entrez_status": "live",
+    "organism": "human",
+    "status": "released",
+    "symbol": "E2F1",
+    "synonyms": ["E2F-1", "RBAP1", "RBBP3", "RBP3"],
+    "go_annotations": [{
+        "go_id": "GO:0000077",
+        "go_name": "DNA damage checkpoint",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0000083",
+        "go_name": "regulation of transcription involved in G1/S transition of mitotic cell cycle",
+        "go_evidence_code": "TAS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0000122",
+        "go_name": "negative regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0000790",
+        "go_name": "nuclear chromatin",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISM",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "NAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "IMP",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000987",
+        "go_name": "proximal promoter sequence-specific DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0001227",
+        "go_name": "DNA-binding transcription repressor activity, RNA polymerase II-specific",
+        "go_evidence_code": "IC",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003677",
+        "go_name": "DNA binding",
+        "go_evidence_code": "IMP",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003677",
+        "go_name": "DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003700",
+        "go_name": "DNA-binding transcription factor activity",
+        "go_evidence_code": "TAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003700",
+        "go_name": "DNA-binding transcription factor activity",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005515",
+        "go_name": "protein binding",
+        "go_evidence_code": "IPI",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005634",
+        "go_name": "nucleus",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005654",
+        "go_name": "nucleoplasm",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005654",
+        "go_name": "nucleoplasm",
+        "go_evidence_code": "TAS",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005739",
+        "go_name": "mitochondrion",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005813",
+        "go_name": "centrosome",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0006351",
+        "go_name": "transcription, DNA-templated",
+        "go_evidence_code": "ISS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0006355",
+        "go_name": "regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0006977",
+        "go_name": "DNA damage response, signal transduction by p53 class mediator resulting in cell cycle arrest",
+        "go_evidence_code": "TAS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0007283",
+        "go_name": "spermatogenesis",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0008134",
+        "go_name": "transcription factor binding",
+        "go_evidence_code": "IPI",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0008630",
+        "go_name": "intrinsic apoptotic signaling pathway in response to DNA damage",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0010628",
+        "go_name": "positive regulation of gene expression",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0019901",
+        "go_name": "protein kinase binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0030900",
+        "go_name": "forebrain development",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0032991",
+        "go_name": "protein-containing complex",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0035189",
+        "go_name": "Rb-E2F complex",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0043065",
+        "go_name": "positive regulation of apoptotic process",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0043276",
+        "go_name": "anoikis",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0043392",
+        "go_name": "negative regulation of DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0043565",
+        "go_name": "sequence-specific DNA binding",
+        "go_evidence_code": "ISS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0043565",
+        "go_name": "sequence-specific DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0045599",
+        "go_name": "negative regulation of fat cell differentiation",
+        "go_evidence_code": "ISS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045892",
+        "go_name": "negative regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045892",
+        "go_name": "negative regulation of transcription, DNA-templated",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045893",
+        "go_name": "positive regulation of transcription, DNA-templated",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045893",
+        "go_name": "positive regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045944",
+        "go_name": "positive regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0046983",
+        "go_name": "protein dimerization activity",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0048146",
+        "go_name": "positive regulation of fibroblast proliferation",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0048255",
+        "go_name": "mRNA stabilization",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0070317",
+        "go_name": "negative regulation of G0 to G1 transition",
+        "go_evidence_code": "TAS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0070345",
+        "go_name": "negative regulation of fat cell proliferation",
+        "go_evidence_code": "ISS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0071398",
+        "go_name": "cellular response to fatty acid",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0071456",
+        "go_name": "cellular response to hypoxia",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0071466",
+        "go_name": "cellular response to xenobiotic stimulus",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0071930",
+        "go_name": "negative regulation of transcription involved in G1/S transition of mitotic cell cycle",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0072332",
+        "go_name": "intrinsic apoptotic signaling pathway by p53 class mediator",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:1900740",
+        "go_name": "positive regulation of protein insertion into mitochondrial membrane involved in apoptotic signaling pathway",
+        "go_evidence_code": "TAS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:1990086",
+        "go_name": "lens fiber cell apoptotic process",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:1990090",
+        "go_name": "cellular response to nerve growth factor stimulus",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:2000045",
+        "go_name": "regulation of G1/S transition of mitotic cell cycle",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045944",
+        "go_name": "positive regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IBA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0001078",
+        "go_name": "proximal promoter DNA-binding transcription repressor activity, RNA polymerase II-specific",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0051726",
+        "go_name": "regulation of cell cycle",
+        "go_evidence_code": "IBA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0005634",
+        "go_name": "nucleus",
+        "go_evidence_code": "IBA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0008134",
+        "go_name": "transcription factor binding",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0001077",
+        "go_name": "proximal promoter DNA-binding transcription activator activity, RNA polymerase II-specific",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000122",
+        "go_name": "negative regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IBA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0043565",
+        "go_name": "sequence-specific DNA binding",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003677",
+        "go_name": "DNA binding",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0090575",
+        "go_name": "RNA polymerase II transcription factor complex",
+        "go_evidence_code": "IBA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0003700",
+        "go_name": "DNA-binding transcription factor activity",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }]
+}, {
+    "uuid": "a9288b44-6ef4-460e-a3d6-464fd625b103",
+    "dbxrefs": ["MIM:604167", "HGNC:13723", "ENSEMBL:ENSG00000102974", "Vega:OTTHUMG00000137539", "UniProtKB:P49711", "UniProtKB:A0A2R8YFL0"],
+    "geneid": "10664",
+    "name": "CCCTC-binding factor",
+    "ncbi_entrez_status": "live",
+    "organism": "human",
+    "status": "released",
+    "symbol": "CTCF",
+    "synonyms": ["MRD21"],
+    "go_annotations": [{
+        "go_id": "GO:0000122",
+        "go_name": "negative regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0000775",
+        "go_name": "chromosome, centromeric region",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0000793",
+        "go_name": "condensed chromosome",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0000978",
+        "go_name": "RNA polymerase II proximal promoter sequence-specific DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "NAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0001078",
+        "go_name": "proximal promoter DNA-binding transcription repressor activity, RNA polymerase II-specific",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003700",
+        "go_name": "DNA-binding transcription factor activity",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003714",
+        "go_name": "transcription corepressor activity",
+        "go_evidence_code": "TAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005515",
+        "go_name": "protein binding",
+        "go_evidence_code": "IPI",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005634",
+        "go_name": "nucleus",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005654",
+        "go_name": "nucleoplasm",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005730",
+        "go_name": "nucleolus",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0006351",
+        "go_name": "transcription, DNA-templated",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0007059",
+        "go_name": "chromosome segregation",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0008270",
+        "go_name": "zinc ion binding",
+        "go_evidence_code": "TAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0008285",
+        "go_name": "negative regulation of cell proliferation",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0010628",
+        "go_name": "positive regulation of gene expression",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0016584",
+        "go_name": "nucleosome positioning",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0040029",
+        "go_name": "regulation of gene expression, epigenetic",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0040030",
+        "go_name": "regulation of molecular function, epigenetic",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0043035",
+        "go_name": "chromatin insulator sequence binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0043565",
+        "go_name": "sequence-specific DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0044212",
+        "go_name": "transcription regulatory region DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0045892",
+        "go_name": "negative regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045893",
+        "go_name": "positive regulation of transcription, DNA-templated",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045893",
+        "go_name": "positive regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0070602",
+        "go_name": "regulation of centromeric sister chromatid cohesion",
+        "go_evidence_code": "NAS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0071459",
+        "go_name": "protein localization to chromosome, centromeric region",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045944",
+        "go_name": "positive regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IBA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0044212",
+        "go_name": "transcription regulatory region DNA binding",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005654",
+        "go_name": "nucleoplasm",
+        "go_evidence_code": "IBA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0003700",
+        "go_name": "DNA-binding transcription factor activity",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }]
+}, {
+    "uuid": "a13fb026-d42f-481c-9420-5fe3f17ede30",
+    "dbxrefs": ["MIM:609150", "HGNC:24343", "ENSEMBL:ENSG00000154832", "Vega:OTTHUMG00000132670", "UniProtKB:Q9P0U4"],
+    "geneid": "30827",
+    "name": "CXXC finger protein 1",
+    "ncbi_entrez_status": "live",
+    "organism": "human",
+    "status": "released",
+    "symbol": "CXXC1",
+    "synonyms": ["2410002I16Rik", "5830420C16Rik", "CFP1", "CGBP", "HsT2645", "PCCX1", "PHF18", "SPP1", "ZCGPC1", "hCGBP"],
+    "go_annotations": [{
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000987",
+        "go_name": "proximal promoter sequence-specific DNA binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005515",
+        "go_name": "protein binding",
+        "go_evidence_code": "IPI",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005634",
+        "go_name": "nucleus",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005654",
+        "go_name": "nucleoplasm",
+        "go_evidence_code": "TAS",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005829",
+        "go_name": "cytosol",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0006351",
+        "go_name": "transcription, DNA-templated",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0006355",
+        "go_name": "regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0006357",
+        "go_name": "regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0008270",
+        "go_name": "zinc ion binding",
+        "go_evidence_code": "IEA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0016363",
+        "go_name": "nuclear matrix",
+        "go_evidence_code": "IEA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0016607",
+        "go_name": "nuclear speck",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0035097",
+        "go_name": "histone methyltransferase complex",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0036498",
+        "go_name": "IRE1-mediated unfolded protein response",
+        "go_evidence_code": "TAS",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0045322",
+        "go_name": "unmethylated CpG binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0045893",
+        "go_name": "positive regulation of transcription, DNA-templated",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0048188",
+        "go_name": "Set1C/COMPASS complex",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0051568",
+        "go_name": "histone H3-K4 methylation",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0042800",
+        "go_name": "histone methyltransferase activity (H3-K4 specific)",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0045893",
+        "go_name": "positive regulation of transcription, DNA-templated",
+        "go_evidence_code": "IBA",
+        "go_aspect": "P"
+    }]
 }]
