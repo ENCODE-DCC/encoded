@@ -364,7 +364,6 @@ globals.listingViews.register(Experiment, 'Experiment');
 
 
 const DatasetComponent = (props, reactContext) => {
-    const { activeCart } = props;
     const result = props.context;
     let biosampleTerm;
     let organism;
@@ -452,11 +451,6 @@ const DatasetComponent = (props, reactContext) => {
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                {activeCart ?
-                    <div className="result-item__cart-control">
-                        <CartToggle element={result} />
-                    </div>
-                : null}
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
         </li>
@@ -465,13 +459,8 @@ const DatasetComponent = (props, reactContext) => {
 
 DatasetComponent.propTypes = {
     context: PropTypes.object.isRequired, // Dataset search results
-    activeCart: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-DatasetComponent.defaultProps = {
-    activeCart: false,
 };
 
 DatasetComponent.contextTypes = {
