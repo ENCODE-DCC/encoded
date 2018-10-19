@@ -233,7 +233,6 @@ def metadata_tsv(context, request):
             file_attributes = file_attributes + [_tsv_mapping[prop][0]]
 
     # Handle metadata.tsv lines from cart-generated files.txt.
-    error_message = None
     cart_uuids = param_list.get('cart', [])
     if cart_uuids:
         # metadata.tsv line includes cart UUID, so load the specified cart and
@@ -338,7 +337,6 @@ def batch_download(context, request):
             elements = request.json.get('elements', [])
         except ValueError:
             elements = []
-            pass
         if cart_uuid:
             # metadata.tsv link includes a cart UUID
             metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
