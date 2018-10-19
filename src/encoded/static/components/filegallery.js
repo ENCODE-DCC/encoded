@@ -1183,7 +1183,7 @@ const fileCssClassGen = (file, active, colorizeNode, addClasses) => {
 
 
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
-export function assembleGraph(files, dataset, options) {
+export function assembleGraph(files, dataset, options, loggedIn = false) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
         if (file.derived_from && file.derived_from.length) {
@@ -1225,7 +1225,7 @@ export function assembleGraph(files, dataset, options) {
                 // Collect any QC info that applies to this file and make it searchable by file
                 // @id.
                 if (file.quality_metrics && file.quality_metrics.length) {
-                    fileQcMetrics[file['@id']] = file.quality_metrics;
+                    fileQcMetrics[file['@id']] = file.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
                 }
 
                 // Save the pipeline array used for each step used by the file.
@@ -1589,7 +1589,7 @@ export function assembleGraph(files, dataset, options) {
 
 
 const FileGraph = (props) => {
-    const { files, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas } = props;
+    const { files, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas, loggedIn } = props;
 
     // Build node graph of the files and analysis steps with this experiment
     let graph;
@@ -1603,7 +1603,8 @@ const FileGraph = (props) => {
                     selectedAssembly,
                     selectedAnnotation,
                     colorize,
-                }
+                },
+                loggedIn
             );
         } catch (e) {
             console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
@@ -1635,6 +1636,7 @@ FileGraph.propTypes = {
     schemas: PropTypes.object, // Schemas for QC metrics
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
     colorize: PropTypes.bool, // True to enable node colorization based on status
+    loggedIn: PropTypes.bool, // True if current user has logged in
     auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
     auditDetail: PropTypes.func, // Inherited from auditDecor HOC
 };
@@ -1645,6 +1647,7 @@ FileGraph.defaultProps = {
     infoNode: null,
     schemas: null,
     colorize: false,
+    loggedIn: false,
     auditIndicators: null,
     auditDetail: null,
 };
@@ -1849,6 +1852,7 @@ class FileGalleryRendererComponent extends React.Component {
                                 schemas={schemas}
                                 colorize={this.state.inclusionOn}
                                 handleNodeClick={this.handleNodeClick}
+                                loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
                                 auditIndicators={this.props.auditIndicators}
                                 auditDetail={this.props.auditDetail}
                             />
@@ -2025,6 +2029,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <h4>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h4>
             </div>
         );
+        const fileQualityMetrics = selectedFile.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
 
         body = (
             <div>
@@ -2142,11 +2147,11 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
-                    {selectedFile.quality_metrics && selectedFile.quality_metrics.length && typeof selectedFile.quality_metrics[0] !== 'string' ?
+                    {fileQualityMetrics.length > 0 ?
                         <div data-test="fileqc">
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
-                                {selectedFile.quality_metrics.map(qc =>
+                                {fileQualityMetrics.map(qc =>
                                     <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} schemas={node.schemas} handleClick={qcClick} />
                                 )}
                             </dd>
