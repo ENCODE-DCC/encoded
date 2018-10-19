@@ -33,7 +33,7 @@ const NewsPreviews = (props) => {
     const { items } = props;
     if (items && items.length) {
         return (
-            <div className="news-listing">
+            <div className="news-listing" data-test="news-listing">
                 {items.map(item => (
                     <NewsPreviewItem key={item['@id']} item={item} />
                 ))}
@@ -217,7 +217,7 @@ const DateFacet = (props) => {
     trimmedMonthTerms = trimmedMonthTerms ? trimmedMonthTerms.sort((a, b) => ((a.key < b.key) ? 1 : (b.key < a.key ? -1 : 0))) : [];
 
     return (
-        <div key={facet.field} className="news-facet">
+        <div key={facet.field} className="news-facet" data-test="news-facets">
             <div className="news-facet__title">
                 Months
                 {yearsSelected ? <span> for {yearsSelected.join(', ')}</span> : null}
@@ -334,7 +334,7 @@ const NewsFacets = (props) => {
     }
 
     return (
-        <div className="news-facets">
+        <div className="news-facets" data-test="news-facets">
             {nonEmptyFacets.map((facet) => {
                 const FacetView = globals.facetView.lookup(facet);
 

@@ -916,6 +916,7 @@ export class TextFilter extends React.Component {
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
                     onKeyDown={this.onKeyDown}
+                    data-test="filter-search-box"
                 />
             </div>
         );
@@ -1038,7 +1039,7 @@ FacetList.contextTypes = {
  * Display the modal for batch download, and pass back clicks in the Download button
  */
 export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled}>{title || 'Download'}</button>}>
+    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title || 'Download'}</button>}>
         <ModalHeader title="Using batch download" closeModal />
         <ModalBody>
             <p>

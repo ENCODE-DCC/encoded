@@ -528,7 +528,7 @@ export class BrowserSelector extends React.Component {
 
         return (
             <div className="browser-selector__actuator">
-                <button onClick={this.openModal} disabled={disabled} className="btn btn-info btn-sm" >{title ? <span>{title}</span> : <span>Visualize</span>}</button>
+                <button onClick={this.openModal} disabled={disabled} className="btn btn-info btn-sm" data-test="visualize">{title ? <span>{title}</span> : <span>Visualize</span>}</button>
                 {this.state.selectorOpen ?
                     <Modal closeModal={this.closeModal} addClasses="browser-selector__modal">
                         <ModalHeader title="Open visualization browser" closeModal={this.closeModal} />
