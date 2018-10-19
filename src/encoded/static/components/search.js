@@ -7,11 +7,12 @@ import { svgIcon } from '../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
+import { CartToggle, CartSearchControls } from './cart';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
-import { BrowserSelector, DisplayAsJson } from './objectutils';
+import { BrowserSelector, DisplayAsJson, requestSearch } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
@@ -253,44 +254,45 @@ const Biosample = auditDecor(BiosampleComponent);
 globals.listingViews.register(Biosample, 'Biosample');
 
 
-class ExperimentComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        let synchronizations;
+const ExperimentComponent = (props, reactContext) => {
+    const { activeCart } = props;
+    const result = props.context;
+    let synchronizations;
 
-        // Collect all biosamples associated with the experiment. This array can contain duplicate
-        // biosamples, but no null entries.
-        let biosamples = [];
-        if (result.replicates && result.replicates.length) {
-            biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
-        }
+    // Collect all biosamples associated with the experiment. This array can contain duplicate
+    // biosamples, but no null entries.
+    let biosamples = [];
+    if (result.replicates && result.replicates.length) {
+        biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+    }
 
-        // Get all biosample organism names
-        const organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
+    // Get all biosample organism names
+    const organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
 
-        // Bek: Forrest should review the change for correctness
-        // Collect synchronizations
-        if (result.replicates && result.replicates.length) {
-            synchronizations = _.uniq(result.replicates.filter(replicate =>
-                replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-            ).map((replicate) => {
-                const biosample = replicate.library.biosample;
-                return (biosample.synchronization +
-                    (biosample.post_synchronization_time ?
-                        ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
-                    : ''));
-            }));
-        }
+    // Bek: Forrest should review the change for correctness
+    // Collect synchronizations
+    if (result.replicates && result.replicates.length) {
+        synchronizations = _.uniq(result.replicates.filter(replicate =>
+            replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
+        ).map((replicate) => {
+            const biosample = replicate.library.biosample;
+            return (biosample.synchronization +
+                (biosample.post_synchronization_time ?
+                    ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
+                : ''));
+        }));
+    }
 
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -330,16 +332,26 @@ class ExperimentComponent extends React.Component {
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
+                {activeCart ?
+                    <div className="result-item__cart-control">
+                        <CartToggle element={result} />
+                    </div>
+                : null}
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
 
 ExperimentComponent.propTypes = {
     context: PropTypes.object.isRequired, // Experiment search results
+    activeCart: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired,
+};
+
+ExperimentComponent.defaultProps = {
+    activeCart: false,
 };
 
 ExperimentComponent.contextTypes = {
@@ -351,67 +363,67 @@ const Experiment = auditDecor(ExperimentComponent);
 globals.listingViews.register(Experiment, 'Experiment');
 
 
-/* eslint-disable react/prefer-stateless-function */
-class DatasetComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        let biosampleTerm;
-        let organism;
-        let lifeSpec;
-        let targets;
-        let lifeStages = [];
-        let ages = [];
+const DatasetComponent = (props, reactContext) => {
+    const { activeCart } = props;
+    const result = props.context;
+    let biosampleTerm;
+    let organism;
+    let lifeSpec;
+    let targets;
+    let lifeStages = [];
+    let ages = [];
 
-        // Determine whether the dataset is a series or not
-        const seriesDataset = result['@type'].indexOf('Series') >= 0;
+    // Determine whether the dataset is a series or not
+    const seriesDataset = result['@type'].indexOf('Series') >= 0;
 
-        // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
-        if (seriesDataset) {
-            biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
-                ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
-            const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
-            if (organisms.length === 1) {
-                organism = organisms[0];
-            }
-
-            // Dig through the biosample life stages and ages
-            if (result.related_datasets && result.related_datasets.length) {
-                result.related_datasets.forEach((dataset) => {
-                    if (dataset.replicates && dataset.replicates.length) {
-                        dataset.replicates.forEach((replicate) => {
-                            if (replicate.library && replicate.library.biosample) {
-                                const biosample = replicate.library.biosample;
-                                const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
-
-                                if (lifeStage) { lifeStages.push(lifeStage); }
-                                if (biosample.age_display) { ages.push(biosample.age_display); }
-                            }
-                        });
-                    }
-                });
-                lifeStages = _.uniq(lifeStages);
-                ages = _.uniq(ages);
-            }
-            lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
-
-            // Get list of target labels
-            if (result.target) {
-                targets = _.uniq(result.target.map(target => target.label));
-            }
+    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+    if (seriesDataset) {
+        biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
+            ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
+        const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
+        if (organisms.length === 1) {
+            organism = organisms[0];
         }
 
-        const haveSeries = result['@type'].indexOf('Series') >= 0;
-        const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+        // Dig through the biosample life stages and ages
+        if (result.related_datasets && result.related_datasets.length) {
+            result.related_datasets.forEach((dataset) => {
+                if (dataset.replicates && dataset.replicates.length) {
+                    dataset.replicates.forEach((replicate) => {
+                        if (replicate.library && replicate.library.biosample) {
+                            const biosample = replicate.library.biosample;
+                            const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
 
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
+                            if (lifeStage) { lifeStages.push(lifeStage); }
+                            if (biosample.age_display) { ages.push(biosample.age_display); }
+                        }
+                    });
+                }
+            });
+            lifeStages = _.uniq(lifeStages);
+            ages = _.uniq(ages);
+        }
+        lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+
+        // Get list of target labels
+        if (result.target) {
+            targets = _.uniq(result.target.map(target => target.label));
+        }
+    }
+
+    const haveSeries = result['@type'].indexOf('Series') >= 0;
+    const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -440,17 +452,26 @@ class DatasetComponent extends React.Component {
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+                {activeCart ?
+                    <div className="result-item__cart-control">
+                        <CartToggle element={result} />
+                    </div>
+                : null}
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
 
 DatasetComponent.propTypes = {
     context: PropTypes.object.isRequired, // Dataset search results
+    activeCart: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+DatasetComponent.defaultProps = {
+    activeCart: false,
 };
 
 DatasetComponent.contextTypes = {
@@ -654,11 +675,11 @@ const Term = (props) => {
                     {em ? <em>{title}</em> : <span>{title}</span>}
                 </div>
                 {negated ? null : <div className="facet-term__count">{count}</div>}
+                {(selected || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
             </a>
             <div className="facet-term__negator">
                 {(selected || negated || exists) ? null : <a href={negationHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
             </div>
-            {(selected || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
         </li>
     );
 };
@@ -751,7 +772,7 @@ class Facet extends React.Component {
         const moreTermSelected = selectedTermCount > 0;
         const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
-        const seeMoreClass = `btn btn-link${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
+        const seeMoreClass = `btn btn-link facet-list__expander${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
         const statusFacet = field === 'status' || field === 'lot_reviews.status';
 
         // Audit facet titles get mapped to a corresponding icon.
@@ -1013,36 +1034,87 @@ FacetList.contextTypes = {
 };
 
 
-export const BatchDownload = (props) => {
-    const link = props.context.batch_download;
-    /* eslint-disable jsx-a11y/anchor-is-valid */
-    return (
-        <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
-            <ModalHeader title="Using batch download" closeModal />
-            <ModalBody>
-                <p>
-                    Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                    The first line of the file will always be the URL to download the metadata file. <br />
-                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-                </p><br />
-                <p>
-                    The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                    The following command using cURL can be used to download all the files in the list:
-                </p><br />
-                <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-            </ModalBody>
-            <ModalFooter
-                closeModal={<a className="btn btn-info btn-sm">Close</a>}
-                submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
-                dontClose
-            />
-        </Modal>
-    );
-    /* eslint-enable jsx-a11y/anchor-is-valid */
+/**
+ * Display the modal for batch download, and pass back clicks in the Download button
+ */
+export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
+    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled}>{title || 'Download'}</button>}>
+        <ModalHeader title="Using batch download" closeModal />
+        <ModalBody>
+            <p>
+                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                The first line of the file has the URL or command line to download the metadata file.
+            </p>
+            <p>
+                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+            </p>
+            <p>
+                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+                The following command using cURL can be used to download all the files in the list:
+            </p>
+            <code>xargs -L 1 curl -O -L &lt; files.txt</code><br />
+            <div>{additionalContent}</div>
+        </ModalBody>
+        <ModalFooter
+            closeModal={<button className="btn btn-info btn-sm">Close</button>}
+            submitBtn={<button className="btn btn-info btn-sm" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
+            dontClose
+        />
+    </Modal>
+);
+
+BatchDownloadModal.propTypes = {
+    /** Function to call when Download button gets clicked */
+    handleDownloadClick: PropTypes.func.isRequired,
+    /** Title to override usual actuator "Download" button title */
+    title: PropTypes.string,
+    /** True to disable Download button */
+    disabled: PropTypes.bool,
+    /** Additional content in modal as component */
+    additionalContent: PropTypes.object,
 };
 
+BatchDownloadModal.defaultProps = {
+    title: '',
+    disabled: false,
+    additionalContent: null,
+};
+
+
+export class BatchDownload extends React.Component {
+    constructor() {
+        super();
+        this.handleDownloadClick = this.handleDownloadClick.bind(this);
+    }
+
+    handleDownloadClick() {
+        if (!this.props.context) {
+            requestSearch(this.props.query).then((results) => {
+                this.context.navigate(results.batch_download);
+            });
+        } else {
+            this.context.navigate(this.props.context.batch_download);
+        }
+    }
+
+    render() {
+        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
+    }
+}
+
 BatchDownload.propTypes = {
-    context: PropTypes.object.isRequired,
+    context: PropTypes.object, // Search result object whose batch_download we're using
+    query: PropTypes.string, // Without `context`, perform a search using this query string
+};
+
+BatchDownload.defaultProps = {
+    context: null,
+    query: '',
+    downloadClickHandler: null,
+};
+
+BatchDownload.contextTypes = {
+    navigate: PropTypes.func,
 };
 
 
@@ -1291,6 +1363,7 @@ export class ResultTable extends React.Component {
                                     : null}
                                 </div>
                                 <hr />
+                                <CartSearchControls searchResults={context} />
                                 {browserAvail ?
                                     <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} addClasses="browser-tab-bg" tabFlange>
                                         <TabPanelPane key="listpane">
@@ -1302,7 +1375,7 @@ export class ResultTable extends React.Component {
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
-                                    <ResultTableList results={results} columns={columns} />
+                                    <ResultTableList results={results} columns={columns} activeCart />
                                 }
                             </div>
                         :
@@ -1345,25 +1418,26 @@ const BrowserTabQuickView = function BrowserTabQuickView() {
 };
 
 
-const ResultTableList = (props) => {
-    const { results, columns, tabbed } = props;
-    return (
-        <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
-            {results.length ?
-                results.map(result => Listing({ context: result, columns, key: result['@id'] }))
-            : null}
-        </ul>
-    );
-};
+// Display the list of search results.
+export const ResultTableList = ({ results, columns, tabbed, activeCart }) => (
+    <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
+        {results.length ?
+            results.map(result => Listing({ context: result, columns, key: result['@id'], activeCart }))
+        : null}
+    </ul>
+);
 
 ResultTableList.propTypes = {
     results: PropTypes.array.isRequired, // Array of search results to display
-    columns: PropTypes.object.isRequired, // Columns from search results
+    columns: PropTypes.object, // Columns from search results
     tabbed: PropTypes.bool, // True if table is in a tab
+    activeCart: PropTypes.bool, // True if items displayed in active cart
 };
 
 ResultTableList.defaultProps = {
+    columns: null,
     tabbed: false,
+    activeCart: false,
 };
 
 
@@ -1445,7 +1519,7 @@ AssemblyChooser.defaultProps = {
 };
 
 
-class Search extends React.Component {
+export class Search extends React.Component {
     constructor() {
         super();
 

@@ -4,6 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import { Navbar, Nav, NavItem } from '../libs/bootstrap/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/bootstrap/dropdown-menu';
+import { CartStatus } from './cart';
 import { productionHost } from './globals';
 
 
@@ -76,8 +77,9 @@ export default class Navigation extends React.Component {
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
-                    <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main">
+                    <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main" openDropdown={this.state.openDropdown} dropdownClick={this.dropdownClick}>
                         <GlobalSections />
+                        <CartStatus />
                         <UserActions />
                         {this.props.isHomePage ? null : <ContextActions />}
                         <Search />
@@ -122,7 +124,7 @@ Navigation.childContextTypes = {
 // Main navigation menus
 const GlobalSections = (props, context) => {
     const actions = context.listActionsFor('global_sections').map(action =>
-        <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title}>
+        <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} >
             {action.children ?
                 <DropdownMenu label={action.id}>
                     {action.children.map((childAction) => {
@@ -143,6 +145,16 @@ const GlobalSections = (props, context) => {
         </NavItem>
     );
     return <Nav>{actions}</Nav>;
+};
+
+GlobalSections.propTypes = {
+    openDropdown: PropTypes.string, // ID of the dropdown currently visible
+    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+};
+
+GlobalSections.defaultProps = {
+    openDropdown: '',
+    dropdownClick: null,
 };
 
 GlobalSections.contextTypes = {
@@ -167,7 +179,7 @@ const ContextActions = (props, context) => {
     if (actions.length > 1) {
         return (
             <Nav right>
-                <NavItem dropdownId="context" dropdownTitle={<i className="icon icon-gear" />}>
+                <NavItem dropdownId="context" dropdownTitle={<i className="icon icon-gear" />} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
                     <DropdownMenu label="context">
                         {actions}
                     </DropdownMenu>
@@ -178,6 +190,16 @@ const ContextActions = (props, context) => {
 
     // Action menu without a dropdown menu
     return <Nav right><NavItem>{actions}</NavItem></Nav>;
+};
+
+ContextActions.propTypes = {
+    openDropdown: PropTypes.string, // ID of the dropdown currently visible
+    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+};
+
+ContextActions.defaultProps = {
+    openDropdown: '',
+    dropdownClick: null,
 };
 
 ContextActions.contextTypes = {
@@ -225,13 +247,23 @@ const UserActions = (props, context) => {
     const fullname = (user && user.title) || 'unknown';
     return (
         <Nav right>
-            <NavItem dropdownId="useractions" dropdownTitle={fullname}>
+            <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
                 <DropdownMenu label="useractions">
                     {actions}
                 </DropdownMenu>
             </NavItem>
         </Nav>
     );
+};
+
+UserActions.propTypes = {
+    openDropdown: PropTypes.string, // ID of the dropdown currently visible
+    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+};
+
+UserActions.defaultProps = {
+    openDropdown: '',
+    dropdownClick: null,
 };
 
 UserActions.contextTypes = {

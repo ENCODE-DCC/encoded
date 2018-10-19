@@ -45,6 +45,10 @@
             }
         }
     }
+
+    .navbar-nav > li > a {
+        color: #fff;
+    }
 }
 
 .navbar-fixed-top {
@@ -132,13 +136,20 @@
         padding: 10px 0;
 
         &>li {
-            &>a {
+            &>a, &>button {
+                width: 100%;
+                margin: 0;
                 padding: 2px 30px 2px 20px;
                 font-size: 1.1rem;
                 color: #444 !important;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
+                border-left: none;
+                border-right: none;
+                text-align: left;
                 letter-spacing: 1px;
+                font-weight: 300;
+
 
                 &:hover,&:active {
                     border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
