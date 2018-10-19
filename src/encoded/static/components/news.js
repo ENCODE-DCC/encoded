@@ -217,7 +217,7 @@ const DateFacet = (props) => {
     trimmedMonthTerms = trimmedMonthTerms ? trimmedMonthTerms.sort((a, b) => ((a.key < b.key) ? 1 : (b.key < a.key ? -1 : 0))) : [];
 
     return (
-        <div key={facet.field} className="news-facet">
+        <div key={facet.field} className="news-facet" data-test="news-facets">
             <div className="news-facet__title">
                 Months
                 {yearsSelected ? <span> for {yearsSelected.join(', ')}</span> : null}

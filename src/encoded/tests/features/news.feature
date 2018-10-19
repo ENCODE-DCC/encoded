@@ -4,7 +4,7 @@ Feature: Title
     Scenario: Title updates
         When I visit "/news/"
         And I wait for the content to load
-        #Then the title should contain the text "\/news\/ – ENCODE"
+        Then the title should contain the text "/news/ – ENCODE"
 
 @News @usefixtures(workbook)
 Feature: News
@@ -14,7 +14,6 @@ Feature: News
 
 
     Scenario: News Listing
-        # TODO: There is a bug with /news/ where it does not get news-listing locally. When that is fixed, this can be re-added.
-        # Then the title should contain the text "\/news\/"
-        # Then I should see at least 2 elements with the css selector "[data-test='news-facets']"
-        # Then I should see at least 10 elements with the css selector "[data-test='news-listing'] > div"
+        Then the title should contain the text "/news/"
+        Then I should see at least 2 elements with the css selector "[data-test='news-facets']"
+        Then I should see at least 10 elements with the css selector "[data-test='news-listing'] > div"
