@@ -17,8 +17,8 @@ from snovault import DBSESSION, COLLECTIONS
 #from snovault.storage import (
 #    TransactionRecord,
 #)
-from snovault.elasticsearch.indexer import (
-    Indexer
+from snovault.elasticsearch.primary_indexer import (
+    PrimaryIndexer
 )
 from snovault.elasticsearch.indexer_state import (
     SEARCH_MAX,
@@ -374,7 +374,7 @@ def index_regions(request):
     return result
 
 
-class RegionIndexer(Indexer):
+class RegionIndexer(PrimaryIndexer):
     def __init__(self, registry):
         super(RegionIndexer, self).__init__(registry)
         self.encoded_es    = registry[ELASTIC_SEARCH]    # yes this is self.es but we want clarity
@@ -387,6 +387,17 @@ class RegionIndexer(Indexer):
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
         return None
+
+    def update_objects(self, request, uuids, force):
+        '''Wapper to iterate over update_object'''
+        errors = []
+        for cnt, uuid in enumerate(uuids):
+            error = self.update_object(request, uuid, force)
+            if error is not None:
+                errors.append(error)
+            if (cnt + 1) % 50 == 0:
+                log.info('Indexing %d', cnt + 1)
+        return errors
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
