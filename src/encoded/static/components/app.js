@@ -566,6 +566,7 @@ class App extends React.Component {
     initializeCartFromSessionProperties(sessionProperties) {
         // First retrieve all carts without the `elements` array contents so we can grab the first
         // cart belonging to the current user without too much large-object stress.
+        cartCacheSaved({}, this.cartStore.dispatch);
         const savedCartObjPromise = this.fetch('/carts/?datastore=database&remove=elements', {
             method: 'GET',
             headers: {
