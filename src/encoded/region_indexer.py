@@ -347,7 +347,6 @@ def index_regions(request):
     result = state.get_initial_state()
 
     (uuids, force) = state.get_one_cycle(request)
-    state.log_reindex_init_state()
     # Note: if reindex=all_uuids then maybe we should delete the entire index
     # On the otherhand, that should probably be left for extreme cases done by hand
     # curl -XDELETE http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/
@@ -360,8 +359,8 @@ def index_regions(request):
 
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
+        state.log_reindex_init_state()
         log.info("Region indexer started on %d uuid(s)" % uuid_count)
-
         result = state.start_cycle(uuids, result)
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)

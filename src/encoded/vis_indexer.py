@@ -200,7 +200,6 @@ def index_vis(request):
     cycles = 0
 
     (xmin, next_xmin, uuids) = state.get_one_cycle(xmin, request)
-    state.log_reindex_init_state()
     uuid_count = len(uuids)
     if uuid_count > 0 and (xmin is None or int(xmin) <= 0):  # Happens when the a reindex all signal occurs.
         xmin = get_current_xmin(request)
@@ -214,6 +213,7 @@ def index_vis(request):
     ### END OF NOTE
 
     if uuid_count and not dry_run:
+        state.log_reindex_init_state()
         # Starts one cycle of uuids to followup index
         result.update(
             last_xmin=last_xmin,
