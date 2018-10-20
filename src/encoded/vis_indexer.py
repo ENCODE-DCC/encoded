@@ -101,7 +101,7 @@ class VisIndexerState(IndexerState):
                     looking_at -= 1
                     break   # got all the uuids for the current xmin
             else:
-                uuids.append(val)
+                uuids.add(val)
 
         if xmin is None:  # could happen if first and only cycle did not start with xmin
             xmin = self.get().get('last_xmin',-1)
