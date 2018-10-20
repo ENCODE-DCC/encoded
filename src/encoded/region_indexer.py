@@ -224,7 +224,7 @@ class RegionIndexerState(IndexerState):
                 #state['status'] = "interrupted"
                 #self.put(state)
                 #return ([], False)
-        assert(uuids == [])
+        assert not uuids
 
         # Normal case, look for uuids staged by primary indexer
         staged_list = self.get_list(self.staged_for_regions_list)
