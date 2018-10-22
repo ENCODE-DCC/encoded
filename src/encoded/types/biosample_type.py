@@ -55,7 +55,7 @@ class BiosampleType(SharedItem):
                 slims.update(registry['ontology'][term_id]['organs'])
         return list(slims)
 
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(condition='term_ids', schema={
         "title": "Cell slims",
         "type": "array",
         "items": {
@@ -83,7 +83,7 @@ class BiosampleType(SharedItem):
                 slims.update(registry['ontology'][term_id]['developmental'])
         return list(slims)
 
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(condition='term_ids', schema={
         "title": "System slims",
         "type": "array",
         "items": {

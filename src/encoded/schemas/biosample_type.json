@@ -157,6 +157,7 @@
             "description": "Ontology term describing BiosampleType.",
             "comment": "The term should match the ontology identifiers specified in term_ids. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
             "permission": "import_items",
+            "pattern": "^(?![\\s\"'])[\\S|\\s]*[^\\s\"']$",
             "type":  "string"
         }
     },

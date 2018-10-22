@@ -7,6 +7,7 @@ import { PickerActions } from './search';
 import { auditDecor } from './audit';
 import pubReferenceList from './reference';
 import BiosampleTermId from './biosample';
+import { DisplayAsJson } from './objectutils';
 
 
 const BiosampleTypeComponenet = (props, reactContext) => {
@@ -34,6 +35,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                         </span>
                     </h2>
                     {props.auditIndicators(context.audit, 'biosample-type-audit', { session: reactContext.session })}
+                    <DisplayAsJson />
                 </div>
             </header>
             {props.auditDetail(context.audit, 'biosample-type-audit', { session: reactContext.session, except: context['@id'] })}
