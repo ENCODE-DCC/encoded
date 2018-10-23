@@ -30,8 +30,6 @@ REGDB_SCORE_CHUNK_SIZE = 30000
 REGDB_STR_SCORES = ['1a', '1b', '1c', '1d', '1e', '1f', '2a', '2b', '2c', '3a', '3b', '4', '5', '6']
 REGDB_NUM_SCORES = [1000, 950, 900, 850, 800, 750, 600, 550, 500, 450, 400, 300, 200, 100]
 
-NEARBY_SNP_WINDOW = 1600
-
 # def includeme(config):
 #    config.scan(__name__)
 #    registry = config.registry
@@ -539,13 +537,14 @@ class RegulomeAtlas(RegionAtlas):
         if region_score > 0:  # end previous region?
             yield (region_start, region_end, region_score)
 
-    def nearby_snps(self, assembly, chrom, pos, rsid=None, max_snps=10, scores=False):
+    def nearby_snps(self, assembly, chrom, pos, rsid=None, window=1600,
+                    max_snps=10, scores=False):
         '''Return SNPs nearby to the chosen SNP.'''
         if rsid:
             max_snps += 1
 
-        range_start = pos - int(NEARBY_SNP_WINDOW / 2)
-        range_end = pos + int(NEARBY_SNP_WINDOW / 2)
+        range_start = int(pos - (window / 2))
+        range_end = int(pos + (window / 2))
         if range_start < 0:
             range_end += 0 - range_start
             range_start = 0
