@@ -2400,7 +2400,10 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
 
 
 def audit_experiment_biosample_characterization(value, system, excluded_types):
-    level = 'WARNING'
+    if check_award_condition(value, ["ENCODE4"]):
+        level = 'ERROR'
+    else:
+        level = 'WARNING'
     if 'replicates' in value:
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and
