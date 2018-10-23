@@ -17,4 +17,4 @@ Feature: Targets
         And I wait for the content to load
         When I click the link to "/search/?type=Target&investigated_as=transcription+factor"
         Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 15 of 15 results"
+        And I should see "Showing 16 of 16 results"
