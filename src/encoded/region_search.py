@@ -414,7 +414,7 @@ def regulome_summary(context, request):
         # Get rsid for the coordinate
         rsids = get_rsids(atlas, assembly, chrom, start, end)
         # Only SNP or single nucleotide are considered as scorable
-        if rsids == [] and (end - start) > 1:
+        if rsids == [] and (int(end) - int(start)) > 1:
             regulome_score = 'N/A'
             result['notifications'].append({coord: 'Failed: {}'.format(
                 'Non-SNP or multi-nucleotide region is not scorable')})
