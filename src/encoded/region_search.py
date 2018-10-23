@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPSeeOther
 from pyramid.view import view_config
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import (
@@ -92,6 +93,7 @@ _GENOME_TO_ALIAS = {
 
 def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
+    config.add_route('regulome-summary', '/regulome-summary{slash:/?}')
     config.add_route('regulome-search', '/regulome-search{slash:/?}')
     config.add_route('suggest', '/suggest{slash:/?}')
     config.add_route('jbrest', '/jbrest/snp141/{assembly}/{cmd}/{chrom}{slash:/?}')
@@ -283,6 +285,152 @@ def update_viusalize(result, assembly, dataset_paths, file_statuses):
     if not vis_assembly:
         return None
     return {assembly: vis_assembly}
+
+
+def get_coordinate(query_term, assembly, atlas):
+    query_term = query_term.lower()
+    if query_term.startswith('chr'):
+        chrom, start, end = sanitize_coordinates(query_term)
+    elif query_term.startswith('ens'):
+        chrom, start, end = get_ensemblid_coordinates(query_term, assembly)
+    elif query_term.startswith('rs'):
+        rsid = sanitize_rsid(query_term)
+        chrom, start, end = get_rsid_coordinates(rsid, assembly, atlas)
+    if not chrom or not start or not end:
+        return None, None, None
+    else:
+        chrom = 'chr' + ''.join(filter(str.isdigit, chrom))
+        if int(start) > int(end):
+            return chrom, int(end), int(start)
+        else:
+            return chrom, int(start), int(end)
+
+
+def get_rsids(atlas, assembly, chrom, start, end):
+    pos = (int(start) + int(end)) / 2
+    window = int(end) - int(start)
+    rsids = atlas.nearby_snps(_GENOME_TO_ALIAS.get(assembly, 'hg19'),
+                              chrom, pos, window=window, max_snps=99999)
+    return [rsid['rsid'] for rsid in rsids if 'rsid' in rsid]
+
+
+def parse_region_query(request):
+    # Get raw parameters from request
+    # TODO process "format", "frame" or other params
+    if request.method == 'GET':
+        assembly = request.params.get('genome', 'GRCh37')
+        region_queries = request.params.getall('region')
+        from_ = request.params.get('from', 0)
+        size = request.params.get('limit', 25)
+    else:  # request.method == 'POST'
+        assembly = request.json_body.get('genome', 'GRCh37')
+        region_queries = request.json_body.get('region', [])
+        if not isinstance(region_queries, list):
+            regions = [region_queries]
+        from_ = request.json_body.get('from', 0)
+        size = request.json_body.get('limit', 25)
+
+    # Parse parameters
+    if assembly not in _GENOME_TO_ALIAS.keys():
+        assembly = 'GRCh37'
+    try:
+        from_ = int(from_)
+    except ValueError:
+        from_ = 0
+    if size in ('all', ''):
+        size = len(regions)
+    else:
+        try:
+            size = int(size)
+        except ValueError:
+            size = 25
+    coordinates = set()
+    notifications = []
+    atlas = RegulomeAtlas(request.registry[SNP_SEARCH_ES])
+    for region_query in region_queries:
+        # Stop when got enough unique regions
+        if len(coordinates) >= size:
+            break
+        # Get coordinate for queried region
+        chrom, start, end = get_coordinate(region_query, assembly, atlas)
+        if chrom is None:
+            notifications.append({region_query: 'Failed: no valid coordinate'})
+            continue
+        # Skip if scored before
+        coord = '{}:{}-{}'.format(chrom, start, end)
+        if coord in coordinates:
+            notifications.append({region_query: 'Skiped: scored before'})
+            continue
+        else:
+            coordinates.add(coord)
+
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': request.path_qs,
+        'assembly': assembly,
+        'coordinates': list(coordinates),
+        'from': from_,
+        'total': size,
+        'notifications': notifications,
+    }
+    return result
+
+
+@view_config(route_name='regulome-summary', request_method=('GET', 'POST'),
+             permission='search')
+def regulome_summary(context, request):
+    """
+    Regulome evidence analysis by region(s).
+    """
+    begin = time.time()  # DEBUG: timing
+    result = parse_region_query(request)
+    result['timing'] = [{'parse_region_query': (time.time() - begin)}]  # DEBUG: timing
+
+    # Redirect to regulome report for single unique region query
+    if len(result['coordinates']) == 1:
+        query = {'region': result['coordinates'],
+                 'genome': result['assembly'],
+                 'from': result['from'],
+                 'limit': result['total']}
+        location = request.route_url('regulome-search', slash='', _query=query)
+        raise HTTPSeeOther(location=location)
+    result['@type'] = ['regulome-summary']
+    result['title'] = 'Regulome summary'
+
+    # No regions to search
+    if result['coordinates'] == []:
+        result['notifications'].append({'Failed': 'No regions found'})
+        return result
+
+    # Loop through coordinates and score each unique region
+    regulome_es = request.registry[SNP_SEARCH_ES]
+    atlas = RegulomeAtlas(regulome_es)
+    assembly = result['assembly']
+    summaries = []
+    for coord in result['coordinates']:
+        begin = time.time()  # DEBUG: timing
+        chrom, start_end = coord.split(':')
+        start, end = start_end.split('-')
+        # Get rsid for the coordinate
+        rsids = get_rsids(atlas, assembly, chrom, start, end)
+        # Only SNP or single nucleotide are considered as scorable
+        if rsids == [] and (end - start) > 1:
+            regulome_score = 'N/A'
+            result['notifications'].append({coord: 'Failed: {}'.format(
+                'Non-SNP or multi-nucleotide region is not scorable')})
+        else:  # Scorable
+            try:
+                all_hits = region_get_hits(atlas, assembly, chrom, start, end)
+                regulome_score = atlas.regulome_score(all_hits['datasets'])
+                result['notifications'].append({coord: 'Success'})
+            except Exception as e:
+                regulome_score = 'N/A'
+                result['notifications'].append({coord: 'Failed: {}'.format(e)})
+        summaries.append({'chrom': chrom, 'start': start, 'end': end,
+                          'rsids': rsids, 'regulome_score': regulome_score})
+        result['timing'].append({coord: (time.time() - begin)})  # DEBUG timing
+    result['summaries'] = summaries
+    return result
 
 
 @view_config(route_name='regulome-search', request_method='GET', permission='search')
