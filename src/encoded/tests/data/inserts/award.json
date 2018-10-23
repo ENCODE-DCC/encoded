@@ -288,5 +288,20 @@
         "title": "A DATA COORDINATING CENTER FOR ENCODE",
         "url": "https://projectreporter.nih.gov/project_info_description.cfm?aid=9247374&icde=32923597&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=",
         "viewing_group": "ENCODE4"
+    },
+    {
+        "uuid": "20cfb0bf-7bd9-431d-9f01-c08453ac28b4",
+        "pi": "860c4750-8d3c-40f5-8f2c-90c5e5d19e88",
+        "project": "community",
+        "name": "U41HG009293",
+        "viewing_group": "community",
+        "title": "REGULOMEDB: A RESOURCE FOR THE HUMAN REGULOME",
+        "status": "current",
+        "rfa": "community",
+        "start_date": "2017-02-01",
+        "schema_version": "5",
+        "end_date": "2020-01-31",
+        "url": "https://projectreporter.nih.gov/project_info_description.cfm?aid=9209087&icde=36753486&ddparam=&ddvalue=&ddsub=&cr=10&csb=default&cs=ASC&pball=",
+        "description": "PROJECT SUMMARY The Human RegulomeDB project provides an essential resource that facilitates medical research and exploratory investigations of gene regulation. The majority of sequence variation identified in genome sequencing projects and disease association studies (GWAS) lie within the 98% of the human genome that is non-exomic. RegulomeDB is a unique web accessible resource that provides integrated knowledge of the wealth of existing information concerning regulatory elements that lie within non-exomic regions. The unique feature of this resource is its ability to comprehensively annotate, integrate and display the experimentally defined functional and biochemical regulatory elements of the human genome. Information generated from individual laboratories and consortia concerning potential regulatory regions such as that affecting gene expression, transcription factor binding, chromatin modification and DNA methylation will be collected from the literature, and integrated into a common database and displayed at nucleotide resolution. The information can be readily accessed via a web accessible interface and related to sequence variations identified from large scale projects (e.g. db SNPs, 1000 genome project, GWAS studies). Researchers will be able to compare variants identified from personal genomes and large scale sequencing projects as well as GWAS studies to the wealth of information in RegulomeDB, and thereby rapidly gain knowledge of non-exomic information. Given the wealth of DNA sequencing project that are emerging, we expect this unique resource to have wide impact in the biomedical community."
     }
 ]

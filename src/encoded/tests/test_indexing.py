@@ -125,7 +125,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
 
     # region indexer contents via region_search
     sleep(1)  # For some reason this fails without some winks
-    res = testapp.get('/region-search/?region=chr13%3A61800000-78800000&genome=GRCh37')
+    res = testapp.get('/region-search/?region=chr13%3A61800000-68800000&genome=GRCh37')
     assert res.json['total'] == 1
     assert res.json['visualize_batch']['hg19']['UCSC']
 

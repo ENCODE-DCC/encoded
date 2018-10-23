@@ -474,5 +474,23 @@
         ],
         "label": "eGFP-ab",
         "status": "released"
+    },
+    {
+        "uuid": "e097e3aa-87cc-4d12-9fa2-71fe5b4585a1",
+        "organism": "human",
+        "schema_version": "8",
+        "dbxref": [
+            "ENSEMBL:ENSG00000158711",
+            "GeneID:2005",
+            "HGNC:3326",
+            "HGNC:SAP1",
+            "UniProtKB:P28324"
+        ],
+        "status": "released",
+        "gene_name": "ELK4",
+        "label": "ELK4",
+        "investigated_as": [
+            "transcription factor"
+        ]
     }
 ]
