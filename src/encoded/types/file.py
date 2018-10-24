@@ -84,6 +84,7 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
+        'replicate.libraries',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -98,6 +99,7 @@ class File(Item):
         'replicate.experiment',
         'replicate.experiment.target',
         'replicate.library',
+        'replicate.libraries',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -226,39 +228,32 @@ class File(Item):
         return sorted(bioreps)
 
     @calculated_property(schema={
-        "title": "Technical replicates",
-        "description": "The technical replicate numbers associated with this file.",
-        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
+        "title": "FILL ME IN",
+        "description": "FILL ME IN",
+        "comment": "FILL ME IN",
         "type": "array",
         "items": {
-            "title": "Technical replicate number",
-            "description": "The identifying number of each relevant technical replicate",
-            "type": "string"
+            "title": "Library",
+            "description": "The nucleic acid library sequenced.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
         }
     })
-    def technical_replicates(self, request, registry, root, replicate=None):
-        if replicate is not None:
-            replicate_obj = traverse(root, replicate)['context']
-            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
-            replicate_techrep = replicate_obj.__json__(request)['technical_replicate_number']
-            tech_rep_string = str(replicate_biorep)+"_"+str(replicate_techrep)
-            return [tech_rep_string]
-
+    def replicate_libraries(self, request, registry, root, library=None):
+        if library is not None:
+            return [library]
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
         dataset_uuid = self.__json__(request)['dataset']
         obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        replicates = {
-            props['replicate']
+        libraries = {
+            props['library']
             for props in obj_props
-            if props['dataset'] == dataset_uuid and 'replicate' in props
+            if props['dataset'] == dataset_uuid and 'library' in props
         }
-        techreps = {
-            str(conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']) +
-            '_' + str(conn.get_by_uuid(uuid).__json__(request)['technical_replicate_number'])
-            for uuid in replicates
-        }
-        return sorted(techreps)
+        return sorted(libraries)
+
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
