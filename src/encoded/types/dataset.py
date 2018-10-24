@@ -295,6 +295,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'files.replicate.library',
         'files.library',
     ]
     rev = Dataset.rev.copy()
@@ -388,7 +389,8 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
     embedded = FileSet.embedded + [
         'organism',
         'files.dataset',
-        'files.library',
+        'files.replicate.library',
+        'files.library'
     ]
 
     @calculated_property(condition='files', schema={
@@ -430,6 +432,7 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
     schema = load_schema('encoded:schemas/project.json')
     embedded = FileSet.embedded + [
         'files.dataset',
+        'files.replicate.library',
         'files.library',
         'files.replicate.experiment.target',
         'organism'
@@ -461,6 +464,14 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.award.pi.lab',
         'related_datasets.replicates.antibody',
         'related_datasets.replicates.antibody.targets',
+        'related_datasets.replicates.library',
+        'related_datasets.replicates.library.biosample.submitted_by',
+        'related_datasets.replicates.library.biosample.source',
+        'related_datasets.replicates.library.biosample.organism',
+        'related_datasets.replicates.library.biosample.donor.organism',
+        'related_datasets.replicates.library.biosample.treatments',
+        'related_datasets.replicates.library.spikeins_used',
+        'related_datasets.replicates.library.treatments',
         'related_datasets.replicates.libraries',
         'related_datasets.replicates.libraries.biosample.submitted_by',
         'related_datasets.replicates.libraries.biosample.source',
@@ -483,6 +494,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
         'files.analysis_step_version.software_versions',
         'files.analysis_step_version.software_versions.software',
+        'files.replicate.library.biosample',
         'files.library.biosample',
         'files.quality_metrics',
         'files.quality_metrics.step_run',
