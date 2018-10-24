@@ -8,6 +8,7 @@ from .base import (
 )
 from pyramid.traversal import (
     find_root,
+    resource_path
 )
 from snovault.validation import ValidationFailure
 
@@ -36,7 +37,7 @@ class Target(SharedItem):
         "type": "string",
         "linkTo": "Organism"
     })
-    def organism(self, properties=None):
+    def organism(self, properties=None, return_uuid=False):
         if properties is None:
             properties = self.upgrade_properties()
         if 'target_organism' in properties:
@@ -52,7 +53,9 @@ class Target(SharedItem):
                     repr(organism_uuids)
                 )
                 raise ValidationFailure('body', ['genes'], msg)
-            return organism_uuids.pop()
+            if return_uuid:
+                return next(iter(organism_uuids))
+            return resource_path(root.get_by_uuid(next(iter(organism_uuids))))
 
     @calculated_property(schema={
         "title": "Name",
@@ -77,7 +80,7 @@ class Target(SharedItem):
 
     def _name(self, properties):
         root = find_root(self)
-        organism = root.get_by_uuid(self.organism(properties))
+        organism = root.get_by_uuid(self.organism(properties=properties, return_uuid=True))
         organism_props = organism.upgrade_properties()
         return u'{}-{}'.format(properties['label'], organism_props['name'])
 
@@ -85,5 +88,5 @@ class Target(SharedItem):
         request._linked_uuids.add(str(self.uuid))
         # Record organism uuid in linked_uuids so linking objects record
         # the rename dependency.
-        request._linked_uuids.add(str(self.organism()))
+        request._linked_uuids.add(str(self.organism(return_uuid=True)))
         return None
