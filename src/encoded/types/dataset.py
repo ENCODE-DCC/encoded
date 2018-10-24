@@ -389,8 +389,8 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
     embedded = FileSet.embedded + [
         'organism',
         'files.dataset',
-        'files.replicate.library'
-        'files.library'
+        'files.replicate.library',
+        'files.library',
     ]
 
     @calculated_property(condition='files', schema={
