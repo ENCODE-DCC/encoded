@@ -62,7 +62,7 @@ export class Navbar extends React.Component {
                         <span className="icon-bar" />
                     </button>
                     {brand ?
-                        <a className="navbar-brand" href={brandlink}>{brand}</a>
+                        <a className="navbar-brand" href="/regulome-search"><img src="/static/img/RegulomeLogoTransparent.gif"></img></a>
                     : null}
                 </div>
 
@@ -116,19 +116,37 @@ export const NavItem = (props, context) => {
     const { dropdownId, dropdownTitle } = props;
     const dropdownOpen = dropdownId && (context.openDropdown === dropdownId);
 
-    return (
-        <li className={dropdownId ? `dropdown${dropdownOpen ? ' open' : ''}` : ''}>
-            {dropdownTitle ?
-                <NavItemButton
-                    clickHandler={context.dropdownClick}
-                    dropdownOpen={dropdownOpen}
-                    dropdownTitle={dropdownTitle}
-                    dropdownId={dropdownId}
-                />
-            : null}
-            {props.children}
-        </li>
-    );
+    if (props.children === null){
+
+        return (
+            <li className="dropdown linked-toggle">
+                {dropdownTitle ?
+                    <button
+                        className="dropdown-toggle"
+                    >
+                        <a href="/regulome-help/">{dropdownTitle}</a>
+                    </button>
+                : null}
+            </li>
+        );
+
+    } else {
+
+        return (
+            <li className={dropdownId ? `dropdown${dropdownOpen ? ' open' : ''}` : ''}>
+                {dropdownTitle ?
+                    <NavItemButton
+                        clickHandler={context.dropdownClick}
+                        dropdownOpen={dropdownOpen}
+                        dropdownTitle={dropdownTitle}
+                        dropdownId={dropdownId}
+                    />
+                : null}
+                {props.children}
+            </li>
+        );
+
+    }
 };
 
 NavItem.propTypes = {

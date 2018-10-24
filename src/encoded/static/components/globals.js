@@ -12,6 +12,9 @@ export const panelViews = new Registry();
 // Listing detail views
 export const listingViews = new Registry();
 
+// Listing table
+export const tableViews = new Registry();
+
 // Cell name listing titles
 export const listingTitles = new Registry();
 

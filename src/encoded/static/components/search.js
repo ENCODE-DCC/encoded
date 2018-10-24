@@ -1354,11 +1354,16 @@ ResultTableList.defaultProps = {
 
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = (props) => {
+export const ResultBrowser = (props) => {
+
+    console.log(props);
+    console.log(props.assembly);
+
     let visUrl = '';
     const datasetCount = props.datasets.length;
     let region = props.region; // optionally make a persistent region
-    const lastRegion = props.currentRegion();
+    // const lastRegion = props.currentRegion();
+    const lastRegion = props.region;
     if (lastRegion && lastRegion.assembly === props.assembly) {
         region = lastRegion.region;
         console.log('found region %s', region);
@@ -1403,7 +1408,6 @@ ResultBrowser.defaultProps = {
     limitFiles: true,
     currentRegion: null,
 };
-
 
 // Display a dropdown menu of the given assemblies.
 const AssemblyChooser = (props) => {
