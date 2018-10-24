@@ -14,6 +14,7 @@ export default class RichTextBlockView extends React.Component {
 
         // Bind this to non-React components.
         this.setupEditor = this.setupEditor.bind(this);
+        this.handleClickableFAQ = this.handleClickableFAQ.bind(this);
     }
 
     componentDidMount() {
@@ -21,6 +22,7 @@ export default class RichTextBlockView extends React.Component {
         if (this.context.editable) {
             $script('ckeditor/ckeditor', this.setupEditor);
         }
+        this.handleClickableFAQ();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -53,6 +55,34 @@ export default class RichTextBlockView extends React.Component {
             this.state.value.body = this.editor.getData();
             this.setState(this.state);
             this.props.onChange(this.state.value);
+        });
+    }
+
+    handleClickableFAQ() {
+        document.getElementsByClassName("faq")[0].addEventListener("click", function(e) {
+            let target = null;
+            for (let i = 0; i < e.path.length; i++) {
+                let tempPath = e.path[i].className;
+                if (tempPath){
+                   if (tempPath.indexOf("regulomehelp-question") !== -1) {
+                        target = e.path[i];
+                        break;
+                    }
+                }
+            }
+            if (target !== null) {
+                let infoId = target.id.split("regulomehelp-faq")[1].split("-question")[0];
+                let infoElement = document.getElementById("regulomehelp-faq"+infoId+"-answer");
+                infoElement.classList.toggle("show");
+                let iconElement = e.target.getElementsByTagName("i")[0];
+                if (e.target.getElementsByTagName("i")[0].className.indexOf("icon-caret-right") > -1){
+                     iconElement.classList.add("icon-caret-down");
+                     iconElement.classList.remove("icon-caret-right");
+                } else {
+                     iconElement.classList.remove("icon-caret-down");
+                     iconElement.classList.add("icon-caret-right");
+                }
+            }
         });
     }
 

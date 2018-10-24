@@ -1,0 +1,237 @@
+<script>
+window.onload=function(){
+     document.getElementsByClassName("faq")[0].addEventListener("click", function(e) {
+               let target = null;
+               for (var i = 0; i < e.path.length; i++) {
+                    let temp_path = e.path[i].className;
+                    if (temp_path.indexOf("regulomehelp-question") !== -1) {
+                         target = e.path[i];
+                         break;
+                     }
+                }
+                if (target !== null) {
+                     let infoId = target.id.split("regulomehelp-faq")[1].split("-question")[0];
+                     let infoElement = document.getElementById("regulomehelp-faq"+infoId+"-answer");
+                     infoElement.classList.toggle("show");
+                     let iconElement = e.target.getElementsByTagName("i")[0];
+                     if (e.target.getElementsByTagName("i")[0].className.indexOf("icon-caret-right") > -1){
+                          iconElement.classList.add("icon-caret-down");
+                          iconElement.classList.remove("icon-caret-right");
+                     } else {
+                          iconElement.classList.remove("icon-caret-down");
+                          iconElement.classList.add("icon-caret-right");
+                     }
+                }
+     });
+}
+</script>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>RegulomeDB is a database that annotates SNPs with known and predicted regulatory elements in the intergenic regions of the H. sapiens genome. Known and predicted regulatory DNA elements include regions of DNAase hypersensitivity, binding sites of transcription factors, and promoter regions that have been biochemically characterized to regulation transcription. Source of these data include public datasets from GEO, the ENCODE project, and published literature.</p>
+
+<div class="faq">
+<p id="regulomehelp-faq1-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>How do I submit my data?</strong></p>
+
+<div id="regulomehelp-faq1-answer" class="regulomehelp-answer">
+<p>Data can be input into the box or uploaded from a file on your desktop in the following file formats:</p>
+
+<ul>
+	<li>dbSNP IDs</li>
+	<li>0-based coordinates (as chr#[tab]min_coord[tab] max_coord or in a BED or VCF file format)</li>
+	<li>1-based coordinates (as chr#:min_coord..max_coord or in a GFF3 file format)</li>
+	<li>BED format (<a href="http://genome.ucsc.edu/FAQ/FAQformat.html">View file format specifications</a>)</li>
+	<li>VCF format (<a href="http://www.1000genomes.org/node/101">View file format specifications</a>)</li>
+	<li>GFF3 format (<a href="http://www.sequenceontology.org/gff3.shtml">View file format specifications</a>)</li>
+</ul>
+</div>
+
+<p id="regulomehelp-faq2-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>What is displayed on the summary of SNP analysis page?</strong></p>
+
+<div id="regulomehelp-faq2-answer" class="regulomehelp-answer">
+<p>A summary of the total number of rows analyzed and coordinates searched will be displayed in addition to any errors located in the file. The rest of the page includes the nucleotides entered in the query and the data associated with the nucleotides. The table contains the following columns of data:</p>
+
+<ul>
+	<li>dbSNP ids</li>
+	<li>dbSNP ID: If available, the dbSNP id for that coordinate is displayed.</li>
+	<li>1-based coordinates (as chr#:min_coord..max_coord or in a GFF3 file format)</li>
+	<li>RegulomeDB Score: This is a computed score based on the integration of multiple high-throughput datasets. Additional details are described in the next question.</li>
+	<li>Other Resources: links to external resources that provide additional information for the genomic region or dbSNP are provided.</li>
+</ul>
+</div>
+
+<p id="regulomehelp-faq3-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>What does the RegulomeDB score represent?</strong></p>
+
+<div id="regulomehelp-faq3-answer" class="regulomehelp-answer">
+<p>The scoring scheme refers to the following available datatypes for a single coordinate.</p>
+
+<table>
+	<tbody>
+		<tr>
+			<th>Score</th>
+			<th>Supporting data</th>
+		</tr>
+		<tr>
+			<td>1a</td>
+			<td>eQTL + TF binding + matched TF motif + matched DNase Footprint + DNase peak</td>
+		</tr>
+		<tr>
+			<td>1b</td>
+			<td>eQTL + TF binding + any motif + DNase Footprint + DNase peak</td>
+		</tr>
+		<tr>
+			<td>1c</td>
+			<td>eQTL + TF binding + matched TF motif + DNase peak</td>
+		</tr>
+		<tr>
+			<td>1d</td>
+			<td>eQTL + TF binding + any motif + DNase peak</td>
+		</tr>
+		<tr>
+			<td>1e</td>
+			<td>eQTL + TF binding + matched TF motif</td>
+		</tr>
+		<tr>
+			<td>1f</td>
+			<td>eQTL + TF binding / DNase peak</td>
+		</tr>
+		<tr>
+			<td>2a</td>
+			<td>TF binding + matched TF motif + matched DNase Footprint + DNase peak</td>
+		</tr>
+		<tr>
+			<td>2b</td>
+			<td>TF binding + any motif + DNase Footprint + DNase peak</td>
+		</tr>
+		<tr>
+			<td>2c</td>
+			<td>TF binding + matched TF motif + DNase peak</td>
+		</tr>
+		<tr>
+			<td>3a</td>
+			<td>TF binding + any motif + DNase peak</td>
+		</tr>
+		<tr>
+			<td>3b</td>
+			<td>TF binding + matched TF motif</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>TF binding + DNase peak</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>TF binding or DNase peak</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>other</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+</div>
+
+<p id="regulomehelp-faq4-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>What details are provided for the datatypes supporting a SNP?</strong></p>
+
+<div id="regulomehelp-faq4-answer" class="regulomehelp-answer">
+<p>This page lists all the DNA features and regulatory regions that have been identified to contain the input coordinate.</p>
+
+<ul>
+	<li>Transcription factor binding sites</li>
+	<li>Position-Weight Matrix for TF binding (PWM)</li>
+	<li>DNase Footprinting</li>
+	<li>DNase sensitivity</li>
+	<li>Chromatin States</li>
+	<li>eQTLs</li>
+	<li>Differentially methylated regions</li>
+	<li>Manually curated regions</li>
+	<li>Validated functional SNPs</li>
+</ul>
+</div>
+
+<p id="regulomehelp-faq5-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>What data is currently available at RegulomeDB?</strong></p>
+
+<div id="regulomehelp-faq5-answer" class="regulomehelp-answer">
+<p>RegulomeDB can currently query the following data types:</p>
+
+<p><em>Transcription factor binding sites</em><br />
+ChIP factors: 740 unique data sets including most recent ENCODE data release (2012 Freeze).<br />
+Xie et al. (2013) and Boyle et al. (2014)</p>
+
+<p><em>Position-Weight Matrix for TF binding (PWM)</em></p>
+
+<ul>
+	<li>JASPAR CORE</li>
+	<li>TRANSFAC</li>
+	<li>UniPROBE</li>
+	<li>Jolma et al.</li>
+</ul>
+
+<p><em>DNase sensitivity</em><br />
+204 unique datasets including most recent ENCODE data release. ENCODE Project Consortium</p>
+
+<p><em>Chromatin States</em><br />
+Roadmap Epigenome Consortium 127 standard epigenomes.</p>
+
+<p><em>eQTLs / dsQTLs</em><br />
+Tissue types:</p>
+
+<ul>
+	<li>Cerebellum</li>
+	<li>Cortex</li>
+	<li>Fibroblasts</li>
+	<li>Frontal-Cortex</li>
+	<li>Liver</li>
+	<li>Lymphoblastoid</li>
+	<li>Monocytes</li>
+	<li>Pons</li>
+	<li>T-cells</li>
+	<li>Temporal-Cortex</li>
+</ul>
+
+<p><em>DNase Footprinting</em></p>
+
+<ul>
+	<li>Boyle et al.</li>
+	<li>Pique-Regi et al.</li>
+	<li>Piper et al.</li>
+</ul>
+
+<p><em>Differentially Methylated regions</em><br />
+Kuleshov et al.</p>
+
+<p><em>Manually curated regions</em></p>
+
+<p><em>Validated functional SNPs</em></p>
+</div>
+
+<p id="regulomehelp-faq6-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>What version of dbSNP is RegulomeDB querying?</strong></p>
+
+<p id="regulomehelp-faq6-answer" class="regulomehelp-answer">RegulomeDB is currently querying build 141 of dbSNP. See NCBI for additional information about dbSNP141.</p>
+
+<p id="regulomehelp-faq7-question" class="regulomehelp-question" div=""><strong><i class='icon icon-caret-right'></i>What version of the human genome sequence are the data mapped to at RegulomeDB?</strong></p>
+
+<p id="regulomehelp-faq7-answer" class="regulomehelp-answer">All data at RegulomeDB is currently mapped to hg19. Additional information about the human reference genome can be found at the <a href="http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/">Genome Reference Consortium</a></p>
+
+<p id="regulomehelp-faq8-question" class="regulomehelp-question"><strong><i class='icon icon-caret-right'></i>Why is there no data for my chromosomal region?</strong></p>
+
+<div id="regulomehelp-faq8-answer" class="regulomehelp-answer">
+<p>Entering a chromosomal region will identify all common SNPs (with an allele frequency &gt; 1%) in that region. Theses SNPs are used to query the RegulomeDB. If there are no common SNPs in the uploaded genomic regions, there will be no data available. However, the chromosomal region can be uploaded as split single nucleotide values in order to query each nucleotide individually.</p>
+
+<p>Alternatively, the region you entered could be in a protein-coding region of the genome. Currently, RegulomeDB only integrates and curates high-throughput data from non-coding and intergenic regions of the human genome.</p>
+</div>
+</div>
+
+<p class="citation"><strong>To cite RegulomeDB:</strong><br />
+Boyle AP, Hong EL, Hariharan M, Cheng Y, Schaub MA, Kasowski M, Karczewski KJ, Park J, Hitz BC, Weng S, Cherry JM, Snyder M. Annotation of functional variation in personal genomes using RegulomeDB. Genome Research 2012, 22(9):1790-1797. PMID: 22955989.</p>
+
+<p><strong>To contact RegulomeDB:</strong><br />
+<a data-reactid="104" href="mailto:regulomedb@mailman.stanford.edu" target="_blank">regulomedb@mailman.stanford.edu</a></p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>

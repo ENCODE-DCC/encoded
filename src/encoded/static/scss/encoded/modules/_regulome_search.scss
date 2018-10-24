@@ -1,0 +1,411 @@
+body {
+    font-family: 'Khula', sans-serif !important;
+    background: #EDEDED;
+}
+
+.navbar-nav, .navbar-search {
+    font-size: 16px;
+}
+.navbar-inverse {
+    .nav {
+        li {
+            button {
+                padding-top: 16px;
+            }
+            &:hover {
+                cursor: pointer;
+                background: darken($regulomeGreen,10%);
+            }
+        }
+    }
+}
+
+.input-region-error {
+    padding-top: 10px;
+    color: #333;
+    position: relative;
+}
+
+.lead-logo {
+    max-width: 500px;
+    margin: 20px auto 40px auto;
+    img {
+        width: 100%;
+    }
+}
+
+// delete this later!!!
+.test-warning {
+    display: none !important;
+}
+
+.navbar-brand {
+    width: 120px;
+    img {
+        max-width: 100%;
+    }
+}
+
+.navbar-nav-right {
+    float: right;
+    font-family: $font-family-sans-serif;
+    font-weight: 100;
+    font-size: 16px;
+    li {
+        a {
+            font-size: 18px;
+            padding-top: 15px;
+            padding-bottom: 14px;
+            color: white !important;
+        }
+        &:hover {
+            text-decoration: none;
+            background: darken($regulomeGreen,10%);
+        }
+    }
+}
+
+.panel-body {
+    padding: 20px;
+}
+
+.adv-search-form {
+    .input-group {
+        width: 100%;
+        display: flex !important;
+        padding-bottom: 10px;
+    }
+    label {
+        font-family: 'Khula', sans-serif !important;
+        font-size: 1.3rem;
+        padding: 5px 5px 0;
+    }
+    #annotation {
+        font-style: italic;
+        padding: 12px 10px 10px;
+        border-radius: 5px;
+        width: 92%;
+    }
+    input {
+        margin-left: 5px;
+    }
+    .icon-search {
+        margin-right: 5px;
+        color: $regulomeGray;
+    }
+}
+
+.btn {
+    font-family: 'Khula', sans-serif !important;
+    font-size: 16px;
+    font-weight: normal !important;
+    padding: 5px 10px 3px;
+}
+
+.btn-info {
+    padding: 5px 10px 0px;
+}
+
+.button-container {
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    .reg-btn {
+        margin: 10px;
+        display: inline-block;
+        padding: 5px 10px;
+        border-bottom: 2px solid $regulomeGreen;
+        color: $regulomeGreen;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+}
+
+.sequence-logo-container {
+    max-width: 400px;
+    margin: auto;
+    .sequence-logo {
+        svg {
+            max-width: 100%;
+        }
+    }
+}
+
+.data-types {
+    cursor: pointer;
+    // border-bottom: solid $regulomeGray 1px;
+}
+.about-regulome {
+    h4 {
+        padding-top: 10px;
+    }
+}
+
+.data-type-explanation {
+    display: none;
+    &.show {
+        display: block;
+    }
+}
+
+.input-group-addon {
+    display: none;
+}
+
+.panel-body {
+    p {
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: normal;
+        margin-bottom: 5px;
+        padding: 0 10px;
+    }
+    .regulomescore {
+        font-weight: 700;
+    }
+}
+
+dl.key-value {
+    margin-top: 10px;
+}
+
+.panel {
+    margin-left: 1px;
+}
+
+.file-gallery-visualize {
+    top: 10px;
+}
+
+.data-types {
+    max-width: 650px;
+    margin: auto;
+    margin-top: 40px;
+}
+
+.about-regulome, .data-types {
+    font-family: 'Khula', sans-serif !important;
+    h4 {
+        font-weight: 700;
+    }
+
+    .data-types-instructions {
+        padding-top: 20px;
+        font-size: 16px;
+        border-bottom: 1px solid $regulomeGray;
+    }
+    .data-types-block {
+        margin-left: 40px;
+        h4 {
+            font-size: 1.2rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            padding-top: 10px;
+            color: $regulomeGreen;
+        }
+        .data-types-explanation {
+            padding-top: 10px;
+            cursor: default;
+        }
+        .data-type {
+            cursor: pointer;
+        }
+    }
+    a {
+        color: lighten($regulomeGreen,5%);
+        text-decoration: underline;
+        &:hover {
+            color: darken($regulomeGreen,10%);
+            font-weight: 700;
+        }
+    }
+    &.introduction {
+        max-width: 800px;
+        margin: auto;
+        padding-bottom: 10px;
+        font-size: 16px;
+    }
+}
+
+#svgHolder {
+    margin-bottom: 40px;
+}
+
+.dropdown-menu {
+    padding: 0;
+    li {
+        padding: 0;
+        margin: 0;
+        a {
+            padding: 12px 20px 10px;
+        }
+    }
+}
+
+.linked-toggle {
+    button {
+        padding: 0 !important;
+        a {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            padding: 16px 20px 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+}
+
+.facet-term__item {
+    padding-top: 5px;
+}
+
+input[type="search"] {
+    padding-top: 7px;
+}
+
+table.matrix th {
+    padding-top: 3px;
+}
+
+a {
+    color: lighten($regulomeGreen,5%);
+    &:hover {
+        color: $regulomeGreen;
+    }
+}
+
+.accession {
+    line-height: 1.2;
+}
+
+.data-row {
+    padding-top: 5px;
+}
+
+.result-table li {
+    padding-bottom: 10px;
+    &:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+}
+
+#navbar {
+    -webkit-box-shadow: 0 0 6px 0 #333;
+    -moz-box-shadow: 0 0 6px 0 #333;
+    box-shadow: 0 0 6px 0 #333;
+    height: 50px;
+}
+
+.auth0-lock-header-logo {
+    height: 40px !important;
+}
+
+.table-sortable {
+    tbody {
+        tr {
+            td {
+                height: 3em;
+            }
+        }
+    }
+}
+
+table {
+    th,td {
+        padding: 10px 10px 4px !important;
+        // border: 1px solid $regulomeGray;
+    }
+}
+
+.panel-body-with-header {
+    padding: 10px;
+    padding-top: 0;
+}
+
+.layout {
+    ul {
+        margin-top: -12px !important;
+        li {
+            margin: 0.2em 0;
+        }
+    }
+}
+
+#regulomehelp-faq8-answer, #regulomehelp-faq5-answer {
+    margin-bottom: 1em;
+}
+
+.regulomehelp-answer {
+    display: none;
+    &.show {
+        display: block;
+    }
+}
+
+.regulomehelp-question {
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
+
+.faq {
+    padding: 20px 0;
+    .icon {
+        margin-right: 5px;
+    }
+}
+
+.visualize-block {
+    margin: 0 0 35px;
+    a {
+        background: $regulomeGreen;
+        color: white;
+        padding: 5px 10px 2px 10px;
+        margin-right: 5px;
+        margin-top: 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        &:hover {
+            text-decoration: none;
+            background: darken($regulomeGreen,10%);
+        }
+        &.disable {
+            display: none;
+        }
+    }
+    .beta-badge {
+        font-size: 0.8rem;
+        padding: 3px 4px 0px;
+        top: -1px;
+    }
+}
+
+.status {
+    padding: 6px 5px 4px;
+    margin-top: 5px;
+}
+
+.facet-list {
+    .status {
+        margin-top: 0;
+    }
+}
+
+.status__icon--spacer {
+    margin-top: -2px;
+}
+
+.visualize-element {
+    display: inline-block;
+}
+
+.visualize-error {
+    font-style: italic;
+}
+
+.flexcol-heading, .panel-heading {
+    height: 45px;
+}

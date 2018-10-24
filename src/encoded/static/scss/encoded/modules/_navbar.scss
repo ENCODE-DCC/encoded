@@ -1,8 +1,8 @@
 /* NavBar */
 .navbar-inverse {
     border: none;
-    border-bottom: 0px solid #4e7294;
-    background: #0a253d;
+    border-bottom: 0px solid $regulomeGreen;//#4e7294;
+    background: $regulomeGreen;//#0a253d;
 
     @media print {
         display: none;
@@ -11,7 +11,7 @@
     .navbar-brand {
         margin-left: -15px;
         color: #fff;
-        font-size: 1.4rem;
+        // font-size: 1.4rem;
         font-weight: 200;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 
@@ -30,7 +30,7 @@
 
         &:focus,
         &:hover {
-            background-color: #2f4961;
+            background-color: darken($regulomeGreen,10%);//#2f4961;
         }
 
         /* Disabled sign-in link */
@@ -137,8 +137,10 @@
 
         &>li {
             &>a, &>button {
+                display: inline-block;
                 width: 100%;
                 margin: 0;
+                height: 100%;
                 padding: 2px 30px 2px 20px;
                 font-size: 1.1rem;
                 color: #444 !important;
@@ -154,8 +156,8 @@
                 &:hover,&:active {
                     border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
                     border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    background-color: $navbar-inverse-link-active-bg;
-                    color: $navbar-inverse-link-active-color !important;
+                    background-color: darken($regulomeGreen,10%);
+                    color: white !important;
                 }
             }
 
