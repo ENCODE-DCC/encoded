@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPSeeOther
+from pyramid.httpexceptions import HTTPTemporaryRedirect
 from pyramid.view import view_config
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import (
@@ -92,12 +93,18 @@ _GENOME_TO_ALIAS = {
 
 
 def includeme(config):
+    config.add_route('regulome-home', '/')
     config.add_route('region-search', '/region-search{slash:/?}')
     config.add_route('regulome-summary', '/regulome-summary{slash:/?}')
     config.add_route('regulome-search', '/regulome-search{slash:/?}')
     config.add_route('suggest', '/suggest{slash:/?}')
     config.add_route('jbrest', '/jbrest/snp141/{assembly}/{cmd}/{chrom}{slash:/?}')
     config.scan(__name__)
+
+
+@view_config(route_name='regulome-home', request_method='GET')
+def regulome_home(context, request):
+    raise HTTPTemporaryRedirect(location='/regulome-search/')
 
 
 def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False):
