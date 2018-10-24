@@ -248,7 +248,7 @@ class File(Item):
         dataset_uuid = self.__json__(request)['dataset']
         obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
         libraries = {
-            props['library']
+            request.embed(props['library'], '@@object')['@id']
             for props in obj_props
             if props['dataset'] == dataset_uuid and 'library' in props
         }

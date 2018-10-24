@@ -198,4 +198,4 @@ def test_file_derived_replicate_libraries(testapp, fastq_pair_1, library, bam_fi
     res = testapp.get(location1)
     testapp.patch_json(bam_file['@id'], {'derived_from': [res.json['@id']]})
     res = testapp.get(bam_file['@id'] + '@@index-data')
-    assert res.json['object']['replicate_libraries'] == [library['uuid']]
+    assert res.json['object']['replicate_libraries'] == [library['@id']]
