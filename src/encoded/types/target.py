@@ -55,7 +55,7 @@ class Target(SharedItem):
                 raise ValidationFailure('body', ['genes'], msg)
             if return_uuid:
                 return next(iter(organism_uuids))
-            return resource_path(root.get_by_uuid(next(iter(organism_uuids))))
+            return resource_path(root.get_by_uuid(next(iter(organism_uuids))), '')
 
     @calculated_property(schema={
         "title": "Name",
