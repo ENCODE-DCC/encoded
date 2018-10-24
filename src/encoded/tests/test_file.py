@@ -183,8 +183,19 @@ def test_file_external_accession(testapp, external_accession):
     assert response.headers['location'].endswith('/files/EXTERNAL/')
 
 
-def test_file_technical_replicates(testapp, fastq_pair_1):
+def test_file_replicate_libraries(testapp, fastq_pair_1, library):
+    fastq_pair_1['library'] = library['@id']
     res = testapp.post_json('/file', fastq_pair_1, status=201)
     location1 = res.json['@graph'][0]['@id']
     res = testapp.get(location1)
-    assert res.json['technical_replicates'] == ['1_1']
+    assert res.json['replicate_libraries'] == [library['@id']]
+
+
+def test_file_derived_replicate_libraries(testapp, fastq_pair_1, library, bam_file):
+    fastq_pair_1['library'] = library['@id']
+    res = testapp.post_json('/file', fastq_pair_1, status=201)
+    location1 = res.json['@graph'][0]['@id']
+    res = testapp.get(location1)
+    testapp.patch_json(bam_file['@id'], {'derived_from': [res.json['@id']]})
+    res = testapp.get(bam_file['@id'] + '@@index-data')
+    assert res.json['object']['replicate_libraries'] == [library['uuid']]
