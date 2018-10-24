@@ -40,10 +40,10 @@ class Target(SharedItem):
     def organism(self, properties=None, return_uuid=False):
         if properties is None:
             properties = self.upgrade_properties()
+        root = find_root(self)
         if 'target_organism' in properties:
-            return properties['target_organism']
+            organism_uuid = properties['target_organism']
         else:
-            root = find_root(self)
             organism_uuids = set(
                 root.get_by_uuid(gene).upgrade_properties()['organism']
                 for gene in properties['genes']
@@ -53,9 +53,10 @@ class Target(SharedItem):
                     repr(organism_uuids)
                 )
                 raise ValidationFailure('body', ['genes'], msg)
-            if return_uuid:
-                return next(iter(organism_uuids))
-            return resource_path(root.get_by_uuid(next(iter(organism_uuids))), '')
+            organism_uuid = next(iter(organism_uuids))
+        if return_uuid:
+            return organism_uuid
+        return resource_path(root.get_by_uuid(organism_uuid), '')
 
     @calculated_property(schema={
         "title": "Name",
@@ -64,12 +65,11 @@ class Target(SharedItem):
     def name(self):
         return self.__name__
 
-    @calculated_property(schema={
+    @calculated_property(condition='organism', schema={
         "title": "Title",
         "type": "string",
     })
-    def title(self, request, label):
-        organism = self.organism()
+    def title(self, request, label, organism):
         organism_props = request.embed(organism, '@@object')
         return u'{} ({})'.format(label, organism_props['scientific_name'])
 
