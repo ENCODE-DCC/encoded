@@ -392,6 +392,7 @@ class Experiment(Dataset,
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
+
     @calculated_property(schema={
         "title": "Replication type",
         "description": "Calculated field that indicates the replication model",
@@ -406,17 +407,20 @@ class Experiment(Dataset,
 
         for rep in replicates:
             replicateObject = request.embed(rep, '@@object')
-            if replicateObject['status'] == 'deleted':
+            if replicateObject['status'] in ['deleted', 'replaced']:
                 continue
-            if 'library' in replicateObject:
-                libraryObject = request.embed(replicateObject['library'], '@@object')
-                if 'biosample' in libraryObject:
-                    biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                    biosample_dict[biosampleObject['accession']] = biosampleObject
-                    biosample_donor_list.append(biosampleObject.get('donor'))
-                    biosample_number_list.append(replicateObject.get('biological_replicate_number'))
-                    biosample_species = biosampleObject.get('organism')
-                    biosample_type = biosampleObject.get('biosample_type')
+            if 'libraries' in replicateObject:
+                biosamples =  request.select_distinct_values('biosample', *replicateObject['libraries'])
+                #print (biosamples)
+                if biosamples:
+                    for b in biosamples:
+                        #print (b)
+                        biosampleObject = request.embed(b, '@@object')
+                        biosample_dict[b] = biosampleObject
+                        biosample_donor_list.append(biosampleObject.get('donor'))
+                        biosample_number_list.append(replicateObject.get('biological_replicate_number'))
+                        biosample_species = biosampleObject.get('organism')
+                        biosample_type = biosampleObject.get('biosample_type')
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind
