@@ -1,0 +1,47 @@
+.panel-heading {
+    margin-left: 1px;
+}
+
+th {
+    border-radius: 0 !important;
+}
+
+.table-panel {
+    border-radius: none;
+    border: 1px solid $regulomeGray;
+    td {
+        border-right: 1px solid #ddd;
+        &:last-child {
+            border-right: none;
+        }
+    }
+    tr {
+        border-bottom: 1px solid #ddd;
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+    table {
+        margin-left: 1px;
+    }
+}
+
+.table-responsive {
+    margin-top: 0;
+}
+
+.btn-container {
+    .btn {
+        margin-right: 5px;
+    }
+}
+
+.clickable-headers-for-details {
+    th {
+        &:hover {
+            cursor: pointer;
+            border: 2px solid darken($regulomeGray,30%);
+            background: lighten($regulomeGray,30%);
+        }
+    }
+}

@@ -268,12 +268,12 @@
 }
 
 .convert-to-json {
-    background: #4F689E;
+    background: $regulomeGreen;
     color: white;
     border-radius: 5px;
     font-weight: 500;
     float: right;
-    padding: 3px 10px 5px;
+    padding: 5px 6px 2px;
     li {
         button {
             padding: 0;
@@ -515,8 +515,8 @@
 // Inverse navbar
 
 .navbar-inverse {
-  background-color: $navbar-inverse-bg;
-  border-color: $navbar-inverse-border;
+  background-color: $regulomeGreen; //$navbar-inverse-bg;
+  border-color: $regulomeGreen; //$navbar-inverse-border;
 
   .navbar-brand {
     color: $navbar-inverse-brand-color;

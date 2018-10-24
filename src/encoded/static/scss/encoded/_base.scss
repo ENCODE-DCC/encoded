@@ -16,6 +16,9 @@ $std-href-color:               #428bca;
 $mobile-font-factor:           1.2; // Amount text increases size on mobile
 $print-font-factor:            0.95; // Amount text decreases size when printing
 
+$regulomeGreen:                #36582E;
+$regulomeGray:                 #919191;
+
 
 // Pass value with CSS units and get just the value back
 @function strip-units($value) {
