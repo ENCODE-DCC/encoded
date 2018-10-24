@@ -211,19 +211,11 @@ const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
     const searchTerm = id.query.searchTerm || '';
     return (
-        <form className="navbar-form navbar-right" action="/search/">
-            <div className="search-wrapper">
-                <input
-                    className="form-control search-query"
-                    id="navbar-search"
-                    type="text"
-                    placeholder="Search..."
-                    name="searchTerm"
-                    defaultValue={searchTerm}
-                    key={searchTerm}
-                />
-            </div>
-        </form>
+        <ul className="nav navbar-nav navbar-nav-right">
+            <li className="dropdown">
+                <a href="https://encodeproject.org/" target="_blank">ENCODE</a>
+            </li>
+        </ul>
     );
 };
 

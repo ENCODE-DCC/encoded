@@ -34,15 +34,16 @@
 
 .page-footer {
 	color: rgb(255, 255, 255);
-	background-color: #a4afb8; // for IE8
-	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
+	// background-color: #a4afb8; // for IE8
+	background-color: #BABABA;//#D3D3D3;
+	// background-color: $footerBackground; // overwrite previous line for CSS3 browsers
 	//height: $footerHeight;
 	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
 	//line-height: 0;
 	text-align: center;
 	overflow: hidden;
-	a { 
-		color: rgb(255, 255, 255); 
+	a {
+		color: rgb(255, 255, 255);
 		font-weight: bold;
 	}
 	ul {
@@ -71,9 +72,9 @@
         background-color: darken($footerBackground, 0.1%);
         border-radius: 3px;
     }
-    a:hover { 
-        text-decoration: none; 
-        background-color: darken($footerBackground, 6%);   
+    a:hover {
+        text-decoration: none;
+        background-color: darken($footerBackground, 6%);
     }
     a:active {
         background-color: darken($footerBackground, 15%);
