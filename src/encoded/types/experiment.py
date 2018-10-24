@@ -462,7 +462,7 @@ class Experiment(Dataset,
     matrix = {
         'y': {
             'facets': [
-                'replicates.library.biosample.donor.organism.scientific_name',
+                'replicates.libraries.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
                 'award.project',
@@ -490,7 +490,7 @@ class Experiment(Dataset,
     summary_data = {
         'y': {
             'facets': [
-                'replicates.library.biosample.donor.organism.scientific_name',
+                'replicates.libraries.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
                 'award.project',
@@ -537,9 +537,14 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
+        'libraries',
+        'libraries.biosample',
+        'libraries.biosample.donor',
+        'libraries.biosample.donor.organism',
     ]
     set_status_up = [
         'library',
+        'libraries',
         'antibody',
     ]
     set_status_down = []
