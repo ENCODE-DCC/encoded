@@ -351,6 +351,7 @@ function_dispatcher = {
 @audit_checker('File',
                frame=['derived_from',
                       'replicate',
+                      'library',
                       'paired_with',
                       'file_format_specifications',
                       'dataset',
