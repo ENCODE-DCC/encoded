@@ -551,9 +551,13 @@ class Replicate(Item):
 
     def unique_keys(self, properties):
         keys = super(Replicate, self).unique_keys(properties)
-        value = u'{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
+        libraries = []
+        for l in properties['libraries']:
+            libraries.append(l)
+        uuids = ":".join(sorted(libraries))
+        value = u'{experiment}/{biological_replicate_number}/'.format(
             **properties)
-        keys.setdefault('replicate:experiment_biological_technical', []).append(value)
+        keys.setdefault('replicate:experiment_biological_libraries', []).append(value + uuids)
         return keys
 
     def __ac_local_roles__(self):
