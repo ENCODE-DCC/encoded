@@ -3259,3 +3259,37 @@ def test_is_control_dataset(testapp, control_target, ctrl_experiment, publicatio
     file_set = testapp.get(publication_data['@id'] + '@@index-data')
     file_set_embedded = file_set.json['embedded']
     assert is_control_dataset(file_set_embedded) == False
+
+
+def test_audit_experiment_histone_characterized_no_primary(testapp,
+                                                           base_experiment,
+                                                           wrangler,
+                                                           base_antibody,
+                                                           base_replicate,
+                                                           base_library,
+                                                           base_biosample,
+                                                           target_H3K9me3,
+                                                           mouse_H3K9me3,
+                                                           base_antibody_characterization2,
+                                                           mouse):
+    # Supporting antibody only have secondary characterizations
+    testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0003971',
+                                                'biosample_term_name': 'MEL cell line',
+                                                'biosample_type': 'cell line',
+                                                'target': mouse_H3K9me3['@id']})
+    base_antibody['targets'] = [mouse_H3K9me3['@id']]
+    no_primary_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    testapp.patch_json(base_replicate['@id'], {'antibody': no_primary_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(
+        base_antibody_characterization2['@id'],
+        {'target': mouse_H3K9me3['@id'],
+            'characterizes': no_primary_antibody['@id'],
+            'status': 'not compliant',
+            'reviewed_by': wrangler['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'antibody not characterized to standard'
+               for error in collect_audit_errors(res))
