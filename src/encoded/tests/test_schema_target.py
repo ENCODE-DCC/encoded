@@ -167,3 +167,23 @@ def test_twogenes_to_onegene(testapp, target_two_same_org, target_one_gene):
     assert set(g['uuid'] for g in res.json['genes']) == set(target_one_gene['genes'])
     res = testapp.get('/targets/?datastore=database')
     assert len(res.json['@graph']) == 1
+
+
+def test_target_organism_at_id(testapp, human):
+    item = {
+        'label': 'target_organism-at-id',
+        'target_organism': human['@id'],
+        'investigated_as': ['other context'],
+    }
+    res = testapp.post_json('/target', item).json['@graph'][0]
+    assert res['organism'] == human['@id']
+
+
+def test_target_organism_uuid(testapp, human):
+    item = {
+        'label': 'target_organism-uuid',
+        'target_organism': human['uuid'],
+        'investigated_as': ['other context'],
+    }
+    res = testapp.post_json('/target', item).json['@graph'][0]
+    assert res['organism'] == human['@id']
