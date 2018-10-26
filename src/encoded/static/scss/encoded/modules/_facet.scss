@@ -79,6 +79,14 @@
     overflow: hidden;
 }
 
+.box.facets {
+    .horizontal {
+        .facet {
+            border-bottom: 0;
+        }
+    }
+}
+
 .facet:last-child {
     border-bottom: none;
     padding-bottom: 0;
