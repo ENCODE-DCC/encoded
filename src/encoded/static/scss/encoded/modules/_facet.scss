@@ -20,6 +20,7 @@
 
         .facet {
             display: block;
+            border-bottom: 0;
 
             @media screen and (min-width: $screen-sm-min) {
                 min-width: 150px;
@@ -77,14 +78,6 @@
     margin-bottom: 7px;
     border-bottom: 1px solid #eee;
     overflow: hidden;
-}
-
-.box.facets {
-    .horizontal {
-        .facet {
-            border-bottom: 0;
-        }
-    }
 }
 
 .facet:last-child {
