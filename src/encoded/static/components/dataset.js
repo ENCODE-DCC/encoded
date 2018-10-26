@@ -17,7 +17,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef, Supersede } from './typeutils';
+import { AwardRef, Supersede, ControllingExperiments } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -1230,6 +1230,7 @@ export class SeriesComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
         let experiments = {};
         context.files.forEach((file) => {
             const experiment = file.replicate && file.replicate.experiment;
@@ -1424,6 +1425,10 @@ export class SeriesComponent extends React.Component {
                     session={this.context.session}
                 />
 
+                {seriesType === 'MatchedSet' ?
+                    <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                : null}
+
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
@@ -1445,95 +1450,3 @@ SeriesComponent.contextTypes = {
 const Series = auditDecor(SeriesComponent);
 
 globals.contentViews.register(Series, 'Series');
-
-
-// Display a count of experiments in the footer, with a link to the corresponding search if needed
-const ExperimentTableFooter = (props) => {
-    const { items, total, url } = props;
-
-    return (
-        <div>
-            <span>Displaying {items.length} of {total} </span>
-            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-        </div>
-    );
-};
-
-ExperimentTableFooter.propTypes = {
-    items: PropTypes.array.isRequired, // Array of experiments that were displayed in the table
-    total: PropTypes.number, // Total number of experiments
-    url: PropTypes.string.isRequired, // URL to link to equivalent experiment search results
-};
-
-ExperimentTableFooter.defaultProps = {
-    total: 0,
-};
-
-
-const experimentTableColumns = {
-    accession: {
-        title: 'Accession',
-        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
-    },
-
-    assay_term_name: {
-        title: 'Assay',
-    },
-
-    biosample_term_name: {
-        title: 'Biosample term name',
-    },
-
-    target: {
-        title: 'Target',
-        getValue: item => item.target && item.target.label,
-    },
-
-    description: {
-        title: 'Description',
-    },
-
-    title: {
-        title: 'Lab',
-        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-    },
-};
-
-export const ExperimentTable = (props) => {
-    let experiments;
-
-    // If there's a limit on entries to display and the array is greater than that
-    // limit, then clone the array with just that specified number of elements
-    if (props.limit && (props.limit < props.items.length)) {
-        // Limit the experiment list by cloning first {limit} elements
-        experiments = props.items.slice(0, props.limit);
-    } else {
-        // No limiting; just reference the original array
-        experiments = props.items;
-    }
-
-    return (
-        <div>
-            <SortTablePanel title={props.title}>
-                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={props.total} url={props.url} />} />
-            </SortTablePanel>
-        </div>
-    );
-};
-
-ExperimentTable.propTypes = {
-    items: PropTypes.array.isRequired, // List of experiments to display in the table
-    limit: PropTypes.number, // Maximum number of experiments to display in the table
-    total: PropTypes.number, // Total number of experiments
-    url: PropTypes.string.isRequired, // URI to go to equivalent search results
-    title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
-        PropTypes.string,
-        PropTypes.node,
-    ]),
-};
-
-ExperimentTable.defaultProps = {
-    limit: 0,
-    total: 0,
-    title: '',
-};
