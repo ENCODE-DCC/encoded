@@ -138,8 +138,8 @@ export function requestObjects(atIds, uri, filteringObjects) {
     // complete.
     return Promise.all(objectChunks.map((objectChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
-        const url = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
-        return fetch(url, {
+        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
+        return fetch(objectUrl, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -633,4 +633,30 @@ AlternateAccession.propTypes = {
 
 AlternateAccession.defaultProps = {
     altAcc: null,
+};
+
+
+/**
+ * Display a list of internal_tags for an object as badges that link to a corresponding search.
+ */
+export const InternalTags = ({ context, css }) => {
+    if (context.internal_tags && context.internal_tags.length > 0) {
+        const tagBadges = context.internal_tags.map((tag) => {
+            const tagSearchUrl = `/search/?type=${context['@type'][0]}&internal_tags=${globals.encodedURIComponent(tag)}`;
+            return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${context['@type'][0]} with internal tag ${tag}`} /></a>;
+        });
+        return <span className={css}>{tagBadges}</span>;
+    }
+    return null;
+};
+
+InternalTags.propTypes = {
+    /** encode object being displayed */
+    context: PropTypes.object.isRequired,
+    /** CSS class to assign to <span> surrounding all the badges */
+    css: PropTypes.string,
+};
+
+InternalTags.defaultProps = {
+    css: '',
 };

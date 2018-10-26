@@ -13,7 +13,7 @@ import { FileGallery } from './filegallery';
 import { CartToggle } from './cart';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, AlternateAccession, DisplayAsJson } from './objectutils';
+import { singleTreatment, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -443,10 +443,6 @@ class ExperimentComponent extends React.Component {
         const references = pubReferenceList(context.references);
 
         // Render tags badges.
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -644,10 +640,10 @@ class ExperimentComponent extends React.Component {
 
                                     {libSubmitterComments}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>

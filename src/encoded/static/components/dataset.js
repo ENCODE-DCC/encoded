@@ -11,7 +11,7 @@ import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import Status from './status';
 import pubReferenceList from './reference';
-import { donorDiversity, publicDataset, AlternateAccession, DisplayAsJson } from './objectutils';
+import { donorDiversity, publicDataset, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
@@ -77,12 +77,6 @@ class AnnotationComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -213,10 +207,10 @@ class AnnotationComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -273,12 +267,6 @@ class PublicationDataComponent extends React.Component {
 
         // Render the publication links
         const referenceList = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -376,10 +364,10 @@ class PublicationDataComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -436,12 +424,6 @@ class ReferenceComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -539,10 +521,10 @@ class ReferenceComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -602,12 +584,6 @@ class ProjectComponent extends React.Component {
 
         // Get a list of reference links
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -726,10 +702,10 @@ class ProjectComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -789,12 +765,6 @@ class UcscBrowserCompositeComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -899,10 +869,10 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -1275,12 +1245,6 @@ export class SeriesComponent extends React.Component {
         }
         const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
 
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
-
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);
 
@@ -1390,10 +1354,10 @@ export class SeriesComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
