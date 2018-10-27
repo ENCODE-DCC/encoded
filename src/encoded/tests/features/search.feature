@@ -10,8 +10,7 @@ Feature: Search
 
 
     Scenario: Search Antibodies
-        When I press "Materials & Methods"
-        And I click the link to "/search/?type=AntibodyLot&status=released"
+        When I visit "/search/?type=AntibodyLot&status=released"
         And I wait for the content to load
         Then I should see at least 7 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 5 elements with the css selector "div.box.facets > div.orientation > div.facet"
@@ -30,8 +29,7 @@ Feature: Search
 
 
     Scenario: Search Biosamples
-        When I press "Materials & Methods"
-        And I click the link to "/search/?type=Biosample&status=released"
+        When I visit "/search/?type=Biosample&status=released"
         And I wait for the content to load
         Then I should see at least 10 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 7 elements with the css selector "div.box.facets > div.orientation > div.facet"
@@ -47,32 +45,30 @@ Feature: Search
 
     Scenario: Search Experiments
         When I press "Data"
-        And I click the link to "/search/?type=Experiment&status=released"
+        And I click the link to "/search/?type=Experiment&internal_tags=RegulomeDB"
         And I wait for the content to load
-        Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 4 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq"
+        When I click the link to "?type=Experiment&internal_tags=RegulomeDB&assay_title=ChIP-seq"
         And I wait for the content to load
-        Then I should see at least 18 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 2 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq&assay_title=DNAme+array"
+        When I click the link to "?type=Experiment&internal_tags=RegulomeDB&assay_title=ChIP-seq&assay_title=DNase-seq"
         And I wait for the content to load
-        Then I should see at least 22 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 3 elements with the css selector "ul.nav.result-table > li"
 
 
-    Scenario: Search BoxI
-        When I fill in "searchTerm" with "ChIP-seq"
+    Scenario: Search TermI
+        When I visit "/search/?searchTerm=ChIP-seq"
         Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
 
 
-    Scenario: Search BoxII
-        When I fill in "searchTerm" with "PMID:23000965"
+    Scenario: Search TermII
+        When I visit "/search/?searchTerm=PMID:23000965"
         Then I should see at least 1 elements with the css selector "ul.nav.result-table > li"
 
 
-    Scenario: Search BoxIII
-        When I fill in "searchTerm" with "@type:Experiment date_released:[2016-01-01 TO 2016-02-01]"
+    Scenario: Search TermIII
+        When I visit "/search/?searchTerm=@type:Experiment date_released:[2016-01-01 TO 2016-02-01]"
         Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
-
-
