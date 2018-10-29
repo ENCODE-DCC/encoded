@@ -339,10 +339,10 @@ def audit_file_output_category(value, system):
     output_category = value.get('output_category')
     file_format = value.get('file_format')
     id = value.get('@id')
-    raw_file_formats = ('rcc', 'idat', 'CEL', 'csfasta', 'fastq', 'csqual',
-                        'sra')
+    raw_file_formats = ['rcc', 'idat', 'CEL', 'csfasta', 'fastq', 'csqual',
+                        'sra']
     # These three formats can be either raw or processed, so ignore them
-    if file_format in ('tar', 'tsv', 'fasta'):
+    if file_format in ['tar', 'tsv', 'fasta']:
         return
     if file_format in raw_file_formats and output_category != 'raw data':
         detail = 'File {} has file format {} '.format(id, file_format) + \
