@@ -308,13 +308,6 @@ const MouseDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.internal_tags && context.internal_tags.length > 0 ?
-                            <div className="tag-badges" data-test="tags">
-                                <dt>Tags</dt>
-                                <dd><InternalTags context={context} /></dd>
-                            </div>
-                        : null}
-
                         {context.submitter_comment ?
                             <div data-test="submittercomment">
                                 <dt>Submitter comment</dt>
@@ -454,13 +447,6 @@ const FlyWormDonor = (props) => {
                             <div data-test="submittercomment">
                                 <dt>Submitter comment</dt>
                                 <dd>{context.submitter_comment}</dd>
-                            </div>
-                        : null}
-
-                        {context.internal_tags && context.internal_tags.length > 0 ?
-                            <div className="tag-badges" data-test="tags">
-                                <dt>Tags</dt>
-                                <dd><InternalTags context={context} /></dd>
                             </div>
                         : null}
                     </dl>
