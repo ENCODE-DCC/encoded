@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import color from 'color';
+import pluralize from 'pluralize';
 import _ from 'underscore';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
@@ -186,6 +187,9 @@ class Matrix extends React.Component {
 
             // Make an array of colors corresponding to the ordering of biosample_type
             const biosampleTypeColors = globals.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
+            const parsed = url.parse(matrixBase, true);
+            const queryStringType = parsed.query.type || '';
+            const type = pluralize(queryStringType.toLocaleLowerCase());
 
             return (
                 <div>
@@ -197,7 +201,7 @@ class Matrix extends React.Component {
                                         <div>
                                             <h3 style={{ marginTop: 0 }}>{context.title}</h3>
                                             <div>
-                                                <p>Click or enter search terms to filter the experiments included in the matrix.</p>
+                                                <p>Click or enter search terms to filter the {type} included in the matrix.</p>
                                                 <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                                             </div>
                                         </div>
