@@ -76,7 +76,7 @@ def audit_biosample_term(value, system):
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
             value['@id'],
             term_id)
-        yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
+        yield AuditFailure('term_id not in ontology', detail, level='INTERNAL_ACTION')
         return
 
     ontology_term_name = ontology[term_id]['name']
