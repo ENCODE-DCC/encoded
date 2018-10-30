@@ -76,6 +76,37 @@ _tsv_mapping = OrderedDict([
     ('Restricted', ['files.restricted'])
 ])
 
+_tsv_mapping_annotation = OrderedDict([
+    ('File accession', ['original_files.title']),
+    ('File format', ['original_files.file_type']),
+    ('Output type', ['original_files.output_type']),
+    ('Dataset accession', ['accession']),
+    ('Annotation type', ['annotation_type']),
+    ('Software used', ['software_used.software.title']),
+    ('Encyclopedia Version', ['encyclopedia_version']),
+    ('Biosample term id', ['biosample_term_id']),
+    ('Biosample term name', ['biosample_term_name']),
+    ('Biosample type', ['biosample_type']),
+    ('Life stage', ['relavant_life_stage']),
+    ('Age', ['relevant_timepoint']),
+    ('Age units', ['relevant_timepoint_units']),
+    ('Organism', ['organism.scientific_name']),
+    ('Targets', ['targets.name']),
+    ('Dataset date released', ['date_released']),
+    ('Project', ['award.project']),
+    ('Derived from', ['original_files.derived_from']),
+    ('Size', ['original_files.file_size']),
+    ('Lab', ['original_files.lab.title']),
+    ('md5sum', ['original_files.md5sum']),
+    ('dbxrefs', ['original_files.dbxrefs']),
+    ('File download URL', ['original_files.href']),
+    ('Assembly', ['original_files.assembly']),
+    ('Controlled by', ['original_files.controlled_by']),
+    ('File Status', ['original_files.status']),
+    ('Restricted', ['original_files.restricted'])
+])
+
+
 _audit_mapping = OrderedDict([
     ('Audit WARNING', ['audit.WARNING.path',
                        'audit.WARNING.category',
@@ -216,13 +247,103 @@ def peak_metadata(context, request):
     )
 
 
+def _get_annotation_metadata(request, search_path):
+    """
+    Get annotation metadata.
+
+        :param request: Pyramid's request.
+        :param search_path: Search url.
+    """
+    param_list = parse_qs(request.matchdict['search_params'])
+    param_list['limit'] = ['all']
+    path = '{}?{}'.format(search_path, urlencode(param_list, True))
+    results = request.embed(path, as_user=True)
+    annotation_graph = results['@graph']
+    ids = [g['@id'] for g in annotation_graph]
+    file_graph = _get_graph('file', request, ids)
+    software_graph = _get_graph('software', request, ids)
+    headers = [header for header in _tsv_mapping_annotation]
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(headers)
+    for file in file_graph:
+        annotation = _get_embedded_schema_by_dataset(annotation_graph, file['dataset'])
+        software = _get_embedded_schema_by_dataset(software_graph, file['dataset'])
+        writer.writerow([
+            file.get('title', ''),
+            file.get('file_type', ''),
+            file.get('output_type', ''),
+            annotation.get('accession', ''),
+            annotation.get('annotation_type', ''),
+            software.get('title', ''),
+            annotation.get('encyclopedia_version', ''),
+            annotation.get('biosample_term_id', ''),
+            annotation.get('biosample_term_name', ''),
+            annotation.get('biosample_type', ''),
+            annotation.get('relevant_life_stage', ''),
+            annotation.get('relevant_timepoint', ''),
+            annotation.get('relevant_timepoint_units', ''),
+            annotation.get('organism', {}).get('scientific_name', ''),
+            annotation.get('targets', {}).get('name', ''),
+            annotation.get('date_released', ''),
+            annotation.get('award').get('project', ''),
+            file.get('derived_from', ''),
+            file.get('file_size', ''),
+            file.get('lab', {}).get('title', ''),
+            file.get('md5sum', ''),
+            file.get('dbxrefs', ''),
+            file.get('href', ''),
+            file.get('assembly', ''),
+            file.get('controlled_by', ''),
+            file.get('status', ''),
+            file.get('restricted', ''),
+        ])
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="%s"' % 'metadata.tsv'
+    )
+
+
+def _get_embedded_schema_by_dataset(graph, dataset):
+    """
+    Get schema based on dataset.
+
+        :param graph: @graph value.
+        :param dataset: dataset.
+    """
+    schema = list(filter(lambda g: g.get('@id') == dataset, graph)) or [{}]
+    return schema[0]
+
+
+def _get_graph(schema_type, request, ids):
+    """
+    Get a graph based on schema type and id.
+
+        :param schema_type: schema type.
+        :param request: request object from pyramid.
+        :param ids: ids.
+    """
+    datasets = ''.join([''.join(['&dataset=', id]) for id in ids])
+    path = '/search/?type={}&status!=revoked{}&format=json'.format(
+        schema_type,
+        datasets,
+    )
+    results = request.embed(path, as_user=True)
+    graph = results['@graph']
+    return graph
+
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
+    type_param = ('type' in param_list and param_list['type'][0] and param_list['type'][0]) or None
     if 'referrer' in param_list:
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
+    is_annotation = type_param and type_param.lower() == 'annotation'
+    if is_annotation:
+        return _get_annotation_metadata(request, search_path)
     param_list['field'] = []
     header = []
     file_attributes = []
