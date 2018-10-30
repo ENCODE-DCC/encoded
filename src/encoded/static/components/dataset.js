@@ -56,6 +56,7 @@ class AnnotationComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -228,6 +229,8 @@ class AnnotationComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} showReplicateNumber={false} />
 
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
@@ -258,6 +261,7 @@ class PublicationDataComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -391,6 +395,8 @@ class PublicationDataComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} showReplicateNumber={false} hideGraph />
 
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
@@ -421,6 +427,7 @@ class ReferenceComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -554,6 +561,8 @@ class ReferenceComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
@@ -584,6 +593,7 @@ class ProjectComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -741,6 +751,8 @@ class ProjectComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
@@ -771,6 +783,7 @@ class UcscBrowserCompositeComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -913,6 +926,8 @@ class UcscBrowserCompositeComponent extends React.Component {
 
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
@@ -1425,9 +1440,7 @@ export class SeriesComponent extends React.Component {
                     session={this.context.session}
                 />
 
-                {seriesType === 'MatchedSet' ?
-                    <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
-                : null}
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
