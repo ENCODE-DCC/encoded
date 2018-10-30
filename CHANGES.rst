@@ -1,6 +1,10 @@
 Changes
 =======
 
+77.1 (released) / 3998 Bug Fix
+-----------------
+1. ENCD-3998 Target upgrade to return gene uuid (#2466)
+
 77.0 (released) / snovault 1.0.19
 -----------------
 1. ENCD-4237 bdd-test-for-search (#2435)
