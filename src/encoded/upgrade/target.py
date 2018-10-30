@@ -1,3 +1,4 @@
+from pyramid.traversal import find_root
 from snovault import upgrade_step
 
 
@@ -164,8 +165,10 @@ def target_8_9(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3998
     value.pop('gene_name', '')
     gene_id_str = 'GeneID:'
+    gene_collection = 'genes'
+    root = find_root(system['context'])
     genes = [
-        dbxref.replace(gene_id_str, '', 1)
+        str(root.get(gene_collection).get(dbxref.replace(gene_id_str, '', 1)).uuid)
         for dbxref in value.get('dbxref', [])
         if dbxref.startswith(gene_id_str)
     ]
