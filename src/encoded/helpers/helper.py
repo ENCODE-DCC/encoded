@@ -79,19 +79,18 @@ def search_result_actions(request, doc_types, es_results, position=None):
         if viz:
             actions.setdefault('visualize_batch', viz)
 
-    # generate batch download URL for experiments
-    # TODO we could enable them for Datasets as well here, but not sure how well it will work
+    # generate batch download URL for experiments and annotation
     # batch download disabled for region-search results
-    if '/region-search/' not in request.url:
-        #if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
-        if (doc_types == ['Experiment']) and any(
+    # TODO: Can potentially be enabled for dataset...
+    if '/region-search/' not in request.url \
+        and doc_types in (['Experiment'], ['Annotation']) \
+        and any(
                 bucket['doc_count'] > 0
                 for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
-            actions['batch_download'] = request.route_url(
-                'batch_download',
-                search_params=request.query_string
-            )
-
+        actions['batch_download'] = request.route_url(
+            'batch_download',
+            search_params=request.query_string
+        )
     return actions
 
 class View_Item:
