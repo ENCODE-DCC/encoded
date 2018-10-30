@@ -101,6 +101,36 @@ _audit_mapping = OrderedDict([
                      'audit.ERROR.detail'])
 ])
 
+_tsv_mapping_annotation = OrderedDict([
+    ('File accession', ['files.title']),
+    ('File format', ['files.file_type']),
+    ('Output type', ['files.output_type']),
+    ('Dataset accession', ['accession']),
+    ('Annotation type', ['annotation_type']),
+    ('Software used', ['software_used.software.title']),
+    ('Encyclopedia Version', ['encyclopedia_version']),
+    ('Biosample term id', ['biosample_ontology.term_id']),
+    ('Biosample term name', ['biosample_ontology.term_name']),
+    ('Biosample type', ['biosample_ontology.classification']),
+    ('Life stage', ['relevant_life_stage']),
+    ('Age', ['relevant_timepoint']),
+    ('Age units', ['relevant_timepoint_units']),
+    ('Organism', ['organism.scientific_name']),
+    ('Targets', ['targets.name']),
+    ('Dataset date released', ['date_released']),
+    ('Project', ['award.project']),
+    ('Lab', ['files.lab.title']),
+    ('md5sum', ['files.md5sum']),
+    ('dbxrefs', ['files.dbxrefs']),
+    ('File download URL', ['files.href']),
+    ('Assembly', ['files.assembly']),
+    ('Controlled by', ['files.controlled_by']),
+    ('File Status', ['files.status']),
+    ('Derived from', ['files.derived_from']),
+    ('S3 URL', ['files.cloud_metadata']),
+    ('Size', ['files.file_size']),
+    ('Restricted', ['files.restricted'])
+])
 
 def get_file_uuids(result_dict):
     file_uuids = []
@@ -174,6 +204,80 @@ def make_audit_cell(header_column, experiment_json, file_json):
     return ', '.join(list(set(data)))
 
 
+def _get_annotation_metadata(request, search_path, param_list):
+    """
+    Get anotation data.
+
+        :param request: Pyramid request
+        :param search_path: Search url
+        :param param_list: Initial param_list
+    """
+    header = [header for header in _tsv_mapping_annotation]
+    header.extend([prop for prop in _audit_mapping])
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(header)
+    param_list['limit'] = ['all']
+    fields = [''.join(['&field=', str(value[0])]) for _, value in _tsv_mapping_annotation.items()]
+    path = '{}?{}{}'.format(
+        search_path,
+        urlencode(param_list, True),
+        ''.join(fields)
+    )
+    results = request.embed(path, as_user=True)
+    for result_graph in results['@graph']:
+        result_files = result_graph.get('files', {})
+        if not result_files:
+            continue
+        software = [s for s in result_graph.get('software_used', {})]
+        software_set = ', '.join([s['software']['title'] for s in software])
+        for result_file in result_files:
+            if restricted_files_present(result_file):
+                continue
+            if param_list.get('files.file_type') and result_file['file_type'] not in param_list['files.file_type']:
+                continue
+            row = [
+                result_file.get('title', ''),
+                result_file.get('file_type', ''),
+                result_file.get('output_type', ''),
+                result_graph.get('accession', ''),
+                result_graph.get('annotation_type', ''),
+                software_set,
+                result_graph.get('encyclopedia_version', ''),
+                result_graph.get('biosample_ontology', {}).get('term_id', ''),
+                result_graph.get('biosample_ontology', {}).get('term_name', ''),
+                result_graph.get('biosample_ontology', {}).get('classification', ''),
+                result_graph.get('relevant_life_stage', ''),
+                result_graph.get('relevant_timepoint', ''),
+                result_graph.get('relevant_timepoint_units', ''),
+                result_graph.get('organism', {}).get('scientific_name', ''),
+                ', '.join([target['name'] for target in result_graph.get('targets', {})]),
+                result_graph.get('date_released', ''),
+                result_graph.get('award', {}).get('project', ''),
+                result_file.get('lab', {}).get('title', ''),
+                result_file.get('md5sum', ''),
+                ', '.join(result_file.get('dbxrefs', '')),
+                result_file.get('href', '')[7:-1],
+                result_file.get('assembly', ''),
+                result_file.get('controlled_by', ''),
+                result_file.get('status', ''),
+                ', '.join([derived_from[7:-1] for derived_from in result_file.get('derived_from', '')]),
+                result_file.get('cloud_metadata', {}).get('url', ''),
+                result_file.get('file_size', ''),
+                result_file.get('restricted', ''),
+            ]
+            # make_audit_cell() was designed just for experiment, but works too for annotation
+            row.extend(
+                [make_audit_cell(audit_type, result_graph, result_file) for audit_type in _audit_mapping]
+            )
+            writer.writerow(row)
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="%s"' % 'metadata.tsv'
+    )
+
+
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
@@ -233,6 +337,9 @@ def metadata_tsv(context, request):
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
         search_path = '/search/'
+    type_param = param_list.get('type', [''])[0]
+    if type_param and type_param.lower() == 'annotation':
+        return _get_annotation_metadata(request, search_path, param_list)
     param_list['field'] = []
     header = []
     file_attributes = []
