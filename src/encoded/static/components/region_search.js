@@ -198,6 +198,7 @@ class AdvSearch extends React.Component {
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
         this.handleOnFocus = this.handleOnFocus.bind(this);
+        this.handleExamples = this.handleExamples.bind(this);
         this.tick = this.tick.bind(this);
     }
 
@@ -254,6 +255,33 @@ class AdvSearch extends React.Component {
         this.context.navigate(this.context.location_href);
     }
 
+    handleExamples(e){
+
+        let replaceNewline = (input) => {
+
+            let replaceAll = (str, find, replace) => {
+                return str.replace(new RegExp(find, 'g'), replace);
+            }
+
+            var newline = String.fromCharCode(13, 10);
+            return replaceAll(input, "\\n", newline);
+        }
+
+        let exampleString = "";
+        if (e.target.id === "example-snps") {
+            exampleString = "chr11:62607065-62607067\nchr10:5894500-5894501\nchr10:11741181-11741181\nchr1:39492463-39492463\nchr6:10695158-10695160";
+        } else if (e.target.id === "example-coordinates") {
+            exampleString = "11\t5248049\t\t5248050\n14\t100705101\t100705102\nX\t146993387\t146993388\nX\t55041617\t55041618";
+        } else if (e.target.id === "example-gene") {
+            exampleString = "CTCF (homo sapiens)";
+        } else if (e.target.id === "example-nucleotide"){
+            exampleString = "ENSG00000102974";
+        } else {
+            exampleString = "chr11:62607065-62607067\nchr10:5894500-5894501\nchr10:11741181-11741181\nchr1:39492463-39492463\nchr6:10695158-10695160";
+        }
+        document.getElementById("multiple-entry-input").value = replaceNewline(exampleString);
+    }
+
     tick() {
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({ searchTerm: this.newSearchTerm });
@@ -273,28 +301,21 @@ class AdvSearch extends React.Component {
             <Panel>
                 <PanelBody>
                     <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.handleOnFocus} >
-                        <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <div className="form-group">
                             <label htmlFor="annotation"><i className="icon icon-search"></i>Search by dbSNP ID, gene name, single nucleotide coordinate, or coordinate range (hg19)</label>
                             <div className="input-group input-group-region-input">
-                                <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} placeholder="Enter search parameters here."/>
-                                {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                    <FetchedData loadingComplete>
-                                        <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
-                                        <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
-                                    </FetchedData>
-                                : null}
-                                <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
-                                <div className="input-group-addon input-group-select-addon">
-                                    <select value={this.state.genome} name="genome" onFocus={this.handleOnFocus} onChange={this.handleAssemblySelect}>
-                                        {regulomeGenomes.map(genomeId =>
-                                            <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
-                                        )}
-                                    </select>
-                                </div>
+                                <textarea className="multiple-entry-input" id="multiple-entry-input" placeholder="Enter search parameters here." onChange={this.handleChange} name="region">
+                                </textarea>
+
+                                <p className="example-inputs" onClick={this.handleExamples}>Click for example entry: <span className="example-input" id="example-snps">multiple dbSNPs</span>, <span className="example-input" id="example-coordinates">0-based coordinates</span>, <span className="example-input" id="example-nucleotide">single nucleotide coordinate</span>, or <span className="example-input" id="example-gene">gene name</span></p>
+
+                                <input type="submit" value="Search" className="btn btn-sm btn-info" />
+                                <input type="hidden" name="genome" value={this.state.genome} />
                             </div>
                         </div>
+
                     </form>
+
                     {(context.notification) ?
                         <p>{context.notification}</p>
                     : null}

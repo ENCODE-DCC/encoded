@@ -70,10 +70,13 @@ body {
 }
 
 .adv-search-form {
-    .input-group {
+    .multiple-entry-input, .input-group {
         width: 100%;
-        display: flex !important;
         padding-bottom: 10px;
+    }
+    .multiple-entry-input {
+        padding: 10px;
+        height: 120px;
     }
     label {
         font-family: 'Khula', sans-serif !important;
@@ -92,6 +95,18 @@ body {
     .icon-search {
         margin-right: 5px;
         color: $regulomeGray;
+    }
+    .example-inputs {
+        padding-bottom: 10px;
+        font-size: 1rem;
+        font-style: italic;
+        .example-input {
+            color: $regulomeGreen;
+            text-decoration: underline;
+            &:hover {
+                cursor: pointer;
+            }
+        }
     }
 }
 
