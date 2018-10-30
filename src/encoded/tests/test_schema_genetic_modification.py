@@ -147,6 +147,21 @@ def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_de
     assert res.status_code == 201
 
 
+def test_tag_targeting_gene(testapp, ctcf, crispr_tag, source):
+    crispr_tag.update({'modified_site_by_gene_id': ctcf['@id'],
+                       'introduced_tags': [{'name': 'mAID-mClover', 'location': 'C-terminal'}],
+                       'category': 'deletion'})
+    res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
+    assert res.status_code == 422
+    crispr_tag.update({'category': 'insertion'})
+    res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
+    assert res.status_code == 422
+    crispr_tag.update({'reagents': [{'source': source['@id'], 
+                                    'identifier': '12345'}]})
+    res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
+    assert res.status_code == 201
+
+
 def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, transfection_tag, 
                                        recomb_tag, target, source, treatment, document):
     # We shouldn't allow purpose = tagging if modification_type != insertion
