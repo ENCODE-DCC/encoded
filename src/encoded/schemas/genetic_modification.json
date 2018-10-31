@@ -210,7 +210,7 @@
             }
         },
         "introduced_sequence": {
-            "comment": "Introduced sequences apply only to modification_type = insertion and replacement.",
+            "comment": "Introduced sequences apply only to category = insertion and replacement.",
             "properties": {
                 "category": {
                     "enum": ["insertion", "replacement"]
@@ -530,7 +530,7 @@
         },
         "introduced_sequence": {
             "title": "Introduced sequence",
-            "description": "If modification_type = insertion or replacement, the newly introduced sequence via the modification.",
+            "description": "If category = insertion or replacement, the newly introduced sequence via the modification.",
         	"type": "string",
             "pattern": "^[ACTG]+$"
 		},
