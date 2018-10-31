@@ -26,7 +26,7 @@ class CartToggleComponent extends React.Component {
     }
 
     render() {
-        const { cart, elementAtId, adminUser, inProgress } = this.props;
+        const { cart, elementAtId, loggedIn, inProgress } = this.props;
         const inCart = cart.indexOf(elementAtId) > -1;
         const cartAtLimit = cart.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
         const inCartToolTip = inCart ? 'Remove item from cart' : 'Add item to cart';
@@ -38,7 +38,7 @@ class CartToggleComponent extends React.Component {
             <button
                 className={`cart__toggle${inCart ? ' cart__toggle--in-cart' : ''}`}
                 onClick={this.handleClick}
-                disabled={inProgress || (!adminUser && !inCart && cartAtLimit)}
+                disabled={inProgress || (!loggedIn && !inCart && cartAtLimit)}
                 title={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
                 aria-pressed={inCart}
                 aria-label={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
@@ -59,15 +59,15 @@ CartToggleComponent.propTypes = {
     onAddToCartClick: PropTypes.func.isRequired,
     /** Function to call to remove `elementAtId` from cart  */
     onRemoveFromCartClick: PropTypes.func.isRequired,
-    /** True if user is logged in as admin */
-    adminUser: PropTypes.bool,
+    /** True if user is logged in */
+    loggedIn: PropTypes.bool,
     /** True if cart operation is in progress */
     inProgress: PropTypes.bool,
 };
 
 CartToggleComponent.defaultProps = {
     cart: [],
-    adminUser: false,
+    loggedIn: false,
     inProgress: false,
 };
 
@@ -75,12 +75,12 @@ const mapStateToProps = (state, ownProps) => ({
     cart: state.cart,
     inProgress: state.inProgress,
     elementAtId: ownProps.element['@id'],
-    adminUser: ownProps.adminUser,
+    loggedIn: ownProps.loggedIn,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.sessionProperties.user, ownProps.adminUser, ownProps.fetch)),
-    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.sessionProperties.user, ownProps.adminUser, ownProps.fetch)),
+    onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.sessionProperties.user, ownProps.loggedIn, ownProps.fetch)),
+    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.sessionProperties.user, ownProps.loggedIn, ownProps.fetch)),
 });
 
 const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartToggleComponent);
@@ -89,7 +89,7 @@ const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartTogg
 const CartToggle = (props, reactContext) => (
     <CartToggleInternal
         element={props.element}
-        adminUser={!!(reactContext.session_properties && reactContext.session_properties.admin)}
+        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
         sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />
@@ -101,6 +101,7 @@ CartToggle.propTypes = {
 };
 
 CartToggle.contextTypes = {
+    session: PropTypes.object,
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };

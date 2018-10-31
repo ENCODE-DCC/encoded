@@ -66,9 +66,9 @@ class CartAddAllComponent extends React.Component {
         requestSearch(searchQuery).then((results) => {
             this.props.setInProgress(false);
             if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
-                const adminUser = !!(this.props.sessionProperties && this.props.sessionProperties.admin);
+                const loggedIn = !!(this.props.session && this.props.session['auth.userid']);
                 const elementsForCart = results['@graph'].map(result => result['@id']);
-                if (!adminUser) {
+                if (!loggedIn) {
                     // Not logged in, so test whether the merged new and existing carts would have
                     // more elements than allowed in a logged-out cart. Display an error modal if
                     // that happens.
@@ -122,24 +122,24 @@ CartAddAllComponent.propTypes = {
     /** Function to indicate cart operation in progress */
     setInProgress: PropTypes.func.isRequired,
     /** Logged-in user information */
-    sessionProperties: PropTypes.object,
+    session: PropTypes.object,
 };
 
 CartAddAllComponent.defaultProps = {
     inProgress: false,
-    sessionProperties: null,
+    session: null,
 };
 
-const mapStateToProps = (state, ownProps) => ({ cart: state.cart, inProgress: state.inProgress, searchResults: ownProps.searchResults, sessionProperties: ownProps.sessionProperties });
+const mapStateToProps = (state, ownProps) => ({ cart: state.cart, inProgress: state.inProgress, searchResults: ownProps.searchResults, session: ownProps.session });
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.sessionProperties.user, ownProps.sessionProperties.admin, ownProps.fetch)),
+    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.sessionProperties.user, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
 });
 
 const CartAddAllInternal = connect(mapStateToProps, mapDispatchToProps)(CartAddAllComponent);
 
 const CartAddAll = (props, reactContext) => (
-    <CartAddAllInternal searchResults={props.searchResults} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
+    <CartAddAllInternal searchResults={props.searchResults} session={reactContext.session} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
 );
 
 CartAddAll.propTypes = {
@@ -148,6 +148,7 @@ CartAddAll.propTypes = {
 };
 
 CartAddAll.contextTypes = {
+    session: PropTypes.object,
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
