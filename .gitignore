@@ -15,6 +15,7 @@
 /eggs/
 /extends/
 /node_modules/
+/npm-shrinkwrap.json
 /ontology.json
 /parts/
 /base.ini
