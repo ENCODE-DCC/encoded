@@ -92,16 +92,17 @@ const mapStateToProps = (state, ownProps) => ({
     user: ownProps.sessionProperties,
 });
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, ownProps.sessionProperties.user, ownProps.sessionProperties.admin, ownProps.fetch)),
+    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, ownProps.sessionProperties.user, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
 });
 
 const CartClearInternal = connect(mapStateToProps, mapDispatchToProps)(CartClearComponent);
 
 const CartClear = (props, reactContext) => (
-    <CartClearInternal sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
+    <CartClearInternal session={reactContext.session} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
 );
 
 CartClear.contextTypes = {
+    session: PropTypes.object,
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
