@@ -667,7 +667,7 @@ class Report extends React.Component {
                 <div className="panel data-display main-panel">
                     <div className="row">
                         <div className="col-sm-5 col-md-4 col-lg-3">
-                            <FacetList facets={context.facets} filters={context.filters} searchBase={searchBase} />
+                            <FacetList context={context} facets={context.facets} filters={context.filters} searchBase={searchBase} docTypeTitleSuffix="report" />
                         </div>
                         <div className="col-sm-7 col-md-8 col-lg-9">
                             <h4>

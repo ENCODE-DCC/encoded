@@ -230,12 +230,12 @@ class AuditMatrix extends React.Component {
             return (
                 <div>
                     <div className="panel data-display main-panel">
-                        <div className="row">
+                        <div className="row matrix__facet--horizontal">
                             <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{ paddingRight: 0 }}>
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>
-                                            <h3 style={{ marginTop: 0 }}>{context.title}</h3>
+                                            <h1>{context.title}</h1>
                                             <div>
                                                 <p>Click or enter search terms to filter the {type} included in the matrix.</p>
                                                 <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />

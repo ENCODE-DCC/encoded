@@ -4,7 +4,7 @@ Feature: Title
     Scenario: Title updates
         When I visit "/audit/?type=Experiment"
         And I wait for the content to load
-        Then the title should contain the text "Matrix – ENCODE"
+        Then the title should contain the text "matrix – ENCODE"
 
 @audit @usefixtures(workbook)
 Feature: Audit
@@ -14,7 +14,7 @@ Feature: Audit
 
 
     Scenario: Audit
-        Then the title should contain the text "Matrix"
+        Then the title should contain the text "matrix"
         Then I should see at least 15 elements with the css selector "tbody > tr"
         Then I should see at least 10 elements with the css selector "tr > th"
         Then I should see at least 5 elements with the css selector "div.orientation > div.facet"
