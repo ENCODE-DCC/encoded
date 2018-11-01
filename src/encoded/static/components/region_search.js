@@ -7,8 +7,6 @@ import { FacetList, Listing, ResultBrowser } from './search';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import _ from 'underscore';
-// import ResultBrowser from './search';
-// import { entryPoint } from '../libs/d3-sequence-logo';
 
 
 const regionGenomes = [
