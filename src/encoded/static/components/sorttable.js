@@ -343,13 +343,15 @@ export class SortTable extends React.Component {
                         </tbody>
                     : null}
 
-                    <tfoot>
-                        <tr>
-                            <td className={`file-table-footer${this.props.collapsed ? ' hiding' : ''}`} colSpan={colCount}>
-                                {this.props.footer}
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {this.props.footer !== null ?
+                        <tfoot>
+                            <tr>
+                                <td className={`file-table-footer${this.props.collapsed ? ' hiding' : ''}`} colSpan={colCount}>
+                                    {this.props.footer}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    : null}
                 </table>
             );
         }
