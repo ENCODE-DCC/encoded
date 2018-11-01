@@ -29,11 +29,11 @@ Feature: Edit forms
         And I wait for an element with the css selector "form.rf-Form" to load
         And I wait for 5 seconds
         And I fill in "antigen_description" with "It's not a very nice antigen"
-        And I click the link with text "ENCODE"
+        And I click the element with the css selector "a.navbar-brand"
         And I dismiss the alert
         Then field "antigen_description" should have the value "It's not a very nice antigen"
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
-        When I click the link with text "ENCODE"
+        When I click the element with the css selector "a.navbar-brand"
         And I accept the alert
         And I wait for 5 seconds
 
@@ -44,7 +44,7 @@ Feature: Edit forms
         And I wait for an element with the css selector ".rf-Message + input[name=date_created]" to load
         Then I should see "is not any of" within 2 seconds
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
-        When I click the link with text "ENCODE"
+        When I click the element with the css selector "a.navbar-brand"
         And I accept the alert
 
 # To add:
