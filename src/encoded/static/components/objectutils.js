@@ -396,7 +396,7 @@ export class RestrictedDownloadButton extends React.Component {
     render() {
         const { file, adminUser } = this.props;
         const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
-        const buttonEnabled = !file.restricted || adminUser;
+        const buttonEnabled = !file.restricted;
 
         // If the user provided us with a component for downloading files, add the download
         // properties to the component before rendering.
