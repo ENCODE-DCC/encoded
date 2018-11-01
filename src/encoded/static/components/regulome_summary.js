@@ -26,7 +26,8 @@ const SNPSummary = (props) => {
                     let href_score = '../regulome-search/?region='+item.chrom+':'+item.start+'-'+item.end+'&genome=GRCh37';
                     return <a href={href_score}>{item.regulome_score}</a>;
                 } else {
-                    return item.regulome_score;
+                    let href_score = '../regulome-search/?region='+item.chrom+':'+item.start+'-'+item.end+'&genome=GRCh37';
+                    return <a href={href_score}>See related experiments</a>;
                 }
             },
         },

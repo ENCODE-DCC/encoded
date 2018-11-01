@@ -269,15 +269,15 @@ class AdvSearch extends React.Component {
 
         let exampleString = "";
         if (e.target.id === "example-snps") {
-            exampleString = "chr11:62607065-62607067\nchr10:5894500-5894501\nchr10:11741181-11741181\nchr1:39492463-39492463\nchr6:10695158-10695160";
+            exampleString = "rs3768324\nrs75982468\nrs10905307\nrs10823321\nrs7745856";
         } else if (e.target.id === "example-coordinates") {
-            exampleString = "11\t5248049\t\t5248050\n14\t100705101\t100705102\nX\t146993387\t146993388\nX\t55041617\t55041618";
+            exampleString = "chr11:62607065-62607067\nchr10:5894500-5894501\nchr10:11741181-11741181\nchr1:39492463-39492463\nchr6:10695158-10695160";
         } else if (e.target.id === "example-gene") {
             exampleString = "CTCF (homo sapiens)";
         } else if (e.target.id === "example-nucleotide"){
             exampleString = "ENSG00000102974";
         } else {
-            exampleString = "chr11:62607065-62607067\nchr10:5894500-5894501\nchr10:11741181-11741181\nchr1:39492463-39492463\nchr6:10695158-10695160";
+            exampleString = "rs3768324\nrs75982468\nrs10905307\nrs10823321\nrs7745856";
         }
         document.getElementById("multiple-entry-input").value = replaceNewline(exampleString);
     }
