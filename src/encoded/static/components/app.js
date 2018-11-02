@@ -707,10 +707,35 @@ class App extends React.Component {
         const options = {};
         const actionUrl = url.parse(url.resolve(this.state.href, target.action));
         let search = serialize(target);
+
+        // Coding for multi-line inputs on forms
+        // ********** go back and delete count **************
+        let summaryFlag = 0;
+        if (search.indexOf('%0D%0A') !== -1){
+            summaryFlag = 1;
+        }
+        search = search.split('%0D%0A').join('&region=');
+        let indexStart = search.indexOf('%23');
+        let indexEnd = 0, count = 0;
+        let searchNew = search;
+        while (indexStart !== -1 && count < 10) {
+            indexEnd = searchNew.indexOf('&', indexStart);
+            searchNew = search.replace(search.substring(indexStart, indexEnd+1),'');
+            indexStart = searchNew.indexOf('%23');
+            count++;
+        }
+        search = searchNew;
+
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
         }
+
+        // different page for multiple input summary
         let href = actionUrl.pathname;
+        if (summaryFlag === 1){
+            href = "/regulome-summary/";
+        }
+
         if (search) {
             href += `?${search}`;
         }
