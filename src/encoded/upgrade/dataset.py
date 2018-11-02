@@ -400,7 +400,14 @@ def dataset_22_23(value, system):
     if value.get('biosample_type') == 'induced pluripotent stem cell line':
         value['biosample_type'] = 'cell line'
     if value.get('biosample_type') == 'stem cell':
-        if value.get('biosample_term_name') in ['MSiPS', 'E14TG2a.4', 'UCSF-4', 'HUES9', 'HUES8', 'HUES66', 'HUES65', 'HUES64', 'HUES63', 'HUES62', 'HUES6', 'HUES53', 'HUES49', 'HUES48', 'HUES45', 'HUES44', 'HUES3', 'HUES28', 'HUES13', 'ES-I3', 'ES-E14', 'CyT49', 'BG01', 'ES-CJ7', 'WW6', 'ZHBTc4-mESC', 'ES-D3', 'H7-hESC', 'ELF-1', 'TT2', '46C', 'ES-Bruce4', 'HUES1', 'H9', 'H1-hESC', 'BG02', 'R1', 'G1E-ER4', 'G1E']:
+        if value.get('biosample_term_name') in ['MSiPS', 'E14TG2a.4', 'UCSF-4', 'HUES9', 'HUES8', 'HUES66', 'HUES65',
+            'HUES64', 'HUES63', 'HUES62', 'HUES6', 'HUES53', 'HUES49', 'HUES48', 'HUES45', 'HUES44', 'HUES3', 'HUES28',
+            'HUES13', 'ES-I3', 'ES-E14', 'CyT49', 'BG01', 'ES-CJ7', 'WW6', 'ZHBTc4-mESC', 'ES-D3', 'H7-hESC', 'ELF-1',
+            'TT2', '46C', 'ES-Bruce4', 'HUES1', 'H9', 'H1-hESC', 'BG02', 'R1', 'G1E-ER4', 'G1E']:
             value['biosample_type'] = 'cell line'
-                elif characterization_review.get('biosample_term_name') in ['hematopoietic stem cell', 'embryonic stem cell', 'mammary stem cell', 'mesenchymal stem cell of the bone marrow', "mesenchymal stem cell of Wharton's jelly", 'mesenchymal stem cell of adipose', 'amniotic stem cell', 'stem cell of epidermis', 'mesenchymal stem cell', 'dedifferentiated amniotic fluid mesenchymal stem cell', 'leukemia stem cell', 'neuronal stem cell', 'neuroepithelial stem cell', 'neural stem progenitor cell']:
+        elif value.get('biosample_term_name') in ['hematopoietic stem cell', 'embryonic stem cell',
+            'mammary stem cell', 'mesenchymal stem cell of the bone marrow', "mesenchymal stem cell of Wharton's jelly",
+            'mesenchymal stem cell of adipose', 'amniotic stem cell', 'stem cell of epidermis', 'mesenchymal stem cell',
+            'dedifferentiated amniotic fluid mesenchymal stem cell', 'leukemia stem cell', 'neuronal stem cell',
+            'neuroepithelial stem cell', 'neural stem progenitor cell']:
             value['biosample_type'] = 'primary cell'
