@@ -72,3 +72,18 @@ def test_not_owner_cannot_add_element_to_cart(cart_submitter_testapp, testapp, o
 def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
     res = cart_submitter_testapp.get(other_cart['@id'])
     assert res.json['submitted_by'] == remc_member['@id']
+
+
+def test_submitter_can_add_own_cart(cart_submitter_testapp, submitter):
+    item = {
+        'name': 'test cart'
+    }
+    res = cart_submitter_testapp.post_json('/cart', item, status=201)
+
+
+def test_submitter_can_not_modify_submitted_by(cart_submitter_testapp, submitter):
+    item = {
+        'name': 'test cart',
+        'submitted_by': submitter['uuid']
+    }
+    res = cart_submitter_testapp.post_json('/cart', item, status=422)
