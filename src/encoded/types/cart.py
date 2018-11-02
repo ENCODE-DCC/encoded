@@ -18,7 +18,11 @@ from .base import (
     properties={
         'title': 'Cart',
         'description': 'Listing of cart contents',
-    })
+    },
+    acl=[
+        (Allow, Authenticated, 'add'),
+    ]
+)
 class Cart(Item):
     item_type = 'cart'
     schema = load_schema('encoded:schemas/cart.json')
