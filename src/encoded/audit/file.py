@@ -335,27 +335,37 @@ def audit_duplicate_quality_metrics(value, system):
                 level='INTERNAL_ACTION'
             )
 
+
 def audit_file_output_category(value, system):
     output_category = value.get('output_category')
     file_format = value.get('file_format')
     file_id = value.get('@id')
     raw_file_formats = ['rcc', 'idat', 'CEL', 'csfasta', 'fastq', 'csqual',
                         'sra']
+    audit_msg = 'inconsistent file format and output category'
     # These three formats can be either raw or processed, so ignore them
     if file_format in ['tar', 'tsv', 'fasta']:
         return
     if file_format in raw_file_formats and output_category != 'raw data':
-        detail = 'File {} has file format {} '.format(file_id, file_format) + \
-                 'corresponding to raw data but has an output category ' + \
-                 'of {}.'.format(output_category)
-        yield AuditFailure('inconsistent file format and output category',
-                           detail, level = 'ERROR')
+        detail = (
+            'File {} has file format {} corresponding to raw data but has an '
+            'output category of {}'.format(
+                file_id,
+                file_format,
+                output_category
+                )
+            )
+        yield AuditFailure(audit_msg, detail, level='ERROR')
     elif file_format not in raw_file_formats and output_category == 'raw data':
-        detail = 'File {} has file format {} '.format(file_id, file_format) + \
-                 'corresponding to processed data, but has an output ' + \
-                 'category of raw data'
-        yield AuditFailure('inconsistent file format and output category',
-                           detail, level = 'ERROR')
+        detail = (
+            'File {} has file format {} corresponding to processed data, but '
+            'has an output category of raw data'.format(
+                file_id,
+                file_format
+                )
+            )
+        yield AuditFailure(audit_msg, detail, level='ERROR')
+
 
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
@@ -366,7 +376,7 @@ function_dispatcher = {
     'audit_specifications': audit_file_format_specifications,
     'audit_controlled_by': audit_file_controlled_by,
     'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
-    'audit_file_output_category': audit_file_output_category
+    'audit_file_output_category': audit_file_output_category,
 }
 
 
