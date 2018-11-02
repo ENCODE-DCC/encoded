@@ -78,7 +78,7 @@ def test_submitter_can_add_own_cart(cart_submitter_testapp, submitter):
     item = {
         'name': 'test cart'
     }
-    res = cart_submitter_testapp.post_json('/cart', item, status=201)
+    cart_submitter_testapp.post_json('/cart', item, status=201)
 
 
 def test_submitter_can_not_modify_submitted_by(cart_submitter_testapp, submitter):
@@ -86,4 +86,4 @@ def test_submitter_can_not_modify_submitted_by(cart_submitter_testapp, submitter
         'name': 'test cart',
         'submitted_by': submitter['uuid']
     }
-    res = cart_submitter_testapp.post_json('/cart', item, status=422)
+    cart_submitter_testapp.post_json('/cart', item, status=422)
