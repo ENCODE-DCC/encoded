@@ -4,6 +4,7 @@ from snovault import (
 )
 from pyramid.security import (
     Allow,
+    Authenticated,
 )
 from .base import (
     Item,
