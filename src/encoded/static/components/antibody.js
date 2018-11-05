@@ -34,9 +34,10 @@ const LotComponent = (props, reactContext) => {
     const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
     const viewableStatuses = getObjectStatuses('AntibodyCharacterization', accessLevel);
     let characterizations = context.characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
-    characterizations = _(characterizations).sortBy(characterization => (
-        [characterization.target.label, characterization.target.organism.name]
-    ));
+    characterizations = _(characterizations).sortBy(characterization => ([
+        characterization.target.label,
+        characterization.target.organism ? characterization.target.organism.name : characterization.target.investigated_as[0],
+    ]));
 
     // Compile the document list
     const documentSpecs = [
@@ -66,6 +67,15 @@ const LotComponent = (props, reactContext) => {
     const geneTerms = [];
     const geneTips = [];
     targetKeys.forEach((key, i) => {
+        if (!targets[key].organism) {
+            // Add to the organism section of breadcrumbs even though the info is not organisms
+            organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{targets[key].investigated_as[0]}</i></span> : <i>{targets[key].investigated_as[0]}</i>}</span>);
+            organismTerms.push(`targets.investigated_as=${targets[key].investigated_as[0]}`);
+            organismTips.push(targets[key].investigated_as[0]);
+            // If a target doesn't have organism, it won't have genes either.
+            return;
+        }
+
         const scientificName = targets[key].organism.scientific_name;
         let geneName = [];
         if (targets[key].genes) {
@@ -107,7 +117,7 @@ const LotComponent = (props, reactContext) => {
                             <span>
                                 Antibody against {Object.keys(targets).map((target, i) => {
                                     const targetObj = targets[target];
-                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{` ${targetObj.label}`}</span>;
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism ? targetObj.organism.scientific_name : targetObj.investigated_as[0]}</em>{` ${targetObj.label}`}</span>;
                                 })}
                             </span>
                         :
@@ -153,7 +163,7 @@ const LotComponent = (props, reactContext) => {
                                 <dd>
                                     {targetKeys.map((target, i) => {
                                         const targetObj = targets[target];
-                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
+                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism ? targetObj.organism.scientific_name : targetObj.investigated_as[0]}</em>{')'}</a></span>;
                                     })}
                                 </dd>
                             </div>
@@ -272,14 +282,18 @@ const AntibodyStatus = (props) => {
 
         // Look at all organisms in current lot_review. They go under this lot_review's status
         const statusNode = statusTree[lotReview.status];
+        if (!lotReview.organisms.length) {
+            lotReview.organisms = [null];
+        }
         lotReview.organisms.forEach((organism) => {
-            // If haven’t seen this organism with this status before, remember it
-            if (!statusNode[organism.scientific_name]) {
-                statusNode[organism.scientific_name] = {};
+            const source = organism ? organism.scientific_name : lotReview.targets[0].investigated_as[0];
+            // If haven’t seen this source (organism) with this status before, remember it
+            if (!statusNode[source]) {
+                statusNode[source] = {};
             }
 
             // If haven't seen this biosample term name for this organism, remember it
-            const organismNode = statusNode[organism.scientific_name];
+            const organismNode = statusNode[source];
             if (!organismNode[lotReview.biosample_term_name]) {
                 organismNode[lotReview.biosample_term_name] = true;
             }
@@ -335,7 +349,7 @@ const CharacterizationHeader = (props) => {
     return (
         <div>
             <div className="document__header">
-                {doc.target.label} {doc.target.organism.scientific_name ? <span>{' ('}<i>{doc.target.organism.scientific_name}</i>{')'}</span> : ''}
+                {doc.target.label} <span>{' ('}<i>{doc.target.organism ? doc.target.organism.scientific_name : doc.target.investigated_as[0]}</i>{')'}</span>
             </div>
             {doc.characterization_reviews && doc.characterization_reviews.length ?
                 <div className="document__characterization-reviews">
@@ -652,7 +666,7 @@ const ListingComponent = (props, reactContext) => {
                         <div key={target}>
                             <a href={result['@id']}>
                                 {targetTree[target].target.label}
-                                {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
+                                <span>{' ('}<i>{targetTree[target].target.organism ? targetTree[target].target.organism.scientific_name : targetTree[target].target.investigated_as[0]}</i>{')'}</span>
                             </a>
                             <StatusIndicators targetTree={targetTree} target={target} />
                         </div>
