@@ -282,7 +282,7 @@ const AntibodyStatus = (props) => {
 
         // Look at all organisms in current lot_review. They go under this lot_review's status
         const statusNode = statusTree[lotReview.status];
-        if (!lotReview.organisms.length) {
+        if (lotReview.organisms.length === 0) {
             lotReview.organisms = [null];
         }
         lotReview.organisms.forEach((organism) => {
