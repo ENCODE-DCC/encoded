@@ -8,7 +8,9 @@ describe('DataColor Module', () => {
             'tissue',
             'primary cell',
             'whole organisms',
+            'stem cell',
             'in vitro differentiated cells',
+            'induced pluripotent stem cell line',
             'secondary cell',
         ];
         const dataColorsInstance = new DataColors(testKeys);
@@ -16,6 +18,7 @@ describe('DataColor Module', () => {
         it('Returns correct colors for small array', () => {
             const testColors = dataColorsInstance.colorList(['primary cell']);
             expect(testColors[0]).toEqual('#ff9a00');
+            expect(testColors[1]).toEqual('#ff9a00');
         });
 
         it('Returns medium gray for a non-existent key', () => {
