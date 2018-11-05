@@ -117,6 +117,22 @@ def antibody_characterization_11(antibody_characterization):
     return item
 
 
+@pytest.fixture
+def antibody_characterization_13(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'characterization_reviews': [{
+            'biosample_term_name': 'HUES62',
+            'biosample_term_id': 'EFO:0007087',
+            'lane_status': 'exempt from standards',
+            'biosample_type': 'induced pluripotent stem cell line',
+            'lane': 2,
+            'organism': '/organisms/human/'
+        }]
+    })
+    return item
+
+
 def test_antibody_characterization_upgrade(upgrader, antibody_characterization_1):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
@@ -220,5 +236,11 @@ def test_antibody_characterization_comment_to_submitter_comment_upgrade(upgrader
 
 def test_upgrade_antibody_characterization_11_to_12(upgrader, antibody_characterization_11, biosample):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_11, current_version='11', target_version='12')
+    for characterization_review in value['characterization_reviews']:
+        assert characterization_review['biosample_type'] == 'cell line'
+
+
+def test_upgrade_antibody_characterization_13_to_14(upgrader, antibody_characterization_13, biosample):
+    value = upgrader.upgrade('antibody_characterization', antibody_characterization_13, current_version='13', target_version='14')
     for characterization_review in value['characterization_reviews']:
         assert characterization_review['biosample_type'] == 'cell line'
