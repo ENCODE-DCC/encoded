@@ -28,8 +28,19 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 
 
 class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
-    '''Audit View'''
+    """
+    AuditView.
+
+        :param MatrixView: MatrixView-parent.
+    """
+
     def __init__(self, context, request):
+        """
+        Initialize.
+
+            :param context: Pyramid context
+            :param request: Pyramind request
+        """
         super(AuditView, self).__init__(context, request)
         self._no_audits_groupings = [
             'no.audit.error',
@@ -288,10 +299,11 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         self._result['matrix']['x'].update(aggregations['matrix']['x'])
 
     def preprocess_view(self):
-        '''
-        Main function to construct query and build view results json
-        * Only publicly accessible function
-        '''
+        """
+        Construct query and build view results json.
+
+            :returns: results object.
+        """
         audit_route = self._request.route_path('audit', slash='/')
         self._result['@id'] = audit_route + self._search_base
         self._result['@type'] = ['AuditMatrix']

@@ -25,8 +25,19 @@ from snovault.viewconfigs.searchview import SearchView  # pylint: disable=import
 
 
 class NewsView(SearchView):  # pylint: disable=too-few-public-methods
-    '''News View'''
+    """
+    NewsView.
+
+        :param SearchView: SearchView-parent.
+    """
+
     def __init__(self, context, request):
+        """
+        Initialize.
+
+            :param context: Pyramid context object
+            :param request: Pyramid request object
+￼         """
         super(NewsView, self).__init__(context, request)
         self._from_ = 0
         self._size = 25
@@ -36,10 +47,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
 
 
     def preprocess_view(self):
-        '''
-        Main function to construct query and build view results json
-        * Only publicly accessible function
-        '''
+        """Construct query and build view results json."""
         self._result['@id'] = '/news/' + self._search_base
         self._result['@type'] = ['News']
         self._result['notification'] = ''

@@ -23,8 +23,15 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 
 
 class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
-    '''Summary View'''
+    """Summary View."""
+
     def __init__(self, context, request):
+        """
+        Initialize.
+
+            :param context: Pyramid context object
+            :param request: Pyramid context object
+        """         
         super(SummaryView, self).__init__(context, request)
         self._summary = None
         self._view_name = 'summary'

@@ -24,7 +24,11 @@ from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-er
 
 
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
-    '''Matrix View'''
+    """
+    MatrixView.
+        :param BaseView: BaseView-parent.
+    """
+
     _filter_exclusion = [
         'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
         'format', 'frame', 'datastore', 'field', 'region', 'genome',
@@ -32,6 +36,12 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     ]
 
     def __init__(self, context, request):
+        """
+        Initialize.
+
+            :param context: Pyramid context object
+            :param request: Pyramid request object
+        """
         super(MatrixView, self).__init__(context, request)
         self._result['matrix'] = ''
         self._matrix = ''
@@ -170,10 +180,11 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 self._summarize_buckets(x_buckets, bucket, grouping_fields)
 
     def preprocess_view(self):
-        '''
-        Main function to construct query and build view results json
-        * Only publicly accessible function
-        '''
+        """
+        Construct query and build view results jsonself.
+
+            :return: results object
+        """
         matrix_route = self._request.route_path('matrix', slash='/')
         self._result['@id'] = matrix_route + self._search_base
         self._result['@type'] = ['Matrix']
