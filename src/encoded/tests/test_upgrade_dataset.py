@@ -190,6 +190,18 @@ def experiment_17(root, experiment):
 
 
 @pytest.fixture
+def experiment_21(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '21',
+        'biosample_type': 'induced pluripotent stem cell line',
+        'status': 'started'
+    })
+    return properties
+
+
+@pytest.fixture
 def annotation_16(award, lab):
     return {
         'award': award['@id'],
@@ -206,6 +218,18 @@ def annotation_17(award, lab):
         'lab': lab['@id'],
         'schema_version': '17',
         'biosample_type': 'immortalized cell line',
+        'status': 'started'
+    }
+
+
+@pytest.fixture
+def annotation_19(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '19',
+        'biosample_type': 'stem cell',
+        'biosample_term_name': 'mammary stem cell',
         'status': 'started'
     }
 
@@ -453,3 +477,17 @@ def test_upgrade_experiment_17_18(upgrader, experiment_17):
 def test_upgrade_annotation_17_to_18(upgrader, annotation_17):
     value = upgrader.upgrade('annotation', annotation_17, current_version='17', target_version='18')
     assert value['schema_version'] == '18'
+
+
+def test_upgrade_experiment_21_to_22(upgrader, experiment_21):
+    assert experiment_21['schema_version'] == '21'
+    value = upgrader.upgrade('experiment', experiment_21, current_version='21', target_version='22')
+    assert value['schema_version'] == '22'
+    assert value['biosample_type'] == 'cell line'
+
+
+def test_upgrade_annotation_19_to_20(upgrader, annotation_19):
+    assert annotation_19['schema_version'] == '19'
+    value = upgrader.upgrade('annotation', annotation_19, current_version='19', target_version='20')
+    assert value['schema_version'] == '20'
+    assert value['biosample_type'] == 'primary cell'

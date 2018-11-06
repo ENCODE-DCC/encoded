@@ -29,10 +29,10 @@
     ],
     "dependencies": {
         "phase": {
-            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells"]
                 }
             }
         },
@@ -80,8 +80,7 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "cell line",
-                                "induced pluripotent stem cell line"
+                                "cell line"
                             ]
                         },
                         "biosample_term_id":{
@@ -93,7 +92,6 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "stem cell",
                                 "in vitro differentiated cells"
                             ]
                         },
@@ -174,18 +172,18 @@
             }
         },
         "culture_harvest_date":{
-            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell, organoid].",
+            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, organoid].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "organoid"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "organoid"]
                 }
             }
         },
         "culture_start_date": {
-            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell, organoid].",
+            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, organoid].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "organoid"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "organoid"]
                 }
             }
         },
@@ -273,8 +271,6 @@
                                         "cell line",
                                         "tissue",
                                         "in vitro differentiated cells",
-                                        "induced pluripotent stem cell line",
-                                        "stem cell",
                                         "single cell",
                                         "organoid"
                                     ]
@@ -407,7 +403,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "21"
+            "default": "22"
         },
         "accession": {
             "accessionType": "BS"
@@ -609,7 +605,7 @@
         "phase": {
             "title": "Cell-cycle phase",
             "description": "Specification of cell cycle phase of the biosample.",
-            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
             "enum": [
                 "G1",
@@ -627,14 +623,14 @@
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
             "format": "date"
         },
         "culture_start_date": {
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
             "format": "date"
         },
@@ -896,6 +892,9 @@
         "organ_slims": {
             "title": "Organ"
         },
+        "cell_slims": {
+            "title": "Cell"
+        },
         "sex": {
             "title": "Sex"
         },
@@ -1012,6 +1011,7 @@
         "biosample_term_id": 1.0,
         "biosample_term_name": 1.0,
         "organ_slims": 1.0,
+        "cell_slims": 1.0,
         "developmental_slims": 1.0,
         "biosample_synonyms": 1.0,
         "dbxrefs": 1.0,

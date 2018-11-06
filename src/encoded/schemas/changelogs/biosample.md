@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 22
+
+* Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums.
+
 ### Minor changes since schema version 21
 
 * *passage_number* was set to have a minimum of 0.

@@ -54,8 +54,7 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "cell line",
-                                "induced pluripotent stem cell line"                               
+                                "cell line"
                             ]
                         },
                         "biosample_term_id":{
@@ -67,7 +66,6 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "stem cell",
                                 "in vitro differentiated cells"                               
                             ]
                         },
@@ -119,7 +117,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "annotation_type": {
             "title": "Type",
@@ -288,6 +286,9 @@
         "organ_slims": {
             "title": "Organ"
         },
+        "cell_slims": {
+            "title": "Cell"
+        },
         "relevant_life_stage": {
             "title": "Life stage"
         },
@@ -369,6 +370,7 @@
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "cell_slims": 1.0,
         "files.replicate.experiment.assay_term_name": 1.0,
         "biosample_term_id": 1.0,
         "biosample_term_name": 1.0,

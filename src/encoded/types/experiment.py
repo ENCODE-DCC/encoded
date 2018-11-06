@@ -151,7 +151,6 @@ class Experiment(Dataset,
                             biosample_accessions.add(biosampleObject['accession'])
 
                             if biosampleObject.get('biosample_type') in [
-                                    'stem cell',
                                     'in vitro differentiated cells']:
                                 drop_age_sex_flag = True
 
@@ -437,6 +436,7 @@ class Experiment(Dataset,
                 'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
+                'cell_slims',
                 'award.project',
                 'assembly',
                 'internal_status',
@@ -465,6 +465,7 @@ class Experiment(Dataset,
                 'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
+                'cell_slims',
                 'award.project',
                 'award.rfa',
                 'status',
