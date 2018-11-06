@@ -68,7 +68,6 @@ const createCartObject = (cart, user, fetch) => {
     const writeableCart = {
         name: `${user.title} cart`,
         elements: cart,
-        submitted_by: user['@id'],
         status: 'current',
     };
     return fetch('/carts/', {
