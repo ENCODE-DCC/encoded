@@ -24,11 +24,12 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 
 class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
     '''Summary View'''
-    _view_name = 'summary'
-    _factory_name = 'summary_data'
     def __init__(self, context, request):
         super(SummaryView, self).__init__(context, request)
         self._summary = None
+        self._view_name = 'summary'
+        self._factory_name = 'summary_data'
+
 
     def _construct_query(self):
         '''Helper method for preprocessing view'''

@@ -25,21 +25,21 @@ from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-er
 
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     '''Matrix View'''
-    _view_name = 'matrix'
-    _factory_name = 'matrix'
     _filter_exclusion = [
         'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
         'format', 'frame', 'datastore', 'field', 'region', 'genome',
         'sort', 'from', 'referrer',
     ]
+
     def __init__(self, context, request):
         super(MatrixView, self).__init__(context, request)
-        if self._view_name == 'matrix':  # hack
-            self._result['matrix'] = ''
-            self._matrix = ''
+        self._result['matrix'] = ''
+        self._matrix = ''
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
         self._schema = None
+        self._view_name = 'matrix'
+        self._factory_name = 'matrix'
 
     @staticmethod
     def _set_result_title(type_info):
@@ -111,25 +111,6 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             "aggs": aggs,
         }
 
-    def _validate_items(self, type_info):
-        '''Helper function for class and child classes'''
-        msg = None
-        if len(self._doc_types) != 1:
-            msg = (
-                'Search result {} currently requires specifying a '
-                'single type.'.format(
-                    self._view_name,
-                )
-            )
-        elif self._doc_types[0] not in self._types:
-            msg = 'Invalid type: {}'.format(self._doc_types[0])
-        elif not hasattr(type_info.factory, self._factory_name):
-            msg = 'No {} configured for type: {}'.format(
-                self._factory_name,
-                self._doc_types[0],
-            )
-        if msg:
-            raise HTTPBadRequest(explanation=msg)
 
     def _set_query_aggs(self, query):
         '''Helper Method for constructing query'''

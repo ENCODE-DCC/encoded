@@ -26,13 +26,14 @@ from snovault.viewconfigs.searchview import SearchView  # pylint: disable=import
 
 class NewsView(SearchView):  # pylint: disable=too-few-public-methods
     '''News View'''
-    _view_name = 'summary'
-    _factory_name = None
     def __init__(self, context, request):
         super(NewsView, self).__init__(context, request)
         self._from_ = 0
         self._size = 25
         self._es_index = 'page'
+        self._view_name = 'news'
+        self._factory_name = None
+
 
     def preprocess_view(self):
         '''

@@ -29,8 +29,6 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 
 class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
     '''Audit View'''
-    _view_name = 'audit'
-    _factory_name = 'matrix'
     def __init__(self, context, request):
         super(AuditView, self).__init__(context, request)
         self._no_audits_groupings = [
@@ -38,6 +36,9 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             'no.audit.not_compliant',
             'no.audit.warning'
         ]
+        self._view_name = 'audit'
+        self._factory_name = 'matrix'
+
 
     def _construct_aggs(self, x_grouping, audit_field_list):
         '''Helper Method for constructing query'''
