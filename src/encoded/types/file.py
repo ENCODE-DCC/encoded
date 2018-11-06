@@ -445,9 +445,9 @@ class File(Item):
         )
         if not status_set or not asbool(request.params.get('update')):
             return False
-        # Skip setting object ACL in s3 if file is restricted.
+        # Skip setting object ACL in s3 if file is restricted or not available.
         properties = self.upgrade_properties()
-        if properties.get('restricted'):
+        if properties.get('restricted') or properties.get('no_file_available'):
             return True
         # Change permission in S3.
         try:
