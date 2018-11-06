@@ -16,8 +16,8 @@ describe('DataColor Module', () => {
         const dataColorsInstance = new DataColors(testKeys);
 
         it('Returns correct colors for small array', () => {
-            const testColors = dataColorsInstance.colorList(['primary cell']);
-            expect(testColors[0]).toEqual('#ff9a00');
+            const testColors = dataColorsInstance.colorList(['stem cell', 'primary cell']);
+            expect(testColors[0]).toEqual('#9b009b');
             expect(testColors[1]).toEqual('#ff9a00');
         });
 
