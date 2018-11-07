@@ -31,7 +31,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
 
             :param context: Pyramid context object
             :param request: Pyramid context object
-        """         
+        """
         super(SummaryView, self).__init__(context, request)
         self._summary = None
         self._view_name = 'summary'
