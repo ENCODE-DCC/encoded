@@ -155,7 +155,14 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         }
 
     def _summarize_buckets(self, x_buckets, outer_bucket, audit_field_list, bucket_key):
-        '''Helper method for preprocessing view'''
+        """
+        Preprocesses view.
+
+            :param x_buckets: x bucket
+            :param outer_bucket: outer bucket
+            :param audit_field_list: audit field list
+            :param bucket_key: buckey key
+        """
         # pylint: disable=arguments-differ
         for category in audit_field_list:
             counts = {}
@@ -228,8 +235,16 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             grouping_fields,
             aggregations,
             bucket_key
-        ):
-        '''Helper method for preprocessing view'''
+        ): # pylint: disable=too-many-arguments
+        """
+        Preprocesses view.
+
+            :param x_buckets: x buckets
+            :param outer_bucket: outer buckets
+            :param grouping_fields: field groups
+            :param aggregations: aggregations
+            :param bucket_key: bucket key
+        """
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
         if grouping_fields:
