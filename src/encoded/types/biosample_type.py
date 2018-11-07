@@ -43,12 +43,10 @@ class BiosampleType(SharedItem):
 
     @staticmethod
     def _get_ontology_slims(registry, term_ids, slim_key):
-        slims = set(
-            slim
-            for term_id in term_ids
-            if term_id in registry['ontology']
-            for slim in registry['ontology'][term_id][slim_key]
-        )
+        slims = set()
+        for term_id in term_ids:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id][slim_key])
         return list(slims)
 
     @calculated_property(condition='term_ids', schema={
