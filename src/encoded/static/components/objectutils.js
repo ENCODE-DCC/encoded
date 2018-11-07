@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import url from 'url';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import * as globals from './globals';
-import url from 'url';
-
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
@@ -263,10 +262,10 @@ class DownloadIcon extends React.Component {
     }
 
     render() {
-        const { file, adminUser } = this.props;
+        const { file } = this.props;
 
         return (
-            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
+            <i className="icon icon-download" style={!file.restricted ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
                 <span className="sr-only">Download</span>
             </i>
         );
@@ -276,11 +275,6 @@ class DownloadIcon extends React.Component {
 DownloadIcon.propTypes = {
     hoverDL: PropTypes.func.isRequired, // Function to call when hovering or stop hovering over the icon
     file: PropTypes.object.isRequired, // File associated with this download button
-    adminUser: PropTypes.bool, // True if logged-in user is an admin
-};
-
-DownloadIcon.defaultProps = {
-    adminUser: false,
 };
 
 
@@ -394,9 +388,9 @@ export class RestrictedDownloadButton extends React.Component {
     }
 
     render() {
-        const { file, adminUser } = this.props;
+        const { file } = this.props;
         const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
-        const buttonEnabled = !file.restricted || adminUser;
+        const buttonEnabled = !file.restricted;
 
         // If the user provided us with a component for downloading files, add the download
         // properties to the component before rendering.
@@ -405,13 +399,12 @@ export class RestrictedDownloadButton extends React.Component {
             href: file.href,
             download: file.href.substr(file.href.lastIndexOf('/') + 1),
             hoverDL: this.hoverDL,
-            adminUser,
             buttonEnabled,
         }) : null;
 
         // Supply a default icon for the user to click to download, if the caller didn't supply one
         // in downloadComponent.
-        const icon = (!downloadComponent ? <DownloadIcon file={file} adminUser={adminUser} hoverDL={this.hoverDL} /> : null);
+        const icon = (!downloadComponent ? <DownloadIcon file={file} hoverDL={this.hoverDL} /> : null);
 
         return (
             <div className="dl-tooltip-trigger">
@@ -451,23 +444,21 @@ export class RestrictedDownloadButton extends React.Component {
 
 RestrictedDownloadButton.propTypes = {
     file: PropTypes.object.isRequired, // File containing `href` to use as download link
-    adminUser: PropTypes.bool, // True if logged in user is admin
     downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
 };
 
 RestrictedDownloadButton.defaultProps = {
-    adminUser: false,
     downloadComponent: null,
 };
 
 
 export const DownloadableAccession = (props) => {
-    const { file, clickHandler, loggedIn, adminUser } = props;
+    const { file, clickHandler, loggedIn } = props;
     return (
         <span className="file-table-accession">
             <FileAccessionButton file={file} />
             {clickHandler ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
-            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+            <RestrictedDownloadButton file={file} loggedIn={loggedIn} />
         </span>
     );
 };
@@ -476,13 +467,11 @@ DownloadableAccession.propTypes = {
     file: PropTypes.object.isRequired, // File whose accession to render
     clickHandler: PropTypes.func, // Function to call when button is clicked
     loggedIn: PropTypes.bool, // True if current user is logged in
-    adminUser: PropTypes.bool, // True if current user is logged in and admin
 };
 
 DownloadableAccession.defaultProps = {
     clickHandler: null,
     loggedIn: false,
-    adminUser: false,
 };
 
 
