@@ -112,7 +112,7 @@ export class TestViz extends React.Component {
         function drawOneChart(svgBars, chartData, maxWidth, fillColor, xAxisLabel, yAxisLabel, maxY){
 
             // create SVG container for chart components
-            let margin = {top: 20, bottom: 60, right: 20, left: 40};
+            let margin = {top: 20, bottom: 100, right: 20, left: 40};
             let height = 300;
             let width = maxWidth - 20;
 
@@ -137,7 +137,12 @@ export class TestViz extends React.Component {
             const xAxis = svgBars.append("g")
                 .attr("transform", `translate(0,${height - margin.bottom})`)
                 .call(d3.axisBottom(xScale))
-                .append("text")
+                    // .selectAll("text")
+                    //     .style("text-anchor", "end")
+                    //     .attr("dx", "-.8em")
+                    //     .attr("dy", "-.55em")
+                    //     .attr("transform", "rotate(-90)" )
+                .append("g").append("text")
                     .attr("class", "label")
                     .attr("x", width - 60)
                     .attr("y", 40)
