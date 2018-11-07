@@ -69,6 +69,11 @@ body {
     padding: 20px;
 }
 
+.btn-left {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
 .adv-search-form {
     .multiple-entry-input, .input-group {
         width: 100%;
@@ -90,7 +95,7 @@ body {
         width: 92%;
     }
     input {
-        margin-left: 5px;
+        margin-left: 10px;
     }
     .icon-search {
         margin-right: 5px;
@@ -331,6 +336,12 @@ table {
     th,td {
         padding: 10px 10px 4px !important;
         // border: 1px solid $regulomeGray;
+    }
+    td {
+        a {
+            font-weight: 700;
+            color: lighten($regulomeGreen,5%);
+        }
     }
 }
 

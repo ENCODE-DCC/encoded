@@ -8,6 +8,7 @@ import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import _ from 'underscore';
 import { SortTablePanel, SortTable } from './sorttable';
+import { TestViz } from './visualizations';
 
 
 const regionGenomes = [
@@ -328,7 +329,7 @@ class AdvSearch extends React.Component {
                     {(context.regulome_score  && !context.peak_details) ?
                         <a
                             rel="nofollow"
-                            className="btn btn-info btn-sm"
+                            className="btn btn-info btn-sm btn-left"
                             href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
                         >
                             See peaks
@@ -387,6 +388,52 @@ const PeakDetails = (props) => {
         <div>
             <SortTablePanel title="Peak details">
                 <SortTable list={peaks} columns={peaksTableColumns} />
+            </SortTablePanel>
+        </div>
+    );
+
+}
+
+const ResultsTable = (props) => {
+
+    const context = props.context;
+    const data = context["@graph"];
+
+    const dataColumns = {
+
+        assay_title: {
+            title: 'Method',
+            getValue: item => item.assay_title ? item.assay_title : item.annotation_type,
+        },
+
+        biosample_term_name: {
+            title: 'Biosample term name',
+        },
+
+        organ_slims: {
+            title: 'Organ',
+        },
+
+        assay_slims: {
+            title: 'Assay',
+        },
+
+        accession: {
+            title: "Link",
+            display: (item) => {
+                return <a href={item['@id']}>{item.accession}</a>;
+            }
+        },
+
+        description: {
+            title: 'Description',
+        },
+    };
+
+    return (
+        <div>
+            <SortTablePanel title="Results">
+                <SortTable list={data} columns={dataColumns} />
             </SortTablePanel>
         </div>
     );
@@ -538,23 +585,16 @@ class RegulomeSearch extends React.Component {
 
                 <AdvSearch {...this.props} />
                 {notification.startsWith('Success') ?
-                    <div className="panel data-display main-panel">
-                        <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3">
-                                <FacetList
-                                    {...this.props}
-                                    facets={facets}
-                                    filters={filters}
-                                    searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                    onFilter={this.onFilter}
-                                />
-                            </div>
-
-                            <div className="col-sm-7 col-md-8 col-lg-9">
+                    <div>
+                        <div>
+                            <div className="panel">
                                 <div>
+
+                                    <TestViz {...this.props}/>
+
                                     {visualizeKeys && context.visualize_batch && !visualizeDisabled ?
                                         <div className="visualize-block">
-                                            <h4>Visualizations</h4>
+                                            <h4>Biodalliance</h4>
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['Quick View']} rel="noopener noreferrer" target="_blank">Quick View
@@ -568,7 +608,7 @@ class RegulomeSearch extends React.Component {
                                         </div>
                                     :
                                         <div className="visualize-block">
-                                            <h4>Visualizations</h4>
+                                            <h4>Biodalliance</h4>
                                             <div className="visualize-element visualize-error">Filter to fewer than 100 results to visualize</div>
                                         </div>
                                     }
@@ -604,9 +644,7 @@ class RegulomeSearch extends React.Component {
 
                                 <hr />
 
-                                <ul className="nav result-table" id="result-table">
-                                    {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
-                                </ul>
+                                <ResultsTable {...this.props} />
 
                             </div>
                         </div>

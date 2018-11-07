@@ -39,6 +39,7 @@ require('./region_search');
 require('./regulome_summary');
 require('./auditmatrix');
 require('./gene');
+require('./visualizations');
 
 
 module.exports = require('./app');
