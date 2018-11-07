@@ -1,5 +1,9 @@
 from encoded.vis_defines import vis_format_url
 
+BATCH_DOWNLOAD_DOC_TYPES = [
+    ['Experiment'],
+    ['Annotation'],
+]
 
 def format_results(request, hits, result=None):
     """
@@ -82,11 +86,12 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch download URL for experiments and annotation
     # batch download disabled for region-search results
     # TODO: Can potentially be enabled for dataset...
-    if '/region-search/' not in request.url \
-        and doc_types in (['Experiment'], ['Annotation']) \
-        and any(
+    if (
+            '/region-search/' not in request.url and
+            doc_types in BATCH_DOWNLOAD_DOC_TYPES and
+            any(
                 bucket['doc_count'] > 0
-                for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
+                for bucket in aggregations['files-file_type']['files-file_type']['buckets'])):
         actions['batch_download'] = request.route_url(
             'batch_download',
             search_params=request.query_string
