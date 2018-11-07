@@ -583,7 +583,7 @@ def generate_summary_dictionary(
             dict_of_phrases['sex'] = sex
     
     if preservation_method is not None:
-        dict_of_phrases['preservation_method'] = preservation_method
+        dict_of_phrases['preservation_method'] = 'preserved by ' + preservation_method
 
     if biosample_term_name is not None:
         dict_of_phrases['sample_term_name'] = biosample_term_name
