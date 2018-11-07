@@ -225,6 +225,7 @@ class Experiment(Dataset,
                                 treatment_objects_list,
                                 part_of_object,
                                 originated_from_object,
+                                biosampleObject.get('preservation_method'),
                                 modifications_list,
                                 True)
 
@@ -240,6 +241,7 @@ class Experiment(Dataset,
                 'modifications_list',
                 'originated_from',
                 'treatments_phrase',
+                'preservation_method',
                 'depleted_in'
             ]
         else:
@@ -253,6 +255,7 @@ class Experiment(Dataset,
                 'modifications_list',
                 'originated_from',
                 'treatments_phrase',
+                'preservation_method',
                 'depleted_in'
             ]
         if len(dictionaries_of_phrases) > 0:

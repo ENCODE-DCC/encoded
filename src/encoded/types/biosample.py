@@ -495,9 +495,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             post_treatment_time,
             post_treatment_time_units,
             treatment_objects_list,
-            preservation_method,
             part_of_object,
             originated_from_object,
+            preservation_method,
             modifications_list)
 
         return construct_biosample_summary([biosample_dictionary],
@@ -580,11 +580,10 @@ def generate_summary_dictionary(
                 dict_of_phrases['sex'] = sex
 
         else:
-            dict_of_phrases['sex'] = sex
-    
+            dict_of_phrases['sex'] = sex   
     if preservation_method is not None:
-        dict_of_phrases['preservation_method'] = 'preserved by ' + preservation_method
-
+        dict_of_phrases['preservation_method'] = 'preserved by ' + \
+                                                            preservation_method
     if biosample_term_name is not None:
         dict_of_phrases['sample_term_name'] = biosample_term_name
 
