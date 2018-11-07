@@ -7,7 +7,6 @@ import { auditDecor } from './audit';
 import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
-import { ExperimentTable } from './dataset';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { CartToggle } from './cart';
@@ -17,7 +16,7 @@ import { singleTreatment, AlternateAccession, DisplayAsJson } from './objectutil
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede, ControllingExperiments } from './typeutils';
 
 
 const anisogenicValues = [
@@ -149,37 +148,6 @@ function AssayDetails(replicates, libVals, libSpecials, libComps) {
     // Finally, return the array of JSX renderings of all assay details.
     return components;
 }
-
-
-const ControllingExperiments = (props) => {
-    const context = props.context;
-
-    if (props.items.length) {
-        return (
-            <div>
-                <ExperimentTable
-                    {...props}
-                    items={props.items}
-                    limit={5}
-                    url={props.url}
-                    title={`Experiments with ${context.accession} as a control:`}
-                />
-            </div>
-        );
-    }
-    return null;
-};
-
-ControllingExperiments.propTypes = {
-    context: PropTypes.object.isRequired, // Experiment object containing the table being rendered
-    items: PropTypes.array, // Experiments to display in the table
-    url: PropTypes.string, // URL to go to full search results corresponding to the table
-};
-
-ControllingExperiments.defaultProps = {
-    items: [],
-    url: '',
-};
 
 
 class ExperimentComponent extends React.Component {
