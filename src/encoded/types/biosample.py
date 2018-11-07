@@ -410,6 +410,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 originated_from=None,
                 transfection_method=None,
                 transfection_type=None,
+                preservation_method=None,
                 genetic_modifications=None,
                 model_organism_donor_modifications=None):
 
@@ -424,6 +425,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'treatments_phrase',
             'depleted_in',
             'phase',
+            'preservation_method',
             'fractionated'
         ]
         organismObject = None
@@ -448,7 +450,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             originated_from_object = request.embed(originated_from, '@@object')
 
         modifications_list = None
-
 
         applied_modifications = get_applied_modifications(
             genetic_modifications, model_organism_donor_modifications)
@@ -494,6 +495,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             post_treatment_time,
             post_treatment_time_units,
             treatment_objects_list,
+            preservation_method,
             part_of_object,
             originated_from_object,
             modifications_list)
@@ -522,6 +524,7 @@ def generate_summary_dictionary(
         post_treatment_time=None,
         post_treatment_time_units=None,
         treatment_objects_list=None,
+        preservation_method=None,
         part_of_object=None,
         originated_from_object=None,
         modifications_list=None,
@@ -539,6 +542,7 @@ def generate_summary_dictionary(
         'depleted_in': '',
         'modifications_list': '',
         'strain_background': '',
+        'preservation_method': '',
         'experiment_term_phrase': ''
     }
 
@@ -577,6 +581,9 @@ def generate_summary_dictionary(
 
         else:
             dict_of_phrases['sex'] = sex
+    
+    if preservation_method is not None:
+        dict_of_phrases['preservation_method'] = preservation_method
 
     if biosample_term_name is not None:
         dict_of_phrases['sample_term_name'] = biosample_term_name
