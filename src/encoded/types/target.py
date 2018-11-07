@@ -30,7 +30,7 @@ class Target(SharedItem):
         keys.setdefault('target:name', []).append(self._name(properties))
         return keys
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Organism",
         "description": "Organism bearing the target.",
         "comment": "Calculated from either target_organism or genes",
