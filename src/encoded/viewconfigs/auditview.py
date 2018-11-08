@@ -154,14 +154,21 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             "aggs": aggs,
         }
 
-    def _summarize_buckets(self, x_buckets, outer_bucket, audit_field_list):
-        '''Helper method for preprocessing view'''
+    def _summarize_buckets(self, x_buckets, outer_bucket, audit_field_list, bucket_key):
+        """
+        Preprocesses view.
+
+            :param x_buckets: x bucket
+            :param outer_bucket: outer bucket
+            :param audit_field_list: audit field list
+            :param bucket_key: buckey key
+        """
         # pylint: disable=arguments-differ
         for category in audit_field_list:
             counts = {}
             for bucket in outer_bucket[category]['buckets']:
                 counts = {}
-                for assay in bucket['assay_title']['buckets']:
+                for assay in bucket[bucket_key]['buckets']:
                     doc_count = assay['doc_count']
                     if doc_count > self._matrix['max_cell_doc_count']:
                         self._matrix['max_cell_doc_count'] = doc_count
@@ -170,7 +177,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 summary = []
                 for xbucket in x_buckets:
                     summary.append(counts.get(xbucket['key'], 0))
-                bucket['assay_title'] = summary
+                bucket[bucket_key] = summary
 
     def _set_query_aggs(self, query):
         '''Helper method for preprocessing view'''
@@ -226,9 +233,18 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             x_buckets,
             outer_bucket,
             grouping_fields,
-            aggregations
-        ):
-        '''Helper method for preprocessing view'''
+            aggregations,
+            bucket_key
+        ): # pylint: disable=too-many-arguments
+        """
+        Preprocesses view.
+
+            :param x_buckets: x buckets
+            :param outer_bucket: outer buckets
+            :param grouping_fields: field groups
+            :param aggregations: aggregations
+            :param bucket_key: bucket key
+        """
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
         if grouping_fields:
@@ -236,10 +252,11 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 x_buckets,
                 outer_bucket[group_by],
                 grouping_fields,
-                aggregations
+                aggregations,
+                bucket_key
             )
         counts = {}
-        for assay in outer_bucket[group_by]['assay_title']['buckets']:
+        for assay in outer_bucket[group_by][bucket_key]['buckets']:
             doc_count = assay['doc_count']
             if doc_count > self._matrix['max_cell_doc_count']:
                 self._matrix['max_cell_doc_count'] = doc_count
@@ -248,8 +265,8 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         summary = []
         for xbucket in x_buckets:
             summary.append(counts.get(xbucket['key'], 0))
-        aggregations[group_by] = outer_bucket[group_by]['assay_title']
-        aggregations[group_by]['assay_title'] = summary
+        aggregations[group_by] = outer_bucket[group_by][bucket_key]
+        aggregations[group_by][bucket_key] = summary
         aggregations[group_by].pop("buckets", None)
         aggregations[group_by].pop("sum_other_doc_count", None)
         aggregations[group_by].pop("doc_count_error_upper_bound", None)
@@ -335,15 +352,19 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             total,
             self._principals
         )
+        doc_type = self._doc_types[0].lower()
+        bucket_key = ('annotation_type' if doc_type == 'annotation' else 'assay_title')
         self._summarize_buckets(
             aggregations['matrix']['x']['buckets'],
             aggregations['matrix'],
-            audit_field_list)
+            audit_field_list,
+            bucket_key)
         self._summarize_no_audits(
             aggregations['matrix']['x']['buckets'],
             aggregations['matrix'],
             self._no_audits_groupings,
-            aggregations['matrix'])
+            aggregations['matrix'],
+            bucket_key)
         self._update_aggregations(aggregations)
         self._result.update(
             search_result_actions(
