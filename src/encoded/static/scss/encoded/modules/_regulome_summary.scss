@@ -8,4 +8,20 @@ svg {
     text {
         font-family: 'Khula', sans-serif !important;
     }
+    .chart-title {
+        font-weight: 700;
+    }
+}
+
+.panel-heading {
+    padding-top: 15px;
+}
+
+.barchart_tooltip {
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #E5E5E5;
+    -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }

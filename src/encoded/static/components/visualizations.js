@@ -71,12 +71,14 @@ export class TestViz extends React.Component {
                         facets[0].terms = [...facets[0].terms, ...facets[1].terms];
                         facets[0].total += facets[1].total;
                     }
-                    chosenIDX.push(facetIDX);
                     obj = facet.terms;
                     arr = Object.keys( obj ).map(function ( key ) {
                         return obj[key]["doc_count"];
                     });
                     overallMax = Math.max(Math.max(...arr), overallMax);
+                    if (Math.max(...arr) > 0) {
+                        chosenIDX.push(facetIDX);
+                    }
                 }
             });
         });
@@ -112,7 +114,7 @@ export class TestViz extends React.Component {
         function drawOneChart(svgBars, chartData, maxWidth, fillColor, xAxisLabel, yAxisLabel, maxY){
 
             // create SVG container for chart components
-            let margin = {top: 20, bottom: 100, right: 20, left: 40};
+            let margin = {top: 40, bottom: 140, right: 20, left: 40};
             let height = 300;
             let width = maxWidth - 20;
 
@@ -126,9 +128,6 @@ export class TestViz extends React.Component {
                 .range([margin.left, width - margin.right])
                 .padding(0.2)
 
-            // let yAxis = d3.scaleLinear()
-            //     .domain([0, d3.max(chartData, d => d.doc_count)]).nice()
-            //     .range([height - margin.bottom, margin.top])
             const yScale = d3.scaleLinear()
                 .domain([0, maxY])
                 .range([height - margin.bottom, margin.top])
@@ -137,14 +136,14 @@ export class TestViz extends React.Component {
             const xAxis = svgBars.append("g")
                 .attr("transform", `translate(0,${height - margin.bottom})`)
                 .call(d3.axisBottom(xScale))
-                    // .selectAll("text")
-                    //     .style("text-anchor", "end")
-                    //     .attr("dx", "-.8em")
-                    //     .attr("dy", "-.55em")
-                    //     .attr("transform", "rotate(-90)" )
+                    .selectAll("text")
+                        .style("text-anchor", "end")
+                        .attr("dx", "-.8em")
+                        .attr("dy", "-.55em")
+                        .attr("transform", "rotate(-90)" )
                 .append("g").append("text")
                     .attr("class", "label")
-                    .attr("x", width - 60)
+                    .attr("x", width)
                     .attr("y", 40)
                     .attr("fill","black")
                     .style("text-anchor", "end")
@@ -155,15 +154,12 @@ export class TestViz extends React.Component {
                 .call(d3.axisLeft(yScale)
                     .ticks(maxY));
 
-                    // .tickFormat(d3.timeFormat('%M:%S'));
-            //     .append("text")
-            //         .attr("class", "label")
-            //         .attr("transform", "rotate(-90)")
-            //         .attr("y", -40)
-            //         .attr("x", -20)
-            //         .attr("fill","black")
-            //         .style("text-anchor", "end")
-            //         .text(yAxisLabel)
+            svgBars.append("text")
+                .attr("class", "chart-title")
+                .attr("x", width/2)
+                .attr("y", 30)
+                .text(xAxisLabel)
+                .style("text-anchor", "middle")
 
             svgBars.selectAll("bar")
                 .data(chartData)
@@ -226,7 +222,6 @@ export class TestViz extends React.Component {
 
         return (
             <div>
-                <h4 id="chart-header"></h4>
                 <div ref={(div) => { this.chartdisplay = div; }} className="chart-display" />
             </div>
         );
