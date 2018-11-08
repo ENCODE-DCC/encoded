@@ -28,6 +28,9 @@
                             "required": ["modified_site_by_target_id", "introduced_tags"]
                         },
                         {
+                            "required": ["modified_site_by_gene_id", "introduced_tags"]
+                        },
+                        {
                             "required": ["modified_site_nonspecific", "introduced_tags"]
                         }
                     ],
@@ -44,6 +47,9 @@
                     "oneOf": [
                         {
                             "required": ["modified_site_by_target_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_gene_id"]
                         },
                         {
                             "required": ["modified_site_by_coordinates"]
@@ -114,6 +120,9 @@
                         },
                         {
                              "required": ["modified_site_by_sequence"]
+                        },
+                        {
+                            "required": ["modified_site_by_gene_id"]
                         }
                     ],
                     "properties": {
@@ -417,6 +426,13 @@
             "type": "string",
             "linkTo": "Target"
         },
+        "modified_site_by_gene_id": {
+            "title": "Modification site",
+            "description": "The name of the gene whose expression or product is modified by the genetic modification.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Gene"
+        },
         "modified_site_by_coordinates": {
             "title": "Modification site",
             "description": "Genomic coordinates specifying the location of the modification.",
@@ -504,7 +520,8 @@
                             "T2A",
                             "TRE",
                             "V5",
-                            "YFP"
+                            "YFP",
+                            "mAID-mClover"
                         ]
                     },
                     "location": {
