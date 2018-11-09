@@ -33,8 +33,7 @@ class BiosampleType(SharedItem):
         if properties is None:
             properties = self.upgrade_properties()
         return u'{}_{}'.format(
-            properties['classification'],
-            '_'.join(properties['term_ids'])
+            properties['classification'], sorted(properties['term_ids'])[0]
         ).replace(' ', '_').replace(':', '_')
 
     @property

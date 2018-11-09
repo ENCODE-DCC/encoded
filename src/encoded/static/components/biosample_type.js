@@ -47,7 +47,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                     </div>
 
                     <div data-test="term-id">
-                        <dt>Term ID</dt>
+                        <dt>Term IDs</dt>
                         <dd>
                             <ul>
                                 {context.term_ids.map(termID =>
