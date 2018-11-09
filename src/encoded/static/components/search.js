@@ -22,6 +22,7 @@ import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 const types = {
     annotation: { title: 'Annotation file set' },
     antibody_lot: { title: 'Antibodies' },
+    biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
