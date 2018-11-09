@@ -55,27 +55,28 @@ function rAssemblyToSources(assembly, region) {
 
     if (region) {
         // console.log('region provided: %s', region);
+        // if a region was set (in region_search or regulome_search), then
+        // parse the 'chr:start-end' format and set the browser window at the region
         const reg = region.split(':');
         browserCfg.chr = reg[0].substring(3, reg[0].length);
         const positions = reg[1].split('-');
         for (let i = 0; i < positions.length; i += 1) {
             positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
         }
-        if (positions.length > 1) {
-            if (positions[0] > 10000) {
-                browserCfg.viewStart = positions[0] - 10000;
-            } else {
-                browserCfg.viewStart = 1;
-            }
-            browserCfg.viewEnd = positions[1] + 10000;
-        } else {
-            if (positions[0] > 10000) {
-                browserCfg.viewStart = positions[0] - 10000;
-            } else {
-                browserCfg.viewStart = 1;
-            }
-            browserCfg.viewEnd = positions[0] + 10000;
+        if (positions.length === 1) {
+            positions[1] = positions[0];
         }
+        // If region is small (e.g. SNP location), then expand the browser window
+        if ((positions[1] - positions[0]) < 10) {
+            if (positions[0] > 1000) {
+                positions[0] -= 1000;
+            } else {
+                positions[0] = 1;
+            }
+            positions[1] += 1000;
+        }
+        browserCfg.viewStart = positions[0];
+        browserCfg.viewEnd = positions[1];
         browserCfg.positionSet = true;
     }
 
