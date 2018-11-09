@@ -137,10 +137,11 @@ def test_biosample_summary(testapp,
                                             "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
+                                            "preservation_method": "cryopreservation",
                                             'treatments': [treatment['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens male child (10 days) liver tissue treated with ethanol')
+        'Homo sapiens male child (10 days) liver tissue treated with ethanol, preserved by cryopreservation')
 
 
 def test_biosample_summary_construct(testapp,

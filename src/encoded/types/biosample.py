@@ -410,6 +410,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 originated_from=None,
                 transfection_method=None,
                 transfection_type=None,
+                preservation_method=None,
                 genetic_modifications=None,
                 model_organism_donor_modifications=None):
 
@@ -422,6 +423,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'modifications_list',
             'originated_from',
             'treatments_phrase',
+            'preservation_method',
             'depleted_in',
             'phase',
             'fractionated'
@@ -448,7 +450,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             originated_from_object = request.embed(originated_from, '@@object')
 
         modifications_list = None
-
 
         applied_modifications = get_applied_modifications(
             genetic_modifications, model_organism_donor_modifications)
@@ -494,6 +495,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             post_treatment_time,
             post_treatment_time_units,
             treatment_objects_list,
+            preservation_method,
             part_of_object,
             originated_from_object,
             modifications_list)
@@ -522,6 +524,7 @@ def generate_summary_dictionary(
         post_treatment_time=None,
         post_treatment_time_units=None,
         treatment_objects_list=None,
+        preservation_method=None,
         part_of_object=None,
         originated_from_object=None,
         modifications_list=None,
@@ -539,6 +542,7 @@ def generate_summary_dictionary(
         'depleted_in': '',
         'modifications_list': '',
         'strain_background': '',
+        'preservation_method': '',
         'experiment_term_phrase': ''
     }
 
@@ -576,8 +580,10 @@ def generate_summary_dictionary(
                 dict_of_phrases['sex'] = sex
 
         else:
-            dict_of_phrases['sex'] = sex
-
+            dict_of_phrases['sex'] = sex   
+    if preservation_method is not None:
+        dict_of_phrases['preservation_method'] = 'preserved by ' + \
+                                                            preservation_method
     if biosample_term_name is not None:
         dict_of_phrases['sample_term_name'] = biosample_term_name
 
@@ -791,7 +797,11 @@ def generate_sentence(phrases_dict, values_list):
     sentence = ''
     for key in values_list:
         if phrases_dict[key] != '':
-            sentence += phrases_dict[key].strip() + ' '
+            if 'preservation_method' in key:
+                sentence = sentence.strip() + ', ' + \
+                                    phrases_dict[key].strip() + ' '
+            else:
+                sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
 
 
@@ -812,6 +822,7 @@ def get_applied_modifications(genetic_modifications=None, model_organism_donor_m
         return model_organism_donor_modifications
     else:
         return []
+
 
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
