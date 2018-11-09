@@ -146,7 +146,7 @@ export const NavItem = (props) => {
             <li className={dropdownId ? `dropdown${dropdownOpen ? ' open' : ''}` : ''}>
                 {dropdownTitle ?
                     <NavItemButton
-                        clickHandler={context.dropdownClick}
+                        clickHandler={props.dropdownClick}
                         dropdownOpen={dropdownOpen}
                         dropdownTitle={dropdownTitle}
                         dropdownId={dropdownId}
