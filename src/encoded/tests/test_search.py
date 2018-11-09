@@ -200,7 +200,7 @@ def test_matrix_view(workbook, testapp):
     assert res['@id'] == '/matrix/?type=Experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
-    assert res['title'] == 'Experiment Matrix'
+    assert res['title'] == 'Experiment matrix'
     assert res['total'] > 0
     assert 'facets' in res
     assert 'filters' in res

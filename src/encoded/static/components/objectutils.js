@@ -659,3 +659,43 @@ InternalTags.propTypes = {
 InternalTags.defaultProps = {
     css: '',
 };
+
+
+/**
+ * Given a search results object, extract the type of object that was requested in the query
+ * string that generated the search results object and map it to a presentable human-generated
+ * object type name from that kind of object's schema. Optionally wrap the name in a given wrapper
+ * component. Nothing gets rendered if the search result's query string doesn't specify a
+ * "type=anything" or has more than one. The wrapper function must take the form of:
+ * "title => <Wrapper>{title}</Wrapper>". Idea for the component wrapping technique from:
+ * https://gist.github.com/kitze/23d82bb9eb0baabfd03a6a720b1d637f
+ */
+export const DocTypeTitle = ({ searchResults, wrapper }, reactContext) => {
+    // Determine the search page doc_type title to display at the top of the facet list.
+    let facetTitle = '';
+    const docTypes = searchResults.filters.length > 0 ? searchResults.filters.filter(searchFilter => searchFilter.field === 'type') : [];
+    if (docTypes.length === 1) {
+        facetTitle = reactContext.profilesTitles[docTypes[0].term];
+    }
+
+    // If one object type was requested, render it *into* the given wrapper component if one was
+    // given.
+    if (facetTitle) {
+        const facetTitleComponent = <span>{facetTitle}</span>;
+        return wrapper ? wrapper(facetTitleComponent) : facetTitleComponent;
+    }
+    return null;
+};
+
+DocTypeTitle.propTypes = {
+    searchResults: PropTypes.object.isRequired,
+    wrapper: PropTypes.func,
+};
+
+DocTypeTitle.defaultProps = {
+    wrapper: null,
+};
+
+DocTypeTitle.contextTypes = {
+    profilesTitles: PropTypes.object,
+};

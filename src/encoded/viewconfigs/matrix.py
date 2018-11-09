@@ -44,10 +44,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     @staticmethod
     def _set_result_title(type_info):
         '''Helper function for class and child classes'''
-        if type_info.name == 'Annotation':
-            title = 'Encyclopedia'
-        else:
-            title = type_info.name + ' Matrix'
+        title = type_info.name + ' matrix'
         return title
 
     def _construct_query(self):
