@@ -34,7 +34,7 @@ const SummaryTitle = (props) => {
     }
 
     return (
-        <div>
+        <div className="summary-header__title_control">
             <div className="summary-header__title">
                 <h1>{context.title}</h1>
                 {context.views ?
