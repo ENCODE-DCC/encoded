@@ -114,13 +114,6 @@
                 "organoid"
             ]
         },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the type of the biosample. Do not include details about any specific biosamples.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
-            "permission": "import_items"
-        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -178,9 +171,6 @@
     "columns": {
         "classification": {
             "title": "classification"
-        },
-        "description": {
-            "title": "Description"
         },
         "term_ids": {
             "title": "Ontology IDs"

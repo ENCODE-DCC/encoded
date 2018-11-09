@@ -59,17 +59,10 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                         </dd>
                     </div>
 
-                    {context.description ?
-                        <div data-test="description">
-                            <dt>Description</dt>
-                            <dd className="sentence-case">{context.description}</dd>
-                        </div>
-                    : null}
-
-                    {context.note ?
+                    {context.notes ?
                         <div data-test="note">
-                            <dt>Note</dt>
-                            <dd>{context.note}</dd>
+                            <dt>Notes</dt>
+                            <dd>{context.notes}</dd>
                         </div>
                     : null}
 

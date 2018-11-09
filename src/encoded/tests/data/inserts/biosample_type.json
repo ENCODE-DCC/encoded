@@ -2,56 +2,48 @@
     "classification": "cell line",
     "uuid": "530d3486-b2b6-4026-9ef2-4149b5d1ca60",
     "term_name": "A549",
-    "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
     "term_ids": ["EFO:0001086"],
     "status": "released"
 }, {
     "classification": "in vitro differentiated cells",
     "uuid": "4847449a-3e1e-4d56-8c7d-dbc1638d057b",
     "term_name": "AVA",
-    "description": "Young adult worms",
     "term_ids": ["NTR:0005842"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "16e3ae2b-ebc1-4dd4-a655-814eb76b9bf5",
     "term_name": "C2C12",
-    "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury",
     "term_ids": ["EFO:0001098"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "d1d53fcd-9497-4b0f-b94f-57cc5a570d97",
     "term_name": "CH12.LX cell",
-    "description": "B-cell lymphoma (GM12878 analog)",
     "term_ids": ["EFO:0005233"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "c4445d05-a05a-46bc-8330-2e0c1644fdae",
     "term_name": "GM06990",
-    "description": "B-lymphocyte, lymphoblastoid, International HapMap Project, CEPH/Utah, treatment: Epstein-Barr Virus transformed",
     "term_ids": ["EFO:0002783"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "58f3d100-c166-4638-afdb-e941d7c77747",
     "term_name": "GM12878",
-    "description": "B-lymphocyte, lymphoblastoid, International HapMap Project - CEPH/Utah - European Caucasion, Epstein-Barr Virus",
     "term_ids": ["EFO:0002784"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "eedcfc42-d5a1-4a7e-a420-659f0054ce24",
     "term_name": "H9-hESC",
-    "description": "embryonic stem cell (hESC) H9",
     "term_ids": ["NTR:0000838"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "df2054b1-3484-4d06-b64c-d3fdb450df9f",
     "term_name": "K562",
-    "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC. ENCODE3 RNA-seq evaluation replicate 2.",
     "term_ids": ["EFO:0002067"],
     "status": "released"
 }, {
@@ -65,70 +57,60 @@
     "classification": "cell line",
     "uuid": "24db2124-07e3-4ad8-b74a-e142a2e08748",
     "term_name": "MCF-7",
-    "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
     "term_ids": ["EFO:0001203"],
     "status": "released"
 }, {
     "classification": "cell line",
     "uuid": "8cf9e560-36e9-444e-8855-20e535c0cc5f",
     "term_name": "SK-N-SH",
-    "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
     "term_ids": ["EFO:0003072"],
     "status": "released"
 }, {
     "classification": "primary cell",
     "uuid": "055c77f2-2a91-4cf1-82dc-4ac6328d123e",
     "term_name": "aortic smooth muscle cell",
-    "description": "Normal Human Aortic Smooth Muscle Cells (HAoSMC)",
     "term_ids": ["CL:0002539"],
     "status": "released"
 }, {
     "classification": "primary cell",
     "uuid": "2b56c868-0e0e-4bb7-a6f8-48a575645307",
     "term_name": "basal cell of epithelium of terminal bronchiole",
-    "description": "small airway epithelial cells",
     "term_ids": ["CL:1000350"],
     "status": "released"
 }, {
     "classification": "primary cell",
     "uuid": "c4803eea-e154-4c99-b572-719308a1a0bd",
     "term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
-    "description": "liver fraction CD117+,CD71+,TER119-",
     "term_ids": ["NTR:0000031"],
     "status": "released"
 }, {
     "classification": "tissue",
     "uuid": "eea050cd-9e8c-4420-967f-3581b20536ab",
     "term_name": "embryonic facial prominence",
-    "description": "Craniofacial E14.5 one tube",
     "term_ids": ["UBERON:0012314"],
     "status": "released"
 }, {
     "classification": "primary cell",
     "uuid": "3fc75da8-8f87-4749-939e-cee38f5c7ab0",
     "term_name": "embryonic stem cell",
-    "description": "Undifferentiated mouse embryonic stem cells",
     "term_ids": ["CL:0002322"],
     "status": "released"
 }, {
     "classification": "single cell",
     "uuid": "70a81e48-20c3-4de9-a5aa-ef92ff9b6e27",
     "term_name": "embryonic stem cell",
-    "description": "Undifferentiated mouse embryonic stem single cell",
     "term_ids": ["CL:0002322"],
     "status": "released"
 }, {
     "classification": "tissue",
     "uuid": "6d82d15f-9a89-4120-904d-c14530ed83db",
     "term_name": "heart",
-    "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
     "term_ids": ["UBERON:0000948"],
     "status": "released"
 }, {
     "classification": "tissue",
     "uuid": "328f8d39-e658-480b-b3ac-2bf92a094606",
     "term_name": "islet of Langerhans",
-    "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
     "term_ids": ["UBERON:0000006"],
     "status": "released"
 }, {
@@ -141,14 +123,12 @@
     "classification": "whole organisms",
     "uuid": "2c89df50-29f4-4876-974c-40c9733f9f86",
     "term_name": "multi-cellular organism",
-    "description": "Mouse; Fruit fly; worm",
     "term_ids": ["UBERON:0000468"],
     "status": "released"
 }, {
     "classification": "in vitro differentiated cells",
     "uuid": "822bf683-7e94-4aa4-afbd-8e5f3293621a",
     "term_name": "myocyte",
-    "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
     "term_ids": ["NTR:0000022"],
     "status": "released"
 }, {
