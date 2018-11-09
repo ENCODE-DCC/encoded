@@ -60,8 +60,9 @@ def audit_inconsistent_modifications_tag(value, system):
         if len(tags_names) > 0:
             antibody_targets = get_ab_targets(value)
             for ab_target in antibody_targets:
-                if 'recombinant protein' in ab_target['investigated_as'] or \
-                   'tag' in ab_target['investigated_as']:
+                if any(i in ab_target['investigated_as']
+                       for i in ['recombinant protein', 'tag',
+                                 'synthetic tag']):
                     if ab_target['label'] in tags_names:
                         matching_flag = True
                         break
