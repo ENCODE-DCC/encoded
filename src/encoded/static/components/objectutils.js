@@ -699,28 +699,3 @@ DocTypeTitle.defaultProps = {
 DocTypeTitle.contextTypes = {
     profilesTitles: PropTypes.object,
 };
-
-
-/**
- * Display a list of internal_tags for an object as badges that link to a corresponding search. The
- * object in `context` must have at least one `internal_tags` value or the results are
- * unpredictable.
- */
-export const InternalTags = ({ context, css }) => {
-    const tagBadges = context.internal_tags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${context['@type'][0]}&internal_tags=${globals.encodedURIComponent(tag)}`;
-        return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${context['@type'][0]} with internal tag ${tag}`} /></a>;
-    });
-    return <span className={css}>{tagBadges}</span>;
-};
-
-InternalTags.propTypes = {
-    /** encode object being displayed */
-    context: PropTypes.object.isRequired,
-    /** Optional CSS class to assign to <span> surrounding all the badges */
-    css: PropTypes.string,
-};
-
-InternalTags.defaultProps = {
-    css: '',
-};
