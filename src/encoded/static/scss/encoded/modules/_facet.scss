@@ -1,5 +1,5 @@
 .box.facets {
-    padding: 10px;
+    padding: 30px 10px 10px;
     border: 1px #ccc solid;
     border-radius: 3px;
     overflow: hidden;
@@ -48,9 +48,10 @@
 }
 
 .clear-filters-control {
-    margin-bottom: 5px;
-    text-align: right;
     font-size: 0.9rem;
+    position: absolute;
+    top: 10px;
+    right: 25px;
 
     @at-root #{&}--summary {
         margin-top: -30px;
