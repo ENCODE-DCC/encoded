@@ -359,13 +359,15 @@ class FileComponent extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!this.context.session_properties.admin;
 
-        // Collect up relevant pipelines.
+        // Collect up relevant pipelines and quality metrics.
         let pipelines = [];
         if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length) {
             pipelines = context.analysis_step_version.analysis_step.pipelines;
         }
+        const qualityMetrics = context.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
 
         return (
             <div className={itemClass}>
@@ -567,8 +569,8 @@ class FileComponent extends React.Component {
                     <DocumentsPanel title="File format specifications" documentSpecs={[{ documents: this.state.fileFormatSpecs }]} />
                 : null}
 
-                {context.quality_metrics && context.quality_metrics.length ?
-                    <QualityMetricsPanel qcMetrics={context.quality_metrics} file={context} />
+                {qualityMetrics.length ?
+                    <QualityMetricsPanel qcMetrics={qualityMetrics} file={context} />
                 : null}
             </div>
         );
