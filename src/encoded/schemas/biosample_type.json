@@ -136,6 +136,7 @@
             "permission": "import_items",
             "type": "array",
             "uniqueItems": true,
+            "minItems": 1,
             "items": {
                 "@type": "@id",
                 "title": "Ontology ID",
