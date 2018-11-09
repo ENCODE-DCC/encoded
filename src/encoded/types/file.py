@@ -437,6 +437,19 @@ class File(Item):
             external['key']
         ).put(ACL='private')
 
+    def _should_set_object_acl(self):
+        '''
+        Skip setting ACL on certain objects.
+        '''
+        properties = self.upgrade_properties()
+        skip_acl_prop_keys = [
+            'restricted',
+            'no_file_available',
+        ]
+        if any(properties.get(prop_key) for prop_key in set(skip_acl_prop_keys)):
+            return False
+        return True
+
     def set_status(self, new_status, request, parent=True):
         status_set = super(File, self).set_status(
             new_status,
@@ -445,18 +458,19 @@ class File(Item):
         )
         if not status_set or not asbool(request.params.get('update')):
             return False
-        # Change permission in S3.
-        try:
-            if new_status in self.public_s3_statuses:
-                self.set_public_s3()
-            elif new_status in self.private_s3_statuses:
-                self.set_private_s3()
-        except ClientError as e:
-            # Demo trying to set ACL on production object?
-            if e.response['Error']['Code'] == 'AccessDenied':
-                logging.warn(e)
-            else:
-                raise e
+        if self._should_set_object_acl():
+            # Change permission in S3.
+            try:
+                if new_status in self.public_s3_statuses:
+                    self.set_public_s3()
+                elif new_status in self.private_s3_statuses:
+                    self.set_private_s3()
+            except ClientError as e:
+                # Demo trying to set ACL on production object?
+                if e.response['Error']['Code'] == 'AccessDenied':
+                    logging.warn(e)
+                else:
+                    raise e
         return True
 
 
