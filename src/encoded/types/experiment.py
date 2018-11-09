@@ -202,7 +202,7 @@ class Experiment(Dataset,
 
                                     modifications_list.append((gm_object['method'], modification_dict))
 
-
+                            preservation_method = None
                             dictionary_to_add = generate_summary_dictionary(
                                 organismObject,
                                 donorObject,
@@ -223,7 +223,7 @@ class Experiment(Dataset,
                                 biosampleObject.get('post_treatment_time'),
                                 biosampleObject.get('post_treatment_time_units'),
                                 treatment_objects_list,
-                                None,
+                                preservation_method,
                                 part_of_object,
                                 originated_from_object,
                                 modifications_list,
