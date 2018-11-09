@@ -732,7 +732,8 @@ class App extends React.Component {
 
         const options = {};
         const actionUrl = url.parse(url.resolve(this.state.href, target.action));
-        options.replace = actionUrl.pathname === url.parse(this.state.href).pathname;
+        // THIS IS THE LINE TO DELETE ??? -------
+        // options.replace = actionUrl.pathname === url.parse(this.state.href).pathname;
         let search = serialize(target);
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
@@ -886,8 +887,10 @@ class App extends React.Component {
             // The URL may have redirected
             const responseUrl = (response.url || mutatableHref) + fragment;
             if (mutatableOptions.replace) {
+                console.log("replace");
                 window.history.replaceState(null, '', responseUrl);
             } else {
+                console.log("push");
                 window.history.pushState(null, '', responseUrl);
             }
             this.setState({
