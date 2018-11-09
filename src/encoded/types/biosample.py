@@ -423,9 +423,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'modifications_list',
             'originated_from',
             'treatments_phrase',
+            'preservation_method',
             'depleted_in',
             'phase',
-            'preservation_method',
             'fractionated'
         ]
         organismObject = None
@@ -495,9 +495,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             post_treatment_time,
             post_treatment_time_units,
             treatment_objects_list,
+            preservation_method,
             part_of_object,
             originated_from_object,
-            preservation_method,
             modifications_list)
 
         return construct_biosample_summary([biosample_dictionary],
@@ -797,7 +797,11 @@ def generate_sentence(phrases_dict, values_list):
     sentence = ''
     for key in values_list:
         if phrases_dict[key] != '':
-            sentence += phrases_dict[key].strip() + ' '
+            if 'preservation_method' in key:
+                sentence = sentence.strip() + ', ' + \
+                                    phrases_dict[key].strip() + ' '
+            else:
+                sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
 
 
@@ -818,6 +822,7 @@ def get_applied_modifications(genetic_modifications=None, model_organism_donor_m
         return model_organism_donor_modifications
     else:
         return []
+
 
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {

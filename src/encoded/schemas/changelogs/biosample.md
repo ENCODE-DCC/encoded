@@ -4,6 +4,7 @@
 
 * *passage_number* was set to have a minimum of 0.
 * *PMI* was set to have a minimum of 1.
+* Added preservation_method to the calculated property of summary.
 
 ### Schema version 21
 
