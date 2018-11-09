@@ -23,6 +23,12 @@ $rotated-th-angle: 30deg;
     }
 }
 
+.matrix__facet--horizontal {
+    h1 {
+        @include facet-title;
+    }
+}
+
 
 th.rotate30 {
     height: $rotated-th-height;

@@ -16,6 +16,28 @@ describe('Server rendering', () => {
     };
 
     beforeEach(() => {
+        // Mock the node fetch() call within App.fetch().
+        global.fetch = jest.fn().mockImplementation(() => (
+            new Promise((resolve) => {
+                resolve({
+                    ok: true,
+                    headers: {
+                        get: () => null,
+                    },
+                    json: () => (
+                        ({
+                            '@type': [
+                                'JSONSchemas',
+                            ],
+                            AntibodyLot: 'Antibody lot',
+                            CpgCorrelationQualityMetric: 'CpG correlation quality metric',
+                            PublicationData: 'Publication data',
+                        })
+                    ),
+                });
+            })
+        ));
+
         const serverApp = <App context={home} href={homeUrl} styles="/static/build/style.css" />;
         const markup = `<!DOCTYPE html>\n${ReactDOMServer.renderToString(serverApp)}`;
         const parser = new DOMParser();
