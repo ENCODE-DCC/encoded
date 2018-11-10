@@ -45,6 +45,12 @@ _app_settings = {
     'postgresql.statement_timeout': 20,
     'tm.attempts': 3,
     'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
+    'queue_type': 'Simple',
+    'queue_server': True,
+    'queue_client': True,
+    'queue_client_processes': 2,
+    'queue_client_chunk_size': 1024,
+    'queue_client_batch_size': 2000,
 }
 
 
