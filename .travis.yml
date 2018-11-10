@@ -67,21 +67,7 @@ before_script:
       while test -f "$SC_PIDFILE" && test ! -f "$SC_READYFILE"; do sleep .5; done
     fi
 script:
-  # - if test -z "$BROWSER"; then npm test; fi
-  - if test -z "$BROWSER"; then bin/test -k track_hubs -v -v --timeout=400 -m "not bdd"; fi
-    # - >
-    #   if test -n "$BROWSER"; then
-    #     test -f "$SC_PIDFILE" && bin/test -v -v --timeout=400 -m "bdd" --tb=short \
-    #       --splinter-implicit-wait 10 \
-    #       --splinter-webdriver remote \
-    #       --splinter-remote-url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
-    #       --splinter-socket-timeout 300 \
-    #       --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
-    #       --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
-    #       --browser-arg-int idleTimeout 300 \
-    #       --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT" \
-    #       --browser-arg browser "$BROWSER"
-    #   fi
+  - if test -z "$BROWSER"; then bin/test  -v -v --timeout=400 -m "not bdd" -k test_trackhubs; fi
 after_script:
   - >
     if test -f "$SC_PIDFILE"; then
