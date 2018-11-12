@@ -4,7 +4,6 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import GeneticModificationSummary from './genetic_modification';
@@ -16,7 +15,7 @@ import pubReferenceList from './reference';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleTable } from './typeutils';
+import { BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
