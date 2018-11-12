@@ -4,8 +4,6 @@ import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import * as globals from './globals';
 import url from 'url';
-import { scaleLinear, scaleBand } from 'd3-scale';
-import { select } from 'd3-selection';
 
 
 // Display information on page as JSON formatted data

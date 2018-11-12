@@ -9,6 +9,7 @@ import * as globals from './globals';
 import _ from 'underscore';
 import { SortTablePanel, SortTable } from './sorttable';
 import { TestViz } from './visualizations';
+import { Biodalliance } from './biodalliance';
 
 
 const regionGenomes = [
@@ -597,6 +598,7 @@ class RegulomeSearch extends React.Component {
                                             <h4>Biodalliance</h4>
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
+                                                    <Biodalliance {...this.props} />
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['Quick View']} rel="noopener noreferrer" target="_blank">Quick View
                                                         <span className="beta-badge">BETA</span>
                                                     </a></div>
