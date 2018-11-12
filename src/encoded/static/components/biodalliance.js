@@ -413,7 +413,9 @@ class GenomeBrowser extends React.Component {
 
     render() {
         return (
-            <div id="svgHolder" className="trackhub-element" />
+            <div className="done">
+                <div id="svgHolder" className="trackhub-element" />
+            </div>
         );
     }
 }
