@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
 import GeneticModificationSummary from './genetic_modification';
@@ -13,7 +12,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
-import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
+import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
