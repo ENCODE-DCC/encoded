@@ -196,6 +196,7 @@ export class Biodalliance extends React.Component {
             longLabel: `${file.status} ${file.output_type}`,
         };
         if (this.props.visBlobs === undefined || this.props.visBlobs === null) {
+            console.log(trackLabels);
             return trackLabels;
         }
         console.log(this.props.visBlobs);

@@ -599,6 +599,7 @@ class RegulomeSearch extends React.Component {
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
                                                     <Biodalliance {...this.props} />
+
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
                                                 </div>
                                             :
