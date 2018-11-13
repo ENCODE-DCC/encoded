@@ -8,7 +8,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { FetchedData, Param } from './fetched';
-import GenomeBrowser from './genome_browser';
+// import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
 import { BrowserSelector, DisplayAsJson } from './objectutils';
@@ -1383,13 +1383,13 @@ export const ResultBrowser = (props) => {
         return (
             <FetchedData ignoreErrors>
                 <Param name="visBlobs" url={visUrl} />
-                <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
+
             </FetchedData>
         );
     }
     return (
         <div>
-            <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
+
         </div>
     );
 };

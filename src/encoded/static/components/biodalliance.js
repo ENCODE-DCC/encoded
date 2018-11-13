@@ -53,13 +53,16 @@ export class Biodalliance extends React.Component {
     constructor(props, context) {
         super(props, context);
 
+        // this.state = {
+        //     chr: 10,
+        //     viewStart: 70992390,
+        //     viewEnd: 71011581,
+        // };
         this.state = {
             chr: +props.context.coordinates.split("chr")[1].split(":")[0],
             viewStart: +props.context.coordinates.split(":")[1].split("-")[0],
             viewEnd: +props.context.coordinates.split("-")[1],
         };
-
-        console.log(this.state);
 
         // Bind `this` to non-React methods.
         this.locationChange = this.locationChange.bind(this);
@@ -105,14 +108,16 @@ export class Biodalliance extends React.Component {
 
         this.browserFiles = [];
         let domain = `${window.location.protocol}//${window.location.hostname}`;
+        let files = [];
         if (domain.includes('localhost')) {
             domain = domainName;
+            files = dummyFiles;
+        } else {
+            // Extract only bigWig and bigBed files from the list:
+            files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+            files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         }
 
-        // Extract only bigWig and bigBed files from the list:
-        let files = dummyFiles;
-        // let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-        // files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         files.forEach((file) => {
             const trackLabels = this.makeTrackLabel(file);
             if (file.file_format === 'bigWig') {
@@ -150,8 +155,6 @@ export class Biodalliance extends React.Component {
             sources = sources.concat(this.browserFiles);
         }
 
-        console.log(files);
-
         require.ensure(['dalliance'], (require) => {
             const Dalliance = require('dalliance').browser;
 
@@ -183,7 +186,6 @@ export class Biodalliance extends React.Component {
         if (location !== this.props.region) {
             if (this.props.currentRegion) {
                 this.props.currentRegion(this.props.assembly, location);
-                // console.log('locationChange %s %s', this.props.assembly, this.props.region);
             }
         }
     }
@@ -196,10 +198,8 @@ export class Biodalliance extends React.Component {
             longLabel: `${file.status} ${file.output_type}`,
         };
         if (this.props.visBlobs === undefined || this.props.visBlobs === null) {
-            console.log(trackLabels);
             return trackLabels;
         }
-        console.log(this.props.visBlobs);
         Object.keys(this.props.visBlobs).forEach((blobKey) => {
             if (blobKey.startsWith(datasetAccession)) {
                 const tracks = this.props.visBlobs[blobKey].tracks;
@@ -222,227 +222,5 @@ export class Biodalliance extends React.Component {
         );
     }
 }
-
-
-//
-//
-// class GenomeBrowser extends React.Component {
-//     constructor() {
-//         super();
-//
-//         // Bind this to non-React methods.
-//         this.locationChange = this.locationChange.bind(this);
-//         this.makeTrackLabel = this.makeTrackLabel.bind(this);
-//     }
-//
-//     componentDidMount() {
-//         const { assembly, region, limitFiles } = this.props;
-//         // console.log('DidMount ASSEMBLY: %s', assembly);
-//
-//         // Probably not worth a define in globals.js for visualizable types and statuses.
-//         // Extract only bigWig and bigBed files from the list:
-//         let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-//         files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
-//
-//
-//         // Make some fake file objects from "test" just to give the genome browser something to
-//         // chew on if we're running locally.
-//         // this.context.localInstance = false;
-//         files = !this.context.localInstance ?
-//             (limitFiles ? files.slice(0, maxFilesBrowsed - 1) : files)
-//         : dummyFiles;
-//
-//         const browserCfg = rAssemblyToSources(assembly, region);
-//
-//         this.browserFiles = [];
-//         let domain = `${window.location.protocol}//${window.location.hostname}`;
-//         if (domain.includes('localhost')) {
-//             domain = domainName;
-//         }
-//         files.forEach((file) => {
-//             const trackLabels = this.makeTrackLabel(file);
-//             if (file.file_format === 'bigWig') {
-//                 this.browserFiles.push({
-//                     name: trackLabels.shortLabel,
-//                     desc: trackLabels.longLabel,
-//                     bwgURI: `${domain}${file.href}`,
-//                     style: [
-//                         {
-//                             type: 'default',
-//                             style: {
-//                                 glyph: 'HISTOGRAM',
-//                                 HEIGHT: 30,
-//                                 BGCOLOR: 'rgb(166,71,71)',
-//                             },
-//                         },
-//                     ],
-//                 });
-//             } else if (file.file_format === 'bigBed') {
-//                 this.browserFiles.push({
-//                     name: trackLabels.shortLabel,
-//                     desc: trackLabels.longLabel,
-//                     bwgURI: `${domain}${file.href}`,
-//                     style: [
-//                         {
-//                             style: {
-//                                 HEIGHT: 10,
-//                             },
-//                         },
-//                     ],
-//                 });
-//             }
-//         });
-//         if (this.browserFiles.length) {
-//             browserCfg.sources = browserCfg.sources.concat(this.browserFiles);
-//         }
-//
-//         require.ensure(['dalliance'], (require) => {
-//             const Dalliance = require('dalliance').browser;
-//
-//             console.log(browserCfg);
-//
-//             let chr =
-//
-//             this.browser = new Dalliance({
-//                 maxHeight: 2000,
-//                 noPersist: false,
-//                 noPersistView: false,
-//                 noTrackAdder: true,
-//                 maxWorkers: 4,
-//                 noHelp: true,
-//                 noExport: true,
-//                 rulerLocation: 'none',
-//                 chr: browserCfg.chr,
-//                 viewStart: browserCfg.viewStart,
-//                 viewEnd: browserCfg.viewEnd,
-//                 cookieKey: browserCfg.cookieKey,
-//                 coordSystem: browserCfg.coordSystem,
-//                 sources: browserCfg.sources,
-//                 noTitle: true,
-//                 disablePoweredBy: true,
-//                 maxViewWidth: Math.min((browserCfg.viewEnd - browserCfg.viewStart) * 10, 100000),
-//             });
-//             this.browser.addViewListener(this.locationChange);
-//         });
-//     }
-//
-//     componentDidUpdate() {
-//         // Remove old tiers
-//         if (this.browser && this.browserFiles && this.browserFiles.length) {
-//             this.browserFiles.forEach((fileSource) => {
-//                 this.browser.removeTier({
-//                     name: fileSource.name,
-//                     desc: fileSource.desc,
-//                     bwgURI: fileSource.bwgURI,
-//                 });
-//             });
-//         }
-//
-//         const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
-//         if (this.browser && files && files.length) {
-//             let domain = `${window.location.protocol}//${window.location.hostname}`;
-//             if (domain.includes('localhost')) {
-//                 domain = domainName;
-//             }
-//             files.forEach((file) => {
-//                 const trackLabels = this.makeTrackLabel(file);
-//                 if (file.file_format === 'bigWig') {
-//                     this.browser.addTier({
-//                         name: trackLabels.shortLabel,
-//                         desc: trackLabels.longLabel,
-//                         bwgURI: `${domain}${file.href}`,
-//                         style: [
-//                             {
-//                                 type: 'default',
-//                                 style: {
-//                                     glyph: 'HISTOGRAM',
-//                                     HEIGHT: 30,
-//                                     BGCOLOR: 'rgb(166,71,71)',
-//                                 },
-//                             },
-//                         ],
-//                     });
-//                 } else if (file.file_format === 'bigBed') {
-//                     this.browser.addTier({
-//                         name: trackLabels.shortLabel,
-//                         desc: trackLabels.longLabel,
-//                         bwgURI: `${domain}${file.href}`,
-//                         style: [
-//                             {
-//                                 style: {
-//                                     HEIGHT: 10,
-//                                 },
-//                             },
-//                         ],
-//                     });
-//                 }
-//             });
-//         }
-//     }
-//
-//     locationChange(chr, min, max) {
-//         console.log("changing location");
-//         const location = `chr${chr}:${min}-${max}`;
-//         if (location !== this.props.region) {
-//             if (this.props.currentRegion) {
-//                 this.props.currentRegion(this.props.assembly, location);
-//                 // console.log('locationChange %s %s', this.props.assembly, this.props.region);
-//             }
-//         }
-//     }
-//
-//     makeTrackLabel(file) {
-//         const datasetAccession = file.dataset.split('/')[2];
-//         // Unreleased files are not in visBlob so get default labels
-//         const trackLabels = {
-//             shortLabel: file.accession,
-//             longLabel: `${file.status} ${file.output_type}`,
-//         };
-//         if (this.props.visBlobs === undefined || this.props.visBlobs === null) {
-//             return trackLabels;
-//         }
-//         Object.keys(this.props.visBlobs).forEach((blobKey) => {
-//             if (blobKey.startsWith(datasetAccession)) {
-//                 const tracks = this.props.visBlobs[blobKey].tracks;
-//                 const trackCount = tracks ? tracks.length : 0;
-//                 for (let ix = 0; ix < trackCount; ix += 1) {
-//                     if (tracks[ix].name === file.accession) {
-//                         trackLabels.shortLabel = tracks[ix].shortLabel;
-//                         trackLabels.longLabel = tracks[ix].longLabel;
-//                         break;
-//                     }
-//                 }
-//             }
-//         });
-//         return trackLabels;
-//     }
-//
-//     render() {
-//         return (
-//             <div id="svgHolder" className="trackhub-element" />
-//         );
-//     }
-// }
-//
-// Biodalliance.propTypes = {
-//     files: PropTypes.array.isRequired, // Array of files to represent
-//     assembly: PropTypes.string.isRequired, // Assembly to use with browser
-//     region: PropTypes.string, // Region to use with browser
-//     visBlobs: PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
-//     limitFiles: PropTypes.bool, // True to limit # files to maxFilesBrowsed
-//     currentRegion: PropTypes.func,
-// };
-//
-// Biodalliance.defaultProps = {
-//     region: '',
-//     visBlobs: undefined,
-//     limitFiles: false,
-//     currentRegion: undefined,
-// };
-//
-// Biodalliance.contextTypes = {
-//     location_href: PropTypes.string,
-//     localInstance: PropTypes.bool,
-// };
 
 export default Biodalliance;

@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import { FacetList, Listing, ResultBrowser } from './search';
+import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import _ from 'underscore';
 import { SortTablePanel, SortTable } from './sorttable';
 import { TestViz } from './visualizations';
 import { Biodalliance } from './biodalliance';
+import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 
 
 const regionGenomes = [
@@ -318,30 +319,6 @@ class AdvSearch extends React.Component {
 
                     </form>
 
-                    {(context.notification) ?
-                        <p>{context.notification}</p>
-                    : null}
-                    {(context.coordinates) ?
-                        <p>Searched coordinates: {context.coordinates}</p>
-                    : null}
-                    {(context.regulome_score) ?
-                        <p className="regulomescore">RegulomeDB score: {context.regulome_score}</p>
-                    : null}
-                    {(context.regulome_score  && !context.peak_details) ?
-                        <a
-                            rel="nofollow"
-                            className="btn btn-info btn-sm btn-left"
-                            href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
-                        >
-                            See peaks
-                        </a>
-                    : null}
-                    {(context.peak_details !== undefined && context.peak_details !== null) ?
-                        <div className="btn-container">
-                            <a className="btn btn-info btn-sm" href={context.download_elements[0]} data-bypass>Download peak details (TSV)</a>
-                            <a className="btn btn-info btn-sm" href={context.download_elements[1]} data-bypass>Download peak details (JSON)</a>
-                        </div>
-                    : null}
                 </PanelBody>
             </Panel>
         );
@@ -584,12 +561,37 @@ class RegulomeSearch extends React.Component {
             <div>
                 <div className="lead-logo"><img src="/static/img/RegulomeLogoFinal.gif"></img></div>
 
-                <AdvSearch {...this.props} />
                 {notification.startsWith('Success') ?
                     <div>
                         <div>
                             <div className="panel">
                                 <div>
+                                    <div className="result-summary">
+                                        {(context.notification) ?
+                                            <p>{context.notification}</p>
+                                        : null}
+                                        {(context.coordinates) ?
+                                            <p>Searched coordinates: {context.coordinates}</p>
+                                        : null}
+                                        {(context.regulome_score) ?
+                                            <p className="regulomescore">RegulomeDB score: {context.regulome_score}</p>
+                                        : null}
+                                    </div>
+                                    {(context.regulome_score  && !context.peak_details) ?
+                                        <a
+                                            rel="nofollow"
+                                            className="btn btn-info btn-sm btn-left centered-btn"
+                                            href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
+                                        >
+                                            See peaks
+                                        </a>
+                                    : null}
+                                    {(context.peak_details !== undefined && context.peak_details !== null) ?
+                                        <div className="btn-container">
+                                            <a className="btn btn-info btn-sm" href={context.download_elements[0]} data-bypass>Download peak details (TSV)</a>
+                                            <a className="btn btn-info btn-sm" href={context.download_elements[1]} data-bypass>Download peak details (JSON)</a>
+                                        </div>
+                                    : null}
 
                                     <TestViz {...this.props}/>
 
@@ -599,7 +601,6 @@ class RegulomeSearch extends React.Component {
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
                                                     <Biodalliance {...this.props} />
-
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
                                                 </div>
                                             :
@@ -649,14 +650,48 @@ class RegulomeSearch extends React.Component {
                             </div>
                         </div>
                     </div>
-                : null}
+                : null }
 
                 {(context.peak_details) ?
-                    <PeakDetails {...this.props} />
+                    <div>
+                        <div className="panel">
+                            <div className="result-summary">
+                                {(context.notification) ?
+                                    <p>{context.notification}</p>
+                                : null}
+                                {(context.coordinates) ?
+                                    <p>Searched coordinates: {context.coordinates}</p>
+                                : null}
+                                {(context.regulome_score) ?
+                                    <p className="regulomescore">RegulomeDB score: {context.regulome_score}</p>
+                                : null}
+                                {(context.regulome_score  && !context.peak_details) ?
+                                    <a
+                                        rel="nofollow"
+                                        className="btn btn-info btn-sm btn-left"
+                                        href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
+                                    >
+                                        See peaks
+                                    </a>
+                                : null}
+                            </div>
+                            {(context.peak_details !== undefined && context.peak_details !== null) ?
+                                <div className="btn-container">
+                                    <a className="btn btn-info btn-sm" href={context.download_elements[0]} data-bypass>Download peak details (TSV)</a>
+                                    <a className="btn btn-info btn-sm" href={context.download_elements[1]} data-bypass>Download peak details (JSON)</a>
+                                </div>
+                            : null}
+                        </div>
+
+                        <PeakDetails {...this.props} />
+                    </div>
                 : null}
 
                 {(context.peak_details === undefined && !notification.startsWith('Success')) ?
-                    <DataTypes />
+                    <div>
+                        <AdvSearch {...this.props} />
+                        <DataTypes />
+                    </div>
                 :  null}
 
             </div>
