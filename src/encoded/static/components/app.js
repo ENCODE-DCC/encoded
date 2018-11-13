@@ -970,7 +970,9 @@ class App extends React.Component {
                     />
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-                            <div className="loading-spinner" />
+                            <div className="loading-spinner">
+                                <div className="loading-spinner-circle"><img src='/static/img/spinner1.gif'></img></div>
+                            </div>
                             <div id="layout">
                                 <Navigation isHomePage={isHomePage} />
                                 <div id="content" className={containerClass} key={key}>
