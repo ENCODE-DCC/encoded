@@ -595,13 +595,10 @@ class RegulomeSearch extends React.Component {
 
                                     {visualizeKeys && context.visualize_batch && !visualizeDisabled ?
                                         <div className="visualize-block">
-                                            <h4>Biodalliance</h4>
+                                            <h4>Genome browser</h4>
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
                                                     <Biodalliance {...this.props} />
-                                                    <div className="visualize-element"><a href={visualizeCfg['hg19']['Quick View']} rel="noopener noreferrer" target="_blank">Quick View
-                                                        <span className="beta-badge">BETA</span>
-                                                    </a></div>
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
                                                 </div>
                                             :
@@ -610,7 +607,7 @@ class RegulomeSearch extends React.Component {
                                         </div>
                                     :
                                         <div className="visualize-block">
-                                            <h4>Biodalliance</h4>
+                                            <h4>Genome browser</h4>
                                             <div className="visualize-element visualize-error">Filter to fewer than 100 results to visualize</div>
                                         </div>
                                     }

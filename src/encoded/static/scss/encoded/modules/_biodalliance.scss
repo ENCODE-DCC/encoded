@@ -1,10 +1,24 @@
 #svgHolder {
-    color: red;
-    textarea {
-        font-family: 'Khula', sans-serif !important;
-    }
+    margin-bottom: 30px;
 }
 
 .trackhub-element {
     border: 0;
+    .btn {
+        margin: 0;
+    }
+}
+
+.track-name-holder, .loc-field {
+    font-family: 'Khula', sans-serif !important;
+    line-height: 1.2;
+}
+
+*.dalliance * {
+    font-family: 'Khula', sans-serif;
+    line-height: 1.2;
+    span {
+        font-family: 'Khula', sans-serif;
+        line-height: 1.2;
+    }
 }
