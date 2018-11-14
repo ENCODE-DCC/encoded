@@ -227,9 +227,6 @@
         "lot_reviews.targets.name": {
             "title": "Target name"
         },
-        "lot_reviews.targets.investigated_as": {
-            "title": "Target category"
-        },
         "lot_reviews.targets.label": {
             "title": "Target label"
         },

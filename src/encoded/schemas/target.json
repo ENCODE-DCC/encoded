@@ -18,40 +18,12 @@
         "label": {
             "oneOf": [
                 {
-                    "properties": {
-                        "investigated_as": {
-                            "items": {
-                                "enum": ["synthetic tag"]
-                            }
-                        }
-                    },
-                    "not": {"required": ["target_organism", "genes"]}
-                },
-                {
                     "required": ["target_organism"],
-                    "not": {
-                        "required": ["genes"],
-                        "properties": {
-                            "investigated_as": {
-                                "items": {
-                                    "enum": ["synthetic tag"]
-                                }
-                            }
-                        }
-                    }
+                    "not": {"required": ["genes"]}
                 },
                 {
                     "required": ["genes"],
-                    "not": {
-                        "required": ["target_organism"],
-                        "properties": {
-                            "investigated_as": {
-                                "items": {
-                                    "enum": ["synthetic tag"]
-                                }
-                            }
-                        }
-                    }
+                    "not": {"required": ["target_organism"]}
                 }
             ]
         }
@@ -175,7 +147,6 @@
                     "other post-translational modification",
                     "recombinant protein",
                     "RNA binding protein",
-                    "synthetic tag",
                     "tag",
                     "transcription factor"
                 ]
@@ -196,9 +167,6 @@
     "columns": {
         "label": {
             "title": "Target"
-        },
-        "investigated_as": {
-            "title": "Target category"
         },
         "organism.scientific_name": {
             "title": "Species"
