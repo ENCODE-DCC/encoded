@@ -468,7 +468,6 @@ class RegulomeSearch extends React.Component {
         const filters = context.filters;
         const facets = context.facets;
         const total = context.total;
-        const visualizeDisabled = total > visualizeLimit;
 
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
@@ -593,7 +592,7 @@ class RegulomeSearch extends React.Component {
 
                                     <TestViz {...this.props}/>
 
-                                    {visualizeKeys && context.visualize_batch && !visualizeDisabled ?
+                                    {visualizeKeys && context.visualize_batch ?
                                         <div className="visualize-block">
                                             <h4>Genome browser</h4>
                                             {visualizeCfg['hg19']['UCSC'] ?

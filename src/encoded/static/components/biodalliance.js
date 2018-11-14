@@ -116,6 +116,9 @@ export class Biodalliance extends React.Component {
             // Extract only bigWig and bigBed files from the list:
             files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
             files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+
+            // we want to be smarter about this but we can't display unlimited data
+            files = files.filter((file, fileIDX) => fileIDX < 100);
         }
 
         files.forEach((file) => {
