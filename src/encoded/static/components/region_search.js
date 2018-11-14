@@ -433,6 +433,14 @@ class RegulomeSearch extends React.Component {
         let assemblies = 'hg19';
         this.assembly == 'hg19';
 
+        this.state = {
+            tableBatch: 0,
+            biodallianceBatch: 0,
+        }
+
+        // this.props.biodallianceBatch = 0;
+        console.log(this);
+
         // Bind this to non-React methods.
         this.onFilter = this.onFilter.bind(this);
         this.currentRegion = this.currentRegion.bind(this);
@@ -459,6 +467,7 @@ class RegulomeSearch extends React.Component {
 
     render() {
         const visualizeLimit = 100;
+        const tableLimit = 100;
         const context = this.props.context;
         const results = context['@graph'];
         const columns = context.columns;
@@ -594,7 +603,11 @@ class RegulomeSearch extends React.Component {
 
                                     {visualizeKeys && context.visualize_batch ?
                                         <div className="visualize-block">
-                                            <h4>Genome browser</h4>
+                                            { total > visualizeLimit ?
+                                                <h4>Genome browser <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(visualizeLimit,total-visualizeLimit*(this.state.biodallianceBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
+                                            :
+                                                <h4>Genome browser <span className="results-count">({Math.min(visualizeLimit,total)} of {total})</span></h4>
+                                            }
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
                                                     <Biodalliance {...this.props} />
@@ -604,15 +617,12 @@ class RegulomeSearch extends React.Component {
                                                 <div className="visualize-element visualize-error">Choose other datasets. These cannot be visualized.</div>
                                             }
                                         </div>
+                                    : null }
+                                    { total > tableLimit ?
+                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(tableLimit,total-tableLimit*(this.state.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
                                     :
-                                        <div className="visualize-block">
-                                            <h4>Genome browser</h4>
-                                            <div className="visualize-element visualize-error">Filter to fewer than 100 results to visualize</div>
-                                        </div>
+                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span></h4>
                                     }
-                                    <h4>
-                                        Showing {results.length} of {total}
-                                    </h4>
                                     <div className="results-table-control">
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                                 <a

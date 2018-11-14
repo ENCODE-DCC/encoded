@@ -64,6 +64,11 @@ export class Biodalliance extends React.Component {
             viewEnd: +props.context.coordinates.split("-")[1],
         };
 
+        console.log(this);
+        console.log(this.context);
+        console.log(this.context.props);
+        console.log(this.props);
+
         // Bind `this` to non-React methods.
         this.locationChange = this.locationChange.bind(this);
         this.makeTrackLabel = this.makeTrackLabel.bind(this);
@@ -113,6 +118,11 @@ export class Biodalliance extends React.Component {
             domain = domainName;
             files = dummyFiles;
         } else {
+            console.log(this);
+            console.log(this.context);
+            console.log(this.context.props);
+            console.log(this.props);
+            console.log(this.context.props.files);
             // Extract only bigWig and bigBed files from the list:
             files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
             files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);

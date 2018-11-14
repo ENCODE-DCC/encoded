@@ -47,3 +47,28 @@ th {
         }
     }
 }
+
+.results-count {
+    font-weight: 500;
+    font-style: italic;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding-left: 10px;
+}
+
+.click-for-more-results {
+    // font-weight: 500;
+    font-style: italic;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-left: 10px;
+    border-bottom: 2px solid $regulomeGreen;
+    color: $regulomeGreen;
+    &:hover {
+        // font-weight: 700;
+        cursor: pointer;
+    }
+    .icon-long-arrow-right {
+        margin-left: 5px;
+    }
+}
