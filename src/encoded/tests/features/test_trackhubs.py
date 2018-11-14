@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.parametrize('expected', [
-    "# http://localhost/batch_hub/type=experiment/hub.txt",
+    "# http://localhost/batch_hub/type%3Dexperiment/hub.txt",
     "hub ENCODE_DCC_search",
     "shortLabel Hub (search:)",
     "longLabel ENCODE Data Coordination Center Data Hub",
@@ -11,6 +11,8 @@ import pytest
 ])
 def test_hub(testapp, workbook, expected):
     res = testapp.get("/batch_hub/type%3Dexperiment/hub.txt")
+    if expected not in res.text:
+        expected = expected.replace('%3D', '=')
     assert expected in res.text
 
 @pytest.mark.parametrize('expected', [
