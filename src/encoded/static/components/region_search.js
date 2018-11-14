@@ -433,17 +433,10 @@ class RegulomeSearch extends React.Component {
         let assemblies = 'hg19';
         this.assembly == 'hg19';
 
-        this.state = {
-            tableBatch: 0,
-            biodallianceBatch: 0,
-        }
-
-        // this.props.biodallianceBatch = 0;
-        console.log(this);
-
         // Bind this to non-React methods.
         this.onFilter = this.onFilter.bind(this);
         this.currentRegion = this.currentRegion.bind(this);
+        this.incrementBiodalliance = this.incrementBiodalliance.bind(this);
     }
 
     onFilter(e) {
@@ -453,6 +446,10 @@ class RegulomeSearch extends React.Component {
             e.stopPropagation();
             e.preventDefault();
         }
+    }
+
+    incrementBiodalliance(e) {
+        this.biodallianceBatch += 1;
     }
 
     currentRegion(assembly, region) {
@@ -466,8 +463,6 @@ class RegulomeSearch extends React.Component {
     }
 
     render() {
-        const visualizeLimit = 100;
-        const tableLimit = 100;
         const context = this.props.context;
         const results = context['@graph'];
         const columns = context.columns;
@@ -477,6 +472,10 @@ class RegulomeSearch extends React.Component {
         const filters = context.filters;
         const facets = context.facets;
         const total = context.total;
+
+        const tableLimit = 100;
+        console.log(this);
+        console.log(this.props);
 
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
@@ -603,10 +602,10 @@ class RegulomeSearch extends React.Component {
 
                                     {visualizeKeys && context.visualize_batch ?
                                         <div className="visualize-block">
-                                            { total > visualizeLimit ?
-                                                <h4>Genome browser <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(visualizeLimit,total-visualizeLimit*(this.state.biodallianceBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
+                                            { total > this.props.visualizeLimit ?
+                                                <h4>Genome browser <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results" onClick={this.incrementBiodalliance}>See next {Math.min(this.props.visualizeLimit,total-this.props.visualizeLimit*(this.props.biodallianceBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
                                             :
-                                                <h4>Genome browser <span className="results-count">({Math.min(visualizeLimit,total)} of {total})</span></h4>
+                                                <h4>Genome browser <span className="results-count">({Math.min(this.props.visualizeLimit,total)} of {total})</span></h4>
                                             }
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
@@ -619,7 +618,7 @@ class RegulomeSearch extends React.Component {
                                         </div>
                                     : null }
                                     { total > tableLimit ?
-                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(tableLimit,total-tableLimit*(this.state.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
+                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(tableLimit,total-tableLimit*(this.props.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
                                     :
                                         <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span></h4>
                                     }
@@ -711,14 +710,18 @@ class RegulomeSearch extends React.Component {
 RegulomeSearch.propTypes = {
     context: PropTypes.object.isRequired,
     onChange: PropTypes.func,
-    currentRegion: PropTypes.func,
-    region: PropTypes.string,
+    incrementBiodalliance: PropTypes.func,
+    tableBatch: PropTypes.number,
+    biodallianceBatch: PropTypes.number,
+    visualizeLimit: PropTypes.number
 };
 
 RegulomeSearch.defaultProps = {
     onChange: null,
-    currentRegion: null,
-    region: null,
+    incrementBiodalliance: null,
+    tableBatch: 0,
+    biodallianceBatch: 0,
+    visualizeLimit: 100,
 };
 
 RegulomeSearch.contextTypes = {

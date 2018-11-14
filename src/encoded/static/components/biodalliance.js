@@ -64,10 +64,7 @@ export class Biodalliance extends React.Component {
             viewEnd: +props.context.coordinates.split("-")[1],
         };
 
-        console.log(this);
-        console.log(this.context);
-        console.log(this.context.props);
-        console.log(this.props);
+        console.log(this.props.biodallianceBatch);
 
         // Bind `this` to non-React methods.
         this.locationChange = this.locationChange.bind(this);
@@ -128,7 +125,11 @@ export class Biodalliance extends React.Component {
             files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
 
             // we want to be smarter about this but we can't display unlimited data
-            files = files.filter((file, fileIDX) => fileIDX < 100);
+            let topLimit = this.props.visualizeLimit*this.props.biodallianceBatch;
+            let bottomLimit = Math.min(this.props.visualizeLimit*(this.props.biodallianceBatch+1)-1,files.length);
+            console.log(topLimit);
+            console.log(bottomLimit);
+            files = files.filter((file, fileIDX) => (fileIDX <= topLimit && fileIDX >= bottomLimit));
         }
 
         files.forEach((file) => {
