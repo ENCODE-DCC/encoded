@@ -92,7 +92,10 @@ export class TestViz extends React.Component {
                   filteredIdx ++;
               }
             });
-            let chartData = filteredTestData;
+            let chartDataOrig = filteredTestData;
+
+            // we want to be smarter about this but we can't display unlimited data
+            let chartData = chartDataOrig.filter((chartData, cIDX) => cIDX < 10);
 
             const svgElement = d3.select(targetElement).append('svg');
             let fillColor = colorScale(idxidx);
@@ -150,7 +153,8 @@ export class TestViz extends React.Component {
             const yAxis = svgBars.append("g")
                 .attr("transform", `translate(${margin.left},0)`)
                 .call(d3.axisLeft(yScale)
-                    .ticks(maxY));
+                    .ticks(4)
+                    .tickFormat(d3.format("d")));
 
             svgBars.append("text")
                 .attr("class", "chart-title")

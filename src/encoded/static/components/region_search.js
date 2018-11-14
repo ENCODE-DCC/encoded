@@ -684,8 +684,6 @@ class RegulomeSearch extends React.Component {
 
                             : null}
                         </div>
-
-
                     </div>
                 : null}
 
