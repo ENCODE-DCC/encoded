@@ -14,6 +14,7 @@ from encoded.helpers.helper import (
     search_result_actions,
     View_Item)
 
+from snovault.elasticsearch.interfaces import RESOURCES_INDEX  # pylint: disable=import-error
 from snovault.helpers.helper import (  # pylint: disable=import-error
     get_filtered_query,
     get_search_fields,
@@ -61,7 +62,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             del query['query']['query_string']
         else:
             query['query']['query_string']['fields'].extend(
-                ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
+                [RESOURCES_INDEX, '*.uuid', '*.md5sum', '*.submitted_file_name']
             )
         used_filters = self._set_query_aggs(query)
         return query, used_filters
