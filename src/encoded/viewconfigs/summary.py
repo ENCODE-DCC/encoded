@@ -144,13 +144,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         self._result['@id'] = summary_route + self._search_base
         self._result['@type'] = ['Summary']
         self._result['notification'] = ''
-        # TODO: Validate doc types in base class in one location
-        # Now we do it here and in _validate_items
-        type_info = None
-        if len(self._doc_types) == 1:
-            if self._doc_types[0] in self._types:
-                type_info = self._types[self._doc_types[0]]
-                self._schema = type_info.schema
+        type_info, self._schema = self._type_info(self._doc_types, self._types)
         self._validate_items(type_info)
         self._result['title'] = type_info.name + ' Summary'
         self._result['summary'] = type_info.factory.summary_data.copy()
