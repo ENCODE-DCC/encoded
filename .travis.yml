@@ -16,20 +16,14 @@ addons:
       - graphviz
 env:
   global:
-    - secure: |-
-        CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
-        cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
-        7diAxOq7YSxxqA2XdtLydkNlo85BWoucmc0yHEl3weNR9554UmM=
-    - secure: |-
-        WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
-        SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
-        ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
     - BOTO_CONFIG=tmp/bogusvalue
     - JAVA_HOME=/usr/lib/jvm/java-8-oracle
     - ES_VERSION=5.6.1
     - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.deb
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
     - ES_JAVA_OPTS="-Xms2g -Xmx2g"
+    - secure: eRKc/zLzb1syTEQAHGCxj5a2AbQA1+1FS9lQ3u4iveNnqXKDaZKcBYXdbTzyHIojJ/LLZ4ES1qg+7Bd7QphQyGSgGkDzkZeDVQ+ofEkJhE3rkgKDwH82ySRKD6v92JLG9G0T7m5AGAy5H4rjXTKFlE8tQ9Zu+Fh4jZz2vIXlfAo9gA2W15Mc5PQhpSx53rOOIqDkcA8IJUpQnMc1Z0vfG9gqGSvccmABrt+a/UDHHldEs+pEqtshyv/aqFpyvr47uSahtIDsJIoQb3PVhyv/C4Ux6ypGSnpJ+TJBB/dbNMTQo4ncrtvBMoNqEgd3fvNlCALLFShq3b8cf6tfAcar+Yixizm7Q/tiggljO0a+H5YC3H7AXlbYAxzj+fDw0XMT6BqcSl6sTi8up/PAhocNOx1C5dD2yrccwBTdkXtQLoJWNXcBTSDNwlU6nZ0Q3w6K8U+EIqxmkpd40HNzQ5fAY2Gc2SKaWc8VpfHg7nO1GDnftWs9TdRzRh9hd1mzpC1V1qFFdUI9AbtCPP6/vGv2+g9CBwTFHYw5bT8rHfv3IJ1HG7qx/7ISdV7Mohpw3gCObDTBVcQfdGMHR4nsDzLxXM4eijBiAY0WR8b2yIk0ohO+G+ghP5zDduUMUYrp+CGRqy0wrDARnwMFQdWG+F3xC953f+ldK+JbeQPijphaLq4=
+    - secure: zBSRLLNjEfQdv4W/KbC66ijRcvrrMwxdFcCnwJIiMWgLcATdfRumh8ZX0kEcZCFSvXTj0VsnfM5YYlKysRPho5qo5ExNhCgfndd1weJWHUULjmTBKIoAaYitXk8Zxh7yw+LHLomkW8k5UR+1Zv/+Uyu+pwlg2qpVW3xZmrHkJaihXzRp93GIjIBSE3TEG7rJ/6Yg3jEpIJ0nlf79uRXHvyoqQiPqQ2hVxcQX5YSXz6KM2YuJsNniW8tV3xWXA8/98P1zv8H8zAZAo1bvj9q7rmh3qXdHk1lSY5WGw2G2eLexqhEE2XvnhbzvoEWJeWPV9ZC2d/1bkgbjIZkVF3oCP6DEia1bbhlAXdLjjm1DjGCQXzaJIR9mn6nB8Em7Fg+V2s6W9FysuejWQ2KGnrK8tV7UwFCR06K2osnA3Adkh18tPYDg4JlyohrgnR8965azX4SKG5fT0GoJ39JoLM2u0EpVYdvNTFTQVGAsmLabXS+08KcP3mEjEZ2Ado6l4yY5tolliJ+EBEetgWIhTc8Z3z7M0Y6GwFTE/FIR5rf5uRZHYb7u4e/p7+0ge3kJbarG/jcKCIAjV7OIrC3RYX1SC1XvsgGe5G/Wlo+JsTQXzwnbHmV+IPjVSRoRHY5HTbVB+21RdBftyl4xSPe5y0HvXxuMn0Y/21AbXnWPr73NL4o=
 matrix:
   include:
     - python: "3.4.3"
