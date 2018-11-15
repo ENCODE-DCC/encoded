@@ -28,7 +28,7 @@ class CartToggleComponent extends React.Component {
     render() {
         const { cart, elementAtId, loggedIn, inProgress } = this.props;
         const inCart = cart.indexOf(elementAtId) > -1;
-        const cartAtLimit = cart.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
+        const cartAtLimit = !loggedIn && cart.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
         const inCartToolTip = inCart ? 'Remove item from cart' : 'Add item to cart';
         const inProgressToolTip = inProgress ? 'Cart operation in progress' : '';
         const cartAtLimitToolTip = cartAtLimit ? `Cart can contain a maximum of ${CART_MAXIMUM_ELEMENTS_LOGGEDOUT} items` : '';
