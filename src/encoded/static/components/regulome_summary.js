@@ -62,7 +62,7 @@ class RegulomeSummary extends React.Component {
 
                 <div className="results-summary">
                     <p>This search has evaluated <span className="bold-span">{context.notifications.length}</span> input lines and found <span className="bold-span">{snp_count}</span> SNP(s).</p>
-                    <p><i className="icon icon-caret-right"></i>Click on the scores for detailed information.</p>
+                    <p>Click on the scores for detailed information.</p>
 
                 </div>
 

@@ -73,6 +73,8 @@ export class Biodalliance extends React.Component {
 
     componentDidMount() {
 
+        console.log(this.props);
+
         let cookieKey = 'GRCh37';
         let coordSystem = { speciesName: 'Homo sapiens', taxon: 9606, auth: 'GRCh', version: 37, ucscName: 'hg19' };
         let sources = [
@@ -108,20 +110,14 @@ export class Biodalliance extends React.Component {
             },
         ];
 
-        this.browserFiles = [];
         let domain = `${window.location.protocol}//${window.location.hostname}`;
         let files = [];
         if (domain.includes('localhost')) {
             domain = domainName;
             files = dummyFiles;
         } else {
-            console.log(this);
-            console.log(this.context);
-            console.log(this.context.props);
-            console.log(this.props);
-            console.log(this.context.props.files);
             // Extract only bigWig and bigBed files from the list:
-            files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+            files = this.props.browserFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
             files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
 
             // we want to be smarter about this but we can't display unlimited data
@@ -132,10 +128,12 @@ export class Biodalliance extends React.Component {
             files = files.filter((file, fileIDX) => (fileIDX <= topLimit && fileIDX >= bottomLimit));
         }
 
+        console.log(files);
+
         files.forEach((file) => {
             const trackLabels = this.makeTrackLabel(file);
             if (file.file_format === 'bigWig') {
-                this.browserFiles.push({
+                this.props.browserFiles.push({
                     name: trackLabels.shortLabel,
                     desc: trackLabels.longLabel,
                     bwgURI: `${domain}${file.href}`,
@@ -151,7 +149,7 @@ export class Biodalliance extends React.Component {
                     ],
                 });
             } else if (file.file_format === 'bigBed') {
-                this.browserFiles.push({
+                this.props.browserFiles.push({
                     name: trackLabels.shortLabel,
                     desc: trackLabels.longLabel,
                     bwgURI: `${domain}${file.href}`,
@@ -165,8 +163,8 @@ export class Biodalliance extends React.Component {
                 });
             }
         });
-        if (this.browserFiles.length) {
-            sources = sources.concat(this.browserFiles);
+        if (this.props.browserFiles.length) {
+            sources = sources.concat(this.props.browserFiles);
         }
 
         require.ensure(['dalliance'], (require) => {

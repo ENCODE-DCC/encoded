@@ -388,6 +388,7 @@ const ResultsTable = (props) => {
 
         organ_slims: {
             title: 'Organ',
+            getValue: (item) => item.organ_slims ? item.organ_slims.join(', ') : "",
         },
 
         assay_slims: {
@@ -433,6 +434,11 @@ class RegulomeSearch extends React.Component {
         let assemblies = 'hg19';
         this.assembly == 'hg19';
 
+        this.state = {
+            tableBatch: 0,
+            biodallianceBatch: 0,
+        }
+
         // Bind this to non-React methods.
         this.onFilter = this.onFilter.bind(this);
         this.currentRegion = this.currentRegion.bind(this);
@@ -449,7 +455,7 @@ class RegulomeSearch extends React.Component {
     }
 
     incrementBiodalliance(e) {
-        this.biodallianceBatch += 1;
+        this.state.biodallianceBatch += 1;
     }
 
     currentRegion(assembly, region) {
@@ -603,13 +609,13 @@ class RegulomeSearch extends React.Component {
                                     {visualizeKeys && context.visualize_batch ?
                                         <div className="visualize-block">
                                             { total > this.props.visualizeLimit ?
-                                                <h4>Genome browser <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results" onClick={this.incrementBiodalliance}>See next {Math.min(this.props.visualizeLimit,total-this.props.visualizeLimit*(this.props.biodallianceBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
+                                                <h4>Genome browser <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results" onClick={this.incrementBiodalliance}>See next {Math.min(this.props.visualizeLimit,total-this.props.visualizeLimit*(this.state.biodallianceBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
                                             :
                                                 <h4>Genome browser <span className="results-count">({Math.min(this.props.visualizeLimit,total)} of {total})</span></h4>
                                             }
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
-                                                    <Biodalliance {...this.props} />
+                                                    <Biodalliance {...this.props} browserFiles={browserFiles} biodallianceBatch={this.state.biodallianceBatch} />
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
                                                 </div>
                                             :
@@ -618,7 +624,7 @@ class RegulomeSearch extends React.Component {
                                         </div>
                                     : null }
                                     { total > tableLimit ?
-                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(tableLimit,total-tableLimit*(this.props.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
+                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(tableLimit,total-tableLimit*(this.state.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
                                     :
                                         <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span></h4>
                                     }
@@ -711,16 +717,12 @@ RegulomeSearch.propTypes = {
     context: PropTypes.object.isRequired,
     onChange: PropTypes.func,
     incrementBiodalliance: PropTypes.func,
-    tableBatch: PropTypes.number,
-    biodallianceBatch: PropTypes.number,
-    visualizeLimit: PropTypes.number
+    visualizeLimit: PropTypes.number,
 };
 
 RegulomeSearch.defaultProps = {
     onChange: null,
     incrementBiodalliance: null,
-    tableBatch: 0,
-    biodallianceBatch: 0,
     visualizeLimit: 100,
 };
 
