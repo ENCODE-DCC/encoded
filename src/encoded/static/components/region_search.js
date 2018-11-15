@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import { FacetList, Listing } from './search';
+import { FacetList } from './facets';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import _ from 'underscore';
@@ -409,7 +409,7 @@ const ResultsTable = (props) => {
 
     return (
         <div>
-            <SortTablePanel title="Results">
+            <SortTablePanel title={props.title}>
                 <SortTable list={data} columns={dataColumns} />
             </SortTablePanel>
         </div>
@@ -568,6 +568,10 @@ class RegulomeSearch extends React.Component {
             }
         }
 
+        // const Facets = context.facets;
+        const Facets = context.facets.filter(f => f.field === "organ_slims" || f.field === "target.label" || f.field === "assay_term_name" || f.field === "biosample_term_name" || f.field === "annotation_type");
+        const title = "Results details";
+
         return (
             <div>
                 <div className="lead-logo"><img src="/static/img/RegulomeLogoFinal.gif"></img></div>
@@ -604,6 +608,14 @@ class RegulomeSearch extends React.Component {
                                         </div>
                                     : null}
 
+                                    <FacetList
+                                        facets={Facets}
+                                        filters={context.filters}
+                                        orientation="horizontal"
+                                        searchBase={searchBase}
+                                        onFilter={this.onFilter}
+                                    />
+
                                     <TestViz {...this.props}/>
 
                                     {visualizeKeys && context.visualize_batch ?
@@ -623,41 +635,10 @@ class RegulomeSearch extends React.Component {
                                             }
                                         </div>
                                     : null }
-                                    { total > tableLimit ?
-                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results">See next {Math.min(tableLimit,total-tableLimit*(this.state.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
-                                    :
-                                        <h4>Results details <span className="results-count">({Math.min(tableLimit,total)} of {total})</span></h4>
-                                    }
-                                    <div className="results-table-control">
-                                        {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                                <a
-                                                    rel="nofollow"
-                                                    className="btn btn-info btn-sm"
-                                                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                                    onClick={this.onFilter}
-                                                >
-                                                    View All
-                                                </a>
-                                        :
-                                            <span>
-                                                {results.length > 25 ?
-                                                        <a
-                                                            className="btn btn-info btn-sm"
-                                                            href={trimmedSearchBase || '/regulome-search/'}
-                                                            onClick={this.onFilter}
-                                                        >
-                                                            View 25
-                                                        </a>
-                                                : null}
-                                            </span>
-                                        }
 
-                                    </div>
                                 </div>
 
-                                <hr />
-
-                                <ResultsTable {...this.props} />
+                                <ResultsTable {...this.props} title={title}/>
 
                             </div>
                         </div>
