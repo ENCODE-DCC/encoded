@@ -541,6 +541,7 @@ class RegulomeSearch extends React.Component {
                 browserAvail = false; // NEW: Limit browser option to type=File&dataset=... only!
             }
         }
+        console.log(browserFiles);
 
         if (browserAvail) {
             // Now determine if we have a mix of assemblies in the files, or just one. If we have

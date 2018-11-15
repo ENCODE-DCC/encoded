@@ -64,6 +64,8 @@ export class Biodalliance extends React.Component {
             viewEnd: +props.context.coordinates.split("-")[1],
         };
 
+        console.log(this.state);
+
         console.log(this.props.biodallianceBatch);
 
         // Bind `this` to non-React methods.
