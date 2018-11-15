@@ -165,9 +165,10 @@ def lot_reviews(characterizations, targets, request):
         if 'histone' in target['investigated_as']:
             is_histone = True
 
-        organism = target['organism']
+        organism = target.get('organism')
         target_organisms = {'all': []}
-        target_organisms['all'].append(organism)
+        if organism:
+            target_organisms['all'].append(organism)
         target_organisms[organism] = target['@id']
 
     # The default base characterization if no characterizations have been submitted
@@ -223,7 +224,7 @@ def lot_reviews(characterizations, targets, request):
         # organism not in the antibody_lot.targets list so it'll have to be reviewed and
         # added if legitimate.
         review_targets.add(target['@id'])
-        char_organisms[characterization['@id']] = target['organism']
+        char_organisms[characterization['@id']] = target.get('organism')
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
@@ -279,7 +280,7 @@ def build_lot_reviews(primary_chars,
         base_review = {
             'biosample_term_name': 'at least one cell type or tissue',
             'biosample_term_id': 'NTR:00000000',
-            'organisms': [char_organisms[primary['@id']]],
+            'organisms': [char_organisms[primary['@id']]] if char_organisms[primary['@id']] else [],
             'targets': [primary['target']]
         }
         if not primary.get('characterization_reviews', []):
