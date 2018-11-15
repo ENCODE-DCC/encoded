@@ -330,3 +330,5 @@ Go to the Visual Studio Code marketplace and install these extensions:
   
 - **JavaScript**: Make a syntax error, or style error, in a JS file. Warnings and errors should show on the left side of the line.  
 
+# Start of regulome branch commits
+bin/deploy --set-region-index-to True --volume-size 500
