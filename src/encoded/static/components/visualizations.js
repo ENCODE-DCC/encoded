@@ -56,7 +56,6 @@ export class TestViz extends React.Component {
         let displayCategories = ["assay_term_name", "organ_slims", "biosample_term_name", "target.label"];
 
         let facets = this.props.context.facets;
-        console.log(facets);
 
         let chosenIDX = [];
         let overallMax = 0;
@@ -117,7 +116,7 @@ export class TestViz extends React.Component {
             // create SVG container for chart components
             let margin = {top: 40, bottom: 140, right: 20, left: 40};
             let height = 300;
-            let width = maxWidth - 20;
+            let width = maxWidth;
 
             svgBars
                 .attr("width", width)

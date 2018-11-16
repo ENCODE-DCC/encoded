@@ -78,3 +78,39 @@ th {
     padding-bottom: 0;
     border-bottom: 0;
 }
+
+.facet-term {
+    display: inline-block;
+    .icon {
+        margin-right: 10px;
+    }
+}
+
+.box.facets {
+    max-height: 120px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    &.long {
+        transition: max-height 500ms ease-in-out;
+        max-height: 1200px;
+        height: auto;
+    }
+}
+
+.expand-list {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 10px 0 2px 0;
+    font-weight: 700;
+    background-image: linear-gradient(to bottom, transparent, #E5E5E5);
+    cursor: pointer;
+    .icon {
+        margin-right: 10px;
+    }
+}

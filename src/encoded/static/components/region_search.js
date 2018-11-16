@@ -409,7 +409,7 @@ const ResultsTable = (props) => {
 
     return (
         <div>
-            <SortTablePanel title={props.title}>
+            <SortTablePanel>
                 <SortTable list={data} columns={dataColumns} />
             </SortTablePanel>
         </div>
@@ -569,9 +569,11 @@ class RegulomeSearch extends React.Component {
             }
         }
 
-        // const Facets = context.facets;
-        const Facets = context.facets.filter(f => f.field === "organ_slims" || f.field === "target.label" || f.field === "assay_term_name" || f.field === "biosample_term_name" || f.field === "annotation_type");
         const title = "Results details";
+
+        let Facets = facets.filter(f => f.field === "organ_slims" || f.field === "target.label" || f.field === "assay_term_name" || f.field === "biosample_term_name");
+        Facets[0].terms = [...facets[0].terms, ...facets[1].terms];
+        Facets[0].total += facets[1].total;
 
         return (
             <div>
@@ -639,7 +641,13 @@ class RegulomeSearch extends React.Component {
 
                                 </div>
 
-                                <ResultsTable {...this.props} title={title}/>
+                                { total > this.props.visualizeLimit ?
+                                    <h4>Results table <span className="results-count">({Math.min(tableLimit,total)} of {total})</span><span className="click-for-more-results" onClick={this.incrementTable}>See next {Math.min(this.props.tableLimit,total-this.props.tableLimit*(this.state.tableBatch+1))} result(s)<i className="icon icon-long-arrow-right" /></span></h4>
+                                :
+                                    <h4>Results table <span className="results-count">({Math.min(this.props.tableLimit,total)} of {total})</span></h4>
+                                }
+
+                                <ResultsTable {...this.props}/>
 
                             </div>
                         </div>

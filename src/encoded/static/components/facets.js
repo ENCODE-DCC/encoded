@@ -98,12 +98,6 @@ const Term = (props) => {
     const count = props.term.doc_count;
     const title = props.title || term;
     const field = facet.field;
-    const em = field === 'target.organism.scientific_name' ||
-                field === 'organism.scientific_name' ||
-                field === 'replicates.library.biosample.donor.organism.scientific_name';
-    const barStyle = {
-        width: `${Math.ceil((count / total) * 100)}%`,
-    };
 
     // Determine if the given term should display selected, as well as what the href for the term
     // should be. If it *is* selected, also indicate whether it was selected for negation or not.
@@ -122,18 +116,16 @@ const Term = (props) => {
         }
     } else {
         // Term isn't selected. Get the href for the term, and for its negation button.
-        href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
-        negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
+        href = `${searchBase}&${field}=${globals.encodedURIComponent(term)}`;
+        negationHref = `${searchBase}&${field}!=${globals.encodedURIComponent(term)}`;
     }
 
-    console.log(selected);
-    console.log(negated);
-    console.log(exists);
-
     return (
-        <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
-            {negated ? <i className="icon icon-square-o" /> : <i className="icon icon-check-square-o" />}
-            <a className="facet-term" href={href} onClick={href ? onFilter : null}>{title} ({count})</a>
+        <li>
+            <a className="facet-term" href={href} onClick={href ? onFilter : null}>
+                {negated ? <i className="icon icon-square-o" /> : <i className="icon icon-check-square-o" />}
+                {title} ({count})
+            </a>
         </li>
     );
 };
@@ -235,27 +227,10 @@ class Facet extends React.Component {
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
                         <div>
                             {/* Display the first five terms of the facet */}
-                            {terms.slice(0, 5).map(term =>
+                            {terms.map(term =>
                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                             )}
                         </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {/* If the user has expanded the "+ See more" button, then display
-                                     the rest of the terms beyond 5 */}
-                                {moreTerms.map(term =>
-                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                )}
-                            </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <div className="pull-right">
-                                {/* Display the "+ See more" button if more than five terms exist for this facet */}
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
-                                </small>
-                            </div>
-                        : null}
                     </ul>
                 </div>
             );
@@ -279,6 +254,29 @@ Facet.defaultProps = {
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
 /* eslint-disable react/prefer-stateless-function */
 export class FacetList extends React.Component {
+
+    constructor() {
+        super();
+
+        // Set initial React commponent state.
+        this.state = {
+            longFacets: false,
+        };
+
+        // Bind `this` to non-React methods.
+        this.expandList = this.expandList.bind(this);
+    }
+
+    expandList() {
+        if (this.state.longFacets === false){
+            document.getElementById("facet-list").classList.add("long");
+            this.setState({ longFacets: true });
+        } else {
+            document.getElementById("facet-list").classList.remove("long");
+            this.setState({ longFacets: false });
+        }
+    }
+
     render() {
         const { context, facets, filters, mode, orientation, hideTextFilter, addClasses } = this.props;
 
@@ -325,7 +323,7 @@ export class FacetList extends React.Component {
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
 
         return (
-            <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
+            <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`} id="facet-list">
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
                     {clearButton ?
                         <div className="clear-filters-control">
@@ -349,6 +347,11 @@ export class FacetList extends React.Component {
                         );
                     })}
                 </div>
+                {this.state.longFacets === false ?
+                    <div className="expand-list" onClick={this.expandList} id="expand-list"><i className="icon icon-expand" />Click to expand</div>
+                :
+                    <div className="expand-list" onClick={this.expandList} id="expand-list"><i className="icon icon-compress" />Click to collapse</div>
+                }
             </div>
         );
     }
@@ -366,6 +369,7 @@ FacetList.propTypes = {
     orientation: PropTypes.string,
     hideTextFilter: PropTypes.bool,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
+    expandList: PropTypes.func,
 };
 
 FacetList.defaultProps = {
