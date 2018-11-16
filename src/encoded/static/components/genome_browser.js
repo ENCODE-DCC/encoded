@@ -10,36 +10,42 @@ const dummyFiles = [
         output_type: 'minus strand signal of all reads',
         accession: 'ENCFF425LKJ',
         href: '/files/ENCFF425LKJ/@@download/ENCFF425LKJ.bigWig',
+        dataset: '/files/ENCFF425LKJ/@@download/ENCFF425LKJ.bigWig',
     },
     {
         file_format: 'bigWig',
         output_type: 'plus strand signal of all reads',
         accession: 'ENCFF638QHN',
         href: '/files/ENCFF638QHN/@@download/ENCFF638QHN.bigWig',
+        dataset: '/files/ENCFF638QHN/@@download/ENCFF638QHN.bigWig',
     },
     {
         file_format: 'bigWig',
         output_type: 'plus strand signal of unique reads',
         accession: 'ENCFF541XFO',
         href: '/files/ENCFF541XFO/@@download/ENCFF541XFO.bigWig',
+        dataset: '/files/ENCFF541XFO/@@download/ENCFF541XFO.bigWig',
     },
     {
         file_format: 'bigBed',
         output_type: 'transcription start sites',
         accession: 'ENCFF517WSY',
         href: '/files/ENCFF517WSY/@@download/ENCFF517WSY.bigBed',
+        dataset: '/files/ENCFF517WSY/@@download/ENCFF517WSY.bigBed',
     },
     {
         file_format: 'bigBed',
         output_type: 'peaks',
         accession: 'ENCFF026DAN',
         href: '/files/ENCFF026DAN/@@download/ENCFF026DAN.bigBed',
+        dataset: '/files/ENCFF026DAN/@@download/ENCFF026DAN.bigBed',
     },
     {
         file_format: 'bigBed',
         output_type: 'peaks',
         accession: 'ENCFF847CBY',
         href: '/files/ENCFF847CBY/@@download/ENCFF847CBY.bigBed',
+        dataset: '/files/ENCFF847CBY/@@download/ENCFF847CBY.bigBed',
     },
 ];
 
@@ -55,27 +61,28 @@ function rAssemblyToSources(assembly, region) {
 
     if (region) {
         // console.log('region provided: %s', region);
+        // if a region was set (in region_search or regulome_search), then
+        // parse the 'chr:start-end' format and set the browser window at the region
         const reg = region.split(':');
         browserCfg.chr = reg[0].substring(3, reg[0].length);
         const positions = reg[1].split('-');
         for (let i = 0; i < positions.length; i += 1) {
             positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
         }
-        if (positions.length > 1) {
-            if (positions[0] > 10000) {
-                browserCfg.viewStart = positions[0] - 10000;
-            } else {
-                browserCfg.viewStart = 1;
-            }
-            browserCfg.viewEnd = positions[1] + 10000;
-        } else {
-            if (positions[0] > 10000) {
-                browserCfg.viewStart = positions[0] - 10000;
-            } else {
-                browserCfg.viewStart = 1;
-            }
-            browserCfg.viewEnd = positions[0] + 10000;
+        if (positions.length === 1) {
+            positions[1] = positions[0];
         }
+        // If region is small (e.g. SNP location), then expand the browser window
+        if ((positions[1] - positions[0]) < 10) {
+            if (positions[0] > 1000) {
+                positions[0] -= 1000;
+            } else {
+                positions[0] = 1;
+            }
+            positions[1] += 1000;
+        }
+        browserCfg.viewStart = positions[0];
+        browserCfg.viewEnd = positions[1];
         browserCfg.positionSet = true;
     }
 
@@ -102,6 +109,13 @@ function rAssemblyToSources(assembly, region) {
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/gencode2_v24.xml',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/gencode.v24.annotation.ix',
+            },
+            {
+                name: 'SNPs',
+                desc: 'dbSNP v141',
+                jbURI: '/jbrest/snp141/GRCh38',
+                jbQuery: 'type=HTMLFeatures',
+                style: [{ style: { HEIGHT: 10 } }],
             },
             {
                 name: 'Repeats',
@@ -134,6 +148,13 @@ function rAssemblyToSources(assembly, region) {
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode_v19.xml',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.v19.annotation.ix',
+            },
+            {
+                name: 'SNPs',
+                desc: 'dbSNP v141',
+                jbURI: '/jbrest/snp141/hg19',
+                jbQuery: 'type=HTMLFeatures',
+                style: [{ style: { HEIGHT: 10 } }],
             },
             {
                 name: 'Repeats',
@@ -391,6 +412,7 @@ class GenomeBrowser extends React.Component {
 
         // Make some fake file objects from "test" just to give the genome browser something to
         // chew on if we're running locally.
+        // this.context.localInstance = false;
         files = !this.context.localInstance ?
             (limitFiles ? files.slice(0, maxFilesBrowsed - 1) : files)
         : dummyFiles;
@@ -442,6 +464,8 @@ class GenomeBrowser extends React.Component {
         require.ensure(['dalliance'], (require) => {
             const Dalliance = require('dalliance').browser;
 
+            console.log(browserCfg);
+
             this.browser = new Dalliance({
                 maxHeight: 2000,
                 noPersist: false,
@@ -450,7 +474,7 @@ class GenomeBrowser extends React.Component {
                 maxWorkers: 4,
                 noHelp: true,
                 noExport: true,
-                rulerLocation: 'right',
+                rulerLocation: 'none',
                 chr: browserCfg.chr,
                 viewStart: browserCfg.viewStart,
                 viewEnd: browserCfg.viewEnd,
@@ -459,6 +483,7 @@ class GenomeBrowser extends React.Component {
                 sources: browserCfg.sources,
                 noTitle: true,
                 disablePoweredBy: true,
+                maxViewWidth: Math.min((browserCfg.viewEnd - browserCfg.viewStart) * 10, 100000),
             });
             this.browser.addViewListener(this.locationChange);
         });

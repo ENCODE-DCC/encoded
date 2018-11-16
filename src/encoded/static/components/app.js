@@ -15,6 +15,7 @@ import Footer from './footer';
 import Home from './home';
 import newsHead from './page';
 
+
 const portal = {
     portal_title: 'ENCODE',
     global_sections: [
@@ -22,59 +23,14 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment' },
-                { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment' },
-                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment' },
-                { id: 'sep-mm-1' },
-                { id: 'region-search', title: 'Search by region', url: '/region-search/' },
-                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome' },
-                { id: 'publications', title: 'Publications', url: '/publications/' },
+                { id: 'experiments', title: 'Experiments', url: '/search/?type=Experiment&internal_tags=RegulomeDB' },
+                { id: 'annotations', title: 'Annotations', url: '/search/?type=Annotation&internal_tags=RegulomeDB' },
             ],
         },
         {
-            id: 'encyclopedia',
-            title: 'Encyclopedia',
-            children: [
-                { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
-                { id: 'sep-mm-1' },
-                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'http://screen.encodeproject.org/' },
-                { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
-                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=4' },
-                { id: 'annotationmethods', title: 'Methods', url: 'http://screen.encodeproject.org/index/about' },
-            ],
-        },
-        {
-            id: 'materialsmethods',
-            title: 'Materials & Methods',
-            children: [
-                { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot' },
-                { id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample' },
-                { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
-                { id: 'sep-mm-1' },
-                { id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/' },
-                { id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies' },
-                { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
-                { id: 'softwaretools', title: 'Software tools', url: '/software/' },
-                { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
-                { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
-                { id: 'dataaccess', title: 'Data access', url: '/about/data-access/' },
-                { id: 'sep-mm-2' },
-                { id: 'profiles', title: 'Schemas', url: '/profiles/' },
-            ],
-        },
-        {
-            id: 'help',
+            id: 'regulomehelp',
             title: 'Help',
-            children: [
-                { id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/' },
-                { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
-                { id: 'cart', title: 'Cart', url: '/help/cart/' },
-                { id: 'projectoverview', title: 'Project overview', url: '/about/contributors/' },
-                { id: 'tutorials', title: 'Tutorials', url: '/tutorials/' },
-                { id: 'news', title: 'News', url: '/search/?type=Page&news=true&status=released' },
-                { id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/' },
-                { id: 'contact', title: 'Contact', url: '/help/contacts/' },
-            ],
+            url: 'regulome-help',
         },
     ],
 };
@@ -265,7 +221,7 @@ class App extends React.Component {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
             protocol: hrefInfo.protocol,
-            pathname: '/static/img/encode-logo-small-2x.png',
+            pathname: '/static/img/RegulomeLogoFinal.gif',
         };
         const logoUrl = url.format(logoHrefInfo);
 
@@ -280,7 +236,7 @@ class App extends React.Component {
             },
             socialButtonStyle: 'big',
             languageDictionary: {
-                title: 'Log in to ENCODE',
+                title: 'Log in to Regulome',
             },
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
@@ -515,7 +471,7 @@ class App extends React.Component {
         }).then(() => {
             this.DISABLE_POPSTATE = true;
             const oldPath = window.location.pathname + window.location.search;
-            window.location.assign('/#logged-out');
+            window.location.assign('/regulome-search/#logged-out');
             if (oldPath === '/') {
                 window.location.reload();
             }
@@ -734,10 +690,35 @@ class App extends React.Component {
         const actionUrl = url.parse(url.resolve(this.state.href, target.action));
         options.replace = actionUrl.pathname === url.parse(this.state.href).pathname;
         let search = serialize(target);
+
+        // Coding for multi-line inputs on forms
+        // ********** go back and delete count **************
+        let summaryFlag = 0;
+        if (search.indexOf('%0D%0A') !== -1){
+            summaryFlag = 1;
+        }
+        search = search.split('%0D%0A').join('&region=');
+        let indexStart = search.indexOf('%23');
+        let indexEnd = 0, count = 0;
+        let searchNew = search;
+        while (indexStart !== -1 && count < 10) {
+            indexEnd = searchNew.indexOf('&', indexStart);
+            searchNew = search.replace(search.substring(indexStart, indexEnd+1),'');
+            indexStart = searchNew.indexOf('%23');
+            count++;
+        }
+        search = searchNew;
+
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
         }
+
+        // different page for multiple input summary
         let href = actionUrl.pathname;
+        if (summaryFlag === 1){
+            href = "/regulome-summary/";
+        }
+
         if (search) {
             href += `?${search}`;
         }
@@ -1057,9 +1038,11 @@ class App extends React.Component {
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
                     <script async src="//www.google-analytics.com/analytics.js" />
+                    <link rel="shortcut icon" href="/static/img/favicon.ico?7" type="image/x-icon" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
+                    <link href="https://fonts.googleapis.com/css?family=Khula:400,700" rel="stylesheet" />
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script

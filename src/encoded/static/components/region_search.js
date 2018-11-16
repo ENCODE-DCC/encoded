@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import { FacetList, Listing } from './search';
+import { FacetList, Listing, ResultBrowser } from './search';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
+import _ from 'underscore';
+import { SortTablePanel, SortTable } from './sorttable';
 
 
 const regionGenomes = [
@@ -14,7 +16,10 @@ const regionGenomes = [
     { value: 'GRCm37', display: 'mm9' },
     { value: 'GRCm38', display: 'mm10' },
 ];
-
+const regulomeGenomes = [
+    { value: 'GRCh37', display: 'hg19' },
+    { value: 'GRCh38', display: 'GRCh38' },
+];
 
 const AutocompleteBox = (props) => {
     const terms = props.auto['@graph']; // List of matching terms from server
@@ -121,6 +126,52 @@ AutocompleteBoxMenu.defaultProps = {
     postText: '',
 };
 
+class DataTypes extends React.Component {
+
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.handleInfo = this.handleInfo.bind(this);
+    }
+
+    handleInfo(e) {
+        let infoId = e.target.id.split("data-type-")[1];
+        if (infoId){
+            let infoElement = document.getElementById("data-explanation-"+infoId);
+            infoElement.classList.toggle("show");
+            let iconElement = e.target.getElementsByTagName("i")[0];
+            if (e.target.getElementsByTagName("i")[0].className.indexOf("icon-caret-right") > -1){
+                iconElement.classList.add("icon-caret-down");
+                iconElement.classList.remove("icon-caret-right");
+            } else {
+                iconElement.classList.remove("icon-caret-down");
+                iconElement.classList.add("icon-caret-right");
+            }
+        }
+    }
+
+    render () {
+        return(
+            <div className="data-types">
+                <div className="data-types-instructions"><h4>Use RegulomeDB to identify DNA features and regulatory elements in non-coding regions of the human genome by entering ...</h4></div>
+                <div className="data-types-block" onClick={this.handleInfo}>
+                    <h4 id="data-type-0" className="data-type"><i className="icon icon-caret-right" /> dbSNP IDs</h4>
+                    <p className="data-type-explanation" id="data-explanation-0">Enter dbSNP ID(s) (example) or upload a list of dbSNP IDs to identify DNA features and regulatory elements that contain the coordinate of the SNP(s).</p>
+                    <h4 id="data-type-1" className="data-type"><i className="icon icon-caret-right" /> Single nucleotides</h4>
+                    <p className="data-type-explanation" id="data-explanation-1">Enter hg19 coordinates for a single nucleotide as 0-based (example) coordinates or in a BED file (example), VCF file (example), or GFF3 file (example). These coordinates will be mapped to a dbSNP IDs (if available) in addition to identifying DNA features and regulatory elements that contain the input coordinate(s).</p>
+                    <h4 id="data-type-2" className="data-type"><i className="icon icon-caret-right" /> A chromosomal region</h4>
+                    <p className="data-type-explanation" id="data-explanation-2">Enter hg19 chromosomal regions, such as a promoter region upstream of a gene, as 0-based (example) coordinates or in a BED file (example) or GFF3 file (example). All dbSNP IDs with an allele frequency >1% that are found in this region will be used to identify DNA features and regulatory elements that contain the coordinate of the SNP(s).</p>
+                </div>
+            </div>
+        )
+    }
+}
+
+DataTypes.propTypes = {
+    handleInfo: PropTypes.func,
+};
+
 
 class AdvSearch extends React.Component {
     constructor() {
@@ -135,7 +186,7 @@ class AdvSearch extends React.Component {
             showAutoSuggest: false,
             searchTerm: '',
             coordinates: '',
-            genome: '',
+            genome: 'GRCh37',
             terms: {},
         };
         /* eslint-enable react/no-unused-state */
@@ -145,13 +196,27 @@ class AdvSearch extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
-        this.closeAutocompleteBox = this.closeAutocompleteBox.bind(this);
+        this.handleOnFocus = this.handleOnFocus.bind(this);
+        this.handleExamples = this.handleExamples.bind(this);
         this.tick = this.tick.bind(this);
     }
 
     componentDidMount() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
+
+        // const sequenceData = ['AGATCGACCCT',
+        //     'GGAACGACGCT',
+        //     'GGATCGACCCT',
+        //     'CGATAGACGCT',
+        //     'CGATAGACGCT',
+        //     'GGATCGACCCT'];
+        //
+        // const seqLenBounds = [5, 25];
+        // const seqNumBounds = [1, 10];
+        // const seqSelector = '#sequence-logo';
+        //
+        // entryPoint(sequenceData, seqLenBounds, seqNumBounds, seqSelector);
     }
 
     componentWillUnmount() {
@@ -184,8 +249,36 @@ class AdvSearch extends React.Component {
         this.setState({ genome: event.target.value });
     }
 
-    closeAutocompleteBox() {
+    handleOnFocus() {
         this.setState({ showAutoSuggest: false });
+        this.context.navigate(this.context.location_href);
+    }
+
+    handleExamples(e){
+
+        let replaceNewline = (input) => {
+
+            let replaceAll = (str, find, replace) => {
+                return str.replace(new RegExp(find, 'g'), replace);
+            }
+
+            var newline = String.fromCharCode(13, 10);
+            return replaceAll(input, "\\n", newline);
+        }
+
+        let exampleString = "";
+        if (e.target.id === "example-snps") {
+            exampleString = "rs3768324\nrs75982468\nrs10905307\nrs10823321\nrs7745856";
+        } else if (e.target.id === "example-coordinates") {
+            exampleString = "chr11:62607065-62607067\nchr10:5894500-5894501\nchr10:11741181-11741181\nchr1:39492463-39492463\nchr6:10695158-10695160";
+        } else if (e.target.id === "example-gene") {
+            exampleString = "CTCF (homo sapiens)";
+        } else if (e.target.id === "example-nucleotide"){
+            exampleString = "ENSG00000102974";
+        } else {
+            exampleString = "rs3768324\nrs75982468\nrs10905307\nrs10823321\nrs7745856";
+        }
+        document.getElementById("multiple-entry-input").value = replaceNewline(exampleString);
     }
 
     tick() {
@@ -198,48 +291,54 @@ class AdvSearch extends React.Component {
         const context = this.props.context;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
+        const searchBase = url.parse(this.context.location_href).search || '';
 
         if (this.state.genome === '') {
-            let assembly = regionGenomes[0].value;
-            if (context.assembly) {
-                assembly = regionGenomes.find(el =>
-                    context.assembly === el.value || context.assembly === el.display
-                ).value;
-            }
-            this.setState({ genome: assembly });
+            this.setState({ genome: context.assembly || regionGenomes[0].value });
         }
 
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.closeAutocompleteBox} >
-                        <input type="hidden" name="annotation" value={this.state.terms.annotation} />
+                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.handleOnFocus} >
                         <div className="form-group">
-                            <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
+                            <label htmlFor="annotation"><i className="icon icon-search"></i>Search by dbSNP ID, gene name, single nucleotide coordinate, or coordinate range (hg19)</label>
                             <div className="input-group input-group-region-input">
-                                <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
-                                {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                    <FetchedData loadingComplete>
-                                        <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
-                                        <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
-                                    </FetchedData>
-                                : null}
-                                <div className="input-group-addon input-group-select-addon">
-                                    <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                        {regionGenomes.map(genomeId =>
-                                            <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
-                                        )}
-                                    </select>
-                                </div>
-                                {context.notification ?
-                                    <p className="input-region-error">{context.notification}</p>
-                                : null}
+                                <textarea className="multiple-entry-input" id="multiple-entry-input" placeholder="Enter search parameters here." onChange={this.handleChange} name="region">
+                                </textarea>
+
+                                <p className="example-inputs" onClick={this.handleExamples}>Click for example entry: <span className="example-input" id="example-snps">multiple dbSNPs</span>, <span className="example-input" id="example-coordinates">0-based coordinates</span>, <span className="example-input" id="example-nucleotide">single nucleotide coordinate</span>, or <span className="example-input" id="example-gene">gene name</span></p>
+
+                                <input type="submit" value="Search" className="btn btn-sm btn-info" />
+                                <input type="hidden" name="genome" value={this.state.genome} />
                             </div>
                         </div>
-                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
+
                     </form>
-                    {context.coordinates ?
-                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+
+                    {(context.notification) ?
+                        <p>{context.notification}</p>
+                    : null}
+                    {(context.coordinates) ?
+                        <p>Searched coordinates: {context.coordinates}</p>
+                    : null}
+                    {(context.regulome_score) ?
+                        <p className="regulomescore">RegulomeDB score: {context.regulome_score}</p>
+                    : null}
+                    {(context.regulome_score  && !context.peak_details) ?
+                        <a
+                            rel="nofollow"
+                            className="btn btn-info btn-sm"
+                            href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
+                        >
+                            See peaks
+                        </a>
+                    : null}
+                    {(context.peak_details !== undefined && context.peak_details !== null) ?
+                        <div className="btn-container">
+                            <a className="btn btn-info btn-sm" href={context.download_elements[0]} data-bypass>Download peak details (TSV)</a>
+                            <a className="btn btn-info btn-sm" href={context.download_elements[1]} data-bypass>Download peak details (JSON)</a>
+                        </div>
                     : null}
                 </PanelBody>
             </Panel>
@@ -256,15 +355,64 @@ AdvSearch.contextTypes = {
     autocompleteHidden: PropTypes.bool,
     onAutocompleteHiddenChange: PropTypes.func,
     location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
+const PeakDetails = (props) => {
 
-class RegionSearch extends React.Component {
+    const context = props.context;
+    const peaks = context.peak_details;
+
+    const peaksTableColumns = {
+        method: {
+            title: 'Method',
+        },
+
+        chrom: {
+            title: 'Chromosome location',
+            getValue: item => item.chrom+":"+item.start+".."+item.end,
+        },
+
+        biosample_term_name: {
+            title: 'Biosample term name',
+        },
+
+        targets: {
+            title: 'Targets',
+            getValue: item => item.targets.join(', '),
+        },
+    };
+
+    return (
+        <div>
+            <SortTablePanel title="Peak details">
+                <SortTable list={peaks} columns={peaksTableColumns} />
+            </SortTablePanel>
+        </div>
+    );
+
+}
+
+// class SequenceLogo extends React.Component {
+//     render (){
+//         return (
+//             <div className="sequence-logo-container">
+//                 <div id="sequence-logo" className="sequence-logo"></div>
+//             </div>
+//         );
+//     }
+// }
+
+class RegulomeSearch extends React.Component {
     constructor() {
         super();
 
+        let assemblies = 'hg19';
+        this.assembly == 'hg19';
+
         // Bind this to non-React methods.
         this.onFilter = this.onFilter.bind(this);
+        this.currentRegion = this.currentRegion.bind(this);
     }
 
     onFilter(e) {
@@ -274,6 +422,16 @@ class RegionSearch extends React.Component {
             e.stopPropagation();
             e.preventDefault();
         }
+    }
+
+    currentRegion(assembly, region) {
+        if (assembly && region) {
+            this.lastRegion = {
+                assembly,
+                region,
+            };
+        }
+        return Search.lastRegion;
     }
 
     render() {
@@ -289,6 +447,14 @@ class RegionSearch extends React.Component {
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
 
+        let browseAllFiles = true; // True to pass all files to browser
+        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
+        let browserDatasets = []; // Datasets will be used to get vis_json blobs
+        let browserFiles = []; // Files to pass to ResultsBrowser component
+        let assemblyChooser;
+
+        let visualizeCfg = context.visualize_batch;
+
         // Get a sorted list of batch hubs keys with case-insensitive sort
         let visualizeKeys = [];
         if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
@@ -299,11 +465,79 @@ class RegionSearch extends React.Component {
             });
         }
 
+        // Check whether the search query qualifies for a genome browser display. Start by counting
+        // the number of "type" filters exist.
+        let typeFilter;
+        const counter = filters.reduce((prev, curr) => {
+            if (curr.field === 'type') {
+                typeFilter = curr;
+                return prev + 1;
+            }
+            return prev;
+        }, 0);
+
+        // If we have only one "type" term in the query string and it's for File, then we can
+        // display the List/Browser tabs. Otherwise we just get the list.
+        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
+        if (browserAvail) {
+            // If dataset is in the query string, we can show all files.
+            const datasetFilter = filters.find(filter => filter.field === 'dataset');
+            if (datasetFilter) {
+                browseAllFiles = true;
+
+                // Probably not worth a define in globals.js for visualizable types and statuses.
+                browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
+                if (browserFiles.length > 0) {
+                    browserFiles = browserFiles.filter(file =>
+                        ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+                    );
+                }
+                browserAvail = (browserFiles.length > 0);
+
+                if (browserAvail) {
+                    // Distill down to a list of datasets so they can be passed to genome_browser code.
+                    browserDatasets = browserFiles.reduce((datasets, file) => (
+                        (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
+                    ), []);
+                }
+            } else {
+                browseAllFiles = false;
+                browserAvail = false; // NEW: Limit browser option to type=File&dataset=... only!
+            }
+        }
+
+        if (browserAvail) {
+            // Now determine if we have a mix of assemblies in the files, or just one. If we have
+            // a mix, we need to render a drop-down.
+            if (assemblies.length === 1) {
+                // Only one assembly in all the files. No menu needed.
+                browserAssembly = assemblies[0];
+                // empty div to avoid warning only.
+                assemblyChooser = (
+                    <div className="browser-assembly-chooser" />
+                );
+            } else {
+                browserAssembly = this.state.browserAssembly;
+                assemblyChooser = (
+                    <div className="browser-assembly-chooser">
+                        <div className="browser-assembly-chooser__title">Assembly:</div>
+                        <div className="browser-assembly-chooser__menu">
+                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
+                        </div>
+                    </div>
+                );
+            }
+            if (this.props.region) {
+                this.props.currentRegion(browserAssembly, this.props.region);
+            }
+        }
+
         return (
             <div>
-                <h2>Region search</h2>
+                <div className="lead-logo"><img src="/static/img/RegulomeLogoFinal.gif"></img></div>
+
                 <AdvSearch {...this.props} />
-                {notification === 'Success' ?
+                {notification.startsWith('Success') ?
                     <div className="panel data-display main-panel">
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
@@ -315,8 +549,29 @@ class RegionSearch extends React.Component {
                                     onFilter={this.onFilter}
                                 />
                             </div>
+
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 <div>
+                                    {visualizeKeys && context.visualize_batch && !visualizeDisabled ?
+                                        <div className="visualize-block">
+                                            <h4>Visualizations</h4>
+                                            {visualizeCfg['hg19']['UCSC'] ?
+                                                <div>
+                                                    <div className="visualize-element"><a href={visualizeCfg['hg19']['Quick View']} rel="noopener noreferrer" target="_blank">Quick View
+                                                        <span className="beta-badge">BETA</span>
+                                                    </a></div>
+                                                    <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
+                                                </div>
+                                            :
+                                                <div className="visualize-element visualize-error">Choose other datasets. These cannot be visualized.</div>
+                                            }
+                                        </div>
+                                    :
+                                        <div className="visualize-block">
+                                            <h4>Visualizations</h4>
+                                            <div className="visualize-element visualize-error">Filter to fewer than 100 results to visualize</div>
+                                        </div>
+                                    }
                                     <h4>
                                         Showing {results.length} of {total}
                                     </h4>
@@ -335,7 +590,7 @@ class RegionSearch extends React.Component {
                                                 {results.length > 25 ?
                                                         <a
                                                             className="btn btn-info btn-sm"
-                                                            href={trimmedSearchBase || '/region-search/'}
+                                                            href={trimmedSearchBase || '/regulome-search/'}
                                                             onClick={this.onFilter}
                                                         >
                                                             View 25
@@ -344,42 +599,49 @@ class RegionSearch extends React.Component {
                                             </span>
                                         }
 
-                                        {visualizeKeys && context.visualize_batch ?
-                                            <BrowserSelector
-                                                visualizeCfg={context.visualize_batch}
-                                                disabled={visualizeDisabled}
-                                                title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                            />
-                                        : null}
-
                                     </div>
                                 </div>
 
                                 <hr />
+
                                 <ul className="nav result-table" id="result-table">
                                     {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
                                 </ul>
+
                             </div>
                         </div>
                     </div>
                 : null}
+
+                {(context.peak_details) ?
+                    <PeakDetails {...this.props} />
+                : null}
+
+                {(context.peak_details === undefined && !notification.startsWith('Success')) ?
+                    <DataTypes />
+                :  null}
+
             </div>
         );
     }
 }
 
-RegionSearch.propTypes = {
+RegulomeSearch.propTypes = {
     context: PropTypes.object.isRequired,
     onChange: PropTypes.func,
+    currentRegion: PropTypes.func,
+    region: PropTypes.string,
 };
 
-RegionSearch.defaultProps = {
+RegulomeSearch.defaultProps = {
     onChange: null,
+    currentRegion: null,
+    region: null,
 };
 
-RegionSearch.contextTypes = {
+RegulomeSearch.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
 };
 
-globals.contentViews.register(RegionSearch, 'region-search');
+globals.contentViews.register(RegulomeSearch, 'region-search');

@@ -1022,7 +1022,13 @@
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
-                        "variant calls"
+                        "curated binding sites",
+                        "curated SNVs",
+                        "variant calls",
+                        "eQTLs",
+                        "dsQTLs",
+                        "Footprints",
+                        "PWMs"
                     ]
                 },
                 {
@@ -1422,6 +1428,12 @@
         "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
+        "curated binding sites": "annotation",
+        "curated SNVs": "annotation",
+        "eQTLs": "annotation",
+        "dsQTLs": "annotation",
+        "Footprints": "annotation",
+        "PWMs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

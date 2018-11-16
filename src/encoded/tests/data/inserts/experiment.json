@@ -395,7 +395,8 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "EBF1-human",
         "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02",
-        "experiment_classification": ["functional genomics assay"]
+        "experiment_classification": ["functional genomics assay"],
+        "internal_tags": ["RegulomeDB"]
     },
     {
         "_test": "treatment control",
@@ -857,5 +858,84 @@
         "accession": "ENCSR751STR",
         "uuid": "a4460c54-aece-43d2-bf52-dbaaa9298aaa",
         "experiment_classification": ["functional genomics assay"]
+    },
+    {
+        "_test": "RegulomeDB test ChIP-seq",
+        "uuid": "5d9a1769-5bdf-40af-85a9-d08c9a3c9b93",
+        "date_submitted": "2010-12-06",
+        "status": "released",
+        "lab": "peggy-farnham",
+        "biosample_term_id": "EFO:0002791",
+        "internal_tags": ["ENCYCLOPEDIAv4", "RegulomeDB"],
+        "description": "ELK4 ChIP-seq on human HeLa-S3",
+        "experiment_classification": ["functional genomics assay"],
+        "date_created": "2013-12-12T07:13:09.995623+00:00",
+        "award": "U41HG009293",
+        "assay_term_name": "ChIP-seq",
+        "target": "ELK4-human",
+        "accession": "ENCSR000EVI",
+        "date_released": "2011-10-29",
+        "biosample_type": "cell line",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "possible_controls": ["ENCSR000EYX"],
+        "dbxrefs": [
+          "UCSC-ENCODE-hg19:wgEncodeEH001753",
+          "GEO:GSM935351"
+        ],
+        "biosample_term_name": "HeLa-S3",
+        "schema_version": "21"
+    },
+    {
+        "_test": "RegulomeDB test DNase-seq",
+        "uuid": "7fabca98-92e3-4957-924e-520490d3d26b",
+        "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+        "date_created": "2013-12-12T07:08:51.605435+00:00",
+        "accession": "ENCSR000ENO",
+        "biosample_term_name": "HeLa-S3",
+        "date_released": "2010-12-16",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH000495",
+            "GEO:GSM736564"
+        ],
+        "status": "released",
+        "biosample_term_id": "EFO:0002791",
+        "award": "U41HG009293",
+        "date_submitted": "2010-12-16",
+        "description": "DNase-seq on human HeLa-S3",
+        "schema_version": "21",
+        "lab": "john-stamatoyannopoulos",
+        "internal_status": "pipeline completed",
+        "biosample_type": "cell line",
+        "experiment_classification": ["functional genomics assay"],
+        "internal_tags": [
+            "cre_inputv10",
+            "ENCYCLOPEDIAv4",
+            "RegulomeDB"
+        ],
+        "assay_term_name": "DNase-seq"
+    },
+    {
+        "_test": "RegulomeDB test FAIRE-seq",
+        "uuid": "4e3c4438-cb09-4401-884e-d3ff3200a537",
+        "biosample_type": "cell line",
+        "lab": "jason-lieb",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH000588",
+            "GEO:GSM864359"
+        ],
+        "date_created": "2013-12-12T06:50:54.224638+00:00",
+        "biosample_term_id": "EFO:0002791",
+        "accession": "ENCSR000DCE",
+        "status": "released",
+        "biosample_term_name": "HeLa-S3",
+        "submitted_by": "metus.donec@nisl.montes",
+        "schema_version": "21",
+        "experiment_classification": ["functional genomics assay"],
+        "assay_term_name": "FAIRE-seq",
+        "award": "U41HG009293",
+        "description": "FAIRE-seq on HeLa-S3 treated with IFNg for 4 hours",
+        "date_submitted": "2011-01-18",
+        "date_released": "2011-03-21",
+        "internal_tags": ["RegulomeDB"]
     }
 ]

@@ -2,6 +2,7 @@
 
 ### Schema version 8
 
+* Added *sequence logo* to document_type enums.
 * *status* property was restricted to one of  
     "enum" : [
         "in progress",
