@@ -63,11 +63,11 @@ export class TestViz extends React.Component {
         facets.forEach(function(facet, facetIDX) {
             displayCategories.forEach(function(display,displayIDX){
                 if (facet.field === display) {
-                    if (facet.field === "assay_term_name"){
-                        // combine "assay_term_name" and "annotation_type"
-                        facets[0].terms = [...facets[0].terms, ...facets[1].terms];
-                        facets[0].total += facets[1].total;
-                    }
+                    // if (facet.field === "assay_term_name"){
+                    //     // combine "assay_term_name" and "annotation_type"
+                    //     facets[0].terms = [...facets[0].terms, ...facets[1].terms];
+                    //     facets[0].total += facets[1].total;
+                    // }
                     obj = facet.terms;
                     arr = Object.keys( obj ).map(function ( key ) {
                         return obj[key]["doc_count"];
