@@ -1,6 +1,39 @@
 Changes
 =======
 
+78.0 (released) / snovault 1.0.21
+-----------------
+1. ENCD-4332 Update to snovault 1.0.21 (#2502)
+2. ENCD-4301 Refactor index UUID server (#2485)
+3. ENCD-4263 Only show released quality metrics (#2450)
+4. ENCD-4195 Update ontology with mintchip slims (#2500)
+5. ENCD-4321 Fix import of ExperimentTable (#2498)
+6. ENCD-4317 Update snovault to 1.0.20 (#2494)
+7. ENCD-4205 biosample type (#2442)
+8. ENCD-4245 skip-restricted-acl (#2490)
+9. ENCD-4279 Biosample preservation (#2493)
+10. ENCD-4033 Search page type-specific header (Req SNO-66) (#2492)
+11. ENCD-4281 fix-audit-text-message (#2465)
+12. ENCD-4223 Make internal_tags badges clickable to search pages (#2467)
+13. ENCD-4289 Update  genetic modification tags metadata (#2491)
+14. ENCD-4244 audit-error-page (#2461)
+15. ENCD-4271 fix-treatment-tem-id-regex (#2475)
+16. ENCD-4231 matched set controls (#2474)
+17. ENCD-4295 fix target title in JSON (#2486)
+18. ENCD-4291 changed modification_type to category in gm schema (#2478)
+19. ENCD-4252 disable-download-restricted-files-admin (#2481)
+20. ENCD-4300 Remove checkfiles folder (#2484)
+21. ENCD-4288 Update requests to 2.20.0 (#2483)
+22. ENCD-4195 ontology update sept18 (#2489)
+23. ENCD-4267 Remove redirect from apache config (#2459)
+24. ENCD-4142 Update calc prop assembly on dataset (#2437)
+25. ENCD-4255 fix-biosample-audit-bug (#2470)
+26. ENCD-4282 Add PGP internal_tags badge (#2468)
+27. ENCD-4256 Fix region search back button functionality (#2463)
+28. ENCD-4280 Remove table margin (#2462)
+29. ENCD-4239 Add biosample to query string on matrix  (#2460)
+30. ENCD-4199 Ignore npm shrinkwrap (#2477)
+
 77.1 (released) / 3998 Bug Fix
 -----------------
 1. ENCD-3998 Target upgrade to return gene uuid (#2466)
