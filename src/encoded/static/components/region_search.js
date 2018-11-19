@@ -471,25 +471,28 @@ class RegulomeSearch extends React.Component {
     render() {
         const context = this.props.context;
         const results = context['@graph'];
-        const columns = context.columns;
+        // const columns = context.columns;
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
-        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+        // const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
         const filters = context.filters;
         const facets = context.facets;
         const total = context.total;
+
+        console.log(filters);
 
         const tableLimit = 100;
         console.log(this);
         console.log(this.props);
 
-        let browseAllFiles = true; // True to pass all files to browser
-        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
+        // let browseAllFiles = true; // True to pass all files to browser
+        // let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
         let browserFiles = []; // Files to pass to ResultsBrowser component
-        let assemblyChooser;
+        // let assemblyChooser;
 
         let visualizeCfg = context.visualize_batch;
+        console.log(visualizeCfg);
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
         let visualizeKeys = [];
@@ -500,35 +503,26 @@ class RegulomeSearch extends React.Component {
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
+        console.log(visualizeKeys);
 
-        // If dataset is in the query string, we can show all files.
-        const datasetFilter = filters.find(filter => filter.field === 'dataset');
-        console.log("dataset filter");
-        console.log(datasetFilter);
-        if (datasetFilter) {
-            browseAllFiles = true;
-
-            // Probably not worth a define in globals.js for visualizable types and statuses.
-            browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-            if (browserFiles.length > 0) {
-                browserFiles = browserFiles.filter(file =>
-                    ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-                );
-            }
-
-            // Distill down to a list of datasets so they can be passed to genome_browser code.
-            browserDatasets = browserFiles.reduce((datasets, file) => (
-                (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
-            ), []);
-
-            console.log("browser datasets");
-            console.log(browserDatasets);
-        } else {
-            browseAllFiles = false;
+        // Probably not worth a define in globals.js for visualizable types and statuses.
+        browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
+        if (browserFiles.length > 0) {
+            browserFiles = browserFiles.filter(file =>
+                ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+            );
         }
 
-        console.log(browserFiles);
+        // Distill down to a list of datasets so they can be passed to genome_browser code.
+        browserDatasets = browserFiles.reduce((datasets, file) => (
+            (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
+        ), []);
+
+        console.log("browser datasets");
         console.log(browserDatasets);
+
+        console.log("browser files");
+        console.log(browserFiles);
 
         const title = "Results details";
 
