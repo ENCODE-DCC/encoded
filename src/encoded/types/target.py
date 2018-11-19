@@ -67,13 +67,14 @@ class Target(SharedItem):
     def name(self):
         return self.__name__
 
-    @calculated_property(condition='organism', schema={
+    @calculated_property(schema={
         "title": "Title",
         "type": "string",
     })
     def title(self, request, label, organism, investigated_as):
         if organism is None:
-            source = investigated_as.capitalize()
+            # ENCD-4250 investigated_as must be just ['synthetic tag']
+            source = investigated_as[0].capitalize()
         else:
             source = request.embed(organism, '@@object')['scientific_name']
         return u'{} ({})'.format(label, source)

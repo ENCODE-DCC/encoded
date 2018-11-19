@@ -63,6 +63,14 @@ def target_two_diff_orgs(ctcf, tbp):
     }
 
 
+@pytest.fixture
+def target_synthetic_tag():
+    return {
+        'label': 'FLAG',
+        'investigated_as': ['synthetic tag'],
+    }
+
+
 def test_post_target_organism(testapp, target_nongene, target_one_gene,
                               target_two_same_org, target_two_diff_orgs):
     res = testapp.post_json('/target', target_nongene)
@@ -187,3 +195,26 @@ def test_target_organism_uuid(testapp, human):
     }
     res = testapp.post_json('/target', item).json['@graph'][0]
     assert res['organism'] == human['@id']
+
+
+def test_synthetic_tag_target(testapp, target_synthetic_tag, human, ctcf):
+    flag_target = testapp.post_json(
+        '/target', target_synthetic_tag
+    ).json['@graph'][0]
+    assert flag_target['title'] == 'FLAG (Synthetic tag)'
+
+    syn_and_org = {'target_organism': human['uuid']}
+    syn_and_org.update(target_synthetic_tag)
+    res = testapp.post_json('/target', syn_and_org, expect_errors=True)
+    assert res.json['status'] == 'error'
+    syn_and_org['investigated_as'] = ['synthetic tag', 'tag']
+    res = testapp.post_json('/target', syn_and_org, expect_errors=True)
+    assert res.json['status'] == 'error'
+
+    syn_and_gene = {'genes': [ctcf['uuid']]}
+    syn_and_gene.update(target_synthetic_tag)
+    res = testapp.post_json('/target', syn_and_gene, expect_errors=True)
+    assert res.json['status'] == 'error'
+    syn_and_gene['investigated_as'] = ['synthetic tag', 'tag']
+    res = testapp.post_json('/target', syn_and_gene, expect_errors=True)
+    assert res.json['status'] == 'error'

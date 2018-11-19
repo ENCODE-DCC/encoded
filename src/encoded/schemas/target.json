@@ -14,47 +14,75 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/standard_status" }
     ],
-    "dependencies": {
-        "label": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "investigated_as": {
-                            "items": {
-                                "enum": ["synthetic tag"]
-                            }
-                        }
-                    },
-                    "not": {"required": ["target_organism", "genes"]}
-                },
-                {
-                    "required": ["target_organism"],
-                    "not": {
-                        "required": ["genes"],
-                        "properties": {
-                            "investigated_as": {
-                                "items": {
-                                    "enum": ["synthetic tag"]
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "required": ["genes"],
-                    "not": {
-                        "required": ["target_organism"],
-                        "properties": {
-                            "investigated_as": {
-                                "items": {
-                                    "enum": ["synthetic tag"]
-                                }
-                            }
-                        }
+    "oneOf": [
+        {
+            "properties": {
+                "investigated_as": {
+                    "items": {
+                        "enum": ["synthetic tag"]
                     }
                 }
+            },
+            "allOf": [
+                {"not": {"required": ["target_organism"]}},
+                {"not": {"required": ["genes"]}}
             ]
+        },
+        {
+            "required": ["target_organism"],
+            "not": {
+                "required": ["genes"]
+            },
+            "properties": {
+                "investigated_as": {
+                    "items": {
+                        "enum": [
+                            "broad histone mark",
+                            "chromatin remodeller",
+                            "control",
+                            "histone",
+                            "narrow histone mark",
+                            "nucleotide modification",
+                            "other context",
+                            "other post-translational modification",
+                            "recombinant protein",
+                            "RNA binding protein",
+                            "tag",
+                            "transcription factor"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "required": ["genes"],
+            "not": {
+                "required": ["target_organism"]
+            },
+            "properties": {
+                "investigated_as": {
+                    "items": {
+                        "enum": [
+                            "broad histone mark",
+                            "chromatin remodeller",
+                            "control",
+                            "histone",
+                            "narrow histone mark",
+                            "nucleotide modification",
+                            "other context",
+                            "other post-translational modification",
+                            "recombinant protein",
+                            "RNA binding protein",
+                            "tag",
+                            "transcription factor"
+                        ]
+                    }
+                }
+            }
         }
+    ],
+    "dependencies": {
+        "modifications": ["genes"]
     },
     "properties": {
         "schema_version": {
