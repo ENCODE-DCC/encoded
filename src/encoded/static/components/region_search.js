@@ -501,84 +501,34 @@ class RegulomeSearch extends React.Component {
             });
         }
 
-        // Check whether the search query qualifies for a genome browser display. Start by counting
-        // the number of "type" filters exist.
-        let typeFilter;
-        const counter = filters.reduce((prev, curr) => {
-            if (curr.field === 'type') {
-                typeFilter = curr;
-                return prev + 1;
+        // If dataset is in the query string, we can show all files.
+        const datasetFilter = filters.find(filter => filter.field === 'dataset');
+        console.log("dataset filter");
+        console.log(datasetFilter);
+        if (datasetFilter) {
+            browseAllFiles = true;
+
+            // Probably not worth a define in globals.js for visualizable types and statuses.
+            browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
+            if (browserFiles.length > 0) {
+                browserFiles = browserFiles.filter(file =>
+                    ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+                );
             }
-            return prev;
-        }, 0);
 
-        // If we have only one "type" term in the query string and it's for File, then we can
-        // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
-        console.log("browser available");
-        console.log(browserAvail);
-        if (browserAvail) {
-            // If dataset is in the query string, we can show all files.
-            const datasetFilter = filters.find(filter => filter.field === 'dataset');
-            console.log("dataset filter");
-            console.log(datasetFilter);
-            if (datasetFilter) {
-                browseAllFiles = true;
+            // Distill down to a list of datasets so they can be passed to genome_browser code.
+            browserDatasets = browserFiles.reduce((datasets, file) => (
+                (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
+            ), []);
 
-                // Probably not worth a define in globals.js for visualizable types and statuses.
-                browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-                if (browserFiles.length > 0) {
-                    browserFiles = browserFiles.filter(file =>
-                        ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-                    );
-                }
-                browserAvail = (browserFiles.length > 0);
-
-                console.log("browser available");
-                console.log(browserAvail);
-
-                if (browserAvail) {
-                    // Distill down to a list of datasets so they can be passed to genome_browser code.
-                    browserDatasets = browserFiles.reduce((datasets, file) => (
-                        (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
-                    ), []);
-
-                    console.log("browser datasets");
-                    console.log(browserDatasets);
-                }
-            } else {
-                browseAllFiles = false;
-                browserAvail = false; // NEW: Limit browser option to type=File&dataset=... only!
-            }
+            console.log("browser datasets");
+            console.log(browserDatasets);
+        } else {
+            browseAllFiles = false;
         }
+
         console.log(browserFiles);
         console.log(browserDatasets);
-
-        if (browserAvail) {
-            // Now determine if we have a mix of assemblies in the files, or just one. If we have
-            // a mix, we need to render a drop-down.
-            if (assemblies.length === 1) {
-                // Only one assembly in all the files. No menu needed.
-                browserAssembly = assemblies[0];
-                // empty div to avoid warning only.
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser" />
-                );
-            } else {
-                browserAssembly = this.state.browserAssembly;
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser">
-                        <div className="browser-assembly-chooser__title">Assembly:</div>
-                        <div className="browser-assembly-chooser__menu">
-                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
-                        </div>
-                    </div>
-                );
-            }
-            if (this.props.region) {
-                this.props.currentRegion(browserAssembly, this.props.region);
-            }
-        }
 
         const title = "Results details";
 
