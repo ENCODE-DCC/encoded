@@ -89,7 +89,6 @@ class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('encoded:schemas/treatment.json')
     embedded = [
-        'lab',
     ]
     set_status_up = [
         'biosamples_used',
