@@ -91,3 +91,9 @@ def treatment_9_10(value, system):
         value['status'] = 'released'
     elif value.get('status') == 'disabled':
         value['status'] = 'deleted'
+
+
+@upgrade_step('treatment', '10', '11')
+def treatment_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4272
+    value.pop('lab', None)
