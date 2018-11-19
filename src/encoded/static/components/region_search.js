@@ -583,8 +583,6 @@ class RegulomeSearch extends React.Component {
         const title = "Results details";
 
         let Facets = facets.filter(f => f.field === "organ_slims" || f.field === "target.label" || f.field === "assay_term_name" || f.field === "biosample_term_name");
-        Facets[0].terms = [...facets[0].terms, ...facets[1].terms];
-        Facets[0].total += facets[1].total;
 
         return (
             <div>
