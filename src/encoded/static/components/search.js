@@ -8,7 +8,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { FetchedData, Param } from './fetched';
-// import GenomeBrowser from './genome_browser';
+import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
 import { BrowserSelector, DisplayAsJson } from './objectutils';

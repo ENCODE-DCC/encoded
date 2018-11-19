@@ -505,24 +505,32 @@ class RegulomeSearch extends React.Component {
         }
         console.log(visualizeKeys);
 
+        console.log("results");
+        console.log(results);
+        results.forEach(result => console.log(result['@type']))
+        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
+
+        console.log("files");
+        console.log(files);
+
         // Probably not worth a define in globals.js for visualizable types and statuses.
-        browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-        if (browserFiles.length > 0) {
-            browserFiles = browserFiles.filter(file =>
-                ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-            );
-        }
-
-        // Distill down to a list of datasets so they can be passed to genome_browser code.
-        browserDatasets = browserFiles.reduce((datasets, file) => (
-            (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
-        ), []);
-
-        console.log("browser datasets");
-        console.log(browserDatasets);
-
-        console.log("browser files");
-        console.log(browserFiles);
+        // browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
+        // if (browserFiles.length > 0) {
+        //     browserFiles = browserFiles.filter(file =>
+        //         ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+        //     );
+        // }
+        //
+        // // Distill down to a list of datasets so they can be passed to genome_browser code.
+        // browserDatasets = browserFiles.reduce((datasets, file) => (
+        //     (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
+        // ), []);
+        //
+        // console.log("browser datasets");
+        // console.log(browserDatasets);
+        //
+        // console.log("browser files");
+        // console.log(browserFiles);
 
         const title = "Results details";
 
@@ -583,7 +591,7 @@ class RegulomeSearch extends React.Component {
                                             }
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
-                                                    <Biodalliance {...this.props} browserFiles={browserDatasets} biodallianceBatch={this.state.biodallianceBatch} />
+                                                    <Biodalliance {...this.props} browserFiles={results} biodallianceBatch={this.state.biodallianceBatch} />
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
                                                 </div>
                                             :

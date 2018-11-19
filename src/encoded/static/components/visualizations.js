@@ -23,6 +23,7 @@ export class TestViz extends React.Component {
             if (this.chartdisplay){
 
                 this.d3 = require('d3');
+                console.log(this.d3);
                 const targetElement = this.chartdisplay;
                 this.drawCharts(targetElement);
 
@@ -117,6 +118,8 @@ export class TestViz extends React.Component {
             let margin = {top: 40, bottom: 140, right: 20, left: 40};
             let height = 300;
             let width = maxWidth;
+
+            console.log(d3);
 
             svgBars
                 .attr("width", width)
