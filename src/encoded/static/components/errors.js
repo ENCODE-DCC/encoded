@@ -89,7 +89,7 @@ const LoginDenied = (props) => {
 
                     <p>
                         The ENCODE Portal now uses a variety of common identity providers to verify you are who say you are.<br />
-                        The email address you use as your &ldquot;id&rdquot; must match exactly the email address in our system.
+                        The email address you use as your &ldquo;id&rdquo; must match exactly the email address in our system.
                     </p>
 
                     <p>Please be aware that login access (to unreleased data) is available only to ENCODE Consortium members.</p>
