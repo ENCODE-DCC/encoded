@@ -65,8 +65,8 @@ def test_audit_inconsistent_modification_tag(
         library_1):
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                            'target': target_H3K27ac['@id']})
-    testapp.patch_json(target['@id'], {'investigated_as': ['recombinant protein'],
-                                       'label': 'FLAG'})
+    testapp.put_json(target['@id'], {'investigated_as': ['synthetic tag'],
+                                     'label': 'FLAG'})
     testapp.patch_json(rep1['@id'], {'antibody': antibody_lot['@id'],
                                      'library': library_1['@id']})
     testapp.patch_json(base_biosample['@id'], {
@@ -87,8 +87,8 @@ def test_audit_consistent_modification_tag(
         library_1):
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                            'target': target['@id']})
-    testapp.patch_json(target['@id'], {'investigated_as': ['recombinant protein'],
-                                       'label': 'FLAG'})
+    testapp.put_json(target['@id'], {'investigated_as': ['synthetic tag'],
+                                     'label': 'FLAG'})
     testapp.patch_json(rep1['@id'], {'antibody': antibody_lot['@id'],
                                      'library': library_1['@id']})
     testapp.patch_json(construct_genetic_modification['@id'],
