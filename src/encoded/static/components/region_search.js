@@ -475,11 +475,11 @@ class RegulomeSearch extends React.Component {
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         // const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-        const filters = context.filters;
+        // const filters = context.filters;
         const facets = context.facets;
         const total = context.total;
 
-        console.log(filters);
+        // console.log(filters);
 
         const tableLimit = 100;
         console.log(this);
@@ -514,12 +514,12 @@ class RegulomeSearch extends React.Component {
         console.log(files);
 
         // Probably not worth a define in globals.js for visualizable types and statuses.
-        // browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-        // if (browserFiles.length > 0) {
-        //     browserFiles = browserFiles.filter(file =>
-        //         ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-        //     );
-        // }
+        browserFiles = files.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
+        if (browserFiles.length > 0) {
+            browserFiles = browserFiles.filter(file =>
+                ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+            );
+        }
         //
         // // Distill down to a list of datasets so they can be passed to genome_browser code.
         // browserDatasets = browserFiles.reduce((datasets, file) => (
@@ -591,7 +591,7 @@ class RegulomeSearch extends React.Component {
                                             }
                                             {visualizeCfg['hg19']['UCSC'] ?
                                                 <div>
-                                                    <Biodalliance {...this.props} browserFiles={results} biodallianceBatch={this.state.biodallianceBatch} />
+                                                    <Biodalliance {...this.props} browserFiles={browserFiles} biodallianceBatch={this.state.biodallianceBatch} />
                                                     <div className="visualize-element"><a href={visualizeCfg['hg19']['UCSC']} rel="noopener noreferrer" target="_blank">UCSC</a></div>
                                                 </div>
                                             :
