@@ -127,7 +127,6 @@
             "description": "List of modifications made to the corresponding gene product of this target.",
             "comment": "This property will be used to calculate the proper label of the target. See computed_label property for details about automatic label calculation.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Modification",
