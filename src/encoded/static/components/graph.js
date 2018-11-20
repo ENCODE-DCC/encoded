@@ -286,6 +286,8 @@ export class Graph extends React.Component {
                             .attr('version', '1.1');
                         this.cv.savedSvg = svg;
 
+                        console.log(svg);
+
                         // Draw the graph into the panel; get the graph's view box and save it for
                         // comparisons later
                         const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
@@ -398,6 +400,12 @@ export class Graph extends React.Component {
 
         // Convert from given node architecture to the dagre nodes and edges
         Graph.convertGraph(this.props.graph, g);
+
+        console.log(svg);
+        console.log(this);
+        console.log(render);
+        console.log(d3);
+        console.log(g);
 
         // Run the renderer. This is what draws the final graph.
         render(svg, g);

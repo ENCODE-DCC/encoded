@@ -1029,6 +1029,7 @@ BatchDownload.propTypes = {
 export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
 
         // Make an array of all assemblies found in all files in the search results.
         let assemblies = [];
@@ -1070,6 +1071,7 @@ export class ResultTable extends React.Component {
     onFilter(e) {
         const searchStr = e.currentTarget.getAttribute('href');
         this.props.onChange(searchStr);
+        console.log(searchStr);
         e.stopPropagation();
         e.preventDefault();
         this.setState({ selectedTab: 'listpane' }); // Always return to listpane so that browser can rerender
@@ -1345,6 +1347,8 @@ const BrowserTabQuickView = function BrowserTabQuickView() {
 
 const ResultTableList = (props) => {
     const { results, columns, tabbed } = props;
+    console.log("results for table");
+    console.log(results);
     return (
         <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
             {results.length ?

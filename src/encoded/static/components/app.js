@@ -353,6 +353,7 @@ class App extends React.Component {
 
     // Handle http requests to the server, using the given URL and options.
     fetch(uri, options) {
+        console.log(uri);
         let reqUri = uri;
         const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
         const httpMethod = extendedOptions.method || 'GET';
@@ -369,6 +370,7 @@ class App extends React.Component {
         if (urlHash > -1) {
             reqUri = reqUri.slice(0, urlHash);
         }
+        console.log(reqUri);
         const request = fetch(reqUri, extendedOptions);
         request.xhr_begin = 1 * new Date();
         request.then((response) => {

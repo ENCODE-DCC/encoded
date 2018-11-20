@@ -4,8 +4,6 @@ import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import * as globals from './globals';
 import url from 'url';
-import { scaleLinear, scaleBand } from 'd3-scale';
-import { select } from 'd3-selection';
 
 
 // Display information on page as JSON formatted data
@@ -55,10 +53,9 @@ export class TestViz extends React.Component {
 
         const d3 = this.d3;
 
-        let displayCategories = ["assay_term_name", "replicates.library.biosample.donor.organism.scientific_name", "organ_slims", "biosample_term_name", "target.label"];
+        let displayCategories = ["assay_term_name", "organ_slims", "biosample_term_name", "target.label"];
 
         let facets = this.props.context.facets;
-        console.log(facets);
 
         let chosenIDX = [];
         let overallMax = 0;
@@ -66,11 +63,11 @@ export class TestViz extends React.Component {
         facets.forEach(function(facet, facetIDX) {
             displayCategories.forEach(function(display,displayIDX){
                 if (facet.field === display) {
-                    if (facet.field === "assay_term_name"){
-                        // combine "assay_term_name" and "annotation_type"
-                        facets[0].terms = [...facets[0].terms, ...facets[1].terms];
-                        facets[0].total += facets[1].total;
-                    }
+                    // if (facet.field === "assay_term_name"){
+                    //     // combine "assay_term_name" and "annotation_type"
+                    //     facets[0].terms = [...facets[0].terms, ...facets[1].terms];
+                    //     facets[0].total += facets[1].total;
+                    // }
                     obj = facet.terms;
                     arr = Object.keys( obj ).map(function ( key ) {
                         return obj[key]["doc_count"];
@@ -94,7 +91,10 @@ export class TestViz extends React.Component {
                   filteredIdx ++;
               }
             });
-            let chartData = filteredTestData;
+            let chartDataOrig = filteredTestData;
+
+            // we want to be smarter about this but we can't display unlimited data
+            let chartData = chartDataOrig.filter((chartData, cIDX) => cIDX < 20);
 
             const svgElement = d3.select(targetElement).append('svg');
             let fillColor = colorScale(idxidx);
@@ -116,7 +116,9 @@ export class TestViz extends React.Component {
             // create SVG container for chart components
             let margin = {top: 40, bottom: 140, right: 20, left: 40};
             let height = 300;
-            let width = maxWidth - 20;
+            let width = maxWidth;
+
+            console.log(d3);
 
             svgBars
                 .attr("width", width)
@@ -152,7 +154,8 @@ export class TestViz extends React.Component {
             const yAxis = svgBars.append("g")
                 .attr("transform", `translate(${margin.left},0)`)
                 .call(d3.axisLeft(yScale)
-                    .ticks(maxY));
+                    .ticks(4)
+                    .tickFormat(d3.format("d")));
 
             svgBars.append("text")
                 .attr("class", "chart-title")
