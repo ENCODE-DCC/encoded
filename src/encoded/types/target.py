@@ -72,7 +72,7 @@ class Target(SharedItem):
         "type": "string",
     })
     def title(self, request, label, organism, investigated_as):
-        if organism is None:
+        if not organism:
             # ENCD-4250 investigated_as must be just ['synthetic tag']
             source = investigated_as[0].capitalize()
         else:
@@ -87,7 +87,7 @@ class Target(SharedItem):
     def _name(self, properties):
         root = find_root(self)
         organism_uuid = self.organism(properties=properties, return_uuid=True)
-        if organism_uuid is None:
+        if not organism_uuid:
             source = properties['investigated_as'][0].replace(' ',  '_')
         else:
             organism = root.get_by_uuid(organism_uuid)
