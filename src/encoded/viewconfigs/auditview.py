@@ -186,11 +186,8 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         # we collect them for use in aggregations later.
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
-        used_filters = set_filters(
-            self._request,
-            filter_collector,
-            self._result,
-        )
+        used_filters, result_filters = set_filters(self._request, filter_collector)
+        self._result['filters'] = result_filters
         filters = filter_collector['post_filter']['bool']['must']
         negative_filters = filter_collector['post_filter']['bool']['must_not']
         self._facets = [

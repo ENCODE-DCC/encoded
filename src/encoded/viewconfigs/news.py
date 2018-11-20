@@ -60,12 +60,12 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
         }
         query['sort'] = result_sort
         self._result['sort'] = result_sort
-        used_filters = set_filters(
+        used_filters, result_filters = set_filters(
             self._request,
             query,
-            self._result,
             [('type', 'Page'), ('news', 'true'), ('status', 'released')]
         )
+        self._result['filters'] = result_filters
         facets = []
         if len(doc_types) == 1 and 'facets' in self._types[doc_types[0]].schema:
             facets.extend(self._types[doc_types[0]].schema['facets'].items())
