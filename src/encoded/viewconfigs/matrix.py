@@ -132,12 +132,12 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         '''Helper Method for constructing query'''
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
-        used_filters = set_filters(
+        used_filters, result_filters = set_filters(
             self._request,
             filter_collector,
-            self._result,
             filter_exclusion=self._filter_exclusion
         )
+        self._result['filters'].extend(result_filters)
         filters = filter_collector['post_filter']['bool']['must']
         negative_filters = filter_collector['post_filter']['bool']['must_not']
         self._facets = [
