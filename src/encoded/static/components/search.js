@@ -1113,6 +1113,8 @@ export class ResultTable extends React.Component {
             return facet;
         });
 
+        console.log(results);
+
         // See if a specific result type was requested ('type=x')
         // Satisfied iff exactly one type is in the search
         if (results.length) {
@@ -1134,6 +1136,8 @@ export class ResultTable extends React.Component {
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
+        console.log("visualize keys");
+        console.log(visualizeKeys);
 
         // Map view icons to svg icons
         const view2svg = {
@@ -1153,12 +1157,17 @@ export class ResultTable extends React.Component {
             return prev;
         }, 0);
 
+        console.log("typeFilter");
+        console.log(typeFilter)
+
         // If we have only one "type" term in the query string and it's for File, then we can
         // display the List/Browser tabs. Otherwise we just get the list.
         let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
         if (browserAvail) {
             // If dataset is in the query string, we can show all files.
             const datasetFilter = filters.find(filter => filter.field === 'dataset');
+            console.log("dataset filter");
+            console.log(datasetFilter);
             if (datasetFilter) {
                 browseAllFiles = true;
 
@@ -1169,6 +1178,8 @@ export class ResultTable extends React.Component {
                         ['released', 'in progress', 'archived'].indexOf(file.status) > -1
                     );
                 }
+                console.log("browser files");
+                console.log(browserFiles);
                 browserAvail = (browserFiles.length > 0);
 
                 if (browserAvail) {
@@ -1176,6 +1187,8 @@ export class ResultTable extends React.Component {
                     browserDatasets = browserFiles.reduce((datasets, file) => (
                         (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
                     ), []);
+                    console.log("browser datasets");
+                    console.log(browserDatasets);
                 }
             } else {
                 browseAllFiles = false;
@@ -1379,6 +1392,12 @@ export const ResultBrowser = (props) => {
         }
         visUrl = `/batch_hub/type=Dataset${visUrl}/${props.assembly}/vis_blob.json`;
     }
+    console.log(visUrl);
+    console.log(props.files);
+    console.log(props.assembly);
+    console.log(props.limitFiles);
+    console.log(region);
+    console.log(props.currentRegion);
     if (datasetCount > 0) {
         return (
             <FetchedData ignoreErrors>
