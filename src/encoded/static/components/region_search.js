@@ -11,6 +11,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { TestViz } from './visualizations';
 import { Biodalliance } from './biodalliance';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
+import GenomeBrowser from './genome_browser';
 
 
 const regionGenomes = [
@@ -23,6 +24,64 @@ const regulomeGenomes = [
     { value: 'GRCh37', display: 'hg19' },
     { value: 'GRCh38', display: 'GRCh38' },
 ];
+
+// Display a local genome browser in the ResultTable where search results would normally go. This
+// only gets displayed if the query string contains only one type and it's "File."
+const ResultBrowser = (props) => {
+    let visUrl = '';
+    const datasetCount = props.datasets.length;
+    let region = 'chr10:5894500-5894500'; // optionally make a persistent region
+    // const lastRegion = 'GRCh37';
+    // if (lastRegion && lastRegion.assembly === props.assembly) {
+    //     region = lastRegion.region;
+    //     console.log('found region %s', region);
+    // }
+    if (datasetCount === 1) {
+        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/trackDb.json
+        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/trackDb.json`;
+    } else if (datasetCount > 1) {
+        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
+        for (let ix = 0; ix < datasetCount; ix += 1) {
+            const accession = props.datasets[ix].split('/')[2];
+            if (visUrl !== '') {
+                visUrl += '%2C%2C';
+            }
+            visUrl += `accession=${accession}`;
+        }
+        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
+    }
+    console.log(visUrl);
+    console.log(props.files);
+    console.log(props.assembly);
+    console.log(props.limitFiles);
+    console.log(region);
+    if (datasetCount > 0) {
+        return (
+            <FetchedData ignoreErrors>
+                <Param name="visBlobs" url={visUrl} />
+                <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={region} />
+            </FetchedData>
+        );
+    }
+    return (
+        <div>
+            <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={region} />
+        </div>
+    );
+};
+
+ResultBrowser.propTypes = {
+    files: PropTypes.array.isRequired, // Array of files whose browser we're rendering
+    assembly: PropTypes.string.isRequired, // Filter `files` by this assembly
+    datasets: PropTypes.array.isRequired, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
+    limitFiles: PropTypes.bool, // True to limit browsing to 20 files
+    currentRegion: PropTypes.string,
+};
+
+ResultBrowser.defaultProps = {
+    limitFiles: true,
+    currentRegion: null,
+};
 
 const AutocompleteBox = (props) => {
     const terms = props.auto['@graph']; // List of matching terms from server
@@ -485,7 +544,7 @@ class RegulomeSearch extends React.Component {
         console.log(this);
         console.log(this.props);
 
-        // let browseAllFiles = true; // True to pass all files to browser
+        let browseAllFiles = true; // True to pass all files to browser
         // let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
         let browserFiles = []; // Files to pass to ResultsBrowser component
@@ -609,6 +668,8 @@ class RegulomeSearch extends React.Component {
                                 }
 
                                 <ResultsTable {...this.props}/>
+
+                                <ResultBrowser files={results} assembly="GRCh37" datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.context.coordinates} />
 
                             </div>
                         </div>

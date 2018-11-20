@@ -84,6 +84,7 @@ function rAssemblyToSources(assembly, region) {
         browserCfg.viewStart = positions[0];
         browserCfg.viewEnd = positions[1];
         browserCfg.positionSet = true;
+        browserCfg.coordSystem = { speciesName: 'Homo sapiens', taxon: 9606, auth: 'GRCh', version: 38, ucscName: 'hg38' };
     }
 
     if (assembly === 'GRCh38') {
@@ -465,6 +466,7 @@ class GenomeBrowser extends React.Component {
             const Dalliance = require('dalliance').browser;
 
             console.log(browserCfg);
+            console.log(browserCfg.coordSystem);
 
             this.browser = new Dalliance({
                 maxHeight: 2000,
@@ -592,7 +594,7 @@ GenomeBrowser.propTypes = {
     region: PropTypes.string, // Region to use with browser
     visBlobs: PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
     limitFiles: PropTypes.bool, // True to limit # files to maxFilesBrowsed
-    currentRegion: PropTypes.func,
+    currentRegion: PropTypes.string,
 };
 
 GenomeBrowser.defaultProps = {

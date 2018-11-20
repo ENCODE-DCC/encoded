@@ -1383,13 +1383,13 @@ export const ResultBrowser = (props) => {
         return (
             <FetchedData ignoreErrors>
                 <Param name="visBlobs" url={visUrl} />
-
+                <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
             </FetchedData>
         );
     }
     return (
         <div>
-
+            <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
         </div>
     );
 };

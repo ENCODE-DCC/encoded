@@ -23,7 +23,6 @@ export class TestViz extends React.Component {
             if (this.chartdisplay){
 
                 this.d3 = require('d3');
-                console.log(this.d3);
                 const targetElement = this.chartdisplay;
                 this.drawCharts(targetElement);
 
