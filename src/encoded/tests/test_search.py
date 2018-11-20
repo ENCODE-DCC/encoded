@@ -238,8 +238,8 @@ def test_set_filters():
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {'field1': ['value1']}
     assert query == {
@@ -259,16 +259,13 @@ def test_set_filters():
             }
         }
     }
-    assert result == {
-        'filters': [
-            {
-                'field': 'field1',
-                'term': 'value1',
-                'remove': '/search/?'
-            }
-        ]
-    }
-
+    assert result_filters == [
+        {
+            'field': 'field1',
+            'term': 'value1',
+            'remove': '/search/?'
+        }
+    ]
 
 def test_set_filters_searchTerm():
     request = FakeRequest((
@@ -285,8 +282,7 @@ def test_set_filters_searchTerm():
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {}
     assert query == {
@@ -300,15 +296,13 @@ def test_set_filters_searchTerm():
             }
         }
     }
-    assert result == {
-        'filters': [
-            {
-                'field': 'searchTerm',
-                'term': 'value1',
-                'remove': '/search/?'
+    assert result_filters == [
+        {
+            'field': 'searchTerm',
+            'term': 'value1',
+            'remove': '/search/?'
             }
         ]
-    }
 
 
 # Reserved params should NOT act as filters
@@ -330,8 +324,7 @@ def test_set_filters_reserved_params(param):
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {}
     assert query == {
@@ -345,10 +338,7 @@ def test_set_filters_reserved_params(param):
             }
         }
     }
-    assert result == {
-        'filters': [],
-    }
-
+    assert result_filters == []
 
 def test_set_filters_multivalued():
     request = FakeRequest((
@@ -366,8 +356,7 @@ def test_set_filters_multivalued():
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {'field1': ['value1', 'value2']}
     assert query == {
@@ -387,21 +376,18 @@ def test_set_filters_multivalued():
             }
         }
     }
-    assert result == {
-        'filters': [
-            {
-                'field': 'field1',
-                'term': 'value1',
-                'remove': '/search/?field1=value2'
-            },
-            {
-                'field': 'field1',
-                'term': 'value2',
-                'remove': '/search/?field1=value1'
-            }
-        ]
-    }
-
+    assert result_filters == [
+        {
+            'field': 'field1',
+            'term': 'value1',
+            'remove': '/search/?field1=value2'
+        },
+        {
+            'field': 'field1',
+            'term': 'value2',
+            'remove': '/search/?field1=value1'
+        }
+    ]
 
 def test_set_filters_negated():
     request = FakeRequest((
@@ -418,8 +404,7 @@ def test_set_filters_negated():
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {'field1!': ['value1']}
     assert query == {
@@ -439,16 +424,13 @@ def test_set_filters_negated():
             }
         }
     }
-    assert result == {
-        'filters': [
-            {
-                'field': 'field1!',
-                'term': 'value1',
-                'remove': '/search/?'
-            },
-        ],
-    }
-
+    assert result_filters == [
+        {
+            'field': 'field1!',
+            'term': 'value1',
+            'remove': '/search/?'
+        },
+    ]
 
 def test_set_filters_audit():
     request = FakeRequest((
@@ -465,8 +447,7 @@ def test_set_filters_audit():
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {'audit.foo': ['value1']}
     assert query == {
@@ -486,16 +467,13 @@ def test_set_filters_audit():
             }
         }
     }
-    assert result == {
-        'filters': [
-            {
-                'field': 'audit.foo',
-                'term': 'value1',
-                'remove': '/search/?'
-            },
-        ],
-    }
-
+    assert result_filters == [
+        {
+            'field': 'audit.foo',
+            'term': 'value1',
+            'remove': '/search/?'
+        },
+    ]
 
 def test_set_filters_exists_missing():
     request = FakeRequest((
@@ -513,8 +491,8 @@ def test_set_filters_exists_missing():
             }
         }
     }
-    result = {'filters': []}
-    used_filters = set_filters(request, query, result)
+
+    used_filters, result_filters = set_filters(request, query)
 
     assert used_filters == {
         'field1': ['*'],
@@ -545,21 +523,18 @@ def test_set_filters_exists_missing():
             }
         }
     }
-
-    assert result == {
-        'filters': [
-            {
-                'field': 'field1',
-                'term': '*',
-                'remove': '/search/?field2%21=%2A',
-            },
-            {
-                'field': 'field2!',
-                'term': '*',
-                'remove': '/search/?field1=%2A',
-            }
-        ],
-    }
+    assert result_filters == [
+        {
+            'field': 'field1',
+            'term': '*',
+            'remove': '/search/?field2%21=%2A',
+        },
+        {
+            'field': 'field2!',
+            'term': '*',
+            'remove': '/search/?field1=%2A',
+        }
+    ]
 
 
 def test_set_facets():
