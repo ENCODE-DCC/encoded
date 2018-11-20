@@ -185,39 +185,36 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             for bucket in outer_bucket[group_by]['buckets']:
                 self._summarize_buckets(x_buckets, bucket, grouping_fields)
 
-    def preprocess_view(self):
-        '''
-        Main function to construct query and build view results json
-        * Only publicly accessible function
-        '''
-        matrix_route = self._request.route_path('matrix', slash='/')
+    def _set_result(
+            self,
+            matrix_route,
+            type_info, total,
+            es_results,
+            used_filters,
+            aggregations,
+            y_groupings,
+            matrix,
+        ):
+        """
+        Update self._result object.
+
+            :param matrix_route: matrix route
+            :param type_info: type info
+            :param total: Total
+            :param es_results: elasticsearch result
+            :param used_filters: filters
+            :param aggregations: Aggregation
+            :param y_groupings: y-groupings
+        """
+        # pylint: disable=too-many-arguments
         self._result['@id'] = matrix_route + self._search_base
-        self._result['@type'] = ['Matrix']
-        self._result['notification'] = ''
-        # TODO: Validate doc types in base class in one location
-        # Now we do it here and in _validate_items
-        type_info = None
-        if len(self._doc_types) == 1:
-            if self._doc_types[0] in self._types:
-                type_info = self._types[self._doc_types[0]]
-                self._schema = type_info.schema
-        self._validate_items(type_info)
         self._result['title'] = self._set_result_title(type_info)
-        self._result['matrix'] = type_info.factory.matrix.copy()
-        self._matrix = self._result['matrix']
-        self._matrix['x']['limit'] = self._request.params.get('x.limit', 20)
-        self._matrix['y']['limit'] = self._request.params.get('y.limit', 5)
-        search_route = self._request.route_path('search', slash='/')
-        self._matrix['search_base'] = search_route + self._search_base
-        matrix_route = self._request.route_path('matrix', slash='/')
-        self._matrix['clear_matrix'] = matrix_route + '?type=' + self._doc_types[0]
+        self._result['matrix'] = matrix
         self._result['views'] = self._construct_result_views(type_info)
-        query, used_filters = self._construct_query()
-        es_results = self._elastic_search.search(body=query, index=self._es_index)
-        aggregations = es_results['aggregations']
-        total = aggregations['matrix']['doc_count']
         self._result['matrix']['doc_count'] = total
         self._result['matrix']['max_cell_doc_count'] = 0
+        self._result['@type'] = ['Matrix']
+        self._result['notification'] = ''
         self._result['facets'] = self._format_facets(
             es_results,
             self._facets,
@@ -225,13 +222,6 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             (self._schema,),
             total,
             self._principals
-        )
-        x_grouping = self._matrix['x']['group_by']
-        y_groupings = self._matrix['y']['group_by']
-        self._summarize_buckets(
-            aggregations['matrix']['x']['buckets'],
-            aggregations['matrix'],
-            y_groupings + [x_grouping]
         )
         self._result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
         self._result['matrix']['x'].update(aggregations['matrix']['x'])
@@ -248,4 +238,54 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         else:
             self._request.response.status_code = 404
             self._result['notification'] = 'No results found'
+
+    def _set_matrix(self, matrix_route, type_info):
+        """
+        Set matrix.
+
+            :param matrix_route: Matrix route
+            :param type_info: Type Info
+        """
+        self._matrix = type_info.factory.matrix.copy()
+        self._matrix['x']['limit'] = self._request.params.get('x.limit', 20)
+        self._matrix['y']['limit'] = self._request.params.get('y.limit', 5)
+        search_route = self._request.route_path('search', slash='/')
+        self._matrix['search_base'] = search_route + self._search_base
+        self._matrix['clear_matrix'] = matrix_route + '?type=' + self._doc_types[0]
+        self._matrix['max_cell_doc_count'] = 0
+
+    def preprocess_view(self):
+        """Construct query and build view results json."""
+        # TODO: Validate doc types in base class in one location.
+        # Now we do it here and in _validate_items
+        type_info = None
+        if len(self._doc_types) == 1:
+            if self._doc_types[0] in self._types:
+                type_info = self._types[self._doc_types[0]]
+                self._schema = type_info.schema
+        self._validate_items(type_info)
+        matrix_route = self._request.route_path('matrix', slash='/')
+        self._set_matrix(matrix_route, type_info)
+        query, used_filters = self._construct_query()
+        es_results = self._elastic_search.search(body=query, index=self._es_index)
+        aggregations = es_results['aggregations']
+        total = aggregations['matrix']['doc_count']
+        self._matrix['doc_count'] = total
+        x_grouping = self._matrix['x']['group_by']
+        y_groupings = self._matrix['y']['group_by']
+        self._summarize_buckets(
+            aggregations['matrix']['x']['buckets'],
+            aggregations['matrix'],
+            y_groupings + [x_grouping]
+        )
+        self._set_result(
+            matrix_route,
+            type_info,
+            total,
+            es_results,
+            used_filters,
+            aggregations,
+            y_groupings,
+            self._matrix,
+        )
         return self._result
