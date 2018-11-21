@@ -208,7 +208,7 @@ class Item(snovault.Item):
             reviewing_lab = properties['characterization_review'].get('reviewing_lab', 'none')
             if reviewing_lab != 'none':
                 lab_reviewers = 'submits_for.%s' % reviewing_lab
-                roles[lab_reviewers] = 'role.lab_reviwer'
+                roles[lab_reviewers] = 'role.lab_reviewer'
         if 'award' in properties:
             viewing_group = _award_viewing_group(properties['award'], find_root(self))
             if viewing_group is not None:
