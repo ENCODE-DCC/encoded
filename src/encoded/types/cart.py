@@ -4,7 +4,6 @@ from snovault import (
 )
 from pyramid.security import (
     Allow,
-    Authenticated,
 )
 from .base import (
     Item,
@@ -21,7 +20,7 @@ from .base import (
         'description': 'Listing of cart contents',
     },
     acl=[
-        (Allow, Authenticated, 'add'),
+        (Allow, 'group.submitter', 'save_carts'),
     ]
 )
 class Cart(Item):
