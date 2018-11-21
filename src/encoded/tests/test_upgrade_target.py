@@ -89,6 +89,26 @@ def target_8_two_genes(target_8_one_gene):
 
 
 @pytest.fixture
+def target_9_empty_modifications(target_8_one_gene):
+    item = {
+        'investigated_as': ['other context'],
+        'modifications': [],
+        'label': 'empty-modifications'
+    }
+    return item
+
+
+@pytest.fixture
+def target_9_real_modifications(target_8_one_gene):
+    item = {
+        'investigated_as': ['other context'],
+        'modifications': [{'modification': '3xFLAG'}],
+        'label': 'empty-modifications'
+    }
+    return item
+
+
+@pytest.fixture
 def gene3012(testapp, organism):
     item = {
         'dbxrefs': ['HGNC:4724'],
@@ -204,3 +224,21 @@ def test_target_upgrade_link_to_gene(root, upgrader, target_control,
     assert two_genes['genes'] == [gene8335['uuid'], gene3012['uuid']]
     assert 'organism' not in two_genes
     assert 'target_organism' not in one_gene
+
+
+def test_target_remove_empty_modifications(upgrader,
+                                           target_9_empty_modifications,
+                                           target_9_real_modifications):
+    empty = upgrader.upgrade(
+        'target', target_9_empty_modifications,
+        current_version='9', target_version='10'
+    )
+    assert empty['schema_version'] == '10'
+    assert 'modifications' not in empty
+
+    nonempty = upgrader.upgrade(
+        'target', target_9_real_modifications,
+        current_version='9', target_version='10'
+    )
+    assert nonempty['schema_version'] == '10'
+    assert 'modifications' in nonempty
