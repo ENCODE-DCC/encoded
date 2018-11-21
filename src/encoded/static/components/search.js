@@ -1458,7 +1458,7 @@ const ResultBrowser = (props) => {
             }
             visUrl += `accession=${accession}`;
         }
-        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
+        visUrl = `batch_hub/type=Experiment%2C%2C${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (
