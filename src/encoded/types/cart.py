@@ -48,38 +48,47 @@ class Cart(Item):
 
 
 def _get_carts_by_user(request, userid):
+    request.datastore = 'database'
     return [
         c['@id']
-        for c in request.embed('/carts/?datastore=database&limit=all&remove=elements')
+        for c in request.embed('/carts/?datastore=database&remove=elements&format=json&limit=all')['@graph']
         if c['submitted_by'] == '/users/{}/'.format(userid)
     ]
 
 
 def _create_cart(request, user):
-    carts = request.registry[COLLECTIONS]['carts']
+    carts = request.registry[COLLECTIONS]['cart']
+    user_props = request.embed(request.resource_path(user), '@@object')
     cart = create_item(
         carts.type_info,
         request,
         {
-            'submitted_by': user.path,
+            'submitted_by': user.uuid,
             'status': 'current',
-            'name': '{} cart'.format(user.properties['title'])
+            'name': '{} cart'.format(user_props['title']),
+            'elements': []
         }
     )
-    return cart.path
+    return request.resource_path(cart)
 
 
-@view_config(context=Cart.Collection, request_method='GET', permission='save-carts')
+@view_config(context=Cart.Collection, request_method='GET', permission='save-carts', name='get-cart')
 def get_or_create_cart_by_user(context, request):
-    userid = request.authenticated_userid
-    if not userid or '.' not in userid:
+    userid = [
+        p.replace('userid.', '')
+        for p in request.effective_principals
+        if p.startswith('userid.')
+    ]
+    if not userid:
         raise HTTPBadRequest()
-    user = request.registry[COLLECTIONS]['users'][userid.split('.')[0]]
+    else:
+        userid = userid[0]
+    user = request.registry[COLLECTIONS]['user'][userid]
     if not user:
         raise HTTPBadRequest()
     carts = _get_carts_by_user(request, userid)
     if not carts:
-        cart = _create_cart(user)
+        cart = _create_cart(request, user)
     request.response.status = 200
     return {
         'status': 'success',
