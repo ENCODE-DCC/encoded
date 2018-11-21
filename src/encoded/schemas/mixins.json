@@ -147,9 +147,9 @@
             "permission": "import_items"
         }
     },
-    "review": { 
-        "review": {
-            "title": "Characterization review",
+    "characterization_review": { 
+        "characterization_review": {
+            "title": "characterization review",
             "description": "Review of the characterization results by an independent reviewer.",
             "type": "object",
             "additionalProperties": false,
@@ -157,7 +157,7 @@
                 "review_status": {
                     "oneOf": [
                          {
-                            "required": ["lab", "reviewer"],
+                            "required": ["reviewing_lab", "reviewer"],
                             "properties": {
                                 "review_status": {
                                     "enum": ["not compliant", "compliant"]
@@ -177,16 +177,17 @@
                 }
             },
             "properties": {
-                "status": {
+                "review_status": {
                     "title": "Review status",
                     "description": "The current state of review.",
                     "type": "string",
                     "enum" : [
                         "compliant",
-                        "not compliant"
+                        "not compliant",
+                        "not for review"
                     ]
                 },
-                "lab": {
+                "reviewing_lab": {
                     "title": "Reviewing lab",
                     "description": "Reviewing lab.",
                     "comment": "Both the submitting and reviewing labs can edit the object.",
