@@ -4,7 +4,7 @@ from snovault import (
 )
 from snovault import COLLECTIONS
 from snovault.crud_views import create_item
-from pyramid.httpexception import HTTPBadRequest
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import (
     Allow,
 )
