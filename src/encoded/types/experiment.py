@@ -434,6 +434,7 @@ class Experiment(Dataset,
     matrix = {
         'y': {
             'facets': [
+                'status',
                 'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
