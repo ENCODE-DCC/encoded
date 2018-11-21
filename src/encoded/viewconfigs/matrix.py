@@ -58,9 +58,11 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             self._doc_types
         )
         if self._search_term == '*':
-            del query['query']['function_score']['query_string']
+            # del query['query']['function_score']['query_string']
+            del query['query']['query_string']
         else:
-            query['query']['function_score']['query_string']['function_score']['fields'].extend(
+            # query['query']['function_score']['query_string']['function_score']['fields'].extend(
+            query['query']['query_string']['fields'].extend(
                 ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
             )
         used_filters = self._set_query_aggs(query)
