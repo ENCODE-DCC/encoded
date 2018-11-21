@@ -1453,12 +1453,9 @@ const ResultBrowser = (props) => {
         // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
         for (let ix = 0; ix < datasetCount; ix += 1) {
             const accession = props.datasets[ix].split('/')[2];
-            if (visUrl !== '') {
-                visUrl += '%2C%2C';
-            }
-            visUrl += `accession=${accession}`;
+            visUrl += `%2C%2Caccession=${accession}`;
         }
-        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
+        visUrl = `/batch_hub/type=Experiment${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (
