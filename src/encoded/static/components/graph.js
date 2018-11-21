@@ -399,16 +399,14 @@ export class Graph extends React.Component {
         // Convert from given node architecture to the dagre nodes and edges
         Graph.convertGraph(this.props.graph, g);
 
-        console.log("g");
-        console.log(g);
-        console.log("render");
-        console.log(render);
         console.log("Graph");
         console.log(Graph);
-        console.log("this.props.graph")
-        console.log(this.props.graph);
-        console.log("svg");
-        console.log(svg);
+        console.log("render");
+        console.log(render);
+        console.log("d3");
+        console.log(d3);
+        console.log("dagreD3");
+        console.log(dagreD3);
 
         // Run the renderer. This is what draws the final graph.
         render(svg, g);
