@@ -15,6 +15,10 @@ from snovault.attachment import ItemWithAttachment
 from pyramid.security import (
     Allow,
 )
+from pyramid.traversal import (
+    find_root,
+)
+from functools import lru_cache
 ALLOW_REVIEWER_EDIT = [
     (Allow, 'role.lab_reviewer', 'edit')
 ] + ALLOW_LAB_SUBMITTER_EDIT
@@ -25,6 +29,14 @@ ALLOW_REVIEWER_EDIT = [
         'title': "Characterizations",
         'description': 'Listing of all types of characterization.',
     })
+
+
+@lru_cache()
+def _award_viewing_group(award_uuid, root):
+    award = root.get_by_uuid(award_uuid)
+    return award.upgrade_properties().get('viewing_group')
+
+
 class Characterization(ItemWithAttachment, Item):
     base_types = ['Characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
