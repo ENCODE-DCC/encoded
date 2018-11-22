@@ -18,10 +18,10 @@ from pyramid.security import (
 from pyramid.traversal import (
     find_root,
 )
-from functools import lru_cache
 ALLOW_REVIEWER_EDIT = [
     (Allow, 'role.lab_reviewer', 'edit')
 ] + ALLOW_LAB_SUBMITTER_EDIT
+
 
 @abstract_collection(
     name='characterizations',
@@ -29,14 +29,6 @@ ALLOW_REVIEWER_EDIT = [
         'title': "Characterizations",
         'description': 'Listing of all types of characterization.',
     })
-
-
-@lru_cache()
-def _award_viewing_group(award_uuid, root):
-    award = root.get_by_uuid(award_uuid)
-    return award.upgrade_properties().get('viewing_group')
-
-
 class Characterization(ItemWithAttachment, Item):
     base_types = ['Characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
@@ -63,7 +55,9 @@ class Characterization(ItemWithAttachment, Item):
                 lab_reviewers = 'submits_for.%s' % reviewing_lab
                 roles[lab_reviewers] = 'role.lab_reviewer'
         if 'award' in properties:
-            viewing_group = _award_viewing_group(properties['award'], find_root(self))
+            root = find_root(self)
+            award = root.get_by_uuid(properties['award'])
+            viewing_group = award.upgrade_properties().get('viewing_group')
             if viewing_group is not None:
                 viewing_group_members = 'viewing_group.%s' % viewing_group
                 roles[viewing_group_members] = 'role.viewing_group_member'
