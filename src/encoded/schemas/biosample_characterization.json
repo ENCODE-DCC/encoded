@@ -20,7 +20,7 @@
         { "$ref": "mixins.json#/characterization_status"},
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/characterization_review" }
+        { "$ref": "mixins.json#/review" }
     ],
     "properties": {
         "schema_version": {

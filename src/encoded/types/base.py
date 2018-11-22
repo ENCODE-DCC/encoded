@@ -55,13 +55,11 @@ ALLOW_VIEWING_GROUP_VIEW = [
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.viewing_group_member', 'view'),
     (Allow, 'role.lab_submitter', 'edit'),
-    (Allow, 'role.lab_reviewer', 'edit'),
 ] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
     (Allow, Everyone, 'view'),
     (Allow, 'role.lab_submitter', 'edit'),
-    (Allow, 'role.lab_reviewer', 'edit'),
 ] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT = [
@@ -204,11 +202,6 @@ class Item(snovault.Item):
         if 'lab' in properties:
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'
-        if 'characterization_review' in properties:
-            reviewing_lab = properties['characterization_review'].get('reviewing_lab', 'none')
-            if reviewing_lab != 'none':
-                lab_reviewers = 'submits_for.%s' % reviewing_lab
-                roles[lab_reviewers] = 'role.lab_reviewer'
         if 'award' in properties:
             viewing_group = _award_viewing_group(properties['award'], find_root(self))
             if viewing_group is not None:

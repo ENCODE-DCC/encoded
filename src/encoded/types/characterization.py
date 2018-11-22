@@ -12,16 +12,9 @@ from .base import (
     DELETED,
 )
 from snovault.attachment import ItemWithAttachment
-from pyramid.security import (
-    Allow,
-)
-from pyramid.traversal import (
-    find_root,
-)
 ALLOW_REVIEWER_EDIT = [
     (Allow, 'role.lab_reviewer', 'edit')
 ] + ALLOW_LAB_SUBMITTER_EDIT
-
 
 @abstract_collection(
     name='characterizations',
@@ -55,9 +48,7 @@ class Characterization(ItemWithAttachment, Item):
                 lab_reviewers = 'submits_for.%s' % reviewing_lab
                 roles[lab_reviewers] = 'role.lab_reviewer'
         if 'award' in properties:
-            root = find_root(self)
-            award = root.get_by_uuid(properties['award'])
-            viewing_group = award.upgrade_properties().get('viewing_group')
+            viewing_group = _award_viewing_group(properties['award'], find_root(self))
             if viewing_group is not None:
                 viewing_group_members = 'viewing_group.%s' % viewing_group
                 roles[viewing_group_members] = 'role.viewing_group_member'
