@@ -12,6 +12,9 @@ from .base import (
     DELETED,
 )
 from snovault.attachment import ItemWithAttachment
+from pyramid.security import (
+    Allow,
+)
 ALLOW_REVIEWER_EDIT = [
     (Allow, 'role.lab_reviewer', 'edit')
 ] + ALLOW_LAB_SUBMITTER_EDIT
