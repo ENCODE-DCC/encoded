@@ -334,6 +334,18 @@
         "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
     },
     {
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "genes": ["126961"],
+        "investigated_as": [
+            "histone"
+        ],
+        "label": "H3K4me3-alt",
+        "status": "released",
+        "uuid": "0831cecb-eed8-4535-b529-46da66e459ac"
+    },
+    {
         "label": "H3K27ac",
         "investigated_as": [
             "histone"
