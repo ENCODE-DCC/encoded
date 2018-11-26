@@ -151,6 +151,7 @@ def audit_biosample_donor(value, system):
 
     for i in donor['mutated_gene'].get('investigated_as'):
         if i in ['tag',
+                 'synthetic tag',
                  'control',
                  'recombinant protein',
                  'nucleotide modification',

@@ -273,10 +273,10 @@
         "status": "released"
     },
     {
+        "_test": "synthetic target",
         "uuid": "f2d60a72-7b9c-422a-a80e-9493640c1d58",
         "label": "FLAG",
-        "target_organism": "synthetic",
-        "investigated_as": ["tag"],
+        "investigated_as": ["synthetic tag"],
         "status": "released"
     },
     {

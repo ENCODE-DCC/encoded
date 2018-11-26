@@ -61,6 +61,7 @@ def audit_inconsistent_modifications_tag(value, system):
             antibody_targets = get_ab_targets(value)
             for ab_target in antibody_targets:
                 if 'recombinant protein' in ab_target['investigated_as'] or \
+                   'synthetic tag' in ab_target['investigated_as'] or \
                    'tag' in ab_target['investigated_as']:
                     if ab_target['label'] in tags_names:
                         matching_flag = True

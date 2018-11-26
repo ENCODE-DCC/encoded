@@ -2460,7 +2460,8 @@ def audit_experiment_target(value, system, excluded_types):
                     unique_antibody_target.add(label)
                     for investigated_as in antibody_target['investigated_as']:
                         unique_investigated_as.add(investigated_as)
-                if 'tag' not in unique_investigated_as:
+                if ('tag' not in unique_investigated_as
+                    and 'synthetic tag' not in unique_investigated_as):
                     detail = '{} is not to tagged protein'.format(
                         antibody['@id'])
                     yield AuditFailure('not tagged antibody', detail, level='ERROR')
@@ -2842,7 +2843,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
 
         if 'histone' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
-                if organism == lot_review['organisms'][0]:
+                if lot_review['organisms'] and organism == lot_review['organisms'][0]:
                     sample_match = True
                     if lot_review['status'] == 'characterized to standards with exemption':
                         detail = '{} has been characterized '.format(antibody['@id']) + \
@@ -2879,7 +2880,9 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
 
             for lot_review in antibody['lot_reviews']:
                 biosample_key = (
-                    lot_review['biosample_term_id'], lot_review['organisms'][0])
+                    lot_review['biosample_term_id'],
+                    lot_review['organisms'][0] if lot_review['organisms'] else None
+                )
                 if experiment_biosample == biosample_key:
                     sample_match = True
                     if lot_review['status'] == 'characterized to standards with exemption':
