@@ -47,16 +47,8 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                     </div>
 
                     <div data-test="term-id">
-                        <dt>Term IDs</dt>
-                        <dd>
-                            <ul>
-                                {context.term_ids.map(termID =>
-                                    <li key={termID}>
-                                        <BiosampleTermId termId={termID} />
-                                    </li>
-                                )}
-                            </ul>
-                        </dd>
+                        <dt>Term ID</dt>
+                        <dd><BiosampleTermId termId={context.term_id} /></dd>
                     </div>
 
                     {context.notes ?
@@ -131,14 +123,7 @@ const ListingComponent = (props, reactContext) => {
                     </a>
                 </div>
                 <div className="data-row">
-                    <strong>Ontology ID: </strong>
-                    <ul>
-                        {result.term_ids.map(termID =>
-                            <li key={termID}>
-                                <BiosampleTermId termId={termID} />
-                            </li>
-                        )}
-                    </ul>
+                    <strong>Ontology ID: </strong><BiosampleTermId termId={result.term_id} />
                 </div>
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}

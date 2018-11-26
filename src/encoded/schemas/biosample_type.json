@@ -5,7 +5,7 @@
     "id": "/profiles/biosample_type.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["classification", "term_ids", "term_name"],
+    "required": ["classification", "term_id", "term_name"],
     "identifyingProperties": ["aliases", "uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -17,7 +17,7 @@
         {"$ref": "mixins.json#/uuid"}
     ],
     "dependencies": {
-        "term_ids":{
+        "term_id":{
             "oneOf": [
                 { 
                     "properties": {
@@ -26,10 +26,8 @@
                                 "single cell"
                             ]
                         },
-                        "term_ids":{
-                            "items": {
-                                "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
-                            }
+                        "term_id":{
+                            "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
                         }
                     }
                 },
@@ -42,10 +40,8 @@
                                 "organoid"
                             ]
                         },
-                        "term_ids":{
-                            "items": {
-                                "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
-                            }
+                        "term_id":{
+                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
                         }
                     }
                 },
@@ -56,10 +52,8 @@
                                 "primary cell"                               
                             ]
                         },
-                        "term_ids":{
-                            "items": {
-                                "pattern": "^(CL|NTR):[0-9]{2,8}$"
-                            }
+                        "term_id":{
+                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
                         }
                     }
                 },
@@ -70,10 +64,8 @@
                                 "cell line"
                             ]
                         },
-                        "term_ids":{
-                            "items": {
-                                "pattern": "^(EFO|NTR):[0-9]{2,8}$"
-                            }
+                        "term_id":{
+                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
                         }
                     }
                 },
@@ -84,10 +76,8 @@
                                 "in vitro differentiated cells"                               
                             ]
                         },
-                        "term_ids":{
-                            "items": {
-                                "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
-                            }
+                        "term_id":{
+                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
                         }
                     }
                 }
@@ -130,26 +120,19 @@
                 "pattern": "^Cellosaurus:CVCL_\\w{4}$"
             }
         },
-        "term_ids": {
-            "title": "Ontology IDs",
-            "description": "Ontology identifiers describing biosamples belonging to this BiosampleType.",
+        "term_id": {
+            "@type": "@id",
+            "title": "Ontology ID",
+            "description": "An ontology identifier describing BiosampleType.",
             "permission": "import_items",
-            "type": "array",
-            "uniqueItems": true,
-            "minItems": 1,
-            "items": {
-                "@type": "@id",
-                "title": "Ontology ID",
-                "description": "An ontology identifier describing biosample.",
-                "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
-                "type": "string",
-                "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
-            }
+            "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
+            "type": "string",
+            "pattern": "^(UBERON|EFO|CL|NTR):[0-9]{2,8}$"
         },
         "term_name": {
             "title": "Ontology term",
             "description": "Ontology term describing BiosampleType.",
-            "comment": "The term should match the ontology identifiers specified in term_ids. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
+            "comment": "The term should match the ontology identifiers specified in term_id. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
             "permission": "import_items",
             "pattern": "^(?![\\s\"'])[\\S|\\s]*[^\\s\"']$",
             "type":  "string"
@@ -173,8 +156,8 @@
         "classification": {
             "title": "classification"
         },
-        "term_ids": {
-            "title": "Ontology IDs"
+        "term_id": {
+            "title": "Ontology ID"
         },
         "term_name": {
             "title": "Term"
@@ -193,7 +176,7 @@
         "references.title": 1.0,
         "synonyms": 1.0,
         "system_slims": 1.0,
-        "term_ids": 1.0,
+        "term_id": 1.0,
         "term_name": 1.0
     },
     "changelog": "/profiles/changelogs/biosample_type.md"

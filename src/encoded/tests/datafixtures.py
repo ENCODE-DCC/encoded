@@ -878,3 +878,19 @@ def encode4_award(testapp):
         'viewing_group': 'ENCODE4',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
+
+
+@pytest.fixture
+def a549(testapp):
+    item = {
+        'term_id': 'EFO:0001086',
+        'term_name': 'A549',
+        'classification': 'cell line',
+        'dbxrefs': ['Cellosaurus:CVCL_0023']
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_type(a549):
+    return a549
