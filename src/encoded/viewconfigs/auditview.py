@@ -331,7 +331,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         search_route = self._request.route_path('search', slash='/')
         self._matrix['search_base'] = search_route + self._search_base
         self._matrix['clear_matrix'] = '{}?type={}'.format(
-            self._request.route_path('matrix', slash='/'),
+            self._request.route_path('audit', slash='/'),
             self._doc_types[0],
         )
         self._result['views'] = [
