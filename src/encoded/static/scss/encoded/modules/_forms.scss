@@ -197,3 +197,8 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	background: transparent;
 	color: #428bca;
 }
+
+// return transition properties back to default
+.clear-transition {
+	transition: all 0s 0s ease !important;
+}

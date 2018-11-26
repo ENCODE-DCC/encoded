@@ -901,7 +901,7 @@ export class TextFilter extends React.Component {
             <div className="facet">
                 <input
                     type="search"
-                    className="form-control search-query"
+                    className="form-control search-query clear-transition"
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
                     onKeyDown={this.onKeyDown}
