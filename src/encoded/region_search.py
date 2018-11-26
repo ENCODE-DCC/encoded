@@ -363,7 +363,7 @@ def region_search(context, request):
                 'embedded.files.uuid': file_uuids
             }
         })
-        used_filters = set_filters(request, query, result)
+        used_filters = set_filters(request, query)
         used_filters['files.uuid'] = file_uuids
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])

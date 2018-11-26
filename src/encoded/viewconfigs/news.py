@@ -64,7 +64,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             self._request,
             query,
             self._result,
-            [('type', 'Page'), ('news', 'true'), ('status', 'released')]
+            static_items=[('type', 'Page'), ('news', 'true'), ('status', 'released')]
         )
         facets = []
         if len(doc_types) == 1 and 'facets' in self._types[doc_types[0]].schema:
