@@ -396,87 +396,166 @@
             ]            
         },
         "file_format":{
-            "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
-            "oneOf": [
+            "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
+            "allOf": [
                 {
-                    "required": [ "platform"],
-                    "properties": {
-                        "file_format": {
-                            "enum": [
-                                "rcc",
-                                "idat",
-                                "CEL",
-                                "csfasta",
-                                "csqual"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "required": [
-                        "replicate",
-                        "platform"
-                    ],
-                    "properties": {
-                        "file_format": {
-                            "enum": [
-                                "fastq",
-                                "sra"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "required": [
-                        "file_format_type",
-                        "assembly"
-                    ],
-                    "properties": {
-                        "file_format": {
-                            "enum": [
-                                "gff",
-                                "bed",
-                                "bigBed"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "required": ["assembly"],
-                    "properties": {
-                        "file_format": {
-                            "enum": [
-                                "bam",
-                                "sam",
-                                "gtf",
-                                "bigWig"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "file_format": {
-                                "enum": [
-                                    "rcc",
-                                    "idat",
-                                    "CEL",
-                                    "fastq",
-                                    "gff",
-                                    "gtf",
-                                    "bed",
-                                    "bigBed",
-                                    "bam",
-                                    "sam",
-                                    "sra",
-                                    "bigWig",
-                                    "csfasta",
-                                    "csqual"
-                                ]
+                    "oneOf": [
+                        {
+                            "required": [ "platform"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "rcc",
+                                        "idat",
+                                        "CEL",
+                                        "csfasta",
+                                        "csqual"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "replicate",
+                                "platform"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "fastq",
+                                        "sra"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "file_format_type",
+                                "assembly"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "gff",
+                                        "bed",
+                                        "bigBed"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["assembly"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam",
+                                        "sam",
+                                        "gtf",
+                                        "bigWig"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "properties": {
+                                    "file_format": {
+                                        "enum": [
+                                            "rcc",
+                                            "idat",
+                                            "CEL",
+                                            "fastq",
+                                            "gff",
+                                            "gtf",
+                                            "bed",
+                                            "bigBed",
+                                            "bam",
+                                            "sam",
+                                            "sra",
+                                            "bigWig",
+                                            "csfasta",
+                                            "csqual"
+                                        ]
+                                    }
+                                }
                             }
                         }
-                    }
+                    ]
+                },
+                {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "rcc",
+                                        "idat",
+                                        "CEL",
+                                        "csfasta",
+                                        "csqual",
+                                        "fastq",
+                                        "sra",
+                                        "tsv",
+                                        "tar",
+                                        "fasta"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "idat green channel",
+                                        "idat red channel",
+                                        "intensity values",
+                                        "reads",
+                                        "rejected reads",
+                                        "raw data",
+                                        "reporter code counts"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam",
+                                        "bed",
+                                        "bedpe",
+                                        "bigBed",
+                                        "bigWig",
+                                        "chain",
+                                        "csv",
+                                        "fasta",
+                                        "gff",
+                                        "gtf",
+                                        "hdf5",
+                                        "hic",
+                                        "PWM",
+                                        "sam",
+                                        "tagAlign",
+                                        "tar",
+                                        "tsv",
+                                        "vcf",
+                                        "wig",
+                                        "2bit",
+                                        "btr"
+                                    ]
+                                },
+                                "output_type": {
+                                    "not": {
+                                        "enum": [
+                                            "idat green channel",
+                                            "idat red channel",
+                                            "intensity values",
+                                            "reads",
+                                            "rejected reads",
+                                            "raw data",
+                                            "reporter code counts"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -488,68 +567,6 @@
                     "enum": ["content error"]
                 }
             }
-        },
-        "file_format": {
-            "comment": "Raw files must have output_category mapping to raw data, and processed files should not have output_category of raw data.",
-            "oneOf": [
-                {
-                    "properties": {
-                        "file_format": {
-                            "enum": [
-                                "rcc",
-                                "idat",
-                                "CEL",
-                                "csfasta",
-                                "csqual",
-                                "fastq",
-                                "sra",
-                                "tsv",
-                                "tar",
-                                "fasta"
-                            ]
-                        },
-                        "output_type": {
-                            "enum": [
-                                "idat green channel",
-                                "idat red channel",
-                                "intensity values",
-                                "reads",
-                                "rejected reads",
-                                "raw data",
-                                "reporter code counts"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "file_format": {
-                                "enum": [
-                                    "rcc",
-                                    "idat",
-                                    "CEL",
-                                    "csfasta",
-                                    "csqual",
-                                    "fastq",
-                                    "sra"
-                                ]
-                            },
-                            "output_type": {
-                                "enum": [
-                                    "idat green channel",
-                                    "idat red channel",
-                                    "intensity values",
-                                    "reads",
-                                    "rejected reads",
-                                    "raw data",
-                                    "reporter code counts"
-                                ]
-                            }
-                        }
-                    }
-                }
-            ]
         },
         "status": {
             "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
