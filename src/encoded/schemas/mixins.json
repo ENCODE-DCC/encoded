@@ -149,7 +149,7 @@
     },
     "review": { 
         "review": {
-            "title": "characterization review",
+            "title": "Characterization review",
             "description": "Review of the characterization results by an independent reviewer.",
             "type": "object",
             "additionalProperties": false,
