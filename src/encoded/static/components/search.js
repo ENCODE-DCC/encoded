@@ -971,12 +971,14 @@ export class FacetList extends React.Component {
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                    {clearButton ?
-                        <div className="clear-filters-control">
-                            <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
-                        </div>
-                    : null}
+                    <div className="search-header-control">
+                        {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
+                        {clearButton ?
+                            <div className="clear-filters-control">
+                                <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
+                            </div>
+                        : null}
+                    </div>
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
                         if (hideTypes && facet.field === 'type') {

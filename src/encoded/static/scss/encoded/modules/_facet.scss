@@ -69,11 +69,26 @@
     @at-root #{&}--summary {
         margin-top: -30px;
         margin-bottom: 30px;
-        text-align: left;
+        position: absolute;
+        bottom: 10px;
+        left: 0px;
 
         @media print {
             display: none;
         }
+    }
+}
+
+.search-header-control {
+    position: relative;
+    padding-bottom: 25px;
+}
+
+.col-sm-5 {
+    .clear-filters-control {
+        position: absolute;
+        bottom: 5px;
+        left: 0px;
     }
 }
 
@@ -406,7 +421,7 @@ div.meta-status {
         }
     }
 }
- 
+
 .main-panel {
     position: relative;
     z-index: 0;
