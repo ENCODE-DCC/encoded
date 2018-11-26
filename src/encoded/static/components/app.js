@@ -585,10 +585,9 @@ class App extends React.Component {
 
     // Retrieve the cart contents for the current logged-in user and add them to the in-memory cart.
     initializeCartFromSessionProperties(sessionProperties) {
-        // First retrieve all carts without the `elements` array contents so we can grab the first
-        // cart belonging to the current user without too much large-object stress.
+        // Retrieve the logged-in user's cart.
         cartCacheSaved({}, this.cartStore.dispatch);
-        const savedCartObjPromise = this.fetch('/carts/?datastore=database&remove=elements', {
+        const savedCartObjPromise = this.fetch('/carts/@@get-cart', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -598,19 +597,17 @@ class App extends React.Component {
                 return response.json();
             }
             throw new Error(response);
-        }).then((thinCartResults) => {
-            // Filter collection results to current ones owned by the current user, then retrieve the cart
-            // object for the first cart in `savedCartResults`.
-            const userAtId = sessionProperties.user ? sessionProperties.user['@id'] : '';
-            const userCarts = (userAtId && thinCartResults['@graph'] && thinCartResults['@graph'].length > 0) ? thinCartResults['@graph'].filter(
-                cartObj => cartObj.submitted_by === userAtId && cartObj.status === 'current'
-            ) : [];
-            return userCarts[0] ? this.fetch(`${userCarts[0]['@id']}?datastore=database`, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                },
-            }) : null;
+        }).then((userCart) => {
+            const userCartAtId = userCart['@graph'].length > 0 ? userCart['@graph'][0] : null;
+            if (userCartAtId) {
+                return this.fetch(`${userCartAtId}?datastore=database`, {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+            }
+            return Promise.resolve(null);
         }).then((response) => {
             if (!response) {
                 // No saved cart for the user.

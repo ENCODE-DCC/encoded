@@ -67,14 +67,14 @@ export const addMultipleToCart = elementAtIds => (
  * user's cart object in the database.
  * @param {array} elementAtIds `@ids` of elements being added to cart
  * @param {object} user User object from <App> session_properties
- * @param {bool} adminUser True if `user` has admin privileges.
+ * @param {bool} loggedIn True if user has logged in.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null not logged in
  */
-export const addMultipleToCartAndSave = (elementAtIds, user, adminUser, fetch) => (
+export const addMultipleToCartAndSave = (elementAtIds, user, loggedIn, fetch) => (
     (dispatch, getState) => {
         dispatch(addMultipleToCart(elementAtIds));
-        if (adminUser) {
+        if (loggedIn) {
             const { cart, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
             return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
