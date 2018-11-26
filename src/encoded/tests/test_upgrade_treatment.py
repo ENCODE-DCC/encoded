@@ -77,6 +77,19 @@ def treatment_9(treatment, document):
     return item
 
 
+@pytest.fixture
+def treatment_10(treatment, document, lab):
+    item = treatment.copy()
+    item.update({
+        'schema_version': '10',
+        'treatment_type': 'protein',
+        'status': 'in progress',
+        'lab': lab['@id']
+    })
+    item['treatment_term_id'] = 'UniprotKB:P03823'
+    return item
+
+
 def test_treatment_upgrade(upgrader, treatment_1):
     value = upgrader.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -134,3 +147,10 @@ def test_treatment_upgrade_9_10(upgrader, treatment_9):
     value = upgrader.upgrade('treatment', treatment_9, current_version='9', target_version='10')
     assert value['schema_version'] == '10'
     assert value['status'] == 'deleted'
+
+
+def test_treatment_upgrade_10_11(upgrader, treatment_10):
+    assert 'lab' in treatment_10
+    value = upgrader.upgrade('treatment', treatment_10, current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert 'lab' not in value

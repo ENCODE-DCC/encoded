@@ -1,5 +1,9 @@
 ## Changelog for treatment.json
 
+### Schema version 11
+
+* *lab* property was removed
+
 ### Schema version 10
 
 * *status* property was restricted to one of  

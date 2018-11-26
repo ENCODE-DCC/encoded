@@ -26,14 +26,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
-        },
-        "lab": {
-            "title": "Lab",
-            "description": "Lab associated with the submission.",
-            "comment": "See lab.json for list of available identifiers.",
-            "type": "string",
-            "linkTo": "Lab"
+            "default": "11"
         },
         "documents": {
             "description": "Documents that describe the treatment protocol."
@@ -140,9 +133,6 @@
         },
         "status": {
             "title": "Treatment status"
-        },
-        "lab.title": {
-            "title": "Lab"
         }
     },
     "changelog": "/profiles/changelogs/treatment.md"
