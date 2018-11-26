@@ -201,7 +201,7 @@ class Matrix extends React.Component {
                                         <div>
                                             <h1>{context.title}</h1>
                                             <div>
-                                                <p>Click or enter search terms to filter the {type} included in the matrix.</p>
+                                                <p>Enter search terms to filter the {type} included in the matrix.</p>
                                                 <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                                             </div>
                                         </div>
