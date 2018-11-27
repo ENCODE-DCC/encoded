@@ -138,17 +138,6 @@ def audit_biosample_donor(value, system):
             donor.get('organism'))
         yield AuditFailure('inconsistent organism', detail, level='ERROR')
 
-    if 'mutated_gene' not in donor:
-        return
-
-    if value.get('organism') != donor['mutated_gene'].get('organism'):
-        detail = 'Biosample {} is organism {}, but its donor {} mutated_gene is in {}. Donor mutated_gene should be of the same species as the donor and biosample'.format(
-            value['@id'],
-            value.get('organism'),
-            donor['@id'],
-            donor['mutated_gene'].get('organism'))
-        yield AuditFailure('inconsistent mutated_gene organism', detail, level='ERROR')
-
     for i in donor['mutated_gene'].get('investigated_as'):
         if i in ['tag',
                  'synthetic tag',
@@ -223,7 +212,6 @@ function_dispatcher = {
 @audit_checker('Biosample',
                frame=['award',
                       'donor',
-                      'donor.mutated_gene',
                       'part_of'])
 def audit_biosample(value, system):
     for function_name in function_dispatcher.keys():
