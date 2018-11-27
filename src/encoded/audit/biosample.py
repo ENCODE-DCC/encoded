@@ -138,19 +138,6 @@ def audit_biosample_donor(value, system):
             donor.get('organism'))
         yield AuditFailure('inconsistent organism', detail, level='ERROR')
 
-    for i in donor['mutated_gene'].get('investigated_as'):
-        if i in ['tag',
-                 'synthetic tag',
-                 'control',
-                 'recombinant protein',
-                 'nucleotide modification',
-                 'other post-translational modification']:
-            detail = 'Donor {} has an invalid mutated_gene {}. Donor mutated_genes should not be tags, controls, recombinant proteins or modifications'.format(
-                donor['@id'],
-                donor['mutated_gene'].get('name'))
-            yield AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
-
-
 def audit_biosample_part_of_consistency(value, system):
     if 'part_of' not in value:
         return
