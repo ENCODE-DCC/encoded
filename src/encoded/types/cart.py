@@ -51,7 +51,7 @@ def _get_carts_by_user(request, userid):
     request.datastore = 'database'
     return [
         c['@id']
-        for c in request.embed('/carts/?datastore=database&remove=elements&format=json&limit=all')['@graph']
+        for c in request.embed('/carts/?remove=elements&format=json&limit=all')['@graph']
         if c['submitted_by'] == '/users/{}/'.format(userid)
     ]
 
@@ -63,7 +63,7 @@ def _create_cart(request, user):
         carts.type_info,
         request,
         {
-            'submitted_by': user.uuid,
+            'submitted_by': str(user.uuid),
             'status': 'current',
             'name': '{} cart'.format(user_props['title']),
             'elements': []
