@@ -138,6 +138,7 @@ def audit_biosample_donor(value, system):
             donor.get('organism'))
         yield AuditFailure('inconsistent organism', detail, level='ERROR')
 
+
 def audit_biosample_part_of_consistency(value, system):
     if 'part_of' not in value:
         return
