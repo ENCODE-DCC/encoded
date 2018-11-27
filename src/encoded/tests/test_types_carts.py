@@ -74,11 +74,11 @@ def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
     assert res.json['submitted_by'] == remc_member['@id']
 
 
-def test_submitter_can_add_own_cart(cart_submitter_testapp, submitter):
+def test_submitter_cannot_add_own_cart(cart_submitter_testapp, submitter):
     item = {
         'name': 'test cart'
     }
-    cart_submitter_testapp.post_json('/cart', item, status=201)
+    cart_submitter_testapp.post_json('/cart', item, status=403)
 
 
 def test_submitter_can_not_modify_submitted_by(cart_submitter_testapp, submitter):
@@ -87,3 +87,26 @@ def test_submitter_can_not_modify_submitted_by(cart_submitter_testapp, submitter
         'submitted_by': submitter['uuid']
     }
     cart_submitter_testapp.post_json('/cart', item, status=422)
+
+
+def test_get_carts_by_user(cart, submitter, dummy_request, threadlocals):
+    from encoded.types.cart import _get_carts_by_user
+    userid = submitter['uuid']
+    carts = _get_carts_by_user(dummy_request, userid)
+    assert carts
+    assert carts[0] == cart['@id']
+
+
+def test_create_cart(dummy_request, threadlocals, submitter):
+    from encoded.types.cart import _create_cart
+    user = dummy_request.root.get_by_uuid(submitter['uuid'])
+    cart = _create_cart(dummy_request, user)
+    assert cart and '/carts/' in cart
+
+
+def test_get_or_create_cart_by_user(cart_submitter_testapp, submitter):
+    res = cart_submitter_testapp.get('/carts/@@get-cart')
+    carts = res.json['@graph']
+    assert carts and '/carts/' in carts[0]
+    cart = cart_submitter_testapp.get(carts[0])
+    assert cart.json['submitted_by'] == submitter['@id']
