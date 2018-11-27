@@ -105,8 +105,16 @@ def test_create_cart(dummy_request, threadlocals, submitter):
 
 
 def test_get_or_create_cart_by_user(cart_submitter_testapp, submitter):
+    # Cart doesn't exist
     res = cart_submitter_testapp.get('/carts/@@get-cart')
     carts = res.json['@graph']
     assert carts and '/carts/' in carts[0]
-    cart = cart_submitter_testapp.get(carts[0])
-    assert cart.json['submitted_by'] == submitter['@id']
+    created_cart = cart_submitter_testapp.get(carts[0])
+    assert created_cart.json['submitted_by'] == submitter['@id']
+    # Cart should exist
+    retrieved_cart = cart_submitter_testapp.get('/carts/@@get-cart').json['@graph'][0]
+    assert created_cart.json['@id'] == retrieved_cart
+
+
+def test_get_or_create_cart_no_user(testapp):
+    testapp.get('/carts/@@get-cart', status=400)
