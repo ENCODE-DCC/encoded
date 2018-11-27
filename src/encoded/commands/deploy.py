@@ -229,7 +229,7 @@ def _get_bdm(main_args):
     ]
 
 
-def get_user_data(commit, config_file, data_insert, profile_name):
+def get_user_data(commit, config_file, data_insert, main_args):
     cmd_list = ['git', 'show', commit + config_file]
     config_template = subprocess.check_output(cmd_list).decode('utf-8')
     ssh_pub_key = read_ssh_key()
@@ -242,13 +242,14 @@ def get_user_data(commit, config_file, data_insert, profile_name):
     # aws s3 authorized_keys folder
     auth_base = 's3://encoded-conf-prod/ssh-keys'
     auth_type = 'prod'
-    if profile_name != 'production':
+    if main_args.profile_name != 'production':
         auth_type = 'demo'
     auth_keys_dir = '{auth_base}/{auth_type}-authorized_keys'.format(
         auth_base=auth_base,
         auth_type=auth_type,
     )
     data_insert['S3_AUTH_KEYS'] = auth_keys_dir
+    data_insert['REDIS_PORT'] = main_args.redis_port
     user_data = config_template % data_insert
     return user_data
 
@@ -314,6 +315,8 @@ def _get_run_args(main_args, instances_tag_data):
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_REPO': main_args.git_repo,
+            'REDIS_IP': main_args.redis_ip,
+            'REDIS_PORT': main_args.redis_port,
         }
         if main_args.no_es:
             config_file = ':cloud-config-no-es.yml'
@@ -325,7 +328,7 @@ def _get_run_args(main_args, instances_tag_data):
             config_file = ':cloud-config.yml'
         if main_args.set_region_index_to:
             data_insert['REGION_INDEX'] = main_args.set_region_index_to
-        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
+        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args)
     else:
         if not main_args.cluster_name:
             print("Cluster must have a name")
@@ -344,7 +347,7 @@ def _get_run_args(main_args, instances_tag_data):
         if main_args.single_data_master:
             data_insert['ES_MASTER'] = 'false'
             data_insert['MIN_MASTER_NODES'] = 1
-        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
+        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args)
         if main_args.single_data_master:
             master_data_insert = {
                 'CLUSTER_NAME': main_args.cluster_name,
@@ -357,7 +360,7 @@ def _get_run_args(main_args, instances_tag_data):
                 instances_tag_data['commit'],
                 config_file,
                 master_data_insert,
-                main_args.profile_name,
+                main_args,
             )
     run_args = {
         'count': count,
@@ -543,6 +546,8 @@ def parse_args():
                         help="c5.9xlarge for indexing. Switch to a smaller instance (m5.xlarge or c5.xlarge).")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--no-es', action='store_true', help="Use non ES cloud condfig")
+    parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
+    parser.add_argument('--redis-port', default=6379, help="Redis Port.")
     parser.add_argument('--set-region-index-to', type=check_region_index,
                         help="Override region index in yaml to 'True' or 'False'")
     parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
