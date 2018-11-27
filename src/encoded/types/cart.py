@@ -83,7 +83,7 @@ def get_or_create_cart_by_user(context, request):
         raise HTTPBadRequest()
     else:
         userid = userid[0]
-    user = request.registry[COLLECTIONS]['user'][userid]
+    user = request.registry[COLLECTIONS]['user'].get(userid)
     if not user:
         raise HTTPBadRequest()
     carts = _get_carts_by_user(request, userid)
