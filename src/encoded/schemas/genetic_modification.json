@@ -246,50 +246,24 @@
             }
         },
         "method": {
-            "comment": "CRISPR technique requires guide_rna_sequences and/or reagent_availability specified. RNAi requires rnai_sequences and/or reagent availability specified. TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment needs treatment to be specified. All other techniques need reagent_avialability and/or supporting documents to be specified.",
+            "comment": "TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment and site-specific recombination need treatment to be specified.",
             "oneOf": [
                 {
-                    "anyOf": [
-                        {
-                            "required": ["guide_rna_sequences"],
-                            "properties": {
-                                "method": {
-                                    "enum": ["CRISPR"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["reagents"],
-                            "properties": {
-                                "method": {
-                                    "enum": ["CRISPR"]
-                                }
-                            }
+                    "properties": {
+                        "method": {
+                            "enum": [
+                                "CRISPR",
+                                "RNAi",
+                                "stable transfection",
+                                "transient transfection",
+                                "transduction",
+                                "microinjection",
+                                "bombardment"
+                            ]
                         }
-                    ]
+                    }
                 },
                 {
-                    "anyOf": [
-                        {
-                            "required": ["rnai_sequences"],
-                            "properties":{
-                                "method": {
-                                    "enum": ["RNAi"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["reagents"],
-                            "properties":{
-                                "method": {
-                                    "enum": ["RNAi"]
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "required": ["reagents"],
                     "comment": "Add back anyOf block with zygosity and RVD_sequence_pairs to the required list after Jason gets metadata",
                     "properties":{
                         "method": {
@@ -298,15 +272,8 @@
                     }
                 },
                 {
-                    "anyOf": [
-                        {
-                            "required": ["treatments", "documents"]
-                        },
-                        {
-                            "required": ["treatments", "reagents"]
-                        }
-                    ],
-                    "properties":{
+                    "required": ["treatments"],
+                    "properties": {
                         "method": {
                             "enum": [
                                 "mutagen treatment",
@@ -314,41 +281,6 @@
                             ]
                         }
                     }
-                },
-                {
-                    "anyOf": [
-                        {
-                            "required": ["documents"],
-                            "properties":{
-                                "documents": {
-                                    "minItems": 1
-                                },
-                                "method": {
-                                    "enum": [
-                                        "stable transfection",
-                                        "transient transfection",
-                                        "transduction",
-                                        "microinjection",
-                                        "bombardment"
-                                     ]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["reagents"],
-                            "properties":{
-                                "method": {
-                                    "enum": [
-                                        "stable transfection",
-                                        "transient transfection",
-                                        "transduction",
-                                        "microinjection",
-                                        "bombardment"
-                                    ]
-                                }
-                            }
-                        }
-                    ]
                 }
             ]
         }
