@@ -299,8 +299,11 @@ class CalculatedVisualize:
     def visualize(self, request, hub, accession, assembly, status, files):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
+
+        # vis_assembly contains all assemblies in all bigWig and bigBed
+        # files with released or in progress status
         vis_assembly = set()
-        viewable_file_formats = ['bigWig', 'bigBed']
+        viewable_file_formats = ['bigWig', 'bigBed', 'hic']
         viewable_file_status = ['released', 'in progress']
         vis_assembly = {
             properties['assembly']
