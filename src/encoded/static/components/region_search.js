@@ -25,6 +25,18 @@ const regulomeGenomes = [
     { value: 'GRCh38', display: 'GRCh38' },
 ];
 
+const BrowserTest = (props) => {
+
+    console.log(props);
+
+    return (
+        <div>
+            <h2>Testing testing part 2</h2>
+        </div>
+    )
+
+}
+
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
 const ResultBrowser = (props) => {
@@ -50,11 +62,6 @@ const ResultBrowser = (props) => {
         }
         visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
     }
-    console.log(visUrl);
-    console.log(props.files);
-    console.log(props.assembly);
-    console.log(props.limitFiles);
-    console.log(region);
     if (datasetCount > 0) {
         return (
             <FetchedData ignoreErrors>
@@ -498,6 +505,8 @@ class RegulomeSearch extends React.Component {
             biodallianceBatch: 0,
         }
 
+        console.log(this);
+
         // Bind this to non-React methods.
         this.onFilter = this.onFilter.bind(this);
         this.currentRegion = this.currentRegion.bind(this);
@@ -537,12 +546,7 @@ class RegulomeSearch extends React.Component {
         // const filters = context.filters;
         const facets = context.facets;
         const total = context.total;
-
-        // console.log(filters);
-
         const tableLimit = 100;
-        console.log(this);
-        console.log(this.props);
 
         let browseAllFiles = true; // True to pass all files to browser
         // let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
@@ -551,7 +555,6 @@ class RegulomeSearch extends React.Component {
         // let assemblyChooser;
 
         let visualizeCfg = context.visualize_batch;
-        console.log(visualizeCfg);
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
         let visualizeKeys = [];
@@ -562,15 +565,16 @@ class RegulomeSearch extends React.Component {
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
-        console.log(visualizeKeys);
 
-        console.log("results");
-        console.log(results);
-        results.forEach(result => console.log(result['@type']))
+        let rootUrl = this.context.location_href.split('/regulome-search')[0];
+        console.log("trying this thing");
+        // if (rootUrl == "http://localhost:6543"){
+        //     rootUrl = "https://encodeproject.org";
+        // }
+        let visualizeUrl = rootUrl + visualizeCfg["hg19"]["Quick View"].slice(0,-8) + '&format=json';
+        console.log(visualizeUrl)
+
         const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
-
-        console.log("files");
-        console.log(files);
 
         // Probably not worth a define in globals.js for visualizable types and statuses.
         browserFiles = files.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
@@ -584,12 +588,6 @@ class RegulomeSearch extends React.Component {
         // browserDatasets = browserFiles.reduce((datasets, file) => (
         //     (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
         // ), []);
-        //
-        // console.log("browser datasets");
-        // console.log(browserDatasets);
-        //
-        // console.log("browser files");
-        // console.log(browserFiles);
 
         const title = "Results details";
 
@@ -669,6 +667,12 @@ class RegulomeSearch extends React.Component {
 
                                 <ResultsTable {...this.props}/>
 
+                                <FetchedData>
+                                    <div>Testing testing</div>
+                                    <Param name="context" url={visualizeUrl} />
+                                    <BrowserTest />
+                                </FetchedData>
+
                                 <ResultBrowser files={results} assembly="GRCh37" datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.context.coordinates} />
 
                             </div>
@@ -741,6 +745,7 @@ RegulomeSearch.defaultProps = {
 RegulomeSearch.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
+    fetch: PropTypes.func,
 };
 
 globals.contentViews.register(RegulomeSearch, 'region-search');

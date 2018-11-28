@@ -118,8 +118,6 @@ export class TestViz extends React.Component {
             let height = 300;
             let width = maxWidth;
 
-            console.log(d3);
-
             svgBars
                 .attr("width", width)
                 .attr("height", height)
