@@ -28,5 +28,7 @@ def audit_genetic_modification_reagents(value, system):
             missing_reagents = True
 
     if missing_reagents:
-        detail = 'Genetic modification {} is missing reagents'.format(value['@id'])
+        detail = 'Genetic modification {} of method {} is missing reagents'.format(
+            value['@id'],
+            method)
         yield AuditFailure('missing genetic modification reagents', detail, level='ERROR')

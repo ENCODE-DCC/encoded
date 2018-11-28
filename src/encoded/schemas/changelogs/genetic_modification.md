@@ -3,7 +3,7 @@
 ### Minor changes since schema version 7
 
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
-* References to *reagents* being required have been removed
+* The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
 
 ### Schema version 7
 

@@ -246,7 +246,7 @@
             }
         },
         "method": {
-            "comment": "TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment and site-specific recombination need treatment to be specified.",
+            "comment": "CRISPR technique requires guide_rna_sequences and/or reagent_availability specified. RNAi requires rnai_sequences and/or reagent availability specified. TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment needs treatment to be specified. All other techniques need reagent_avialability and/or supporting documents to be specified.",
             "oneOf": [
                 {
                     "properties": {
