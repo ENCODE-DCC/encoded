@@ -19,7 +19,8 @@ def tale_deletion(lab, award):
         'award': award['@id'],
         'category': 'deletion',
         'purpose': 'repression',
-        'method': 'TALEN'
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
     }
 
 
@@ -107,7 +108,8 @@ def tale_replacement(lab, award):
         'award': award['@id'],
         'category': 'replacement',
         'purpose': 'characterization',
-        'method': 'TALEN'
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
     }
 
 
@@ -135,7 +137,7 @@ def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_de
     tale_deletion.update({'modified_site_by_coordinates': 
                           {'assembly': 'hg19', 'start': 88943, 'end': 123829, 'chromosome': 'chr3'}})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
-    assert res.status_code == 422
+    assert res.status_code == 201
     '''
     Once the TALEN metadata is fixed, we can add the RVD_sequence_pairs dependency back into the schema
     tale_deletion.update({'RVD_sequence_pairs': 
