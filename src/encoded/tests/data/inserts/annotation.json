@@ -131,6 +131,7 @@
         "targets": [
             "ELK4-human"
         ],
+        "documents": ["j-michael-cherry:regulomedb-PWMs-MA0076.1.pwm"],
         "aliases": [
             "j-michael-cherry:regulomeDB-PWMs_M01167",
             "j-michael-cherry:regulomeDB-PWMs_MA0076.1"
@@ -155,6 +156,7 @@
         "biosample_term_id": "EFO:0002791",
         "lab": "j-michael-cherry",
         "schema_version": "19",
+        "documents": ["j-michael-cherry:regulomedb-PWMs-M01167.pwm"],
         "aliases": [
             "j-michael-cherry:regulomedb-Motifs-Footprints-Helas3-M01167.pwm"
         ],

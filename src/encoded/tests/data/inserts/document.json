@@ -434,5 +434,29 @@
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
+    },
+    {
+        "aliases": [
+            "j-michael-cherry:regulomedb-PWMs-M01167.pwm"
+        ],
+        "attachment": "M01167.txt",
+        "award": "U41HG009293",
+        "document_type": "position weight matrix",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "uuid": "95d594c7-9d40-4cdf-91c8-d03f714a7305"
+    },
+    {
+        "aliases": [
+            "j-michael-cherry:regulomedb-PWMs-MA0076.1.pwm"
+        ],
+        "attachment": "MA0076.1.txt",
+        "award": "U41HG009293",
+        "document_type": "position weight matrix",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "uuid": "87632efc-0349-4914-b74a-6fdd733e8146"
     }
 ]
