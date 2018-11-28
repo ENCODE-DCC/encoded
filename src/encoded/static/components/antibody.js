@@ -85,7 +85,7 @@ const LotComponent = (props, reactContext) => {
         organisms = _.uniq(organisms, organism => `${organism.name}${organism.noOrganism}`);
         organismComponents = organisms.map((organism, i) => {
             const organismName = organism.noOrganism ? <span>{organism.name}</span> : <i>{organism.name}</i>;
-            return <span key={organismName}>{i > 0 ? <span> + {organismName}</span> : <span>{organismName}</span>}</span>;
+            return <span key={organism.name}>{i > 0 ? <span> + {organismName}</span> : <span>{organismName}</span>}</span>;
         });
         organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${globals.encodedURIComponent(organism.name)}`).join('&');
     }
@@ -102,7 +102,7 @@ const LotComponent = (props, reactContext) => {
     // Build the breadcrumb object with option gene component.
     const crumbs = [
         { id: 'Antibodies' },
-        { id: organismComponents, query: organismQuery, tip: organisms.join(' + ') },
+        { id: organismComponents, query: organismQuery, tip: organisms.map(organism => organism.name).join(' + ') },
         { id: geneComponents, query: geneQuery, tip: genes.join(' + ') },
     ];
 
