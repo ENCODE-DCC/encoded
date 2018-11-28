@@ -289,8 +289,7 @@
                     ]
                 },
                 {
-                    "required": ["reagents"],
-                    "comment": "Add back anyOf block with zygosity and RVD_sequence_pairs to the required list after Jason gets metadata",
+                    "required": ["zygosity"],
                     "properties":{
                         "method": {
                             "enum": ["TALEN"]
