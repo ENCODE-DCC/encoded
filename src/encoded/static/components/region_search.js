@@ -412,6 +412,7 @@ const ResultsTable = (props) => {
 
         organ_slims: {
             title: 'Organ',
+            getValue: (item) => item.organ_slims ? item.organ_slims.join(', ') : "",
         },
 
         assay_slims: {
@@ -581,14 +582,40 @@ class RegulomeSearch extends React.Component {
 
         return (
             <div>
-                <div className="lead-logo"><img src="/static/img/RegulomeLogoFinal.gif"></img></div>
+                <div className="lead-logo"><a href="/"><img src="/static/img/RegulomeLogoFinal.gif"></img></a></div>
 
-                <AdvSearch {...this.props} />
                 {notification.startsWith('Success') ?
                     <div>
                         <div>
                             <div className="panel">
                                 <div>
+
+                                    <div className="result-summary">
+                                        {(context.notification) ?
+                                            <p>{context.notification}</p>
+                                        : null}
+                                        {(context.coordinates) ?
+                                            <p>Searched coordinates: {context.coordinates}</p>
+                                        : null}
+                                        {(context.regulome_score) ?
+                                            <p className="regulomescore">RegulomeDB score: {context.regulome_score}</p>
+                                        : null}
+                                    </div>
+                                    {(context.regulome_score  && !context.peak_details) ?
+                                        <a
+                                            rel="nofollow"
+                                            className="btn btn-info btn-sm btn-left centered-btn"
+                                            href={searchBase ? `${searchBase}&peak_metadata` : '?peak_metadata'}
+                                        >
+                                            See peaks
+                                        </a>
+                                    : null}
+                                    {(context.peak_details !== undefined && context.peak_details !== null) ?
+                                        <div className="btn-container">
+                                            <a className="btn btn-info btn-sm" href={context.download_elements[0]} data-bypass>Download peak details (TSV)</a>
+                                            <a className="btn btn-info btn-sm" href={context.download_elements[1]} data-bypass>Download peak details (JSON)</a>
+                                        </div>
+                                    : null}
 
                                     <TestViz {...this.props}/>
 
@@ -656,7 +683,10 @@ class RegulomeSearch extends React.Component {
                 : null}
 
                 {(context.peak_details === undefined && !notification.startsWith('Success')) ?
-                    <DataTypes />
+                    <div>
+                        <AdvSearch {...this.props} />
+                        <DataTypes />
+                    </div>
                 :  null}
 
             </div>

@@ -25,3 +25,17 @@ svg {
     -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
+
+.result-summary {
+    text-align: center;
+    padding: 20px 0;
+    font-weight: 700;
+    p {
+        margin-bottom: 3px;
+    }
+}
+ .centered-btn {
+    width: 120px;
+    margin: auto auto 30px !important;
+    display: block !important;
+}

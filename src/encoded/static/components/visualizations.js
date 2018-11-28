@@ -55,7 +55,7 @@ export class TestViz extends React.Component {
 
         const d3 = this.d3;
 
-        let displayCategories = ["assay_term_name", "replicates.library.biosample.donor.organism.scientific_name", "organ_slims", "target.label"];
+        let displayCategories = ["assay_term_name", "organ_slims", "biosample_term_name", "target.label"];
 
         let facets = this.props.context.facets;
         console.log(facets);

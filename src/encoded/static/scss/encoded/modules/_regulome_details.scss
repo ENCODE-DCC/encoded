@@ -31,6 +31,8 @@ th {
 }
 
 .btn-container {
+    text-align: center;
+    margin-bottom: 30px;
     .btn {
         margin-right: 5px;
     }
@@ -43,5 +45,21 @@ th {
             border: 2px solid darken($regulomeGray,30%);
             background: lighten($regulomeGray,30%);
         }
+    }
+}
+
+.expand-list {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 10px 0 2px 0;
+    font-weight: 700;
+    background-image: linear-gradient(to bottom, transparent, #E5E5E5);
+    cursor: pointer;
+    .icon {
+        margin-right: 10px;
     }
 }

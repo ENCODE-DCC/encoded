@@ -58,7 +58,7 @@ class RegulomeSummary extends React.Component {
 
         return (
             <div>
-                <div className="lead-logo"><img src="/static/img/RegulomeLogoFinal.gif"></img></div>
+                <div className="lead-logo"><a href="/"><img src="/static/img/RegulomeLogoFinal.gif"></img></a></div>
 
                 <div className="results-summary">
                     <p>This search has evaluated {context.notifications.length} input lines and found {snp_count} SNP(s).</p>
