@@ -55,7 +55,7 @@ export class TestViz extends React.Component {
 
         const d3 = this.d3;
 
-        let displayCategories = ["assay_term_name", "replicates.library.biosample.donor.organism.scientific_name", "organ_slims", "biosample_term_name", "target.label"];
+        let displayCategories = ["assay_term_name", "replicates.library.biosample.donor.organism.scientific_name", "organ_slims", "target.label"];
 
         let facets = this.props.context.facets;
         console.log(facets);
@@ -94,7 +94,10 @@ export class TestViz extends React.Component {
                   filteredIdx ++;
               }
             });
-            let chartData = filteredTestData;
+            let chartDataOrig = filteredTestData;
+
+            // we want to be smarter about this but we can't display unlimited data
+            let chartData = chartDataOrig.filter((chartData, cIDX) => cIDX < 10);
 
             const svgElement = d3.select(targetElement).append('svg');
             let fillColor = colorScale(idxidx);
@@ -152,7 +155,8 @@ export class TestViz extends React.Component {
             const yAxis = svgBars.append("g")
                 .attr("transform", `translate(${margin.left},0)`)
                 .call(d3.axisLeft(yScale)
-                    .ticks(maxY));
+                    .ticks(4)
+                    .tickFormat(d3.format("d")));
 
             svgBars.append("text")
                 .attr("class", "chart-title")
