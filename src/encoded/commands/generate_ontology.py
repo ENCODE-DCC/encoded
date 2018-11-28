@@ -540,7 +540,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000762": {
         "assay": ['Transcription'],
@@ -553,7 +554,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000763": {
         "assay": ['Transcription'],
@@ -566,7 +568,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0001132": {
         "assay": ['RNA binding'],
@@ -579,7 +582,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0003082": {
         "assay": ['Transcription'],
@@ -592,7 +596,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0004774": {
         "assay": ['DNA accessibility'],
@@ -605,7 +610,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0003814": {
         "assay": ['Transcription'],
@@ -618,7 +624,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0004619": {
         "assay": ['Transcription'],
@@ -631,7 +638,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0004875": {
         "assay": ['Genotyping'],
@@ -644,7 +652,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0005023": {
         "assay": ['DNA sequencing'],
@@ -657,7 +666,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000438": {
         "assay": ['DNA accessibility'],
@@ -670,7 +680,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000433": {
         "assay": ['RNA structure'],
@@ -683,7 +694,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000444": {
         "assay": ['DNA accessibility'],
@@ -696,7 +708,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000445": {
         "assay": ['Transcription'],
@@ -709,7 +722,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000454": {
         "assay": ['Transcription'],
@@ -722,7 +736,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000455": {
         "assay": ['RNA binding'],
@@ -735,7 +750,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000456": {
         "assay": ['3D chromatin structure'],
@@ -748,7 +764,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     },
     "NTR:0000458": {
         "assay": ['DNA sequencing'],
@@ -761,7 +778,8 @@ ntr_assays = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
+        "types": [],
+        'parent_terms': []
     }
 }
 
@@ -1035,6 +1053,30 @@ def iterativeChildren(nodes, terms, closure):
     return list(set(results))
 
 
+def iterativeChildren3Layers(nodes, terms, closure):
+    if closure == 'data':
+        data = 'data'
+    else:
+        data = 'data_with_develops_from'
+    results = []
+    count = 1
+    while count<4:
+        newNodes = []
+        if len(nodes) == 0:
+            break
+        for node in nodes:
+            results.append(node)
+            if terms[node][data]:
+                for child in terms[node][data]:
+                    if child not in results:
+                        newNodes.append(child)
+        nodes = list(set(newNodes))
+        count += 1
+    return list(set(results))
+
+
+
+
 def getSlims(goid, terms, slimType):
     ''' Get Slims '''
 
@@ -1090,12 +1132,14 @@ def getTermStructure():
         'slims': [],
         'data': [],
         'closure_with_develops_from': [],
+        'closure_with_develops_from_3layers': [],
         'data_with_develops_from': [],
         'synonyms': [],
         'category': [],
         'assay': [],
         'types': [],
-        'objectives': []
+        'objectives': [],
+        'parent_terms': []
     }
 
 
@@ -1116,6 +1160,8 @@ def main():
     efo_url = args.efo_url
     obi_url = args.obi_url
     urls = [obi_url, uberon_url, efo_url]
+
+    ontologies_included = ['EFO', 'CL', 'UBERON', 'OBI']
 
     terms = {}
     for url in urls:
@@ -1196,9 +1242,13 @@ def main():
         d = iterativeChildren(terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
         for dd in d:
             terms[term]['closure_with_develops_from'].append(dd)
+        d = iterativeChildren3Layers(terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
+        for dd in d:
+            terms[term]['closure_with_develops_from_3layers'].append(dd)
        
         terms[term]['closure'].append(term)
         terms[term]['closure_with_develops_from'].append(term)
+        terms[term]['closure_with_develops_from_3layers'].append(term)
 
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
@@ -1208,13 +1258,16 @@ def main():
         terms[term]['category'] = getSlims(term, terms, 'category')
         terms[term]['objectives'] = getSlims(term, terms, 'objective')
         terms[term]['types'] = getSlims(term, terms, 'type')
-
-        del terms[term]['closure'], terms[term]['closure_with_develops_from']
     
     for term in terms:
+        for parent in terms[term]['closure_with_develops_from_3layers']:
+            if parent.startswith('UBERON:') or parent.startswith('CL:') or parent.startswith('EFO:'):
+                terms[term]['parent_terms'].append(terms[parent]['name'])
         del terms[term]['parents'], terms[term]['develops_from']
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
+        del terms[term]['closure'], terms[term]['closure_with_develops_from']
+        del terms[term]['closure_with_develops_from_3layers']
     
     terms.update(ntr_assays)
     with open('ontology.json', 'w') as outfile:
