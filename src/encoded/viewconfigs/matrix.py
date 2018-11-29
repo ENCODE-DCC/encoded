@@ -186,10 +186,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 self._summarize_buckets(x_buckets, bucket, grouping_fields)
 
     def preprocess_view(self):
-        '''
-        Main function to construct query and build view results json
-        * Only publicly accessible function
-        '''
+        """Construct query and build view results json."""
         matrix_route = self._request.route_path('matrix', slash='/')
         self._result['@id'] = matrix_route + self._search_base
         self._result['@type'] = ['Matrix']
@@ -209,7 +206,6 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._matrix['y']['limit'] = self._request.params.get('y.limit', 5)
         search_route = self._request.route_path('search', slash='/')
         self._matrix['search_base'] = search_route + self._search_base
-        matrix_route = self._request.route_path('matrix', slash='/')
         self._matrix['clear_matrix'] = matrix_route + '?type=' + self._doc_types[0]
         self._result['views'] = self._construct_result_views(type_info)
         query, used_filters = self._construct_query()
