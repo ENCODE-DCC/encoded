@@ -1360,7 +1360,7 @@ export class ResultTable extends React.Component {
                                 <hr />
                                 <CartSearchControls searchResults={context} />
                                 {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} addClasses="browser-tab-bg" tabFlange>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} navCss="browser-tab-bg" tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>

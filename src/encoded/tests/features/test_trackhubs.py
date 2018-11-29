@@ -139,15 +139,15 @@ def test_hub_field(testapp, workbook, expected):
 
 def test_visualize(submitter_testapp, workbook):
     expected = {
-        'GRCh38': {
-            'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens',
-            'Quick View': '/search/?type=File&assembly=GRCh38&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress#browser',
-            'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38'
-        },
-        'hg19': {
-            'Quick View': '/search/?type=File&assembly=hg19&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress#browser',
-            'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
-        }
+        'GRCh38': [
+            "Ensembl",
+            "Quick View",
+            "UCSC",
+        ],
+        'hg19': [
+            "Quick View",
+            "UCSC"
+        ]
     }
     res = submitter_testapp.get("/experiments/ENCSR000AEN/")
-    assert expected == res.json['visualize']
+    assert set(expected['GRCh38']) == set(res.json['visualize']['GRCh38']) and set(expected['hg19']) == set(res.json['visualize']['hg19'])
