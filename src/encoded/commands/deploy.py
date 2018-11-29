@@ -313,6 +313,7 @@ def _get_run_args(main_args, instances_tag_data):
             'REGION_INDEX': 'False',
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
+            'GIT_REPO': main_args.git_repo,
         }
         if main_args.no_es:
             config_file = ':cloud-config-no-es.yml'
@@ -338,6 +339,7 @@ def _get_run_args(main_args, instances_tag_data):
             'ES_DATA': 'true',
             'ES_MASTER': 'true',
             'MIN_MASTER_NODES': int(count/2 + 1),
+            'GIT_REPO': main_args.git_repo,
         }
         if main_args.single_data_master:
             data_insert['ES_MASTER'] = 'false'
@@ -349,6 +351,7 @@ def _get_run_args(main_args, instances_tag_data):
                 'ES_DATA': 'false',
                 'ES_MASTER': 'true',
                 'MIN_MASTER_NODES': 1,
+                'GIT_REPO': main_args.git_repo,
             }
             master_user_data = get_user_data(
                 instances_tag_data['commit'],
@@ -558,6 +561,8 @@ def parse_args():
         help="Deploy to production AWS")
     parser.add_argument('--availability-zone', default='us-west-2a',
         help="Set EC2 availabilty zone")
+    parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
+            help="Git repo to checkout branches")
     return parser.parse_args()
 
 
