@@ -188,7 +188,6 @@ slim_shims = {
         'EFO:0007751': ['stem cell'],
         'EFO:0005738': ['stem cell'],
         'EFO:0005740': ['induced pluripotent stem cell', 'stem cell'],
-        'EFO:0005740': ['induced pluripotent stem cell', 'stem cell'],
         'EFO:0005742': ['fibroblast'],
         'EFO:0009318': ['fibroblast'],
         'EFO:0005914': ['stem cell'],
@@ -315,42 +314,42 @@ slim_shims = {
         'EFO:0002847': ['lung'],
         'EFO:0002059': ['connective tissue'],
         'EFO:0002034': ['blood', 'bodily fluid'],
-        'EFO:0001222': ['embryo'],
-        'EFO:0002150': ['kidney'],
-        'EFO:0002184': ['embryo'],
+        'EFO:0001222': ['embryo', 'connective tissue'], # 'connective tissue' is ontology-based
+        'EFO:0002150': ['kidney', 'epithelium'], # 'epithelium' is ontology-based
+        'EFO:0002184': ['embryo', 'epithelium', 'brain'], # 'epithelium' & 'brain' are ontology-based
         'EFO:0002779': ['penis', 'skin of body', 'connective tissue'], # 'connective tissue' & 'penis' are ontology-based
-        'EFO:0005233': ['lymph node'],
-        'EFO:0005282': ['bone element'],
-        'EFO:0005285': ['lymph node'],
-        'EFO:0005333': ['lymph node'],
-        'EFO:0005334': ['lymph node'],
-        'EFO:0005335': ['lymph node'],
-        'EFO:0005337': ['lymph node'],
-        'EFO:0005338': ['lymph node'],
-        'EFO:0005339': ['lymph node'],
-        'EFO:0005340': ['lymph node'],
-        'EFO:0005341': ['lymph node'],
-        'EFO:0005342': ['lymph node'],
-        'EFO:0005343': ['lymph node'],
-        'EFO:0005344': ['lymph node'],
-        'EFO:0005345': ['lymph node'],
-        'EFO:0005346': ['lymph node'],
-        'EFO:0005352': ['lymph node'],
-        'EFO:0005353': ['lymph node'],
-        'EFO:0005480': ['spleen'],
-        'EFO:0005482': ['lymph node'],
-        'EFO:0005719': ['blood', 'bodily fluid'],
+        'EFO:0005233': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005282': ['bone element', 'connective tissue'], # 'connective tissue' is ontology-based
+        'EFO:0005285': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005333': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005334': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005335': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005337': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005338': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005339': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005340': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005341': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005342': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005343': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005344': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005345': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005346': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005352': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005353': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005480': ['blood', 'bodily fluid', 'spleen'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005482': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005719': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
         'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
-        'EFO:0005724': ['lymph node'],
-        'EFO:0005744': ['limb'],
-        'EFO:0006283': ['lymph node'],
-        'EFO:0006711': ['blood', 'bodily fluid'],
-        'EFO:0007074': ['lymph node'],
-        'EFO:0007095': ['skin of body'],
-        'EFO:0007096': ['skin of body'],
-        'EFO:0007097': ['skin of body'],
-        'EFO:0007098': ['skin of body'],
-        'EFO:0007112': ['lymph node']
+        'EFO:0005724': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
+        'EFO:0006283': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0006711': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
+        'EFO:0007074': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0007095': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007098': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007112': ['blood', 'bodily fluid', 'lymph node'] # 'blood' & 'bodily fluid' are ontology-based
     }
 
 }
