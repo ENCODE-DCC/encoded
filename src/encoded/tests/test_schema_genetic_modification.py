@@ -134,10 +134,11 @@ def test_crispr_deletion_two_sites(testapp, crispr_deletion, target):
 
 def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_deletion, source):
     # TALEN modifications either need RVD sequence and/or reagent_availability properties specified
+    del tale_deletion['zygosity']
     tale_deletion.update({'modified_site_by_coordinates': 
                           {'assembly': 'hg19', 'start': 88943, 'end': 123829, 'chromosome': 'chr3'}})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
-    assert res.status_code == 201
+    assert res.status_code == 422
     '''
     Once the TALEN metadata is fixed, we can add the RVD_sequence_pairs dependency back into the schema
     tale_deletion.update({'RVD_sequence_pairs': 
@@ -145,6 +146,7 @@ def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_de
                             {'left_RVD_sequence': 'NN,NH,NH', 'right_RVD_sequence': 'NN,NI,NI'}]})
     '''
     tale_deletion.update({'reagents': [{'source': source['@id'], 'identifier': '12345'}]})
+    tale_deletion.update({'zygosity': 'heterozygous'})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
     assert res.status_code == 201
 
