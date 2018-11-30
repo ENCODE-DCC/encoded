@@ -25,9 +25,11 @@ const PublicationComponent = (props, reactContext) => {
         },
     ];
 
+    const crumbsReleased = (context.status === 'released');
+
     return (
         <div className={itemClass}>
-            <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} />
+            <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
             <h2>{context.title}</h2>
             {props.auditIndicators(context.audit, 'publication-audit', { session: reactContext.session })}
             {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, except: context['@id'] })}

@@ -2,14 +2,14 @@
 Feature: Title
 
     Scenario: Title updates
-        When I visit "/summary/?type=Experiment"
+        When I visit "/summary/?type=Experiment&status=released"
         And I wait for the content to load
         Then the title should contain the text "Experiment summary – ENCODE"
 
 @Summary @usefixtures(workbook)
 Feature: Summary
     Background:
-        When I visit "/summary/?type=Experiment"
+        When I visit "/summary/?type=Experiment&status=released"
         And I wait for the content to load
 
 

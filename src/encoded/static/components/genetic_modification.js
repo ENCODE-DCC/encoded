@@ -511,11 +511,13 @@ class GeneticModificationComponent extends React.Component {
             { id: context.modification_type, query: `modification_type=${context.modification_type}`, tip: context.modification_type },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
                         {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
                         <DisplayAsJson />
