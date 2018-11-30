@@ -48,6 +48,32 @@ seq_assays = [
 ]
 
 
+def audit_experiment_HiC_fragmentation_method(value, system, excluded_types):
+    '''
+    HiC experiments should not have libraries with different fragmentation methods
+    '''
+    if value['assay_term_name'] != 'HiC':
+        return
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    frag_methods = set()
+    for rep in value['replicates']:
+        if rep.get('status') not in excluded_types and 'library' in rep:
+            lib = rep['library']
+            if lib.get('status') not in excluded_types and \
+                    'fragmentation_method' in lib:
+                frag_methods.add(lib['fragmentation_method'])
+
+    if len(frag_methods) > 1:
+        detail = 'Experiment {} '.format(value['@id']) + \
+                 'contains libraries with inconsistant fragmentation method{} '.format(
+                     frag_methods)
+        yield AuditFailure('inconsistant fragmentation', detail, level='INTERNAL_ACTION')
+    return
+
+
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
     # relevant only for ChIP-seq
     if value.get('assay_term_id') != 'OBI:0000716':
