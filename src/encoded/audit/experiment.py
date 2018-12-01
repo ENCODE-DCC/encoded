@@ -48,9 +48,9 @@ seq_assays = [
 ]
 
 
-def audit_experiment_HiC_fragmentation_method(value, system, excluded_types):
+def audit_mixed_restriction_enzyme_in_libaries(value, system, excluded_types):
     '''
-    HiC experiments should not have libraries with different fragmentation methods
+    Libraries for HiC experiments should use the same restriction enzyme
     '''
     if value['assay_term_name'] != 'HiC':
         return
@@ -63,12 +63,12 @@ def audit_experiment_HiC_fragmentation_method(value, system, excluded_types):
         if rep.get('status') not in excluded_types and 'library' in rep:
             lib = rep['library']
             if lib.get('status') not in excluded_types and \
-                    'fragmentation_method' in lib:
+                    'fragmentation_method' in lib and \
+                    'restriction' in lib['fragmentation_method']:
                 frag_methods.add(lib['fragmentation_method'])
-
     if len(frag_methods) > 1:
         detail = 'Experiment {} '.format(value['@id']) + \
-                 'contains libraries with inconsistant fragmentation method{} '.format(
+                 'contains libraries with inconsistant restriction enzymes {} '.format(
                      frag_methods)
         yield AuditFailure('inconsistant fragmentation', detail, level='INTERNAL_ACTION')
     return
@@ -3704,6 +3704,7 @@ function_dispatcher_without_files = {
     'audit_library_biosample': audit_experiment_library_biosample,
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
+    'audit_mixed_restriction_enzyme_in_libaries': audit_mixed_restriction_enzyme_in_libaries,
     'audit_internal_tags': audit_experiment_internal_tag,
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_replication': audit_experiment_replicated,
