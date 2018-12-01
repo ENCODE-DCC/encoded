@@ -70,7 +70,7 @@ def audit_mixed_restriction_enzyme_in_libaries(value, system, excluded_types):
         detail = 'Experiment {} '.format(value['@id']) + \
                  'contains libraries with inconsistant restriction enzymes {} '.format(
                      frag_methods)
-        yield AuditFailure('inconsistant fragmentation', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistant fragmentation method', detail, level='ERROR')
     return
 
 
