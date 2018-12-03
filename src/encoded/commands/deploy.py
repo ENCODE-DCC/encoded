@@ -562,7 +562,7 @@ def parse_args():
     parser.add_argument('--availability-zone', default='us-west-2a',
         help="Set EC2 availabilty zone")
     parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
-            help="Git repo to checkout branches")
+            help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
     return parser.parse_args()
 
 
