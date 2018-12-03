@@ -58,7 +58,7 @@
         "submitted_by": "fames.at@per.varius",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
-        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-mouse"],
+        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-alt-human"],
         "status": "in progress"
     },
     {

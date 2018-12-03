@@ -59,57 +59,58 @@ const LotComponent = (props, reactContext) => {
     }
     const targetKeys = Object.keys(targets);
 
-    // Set up the breadcrumbs
-    const organismComponents = [];
-    const organismTerms = [];
-    const organismTips = [];
-    const geneComponents = [];
-    const geneTerms = [];
-    const geneTips = [];
-    targetKeys.forEach((key, i) => {
-        if (!targets[key].organism) {
-            // Add to the organism section of breadcrumbs even though the info is not organisms
-            organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{targets[key].investigated_as[0]}</i></span> : <i>{targets[key].investigated_as[0]}</i>}</span>);
-            organismTerms.push(`targets.investigated_as=${targets[key].investigated_as[0]}`);
-            organismTips.push(targets[key].investigated_as[0]);
-            // If a target doesn't have organism, it won't have genes either.
-            return;
-        }
-
-        const scientificName = targets[key].organism.scientific_name;
-        let geneName = [];
-        if (targets[key].genes) {
-            geneName = targets[key].genes.map(gene => gene.symbol);
-        }
-
-        // Add to the information on organisms from the targets
-        organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>);
-        organismTerms.push(`targets.organism.scientific_name=${scientificName}`);
-        organismTips.push(scientificName);
-
-        // Add to the information on gene names from the targets
-        if (geneName.length > 0) {
-            geneName.forEach((symbol) => {
-                geneComponents.push(<span key={key + symbol}>{geneComponents.length > 0 ? <span> + {symbol}</span> : <span>{symbol}</span>}</span>);
-                geneTerms.push(`targets.genes.symbol=${symbol}`);
-                geneTips.push(symbol);
-            });
+    // Build lists of organism names and gene symbols from the target objects. We have to remember
+    // whether the organism name comes from the organism object or from `investigated_as`, so the
+    // list of organism names uses an object for each element including a boolean indicating its
+    // source.
+    let organisms = [];
+    let genes = [];
+    targetKeys.forEach((key) => {
+        if (targets[key].organism) {
+            organisms.push({ name: targets[key].organism.scientific_name, noOrganism: false });
+            if (targets[key].genes && targets[key].genes.length > 0) {
+                genes.push(...targets[key].genes.map(gene => gene.symbol));
+            }
+        } else {
+            organisms.push({ name: targets[key].investigated_as[0], noOrganism: true });
         }
     });
 
-    const organismQuery = organismTerms.join('&');
-    const geneQuery = geneTerms.join('&');
+    // Build up the organism breadcrumb components.
+    let organismComponents = null;
+    let organismQuery = '';
+    if (organisms.length > 0) {
+        // Remove duplicates from organism list. Concat with `noOrganism` flag in case of a
+        // organism/non-organism name clash.
+        organisms = _.uniq(organisms, organism => `${organism.name}${organism.noOrganism}`);
+        organismComponents = organisms.map((organism, i) => {
+            const organismName = organism.noOrganism ? <span>{organism.name}</span> : <i>{organism.name}</i>;
+            return <span key={organism.name}>{i > 0 ? <span> + {organismName}</span> : <span>{organismName}</span>}</span>;
+        });
+        organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${globals.encodedURIComponent(organism.name)}`).join('&');
+    }
+
+    // Build up the gene breadcrumb components.
+    let geneComponents = null;
+    let geneQuery = '';
+    if (genes.length > 0) {
+        genes = _.uniq(genes);
+        geneComponents = genes.map((gene, i) => <span key={gene}>{i > 0 ? <span> + {gene}</span> : <span>{gene}</span>}</span>);
+        geneQuery = genes.map(gene => `targets.genes.symbol=${globals.encodedURIComponent(gene)}`).join('&');
+    }
+
+    // Build the breadcrumb object with option gene component.
     const crumbs = [
         { id: 'Antibodies' },
-        { id: organismComponents, query: organismQuery, tip: organismTips.join(' + ') },
-        { id: geneComponents.length > 0 ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ') },
+        { id: organismComponents, query: organismQuery, tip: organisms.map(organism => organism.name).join(' + ') },
+        { id: geneComponents, query: geneQuery, tip: genes.join(' + ') },
     ];
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=antibody_lot" crumbs={crumbs} />
+                    <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} />
                     <h2>{context.accession}</h2>
                     <AlternateAccession altAcc={context.alternate_accessions} />
                     <h3>
@@ -117,7 +118,7 @@ const LotComponent = (props, reactContext) => {
                             <span>
                                 Antibody against {Object.keys(targets).map((target, i) => {
                                     const targetObj = targets[target];
-                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism ? targetObj.organism.scientific_name : targetObj.investigated_as[0]}</em>{` ${targetObj.label}`}</span>;
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{` ${targetObj.label}`}</span>;
                                 })}
                             </span>
                         :
@@ -159,11 +160,11 @@ const LotComponent = (props, reactContext) => {
 
                         {Object.keys(targets).length ?
                             <div data-test="targets">
-                                <dt>Targets</dt>
+                                <dt>Characterized targets</dt>
                                 <dd>
                                     {targetKeys.map((target, i) => {
                                         const targetObj = targets[target];
-                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism ? targetObj.organism.scientific_name : targetObj.investigated_as[0]}</em>{')'}</a></span>;
+                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{')'}</a></span>;
                                     })}
                                 </dd>
                             </div>
@@ -349,7 +350,7 @@ const CharacterizationHeader = (props) => {
     return (
         <div>
             <div className="document__header">
-                {doc.target.label} <span>{' ('}<i>{doc.target.organism ? doc.target.organism.scientific_name : doc.target.investigated_as[0]}</i>{')'}</span>
+                {doc.target.label} <span>{' ('}{doc.target.organism ? <i>{doc.target.organism.scientific_name}</i> : <span>{doc.target.investigated_as[0]}</span>}{')'}</span>
             </div>
             {doc.characterization_reviews && doc.characterization_reviews.length ?
                 <div className="document__characterization-reviews">
@@ -666,7 +667,7 @@ const ListingComponent = (props, reactContext) => {
                         <div key={target}>
                             <a href={result['@id']}>
                                 {targetTree[target].target.label}
-                                <span>{' ('}<i>{targetTree[target].target.organism ? targetTree[target].target.organism.scientific_name : targetTree[target].target.investigated_as[0]}</i>{')'}</span>
+                                <span>{' ('}{targetTree[target].target.organism ? <i>{targetTree[target].target.organism.scientific_name}</i> : <span>{targetTree[target].target.investigated_as[0]}</span>}{')'}</span>
                             </a>
                             <StatusIndicators targetTree={targetTree} target={target} />
                         </div>

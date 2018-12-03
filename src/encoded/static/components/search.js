@@ -487,7 +487,7 @@ class TargetComponent extends React.Component {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {result.label} (<em>{result.organism && result.organism.scientific_name ? result.organism.scientific_name : result.investigated_as[0]}</em>)
+                            {result.label} ({result.organism && result.organism.scientific_name ? <i>{result.organism.scientific_name}</i> : <span>{result.investigated_as[0]}</span>})
                         </a>
                     </div>
                     <div className="data-row">
