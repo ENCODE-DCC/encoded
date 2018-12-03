@@ -47,7 +47,8 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	font-weight: normal;
 	border: 1px solid $inputBorder;
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.1);
-	transition: all 0.15s linear;
+	// resets bootrap form-control changes-effect on input
+	transition: all 0s 0s ease !important;
 		&:focus {
 			background: $inputFocusBgColor;
 			border-color: $inputFocusBorderColor;
