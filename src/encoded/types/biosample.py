@@ -80,7 +80,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     ]
     audit_inherit = [
         'donor',
-        'donor.mutated_gene',
         'donor.organism',
         'donor.characterizations',
         'donor.donor_documents',
