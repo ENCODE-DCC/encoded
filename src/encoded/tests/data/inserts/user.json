@@ -1011,5 +1011,29 @@
             "community"
         ],
         "uuid": "af989110-67d2-4c8b-87f0-38d9d6d31868"
+    },
+    {
+        "email": "jenjou168@gmail.com",
+        "first_name": "Jennifer",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Associate Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Jou",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "community",
+            "ENCODE3",
+            "ENCODE4",
+            "GGR",
+            "REMC",
+            "ENCORE"
+        ],
+        "uuid": "43f2f757-5cbf-490a-9787-a1ee85a4cdcd"
     }
 ]
