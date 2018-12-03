@@ -251,13 +251,6 @@ const MouseDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
-                            <div data-test="mutatedgene">
-                                <dt>Mutated gene</dt>
-                                <dd><a href={context.mutated_gene}>{biosample.donor.mutated_gene.label}</a></dd>
-                            </div>
-                        : null}
-
                         {biosample && biosample.sex ?
                             <div data-test="sex">
                                 <dt>Sex</dt>
@@ -389,13 +382,6 @@ const FlyWormDonor = (props) => {
                             <div data-test="genotype">
                                 <dt>Genotype</dt>
                                 <dd>{context.genotype}</dd>
-                            </div>
-                        : null}
-
-                        {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
-                            <div data-test="mutatedgene">
-                                <dt>Mutated gene</dt>
-                                <dd><a href={context.mutated_gene['@id']}>{biosample.donor.mutated_gene.label}</a></dd>
                             </div>
                         : null}
 
