@@ -23,8 +23,13 @@ def audit_file_processed_step_run(value, system):
         if 'step_run' not in value:
             detail = ('Missing analysis_step_run '
                       'information in {}.').format(value['@id'])
-            yield AuditFailure('missing analysis_step_run',
-                            detail, level='ERROR')
+            if value.get('lab', '') == '/labs/encode-processing-pipeline/':
+                yield AuditFailure('missing analysis_step_run',
+                                   detail, level='ERROR')
+            else:
+                yield AuditFailure('missing analysis_step_run',
+                                   detail, level='WARNING')
+
 
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
