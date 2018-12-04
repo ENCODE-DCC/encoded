@@ -154,7 +154,7 @@ class AntibodyLot(SharedItem):
 })
 def lot_reviews(characterizations, targets, request):
     characterizations = paths_filtered_by_status(request, characterizations)
-    target_organisms = {}
+    target_organisms = set()
 
     is_control = False
     is_histone = False
@@ -166,16 +166,14 @@ def lot_reviews(characterizations, targets, request):
             is_histone = True
 
         organism = target.get('organism')
-        target_organisms = {'all': []}
-        if organism:
-            target_organisms['all'].append(organism)
-        target_organisms[organism] = target['@id']
+        if organism:  # None (synthetic tag) triggers indexinng error
+            target_organisms.add(organism)
 
     # The default base characterization if no characterizations have been submitted
     base_review = {
         'biosample_term_name': 'any cell type or tissue',
         'biosample_term_id': 'NTR:99999999',
-        'organisms': sorted(target_organisms['all']),
+        'organisms': sorted(target_organisms),
         'targets': sorted(targets),
         'status': 'characterized to standards with exemption'
         if is_control else ab_states[(None, None)],
