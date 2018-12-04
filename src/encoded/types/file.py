@@ -269,7 +269,6 @@ class File(Item):
         }
         return sorted(techreps)
 
-
     @calculated_property(schema={
         "title": "Biosamples",
         "description": "Biosamples the file was derived from.",
@@ -296,6 +295,18 @@ class File(Item):
             }
             return request.select_distinct_values('library.biosample', *replicates)
 
+    @calculated_property(condition='biosamples', schema={
+        "title": "Biosample Label",
+        "description": "Name of the biosample the file was derived from.",
+        "comment": "Do not submit.  This field is calculated.",
+        "type": "string",
+    })
+    def biosample_label(self, request, biosamples):
+        biosample_names = request.select_distinct_values('biosample_term_name', biosamples)
+        if len(biosample_names) >= 1:
+            return "Multiple"
+        else:
+            return biosample_names.pop()
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
