@@ -563,6 +563,13 @@ def parse_args():
             help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
     return parser.parse_args()
     # Set Role
+    # - 'demo' role is default for making single or clustered 
+    # applications for feature building
+    # - 'rc' role is for Release-Candidate QA testing and 
+    # is the same as 'demo' except batchupgrade will be skipped during deployment.
+    # This better mimics production but require a command be run after deployment.
+    # - 'candidate' role is for production release that potential can
+    # connect to produciton data.
     args = parser.parse_args()
     setattr(args, 'role', 'demo')
     if args.release_candidate:
