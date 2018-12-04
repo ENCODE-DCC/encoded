@@ -1,5 +1,6 @@
 """
-# Matrix View
+# Matrix View.
+
 Some Desc
 
 ## Inheritance
@@ -9,11 +10,9 @@ MatrixView<-BaseView
 - _format_facets
 """
 from pyramid.httpexceptions import HTTPBadRequest  # pylint: disable=import-error
-
 from encoded.helpers.helper import (
     search_result_actions,
     View_Item)
-
 from snovault.helpers.helper import (  # pylint: disable=import-error
     get_filtered_query,
     get_search_fields,
@@ -23,8 +22,10 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-error
 
 
-class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
-    '''Matrix View'''
+class MatrixView(BaseView):
+    """Matrix View."""
+
+    # pylint: disable=too-few-public-methods
     _view_name = 'matrix'
     _factory_name = 'matrix'
     _filter_exclusion = [
@@ -34,6 +35,12 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     ]
 
     def __init__(self, context, request):
+        """
+        Initialization.
+
+            :param context: Context
+            :param request: Request
+        """
         super(MatrixView, self).__init__(context, request)
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
@@ -41,12 +48,21 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
 
     @staticmethod
     def _set_result_title(type_info):
-        """Set class and child classes."""
+        """
+        Set class and child classes.
+
+            :param type_info: Type info
+        """
         title = type_info.name + ' matrix'
         return title
 
     def _construct_query(self, search_result, matrix):
-        """Preprocess query."""
+        """
+        Preprocess query.
+
+            :param search_result: Search result
+            :param matrix: Matrix object
+        """
         search_fields, _ = get_search_fields(self._request, self._doc_types)
         query = get_filtered_query(
             self._search_term,
@@ -65,7 +81,11 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         return query, used_filters
 
     def _construct_result_views(self, type_info):
-        '''Helper method for preprocessing view'''
+        """
+        Construct result view.
+
+            :param type_info: Type info
+        """
         views = [
             self._view_item.result_list,
             self._view_item.tabular_report
@@ -75,7 +95,15 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         return views
 
     def _construct_xygroupings(self, query, filters, negative_filters, matrix):
-        """Construct xy group."""
+        """
+        Construct xy group.
+
+            :param query: Query
+            :param filters: Filters
+            :param negative_filters: Negative filters 
+            :param matrix: Matrix object
+        """
+        # pylint: disable=no-self-use
         x_grouping = matrix['x']['group_by']
         y_groupings = matrix['y']['group_by']
         x_agg = {
@@ -107,7 +135,11 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         }
 
     def _validate_items(self, type_info):
-        """Validate items."""
+        """
+        Validate items.
+
+            :param type_info: Type info
+        """
         msg = None
         if len(self._doc_types) != 1:
             msg = (
@@ -127,7 +159,13 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             raise HTTPBadRequest(explanation=msg)
 
     def _set_query_aggs(self, query, search_result, matrix):
-        """Construct facets of search query."""
+        """
+        Construct facets of search query.
+
+            :param query: Query
+            :param search_result: Search result
+            :param matrix: Matrix object
+        """
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
         used_filters = set_filters(
