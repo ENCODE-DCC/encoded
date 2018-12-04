@@ -29,7 +29,7 @@ def fastq_no_replicate(award, experiment, lab, platform1):
 
 
 @pytest.fixture
-def fastq(fastq_no_replicate, replicate):
+def fastq_paired(fastq_no_replicate, replicate):
     item = fastq_no_replicate.copy()
     item['replicate'] = replicate['@id']
     return item
@@ -39,8 +39,8 @@ def test_file_post_fastq_no_replicate(testapp, fastq_no_replicate):
     testapp.post_json('/file', fastq_no_replicate, status=422)
 
 
-def test_file_post_fastq_with_replicate(testapp, fastq):
-    testapp.post_json('/file', fastq, status=201)
+def test_file_post_fastq_with_replicate(testapp, fastq_paired):
+    testapp.post_json('/file', fastq_paired, status=201)
 
 
 @pytest.fixture
@@ -85,8 +85,8 @@ def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
 
 
 @pytest.fixture
-def fastq_pair_1(fastq):
-    item = fastq.copy()
+def fastq_pair_1(fastq_paired):
+    item = fastq_paired.copy()
     item['paired_end'] = '1'
     return item
 
@@ -99,8 +99,8 @@ def fastq_pair_1_paired_with(fastq_pair_1, file):
 
 
 @pytest.fixture
-def fastq_pair_2(fastq):
-    item = fastq.copy()
+def fastq_pair_2(fastq_paired):
+    item = fastq_paired.copy()
     item['paired_end'] = '2'
     item['md5sum'] = '2123456789abcdef0123456789abcdef'
     return item
