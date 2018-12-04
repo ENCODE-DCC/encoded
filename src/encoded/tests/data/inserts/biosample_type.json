@@ -138,4 +138,10 @@
     "term_name": "heart",
     "term_id": "EFO:0002067",
     "status": "released"
+}, {
+    "classification": "cell-free sample",
+    "uuid": "23f48440-6770-4011-8eb0-9a7eb16f2ef0",
+    "term_name": "cell-free sample",
+    "term_id": "NTR:0000471",
+    "status": "released"
 }]
