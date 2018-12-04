@@ -11,9 +11,7 @@ SummaryView<-MatrixView<-BaseView
 - _format_facets
 """
 from urllib.parse import urlencode
-
 from encoded.viewconfigs.matrix import MatrixView
-
 from snovault.helpers.helper import (  # pylint: disable=import-error
     get_filtered_query,
     get_search_fields,
@@ -22,15 +20,30 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 )
 
 
-class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
-    '''Summary View'''
+class SummaryView(MatrixView):  # pylint: disable=too-few-public-methods
+    """Summary View."""
+
     _view_name = 'summary'
     _factory_name = 'summary_data'
+
     def __init__(self, context, request):
+        """
+        Initialization.
+
+            :param context: context
+            :param request: request
+        """
+        # pylint: disable=useless-super-delegation
         super(SummaryView, self).__init__(context, request)
 
     def _construct_query(self, search_result, summary):
-        '''Helper method for preprocessing view'''
+        """
+        Construct search query.
+
+            :param search_result: search result
+            :param summary: summary object
+        """
+        # pylint: disable=arguments-differ
         search_fields, _ = get_search_fields(self._request, self._doc_types)
         query = get_filtered_query(
             self._search_term,
@@ -101,7 +114,14 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         }
 
     def _set_query_aggs(self, query, search_result, summary):
-        '''Helper Method for constructing query'''
+        """
+        Construct query aggregation.
+
+            :param query: search query
+            :param search_result: search result
+            :param summary: summary object
+        """
+        # pylint: disable=arguments-differ
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
         used_filters = set_filters(
