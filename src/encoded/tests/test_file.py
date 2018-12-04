@@ -85,23 +85,6 @@ def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
 
 
 @pytest.fixture
-def file(testapp, award, experiment, lab, replicate):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-    res = testapp.post_json('/file', item)
-    return res.json['@graph'][0]
-
-
-@pytest.fixture
 def fastq_pair_1(fastq):
     item = fastq.copy()
     item['paired_end'] = '1'
