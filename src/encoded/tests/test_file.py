@@ -171,3 +171,9 @@ def test_file_technical_replicates(testapp, fastq_pair_1):
     location1 = res.json['@graph'][0]['@id']
     res = testapp.get(location1)
     assert res.json['technical_replicates'] == ['1_1']
+
+
+def test_no_biosample(testapp, mapped_run_type_on_bam):
+    res = testapp.post_json('/file', mapped_run_type_on_bam, status=201)
+    bam = testapp.get(res.location).json
+    assert not item.biosamples
