@@ -552,10 +552,8 @@ def parse_args():
     parser.add_argument('--volume-size', default=200, type=check_volume_size,
                         help="Size of disk. Allowed values 120, 200, and 500")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    # Set Role
-    parser.add_argument(
-        '--candidate', action='store_const', default='demo', const='candidate', dest='role',
-        help="Deploy candidate instance")
+    parser.add_argument('--candidate', action='store_true', help="Deploy candidate instance")
+    parser.add_argument('--release-candidate', action='store_true', help="Deploy release-candidate instance")
     parser.add_argument(
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
@@ -563,7 +561,22 @@ def parse_args():
         help="Set EC2 availabilty zone")
     parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
             help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
-    return parser.parse_args()
+    # Set Role
+    # - 'demo' role is default for making single or clustered
+    # applications for feature building
+    # - 'rc' role is for Release-Candidate QA testing and
+    # is the same as 'demo' except batchupgrade will be skipped during deployment.
+    # This better mimics production but require a command be run after deployment.
+    # - 'candidate' role is for production release that potential can
+    # connect to produciton data.
+    args = parser.parse_args()
+    setattr(args, 'role', 'demo')
+    if args.release_candidate:
+        args.role = 'rc'
+        args.candidate = False
+    elif args.candidate:
+        args.role = 'candidate'
+    return args
 
 
 if __name__ == '__main__':
