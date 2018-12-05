@@ -308,7 +308,6 @@ class File(Item):
                 return "Multiple"
             else:
                 return biosample_names.pop()
-        return "None"
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
