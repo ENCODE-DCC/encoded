@@ -160,7 +160,7 @@ runcmd:
 - service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-- if test "%(ROLE)s" = "demo"
+- if test "%(ROLE)s" != "candidate"
 - then
 -   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
 -   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
