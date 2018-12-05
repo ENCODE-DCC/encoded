@@ -9,6 +9,7 @@ from pyramid.security import (
     Allow,
 )
 from pyramid.view import view_config
+from pyramid.traversal import resource_path
 from .base import (
     Item,
     DELETED,
@@ -48,11 +49,10 @@ class Cart(Item):
 
 
 def _get_carts_by_user(request, userid):
-    request.datastore = 'database'
     return [
-        c['@id']
-        for c in request.embed('/carts/?remove=elements&format=json&limit=all')['@graph']
-        if c['submitted_by'] == '/users/{}/'.format(userid)
+        resource_path(v, '')
+        for k, v in request.registry[COLLECTIONS]['carts'].items()
+        if v.properties['submitted_by'] == userid
     ]
 
 
