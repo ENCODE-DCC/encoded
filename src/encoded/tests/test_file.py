@@ -175,5 +175,23 @@ def test_file_technical_replicates(testapp, fastq_pair_1):
 
 def test_no_biosample(testapp, mapped_run_type_on_bam):
     res = testapp.post_json('/file', mapped_run_type_on_bam, status=201)
-    bam = testapp.get(res.location).json
-    assert not item.biosamples
+    item = testapp.get(res.location).json
+    assert not item.get('biosamples')
+    assert 'biosample_label' not in item
+
+
+def test_biosample_replicate(testapp, fastq_paired):
+    res = testapp.post_json('/file', fastq_paired, status=201)
+    item = testapp.get(res.location).json
+    assert len(item.get('biosamples')) == 1
+    assert item['biosample_label'] == 'heart'
+
+
+def test_biosample_no_replicate(testapp, fastq_paired, mapped_run_type_on_bam):
+    res = testapp.post_json('/file', fastq_paired, status=201)
+    fq = testapp.get(res.location).json
+    mapped_run_type_on_bam['derived_from'] = [fq['@id']]
+    res = testapp.post_json('/file', mapped_run_type_on_bam, status=201)
+    item = testapp.get(res.location).json
+    assert len(item.get('biosamples')) == 1
+    assert item['biosample_label'] == 'heart'

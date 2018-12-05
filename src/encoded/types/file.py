@@ -269,7 +269,7 @@ class File(Item):
         }
         return sorted(techreps)
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Biosamples",
         "description": "Biosamples the file was derived from.",
         "comment": "Do not submit.  This field is calculated.",
@@ -279,7 +279,7 @@ class File(Item):
             "description": "Biosample the file was derived from.",
             "type": "string",
             "linkTo": "Biosample"
-        }
+        },
     })
     def biosamples(self, request, replicate=None, dataset=None):
         if replicate is not None:
@@ -301,12 +301,14 @@ class File(Item):
         "comment": "Do not submit.  This field is calculated.",
         "type": "string",
     })
-    def biosample_label(self, request, biosamples):
-        biosample_names = request.select_distinct_values('biosample_term_name', biosamples)
-        if len(biosample_names) >= 1:
-            return "Multiple"
-        else:
-            return biosample_names.pop()
+    def biosample_label(self, request, biosamples=None):
+        if biosamples:
+            biosample_names = request.select_distinct_values('biosample_term_name', *biosamples)
+            if len(biosample_names) > 1:
+                return "Multiple"
+            else:
+                return biosample_names.pop()
+        return "None"
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
