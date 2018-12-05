@@ -43,28 +43,28 @@ def other_cart_submitter_testapp(app, remc_member):
     return TestApp(app, environ)
 
 
-def test_add_element_to_cart(testapp, cart):
+def test_add_element_to_cart(testapp, cart, experiment):
     testapp.patch_json(
         cart['@id'],
-        {'elements': ['abc']}
+        {'elements': [experiment['@id']]}
     )
     res = testapp.get(cart['@id'])
-    assert res.json['elements'][0] == 'abc'
+    assert res.json['elements'][0] == experiment['@id']
 
 
-def test_owner_can_add_element_to_cart(cart_submitter_testapp, testapp, cart):
+def test_owner_can_add_element_to_cart(cart_submitter_testapp, testapp, cart, experiment):
     cart_submitter_testapp.patch_json(
         cart['@id'],
-        {'elements': ['abc']}
+        {'elements': [experiment['@id']]}
     )
     res = testapp.get(cart['@id'])
-    assert res.json['elements'][0] == 'abc'
+    assert res.json['elements'][0] == experiment['@id']
 
 
-def test_not_owner_cannot_add_element_to_cart(cart_submitter_testapp, testapp, other_cart):
+def test_not_owner_cannot_add_element_to_cart(cart_submitter_testapp, testapp, other_cart, experiment):
     cart_submitter_testapp.patch_json(
         other_cart['@id'],
-        {'elements': ['bde']},
+        {'elements': [experiment['@id']]},
         status=403
     )
 
