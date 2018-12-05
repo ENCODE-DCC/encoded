@@ -32,7 +32,8 @@
             "items": {
                 "title": "Cart element",
                 "description": "Reference to one element in the cart",
-                "type":  "string"
+                "type":  "string",
+                "linkTo": "Dataset"
             }
         }
     },
