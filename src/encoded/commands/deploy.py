@@ -561,11 +561,10 @@ def parse_args():
         help="Set EC2 availabilty zone")
     parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
             help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
-    return parser.parse_args()
     # Set Role
-    # - 'demo' role is default for making single or clustered 
+    # - 'demo' role is default for making single or clustered
     # applications for feature building
-    # - 'rc' role is for Release-Candidate QA testing and 
+    # - 'rc' role is for Release-Candidate QA testing and
     # is the same as 'demo' except batchupgrade will be skipped during deployment.
     # This better mimics production but require a command be run after deployment.
     # - 'candidate' role is for production release that potential can
