@@ -396,6 +396,7 @@ class ExperimentComponent extends React.Component {
             { id: names.length ? names : null, query: nameQuery, tip: nameTip },
             { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
         ];
+        const crumbsReleased = (context.status === 'released');
 
         // Compile the document list.
         const combinedDocuments = _.uniq(documents.concat(
@@ -416,7 +417,7 @@ class ExperimentComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Experiment summary for {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />

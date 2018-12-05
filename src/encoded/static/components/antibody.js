@@ -106,11 +106,13 @@ const LotComponent = (props, reactContext) => {
         { id: geneComponents, query: geneQuery, tip: genes.join(' + ') },
     ];
 
+    const crumbsReleased = (context.status === 'released');
+
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} />
+                    <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>{context.accession}</h2>
                     <AlternateAccession altAcc={context.alternate_accessions} />
                     <h3>

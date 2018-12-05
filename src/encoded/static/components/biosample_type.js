@@ -21,6 +21,8 @@ const BiosampleTypeComponenet = (props, reactContext) => {
         { id: context.term_name, query: `term_name=${context.term_name}`, tip: context.term_name },
     ];
 
+    const crumbsReleased = (context.status === 'released');
+
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
@@ -28,7 +30,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} />
+                    <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>
                         <span className="sentence-case">
                             {context.term_name} / {context.classification}

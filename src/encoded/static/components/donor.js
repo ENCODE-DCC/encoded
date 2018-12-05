@@ -562,11 +562,13 @@ class DonorComponent extends React.Component {
             { id: <i>{context.organism.scientific_name}</i> },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}

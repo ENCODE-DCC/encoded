@@ -366,6 +366,8 @@ class PipelineComponent extends React.Component {
             ];
         }
 
+        const crumbsReleased = (context.status === 'released');
+
         const documents = {};
         if (context.documents) {
             context.documents.forEach((doc, i) => {
@@ -392,7 +394,7 @@ class PipelineComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} /> : null}
+                        {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
                         <h2>{context.title}</h2>
                         {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
                         <DisplayAsJson />

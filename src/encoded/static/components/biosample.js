@@ -31,6 +31,8 @@ class BiosampleComponent extends React.Component {
             { id: context.biosample_term_name, query: `biosample_term_name=${context.biosample_term_name}`, tip: context.biosample_term_name },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Build the text of the synchronization string
         let synchText;
         if (context.synchronization) {
@@ -60,7 +62,7 @@ class BiosampleComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>

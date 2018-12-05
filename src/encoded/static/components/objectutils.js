@@ -643,7 +643,7 @@ AlternateAccession.defaultProps = {
  */
 export const InternalTags = ({ context, css }) => {
     const tagBadges = context.internal_tags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${context['@type'][0]}&internal_tags=${globals.encodedURIComponent(tag)}`;
+        const tagSearchUrl = `/search/?type=${context['@type'][0]}&internal_tags=${globals.encodedURIComponent(tag)}&status=released`;
         return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${context['@type'][0]} with internal tag ${tag}`} /></a>;
     });
     return <span className={css}>{tagBadges}</span>;
