@@ -34,11 +34,13 @@ class Target extends React.Component {
             });
         }
 
+        const crumbsReleased = (context.status === 'released');
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=target" crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.label} (<em>{source}</em>)</h2>
                         <DisplayAsJson />
                     </div>

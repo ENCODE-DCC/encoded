@@ -590,11 +590,13 @@ const SchemaPage = (props) => {
         { id: schemaName },
     ];
 
+    const crumbsReleased = (context.status === 'released');
+
     return (
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/profiles/" crumbs={crumbs} />
+                    <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>{title}</h2>
                 </div>
             </header>
