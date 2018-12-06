@@ -185,6 +185,43 @@ def file_with_bad_revoke_detail(testapp, experiment, award, lab, replicate, plat
     return item
 
 
+@pytest.fixture
+def file_processed_output_raw_format(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'output_type': 'peaks',
+        'read_length': 36,
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_raw_output_processed_format(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'award': award['@id'],
+        'file_format': 'bam',
+        'output_type': 'reads',
+        'read_length': 36,
+        'assembly': 'hg19',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -343,3 +380,19 @@ def test_read_name_details(testapp, file_no_error):
     testapp.patch_json(
         file['@id'], {'file_format': 'bam'},
         status=422)
+
+
+def test_processed_output_raw_format(testapp, file_processed_output_raw_format):
+    res = testapp.post_json('/file', file_processed_output_raw_format, expect_errors=True)
+    assert res.status_code == 422
+    file_processed_output_raw_format.update({'output_type': 'reads'})
+    res = testapp.post_json('/file', file_processed_output_raw_format, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_raw_output_processed_format(testapp, file_raw_output_processed_format):
+    res = testapp.post_json('/file', file_raw_output_processed_format, expect_errors=True)
+    assert res.status_code == 422
+    file_raw_output_processed_format.update({'output_type': 'alignments'})
+    res = testapp.post_json('/file', file_raw_output_processed_format, expect_errors=True)
+    assert res.status_code == 201
