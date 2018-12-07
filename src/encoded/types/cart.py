@@ -7,6 +7,7 @@ from snovault.crud_views import create_item
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import (
     Allow,
+    Authenticated,
 )
 from pyramid.view import view_config
 from .base import (
@@ -24,7 +25,7 @@ from .base import (
         'description': 'Listing of cart contents',
     },
     acl=[
-        (Allow, 'group.submitter', 'save-carts'),
+        (Allow, Authenticated, 'save-carts'),
     ]
 )
 class Cart(Item):
