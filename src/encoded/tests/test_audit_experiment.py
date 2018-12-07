@@ -649,6 +649,8 @@ def test_audit_experiment_missing_fragmentation_method(testapp,
                                                        library_1,
                                                        library_2):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'HiC'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing fragmentation method'
                for error in collect_audit_errors(res))
@@ -661,6 +663,8 @@ def test_audit_experiment_inconsistent_fragmentation_method(testapp,
                                                             library_1,
                                                             library_2):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'HiC'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(library_1['@id'], {'fragmentation_method': 'chemical (HindIII restriction)'})
     testapp.patch_json(library_2['@id'], {'fragmentation_method': 'chemical (MboI restriction)'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
