@@ -664,7 +664,7 @@ def test_audit_experiment_inconsistent_fragmentation_method(testapp,
     testapp.patch_json(library_1['@id'], {'fragmentation_method': 'chemical (HindIII restriction)'})
     testapp.patch_json(library_2['@id'], {'fragmentation_method': 'chemical (MboI restriction)'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'missing fragmentation method'
+    assert any(error['category'] == 'inconsistent fragmentation method'
                for error in collect_audit_errors(res))
 
 
