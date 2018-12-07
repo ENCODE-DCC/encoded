@@ -77,16 +77,16 @@ def test_batch_download_report_download(testapp, workbook):
 
 
 def test_batch_download_files_txt(testapp, workbook):
-    results = testapp.get('/batch_download/type%3DExperiment')
+    results = testapp.get('/batch_download/type=Experiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'
     assert results.headers['Content-Disposition'] == 'attachment; filename="files.txt"'
 
     lines = results.body.splitlines()
     assert len(lines) > 0
-
+  
     metadata = (lines[0].decode('UTF-8')).split('/')
     assert metadata[-1] == 'metadata.tsv'
-    assert metadata[-2] == 'type=Experiment'
+    assert metadata[-2] == 'type%3DExperiment'
     assert metadata[-3] == 'metadata'
 
     assert len(lines[1:]) > 0
