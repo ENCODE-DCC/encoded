@@ -49,6 +49,7 @@ class Cart(Item):
 
 
 def _get_carts_by_user(request, userid):
+    request.datastore = 'database'
     return [
         request.resource_path(v, '')
         for k, v in request.registry[COLLECTIONS]['cart'].items()
