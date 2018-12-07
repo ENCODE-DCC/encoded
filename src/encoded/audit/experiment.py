@@ -63,17 +63,25 @@ def audit_HiC_restriction_enzyme_in_libaries(value, system, excluded_types):
     for rep in value['replicates']:
         if rep.get('status') not in excluded_types and 'library' in rep:
             lib = rep['library']
-            if lib.get('status') not in excluded_types and \
-                    'fragmentation_method' in lib:
-                if 'restriction' in lib['fragmentation_method']:
-                    using_restriction_enzyme = 1
-                frag_methods.add(lib['fragmentation_method'])
+            if lib.get('status') not in excluded_types:
+                if 'fragmentation_method' in lib:
+                    frag_methods.add(lib['fragmentation_method'])
+                    if 'restriction' in lib['fragmentation_method']:
+                        using_restriction_enzyme = 1
+                else:
+                    detail = 'Experiment {} '.format(value['@id']) + \
+                        'contains a library {} '.format(
+                        lib.get('accession')) + \
+                        'lacking the specification of the fragmentation ' + \
+                        'method used to generate it'
+                    yield AuditFailure('missing fragmentation method', detail, level='WARNING')
+
     if len(frag_methods) > 1 and using_restriction_enzyme > 0:
         detail = 'Experiment {} '.format(value['@id']) + \
-                 'contains libraries with inconsistant restriction enzymes {} '.format(
-                     frag_methods)
-        yield AuditFailure('inconsistant fragmentation method', detail, level='ERROR')
-    return
+                    'contains libraries generated following fragmentation ' + \
+                    'with inconsistent restriction enzymes {} '.format(
+                  frag_methods)
+        yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
