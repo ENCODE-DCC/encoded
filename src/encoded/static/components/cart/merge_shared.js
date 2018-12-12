@@ -31,8 +31,8 @@ class CartMergeSharedComponent extends React.Component {
      * in a logged-out user's cart than allowed.
      */
     handleMergeButtonClick() {
-        const { viewableElements, adminUser } = this.props;
-        if (adminUser || viewableElements.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
+        const { viewableElements, loggedIn } = this.props;
+        if (loggedIn || viewableElements.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
             this.setState({ mergeCartDisplayed: true });
         } else {
             this.setState({ overMaximumError: true });
@@ -105,15 +105,15 @@ CartMergeSharedComponent.propTypes = {
     onMergeCartClick: PropTypes.func.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,
-    /** True if user is logged in as admin */
-    adminUser: PropTypes.bool,
+    /** True if user is logged in */
+    loggedIn: PropTypes.bool,
 };
 
 CartMergeSharedComponent.defaultProps = {
     sharedCartObj: {},
     savedCartObj: null,
     viewableElements: null,
-    adminUser: false,
+    loggedIn: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -139,7 +139,7 @@ const CartMergeShared = ({ sharedCartObj, viewableElements }, reactContext) => (
     <CartMergeSharedInternal
         sharedCartObj={sharedCartObj}
         viewableElements={viewableElements}
-        adminUser={!!(reactContext.session_properties && reactContext.session_properties.admin)}
+        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
         sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />
