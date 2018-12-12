@@ -172,7 +172,8 @@ def audit_item_status(value, system):
                            'step_run',
                            'derived_from',
                            'controlled_by',
-                           'possible_controls']:
+                           'possible_controls',
+                           'elements']:
             continue
         else:
             linked.update(simple_path_ids(value, schema_path))

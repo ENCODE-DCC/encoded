@@ -58,40 +58,6 @@ const getWriteableCartObject = (cartAtId, fetch) => (
 
 
 /**
- * Create a new object in the DB for the given cart object and user.
- * @param {object} cart Current cart object to be saved
- * @param {object} user Current logged-in user's object
- * @param {func} fetch System-wide fetch operation
- * @return {object} Promise with new cart object just created
- */
-const createCartObject = (cart, user, fetch) => {
-    const writeableCart = {
-        name: `${user.title} cart`,
-        elements: cart,
-        submitted_by: user['@id'],
-        status: 'current',
-    };
-    return fetch('/carts/', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(writeableCart),
-    }).then((response) => {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error(response);
-    }).then(result => (
-        result['@graph'][0]
-    )).catch((err) => {
-        parseAndLogError('Error creating cart object in DB', err);
-    });
-};
-
-
-/**
  * Save the in-memory cart to the database. The user object has the @id of the user's cart, but not
  * the cart object itself which must be provided in `savedCartObj`.
  * @param {array} cart Array of @ids contained in the in-memory cart to be saved
@@ -109,9 +75,7 @@ const cartSave = (cart, savedCartObj, user, fetch) => {
             return updateCartObject(writeableCart, cartAtId, fetch);
         });
     }
-
-    // No user cart. Make one from scratch and save it.
-    return createCartObject(cart, user, fetch);
+    return Promise.resolve(null);
 };
 
 export default cartSave;
