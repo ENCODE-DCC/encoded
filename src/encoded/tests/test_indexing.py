@@ -28,6 +28,8 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['queue_worker_processes'] = 2
     settings['queue_worker_chunk_size'] = 1024
     settings['queue_worker_batch_size'] = 2000
+    settings['visindexer'] = True
+    settings['regionindexer'] = True
     return settings
 
 

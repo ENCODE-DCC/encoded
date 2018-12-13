@@ -47,7 +47,9 @@ def includeme(config):
     config.add_route('_visindexer_state', '/_visindexer_state')
     config.scan(__name__)
     registry = config.registry
-    registry['vis'+INDEXER] = VisIndexer(registry)
+    is_vis_indexer = registry.settings.get('visindexer')
+    if is_vis_indexer:
+        registry['vis'+INDEXER] = VisIndexer(registry)
 
 class VisIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and vis_indexer state by cycle.
