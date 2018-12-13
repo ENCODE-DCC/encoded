@@ -1,6 +1,39 @@
 Changes
 =======
 
+79.0 (released) / snovault 1.0.22-23
+-----------------
+1. ENCD-4340 get-or-create-carts-with-types (#2541)
+2. ENCD-4372 Update to snovault 1.0.23 (#2546)
+3. ENCD-4367 Update simple for queue module (#2542)
+4. ENCD-4371 Update to snovault 1.0.22 (#2544)
+5. ENCD-4335 Remove npm shrinkwrap again (#2540)
+6. ENCD-4312 genetic modification audit (#2528)
+7. ENCD-3665 add file format dependency (#2523)
+8. ENCD-4333 Add release candidate options to deploy (#2503)
+9. ENCD-4323 Promote released objects (#2535)
+10. ENCD-4346 Added new output type for HiC files (#2531)
+11. ENCD-4334 Added status facet to Matrix view on y axis (#2520)
+12. ENCD-4299 Fix anti body lot target_organisms (#2529)
+13. ENCD-4358 add cell-free sample BiosampleType (#2536)
+14. ENCD-4306 remove-improper-styling (#2524)
+15. ENCD-4338 Allow repo to be specified on deploy (#2509)
+16. ENCD-4327 changed audit level for missing step run (#2513)
+17. ENCD-4201 Add Jen to test data insert (#2518)
+18. ENCD-4328 disable-btn-unavail-files (#2521)
+19. ENCD-4218 fix biodalliance visualize multiple datasets (#2522)
+20. ENCD-4315 cleanup-mutated-gene (#2526)
+21. ENCD-4273 Inconsistent antibody handling (#2530)
+22. ENCD-4319 improve BiosampleType (#2516)
+23. ENCD-4308 fix-audit-clear-filter (#2499)
+24. ENCD-4324 Added-min-width-to-y-axis-label (#2506)
+25. ENCD-4265 matrix-audit-text-update (#2507)
+26. ENCD-4250 Make target synthetic organism as tag (#2510)
+27. ENCD-4272 no-add-treatments (#2514)
+28. ENCD-4326 Fix HTML entities for quotes (#2511)
+29. ENCD-4297 Fix back button behavior and page jumping (#2515)
+30. ENCD-3855 Filter ReEpig by assay facet by title (#2517)
+
 78.0 (released) / snovault 1.0.21
 -----------------
 1. ENCD-4332 Update to snovault 1.0.21 (#2502)
