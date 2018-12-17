@@ -4,6 +4,7 @@
 
 * Property modifications depends on genes and the default for modifications is removed. In other words, only gene targets can have modifications.
 * Added "synthetic tag" and oneOf keyword to address synthetic targets (FLAG) properly.
+* Added "Ubiquitination" to target.modifications.modification enum.
 
 ### Schema version 9
 
