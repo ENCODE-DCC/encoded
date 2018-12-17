@@ -77,7 +77,7 @@
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags or introduced_sequence. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, or introduced_gene. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
             "oneOf": [
                 {
                     "anyOf": [
@@ -94,6 +94,14 @@
                         },
                         {
                             "required": ["introduced_sequence"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["introduced_gene"],
                             "properties": {
                                 "category": {
                                     "enum": ["insertion"]
@@ -483,6 +491,13 @@
         	"type": "string",
             "pattern": "^[ACTG]+$"
 		},
+        "introduced_gene": {
+            "title": "Introduced gene",
+            "description": "The identifier of the gene on the ENCODE portal introduced via the modification.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Gene"
+        },
         "method": {
             "title": "Method",
             "description": "The method used to produce the described genetic modification.",

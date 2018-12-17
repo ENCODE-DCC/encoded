@@ -4,6 +4,8 @@
 
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
+* Zygosity is now required for modifications of *method* TALEN
+* The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 
 ### Schema version 7
 
