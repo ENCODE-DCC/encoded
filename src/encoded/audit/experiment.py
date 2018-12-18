@@ -48,7 +48,7 @@ seq_assays = [
 ]
 
 
-def audit_HiC_restriction_enzyme_in_libaries(value, system, excluded_types):
+def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
     '''
     Libraries for HiC experiments should use the same restriction enzyme
     '''
@@ -61,26 +61,33 @@ def audit_HiC_restriction_enzyme_in_libaries(value, system, excluded_types):
     frag_methods = set()
     using_restriction_enzyme = 0
     for rep in value['replicates']:
-        if rep.get('status') not in excluded_types and 'library' in rep:
-            lib = rep['library']
-            if lib.get('status') not in excluded_types:
-                if 'fragmentation_method' in lib:
-                    frag_methods.add(lib['fragmentation_method'])
-                    if 'restriction' in lib['fragmentation_method']:
+        rep_lib = rep.get('library')
+        rep_status = rep.get('status')
+        if rep_lib and rep_status and rep_status not in excluded_types:
+            rep_lib_status = rep_lib.get('status')
+            if rep_lib_status and rep_lib_status not in excluded_types:
+                if 'fragmentation_method' in rep_lib:
+                    frag_methods.add(rep_lib['fragmentation_method'])
+                    if 'restriction' in rep_lib['fragmentation_method']:
                         using_restriction_enzyme = 1
                 else:
-                    detail = 'Experiment {} '.format(value['@id']) + \
-                        'contains a library {} '.format(
-                        lib.get('accession')) + \
-                        'lacking the specification of the fragmentation ' + \
-                        'method used to generate it'
+                    detail = ('Experiment {} contains a library {} '
+                              'lacking the specification of the fragmentation '
+                              'method used to generate it'.format(
+                                    value['@id'],
+                                    rep_lib.get('accession')
+                               )
+                              )
                     yield AuditFailure('missing fragmentation method', detail, level='WARNING')
 
     if len(frag_methods) > 1 and using_restriction_enzyme > 0:
-        detail = 'Experiment {} '.format(value['@id']) + \
-                    'contains libraries generated following fragmentation ' + \
-                    'with inconsistent restriction enzymes {} '.format(
-                  frag_methods)
+        detail = ('Experiment {} contains libraries generated '
+                  'following fragmentation with '
+                  'inconsistent restriction enzymes {} '.format(
+                        value['@id'],
+                        frag_methods
+                    )
+                  )
         yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')
 
 
@@ -3714,7 +3721,7 @@ function_dispatcher_without_files = {
     'audit_library_biosample': audit_experiment_library_biosample,
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
-    'audit_HiC_restriction_enzyme_in_libaries': audit_HiC_restriction_enzyme_in_libaries,
+    'audit_hic_restriction_enzyme_in_libaries': audit_hic_restriction_enzyme_in_libaries,
     'audit_internal_tags': audit_experiment_internal_tag,
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_replication': audit_experiment_replicated,
