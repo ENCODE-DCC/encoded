@@ -97,7 +97,7 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
         project_detail = 'required according to standards of Minimal IHEC Reference Epigenome.'
 
     for assay in value['related_datasets']:
-        if assay['status'] not in ['replaced', 'revoked', 'deleted']:
+        if assay['status'] in ['released', 'archived']:
             assay_id = assay['assay_term_id']
             if (assay_id == 'OBI:0000716'):
                 if 'target' in assay:
