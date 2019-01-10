@@ -1,6 +1,6 @@
 /**
- * Displays the button displayed at the top of search result pages that lets the user add all
- * results to the cart.
+ * Displays the button at the top of search result pages that lets the user add all results to the
+ * cart.
  */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -17,7 +17,7 @@ class CartAddAllComponent extends React.Component {
     constructor() {
         super();
         this.state = {
-            /** True if search results total more than maximum number of elements while not logged in */
+            /** True if search results total more than maximum # of elements while not logged in */
             overMaximumError: false,
         };
         this.handleClick = this.handleClick.bind(this);
@@ -72,7 +72,7 @@ class CartAddAllComponent extends React.Component {
                     // Not logged in, so test whether the merged new and existing carts would have
                     // more elements than allowed in a logged-out cart. Display an error modal if
                     // that happens.
-                    const margedCarts = mergeCarts(this.props.cart, elementsForCart);
+                    const margedCarts = mergeCarts(this.props.elements, elementsForCart);
                     if (margedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
                         this.setState({ overMaximumError: true });
                         return;
@@ -91,14 +91,15 @@ class CartAddAllComponent extends React.Component {
     }
 
     render() {
-        const { inProgress } = this.props;
+        const { savedCartObj, inProgress } = this.props;
+        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         return (
             <span>
                 <button
                     disabled={inProgress}
                     className="btn btn-info btn-sm"
                     onClick={this.handleClick}
-                    title="Add all experiments in search results to cart"
+                    title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
                 >
                     Add all items to cart
                 </button>
@@ -112,7 +113,9 @@ class CartAddAllComponent extends React.Component {
 
 CartAddAllComponent.propTypes = {
     /** Existing cart contents before adding new items */
-    cart: PropTypes.array.isRequired,
+    elements: PropTypes.array.isRequired,
+    /** Current cart saved object */
+    savedCartObj: PropTypes.object,
     /** Search result object of elements to add to cart */
     searchResults: PropTypes.object.isRequired,
     /** True if cart updating operation is in progress */
@@ -127,12 +130,19 @@ CartAddAllComponent.propTypes = {
 
 CartAddAllComponent.defaultProps = {
     inProgress: false,
+    savedCartObj: null,
     session: null,
 };
 
-const mapStateToProps = (state, ownProps) => ({ cart: state.cart, inProgress: state.inProgress, searchResults: ownProps.searchResults, session: ownProps.session });
+const mapStateToProps = (state, ownProps) => ({
+    elements: state.elements,
+    savedCartObj: state.savedCartObj,
+    inProgress: state.inProgress,
+    searchResults: ownProps.searchResults,
+    session: ownProps.session,
+});
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.sessionProperties.user, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
 });
 

@@ -40,47 +40,42 @@ class CartShareComponent extends React.Component {
     }
 
     render() {
-        if (this.props.cart.length > 0) {
-            const { userCart, locationHref, closeShareCart } = this.props;
+        const { userCart, locationHref, closeShareCart } = this.props;
 
-            // Generate the shared cart URL.
-            const parsedUrl = url.parse(locationHref);
-            Object.assign(parsedUrl, {
-                pathname: userCart['@id'],
-                search: '',
-                query: '',
-            });
-            const sharableUrl = url.format(parsedUrl);
+        // Generate the shared cart URL.
+        const parsedUrl = url.parse(locationHref);
+        Object.assign(parsedUrl, {
+            pathname: userCart['@id'],
+            search: '',
+            query: '',
+        });
+        const sharableUrl = url.format(parsedUrl);
 
-            return (
-                <Modal closeModal={closeShareCart} labelId="share-cart-label" descriptionId="share-cart-description" focusId="share-cart-close">
-                    <ModalHeader title="Share cart" labelId="share-cart-label" closeModal={closeShareCart} />
-                    <ModalBody>
-                        <p id="share-cart-description" role="document">
-                            Copy the URL below to share with other people. Some items might not appear
-                            for all people depending on whether they have logged in or not.
-                        </p>
-                        <div className="cart__share-url">
-                            <input ref={(input) => { this.cartUrlBox = input; }} type="text" aria-label="Sharable cart URL" value={sharableUrl} readOnly />
-                            <button id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-info btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
-                        </div>
-                    </ModalBody>
-                    <ModalFooter
-                        closeModal={closeShareCart}
-                        cancelTitle="Close"
-                        submitBtn={<a data-bypass="true" target="_self" className="btn btn-info" href={sharableUrl}>Visit sharable cart</a>}
-                        closeId="share-cart-close"
-                    />
-                </Modal>
-            );
-        }
-        return null;
+        return (
+            <Modal closeModal={closeShareCart} labelId="share-cart-label" descriptionId="share-cart-description" focusId="share-cart-close">
+                <ModalHeader title="Share cart" labelId="share-cart-label" closeModal={closeShareCart} />
+                <ModalBody>
+                    <p id="share-cart-description" role="document">
+                        Copy the URL below to share with other people. Some items might not appear
+                        for all people depending on whether they have logged in or not.
+                    </p>
+                    <div className="cart__share-url">
+                        <input ref={(input) => { this.cartUrlBox = input; }} type="text" aria-label="Sharable cart URL" value={sharableUrl} readOnly />
+                        <button id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-info btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
+                    </div>
+                </ModalBody>
+                <ModalFooter
+                    closeModal={closeShareCart}
+                    cancelTitle="Close"
+                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info" href={sharableUrl}>Visit sharable cart</a>}
+                    closeId="share-cart-close"
+                />
+            </Modal>
+        );
     }
 }
 
 CartShareComponent.propTypes = {
-    /** Cart contents; array of element @ids */
-    cart: PropTypes.array,
     /** Logged-in users's cart object */
     userCart: PropTypes.object.isRequired,
     /** location_href from <App> context */
@@ -90,12 +85,10 @@ CartShareComponent.propTypes = {
 };
 
 CartShareComponent.defaultProps = {
-    cart: [],
     locationHref: '',
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    cart: state.cart,
     userCart: ownProps.userCart,
     locationHref: ownProps.locationHref,
     closeShareCart: ownProps.closeShareCart,

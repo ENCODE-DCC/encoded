@@ -14,6 +14,10 @@
             left: 0;
             width: 16px;
             vertical-align: top;
+
+            &--empty {
+                width: 24px;
+            }
         }
 
         &-count {
@@ -306,4 +310,189 @@
     button {
         margin-left: 5px;
     }
+}
+
+
+// Cart manager table header
+.cart-manager-header {
+    display: flex;
+
+    @at-root #{&}__title {
+        flex: 1 1 auto;
+    }
+
+    @at-root #{&}__control {
+        display: block;
+        flex: 0 1 auto;
+        margin: -5px;
+    }
+}
+
+$current-bg: #d0f0ff;
+$autosave-bg: #ffffc0;
+$deleted-bg: #ffe0e0;
+
+%cart-manager-table-chip {
+    display: inline-block;
+    margin-right: 5px;
+    width: 20px;
+    height: 10px;
+    border: 1px solid #c0c0c0;
+}
+  
+.cart-manager-table {
+    @at-root #{&}__action {
+        display: flex;
+        margin: -5px;
+    }
+
+    @at-root #{&}__action-button {
+        display: inline-block;
+        position: relative;
+        margin-left: 5px;
+
+        &:first-child {
+            margin-left: 0;
+        }
+    }
+
+    @at-root #{&}__name-header {
+        width: 50%;
+    }
+
+    @at-root #{&}__current-button {
+        display: block;
+        margin: 0 auto !important;
+    }
+
+    // Mark the current cart's row in the table
+    @at-root #{&}__current-row {
+        background-color: $current-bg;
+    }
+
+    // Mark deleted carts' rows in the table
+    @at-root #{&}__deleted-row {
+        background-color: $deleted-bg;
+    }
+
+    // Mark auto-saved cart's row in the table
+    @at-root #{&}__autosave-row {
+        background-color: $autosave-bg;
+    }
+
+    @at-root #{&}__delete-group {
+        position: relative;
+    }
+
+    @at-root #{&}__button-overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    @at-root #{&}__text-wrap {
+        overflow-wrap: break-word;
+    }
+
+    @at-root #{&}__legend {
+        text-align: center;
+
+        @at-root #{&}-item {
+            display: inline-block;
+            margin: 0 15px;
+        }
+    }
+
+    @at-root #{&}__chip {
+        @at-root #{&}--current {
+            @extend %cart-manager-table-chip;
+            background-color: $current-bg;
+        }
+
+        @at-root #{&}--autosave {
+            @extend %cart-manager-table-chip;
+            background-color: $autosave-bg;
+        }
+    }
+}
+
+
+// Cart rename modal styles
+.cart-rename {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+    @at-root #{&}__name-area {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 40%;
+        }
+    }
+
+    @at-root #{&}__identifier-area {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 40%;
+        }
+    }
+
+    @at-root #{&}__explanation {
+        margin-top: 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    @at-root #{&}__control-area {
+        text-align: center;
+        font-size: 1.9rem;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 0 20%;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            @extend .icon;
+            @extend .icon-arrow-circle-down;
+            padding: 4px 8px;
+            color: #606060;
+            background-color: transparent;
+            border: 1px solid #808080;
+            border-radius: 5px;
+
+            @media screen and (min-width: $screen-sm-min) {
+                &:before {
+                    content: $fa-var-arrow-circle-right;
+                }
+            }
+        }
+
+        @at-root #{&}--enabled {
+            button {
+                color: #fff;
+                background-color: #808080;
+                border-color: #404040;
+            }
+        }
+    }
+
+    @at-root #{&}__input {
+        width: 100% !important;
+    }
+}
+
+
+// Display of the number of carts the user owns.
+.cart-counts {
+    padding: 2px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #606060;
+    background-color: #fff;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
 }

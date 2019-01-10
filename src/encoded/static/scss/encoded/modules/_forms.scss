@@ -199,3 +199,28 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	background: transparent;
 	color: #428bca;
 }
+
+
+// Labels on form elements with invalid values.
+.non-valid-label {
+	font-size: 0.8rem;
+	font-weight: bold;
+	color: #e00;
+	text-transform: uppercase;
+}
+
+
+.form-element-with-valid-message {
+	display: block;
+	position: relative;
+
+	@at-root #{&}--inline {
+		display: inline-block;
+	}
+
+	.non-valid-label {
+		position: absolute;
+		top: 100%;
+		left: 0;
+	}
+}

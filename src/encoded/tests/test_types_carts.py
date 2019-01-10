@@ -20,6 +20,17 @@ def other_cart(testapp, remc_member):
 
 
 @pytest.fixture
+def deleted_cart(testapp, submitter):
+    item = {
+        'name': 'test cart',
+        'status': 'deleted',
+        'elements': [],
+        'submitted_by': submitter['uuid'],
+    }
+    return testapp.post_json('/cart', item).json['@graph'][0]
+
+
+@pytest.fixture
 def cart_submitter_testapp(app, submitter):
     '''TestApp with JSON accept header for non-admin user.
     '''
@@ -74,6 +85,10 @@ def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
     assert res.json['submitted_by'] == remc_member['@id']
 
 
+def test_submitter_cant_see_deleted_cart(cart_submitter_testapp, deleted_cart, submitter):
+    res = cart_submitter_testapp.get(deleted_cart['@id'], status=403)
+
+
 def test_submitter_cannot_add_own_cart(cart_submitter_testapp, submitter):
     item = {
         'name': 'test cart'
@@ -90,11 +105,11 @@ def test_submitter_can_not_modify_submitted_by(cart_submitter_testapp, submitter
 
 
 def test_get_carts_by_user(cart, submitter, dummy_request, threadlocals):
-    from encoded.types.cart import _get_carts_by_user
+    from encoded.cart_view import get_cart_objects_by_user
     userid = submitter['uuid']
-    carts = _get_carts_by_user(dummy_request, userid)
+    carts = get_cart_objects_by_user(dummy_request, userid)
     assert carts
-    assert carts[0] == cart['@id']
+    assert carts[0]['@id'] == cart['@id']
 
 
 def test_create_cart(dummy_request, threadlocals, submitter):

@@ -20,16 +20,17 @@ class CartToggleComponent extends React.Component {
      * cart, call the Redux action either to remove from or add to the cart.
      */
     handleClick() {
-        const { cart, elementAtId, onRemoveFromCartClick, onAddToCartClick } = this.props;
-        const onClick = (cart.indexOf(elementAtId) !== -1) ? onRemoveFromCartClick : onAddToCartClick;
+        const { elements, elementAtId, onRemoveFromCartClick, onAddToCartClick } = this.props;
+        const onClick = (elements.indexOf(elementAtId) !== -1) ? onRemoveFromCartClick : onAddToCartClick;
         onClick();
     }
 
     render() {
-        const { cart, elementAtId, loggedIn, inProgress } = this.props;
-        const inCart = cart.indexOf(elementAtId) > -1;
-        const cartAtLimit = !loggedIn && cart.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
-        const inCartToolTip = inCart ? 'Remove item from cart' : 'Add item to cart';
+        const { elements, elementAtId, savedCartObj, loggedIn, inProgress } = this.props;
+        const inCart = elements.indexOf(elementAtId) > -1;
+        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+        const cartAtLimit = !loggedIn && elements.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
+        const inCartToolTip = `${inCart ? 'Remove item from cart' : 'Add item to cart'}${cartName ? `: ${cartName}` : ''}`;
         const inProgressToolTip = inProgress ? 'Cart operation in progress' : '';
         const cartAtLimitToolTip = cartAtLimit ? `Cart can contain a maximum of ${CART_MAXIMUM_ELEMENTS_LOGGEDOUT} items` : '';
 
@@ -52,7 +53,9 @@ class CartToggleComponent extends React.Component {
 
 CartToggleComponent.propTypes = {
     /** Current contents of cart; array of @ids */
-    cart: PropTypes.array,
+    elements: PropTypes.array,
+    /** Current cart saved object */
+    savedCartObj: PropTypes.object,
     /** @id of element being added to cart */
     elementAtId: PropTypes.string.isRequired,
     /** Function to call to add `elementAtId` to cart */
@@ -66,21 +69,23 @@ CartToggleComponent.propTypes = {
 };
 
 CartToggleComponent.defaultProps = {
-    cart: [],
+    elements: [],
+    savedCartObj: null,
     loggedIn: false,
     inProgress: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    cart: state.cart,
+    elements: state.elements,
+    savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     elementAtId: ownProps.element['@id'],
     loggedIn: ownProps.loggedIn,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.sessionProperties.user, ownProps.loggedIn, ownProps.fetch)),
-    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.sessionProperties.user, ownProps.loggedIn, ownProps.fetch)),
+    onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.loggedIn, ownProps.fetch)),
+    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.loggedIn, ownProps.fetch)),
 });
 
 const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartToggleComponent);

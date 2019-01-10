@@ -2,22 +2,28 @@
  * Redux and thunk functions to interact with the cart in the Redux store.
  */
 import cartCacheSaved from './cache_saved';
-import cartSave from './save';
+import cartSave, { cartPatch } from './database';
 import cartSetOperationInProgress from './in_progress';
+import { cartGetSettings, cartSetSettingsCurrent } from './settings';
 
 
-// Action creators to use with Redux store.dispatch().
+// Actions to use with Redux store.dispatch().
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const ADD_MULTIPLE_TO_CART = 'ADD_MULTIPLE_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const REMOVE_MULTIPLE_FROM_CART = 'REMOVE_MULTIPLE_FROM_CART';
+export const REPLACE_CART = 'REPLACE_CART';
 export const CACHE_SAVED_CART = 'CACHE_SAVED_CART';
 export const CART_OPERATION_IN_PROGRESS = 'CART_OPERATION_IN_PROGRESS';
+export const SET_CURRENT = 'SET_CURRENT';
+export const SET_NAME = 'SET_NAME';
+export const SET_IDENTIFIER = 'SET_IDENTIFIER';
+export const SET_STATUS = 'SET_STATUS';
 export const NO_ACTION = 'NO_ACTION';
 
 
 /**
- * Redux action to add an element to the cart.
+ * Redux action creator to add an element to the cart.
  * @param {string} elementAtId `@id` of element being added to cart
  * @return {object} Redux action object
  */
@@ -27,21 +33,20 @@ export const addToCart = elementAtId => (
 
 
 /**
- * Redux thunk action to add an element to the cart and save this change to the logged-in user's
- * cart object in the database.
+ * Redux thunk action creator to add an element to the cart and save this change to the logged-in
+ * user's cart object in the database.
  * @param {string} elementAtId `@id` of element being added to cart
- * @param {object} user User object from <App> session_properties
- * @param {bool} loggedIn True if `user` has logged in.
+ * @param {bool} loggedIn True if user is logged in.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null if not logged in
  */
-export const addToCartAndSave = (elementAtId, user, loggedIn, fetch) => (
+export const addToCartAndSave = (elementAtId, loggedIn, fetch) => (
     (dispatch, getState) => {
         dispatch(addToCart(elementAtId));
         if (loggedIn) {
-            const { cart, savedCartObj } = getState();
+            const { elements, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
-            return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
+            return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
                 cartSetOperationInProgress(false, dispatch);
                 cartCacheSaved(updatedSavedCartObj, dispatch);
                 return updatedSavedCartObj;
@@ -53,7 +58,7 @@ export const addToCartAndSave = (elementAtId, user, loggedIn, fetch) => (
 
 
 /**
- * Redux action to add multiple elements to the cart.
+ * Redux action creator to add multiple elements to the cart.
  * @param {array} elementAtIds `@ids` of elements being added to cart
  * @return {object} Redux action object
  */
@@ -63,21 +68,20 @@ export const addMultipleToCart = elementAtIds => (
 
 
 /**
- * Redux thunk action to add multiple elements to the cart and save this change to the logged-in
- * user's cart object in the database.
+ * Redux thunk action creator to add multiple elements to the cart and save this change to the
+ * logged-in user's cart object in the database.
  * @param {array} elementAtIds `@ids` of elements being added to cart
- * @param {object} user User object from <App> session_properties
  * @param {bool} loggedIn True if user has logged in.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null not logged in
  */
-export const addMultipleToCartAndSave = (elementAtIds, user, loggedIn, fetch) => (
+export const addMultipleToCartAndSave = (elementAtIds, loggedIn, fetch) => (
     (dispatch, getState) => {
         dispatch(addMultipleToCart(elementAtIds));
         if (loggedIn) {
-            const { cart, savedCartObj } = getState();
+            const { elements, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
-            return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
+            return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
                 cartSetOperationInProgress(false, dispatch);
                 cartCacheSaved(updatedSavedCartObj, dispatch);
                 return updatedSavedCartObj;
@@ -89,7 +93,7 @@ export const addMultipleToCartAndSave = (elementAtIds, user, loggedIn, fetch) =>
 
 
 /**
- * Redux action to remove an element from the cart.
+ * Redux action creator to remove an element from the cart.
  * @param {string} elementAtId `@id` of element to remove from the cart
  * @return {object} Redux action object
  */
@@ -99,21 +103,20 @@ export const removeFromCart = elementAtId => (
 
 
 /**
- * Redux thunk action to remove an element from the cart and save this change to the logged-in
- * user's cart object in the database.
+ * Redux thunk action creator to remove an element from the cart and save this change to the
+ * logged-in user's cart object in the database.
  * @param {string} elementAtId `@id` of object being added to cart
- * @param {object} user User object from <App> session_properties
- * @param {bool} loggedIn True if `user` has logged in.
+ * @param {bool} loggedIn True if user has logged in.
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null not logged in
  */
-export const removeFromCartAndSave = (elementAtId, user, loggedIn, fetch) => (
+export const removeFromCartAndSave = (elementAtId, loggedIn, fetch) => (
     (dispatch, getState) => {
         dispatch(removeFromCart(elementAtId));
         if (loggedIn) {
-            const { cart, savedCartObj } = getState();
+            const { elements, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
-            return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
+            return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
                 cartSetOperationInProgress(false, dispatch);
                 cartCacheSaved(updatedSavedCartObj, dispatch);
                 return updatedSavedCartObj;
@@ -125,7 +128,7 @@ export const removeFromCartAndSave = (elementAtId, user, loggedIn, fetch) => (
 
 
 /**
- * Redux action to remove multiple elements from the cart.
+ * Redux action creator to remove multiple elements from the cart.
  * @param {array} elementAtIds `@ids` of elements to remove from the cart
  * @return {object} Redux action object
  */
@@ -135,21 +138,20 @@ export const removeMultipleFromCart = elementAtIds => (
 
 
 /**
- * Redux thunk action to remove multiple elements from the cart and save this change to the
+ * Redux thunk action creator to remove multiple elements from the cart and save this change to the
  * database.
  * @param {array} elementAtIds `@ids` of elements to remove from the cart
- * @param {object} user User object from <App> session_properties
- * @param {bool} adminUser True if `user` has admin privileges.
+ * @param {bool} loggedIn True if user has logged in
  * @param {function} fetch fetch function from <App> context
  * @return {object} Promise from saving the cart; null if not logged in
  */
-export const removeMultipleFromCartAndSave = (elementAtIds, user, adminUser, fetch) => (
+export const removeMultipleFromCartAndSave = (elementAtIds, loggedIn, fetch) => (
     (dispatch, getState) => {
         dispatch(removeMultipleFromCart(elementAtIds));
-        if (adminUser) {
-            const { cart, savedCartObj } = getState();
+        if (loggedIn) {
+            const { elements, savedCartObj } = getState();
             cartSetOperationInProgress(true, dispatch);
-            return cartSave(cart, savedCartObj, user, fetch).then((updatedSavedCartObj) => {
+            return cartSave(elements, savedCartObj, fetch).then((updatedSavedCartObj) => {
                 cartSetOperationInProgress(false, dispatch);
                 cartCacheSaved(updatedSavedCartObj, dispatch);
                 return updatedSavedCartObj;
@@ -161,7 +163,17 @@ export const removeMultipleFromCartAndSave = (elementAtIds, user, adminUser, fet
 
 
 /**
- * Redux action to cache a saved cart object into the cart store.
+ * Redux action creator to replace all items in the cart with another set of items.
+ * @param {array} elementAtIds `@ids` of elements to set the cart to
+ * @return {object} Redux action object
+ */
+export const replaceCart = elementAtIds => (
+    { type: REPLACE_CART, elementAtIds }
+);
+
+
+/**
+ * Redux action creator to cache a saved cart object into the cart store.
  * @param {object} savedCartObj Cart object as saved to the database
  * @return {object} Redux action object
  */
@@ -171,10 +183,98 @@ export const cacheSavedCart = savedCartObj => (
 
 
 /**
- * Redux action to indicate that a cart operation is currently in progress.
+ * Redux action creator to indicate that a cart operation is currently in progress.
  * @param {bool} inProgress True to indicate cart operation in progress; false when done
  * @return {object} Redux action object
  */
 export const cartOperationInProgress = inProgress => (
     { type: CART_OPERATION_IN_PROGRESS, inProgress }
+);
+
+
+/**
+ * Redux action creator to set the name of the cart.
+ * @param {string} name Name to set cart to
+ * @return {object} Redux action object
+ */
+export const setCartName = name => (
+    { type: SET_NAME, name }
+);
+
+
+/**
+ * Redux action creator to set the identifier of the cart.
+ * @param {string} identifier Identifier to set cart to
+ * @return {object} Redux action object
+ */
+export const setCartIdentifier = identifier => (
+    { type: SET_IDENTIFIER, identifier }
+);
+
+
+/**
+ * Redux action creator to set the current cart. This sets the current cart in the Redux store
+ * only -- this does not affect the cart settings in localstorage.
+ * @param {string} current @id of cart to set as current
+ * @return {object} Redux action object
+ */
+export const setCurrentCart = current => (
+    { type: SET_CURRENT, current }
+);
+
+
+/**
+ * Redux action creator to set the status of the cart.
+ * @param {string} status New status for cart
+ * @return {object} Redux action object
+ */
+export const setCartStatus = status => (
+    { type: SET_STATUS, status }
+);
+
+
+/**
+ * Redux thunk action creator to set the name and/or identifier of a cart both in the Redux store
+ * and the cart's database object.
+ * @param {string} {name} Name to assign to cart (optional)
+ * @param {string} {identifier} Identifier (URI) to assign to cart (optional)
+ * @param {object} cart Cart object being updated
+ * @param {object} user Current user object, often from `session` React context variable
+ * @param {func} fetch System fetch function
+ * @return {Promise} Resolves to the updated cart object
+ */
+export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, fetch) => (
+    dispatch => (
+        new Promise((resolve, reject) => {
+            cartSetOperationInProgress(true, dispatch);
+            return cartPatch(cart['@id'], { name, identifier }, null, fetch).then((updatedSavedCartObj) => {
+                // We know the update of the cart object in the database succeeded, so update the
+                // cart Redux store as well.
+                cartSetOperationInProgress(false, dispatch);
+                if (name) {
+                    dispatch(setCartName(name));
+                }
+                if (identifier) {
+                    dispatch(setCartIdentifier(identifier));
+                }
+
+                // The current cart settings track the current cart's identifier, so that needs to
+                // be updated if the identifer for the current cart gets updated.
+                if (cart['@id'] !== updatedSavedCartObj['@id']) {
+                    // At this point we know the identifier changed, but we don't know if that
+                    // affects the current cart.
+                    const oldCurrent = cartGetSettings(user).current;
+                    if (cart['@id'] === oldCurrent) {
+                        // The identifier changed AND it affects the current cart, so update the
+                        // current cart settings and cart Redux store with the new identifier.
+                        cartSetSettingsCurrent(user, updatedSavedCartObj['@id']);
+                        dispatch(setCurrentCart(updatedSavedCartObj['@id']));
+                    }
+                }
+                resolve(updatedSavedCartObj);
+            }, (err) => {
+                reject(err);
+            });
+        })
+    )
 );

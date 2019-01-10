@@ -277,7 +277,7 @@ class ImpersonateUserFormComponent extends React.Component {
     }
 
     finished() {
-        this.props.clearCart(this.props.cart);
+        this.props.clearCart(this.props.elements);
         this.props.navigate('/');
     }
 
@@ -299,7 +299,7 @@ class ImpersonateUserFormComponent extends React.Component {
 
 ImpersonateUserFormComponent.propTypes = {
     /** Current contents of cart; array of @ids */
-    cart: PropTypes.array.isRequired,
+    elements: PropTypes.array.isRequired,
     /** Function to call to clear the cart from the Redux store */
     clearCart: PropTypes.func.isRequired,
     /** navigate callback from <App> context */
@@ -307,7 +307,7 @@ ImpersonateUserFormComponent.propTypes = {
 };
 
 
-const mapStateToProps = state => ({ cart: state.cart });
+const mapStateToProps = state => ({ elements: state.elements });
 const mapDispatchToProps = dispatch => ({
     clearCart: elementAtIds => cartRemoveElements(elementAtIds, dispatch),
 });
