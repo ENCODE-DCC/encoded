@@ -1,7 +1,7 @@
 import pytest
 
 @pytest.fixture
-def base_experiment(testapp, lab, award):
+def base_experiment(testapp, lab, award, cell_free):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -9,6 +9,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
+        'biosample_ontology': cell_free['uuid'],
         'experiment_classification': ['functional genomics assay'],
         'status': 'in progress'
     }
@@ -101,7 +102,9 @@ def test_experiment_biosample_summary(testapp,
                                       library_2,
                                       treatment,
                                       replicate_1_1,
-                                      replicate_2_1):
+                                      replicate_2_1,
+                                      s2r_plus,
+                                      liver):
     testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '55', 'life_stage': 'adult'})
     testapp.patch_json(donor_2['@id'], {'age_units': 'day', 'age': '1', 'life_stage': 'child'})
     testapp.patch_json(donor_1['@id'], {'sex': 'female',
@@ -112,12 +115,14 @@ def test_experiment_biosample_summary(testapp,
                                             "biosample_term_id": "EFO:0005837",
                                             "biosample_term_name": "S2R+",
                                             "biosample_type": "cell line",
+                                            'biosample_ontology': s2r_plus['uuid'],
                                             "subcellular_fraction_term_name": "nucleus",
                                             })
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
                                             "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
+                                            'biosample_ontology': liver['uuid'],
                                             'treatments': [treatment['@id']]})
 
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -142,7 +147,8 @@ def test_experiment_biosample_summary_2(testapp,
                                         library_2,
                                         treatment,
                                         replicate_1_1,
-                                        replicate_2_1):
+                                        replicate_2_1,
+                                        liver):
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'life_stage': 'child'})
     testapp.patch_json(donor_2['@id'], {'age_units': 'day', 'age': '10', 'life_stage': 'child'})
     testapp.patch_json(donor_1['@id'], {'sex': 'male'})
@@ -151,9 +157,11 @@ def test_experiment_biosample_summary_2(testapp,
                                             "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
+                                            'biosample_ontology': liver['uuid'],
                                             'treatments': [treatment['@id']]})
 
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
+                                            'biosample_ontology': liver['uuid'],
                                             "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue"})

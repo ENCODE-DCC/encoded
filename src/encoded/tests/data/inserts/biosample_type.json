@@ -144,4 +144,34 @@
     "term_name": "cell-free sample",
     "term_id": "NTR:0000471",
     "status": "released"
+}, {
+    "classification": "cell line",
+    "uuid": "302585be-4afc-4712-b158-0e613a8e0aa7",
+    "term_name": "IMR-90",
+    "term_id": "EFO:0001196",
+    "status": "released"
+}, {
+    "classification": "cell line",
+    "uuid": "2ca8e02c-2c6e-4bcd-b361-668819050b93",
+    "term_name": "HeLa-S3",
+    "term_id": "EFO:0002791",
+    "status": "released"
+}, {
+    "classification": "cell line",
+    "uuid": "6d281bc4-8581-49e6-a9d4-066be68df5cd",
+    "term_name": "MEL cell line",
+    "term_id": "EFO:0003971",
+    "status": "released"
+}, {
+    "classification": "cell line",
+    "uuid": "c38a56fd-40bf-4db1-bf8f-cd2e6af0bde3",
+    "term_name": "HepG2",
+    "term_id": "EFO:0001187",
+    "status": "released"
+}, {
+    "classification": "in vitro differentiated cells",
+    "uuid": "e5ee35e6-a904-43d1-af5d-4893312cc544",
+    "term_name": "neural cell",
+    "term_id": "CL:0002319",
+    "status": "released"
 }]

@@ -213,13 +213,13 @@ def test_matrix_view(workbook, testapp):
     assert len(res['matrix']['x']['buckets']) > 0
     assert len(res['matrix']['x']['facets']) > 0
     assert res['matrix']['y']['group_by'] == [
-        'biosample_type', 'biosample_term_name']
+        'biosample_ontology.classification', 'biosample_ontology.term_name']
     assert res['matrix']['y']['label'] == 'Biosample'
     assert res['matrix']['y']['limit'] == 5
     assert len(res['matrix']['y'][
-        'biosample_type']['buckets']) > 0
+        'biosample_ontology.classification']['buckets']) > 0
     assert len(res['matrix']['y'][
-        'biosample_type']['buckets'][0]['biosample_term_name']['buckets']) > 0
+        'biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']) > 0
 
 
 def test_set_filters():

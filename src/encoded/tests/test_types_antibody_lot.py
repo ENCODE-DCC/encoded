@@ -80,12 +80,14 @@ def test_have_primary_missing_secondary(testapp,
                                         human,
                                         target,
                                         wrangler,
-                                        document):
+                                        document,
+                                        k562):
     char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
     characterization_review = {
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'cell line',
+        'biosample_ontology': k562['uuid'],
         'organism': human['@id'],
         'lane': 1
     }
@@ -191,7 +193,8 @@ def test_multiple_secondary_one_primary(testapp,
                                         human,
                                         target,
                                         wrangler,
-                                        document):
+                                        document,
+                                        k562):
 
     prim_char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
     sec_char1 = testapp.post_json('/antibody_characterization', motif_enrichment).json['@graph'][0]
@@ -200,6 +203,7 @@ def test_multiple_secondary_one_primary(testapp,
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'cell line',
+        'biosample_ontology': k562['uuid'],
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
@@ -250,7 +254,9 @@ def test_histone_mod_characterizations(testapp,
                                        target_H3K9me3,
                                        mouse_target_H3K9me3,
                                        wrangler,
-                                       document):
+                                       document,
+                                       liver,
+                                       erythroblast):
 
     prim_char_human = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
     prim_char_mouse = testapp.post_json('/antibody_characterization', immunoprecipitation).json['@graph'][0]
@@ -260,6 +266,7 @@ def test_histone_mod_characterizations(testapp,
         'biosample_term_name': 'liver',
         'biosample_term_id': 'UBERON:0002107',
         'biosample_type': 'tissue',
+        'biosample_ontology': liver['uuid'],
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
@@ -268,6 +275,7 @@ def test_histone_mod_characterizations(testapp,
         'biosample_term_name': 'liver',
         'biosample_term_id': 'UBERON:0002107',
         'biosample_type': 'tissue',
+        'biosample_ontology': liver['uuid'],
         'organism': mouse['@id'],
         'lane': 1,
         'lane_status': 'not compliant'
@@ -309,6 +317,7 @@ def test_histone_mod_characterizations(testapp,
     characterization_review_mouse2.update({'biosample_term_name': 'erythroblast',
                                            'biosample_term_id': 'CL:0000765',
                                            'biosample_type': 'primary cell',
+                                           'biosample_ontology': erythroblast['uuid'],
                                            'lane_status': 'exempt from standards',
                                            'lane': 2})
 
@@ -341,7 +350,10 @@ def test_multi_lane_primary(testapp,
                             target,
                             mouse_target,
                             wrangler,
-                            document):
+                            document,
+                            k562,
+                            hepg2,
+                            gm12878):
 
     prim_char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
     sec_char = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
@@ -350,6 +362,7 @@ def test_multi_lane_primary(testapp,
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'cell line',
+        'biosample_ontology': k562['uuid'],
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
@@ -357,6 +370,7 @@ def test_multi_lane_primary(testapp,
     characterization_review_2 = {'biosample_term_name': 'HepG2',
                                  'biosample_term_id': 'EFO:0001187',
                                  'biosample_type': 'cell line',
+                                 'biosample_ontology': hepg2['uuid'],
                                  'organism': human['@id'],
                                  'lane': 2,
                                  'lane_status': 'not compliant'}
@@ -364,6 +378,7 @@ def test_multi_lane_primary(testapp,
     characterization_review_3 = {'biosample_term_name': 'GM12878',
                                  'biosample_term_id': 'EFO:0002784',
                                  'biosample_type': 'cell line',
+                                 'biosample_ontology': gm12878['uuid'],
                                  'organism': human['@id'],
                                  'lane': 3,
                                  'lane_status': 'exempt from standards'}
@@ -418,7 +433,9 @@ def test_bonus_char_reviews_in_primary(testapp,
                                        human,
                                        target,
                                        wrangler,
-                                       document):
+                                       document,
+                                       k562,
+                                       hepg2):
 
     # A not submitted for review primary with no secondary should give status of not pursued
     prim_char1 = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
@@ -426,6 +443,7 @@ def test_bonus_char_reviews_in_primary(testapp,
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'cell line',
+        'biosample_ontology': k562['uuid'],
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'pending dcc review'
@@ -444,6 +462,7 @@ def test_bonus_char_reviews_in_primary(testapp,
         'biosample_term_name': 'HepG2',
         'biosample_term_id': 'EFO:0001187',
         'biosample_type': 'cell line',
+        'biosample_ontology': hepg2['uuid'],
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'pending dcc review'

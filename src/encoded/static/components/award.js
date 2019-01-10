@@ -718,7 +718,7 @@ class BiosampleChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/report/?type=Biosample&award.name=${award.name}&${BiosampleQuery}&biosample_type=`;
+        chart.options.onClick.baseSearchUri = `/report/?type=Biosample&award.name=${award.name}&${BiosampleQuery}&biosample_ontology.classification=`;
         chart.update();
 
         // Redraw the updated legend
@@ -1310,7 +1310,7 @@ const ChartRenderer = (props) => {
             labs: [],
             categoryData: [],
             statuses: [],
-            categoryFacet: 'biosample_type',
+            categoryFacet: 'biosample_ontology.classification',
             title: 'Biosamples',
             uriBase: '/search/?type=Biosample&award.name=',
             linkUri: '/report/?type=Biosample&award.name=',

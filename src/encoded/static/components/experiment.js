@@ -388,8 +388,8 @@ class ExperimentComponent extends React.Component {
             nameQuery += `${nameQuery.length ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
             return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
         });
-        const biosampleTermName = context.biosample_term_name;
-        const biosampleTermQuery = biosampleTermName ? `biosample_term_name=${biosampleTermName}` : '';
+        const biosampleTermName = context.biosample_ontology.term_name;
+        const biosampleTermQuery = biosampleTermName ? `biosample_ontology.term_name=${biosampleTermName}` : '';
         const crumbs = [
             { id: 'Experiments' },
             { id: assayName, query: assayQuery, tip: assayName },
@@ -484,10 +484,10 @@ class ExperimentComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.biosample_type ?
+                                    {context.biosample_ontology ?
                                         <div data-test="biosample-type">
                                             <dt>Biosample Type</dt>
-                                            <dd>{context.biosample_type}</dd>
+                                            <dd>{context.biosample_ontology.classification}</dd>
                                         </div>
                                     : null}
 

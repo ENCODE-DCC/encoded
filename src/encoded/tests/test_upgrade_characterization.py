@@ -133,6 +133,22 @@ def antibody_characterization_13(antibody_characterization):
     return item
 
 
+@pytest.fixture
+def antibody_characterization_14(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'characterization_reviews': [{
+            'biosample_term_name': 'A549',
+            'biosample_term_id': 'EFO:0001086',
+            'lane_status': 'exempt from standards',
+            'biosample_type': 'cell line',
+            'lane': 2,
+            'organism': '/organisms/human/'
+        }]
+    })
+    return item
+
+
 def test_antibody_characterization_upgrade(upgrader, antibody_characterization_1):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
@@ -244,3 +260,15 @@ def test_upgrade_antibody_characterization_13_to_14(upgrader, antibody_character
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_13, current_version='13', target_version='14')
     for characterization_review in value['characterization_reviews']:
         assert characterization_review['biosample_type'] == 'cell line'
+
+
+def test_upgrade_antibody_characterization_14_to_15(root, upgrader,
+                                                    antibody_characterization_14,
+                                                    a549):
+    value = upgrader.upgrade('antibody_characterization',
+                             antibody_characterization_14,
+                             current_version='14',
+                             target_version='15',
+                             context=root.get_by_uuid(a549['uuid']))
+    for characterization_review in value['characterization_reviews']:
+        assert characterization_review['biosample_ontology'] == a549['uuid']

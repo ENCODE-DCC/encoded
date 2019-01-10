@@ -215,13 +215,13 @@ class BiosampleComponent extends React.Component {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {`${result.biosample_term_name} (`}
+                            {`${result.biosample_ontology.term_name} (`}
                             <em>{result.organism.scientific_name}</em>
                             {`${separator}${lifeStage}${age}${ageUnits})`}
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Type: </strong>{result.biosample_type}</div>
+                        <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
                         {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
                         {rnais.length ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
                         {constructs.length ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
@@ -302,7 +302,7 @@ const ExperimentComponent = (props, reactContext) => {
                             :
                                 <span>{result.assay_term_name}</span>
                             }
-                            {result.biosample_term_name ? <span>{` of ${result.biosample_term_name}`}</span> : null}
+                            {result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
                         </a>
                     </div>
                     {result.biosample_summary ?
@@ -378,8 +378,8 @@ const DatasetComponent = (props, reactContext) => {
 
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
-        biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
-            ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
+        biosampleTerm = (result.biosample_ontology.term_name && typeof result.biosample_ontology.term_name === 'object' && result.biosample_ontology.term_name.length === 1) ? result.biosample_ontology.term_name[0] :
+            ((result.biosample_ontology.term_name && typeof result.biosample_ontology.term_name === 'string') ? result.biosample_ontology.term_name : '');
         const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
         if (organisms.length === 1) {
             organism = organisms[0];

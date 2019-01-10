@@ -10,6 +10,7 @@ module.exports = {
     "biosample_term_id": "EFO:0002067",
     "biosample_term_name": "K562",
     "biosample_type": "cell line",
+    "biosample_ontology": require('./biosample_type/k562'),
     "contributing_files": [],
     "dataset_type": "experiment",
     "date_released": "2011-10-29",

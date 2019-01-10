@@ -50,6 +50,7 @@ class AntibodyLot(SharedItem):
         'targets',
         'targets.organism',
         'characterizations',
+        'characterizations.biosample_ontology',
         'characterizations.documents',
         'lot_reviews.targets',
         'lot_reviews.targets.organism',
@@ -252,7 +253,8 @@ def lot_reviews(characterizations, targets, request):
 
     # Done with easy cases, the remaining require reviews.
     # Check the primaries and update their status accordingly
-    lot_reviews = build_lot_reviews(primary_chars,
+    lot_reviews = build_lot_reviews(request,
+                                    primary_chars,
                                     secondary_status,
                                     status_ranking,
                                     review_targets,
@@ -262,7 +264,8 @@ def lot_reviews(characterizations, targets, request):
     return lot_reviews
 
 
-def build_lot_reviews(primary_chars,
+def build_lot_reviews(request,
+                      primary_chars,
                       secondary_status,
                       status_ranking,
                       review_targets,
@@ -303,10 +306,11 @@ def build_lot_reviews(primary_chars,
                 base_review = {}
                 lane_organism = lane_review['organism']
 
+                review_biosample_object = request.embed(lane_review['biosample_ontology'], '@@object')
                 base_review['biosample_term_name'] = 'any cell type or tissue' \
-                    if is_histone else lane_review['biosample_term_name']
+                    if is_histone else review_biosample_object['term_name']
                 base_review['biosample_term_id'] = 'NTR:99999999' \
-                    if is_histone else lane_review['biosample_term_id']
+                    if is_histone else review_biosample_object['term_id']
                 base_review['organisms'] = [lane_organism]
                 base_review['targets'] = sorted(review_targets) \
                     if is_histone else [primary['target']]

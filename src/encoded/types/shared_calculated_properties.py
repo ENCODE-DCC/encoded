@@ -108,37 +108,16 @@ class CalculatedAssaySynonyms:
 
 class CalculatedFileSetBiosample:
     @calculated_property(condition='related_files', schema={
-        "title": "Biosample term name",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def biosample_term_name(self, request, related_files):
-        return request.select_distinct_values(
-            'dataset.biosample_term_name', *related_files)
-
-    @calculated_property(define=True, condition='related_files', schema={
-        "title": "Biosample term id",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def biosample_term_id(self, request, related_files):
-        return request.select_distinct_values(
-            'dataset.biosample_term_id', *related_files)
-
-    @calculated_property(condition='related_files', schema={
         "title": "Biosample type",
         "type": "array",
         "items": {
             "type": 'string',
+            "linkTo": "BiosampleType"
         },
     })
-    def biosample_type(self, request, related_files):
+    def biosample_ontology(self, request, related_files):
         return request.select_distinct_values(
-            'dataset.biosample_type', *related_files)
+            'dataset.biosample_ontology', *related_files)
 
     @calculated_property(condition='related_files', schema={
         "title": "Organism",
@@ -206,37 +185,16 @@ class CalculatedSeriesAssay:
 
 class CalculatedSeriesBiosample:
     @calculated_property(condition='related_datasets', schema={
-        "title": "Biosample term name",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def biosample_term_name(self, request, related_datasets):
-        return request.select_distinct_values(
-            'biosample_term_name', *related_datasets)
-
-    @calculated_property(define=True, condition='related_datasets', schema={
-        "title": "Biosample term id",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def biosample_term_id(self, request, related_datasets):
-        return request.select_distinct_values(
-            'biosample_term_id', *related_datasets)
-
-    @calculated_property(condition='related_datasets', schema={
         "title": "Biosample type",
         "type": "array",
         "items": {
             "type": 'string',
+            "linkTo": "BiosampleType"
         },
     })
-    def biosample_type(self, request, related_datasets):
+    def biosample_ontology(self, request, related_datasets):
         return request.select_distinct_values(
-            'biosample_type', *related_datasets)
+            'biosample_ontology', *related_datasets)
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Organism",
@@ -336,4 +294,3 @@ class CalculatedVisualize:
             return viz
         else:
             return None
-

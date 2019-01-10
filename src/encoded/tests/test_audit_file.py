@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def file_exp(lab, award, testapp, experiment):
+def file_exp(lab, award, testapp, experiment, ileum):
     item = {
         'lab': lab['uuid'],
         'award': award['uuid'],
@@ -11,6 +11,7 @@ def file_exp(lab, award, testapp, experiment):
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
         'biosample_type': 'tissue',
+        'biosample_ontology': ileum['uuid'],
         'possible_controls': [experiment['uuid']],
         'status': 'released',
         'date_released': '2016-01-01',
@@ -30,7 +31,7 @@ def file_rep(replicate, file_exp, testapp):
 
 
 @pytest.fixture
-def file_exp2(lab, award, testapp):
+def file_exp2(lab, award, testapp, ileum):
     item = {
         'lab': lab['uuid'],
         'award': award['uuid'],
@@ -38,6 +39,7 @@ def file_exp2(lab, award, testapp):
         'biosample_term_id': 'NTR:000013',
         'biosample_type': 'tissue',
         'biosample_term_name': 'Some other body part',
+        'biosample_ontology': ileum['uuid'],
         'status': 'released',
         'date_released': '2016-01-01',
         'experiment_classification': ['functional genomics assay']
@@ -302,7 +304,7 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
 
 def test_audit_file_read_length_controlled_by(testapp, file1_2,
                                               file2, file_exp,
-                                              file_exp2):
+                                              file_exp2, ileum):
     testapp.patch_json(file1_2['@id'], {'read_length': 50,
                                         'run_type': 'single-ended'})
     testapp.patch_json(file2['@id'], {'read_length': 150,
@@ -311,8 +313,7 @@ def test_audit_file_read_length_controlled_by(testapp, file1_2,
     testapp.patch_json(file_exp['@id'], {
                        'possible_controls': [file_exp2['@id']]})
     testapp.patch_json(file_exp2['@id'], {'assay_term_name': 'RAMPAGE',
-                                          'biosample_term_id': 'NTR:000012',
-                                          'biosample_term_name': 'Some body part'})
+                                          'biosample_ontology': ileum['uuid']})
     res = testapp.get(file1_2['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -324,7 +325,7 @@ def test_audit_file_read_length_controlled_by(testapp, file1_2,
 
 def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
                                                         file2, file_exp,
-                                                        file_exp2):
+                                                        file_exp2, ileum):
     testapp.patch_json(file1_2['@id'], {'read_length': 50,
                                         'run_type': 'single-ended'})
     testapp.patch_json(file2['@id'], {'read_length': 52,
@@ -333,8 +334,7 @@ def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
     testapp.patch_json(file_exp['@id'], {
                        'possible_controls': [file_exp2['@id']]})
     testapp.patch_json(file_exp2['@id'], {'assay_term_name': 'RAMPAGE',
-                                          'biosample_term_id': 'NTR:000012',
-                                          'biosample_term_name': 'Some body part'})
+                                          'biosample_ontology': ileum['uuid']})
     res = testapp.get(file1_2['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []

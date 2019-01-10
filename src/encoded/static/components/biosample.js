@@ -26,9 +26,9 @@ class BiosampleComponent extends React.Component {
         // Set up the breadcrumbs.
         const crumbs = [
             { id: 'Biosamples' },
-            { id: context.biosample_type, query: `biosample_type=${context.biosample_type}`, tip: context.biosample_type },
+            { id: context.biosample_ontology.classification, query: `biosample_ontology.classification=${context.biosample_ontology.classification}`, tip: context.biosample_ontology.classification },
             { id: <i>{context.organism.scientific_name}</i>, query: `organism.scientific_name=${context.organism.scientific_name}`, tip: context.organism.scientific_name },
-            { id: context.biosample_term_name, query: `biosample_term_name=${context.biosample_term_name}`, tip: context.biosample_term_name },
+            { id: context.biosample_ontology.term_name, query: `biosample_ontology.term_name=${context.biosample_ontology.term_name}`, tip: context.biosample_ontology.term_name },
         ];
 
         const crumbsReleased = (context.status === 'released');
@@ -64,7 +64,7 @@ class BiosampleComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>
-                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
+                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_ontology.classification}</span>
                         </h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
@@ -85,12 +85,12 @@ class BiosampleComponent extends React.Component {
 
                                     <div data-test="term-name">
                                         <dt>Term name</dt>
-                                        <dd>{context.biosample_term_name}</dd>
+                                        <dd>{context.biosample_ontology.term_name}</dd>
                                     </div>
 
                                     <div data-test="term-id">
                                         <dt>Term ID</dt>
-                                        <dd><BiosampleTermId termId={context.biosample_term_id} /></dd>
+                                        <dd><BiosampleTermId termId={context.biosample_ontology.term_id} /></dd>
                                     </div>
 
                                     <div data-test="summary">
@@ -472,7 +472,7 @@ const BiosampleTermId = (props) => {
         return <span>{termId}</span>;
     }
 
-    // biosample_term_id is a required property, but just in case...
+    // biosample_ontology is a required property, but just in case...
     return null;
 };
 

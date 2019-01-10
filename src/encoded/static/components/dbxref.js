@@ -146,8 +146,8 @@ export const dbxrefPrefixMap = {
         pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',
         postprocessor: (context, dbxref, urlPattern) => (
             // Experiments with RBPImage need to replace one urlPattern element with
-            // biosample_term_name.
-            (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_term_name) : urlPattern)
+            // BiosampleType term_name.
+            (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_ontology.term_name) : urlPattern)
         ),
     },
     RefSeq: {

@@ -234,6 +234,32 @@ def annotation_19(award, lab):
     }
 
 
+@pytest.fixture
+def experiment_22(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '22',
+        'biosample_type': 'primary cell',
+        'biosample_term_id': 'CL:0000765',
+        'biosample_term_name': 'erythroblast',
+        'status': 'started'
+    })
+    return properties
+
+
+@pytest.fixture
+def annotation_20(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '19',
+        'biosample_type': 'primary cell',
+        'biosample_term_id': 'CL:0000765',
+        'biosample_term_name': 'erythroblast',
+    }
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -491,3 +517,19 @@ def test_upgrade_annotation_19_to_20(upgrader, annotation_19):
     value = upgrader.upgrade('annotation', annotation_19, current_version='19', target_version='20')
     assert value['schema_version'] == '20'
     assert value['biosample_type'] == 'primary cell'
+
+
+def test_upgrade_experiment_22_to_23(root, upgrader, experiment_22, erythroblast):
+    value = upgrader.upgrade(
+        'experiment', experiment_22, current_version='22', target_version='23',
+        context=root.get_by_uuid(erythroblast['uuid'])
+    )
+    assert value['biosample_ontology'] == erythroblast['uuid']
+
+
+def test_upgrade_annotation_20_to_21(root, upgrader, annotation_20, erythroblast):
+    value = upgrader.upgrade(
+        'annotation', annotation_20, current_version='20', target_version='21',
+        context=root.get_by_uuid(erythroblast['uuid'])
+    )
+    assert value['biosample_ontology'] == erythroblast['uuid']

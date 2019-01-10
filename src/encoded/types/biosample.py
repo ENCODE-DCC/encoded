@@ -7,10 +7,6 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
-from .shared_calculated_properties import (
-    CalculatedBiosampleSlims,
-    CalculatedBiosampleSynonyms
-)
 import re
 
 
@@ -21,7 +17,7 @@ import re
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     })
-class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
+class Biosample(Item):
     item_type = 'biosample'
     schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
@@ -30,6 +26,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'parent_of': ('Biosample', 'part_of'),
     }
     embedded = [
+        'biosample_ontology',
         'donor',
         'donor.organism',
         'donor.characterizations',
@@ -55,6 +52,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'documents.award',
         'documents.submitted_by',
         'originated_from',
+        'originated_from.biosample_ontology',
         'part_of',
         'part_of.documents',
         'part_of.documents.award',
@@ -67,6 +65,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.treatments.documents',
         'parent_of',
         'pooled_from',
+        'pooled_from.biosample_ontology',
         'characterizations.submitted_by',
         'characterizations.award',
         'characterizations.lab',
@@ -79,7 +78,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'applied_modifications.treatments'
     ]
     audit_inherit = [
+        'biosample_ontology',
         'donor',
+        'donor.biosample_ontology',
         'donor.organism',
         'donor.characterizations',
         'donor.donor_documents',
@@ -90,7 +91,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'source',
         'treatments',
         'originated_from',
+        'originated_from.biosample_ontology',
         'pooled_from',
+        'pooled_from.biosample_ontology',
         'organism',
         'references',
         'applied_modifications',
@@ -392,8 +395,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 age_units=None,
                 life_stage=None,
                 sex=None,
-                biosample_term_name=None,
-                biosample_type=None,
+                biosample_ontology=None,
                 starting_amount=None,
                 starting_amount_units=None,
                 depleted_in_term_name=None,
@@ -473,6 +475,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                         modification_dict['tags'].append(tag_dict)
 
                 modifications_list.append((gm_object['method'], modification_dict))
+
+        if biosample_ontology:
+            biosample_type_object = request.embed(biosample_ontology, '@@object')
+            biosample_term_name = biosample_type_object['term_name']
+            biosample_type = biosample_type_object['classification']
+        else:
+            biosample_term_name = None
+            biosample_type = None
 
         biosample_dictionary = generate_summary_dictionary(
             organismObject,
