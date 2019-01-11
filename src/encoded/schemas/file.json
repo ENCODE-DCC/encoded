@@ -28,6 +28,9 @@
         "status": {
             "title": "File status"
         },
+        "biosample_label": {
+            "title": "Biosample"
+        },
         "output_category": {
             "title": "Content category"
         },
@@ -1310,6 +1313,9 @@
         },
         "dataset": {
             "title": "Dataset"
+        },
+        "biosample_label": {
+            "title": "Biosample"
         },
         "assembly": {
             "title": "Mapping assembly"
