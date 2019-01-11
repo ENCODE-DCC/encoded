@@ -13,6 +13,7 @@ import { requestFiles, DownloadableAccession, BrowserSelector } from './objectut
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
+import { GenomeBrowser } from './genome_browser';
 import Status from './status';
 
 
@@ -1841,7 +1842,7 @@ class FileGalleryRendererComponent extends React.Component {
                 />
 
                 {!hideGraph ?
-                    <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
+                    <TabPanel tabs={{ graph: 'Association graph', tables: 'File details', browser: 'Genome Browser' }}>
                         <TabPanelPane key="graph">
                             <FileGraph
                                 dataset={context}
@@ -1863,6 +1864,10 @@ class FileGalleryRendererComponent extends React.Component {
                                 this dataset to get released and unreleased ones. If not logged in, then just get
                                 files from dataset.files */}
                             {fileTable}
+                        </TabPanelPane>
+
+                        <TabPanelPane key="browser">
+                            <div>BROWSER{GenomeBrowser}</div>
                         </TabPanelPane>
                     </TabPanel>
                 :

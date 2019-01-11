@@ -51,6 +51,7 @@ const loaders = [
             PATHS.static,
             path.resolve(__dirname, 'node_modules/dagre-d3'),
             path.resolve(__dirname, 'node_modules/dalliance'),
+            path.resolve(__dirname, 'node_modules/valis-hpgv'),
             path.resolve(__dirname, 'node_modules/superagent'),
         ],
         loader: 'babel',
@@ -128,6 +129,7 @@ module.exports = [
             'dagre-d3',
             'chart.js',
             'dalliance',
+            'valis-hpgv',
             // avoid bundling babel transpiler, which is not used at runtime
             'babel-core/register',
         ],
