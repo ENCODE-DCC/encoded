@@ -310,6 +310,16 @@ class File(Item):
                 return biosample_names.pop()
 
     @calculated_property(schema={
+        "title": "Method",
+        "description": "Assay or Annotation type the file was produced for.",
+        "comment": "Do not submit.  This field is calculated.",
+        "type": "string",
+    })
+    def method(self, request, root, dataset):
+        dataset_json = traverse(root, dataset)['context'].__json__(request)
+        return dataset_json.get('assay_term_name', '') or dataset_json.get('annotation_type', None)
+
+    @calculated_property(schema={
         "title": "Analysis Step Version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",

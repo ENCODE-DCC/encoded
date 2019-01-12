@@ -61,7 +61,7 @@ def mapped_run_type_on_fastq(award, experiment, lab, platform1):
 
 
 @pytest.fixture
-def mapped_run_type_on_bam(award, experiment, lab):
+def mapped_run_type_on_bam(award, experiment, lab, replicate):
     return {
         'award': award['@id'],
         'dataset': experiment['@id'],
@@ -73,6 +73,25 @@ def mapped_run_type_on_bam(award, experiment, lab):
         'md5sum': 'abcdef01234567890123456789abcdef',
         'output_type': 'alignments',
         'status': 'in progress',
+    }
+
+
+@pytest.fixture
+def annotation_file(award, annotation_dataset, lab):
+    return {
+        'award': award['@id'],
+        'dataset': annotation_dataset['@id'],
+        'lab': lab['@id'],
+        'file_format': 'bed',
+        'assembly': 'GRCh38',
+        'output_type': 'candidate regulatory elements',
+        "file_size": 1544154147,
+        "file_format": "bed",
+        "file_format_type": "enhancer predictions",
+        "md5sum": "a5f849c78025c80dca58771492c97318",
+        "output_type": "predicted heart enhancers",
+        "status": "released",
+        "submitted_file_name": "/Users/anurag/Projects/ENCODE/Round2/Ensembl/Ensembl_Regulatory_Build.whole_genome.heart.bed.gz",
     }
 
 
@@ -195,3 +214,17 @@ def test_biosample_no_replicate(testapp, fastq_paired, mapped_run_type_on_bam):
     item = testapp.get(res.location).json
     assert len(item.get('biosamples')) == 1
     assert item['biosample_label'] == 'heart'
+
+
+def test_assay_method(testapp, mapped_run_type_on_bam):
+    res = testapp.post_json('/file', mapped_run_type_on_bam, status=201)
+    item = testapp.get(res.location).json
+    assert item['method'] == 'RNA-seq'
+
+
+def test_annotation_method(testapp, annotation_file):
+    res = testapp.post_json('/file', annotation_file, status=201)
+    item = testapp.get(res.location).json
+    assert item['method'] == "candidate regulatory elements"
+
+

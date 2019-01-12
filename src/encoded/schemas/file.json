@@ -31,6 +31,9 @@
         "biosample_label": {
             "title": "Biosample"
         },
+        "method": {
+            "title": "Method"
+        },
         "output_category": {
             "title": "Content category"
         },

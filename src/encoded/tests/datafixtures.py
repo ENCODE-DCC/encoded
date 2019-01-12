@@ -234,7 +234,7 @@ def biosample(testapp, source, lab, award, organism):
 @pytest.fixture
 def library(testapp, lab, award, biosample):
     item = {
-        'nucleic_acid_term_name': 'DNA',
+        'nucleic_acid_term_name': 'polyadenylated mRNA',
         'lab': lab['@id'],
         'award': award['@id'],
         'biosample': biosample['@id'],
@@ -535,7 +535,8 @@ def publication_data(testapp, lab, award):
 def annotation_dataset(testapp, lab, award):
     item = {
         'award': award['@id'],
-        'lab': lab['@id']
+        'lab': lab['@id'],
+        'annotation_type': "candidate regulatory elements",
     }
     return testapp.post_json('/annotation', item).json['@graph'][0]
 
