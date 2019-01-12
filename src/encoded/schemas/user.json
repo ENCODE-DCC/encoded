@@ -94,7 +94,8 @@
         }
     },
     "boost_values": {
-        "title": 1.0
+        "title": 1.0,
+        "viewing_groups": 1.0
     },
     "changelog": "/profiles/changelogs/user.md"
 }

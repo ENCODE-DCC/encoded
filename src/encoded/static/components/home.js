@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { FetchedData, FetchedItems, Param } from './fetched';
 import * as globals from './globals';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
@@ -498,6 +499,41 @@ class ScreenSearch extends React.Component {
 }
 
 
+const CitationGuide = () => (
+    <div className="citation-guide">
+        <div className="citation-guide__content">
+            <div className="citation-guide__title">
+                <h2>How to cite ENCODE</h2>
+            </div>
+            <div className="citation-guide__text">
+                <p>We request that researchers who use ENCODE datasets (published or unpublished) in publications and talks cite the ENCODE Consortium in <em>all</em> of the following ways:</p>
+                <ol>
+                    <li>Cite the Consortium&rsquo;s most recent integrative publication (PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22955616">22955616</a>; PMCID: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3439153">PMC3439153</a>);</li>
+                    <li>Reference the ENCODE Data Coordination Center (DCC) or GEO accession numbers of the datasets (DCC accession: <a href="/datasets/ENCSR037HRJ/">ENCSR037HRJ</a>; GEO accession: <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE30567">GSE30567</a>)</li>
+                    <li>Cite the most recent publications regarding the ENCODE portal (PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/29126249">29126249</a>; PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5753278/">PMC5753278</a>)</li>
+                    <li>Acknowledge the ENCODE Consortium and the ENCODE production laboratory(s) generating the particular dataset(s)</li>
+                </ol>
+            </div>
+            <div className="citation-guide__controls">
+                <a href="/about/data-use-policy/#data-use-external" className="btn btn-info">Details</a>
+                <Modal actuator={<button className="btn btn-info">Example</button>}>
+                    <ModalHeader title="Example citation" closeModal />
+                    <ModalBody>
+                        <h3>References</h3>
+                        <p>
+                            We acknowledge the work of the ENCODE Consortium, the A Lab, and the B Lab.
+                            Dunham et al. <i>An integrated encyclopedia of DNA elements in the human genome</i>. PubMed PMID: 22955616.
+                            Davis et al. <i>The Encyclopedia of DNA elements (ENCODE): data portal update</i>. PubMed PMID: 29126249.
+                            Datasets &mdash; DCC accession ENCSR037HRJ; GEO accession GSE30567.
+                        </p>
+                    </ModalBody>
+                </Modal>
+            </div>
+        </div>
+    </div>
+);
+
+
 // Main page component to render the home page
 export default class Home extends React.Component {
     constructor(props) {
@@ -558,6 +594,7 @@ export default class Home extends React.Component {
                     <div className="col-xs-12">
                         <Panel>
                             <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
+                            <CitationGuide />
                             <div className="organism-tabs">
                                 <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
                             </div>

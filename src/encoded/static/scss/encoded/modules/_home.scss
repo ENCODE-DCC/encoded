@@ -489,3 +489,38 @@
     line-height: 1;
     vertical-align: baseline;
 }
+
+
+.citation-guide {
+    padding: 10px;
+    background-color: #d0d0d0;
+
+    @at-root #{&}__content {
+        display: flex;
+    }
+
+    @at-root #{&}__title {
+        flex: 0 0 150px;
+    }
+
+    h2 {
+        margin: 0;
+        color: #606060;
+        font-size: 1.3rem;
+    }
+
+    @at-root #{&}__text {
+        flex: 0 1 auto;
+        padding: 0 20px 0 20px;
+    }
+
+    @at-root #{&}__controls {
+        flex: 0 0 150px;
+
+        button, a {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+        }
+    }
+}
