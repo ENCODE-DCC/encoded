@@ -493,14 +493,17 @@
 
 .citation-guide {
     padding: 10px;
-    background-color: #d0d0d0;
+    background-color: #ffc;
+    border-top: 1px solid #a0a0a0; 
 
-    @at-root #{&}__content {
-        display: flex;
-    }
+    @media screen and (min-width: $screen-sm-min) {
+        @at-root #{&}__content {
+            display: flex;
+        }
 
-    @at-root #{&}__title {
-        flex: 0 0 150px;
+        @at-root #{&}__title {
+            flex: 0 0 150px;
+        }
     }
 
     h2 {
@@ -510,17 +513,31 @@
     }
 
     @at-root #{&}__text {
-        flex: 0 1 auto;
-        padding: 0 20px 0 20px;
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
+            padding: 0 20px 0 20px;
+        }
+
+        li {
+            margin: 5px;
+        }
     }
 
     @at-root #{&}__controls {
-        flex: 0 0 150px;
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 0 150px;
+        }
 
         button, a {
             display: block;
             width: 100%;
-            margin: 5px 0;
+            margin-bottom: 5px;
+        }
+    }
+
+    @at-root #{&}__example {
+        h3 {
+            margin-top: 0;
         }
     }
 }

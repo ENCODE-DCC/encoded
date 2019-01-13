@@ -499,6 +499,9 @@ class ScreenSearch extends React.Component {
 }
 
 
+/**
+ * Render the citation guide section of the home page.
+ */
 const CitationGuide = () => (
     <div className="citation-guide">
         <div className="citation-guide__content">
@@ -509,14 +512,14 @@ const CitationGuide = () => (
                 <p>We request that researchers who use ENCODE datasets (published or unpublished) in publications and talks cite the ENCODE Consortium in <em>all</em> of the following ways:</p>
                 <ol>
                     <li>Cite the Consortium&rsquo;s most recent integrative publication (PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22955616">22955616</a>; PMCID: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3439153">PMC3439153</a>);</li>
-                    <li>Reference the ENCODE Data Coordination Center (DCC) or GEO accession numbers of the datasets (DCC accession: <a href="/datasets/ENCSR037HRJ/">ENCSR037HRJ</a>; GEO accession: <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE30567">GSE30567</a>)</li>
-                    <li>Cite the most recent publications regarding the ENCODE portal (PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/29126249">29126249</a>; PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5753278/">PMC5753278</a>)</li>
-                    <li>Acknowledge the ENCODE Consortium and the ENCODE production laboratory(s) generating the particular dataset(s)</li>
+                    <li>Reference the ENCODE Data Coordination Center (DCC) or GEO accession numbers of the datasets (DCC accession: <a href="/datasets/ENCSR037HRJ/">ENCSR037HRJ</a>; GEO accession: <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE30567">GSE30567</a>);</li>
+                    <li>Cite the most recent publications regarding the ENCODE portal (PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/29126249">29126249</a>; PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5753278/">PMC5753278</a>); and&hellip;</li>
+                    <li>Acknowledge the ENCODE Consortium and the ENCODE production laboratory(s) generating the particular dataset(s).</li>
                 </ol>
             </div>
             <div className="citation-guide__controls">
                 <a href="/about/data-use-policy/#data-use-external" className="btn btn-info">Details</a>
-                <Modal actuator={<button className="btn btn-info">Example</button>}>
+                <Modal addClasses="citation-guide__example" actuator={<button className="btn btn-info">Example</button>}>
                     <ModalHeader title="Example citation" closeModal />
                     <ModalBody>
                         <h3>References</h3>
@@ -527,6 +530,7 @@ const CitationGuide = () => (
                             Datasets &mdash; DCC accession ENCSR037HRJ; GEO accession GSE30567.
                         </p>
                     </ModalBody>
+                    <ModalFooter closeModal />
                 </Modal>
             </div>
         </div>
