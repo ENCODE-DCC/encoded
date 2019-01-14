@@ -518,7 +518,6 @@ const CitationGuide = () => (
                 </ol>
             </div>
             <div className="citation-guide__controls">
-                <a href="/about/data-use-policy/#data-use-external" className="btn btn-info">Details</a>
                 <Modal addClasses="citation-guide__example" actuator={<button className="btn btn-info">Example</button>}>
                     <ModalHeader title="Example citation" closeModal />
                     <ModalBody>
@@ -532,6 +531,7 @@ const CitationGuide = () => (
                     </ModalBody>
                     <ModalFooter closeModal />
                 </Modal>
+                <a href="/about/data-use-policy/#data-use-external">Details</a>
             </div>
         </div>
     </div>
