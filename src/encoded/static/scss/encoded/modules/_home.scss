@@ -44,7 +44,6 @@
         text-align: center;
         font-weight: normal;
         font-size: 1.6rem;
-        border-bottom: 1px solid #e0e0e0;
 
         @media screen and (min-width: $screen-md-min) {
             padding: 30px 10px;
@@ -492,48 +491,49 @@
 
 
 .citation-guide {
-    padding: 10px;
-    background-color: #ffc;
-    border-top: 1px solid #a0a0a0; 
+    position: relative;
 
-    @media screen and (min-width: $screen-sm-min) {
-        @at-root #{&}__content {
-            display: flex;
+    // Trigger button for citation guide
+    @at-root #{&}__trigger {
+        button {
+            display: block;
+            margin: 0 auto;
+            color: #606060;
+            background-color: #e0e0e0;
+            border: none;
+            font-weight: bold;
         }
 
-        @at-root #{&}__title {
-            flex: 0 0 150px;
-        }
+        z-index: 1; // Avoid cutting off focus outline
     }
 
-    h2 {
-        margin: 0;
-        color: #606060;
-        font-size: 1.3rem;
+    // Info area that appears when you click the trigger.
+    @at-root #{&}__content {
+        height: 5px; // Avoid cutton off focus outline
+        border-top: 1px solid #e0e0e0;
+
+        @at-root #{&}--disclosed {
+            padding: 20px;
+            background-color: #ffc;
+        }
     }
 
     @at-root #{&}__text {
         @media screen and (min-width: $screen-sm-min) {
-            flex: 0 1 auto;
-            padding: 0 20px 0 20px;
+            display: flex;
+
+            @at-root #{&}--note {
+                flex: 0 1 25%;
+            }
+
+            @at-root #{&}--steps {
+                flex: 0 1 75%;
+            }
         }
 
         li {
             margin: 5px;
-        }
-    }
-
-    @at-root #{&}__controls {
-        text-align: center;
-
-        @media screen and (min-width: $screen-sm-min) {
-            flex: 0 0 150px;
-        }
-
-        button {
-            display: block;
-            width: 100%;
-            margin-bottom: 5px;
+            font-weight: bold;
         }
     }
 

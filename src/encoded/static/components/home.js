@@ -502,40 +502,63 @@ class ScreenSearch extends React.Component {
 /**
  * Render the citation guide section of the home page.
  */
-const CitationGuide = () => (
-    <div className="citation-guide">
-        <div className="citation-guide__content">
-            <div className="citation-guide__title">
-                <h2>How to cite ENCODE</h2>
+class CitationGuide extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            /** True if citation panel is disclosed */
+            disclosed: false,
+        };
+        this.handleDiscloseClick = this.handleDiscloseClick.bind(this);
+    }
+
+    /**
+     * Called when the user clicks the citation disclosure button.
+     */
+    handleDiscloseClick() {
+        this.setState(prevState => ({ disclosed: !prevState.disclosed }));
+    }
+
+    render() {
+        const triggerArrow = <i className={`icon icon-chevron-${this.state.disclosed ? 'up' : 'down'}`} />;
+        return (
+            <div className="citation-guide">
+                <div className="citation-guide__trigger">
+                    <button onClick={this.handleDiscloseClick}>How to cite ENCODE {triggerArrow}</button>
+                </div>
+                {this.state.disclosed ?
+                    <div className="citation-guide__content--disclosed">
+                        <div className="citation-guide__text">
+                            <div className="citation-guide__text--note">
+                                <p>We request that researchers who use ENCODE datasets (published or unpublished) in publications and talks cite the ENCODE Consortium in <em>all</em> of the following ways:</p>
+                            </div>
+                            <div className="citation-guide__text--steps">
+                                <ol>
+                                    <li>Cite the Consortium&rsquo;s most recent integrative publication (PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22955616">22955616</a>; PMCID: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3439153">PMC3439153</a>);</li>
+                                    <li>Reference the ENCODE Data Coordination Center (DCC) or GEO accession numbers of the datasets (DCC accession: <a href="/datasets/ENCSR037HRJ/">ENCSR037HRJ</a>; GEO accession: <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE30567">GSE30567</a>);</li>
+                                    <li>Cite the most recent publications regarding the ENCODE portal (PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/29126249">29126249</a>; PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5753278/">PMC5753278</a>); and&hellip;</li>
+                                    <li>Acknowledge the ENCODE Consortium and the ENCODE production laboratory(s) generating the particular dataset(s).</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div className="citation-guide__example">
+                            <h3>Example Reference</h3>
+                            <p>
+                                We acknowledge the work of the ENCODE Consortium, the A Lab, and the B Lab.
+                                Dunham et al. <i>An integrated encyclopedia of DNA elements in the human genome</i>. PubMed PMID: 22955616.
+                                Davis et al. <i>The Encyclopedia of DNA elements (ENCODE): data portal update</i>. PubMed PMID: 29126249.
+                                Datasets &mdash; DCC accession ENCSR037HRJ; GEO accession GSE30567.
+                            </p>
+                            <a href="/about/data-use-policy/#data-use-external">Details&hellip;</a>
+                        </div>
+                    </div>
+                :
+                    <div className="citation-guide__content" />
+                }
             </div>
-            <div className="citation-guide__text">
-                <p>We request that researchers who use ENCODE datasets (published or unpublished) in publications and talks cite the ENCODE Consortium in <em>all</em> of the following ways:</p>
-                <ol>
-                    <li>Cite the Consortium&rsquo;s most recent integrative publication (PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22955616">22955616</a>; PMCID: <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3439153">PMC3439153</a>);</li>
-                    <li>Reference the ENCODE Data Coordination Center (DCC) or GEO accession numbers of the datasets (DCC accession: <a href="/datasets/ENCSR037HRJ/">ENCSR037HRJ</a>; GEO accession: <a href="http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE30567">GSE30567</a>);</li>
-                    <li>Cite the most recent publications regarding the ENCODE portal (PMID: <a href="https://www.ncbi.nlm.nih.gov/pubmed/29126249">29126249</a>; PMCID: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5753278/">PMC5753278</a>); and&hellip;</li>
-                    <li>Acknowledge the ENCODE Consortium and the ENCODE production laboratory(s) generating the particular dataset(s).</li>
-                </ol>
-            </div>
-            <div className="citation-guide__controls">
-                <Modal addClasses="citation-guide__example" actuator={<button className="btn btn-info">Example</button>}>
-                    <ModalHeader title="Example citation" closeModal />
-                    <ModalBody>
-                        <h3>References</h3>
-                        <p>
-                            We acknowledge the work of the ENCODE Consortium, the A Lab, and the B Lab.
-                            Dunham et al. <i>An integrated encyclopedia of DNA elements in the human genome</i>. PubMed PMID: 22955616.
-                            Davis et al. <i>The Encyclopedia of DNA elements (ENCODE): data portal update</i>. PubMed PMID: 29126249.
-                            Datasets &mdash; DCC accession ENCSR037HRJ; GEO accession GSE30567.
-                        </p>
-                    </ModalBody>
-                    <ModalFooter closeModal />
-                </Modal>
-                <a href="/about/data-use-policy/#data-use-external">Details</a>
-            </div>
-        </div>
-    </div>
-);
+        );
+    }
+}
 
 
 // Main page component to render the home page
@@ -598,7 +621,6 @@ export default class Home extends React.Component {
                     <div className="col-xs-12">
                         <Panel>
                             <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
-                            <CitationGuide />
                             <div className="organism-tabs">
                                 <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
                             </div>
@@ -707,7 +729,7 @@ class AssayClicking extends React.Component {
                 <div className="overall-classic">
 
                     <h1>ENCODE: Encyclopedia of DNA Elements</h1>
-
+                    <CitationGuide />
                     <div className="site-banner">
                         <div className="site-banner-img">
                             <img src="static/img/classic-image.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />
