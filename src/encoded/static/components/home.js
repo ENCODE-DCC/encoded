@@ -524,10 +524,10 @@ class CitationGuide extends React.Component {
         return (
             <div className="citation-guide">
                 <div className="citation-guide__trigger">
-                    <button onClick={this.handleDiscloseClick}>How to cite ENCODE {triggerArrow}</button>
+                    <button onClick={this.handleDiscloseClick} id="citation-guide-trigger" aria-controls="citation-guide" aria-expanded={this.state.disclosed}>How to cite ENCODE {triggerArrow}</button>
                 </div>
                 {this.state.disclosed ?
-                    <div className="citation-guide__content--disclosed">
+                    <div className="citation-guide__content--disclosed" id="citation-guide" aria-labelledby="citation-guide-trigger">
                         <div className="citation-guide__text">
                             <div className="citation-guide__text--note">
                                 <p>We request that researchers who use ENCODE datasets (published or unpublished) in publications and talks cite the ENCODE Consortium in <em>all</em> of the following ways:</p>
