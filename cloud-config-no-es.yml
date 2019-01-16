@@ -85,8 +85,6 @@ packages:
 - lzop
 - nodejs
 - ntp
-- oracle-java8-installer
-- oracle-java8-set-default
 - postgresql-9.3
 - pv
 - python2.7-dev
@@ -108,6 +106,16 @@ output:
 runcmd:
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
+# Manually install java
+- sudo -u ubuntu aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/.aws ~ubuntu/.aws
+- sudo mkdir -p /usr/lib/jvm
+- sudo chmod 777 /usr/lib/jvm
+- sudo tar -xzvf /home/ubuntu/.aws/jdk-8u211-linux-x64.tar.gz --directory /usr/lib/jvm/
+- sudo -u ubuntu rm -r /home/ubuntu/.aws
+- sudo chmod 755 /usr/lib/jvm
+- sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_211/bin/java 100
+# Manually install java
+- sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_201/bin/java 100
 - cp /etc/redis/redis.conf /etc/redis/redis.conf.default
 - sed -i -e 's/port 6379/port %(REDIS_PORT)s/' /etc/redis/redis.conf
 - sed -i -e 's/bind 127\.0\.0\.1/bind 0\.0\.0\.0/' /etc/redis/redis.conf
