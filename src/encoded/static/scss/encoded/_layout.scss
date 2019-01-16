@@ -53,7 +53,7 @@
 }
 
 .footer-links {
-    margin: 15px 0;
+    margin: 5px 0;
     text-align: center;
 
     @media (min-width: $screen-sm-min) {
@@ -81,7 +81,6 @@
 }
 
 .footer-logos {
-    margin: 10px 0;
     text-align: center;
 
     @media (min-width: $screen-sm-min) {
@@ -96,10 +95,6 @@
 
 .copy-notice {
     text-align: center;
-
-    @media (min-width: $screen-sm-min) {
-        text-align: right;
-    }
 }
 
 

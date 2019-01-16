@@ -20,19 +20,21 @@
 @media (min-width: $screen-sm-min) {
     .footer-row { margin-left: 0; margin-right: 0; }
 
-    #page-footer {
-        height: $footerHeight;
-    }
-
-    .page-footer {
-        height: $footerHeight - $appVersionHeight;
-    }
-
     .app-version {
         text-align: left;
     }
 
     @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
+
+    .footer-sections {
+        display: flex;
+        padding: 15px 10px;
+        flex-direction: row-reverse;
+    }
+
+    .footer-links-section {
+        flex: 0 1 60%;
+    }
 
     .footer-links {
         list-style: none outside none;
@@ -55,9 +57,12 @@
         }
         a:active { background-color: transparent; }
     }
+
+    .footer-logos-section {
+        flex: 0 1 40%;
+    }
     
     .footer-logos {
-        margin-top: 16px;
         li { 
             display: inline-block;
             padding-left: 10px;
