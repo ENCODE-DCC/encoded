@@ -1408,7 +1408,7 @@
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
-        "gene alignments": "alignments",
+        "gene alignments": "alignment",
         "redacted alignments": "alignment",
         "redacted unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
