@@ -530,12 +530,20 @@
 
             @at-root #{&}--steps {
                 flex: 0 1 75%;
-            }
-        }
+                
+                li {
+                    margin: 5px;
+                    font-weight: bold;
 
-        li {
-            margin: 5px;
-            font-weight: bold;
+                    &:first-child {
+                        margin-top: 0;
+                    }
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
         }
     }
 
