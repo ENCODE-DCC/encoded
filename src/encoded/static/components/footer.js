@@ -26,7 +26,7 @@ const Footer = ({ version }, reactContext) => {
                         <div className="footer-sections">
                             <div className="footer-links-section">
                                 <ul className="footer-links">
-                                    <li><a href="/about/data-use-policy/#data-use-external">Citing ENCODE</a></li>
+                                    <li><a href="/help/citing-encode">Citing ENCODE</a></li>
                                     <li><a href="https://www.stanford.edu/site/privacy/">Privacy</a></li>
                                     <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
                                     <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
