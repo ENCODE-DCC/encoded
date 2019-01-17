@@ -291,6 +291,19 @@
                     }
                 }
             ]
+        },
+        "introduced_gene": {
+            "comment": "The property introduced_gene is not allowed for modifications of method RNAi or mutagen_treatment.",
+            "properties": {
+                "method": {
+                    "not": {
+                        "enum": [
+                            "RNAi",
+                            "mutagen treatment"
+                        ]
+                    }
+                }
+            }
         }
     },
     "properties": {
