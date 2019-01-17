@@ -29,7 +29,6 @@ const Footer = ({ version }, reactContext) => {
                                     <li><a href="/help/citing-encode">Citing ENCODE</a></li>
                                     <li><a href="https://www.stanford.edu/site/privacy/">Privacy</a></li>
                                     <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
-                                    <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
                                 </ul>
                                 <ul className="footer-links">
                                     <li id="user-actions-footer">{userActionRender}</li>
@@ -43,7 +42,7 @@ const Footer = ({ version }, reactContext) => {
                                 </ul>
                             </div>
                         </div>
-                        <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University.</p>
+                        <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University</p>
                     </div>
                 </div>
             </div>

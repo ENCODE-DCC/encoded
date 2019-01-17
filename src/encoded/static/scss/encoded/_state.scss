@@ -16,7 +16,6 @@
 }
 
 // make footer look good on larger screens
-// and activate sticky footer
 @media (min-width: $screen-sm-min) {
     .footer-row { margin-left: 0; margin-right: 0; }
 
@@ -24,11 +23,9 @@
         text-align: left;
     }
 
-    @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
-
     .footer-sections {
         display: flex;
-        padding: 15px 10px;
+        padding: 15px 10px 0;
         flex-direction: row-reverse;
     }
 
