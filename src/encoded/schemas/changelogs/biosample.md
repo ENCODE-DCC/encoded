@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+###Schema version 23
+
+* Link to BiosampleType object.
+
 ### Schema version 22
 
 * Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums.
