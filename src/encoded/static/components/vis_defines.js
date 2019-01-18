@@ -107,7 +107,7 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
         delete parsedUrl.query;
         const fileQueries = files.map((file) => {
             parsedUrl.pathname = file.href;
-            const name = file.biological_replicates && file.biological_replicates.length > 0 ? `&name=Replicate ${file.biological_replicates.join(',')}` : '';
+            const name = file.biological_replicates && file.biological_replicates.length > 0 ? `&name=${dataset.accession}/${file.title}, Replicate ${file.biological_replicates.join(',')}` : '';
             return globals.encodedURIComponent(`{hicUrl=${url.format(parsedUrl)}${name}}`, { encodeEquals: true });
         });
         href = `http://aidenlab.org/juicebox/?juicebox=${fileQueries.join(',')}`;
