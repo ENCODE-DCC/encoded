@@ -6,7 +6,7 @@ import * as globals from './globals';
 /**
  * Maximum number of hic files allowed to be selected at once.
  */
-const MAX_HIC_FILES_SELECTED = 2;
+const MAX_HIC_FILES_SELECTED = 8;
 
 
 /**
@@ -107,7 +107,8 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
         delete parsedUrl.query;
         const fileQueries = files.map((file) => {
             parsedUrl.pathname = file.href;
-            return globals.encodedURIComponent(`{hicUrl=${url.format(parsedUrl)}}`, { encodeEquals: true });
+            const name = file.biological_replicates && file.biological_replicates.length > 0 ? `Replicate ${file.biological_replicates.join(',')}` : '';
+            return globals.encodedURIComponent(`{hicUrl=${url.format(parsedUrl)}${name}}`, { encodeEquals: true });
         });
         href = `http://aidenlab.org/juicebox/?juicebox=${fileQueries.join(',')}`;
         break;
