@@ -163,7 +163,7 @@ SUPPORTED_MASK_TOKENS = [
     ]
 
 # Simple tokens are a straight lookup, no questions asked
-SIMPLE_DATASET_TOKENS = ["{biosample_term_name}", "{accession}", "{assay_title}",
+SIMPLE_DATASET_TOKENS = ["{accession}", "{assay_title}",
                          "{assay_term_name}", "{annotation_type}", "{@id}", "{@type}"]
 
 # static group defs are keyed by group title (or special token) and consist of
@@ -240,8 +240,10 @@ COMPOSITE_SETTINGS = ["longLabel", "shortLabel", "visibility", "pennantIcon", "a
 TRACK_SETTINGS = ["bigDataUrl", "longLabel", "shortLabel", "type", "color", "altColor"]
 
 # This dataset terms (among others) are needed in vis_dataset formatting
-ENCODED_DATASET_TERMS = ['biosample_term_name', 'biosample_term_id', 'biosample_summary',
-                    'biosample_type', 'assay_term_id', 'assay_term_name']
+ENCODED_DATASET_TERMS = ['biosample_ontology.term_name',
+                         'biosample_ontology.term_id', 'biosample_summary',
+                         'biosample_ontology.classification', 'assay_term_id',
+                         'assay_term_name']
 
 # This dataset terms (among others) are needed in vis_dataset formatting
 ENCODED_DATASET_EMBEDDED_TERMS = {
@@ -451,8 +453,9 @@ class VisDefines(object):
     # Loads vis_def static files and other defines for vis formatting
     # This class is also a swiss army knife of vis formatting conversions
 
-    def __init__(self, dataset=None):
+    def __init__(self, request, dataset=None):
         # Make these global so that the same files are not continually reloaded
+        self.request = request
         global VIS_DEFS_BY_TYPE
         global VIS_DEFS_DEFAULT
         self.vis_defs = VIS_DEFS_BY_TYPE
@@ -601,31 +604,25 @@ class VisDefines(object):
         color = None
         altColor = None
         coloring = {}
-        biosample_term = self.dataset.get('biosample_type')
-        if biosample_term is not None:
-            if isinstance(biosample_term, list):
-                if len(biosample_term) == 1:
-                    biosample_term = biosample_term[0]
-                else:
-                    log.debug("%s has biosample_type %s that is unexpectedly a list" %
-                            (self.dataset['accession'], str(biosample_term)))
-                    biosample_term = "unknown"  # really only seen in test data!
-            coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
-        if not coloring:
-            biosample_term = self.dataset.get('biosample_term_name')
-            if biosample_term is not None:
-                if isinstance(biosample_term, list):
-                    if len(biosample_term) == 1:
-                        biosample_term = biosample_term[0]
-                    else:
-                        log.debug("%s has biosample_term_name %s that is unexpectedly a list" %
-                                (self.dataset['accession'], str(biosample_term)))
-                        biosample_term = "unknown"  # really only seen in test data!
-                coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
-        if not coloring:
-            organ_slims = self.dataset.get('organ_slims', [])
-            if len(organ_slims) > 1:
-                coloring = BIOSAMPLE_COLOR.get(organ_slims[1])
+        ontology = self.dataset.get('biosample_ontology')
+        term = "unknown"  # really only seen in test data!
+        if ontology is not None:
+            if not isinstance(ontology, list):
+                ontology = [ontology]
+            if len(ontology) == 1:
+                assert isinstance(ontology[0], dict)
+                term = ontology[0]['term_name']
+            else:
+                log.debug("%s has biosample_ontology %s that is unexpectedly a list" %
+                          (self.dataset['accession'],
+                           str([bo['@id'] for bo in ontology])))
+            coloring = BIOSAMPLE_COLOR.get(term, {})
+            if not coloring:
+                for organ_slim in (os for bo in ontology
+                                   for os in bo['organ_slims']):
+                    coloring = BIOSAMPLE_COLOR.get(organ_slim, {})
+                    if coloring:
+                        break
         if coloring:
             assert("color" in coloring)
             if "altColor" not in coloring:
@@ -750,8 +747,42 @@ class VisDefines(object):
             if token.endswith("|multiple}"):
                 return "multiple biosamples"
             return "Unknown Biosample"
+        elif token == "{biosample_term_name}":
+            biosample_ontology = dataset.get('biosample_ontology')
+            if biosample_ontology is None:
+                return "Unknown Biosample"
+            if isinstance(biosample_ontology, dict):
+                return biosample_ontology['term_name']
+            if isinstance(biosample_ontology, list) and len(biosample_ontology) > 3:
+                return "Collection of %d Biosamples" % (len(biosample_ontology))
+            # The following got complicated because general Dataset objects
+            # cannot have biosample_ontology embedded properly. As a base class,
+            # some of the children, PublicationData, Project and 8 Series
+            # objects, have biosample_ontology embedded as array of objects,
+            # while experiment and annotation have it embedded as one single
+            # object. This becomes a problem when File object linkTo Dataset in
+            # general rather than one specific type. Current embedding system
+            # don't know how to map a property with type = ["array", "string"]
+            # in elasticsearch. Therefore, it is possible the
+            # "biosample_ontology" we got here is @id which should be embedded
+            # with the following code.
+            if not isinstance(biosample_ontology, list):
+                assert isinstance(biosample_ontology, str)
+                biosample_ontology = [biosample_ontology]
+            term_names = [
+                self.request.embed(type_obj_id, '@@object')['term_name']
+                for type_obj_id in biosample_ontology
+            ]
+            if len(term_names) == 1:
+                return term_names[0]
+            else:
+                return term_names
+
         elif token == "{biosample_term_name|multiple}":
-            return dataset.get("biosample_term_name", "multiple biosamples")
+            biosample_ontology = dataset.get('biosample_ontology')
+            if biosample_ontology is None:
+                return "multiple biosamples"
+            return biosample_ontology.get('term_name')
         # TODO: rna_species
         # elif token == "{rna_species}":
         #     if replicates.library.nucleic_acid = polyadenylated mRNA
@@ -985,7 +1016,8 @@ class VisDefines(object):
 class IhecDefines(object):
     # Defines and formatting code for IHEC JSON
 
-    def __init__(self):
+    def __init__(self, request):
+        self.request = request
         self.samples = {}
         self.vis_defines = None
 
@@ -1139,7 +1171,7 @@ class IhecDefines(object):
         # returns an ihec sample appropriate for the dataset
         if vis_defines is None:
             if self.vis_defines is None:
-                self.vis_defines = VisDefines()
+                self.vis_defines = VisDefines(self.request)
             vis_defines = self.vis_defines
 
         sample = {}
@@ -1156,12 +1188,12 @@ class IhecDefines(object):
         sample['molecule'] = molecule
         sample['lineage'] = self.lineage(biosample, 'unknown')
         sample['differentiation_stage'] = self.differentiation(biosample, 'unknown')
-        biosample_term_id = biosample.get('biosample_term_id')
-        if biosample_term_id:
-            sample["sample_ontology_uri"] = biosample_term_id
+        term_id = biosample.get('biosample_ontology', {}).get('term_id')
+        if term_id:
+            sample["sample_ontology_uri"] = term_id
 
-        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_type')) # ["Cell Line","Primary Cell", ...
-        sample["line"] = biosample.get('biosample_term_name', 'none')
+        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification')) # ["Cell Line","Primary Cell", ...
+        sample["line"] = biosample.get('biosample_ontology', {}).get('term_name', 'none')
         sample["medium"] = "unknown"                                                    # We don't have
         sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
         if sample["disease"] == "Healthy":
