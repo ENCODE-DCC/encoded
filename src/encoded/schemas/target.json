@@ -157,6 +157,7 @@
                             "Dimethylation",
                             "Trimethylation",
                             "Acetylation",
+                            "Ubiquitination",
                             "Phosphorylation"
                         ]
                     },
