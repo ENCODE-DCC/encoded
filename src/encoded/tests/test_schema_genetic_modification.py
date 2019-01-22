@@ -313,7 +313,7 @@ def test_rnai_properties(testapp, rnai, target, source, document):
     assert res.status_code == 201
     rnai = res.json['@graph'][0]
     res = testapp.patch_json(rnai['@id'], {'reagents': 
-                                           [{'source': source['@id'], 'identifier': 'abc'}]})
+                                           [{'source': source['@id'], 'identifier': '12345'}]})
     assert res.status_code == 200
 
 
@@ -342,7 +342,7 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
 def test_tale_replacement_properties(testapp, tale_replacement, source):
     # Replacement modifications need to include introduced_sequence
     tale_replacement.update({'modified_site_by_sequence': 'ATTTTAGGCAGGTAGGATTACGAGGACCCAGGTACGATCAGGT',
-                             'reagents': [{'source': source['@id'], 'identifier': 'xyz'}]})
+                             'reagents': [{'source': source['@id'], 'identifier': '12345'}]})
     res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
     assert res.status_code == 422
     tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})
