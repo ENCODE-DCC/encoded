@@ -1535,7 +1535,7 @@ def browsers_available(
             vis_blob = vis_cache.get(accession=accession, assembly=assembly)
         if not vis_blob and file_assemblies is None and files is not None:
             file_assemblies = visualizable_assemblies(assemblies, files)
-        if file_types is not None:
+        if file_types is None:
             continue
         if ('ucsc' not in browsers
                 and 'ucsc_assembly' in mapped_assembly.keys()
