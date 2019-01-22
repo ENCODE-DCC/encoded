@@ -1487,9 +1487,9 @@ def visualizable_assemblies(
     return list(file_assemblies)
 
 
-def file_to_type(file):
+def _file_to_type(process_file):
     '''Used with map to convert list of files to their types'''
-    return file['file_type']
+    return process_file['file_type']
 
 # Currently called in types/shared_calculated_properties.py
 def browsers_available(
@@ -1517,13 +1517,12 @@ def browsers_available(
     browsers = set()
     full_set = {'ucsc', 'ensembl', 'quickview', 'hic'}
     file_assemblies = None
+    file_types = None
     if request is not None:
         vis_cache = VisCache(request)
     if files is not None:
         # Make a set of all file types in all dataset files
-        file_types = set(map(file_to_type, files))
-    else:
-        file_types = None
+        file_types = set(map(_file_to_type, files))
     for assembly in assemblies:
         mapped_assembly = ASSEMBLY_DETAILS.get(assembly)
         if not mapped_assembly:
@@ -1536,21 +1535,20 @@ def browsers_available(
             vis_blob = vis_cache.get(accession=accession, assembly=assembly)
         if not vis_blob and file_assemblies is None and files is not None:
             file_assemblies = visualizable_assemblies(assemblies, files)
+        if file_types is not None:
+            continue
         if ('ucsc' not in browsers
                 and 'ucsc_assembly' in mapped_assembly.keys()
-                and file_types is not None
                 and not BROWSER_FILE_TYPES['ucsc'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
                 browsers.add('UCSC')
         if ('ensembl' not in browsers
                 and 'ensembl_host' in mapped_assembly.keys()
-                and file_types is not None
                 and not BROWSER_FILE_TYPES['ensembl'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
                 browsers.add('Ensembl')
         if ('quickview' not in browsers
                 and 'quickview' in mapped_assembly.keys()
-                and file_types is not None
                 and not BROWSER_FILE_TYPES['quickview'].isdisjoint(file_types)):
             # NOTE: quickview may not have vis_blob as 'in progress'
             #   files can also be displayed
@@ -1561,7 +1559,6 @@ def browsers_available(
                 browsers.add('Quick View')
         if ('hic' not in browsers
                 and 'hic' in mapped_assembly.keys()
-                and file_types is not None
                 and not BROWSER_FILE_TYPES['hic'].isdisjoint(file_types)):
             if file_assemblies is not None and assembly in file_assemblies:
                 browsers.add('hic')
