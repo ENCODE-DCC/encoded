@@ -46,7 +46,7 @@
         "reagents": [
             { 
                 "source": "atcc",
-                "identifier": "CRL-2522"
+                "identifier": "12345"
             }
         ],
         "guide_rna_sequences": [
@@ -122,8 +122,8 @@
         "purpose": "characterization",
         "zygosity": "heterozygous",
         "reagents": [{
-            "source": "/sources/gregory-crawford/",
-            "identifier": "please-contact-lab"
+            "source": "/sources/sigma/",
+            "identifier": "123456"
         }],
         "method": "TALEN",
         "RVD_sequence_pairs": [
