@@ -7,6 +7,7 @@
 * Zygosity is now required for modifications of *method* TALEN
 * The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 * *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
+* Within *reagents*, an *identifier* is no longer allowed to be free text and must conform to the pattern.
 
 ### Schema version 7
 
