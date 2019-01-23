@@ -197,7 +197,7 @@ def audit_biosample_depleted_in_term_name(value, system):
 
 # utility functions
 
-def is_part_of(term_id, part_of_term_id, ontology):
+def is_part_of(term_id, part_of_term_id, ontology, parent_term_id=None):
     if 'part_of' not in ontology[term_id] or ontology[term_id]['part_of'] == []:
         return False
     if part_of_term_id in ontology[term_id]['part_of']:
@@ -205,7 +205,10 @@ def is_part_of(term_id, part_of_term_id, ontology):
     else:
         parents = []
         for x in ontology[term_id]['part_of']:
-            parents.append(is_part_of(x, part_of_term_id, ontology))
+            if not parent_term_id == x:
+                parents.append(
+                    is_part_of(x, part_of_term_id, ontology, parent_term_id=term_id)
+                )
         return any(parents)
 
 
