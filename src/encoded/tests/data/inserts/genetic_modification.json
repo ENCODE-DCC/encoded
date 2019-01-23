@@ -172,7 +172,7 @@
         "purpose": "tagging",
         "reagents": [
             {
-                "source": "/sources/atcc/",
+                "source": "/sources/bacpac/",
                 "identifier": "CH321-73P09"
             }
         ],
