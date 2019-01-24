@@ -15,7 +15,8 @@ def reference_experiment_RNA_seq(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'RNA-seq',
@@ -30,7 +31,8 @@ def reference_experiment_RRBS(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'assay_term_name': 'RRBS',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
@@ -47,7 +49,8 @@ def reference_experiment_WGBS(testapp, lab, award):
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
         'experiment_classification': ['functional genomics assay']
 
@@ -62,7 +65,8 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control):
         'lab': lab['uuid'],
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'assay_term_name': 'ChIP-seq',
         'target': target_control['uuid'],
         'experiment_classification': ['functional genomics assay']
@@ -76,7 +80,8 @@ def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3)
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
@@ -94,7 +99,8 @@ def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3)
         'lab': lab['uuid'],
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K36me3['uuid'],
         'experiment_classification': ['functional genomics assay']
@@ -110,7 +116,8 @@ def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1):
         'lab': lab['uuid'],
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'assay_term_name': 'ChIP-seq',
         'target': target_H3K4me1['uuid'],
         'experiment_classification': ['functional genomics assay']
@@ -124,7 +131,8 @@ def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
@@ -140,7 +148,8 @@ def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
@@ -156,7 +165,8 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'in progress',
+        'status': 'released',
+        'date_released': '2019-01-08',
         'biosample_type': 'tissue',
         'biosample_term_id': 'UBERON:349829',
         'assay_term_name': 'ChIP-seq',
@@ -294,6 +304,14 @@ def test_reference_epigenome_with_required_assays(testapp, reference_epigenome_1
                                                        reference_experiment_chip_seq_H3K27ac['@id'],
                                                        reference_experiment_chip_seq_H3K9me3['@id']
                                                        ]})
+    testapp.patch_json(reference_experiment_RNA_seq['@id'], {'status': 'in progress'})
+    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'partial reference epigenome' for error in errors_list)
+    testapp.patch_json(reference_experiment_RNA_seq['@id'], {'status': 'released'})
     res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
