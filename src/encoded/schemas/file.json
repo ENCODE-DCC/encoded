@@ -1037,6 +1037,7 @@
                         "filtered regions",
                         "filtered SNPs",
                         "fold change over control",
+                        "gene alignments",
                         "gene quantifications",
                         "genome compartments",
                         "genome index",
@@ -1407,6 +1408,7 @@
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
+        "gene alignments": "alignment",
         "redacted alignments": "alignment",
         "redacted unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
