@@ -4,22 +4,22 @@
 
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
-<<<<<<< HEAD
 * Zygosity is now required for modifications of *method* TALEN
 * The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 * *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
-* Within *reagents*, an *identifier* is no longer allowed to be free text and must conform to the pattern. Listed below are indivdual sources, the corresponding *identifier* regular expressions, and examples of allowed identifiers.
-  * Addgene: '^\\d{5,6}$', ex. 12345, 123456
-  * BACPAC: '^([A-Z]{2,3}\\d{2,3}|[A-Z]{3})-\\d{1,4}[A-Z]\\d{1,2}$', ex. CH17-232B19, RP11-722H2
-  * Brenton Graveley: '^BGC#\\d{7}$', ex. BGC#0000007
-  * Dharmacon: '^[DL]-\\d{6}-\\d{2}(-\\d{2,4})?$', ex. D-001810-10-05, L-006690-00
-  * Hugo Bellen: '^MI\\d{5}$', ex. MI06350
-  * Human Orfeome: '^([A-Z]{2})?\\d{1,9}$', ex. 100068273, 867, BC009921
-  * Plasmid Repository: '^HsCD\\d{8}$', ex. HsCD00040564
-  * Sigma: '^[A-Z]{3}\\d{3}$', ex. SHC002
-  * Source BioScience: '^[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(\_[A-Z]\\d{2})?$', ex. WRM0610bH03, WRM061aG12
-  * Thermo Fisher: '^[a-zA-Z]{1,3}\\d{5,6}$', ex. P36238, V601020
-  * TRC: '^TRCN\\d{10}$', ex. TRCN0000001243
+* Within *reagents*, an *identifier* is no longer allowed to be free text and must conform to the pattern. Listed below are indivdual sources, their corresponding *identifier* regular expressions, and examples of allowed identifiers. Note that the
+identifier is prefixed by 'source-name:'.
+  * Addgene: '^addgene:\\d{5,6}$', ex. addgene:12345, addgene:123456
+  * BACPAC: '^bacpac:([A-Z]{2,3}\\d{2,3}|[A-Z]{3})-\\d{1,4}[A-Z]\\d{1,2}$', ex. bacpac:CH17-232B19, bacpac:RP11-722H2
+  * Brenton Graveley: '^brenton-graveley:BGC#\\d{7}$', ex. brenton-graveley:BGC#0000007
+  * Dharmacon: '^dharmacon:[DL]-\\d{6}-\\d{2}(-\\d{2,4})?$', ex. dharmacon:D-001810-10-05, dharmacon:L-006690-00
+  * Hugo Bellen: '^hugo-bellen:MI\\d{5}$', ex. hugo-bellen:MI06350
+  * Human Orfeome: '^human-orfeome:([A-Z]{2})?\\d{1,9}$', ex. human-orfeome:100068273, human-orfeome:867, human-orfeome:BC009921
+  * Plasmid Repository: '^plasmid-repository:HsCD\\d{8}$', ex. plasmid-repository:HsCD00040564
+  * Sigma: '^sigma:[A-Z]{3}\\d{3}$', ex. sigma:SHC002
+  * Source BioScience: '^source-bioscience:[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(\_[A-Z]\\d{2})?$', ex. source-bioscience:WRM0610bH03, source-bioscience:WRM061aG12
+  * Thermo Fisher: '^thermo-fisher:[a-zA-Z]{1,3}\\d{5,6}$', ex. thermo-fisher:P36238, thermo-fisher:V601020
+  * TRC: '^trc:TRCN\\d{10}$', ex. trc:TRCN0000001243
 
 ### Schema version 7
 
