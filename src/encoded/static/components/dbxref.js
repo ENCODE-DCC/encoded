@@ -213,6 +213,9 @@ export const dbxrefPrefixMap = {
     'IMGT/GENE-DB': {
         pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
     },
+    SRA: {
+        pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
+    },
 };
 
 
