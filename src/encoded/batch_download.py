@@ -76,6 +76,36 @@ _tsv_mapping = OrderedDict([
     ('Restricted', ['files.restricted'])
 ])
 
+_tsv_mapping_annotation = OrderedDict([
+    ('File accession', ['original_files.title']),
+    ('File format', ['original_files.file_type']),
+    ('Output type', ['original_files.output_type']),
+    ('Dataset accession', ['accession']),
+    ('Annotation type', ['annotation_type']),
+    ('Software used', ['software_used.software.title']),
+    ('Encyclopedia Version', ['encyclopedia_version']),
+    ('Biosample term id', ['biosample_term_id']),
+    ('Biosample term name', ['biosample_term_name']),
+    ('Biosample type', ['biosample_type']),
+    ('Life stage', ['relavant_life_stage']),
+    ('Age', ['relevant_timepoint']),
+    ('Age units', ['relevant_timepoint_units']),
+    ('Organism', ['organism.scientific_name']),
+    ('Targets', ['targets.name']),
+    ('Dataset date released', ['date_released']),
+    ('Project', ['award.project']),
+    ('Derived from', ['original_files.derived_from']),
+    ('Size', ['original_files.file_size']),
+    ('Lab', ['original_files.lab.title']),
+    ('md5sum', ['original_files.md5sum']),
+    ('dbxrefs', ['original_files.dbxrefs']),
+    ('File download URL', ['original_files.href']),
+    ('Assembly', ['original_files.assembly']),
+    ('Controlled by', ['original_files.controlled_by']),
+    ('File Status', ['original_files.status']),
+    ('Restricted', ['original_files.restricted'])
+])
+
 _audit_mapping = OrderedDict([
     ('Audit WARNING', ['audit.WARNING.path',
                        'audit.WARNING.category',
@@ -127,9 +157,9 @@ def get_peak_metadata_links(request):
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
-def make_cell(header_column, row, exp_data_row):
+def make_cell(header_column, row, exp_data_row, mapping):
     temp = []
-    for column in _tsv_mapping[header_column]:
+    for column in mapping[header_column]:
         c_value = []
         for value in simple_path_ids(row, column):
             if str(value) not in c_value:
@@ -226,11 +256,13 @@ def metadata_tsv(context, request):
     param_list['field'] = []
     header = []
     file_attributes = []
-    for prop in _tsv_mapping:
+    is_annotation = 'type' in param_list and param_list['type'][0] and param_list['type'][0].lower() == 'annotation'
+    mapping = _tsv_mapping_annotation if is_annotation else _tsv_mapping
+    for prop in mapping:
         header.append(prop)
-        param_list['field'] = param_list['field'] + _tsv_mapping[prop]
-        if _tsv_mapping[prop][0].startswith('files'):
-            file_attributes = file_attributes + [_tsv_mapping[prop][0]]
+        param_list['field'] = param_list['field'] + mapping[prop]
+        if mapping[prop][0].startswith('files'):
+            file_attributes = file_attributes + [mapping[prop][0]]
 
     # Handle metadata.tsv lines from cart-generated files.txt.
     cart_uuids = param_list.get('cart', [])
@@ -264,8 +296,8 @@ def metadata_tsv(context, request):
         if experiment_json.get('files', []):
             exp_data_row = []
             for column in header:
-                if not _tsv_mapping[column][0].startswith('files'):
-                    make_cell(column, experiment_json, exp_data_row)
+                if not mapping[column][0].startswith('files'):
+                    make_cell(column, experiment_json, exp_data_row, mapping)
 
             f_attributes = ['files.title', 'files.file_type',
                             'files.output_type']
