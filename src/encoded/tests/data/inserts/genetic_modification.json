@@ -181,5 +181,18 @@
         "treatments": [
             "/treatments/a7ab9449-73ea-4693-be2d-a726a9e82056/"
         ]
+    },
+    {
+        "accession": "ENCGM123ABC",
+        "status": "released",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/kevin-white/",
+        "uuid": "12f82b48-4082-479d-8184-a1a73f9ff16d",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "category": "insertion",
+        "purpose": "expression",
+        "introduced_gene": "/genes/a9288b44-6ef4-460e-a3d6-464fd625b103",
+        "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
+        "method": "CRISPR"
     }
 ]

@@ -73,6 +73,21 @@
                             "enum": ["analysis"]
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["expression"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": ["introduced_sequence"]
+                        },
+                        {
+                            "required": ["introduced_gene"]
+                        }
+                    ]
                 }
             ]
         },
@@ -360,7 +375,8 @@
                 "repression",
                 "tagging",
                 "characterization",
-                "screening"
+                "screening",
+                "expression"
             ]
         },
         "zygosity":{
