@@ -455,7 +455,7 @@ class VisDefines(object):
 
     def __init__(self, request, dataset=None):
         # Make these global so that the same files are not continually reloaded
-        self.request = request
+        self._request = request
         global VIS_DEFS_BY_TYPE
         global VIS_DEFS_DEFAULT
         self.vis_defs = VIS_DEFS_BY_TYPE
@@ -610,12 +610,12 @@ class VisDefines(object):
             if not isinstance(ontology, list):
                 ontology = [ontology]
             if len(ontology) == 1:
-                assert isinstance(ontology[0], dict)
-                term = ontology[0]['term_name']
+                if isinstance(ontology[0], dict):
+                    term = ontology[0]['term_name']
             else:
-                log.debug("%s has biosample_ontology %s that is unexpectedly a list" %
-                          (self.dataset['accession'],
-                           str([bo['@id'] for bo in ontology])))
+                log.debug("%s has biosample_ontology %s that is unexpectedly a list",
+                          self.dataset['accession'],
+                          str([bo['@id'] for bo in ontology]))
             coloring = BIOSAMPLE_COLOR.get(term, {})
             if not coloring:
                 for organ_slim in (os for bo in ontology
@@ -767,12 +767,15 @@ class VisDefines(object):
             # "biosample_ontology" we got here is @id which should be embedded
             # with the following code.
             if not isinstance(biosample_ontology, list):
-                assert isinstance(biosample_ontology, str)
                 biosample_ontology = [biosample_ontology]
-            term_names = [
-                self.request.embed(type_obj_id, '@@object')['term_name']
-                for type_obj_id in biosample_ontology
-            ]
+            term_names = []
+            for type_obj in biosample_ontology:
+                if isinstance(type_obj, str):
+                    term_names.append(
+                        self._request.embed(type_obj, '@@object')['term_name']
+                    )
+                elif 'term_name' in type_obj:
+                    term_names.append(type_obj['term_name'])
             if len(term_names) == 1:
                 return term_names[0]
             else:
@@ -1017,7 +1020,7 @@ class IhecDefines(object):
     # Defines and formatting code for IHEC JSON
 
     def __init__(self, request):
-        self.request = request
+        self._request = request
         self.samples = {}
         self.vis_defines = None
 
@@ -1171,7 +1174,7 @@ class IhecDefines(object):
         # returns an ihec sample appropriate for the dataset
         if vis_defines is None:
             if self.vis_defines is None:
-                self.vis_defines = VisDefines(self.request)
+                self.vis_defines = VisDefines(self._request)
             vis_defines = self.vis_defines
 
         sample = {}
@@ -1640,4 +1643,3 @@ def vis_format_url(browser, path, assembly, position=None):
     #else:
         # ERROR: not supported at this time
     return None
-

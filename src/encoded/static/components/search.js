@@ -378,8 +378,7 @@ const DatasetComponent = (props, reactContext) => {
 
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
-        biosampleTerm = (result.biosample_ontology.term_name && typeof result.biosample_ontology.term_name === 'object' && result.biosample_ontology.term_name.length === 1) ? result.biosample_ontology.term_name[0] :
-            ((result.biosample_ontology.term_name && typeof result.biosample_ontology.term_name === 'string') ? result.biosample_ontology.term_name : '');
+        biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
         const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
         if (organisms.length === 1) {
             organism = organisms[0];

@@ -1021,7 +1021,7 @@ class VisDataset(object):
             log.debug("%s can't be visualized because it's not unreleased status:%s." %
                     (self.dataset["accession"], self.dataset["status"]))
             return {}
-        self.vis_defines = VisDefines(self.request, self.dataset)
+        self.vis_defines = VisDefines(self.request, dataset=self.dataset)
         vis_type = self.vis_defines.get_vis_type()
         self.vis_def = self.vis_defines.get_vis_def(vis_type)
         if self.vis_def is None:
@@ -1349,7 +1349,7 @@ def generate_html(context, request):
         log.debug("generate_html for %s   %.3f secs" % (accession, (time.time() - PROFILE_START_TIME)))
         assert(html_requested == accession)
 
-        vis_defines = VisDefines(request, embedded)
+        vis_defines = VisDefines(request, dataset=embedded)
         vis_type = vis_defines.get_vis_type()
         vis_def = vis_defines.get_vis_def(vis_type)
         longLabel = vis_def.get('longLabel',
