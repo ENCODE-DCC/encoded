@@ -846,7 +846,7 @@ class TypeaheadFacet extends React.Component {
 
     handleScroll(event) {
         // scroll overflowing facet term lists to the bottom on click
-        let overflowingList = event.target.parentNode.getElementsByClassName('term-list')[0].getElementsByClassName('facet-term');
+        let overflowingList = event.target.parentNode.getElementsByClassName('facet-term');
         let lastOverflowIdx = overflowingList.length-1;
         let overflowingListLastElement = overflowingList[lastOverflowIdx];
         overflowingListLastElement.parentNode.scrollTop = overflowingListLastElement.offsetTop;
@@ -906,11 +906,11 @@ class TypeaheadFacet extends React.Component {
         // collecting selected search terms to display at the top of the facet
         let selectedTerms = [];
         filters.map(filter => {
-            if (filter.field === field){
+            if (filter.field === field || filter.field === field+"!"){
                 selectedTerms.push(filter);
             }
         });
-        let displayedTermsCount = 8;
+        let displayedTermsCount = 5;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -939,7 +939,7 @@ class TypeaheadFacet extends React.Component {
                     <div className="filter-container">
                         <div className="filter-hed">Selected filters:</div>
                         {selectedTerms.map((filter, filterIdx) =>
-                            <a href={filter.remove} key={filter.term}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                            <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
                         )}
                     </div>
                 : null}
@@ -968,10 +968,12 @@ class TypeaheadFacet extends React.Component {
                     : 
                         <div>
                             {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
-                                <div className="term-list">
-                                    {terms.map(term =>
-                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                    )}
+                                <div>
+                                    <div className="term-list">
+                                        {terms.map(term =>
+                                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                        )}
+                                    </div>
                                     {(terms.length > displayedTermsCount) ?
                                         <i className="icon icon-caret-down" onClick={this.handleScroll}/>
                                     : null}

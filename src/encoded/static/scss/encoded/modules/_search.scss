@@ -200,12 +200,10 @@ $form-bg: #f3f3f3;
         left: 0;
         text-align:center;
     }
-    position: relative;
-}
-
-.term-list {
-    max-height: 150px;
-    overflow-y: scroll;
+    .term-list {
+        max-height: 100px;
+        overflow-y: scroll;
+    }
     position: relative;
 }
 
