@@ -97,15 +97,16 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
         project_detail = 'required according to standards of Minimal IHEC Reference Epigenome.'
 
     for assay in value['related_datasets']:
-        assay_id = assay['assay_term_id']
-        if (assay_id == 'OBI:0000716'):
-            if 'target' in assay:
-                assay_taget = assay['target']['label']
-                key = (assay_id, assay_taget)
-                if key in required_assays:
-                    required_assays[key] = 1
-        elif assay_id in required_assays:
-                required_assays[assay_id] = 1
+        if assay['status'] in ['released', 'archived']:
+            assay_id = assay['assay_term_id']
+            if (assay_id == 'OBI:0000716'):
+                if 'target' in assay:
+                    assay_taget = assay['target']['label']
+                    key = (assay_id, assay_taget)
+                    if key in required_assays:
+                        required_assays[key] = 1
+            elif assay_id in required_assays:
+                    required_assays[assay_id] = 1
 
     if required_assays[('OBI:0000716', 'Control')] == 0:
         detail = detail_prefix + \
