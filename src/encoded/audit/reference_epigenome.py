@@ -8,6 +8,7 @@ from snovault import (
                                             'related_datasets.replicates',
                                             'related_datasets.replicates.library',
                                             'related_datasets.replicates.library.biosample',
+                                            'related_datasets.replicates.library.biosample.biosample_ontology',
                                             'related_datasets.replicates.library.biosample.donor',
                                             'related_datasets.replicates.library.biosample.treatments'])
 def audit_reference_epigenome_donor_biosample(value, system):
@@ -26,8 +27,8 @@ def audit_reference_epigenome_donor_biosample(value, system):
                     if rep['status'] not in ['deleted'] and \
                        'library' in rep and 'biosample' in rep['library']:
                         biosample_object = rep['library']['biosample']
-                        if 'biosample_term_name' in biosample_object:
-                            biosample_name_set.add(biosample_object['biosample_term_name'])
+                        if 'biosample_ontology' in biosample_object:
+                            biosample_name_set.add(biosample_object['biosample_ontology']['term_name'])
                         if 'treatments' in biosample_object:
                             if len(biosample_object['treatments']) == 0:
                                 treatments_set.add('untreated')

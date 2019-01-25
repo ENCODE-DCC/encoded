@@ -220,6 +220,15 @@
             }
         }
     },
+    "biosample_ontology": {
+        "biosample_ontology": {
+            "title": "Biosample type",
+            "description": "An embeded property for linking to biosample type which describes the ontology of the biosample.",
+            "comment": "See biosample_type.json for available identifiers.",
+            "type": "string",
+            "linkTo": "BiosampleType"
+        }
+    },
     "biosample_classification": {
         "biosample_term_id": {
             "@type": "@id",
@@ -227,12 +236,14 @@
             "description": "Ontology identifier describing biosample.",
             "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
             "type": "string",
+            "permission": "import_items",
             "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
         },
         "biosample_term_name": {
             "title": "Ontology term",
             "description": "Ontology term describing biosample.",
             "comment": "The term should match the ontology identifier specified in biosample_term_id. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
+            "permission": "import_items",
             "type":  "string"
         },
         "biosample_type": {
@@ -240,6 +251,7 @@
             "description": "The general category of the biosample.",
             "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
             "type": "string",
+            "permission": "import_items",
             "enum" : [
                 "single cell",
                 "cell line",

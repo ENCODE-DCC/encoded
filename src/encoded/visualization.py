@@ -182,7 +182,7 @@ class VisCollections(object):
             return {}
 
         self.vis_by_types = {}
-        vis_defines = VisDefines()
+        vis_defines = VisDefines(self.request)
 
         for accession in sorted(self.vis_datasets.keys()):
             vis_dataset = self.vis_datasets[accession]
@@ -304,14 +304,14 @@ class VisCollections(object):
         '''Formats this collection of vis_datasets into IHEC hub json structure.'''
         if not self.vis_datasets:
             return {}
-        ihec = IhecDefines()
+        ihec = IhecDefines(self.request)
         return ihec.remodel_to_json(self.host, self.vis_datasets)
 
     def ucsc_trackDb(self):
         '''Formats collection into UCSC trackDb.ra text'''
         trackdb_txt = ""
 
-        vis_defines = VisDefines()
+        vis_defines = VisDefines(self.request)
 
         if self.vis_by_types:
             for tag in sorted(self.vis_by_types.keys()):
@@ -1021,7 +1021,7 @@ class VisDataset(object):
             log.debug("%s can't be visualized because it's not unreleased status:%s." %
                     (self.dataset["accession"], self.dataset["status"]))
             return {}
-        self.vis_defines = VisDefines(self.dataset)
+        self.vis_defines = VisDefines(self.request, dataset=self.dataset)
         vis_type = self.vis_defines.get_vis_type()
         self.vis_def = self.vis_defines.get_vis_def(vis_type)
         if self.vis_def is None:
@@ -1043,7 +1043,7 @@ class VisDataset(object):
                 self.vis_dataset[term] = val
 
         if self.ihec is None:
-            self.ihec = IhecDefines()
+            self.ihec = IhecDefines(self.request)
         ihec_exp_type = self.ihec.exp_type(vis_type, self.dataset)
         if ihec_exp_type is not None:
             self.vis_dataset['ihec_exp_type'] = ihec_exp_type
@@ -1111,7 +1111,7 @@ class VisDataset(object):
     def ucsc_trackDb(self):
         '''Formats single vis_dataset into UCSC trackDb.ra text'''
         if self.vis_defines is None:
-            self.vis_defines = VisDefines()
+            self.vis_defines = VisDefines(self.request)
         return self.vis_defines.ucsc_single_composite_trackDb(self.vis_dataset, self.accession)
         #vis_collection = VisCollections(self.request, {self.accession: self.vis_dataset})
         #return vis_collection.ucsc_trackDb()
@@ -1349,7 +1349,7 @@ def generate_html(context, request):
         log.debug("generate_html for %s   %.3f secs" % (accession, (time.time() - PROFILE_START_TIME)))
         assert(html_requested == accession)
 
-        vis_defines = VisDefines(embedded)
+        vis_defines = VisDefines(request, dataset=embedded)
         vis_type = vis_defines.get_vis_type()
         vis_def = vis_defines.get_vis_def(vis_type)
         longLabel = vis_def.get('longLabel',
@@ -1366,7 +1366,7 @@ def generate_html(context, request):
 
     else:  # collection
         vis_type = html_requested
-        vis_def = VisDefines().get_vis_def(vis_type)
+        vis_def = VisDefines(request).get_vis_def(vis_type)
         longLabel = vis_def.get('assay_composite', {}).get('longLabel',
                                                             "Unknown collection of experiments")
         page = '<h2>%s</h2>' % longLabel

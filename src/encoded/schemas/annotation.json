@@ -18,6 +18,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_classification" },
+        { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
@@ -91,6 +92,25 @@
                 }
             }
         },
+        "biosample_ontology": {
+            "not": {
+                "properties": {
+                    "biosample_ontology": {
+                        "linkTo": "BiosampleType",
+                        "linkEnum": [
+                            "50276608-b1e0-47cc-8cbc-330f0c0a0694",
+                            "3df0d6c4-6baf-4def-803c-22093ed028a7"
+                        ]
+                    },
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
         "relevant_timepoint": ["relevant_timepoint_units"],
         "relevant_timepoint_units": ["relevant_timepoint"],
         "status": {
@@ -117,7 +137,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "annotation_type": {
             "title": "Type",
@@ -280,13 +300,13 @@
          "targets.label": {
             "title": "Target(s) of assay"
         },
-       "biosample_type": {
+       "biosample_ontology.classification": {
             "title": "Biosample type"
         },
-        "organ_slims": {
+        "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
-        "cell_slims": {
+        "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
         "relevant_life_stage": {
@@ -324,7 +344,7 @@
             "title": "Target",
             "type": "string"
         },
-        "biosample_term_name": {
+        "biosample_ontology.term_name": {
             "title": "Biosample",
             "type": "string"
         },
@@ -370,14 +390,14 @@
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
-        "cell_slims": 1.0,
+        "biosample_ontology.cell_slims": 1.0,
         "files.replicate.experiment.assay_term_name": 1.0,
-        "biosample_term_id": 1.0,
-        "biosample_term_name": 1.0,
-        "biosample_type": 1.0,
-        "organ_slims": 1.0,
-        "developmental_slims": 1.0,
-        "biosample_synonyms": 1.0,
+        "biosample_ontology.term_id": 1.0,
+        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.classification": 1.0,
+        "biosample_ontology.organ_slims": 1.0,
+        "biosample_ontology.developmental_slims": 1.0,
+        "biosample_ontology.synonyms": 1.0,
         "relevant_life_stage": 1.0,
         "relevant_timepoint": 1.0,
         "software_used.software.name": 1.0,

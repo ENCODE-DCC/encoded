@@ -232,14 +232,14 @@ def audit_file_controlled_by(value, system):
         return
 
     possible_controls = value['dataset'].get('possible_controls')
-    biosample = value['dataset'].get('biosample_term_id')
-    biosample_term_name = value['dataset'].get('biosample_term_name')
+    biosample = value['dataset'].get('biosample_ontology', {}).get('term_id')
+    biosample_term_name = value['dataset'].get('biosample_ontology', {}).get('term_name')
     run_type = value.get('run_type', None)
     read_length = value.get('read_length', None)
 
     if value['controlled_by']:
         for ff in value['controlled_by']:
-            control_bs = ff['dataset'].get('biosample_term_id')
+            control_bs = ff['dataset'].get('biosample_ontology', {}).get('term_id')
             control_run = ff.get('run_type', None)
             control_length = ff.get('read_length', None)
 
@@ -249,7 +249,7 @@ def audit_file_controlled_by(value, system):
                          'file {} contains in controlled_by list a file '.format(value['@id']) + \
                          '{} that belongs to experiment with different biosample {}.'.format(
                              ff['@id'],
-                             ff['dataset'].get('biosample_term_name'))
+                             ff['dataset'].get('biosample_ontology', {}).get('term_name'))
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
 
@@ -359,12 +359,14 @@ function_dispatcher = {
                       'paired_with',
                       'file_format_specifications',
                       'dataset',
+                      'dataset.biosample_ontology',
                       'dataset.target',
                       'dataset.award',
                       'platform',
                       'controlled_by',
                       'controlled_by.replicate',
                       'controlled_by.dataset',
+                      'controlled_by.dataset.biosample_ontology',
                       'controlled_by.paired_with',
                       'controlled_by.platform',
                       'quality_metrics',

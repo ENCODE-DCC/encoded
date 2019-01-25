@@ -117,21 +117,20 @@ class AnnotationComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.biosample_term_name || biosampleSummary ?
+                                    {context.biosample_ontology || biosampleSummary ?
                                         <div data-test="biosample">
                                             <dt>Biosample summary</dt>
                                             <dd>
-                                                {context.biosample_term_name}
-                                                {context.biosample_term_name ? <span>{' '}</span> : null}
+                                                {context.biosample_ontology ? <span>{context.biosample_ontology.term_name}{' '}</span> : null}
                                                 {biosampleSummary ? <span>({biosampleSummary})</span> : null}
                                             </dd>
                                         </div>
                                     : null}
 
-                                    {context.biosample_type ?
+                                    {context.biosample_ontology ?
                                         <div data-test="biosampletype">
                                             <dt>Biosample type</dt>
-                                            <dd>{context.biosample_type}</dd>
+                                            <dd>{context.biosample_ontology.classification}</dd>
                                         </div>
                                     : null}
 
@@ -318,17 +317,17 @@ class PublicationDataComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.biosample_term_name && context.biosample_term_name.length ?
+                                    {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                         <div data-test="biosampletermname">
                                             <dt>Biosample term name</dt>
-                                            <dd>{context.biosample_term_name.join(', ')}</dd>
+                                            <dd>{_.uniq(context.biosample_ontology.map(b => b.term_name)).join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {context.biosample_type && context.biosample_type.length ?
+                                    {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                         <div data-test="biosampletype">
                                             <dt>Biosample type</dt>
-                                            <dd>{context.biosample_type.join(', ')}</dd>
+                                            <dd>{_.uniq(context.biosample_ontology.map(b => b.classification)).join(', ')}</dd>
                                         </div>
                                     : null}
 
@@ -652,17 +651,17 @@ class ProjectComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.biosample_term_name && context.biosample_term_name.length ?
+                                    {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                         <div data-test="biosampletermname">
                                             <dt>Biosample term name</dt>
-                                            <dd>{context.biosample_term_name.join(', ')}</dd>
+                                            <dd>{_.uniq(context.biosample_ontology.map(b => b.term_name)).join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {context.biosample_type && context.biosample_type.length ?
+                                    {context.biosample_ontology && context.biosample_ontology.length > 0 ?
                                         <div data-test="biosampletype">
                                             <dt>Biosample type</dt>
-                                            <dd>{context.biosample_type.join(', ')}</dd>
+                                            <dd>{_.uniq(context.biosample_ontology.map(b => b.classification)).join(', ')}</dd>
                                         </div>
                                     : null}
 
@@ -1271,7 +1270,7 @@ export class SeriesComponent extends React.Component {
                 </span>
             );
         }
-        const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
+        const terms = (context.biosample_ontology && context.biosample_ontology.length > 0) ? _.uniq(context.biosample_ontology.map(b => b.term_name)) : [];
 
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);

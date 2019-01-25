@@ -5,60 +5,13 @@ from snovault import (
 from .conditions import rfa
 
 
-@audit_checker('antibody_characterization', frame=['characterization_reviews'])
-def audit_antibody_characterization_review(value, system):
-    '''
-    Make sure that biosample terms are in ontology
-    for each characterization_review.
-    '''
-    if (value['status'] in ['not reviewed',
-                            'not submitted for review by lab',
-                            'deleted',
-                            'in progress']):
-        return
-
-    if 'secondary_characterization_method' in value:
-        return
-
-    if value['characterization_reviews']:
-        ontology = system['registry']['ontology']
-        for review in value['characterization_reviews']:
-            term_id = review['biosample_term_id']
-            term_name = review['biosample_term_name']
-            if term_id.startswith('NTR:'):
-                detail = '{} contains a New Term Request {} - {}'.format(
-                    value['@id'],
-                    term_id,
-                    term_name
-                    )
-                yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
-                return
-            if term_id not in ontology:
-                detail = 'Antibody characterization {} contains '.format(value['@id']) + \
-                         'a biosample_term_id {} that is not in the ontology'.format(term_id)
-
-                yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
-                return
-            ontology_term_name = ontology[term_id]['name']
-            if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-                detail = 'Antibody characterization {} '.format(value['@id']) + \
-                         'has a mismatch between biosample term_id ({}) '.format(
-                             term_id) + \
-                         'and term_name ({}), ontology term_name for term_id {} '.format(
-                             term_name,
-                             term_id) + \
-                         'is {}.'.format(ontology_term_name)
-                yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
-                return
-
-
 @audit_checker('antibody_characterization', frame=[
     'characterization_reviews',
     'characterization_reviews.lanes'
     ])
 def audit_antibody_characterization_unique_reviews(value, system):
     '''
-    Make sure primary characterizations have unique lane, biosample_term_id and
+    Make sure primary characterizations have unique lane, BiosampleType and
     organism combinations for characterization reviews
     '''
     if(value['status'] in ['deleted', 'not submitted for review by lab', 'in progress', 'not reviewed']):
@@ -70,16 +23,16 @@ def audit_antibody_characterization_unique_reviews(value, system):
     unique_reviews = set()
     for review in value['characterization_reviews']:
         lane = review['lane']
-        term_id = review['biosample_term_id']
+        biosample_ontology = review['biosample_ontology']
         organism = review['organism']
-        review_lane = frozenset([lane, term_id, organism])
+        review_lane = frozenset([lane, biosample_ontology, organism])
         if review_lane not in unique_reviews:
             unique_reviews.add(review_lane)
         else:
             detail = 'Lane {} in {} is a duplicate review for {} - {}'.format(
                 lane,
                 value['@id'],
-                term_id,
+                biosample_ontology,
                 organism
                 )
             raise AuditFailure('duplicate lane review', detail, level='INTERNAL_ACTION')

@@ -12,8 +12,6 @@ from .base import (
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
-    CalculatedBiosampleSlims,
-    CalculatedBiosampleSynonyms,
     CalculatedAssaySynonyms,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
@@ -276,10 +274,11 @@ class FileSet(Dataset):
         'title': "Annotation file set",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedVisualize):
+class Annotation(FileSet, CalculatedVisualize):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
+        'biosample_ontology',
         'software_used',
         'software_used.software',
         'organism',
@@ -307,14 +306,14 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'y': {
             'facets': [
                 'organism.scientific_name',
-                'biosample_type',
-                'organ_slims',
-                'cell_slims',
+                'biosample_ontology.classification',
+                'biosample_ontology.organ_slims',
+                'biosample_ontology.cell_slims',
                 'award.project',
                 'assembly',
                 'encyclopedia_version'
             ],
-            'group_by': ['biosample_type', 'biosample_term_name'],
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
             'label': 'Biosample',
         },
         'x': {
@@ -349,10 +348,11 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
+class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedAssaySynonyms):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
     embedded = [
+        'biosample_ontology',
         'organism',
         'submitted_by',
         'lab',
@@ -429,10 +429,11 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
         'title': "Project file set",
         'description': 'A set of files that comprise a project.',
     })
-class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
+class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedAssaySynonyms):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
     embedded = FileSet.embedded + [
+        'biosample_ontology',
         'files.dataset',
         'files.replicate.library',
         'files.replicate.experiment.target',
@@ -447,16 +448,18 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'title': "Series",
         'description': 'Listing of all types of series datasets.',
     })
-class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
+class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded + [
+        'biosample_ontology',
         'organism',
         'target',
         'target.genes',
         'target.organism',
         'references',
+        'related_datasets.biosample_ontology',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',
         'related_datasets.files.analysis_step_version.analysis_step',

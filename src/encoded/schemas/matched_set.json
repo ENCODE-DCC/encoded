@@ -65,19 +65,19 @@
         "target.investigated_as": {
             "title": "Target of assay"
         },
-        "biosample_type": {
+        "biosample_ontology.classification": {
             "title": "Biosample type"
         },
-        "organ_slims": {
+        "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
-        "cell_slims": {
+        "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
-        "biosample_term_name": {
+        "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
-        "related_datasets.replicates.library.biosample.organ_slims": {
+        "related_datasets.replicates.library.biosample.biosample_ontology.organ_slims": {
             "title": "Organ"
         },
         "related_datasets.replicates.library.biosample.life_stage": {
@@ -136,7 +136,7 @@
             "title": "Target",
             "type": "string"
         },
-        "biosample_term_name": {
+        "biosample_ontology.term_name": {
             "title": "Biosample",
             "type": "string"
         },
@@ -232,14 +232,14 @@
         "related_datasets.assay_term_id": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
-        "cell_slims": 1.0,
-        "related_datasets.biosample_term_id": 1.0,
-        "related_datasets.biosample_term_name": 1.0,
-        "related_datasets.biosample_type": 1.0,
-        "related_datasets.organ_slims": 1.0,
-        "related_datasets.developmental_slims": 1.0,
+        "biosample_ontology.cell_slims": 1.0,
+        "related_datasets.biosample_ontology.term_id": 1.0,
+        "related_datasets.biosample_ontology.term_name": 1.0,
+        "related_datasets.biosample_ontology.classification": 1.0,
+        "related_datasets.biosample_ontology.organ_slims": 1.0,
+        "related_datasets.biosample_ontology.developmental_slims": 1.0,
         "related_datasets.assay_synonyms": 1.0,
-        "related_datasets.biosample_synonyms": 1.0,
+        "related_datasets.biosample_ontology.synonyms": 1.0,
         "files.accession": 1.0,
         "files.alternate_accessions": 1.0,
         "files.file_format": 1.0,

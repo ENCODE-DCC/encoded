@@ -6,6 +6,7 @@ module.exports = {
     "biosample_term_id": "UBERON:0002371",
     "biosample_term_name": "bone marrow",
     "biosample_type": "tissue",
+    "biosample_ontology": require('../biosample_type/bone_marrow'),
     "description": "pooled bone marrow from mouse femurs and tibias",
     "donor": require('../donor/encdo012aaa'),
     "lab": "/labs/ross-hardison/",

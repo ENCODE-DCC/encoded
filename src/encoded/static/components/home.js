@@ -1119,7 +1119,7 @@ class HomepageChart2 extends React.Component {
                             for (let i = 0; i < chartData.length; i += 1) {
                                 if (chartData[i]) {
                                     text.push('<li>');
-                                    text.push(`<a href="/matrix/${this.props.query}&biosample_type=${chart.data.labels[i]}">`); // go to matrix view when clicked
+                                    text.push(`<a href="/matrix/${this.props.query}&biosample_ontology.classification=${chart.data.labels[i]}">`); // go to matrix view when clicked
                                     text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                     if (chart.data.labels[i]) {
                                         text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
@@ -1136,7 +1136,7 @@ class HomepageChart2 extends React.Component {
                             if (activePoints[0]) {
                                 const clickedElementIndex = activePoints[0]._index;
                                 const term = this.myPieChart.data.labels[clickedElementIndex];
-                                this.context.navigate(`/matrix/${this.props.query}&biosample_type=${term}`); // go to matrix view
+                                this.context.navigate(`/matrix/${this.props.query}&biosample_ontology.classification=${term}`); // go to matrix view
                             }
                         },
                     },
@@ -1190,7 +1190,7 @@ class HomepageChart2 extends React.Component {
         // Our data source will be different for computational predictions
         if (facets) {
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
-            const assayFacet = facets.find(facet => facet.field === 'biosample_type');
+            const assayFacet = facets.find(facet => facet.field === 'biosample_ontology.classification');
             this.facetData = assayFacet ? assayFacet.terms : [];
             const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
             total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;

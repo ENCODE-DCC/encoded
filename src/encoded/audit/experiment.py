@@ -2170,7 +2170,7 @@ def audit_experiment_replicated(value, system, excluded_types):
     '''
     Excluding single cell experiments
     '''
-    if value['biosample_type'] == 'single cell':
+    if value['biosample_ontology']['classification'] == 'single cell':
         return
     '''
     Excluding single cell isolation experiments from the replication requirement
@@ -2536,13 +2536,14 @@ def audit_experiment_control(value, system, excluded_types):
         return
 
     for control in value['possible_controls']:
-        if not is_matching_biosample_control(control, value.get('biosample_term_id')):
+        if not is_matching_biosample_control(
+            control, value.get('biosample_ontology', {}).get('term_id')):
             detail = ('The specified control {} '
                       'for this experiment is on {}, '
                       'but this experiment is done on {}.').format(
                         control['@id'],
-                        control.get('biosample_term_name'),
-                        value['biosample_term_name']
+                        control.get('biosample_ontology', {}).get('term_name'),
+                        value['biosample_ontology']['term_name']
                       )
             yield AuditFailure('inconsistent control', detail, level='ERROR')
     return
@@ -2550,9 +2551,10 @@ def audit_experiment_control(value, system, excluded_types):
 
 def is_matching_biosample_control(dataset, biosample_term_id):
     if dataset['@type'][0] == 'Experiment':
-        return dataset.get('biosample_term_id') == biosample_term_id
-    elif (not dataset.get('biosample_term_id') or
-         any([term != biosample_term_id for term in dataset.get('biosample_term_id')])):
+        return dataset.get('biosample_ontology', {}).get('term_id') == biosample_term_id
+    elif (not dataset.get('biosample_ontology') or
+         any([term['term_id'] != biosample_term_id
+              for term in dataset.get('biosample_ontology')])):
             return False
     return True
 
@@ -2708,17 +2710,17 @@ def audit_experiment_biosample_term(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('biosample_type') == 'cell-free sample':
+    if value.get('biosample_ontology', {}).get('classification') == 'cell-free sample':
         return
 
     ontology = system['registry']['ontology']
-    term_id = value.get('biosample_term_id')
-    term_type = value.get('biosample_type')
-    term_name = value.get('biosample_term_name')
+    term_id = value.get('biosample_ontology', {}).get('term_id')
+    term_type = value.get('biosample_ontology', {}).get('classification')
+    term_name = value.get('biosample_ontology', {}).get('term_name')
 
-    if 'biosample_term_name' not in value:
-        detail = '{} is missing biosample_term_name'.format(value['@id'])
-        yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
+    if 'biosample_ontology' not in value:
+        detail = '{} is missing biosample_ontology'.format(value['@id'])
+        yield AuditFailure('missing biosample_ontology', detail, level='ERROR')
     # The type and term name should be put into dependencies
 
     if term_id.startswith('NTR:'):
@@ -2756,9 +2758,9 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 continue
 
             biosample = lib['biosample']
-            bs_type = biosample.get('biosample_type')
-            bs_name = biosample.get('biosample_term_name')
-            bs_id = biosample.get('biosample_term_id')
+            bs_type = biosample.get('biosample_ontology', {}).get('classification')
+            bs_name = biosample.get('biosample_ontology', {}).get('term_name')
+            bs_id = biosample.get('biosample_ontology', {}).get('term_id')
 
             if bs_type != term_type:
                 detail = 'Experiment {} '.format(value['@id']) + \
@@ -2874,8 +2876,8 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                         # This should only leave the characterized to standards case
                         pass
         else:
-            biosample_term_id = value['biosample_term_id']
-            biosample_term_name = value['biosample_term_name']
+            biosample_term_id = value['biosample_ontology']['term_id']
+            biosample_term_name = value['biosample_ontology']['term_name']
             experiment_biosample = (biosample_term_id, organism)
 
             for lot_review in antibody['lot_reviews']:
@@ -3708,12 +3710,14 @@ function_dispatcher_with_files = {
 @audit_checker(
     'Experiment',
     frame=[
+        'biosample_ontology',
         'award',
         'target',
         'replicates',
         'replicates.library',
         'replicates.library.spikeins_used',
         'replicates.library.biosample',
+        'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
         'replicates.library.biosample.donor',
@@ -3721,6 +3725,7 @@ function_dispatcher_with_files = {
         'replicates.antibody.targets',
         'replicates.antibody.lot_reviews',
         'possible_controls',
+        'possible_controls.biosample_ontology',
         'possible_controls.original_files',
         'possible_controls.original_files.quality_metrics',
         'possible_controls.original_files.platform',

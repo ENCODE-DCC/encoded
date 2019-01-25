@@ -12,7 +12,7 @@ def base_reference_epigenome(testapp, lab, award):
 
 
 @pytest.fixture
-def base_experiment(testapp, lab, award):
+def base_experiment(testapp, lab, award, cell_free):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -20,6 +20,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
+        'biosample_ontology': cell_free['uuid'],
         'status': 'submitted',
         'date_submitted': '2015-07-23',
         'experiment_classification': ['functional genomics assay']

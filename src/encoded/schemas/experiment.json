@@ -5,8 +5,8 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name", "biosample_type", "experiment_classification"],
-    "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
+    "required": ["award", "lab", "assay_term_name", "experiment_classification", "biosample_ontology"],
+    "approvalRequired": ["assay_term_id", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -21,6 +21,7 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_classification" },
+        { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
@@ -196,7 +197,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "22"
+            "default": "23"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -350,13 +351,13 @@
         "target.investigated_as": {
             "title": "Target of assay"
         },
-        "biosample_type": {
+        "biosample_ontology.classification": {
             "title": "Biosample type"
         },
-        "organ_slims": {
+        "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
-        "cell_slims": {
+        "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
         "replicates.library.biosample.life_stage": {
@@ -428,7 +429,7 @@
         "biosample_summary": {
             "title": "Biosample summary"
         },
-        "biosample_term_name": {
+        "biosample_ontology.term_name": {
             "title": "Biosample"
         },
         "description": {
@@ -508,17 +509,18 @@
         "assay_term_id": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
-        "biosample_term_id": 1.0,
-        "biosample_term_name": 1.0,
-        "biosample_type": 1.0,
-        "organ_slims": 1.0,
-        "cell_slims": 1.0,
-        "developmental_slims": 1.0,
+        "award.title": 1.0,
+        "biosample_ontology.term_id": 1.0,
+        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.classification": 1.0,
+        "biosample_ontology.organ_slims": 1.0,
+        "biosample_ontology.cell_slims": 1.0,
+        "biosample_ontology.developmental_slims": 1.0,
         "category_slims": 1.0,
         "objective_slims": 1.0,
         "type_slims": 1.0,
         "assay_synonyms": 1.0,
-        "biosample_synonyms": 1.0,
+        "biosample_ontology.synonyms": 1.0,
         "files.accession": 1.0,
         "files.alternate_accessions": 1.0,
         "files.file_format": 1.0,

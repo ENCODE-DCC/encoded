@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+###Schema version 15
+
+* Link to BiosampleType object.
+
 ### Schema version 14
 
 * Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums in characterization_reviews.

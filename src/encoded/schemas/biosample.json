@@ -5,12 +5,13 @@
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id", "biosample_term_name"],
+    "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_ontology"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/genetic_modifications"},
         {"$ref": "mixins.json#/biosample_classification"},
+        {"$ref": "mixins.json#/biosample_ontology"},
         {"$ref": "mixins.json#/product_id"},
         {"$ref": "mixins.json#/lot_id"},
         {"$ref": "mixins.json#/source"},
@@ -107,6 +108,25 @@
                 "properties": {
                     "biosample_type": {
                         "enum": ["whole organisms"]
+                    },
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
+        "biosample_ontology": {
+            "not": {
+                "properties": {
+                    "biosample_ontology": {
+                        "linkTo": "BiosampleType",
+                        "linkEnum": [
+                            "50276608-b1e0-47cc-8cbc-330f0c0a0694",
+                            "3df0d6c4-6baf-4def-803c-22093ed028a7"
+                        ]
                     },
                     "organism": {
                         "linkTo": "Organism",
@@ -265,16 +285,6 @@
                     "allOf": [
                         {
                             "properties": {
-                                "biosample_type": {
-                                    "enum": [
-                                        "primary cell",
-                                        "cell line",
-                                        "tissue",
-                                        "in vitro differentiated cells",
-                                        "single cell",
-                                        "organoid"
-                                    ]
-                                },
                                 "organism": {
                                     "linkTo": "Organism",
                                     "linkEnum": [
@@ -403,7 +413,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "22"
+            "default": "23"
         },
         "accession": {
             "accessionType": "BS"
@@ -886,13 +896,13 @@
         "status": {
             "title": "Biosample status"
         },
-        "biosample_type": {
+        "biosample_ontology.classification": {
             "title": "Biosample type"
         },
-        "organ_slims": {
+        "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
-        "cell_slims": {
+        "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
         "sex": {
@@ -940,10 +950,10 @@
         "age_units": {
             "title": "Age Units"
         },
-        "biosample_term_name": {
+        "biosample_ontology.term_name": {
             "title": "Term"
         },
-        "biosample_type": {
+        "biosample_ontology.classification": {
             "title": "Type"
         },
         "synchronization": {
@@ -1005,12 +1015,12 @@
         "accession": 1.0,
         "aliases": 1.0,
         "alternate_accessions": 1.0,
-        "biosample_term_id": 1.0,
-        "biosample_term_name": 1.0,
-        "organ_slims": 1.0,
-        "cell_slims": 1.0,
-        "developmental_slims": 1.0,
-        "biosample_synonyms": 1.0,
+        "biosample_ontology.term_id": 1.0,
+        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.organ_slims": 1.0,
+        "biosample_ontology.cell_slims": 1.0,
+        "biosample_ontology.developmental_slims": 1.0,
+        "biosample_ontology.synonyms": 1.0,
         "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
         "phase": 2.0,
@@ -1043,12 +1053,12 @@
         "applied_modifications.modified_site_by_target_id.aliases": 1.0,
         "originated_from.accession": 1.0,
         "originated_from.alternate_accessions": 1.0,
-        "originated_from.biosample_term_id": 1.0,
-        "originated_from.biosample_term_name": 1.0,
+        "originated_from.biosample_ontology.term_id": 1.0,
+        "originated_from.biosample_ontology.term_name": 1.0,
         "pooled_from.accession": 1.0,
         "pooled_from.alternate_accessions": 1.0,
-        "pooled_from.biosample_term_id": 1.0,
-        "pooled_from.biosample_term_name": 1.0,
+        "pooled_from.biosample_ontology.term_id": 1.0,
+        "pooled_from.biosample_ontology.term_name": 1.0,
         "characterizations.characterization_method": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
