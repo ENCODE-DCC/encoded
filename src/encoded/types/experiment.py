@@ -100,8 +100,6 @@ class Experiment(Dataset,
         'replicates.library.treatments',
         'target.organism',
     ]
-    ]
-    set_status_up = [
     set_status_up = [
         'original_files',
         'replicates',
