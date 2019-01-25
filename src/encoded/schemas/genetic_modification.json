@@ -73,11 +73,26 @@
                             "enum": ["analysis"]
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["expression"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": ["introduced_sequence"]
+                        },
+                        {
+                            "required": ["introduced_gene"]
+                        }
+                    ]
                 }
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags or introduced_sequence. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, or introduced_gene. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
             "oneOf": [
                 {
                     "anyOf": [
@@ -94,6 +109,14 @@
                         },
                         {
                             "required": ["introduced_sequence"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["introduced_gene"],
                             "properties": {
                                 "category": {
                                     "enum": ["insertion"]
@@ -283,6 +306,19 @@
                     }
                 }
             ]
+        },
+        "introduced_gene": {
+            "comment": "The property introduced_gene is not allowed for modifications of method RNAi or mutagen_treatment.",
+            "properties": {
+                "method": {
+                    "not": {
+                        "enum": [
+                            "RNAi",
+                            "mutagen treatment"
+                        ]
+                    }
+                }
+            }
         }
     },
     "properties": {
@@ -339,7 +375,8 @@
                 "repression",
                 "tagging",
                 "characterization",
-                "screening"
+                "screening",
+                "expression"
             ]
         },
         "zygosity":{
@@ -453,7 +490,9 @@
                             "TRE",
                             "V5",
                             "YFP",
-                            "mAID-mClover"
+                            "mAID-mClover",
+                            "mAID-mClover-NeoR",
+                            "mAID-mClover-Hygro"
                         ]
                     },
                     "location": {
@@ -483,6 +522,13 @@
         	"type": "string",
             "pattern": "^[ACTG]+$"
 		},
+        "introduced_gene": {
+            "title": "Introduced gene",
+            "description": "The identifier of the gene on the ENCODE portal introduced via the modification.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Gene"
+        },
         "method": {
             "title": "Method",
             "description": "The method used to produce the described genetic modification.",

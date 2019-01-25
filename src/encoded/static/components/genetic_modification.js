@@ -554,6 +554,13 @@ class GeneticModificationComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.introduced_gene ?
+                                        <div data-test="introduced-gene">
+                                            <dt>Introduced gene</dt>
+                                            <dd><a href={context.introduced_gene}>{context.introduced_gene}</a></dd>
+                                        </div>
+                                    : null}
+
                                     {context.zygosity ?
                                         <div data-test="zygosity">
                                             <dt>Zygosity</dt>
