@@ -299,8 +299,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         margin-right: 5px;
     }
 
-    @at-root #{&}__inclusion-selector {
+    @at-root #{&}__visualization-selector {
         flex: 0 1 auto;
+
+        select {
+            display: inline-block;
+            width: auto;
+            margin-right: 5px;
+            vertical-align: top;
+        }
+
+        button {
+            height: 34px;
+            vertical-align: top;
+        }
     }
 }
 
@@ -338,6 +350,26 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         pointer-events: none;
     }
 }
+
+.file-gallery-tab-bar {
+    .tab-nav {
+        display: flex;
+        justify-content: space-between;
+        align-content: stretch;
+        align-items: stretch;
+    }
+
+    .file-gallery__inclusion-selector {
+        flex: 0 1 auto;
+        align-self: center;
+        margin-right: 10px;
+    }
+}
+
+.file-table-visualizer {
+    text-align: center;
+}
+
 
 // File gallery title bars that collapse
 .collapsing-title-icon {

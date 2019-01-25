@@ -2300,5 +2300,59 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "file_format": "sra",
         "dataset": "ENCSR765JPC"
+    },
+    {
+        "accession": "ENCFF355OWW",
+        "aliases": [
+            "erez-lieberman:HIC036-hic30"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "hic",
+        "file_size": 3279889636,
+        "lab": "ali-mortazavi",
+        "md5sum": "2600b6928d28a4c5c932552ee8f84ab9",
+        "output_type": "chromatin interactions",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "0713dad6-5376-4a6c-a591-2542006a229c"
+    },
+    {
+        "accession": "ENCFF784GFP",
+        "aliases": [
+            "erez-lieberman:HIC036-hic"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "hic",
+        "file_size": 4367743691,
+        "lab": "ali-mortazavi",
+        "md5sum": "1f9c658e22e885a39a5cf37ed1613512",
+        "output_type": "chromatin interactions",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "7e1ff030-0d63-48d5-8447-ff69234f1b0c"
+    },
+    {
+        "accession": "ENCFF812THZ",
+        "aliases": [
+            "erez-lieberman:HIC034-hic30"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "hic",
+        "file_size": 9731729568,
+        "lab": "ali-mortazavi",
+        "md5sum": "e77a125126ea493e1159fbee8da014e7",
+        "output_type": "mapping quality thresholded chromatin interactions",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a5"
     }
 ]

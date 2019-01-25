@@ -28,6 +28,7 @@ ASSEMBLY_DETAILS = {
                         'ucsc_assembly':    'hg38',
                         'ensembl_host':     'www.ensembl.org',
                         'quickview':        True,
+                        'hic':              True,
                         'comment':          'Ensembl works'
     },
     'GRCh38-minimal': { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
@@ -40,6 +41,7 @@ ASSEMBLY_DETAILS = {
                         'ucsc_assembly':    'hg19',
                         'NA_ensembl_host':  'grch37.ensembl.org',
                         'quickview':        True,
+                        'hic':              True,
                         'comment':          'Ensembl DOES NOT WORK'
     },
     'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
@@ -101,6 +103,13 @@ ASSEMBLY_DETAILS = {
     },
 }
 
+BROWSER_FILE_TYPES = {
+    'ucsc': {'bigWig', 'bigBed'},
+    'ensembl': {'bigWig', 'bigBed'},
+    'quickview': {'bigWig', 'bigBed'},
+    'hic': {'hic'},
+}
+
 # Distinct from ASSEMBLY_DETAILS['ucsc_assembly'] as that defines allowed mappings
 ASSEMBLY_TO_UCSC_ID = {
     'GRCh38-minimal': 'hg38',
@@ -121,7 +130,8 @@ VISIBLE_DATASET_STATUSES = ["released"]
 VISIBLE_FILE_STATUSES = ["released"]
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
-VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES
+HIC_FILE_TYPES = ['hic']
+VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
 
@@ -1512,6 +1522,10 @@ def visualizable_assemblies(
     return list(file_assemblies)
 
 
+def _file_to_type(process_file):
+    '''Used with map to convert list of files to their types'''
+    return process_file['file_type']
+
 # Currently called in types/shared_calculated_properties.py
 def browsers_available(
     status,
@@ -1536,10 +1550,14 @@ def browsers_available(
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
     browsers = set()
-    full_set = {'ucsc', 'ensembl', 'quickview'}
+    full_set = {'ucsc', 'ensembl', 'quickview', 'hic'}
     file_assemblies = None
+    file_types = None
     if request is not None:
         vis_cache = VisCache(request)
+    if files is not None:
+        # Make a set of all file types in all dataset files
+        file_types = set(map(_file_to_type, files))
     for assembly in assemblies:
         mapped_assembly = ASSEMBLY_DETAILS.get(assembly)
         if not mapped_assembly:
@@ -1552,23 +1570,33 @@ def browsers_available(
             vis_blob = vis_cache.get(accession=accession, assembly=assembly)
         if not vis_blob and file_assemblies is None and files is not None:
             file_assemblies = visualizable_assemblies(assemblies, files)
+        if file_types is None:
+            continue
         if ('ucsc' not in browsers
-                and 'ucsc_assembly' in mapped_assembly.keys()):
+                and 'ucsc_assembly' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['ucsc'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
-                browsers.add('ucsc')
+                browsers.add('UCSC')
         if ('ensembl' not in browsers
-                and 'ensembl_host' in mapped_assembly.keys()):
+                and 'ensembl_host' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['ensembl'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
-                browsers.add('ensembl')
+                browsers.add('Ensembl')
         if ('quickview' not in browsers
-                and 'quickview' in mapped_assembly.keys()):
+                and 'quickview' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['quickview'].isdisjoint(file_types)):
             # NOTE: quickview may not have vis_blob as 'in progress'
             #   files can also be displayed
             #       Ideally we would also look at files' statuses and formats.
             #   However, the (calculated)files property only contains
             #   'released' files so it doesn't really help for quickview!
             if vis_blob is not None or status not in QUICKVIEW_STATUSES_BLOCKED:
-                browsers.add('quickview')
+                browsers.add('Quick View')
+        if ('hic' not in browsers
+                and 'hic' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['hic'].isdisjoint(file_types)):
+            if file_assemblies is not None and assembly in file_assemblies:
+                browsers.add('hic')
         if browsers == full_set:  # No use continuing
             break
     return list(browsers)
@@ -1600,7 +1628,7 @@ def object_is_visualizable(
         return len(browsers) > 0
 
 
-# Currently called in types/shared_calculated_properties.py and in search.py
+# Currently called in search.py
 def vis_format_url(browser, path, assembly, position=None):
     '''Given a url to hub.txt, returns the url to an external browser or None.'''
     mapped_assembly = ASSEMBLY_DETAILS[assembly]

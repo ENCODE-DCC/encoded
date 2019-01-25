@@ -258,7 +258,7 @@ class CalculatedVisualize:
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         vis_assembly = set()
-        viewable_file_formats = ['bigWig', 'bigBed']
+        viewable_file_formats = ['bigWig', 'bigBed', 'hic']
         viewable_file_status = ['released', 'in progress']
         vis_assembly = {
             properties['assembly']
@@ -273,23 +273,8 @@ class CalculatedVisualize:
             browsers = browsers_available(status, [assembly_name],
                                           self.base_types, self.item_type,
                                           files, accession, request)
-            if len(browsers) == 0:
-                continue
-            browser_urls = {}
-            if 'ucsc' in browsers:
-                ucsc_url = vis_format_url("ucsc", hub_url, assembly_name)
-                if ucsc_url is not None:
-                    browser_urls['UCSC'] = ucsc_url
-            if 'ensembl' in browsers:
-                ensembl_url = vis_format_url("ensembl", hub_url, assembly_name)
-                if ensembl_url is not None:
-                    browser_urls['Ensembl'] = ensembl_url
-            if 'quickview' in browsers:
-                quickview_url = vis_format_url("quickview", request.path, assembly_name)
-                if quickview_url is not None:
-                    browser_urls['Quick View'] = quickview_url
-            if browser_urls:
-                viz[assembly_name] = browser_urls
+            if len(browsers) > 0:
+                viz[assembly_name] = browsers
         if viz:
             return viz
         else:
