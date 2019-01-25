@@ -3,7 +3,7 @@ ssh_authorized_keys:
   - %(LOCAL_SSH_KEY)s
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb https://deb.nodesource.com/node_6.x trusty main"
+- source: "deb https://deb.nodesource.com/node_10.x trusty main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v1

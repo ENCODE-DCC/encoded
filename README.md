@@ -8,7 +8,7 @@
 
 These are the primary software versions used in production, and you should be able to use them locally:
 - Python 3.4.3
-- Node 6
+- Node 10
 - Elasticsearch 5.4 (or later?)
 - Java VM 1.8
 - Ubuntu 14.04
@@ -35,8 +35,8 @@ brew install freetype libjpeg libtiff littlecms webp # chromedriver temporarily 
 brew tap petere/postgresql
 brew install postgresql@9.3
 brew link --force postgresql@9.3
-brew install --force node@6
-brew link node@6 --force
+brew install --force node@10
+brew link node@10 --force
 brew cask install java8
 brew install elasticsearch@5.6
 pip3 install typing
@@ -58,8 +58,8 @@ pip3 install typing
 
 >:star: _Note_: **Node version mangement with nvm**: If you need to easily switch between **node** versions you may wish to use [nvm](https://github.com/creationix/nvm) instead (not required for most users)
 >- `npm install -g nvm`
->- `nvm install 6`
->- `nvm use 6`
+>- `nvm install 10`
+>- `nvm use 10`
 >
 >:star: _Note_: **Node version mangement with homebrew**: Switching node versions with homebrew (which is not package manager but not a typical version manager) is possible but is not as flexbible for this purpose, e.g.:
 >- `brew install node@7`
@@ -318,7 +318,7 @@ Go to the Visual Studio Code marketplace and install these extensions:
 **Versions**
 
 - `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x)_
-- `node --version`  _returns `v6.10.3`  (or variant like  v6.x.y)_
+- `node --version`  _returns `v10.15.0`  (or variant like  v6.x.y)_
 - `elasticsearch -v` _returns `Version: 1.7.6` (or variant like  Version: 1.7.x)_
 - `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)_ 
 
