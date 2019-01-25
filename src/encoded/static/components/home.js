@@ -666,7 +666,6 @@ class AssayClicking extends React.Component {
                 <div className="overall-classic">
 
                     <h1>ENCODE: Encyclopedia of DNA Elements</h1>
-
                     <div className="site-banner">
                         <div className="site-banner-img">
                             <img src="static/img/classic-image.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />
