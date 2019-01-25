@@ -857,9 +857,13 @@ class TypeaheadFacet extends React.Component {
         let filterVal = String(event.target.value.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, ''));
         // which facet terms match the search term entered by the user
         let terms = this.props.facet.terms.filter((term) => {
-            let termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '')
-            if (termKey.match(filterVal)){
-                return term;
+            if (term.doc_count > 0){
+                let termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '')
+                if (termKey.match(filterVal)){
+                    return term;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -910,7 +914,7 @@ class TypeaheadFacet extends React.Component {
                 selectedTerms.push(filter);
             }
         });
-        let displayedTermsCount = 5;
+        let displayedTermsCount = 8;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -1151,7 +1155,7 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        if ((facet.field === "organ_slims") || (facet.field === "biosample_type")){
+                        if ((facet.field === "organ_slims") || (facet.field === "biosample_summary") || (facet.field == "cell_slims")){
                             return (
                                 <TypeaheadFacet
                                     {...this.props}
