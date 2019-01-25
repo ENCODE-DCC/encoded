@@ -830,6 +830,193 @@ Facet.defaultProps = {
     width: 'inherit',
 };
 
+class TypeaheadFacet extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React commponent state.
+        this.state = {
+            filteredTerms: null,
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleSearch = this.handleSearch.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(event) {
+        let overflowingList = event.target.parentNode.getElementsByClassName('term-list')[0].getElementsByClassName('facet-term');
+        let overflowingListLength = overflowingList.length-1;
+        let overflowingListLastElement = overflowingList[overflowingListLength];
+        overflowingListLastElement.parentNode.scrollTop = overflowingListLastElement.offsetTop;
+    }
+    
+    handleSearch(event){
+        let filterVal = String(event.target.value.toLowerCase().replace(/ /g, ''));
+        let terms = this.props.facet.terms.filter((term) => {
+            if (term.key.match(filterVal)){
+                return term;
+            } else {
+                return false;
+            }
+        });
+        this.setState({filteredTerms: terms});
+    }
+
+    render() {
+        const { facet, filters } = this.props;
+        const title = facet.title;
+        const field = facet.field;
+        const total = facet.total;
+        const termID = title.replace(/\s+/g, '');
+
+        // Make a list of terms for this facet that should appear, by filtering out terms that
+        // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
+        // the search result filter list.
+        let terms = facet.terms.filter((term) => {
+            if (term.key) {
+                // See if the facet term also exists in the search result filters (i.e. the term
+                // exists in the URL query string).
+                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
+
+                // If the term wasn't in the filters list, allow its display only if it has a non-
+                // zero doc_count. If the term *does* exist in the filters list, display it
+                // regardless of its doc_count.
+                return found || term.doc_count > 0;
+            }
+
+            // The term exists, but without a key, so don't allow its display.
+            return false;
+        });
+        const moreTerms = terms.slice(5);
+        const TermComponent = field === 'type' ? TypeTerm : Term;
+        const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
+        const moreTermSelected = selectedTermCount > 0;
+        const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
+        const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
+        const seeMoreClass = `btn btn-link facet-list__expander${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
+        const statusFacet = field === 'status' || field === 'lot_reviews.status';
+        
+        let selectedTerms = [];
+        filters.map(filter => {
+            if (filter.field === field){
+                selectedTerms.push(filter);
+            }
+        });
+
+        // Audit facet titles get mapped to a corresponding icon.
+        let titleComponent = title;
+        if (field.substr(0, 6) === 'audit.') {
+            // Get the human-readable part of the audit facet title.
+            const titleParts = title.split(': ');
+
+            // Get the non-human-readable part so we can generate a corresponding CSS class name.
+            const fieldParts = field.match(/^audit.(.+).category$/i);
+            if (fieldParts && fieldParts.length === 2 && titleParts) {
+                // We got something that looks like an audit title. Generate a CSS class name for
+                // the corresponding audit icon, and generate the title.
+                const iconClass = `icon audit-activeicon-${fieldParts[1].toLowerCase()}`;
+                titleComponent = <span>{titleParts[0]}: <i className={iconClass} /></span>;
+            } else {
+                // Something about the audit facet title doesn't match expectations, so just
+                // display the given non-human-readable audit title.
+                titleComponent = <span>{title}</span>;
+            }
+        }
+        
+        if (this.state.filteredTerms !== null){
+            if (this.state.filteredTerms.length === 0){
+                return (
+                    <div className="facet typeahead-facet">
+                        <h5>{titleComponent}</h5>
+                        {(selectedTerms.length > 0) ?
+                            <div className="filter-container">
+                                <div className="filter-hed">Selected filters:</div>
+                                {selectedTerms.map((filter, filterIdx) =>
+                                    <a href={filter.remove} key={filter.term}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                                )}
+                            </div>
+                        : null}
+                        <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                            <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
+                            <div className="searcherror">
+                                Try a different search term for results.
+                            </div>
+                        </ul>
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="facet typeahead-facet">
+                        <h5>{titleComponent}</h5>
+                        {(selectedTerms.length > 0) ?
+                            <div className="filter-container">
+                                <div className="filter-hed">Selected filters:</div>
+                                {selectedTerms.map((filter, filterIdx) =>
+                                    <a href={filter.remove} key={filter.term}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                                )}
+                            </div>
+                        : null}
+                        <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                            <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
+                            <div className="term-list">
+                                {/* Display the first five terms of the facet */}
+                                {this.state.filteredTerms.map(term =>
+                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                )}
+                            </div>
+                            {(this.state.filteredTerms.length > 7) ?
+                                <i className="icon icon-caret-down" onClick={this.handleClick}/>
+                            : null}
+                        </ul>
+                    </div>
+                );
+            }
+            
+        } else {
+
+            if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+                return (
+                    <div className="facet typeahead-facet">
+                        <h5>{titleComponent}</h5>
+                        {(selectedTerms.length > 0) ?
+                            <div className="filter-container">
+                                <div className="filter-hed">Selected filters:</div>
+                                {selectedTerms.map((filter, filterIdx) =>
+                                    <a href={filter.remove} key={filter.term}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                                )}
+                            </div>
+                        : null}
+                        <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                            <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
+                            <div className="term-list">
+                                {terms.map(term =>
+                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                )}
+                            </div>
+                        </ul>
+                        {(terms.length > 7) ?
+                            <i className="icon icon-caret-down" onClick={this.handleClick}/>
+                        : null}
+                    </div>
+                );
+            }
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
+    }
+}
+
+TypeaheadFacet.propTypes = {
+    facet: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
+};
+
+TypeaheadFacet.defaultProps = {
+    width: 'inherit',
+};
+
 
 /**
  * Entry field for filtering the results list when search results appear in edit forms.
@@ -982,16 +1169,29 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        return (
-                            <Facet
-                                {...this.props}
-                                key={facet.field}
-                                facet={facet}
-                                filters={filters}
-                                width={width}
-                                negationFilters={negationFilters}
-                            />
-                        );
+                        if ((facet.field === "organ_slims") || (facet.field === "biosample_type")){
+                            return (
+                                <TypeaheadFacet
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                />
+                            );
+                        } else {
+                            return (
+                                <Facet
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                />
+                            );
+                        }
                     })}
                 </div>
             </div>
