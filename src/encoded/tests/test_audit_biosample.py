@@ -51,6 +51,52 @@ def base_chipmunk(testapp):
     return testapp.post_json('/organism', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def ontology():
+    ontology = {
+        'UBERON:0002469': {
+            'part_of': [
+                'UBERON:0001043',
+                'UBERON:0001096',
+                'UBERON:1111111'
+            ]
+        },
+        'UBERON:1111111': {
+            'part_of': []
+        },
+        'UBERON:0001096': {
+            'part_of': []
+        },
+        'UBERON:0001043': {
+            'part_of': [
+                'UBERON:0001007',
+                'UBERON:0004908'
+            ]
+        },
+        'UBERON:0001007': {
+            'part_of': []
+        },
+        'UBERON:0004908': {
+            'part_of': [
+                'UBERON:0001043',
+                'UBERON:1234567'
+            ]
+        },
+        'UBERON:1234567': {
+            'part_of': [
+                'UBERON:0006920'
+            ]
+        },
+        'UBERON:0006920': {
+            'part_of': []
+        },
+        'UBERON:1231231': {
+            'name': 'liver'
+        }
+    }
+    return ontology
+
+
 def test_audit_biosample_modifications_whole_organism(
         testapp, base_biosample,
         fly_donor, fly, construct_genetic_modification,
@@ -303,3 +349,28 @@ def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, single_c
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
+
+
+def test_is_part_of_grandparent(ontology):
+    from encoded.audit.biosample import is_part_of
+    assert is_part_of('UBERON:0002469', 'UBERON:0001007', ontology)
+
+def test_is_part_of_avoid_infinite_recursion(ontology):
+    from encoded.audit.biosample import is_part_of
+    assert is_part_of('UBERON:0002469', 'UBERON:0006920', ontology)
+
+def test_is_part_of_not_related(ontology):
+    from encoded.audit.biosample import is_part_of
+    assert not is_part_of('UBERON:1111111', 'UBERON:0001043', ontology)
+
+def test_is_part_of_part_of_not_in_ontology(ontology):
+    from encoded.audit.biosample import is_part_of
+    assert not is_part_of('UBERON:1231231', 'UBERON:0001043', ontology)
+
+def test_is_part_of_empty_part_of_in_ontology(ontology):
+    from encoded.audit.biosample import is_part_of
+    assert not is_part_of('UBERON:0001007', 'UBERON:0001043', ontology)
+
+def test_is_part_of_parent(ontology):
+    from encoded.audit.biosample import is_part_of
+    assert is_part_of('UBERON:0002469', 'UBERON:0001043', ontology)
