@@ -852,14 +852,18 @@ class TypeaheadFacet extends React.Component {
     }
     
     handleSearch(event){
-        let filterVal = String(event.target.value.toLowerCase().replace(/ /g, ''));
+        let filterVal = String(event.target.value.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, ''));
         let terms = this.props.facet.terms.filter((term) => {
-            if (term.key.match(filterVal)){
+            let termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '')
+            if (termKey.match(filterVal)){
                 return term;
             } else {
                 return false;
             }
         });
+        if (event.target.value.length > 0 && filterVal == ''){
+            terms = [];
+        }
         this.setState({filteredTerms: terms});
     }
 
@@ -965,7 +969,7 @@ class TypeaheadFacet extends React.Component {
                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                 )}
                             </div>
-                            {(this.state.filteredTerms.length > 7) ?
+                            {(this.state.filteredTerms.length > 8) ?
                                 <i className="icon icon-caret-down" onClick={this.handleClick}/>
                             : null}
                         </ul>
@@ -995,7 +999,7 @@ class TypeaheadFacet extends React.Component {
                                 )}
                             </div>
                         </ul>
-                        {(terms.length > 7) ?
+                        {(terms.length > 8) ?
                             <i className="icon icon-caret-down" onClick={this.handleClick}/>
                         : null}
                     </div>
