@@ -1181,8 +1181,9 @@ const organismDevelopmentSeriesTableColumns = {
             }
             if (biosamples && biosamples.length) {
                 lifeStageBiosample = _(biosamples).find(biosample => biosample.life_stage);
+                return lifeStageBiosample.life_stage;
             }
-            return lifeStageBiosample.life_stage;
+            return null;
         },
     },
 
