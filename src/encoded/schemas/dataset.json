@@ -104,7 +104,8 @@
                     "ENCORE",
                     "ENTEx",
                     "SESCC",
-                    "RegulomeDB"
+                    "RegulomeDB",
+                    "RNA_select"
                 ]
             }
         },
