@@ -7,6 +7,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
+import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
 import { requestFiles, DownloadableAccession } from './objectutils';
@@ -140,12 +141,12 @@ export class FileTable extends React.Component {
         const loggedIn = !!(session && session['auth.userid']);
 
         // Establish the selected assembly and annotation.
-        let selectedAssembly = null;
-        let selectedAnnotation = null;
-        if (selectedFilterValue && filterOptions[selectedFilterValue]) {
-            selectedAssembly = filterOptions[selectedFilterValue].assembly;
-            selectedAnnotation = filterOptions[selectedFilterValue].annotation;
-        }
+        const selectedAssembly = null;
+        const selectedAnnotation = null;
+        // if (selectedFilterValue && filterOptions[selectedFilterValue]) {
+        //     selectedAssembly = filterOptions[selectedFilterValue].assembly;
+        //     selectedAnnotation = filterOptions[selectedFilterValue].annotation;
+        // }
 
         let datasetFiles = _((items && items.length > 0) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length > 0) {
@@ -1078,6 +1079,7 @@ class FilterControls extends React.Component {
         if (filterOptions.length > 0 || browsers.length > 0) {
             return (
                 <div className="file-gallery-controls">
+                    <span className="file-gallery-instructions">Choose an assembly to view an external browser:</span>
                     {filterOptions.length > 0 ?
                         <div className="file-gallery-controls__assembly-selector">
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
@@ -1787,6 +1789,256 @@ InclusionSelector.propTypes = {
     handleInclusionChange: PropTypes.func.isRequired,
 };
 
+// Display facets for files
+const AssemblyFacet = (props) => {
+    const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
+    // Determine how many total files there are
+    let objSum = 0;
+    // Create object to keep track of selected filters
+    const selectedObj = {};
+    Object.keys(facetObject).forEach((key) => {
+        objSum += facetObject[key];
+        if (Object.keys(selectedFilters).length > 0) {
+            Object.keys(selectedFilters).forEach((filter) => {
+                if (selectedFilters[filter].indexOf(key) > -1) {
+                    selectedObj[key] = 'selected';
+                }
+            });
+        }
+    });
+    // Sort results
+    const sortedKeys = Object.keys(facetObject).sort((a, b) => (facetObject[b] - facetObject[a]));
+
+    return (
+        <div className="facet assembly-facet">
+            {sortedKeys.map(item =>
+                <div className={`facet-term-${item.replace(/ /g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
+                    <i className={`${selectedObj[item] ? 'icon icon-circle' : 'icon icon-circle-o'}`} />
+                    <div className="facet-term__item">
+                        <div className="facet-term__text">
+                            <span>{item}</span>
+                        </div>
+                        { (facetObject[item] > 0) ?
+                            <div className="facet-term__count">{facetObject[item]}</div>
+                        : null}
+                        <div className="facet-term__bar" style={{ width: `${Math.ceil((facetObject[item] / objSum) * 100)}%` }} />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+AssemblyFacet.propTypes = {
+    facetObject: PropTypes.object.isRequired,
+    facetTitle: PropTypes.string.isRequired,
+    filterFiles: PropTypes.func.isRequired,
+    facetKey: PropTypes.string.isRequired,
+    selectedFilters: PropTypes.object.isRequired,
+    currentTab: PropTypes.string.isRequired,
+};
+
+// Display facets for files
+const FileFacet = (props) => {
+    const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
+    // Determine how many total files there are
+    let objSum = 0;
+    // Create object to keep track of selected filters
+    const selectedObj = {};
+    Object.keys(facetObject).forEach((key) => {
+        objSum += facetObject[key];
+        if (Object.keys(selectedFilters).length > 0) {
+            Object.keys(selectedFilters).forEach((filter) => {
+                if (selectedFilters[filter].indexOf(key) > -1) {
+                    selectedObj[key] = 'selected';
+                }
+            });
+        }
+    });
+    // Sort results
+    const sortedKeys = Object.keys(facetObject).sort((a, b) => (facetObject[b] - facetObject[a]));
+
+    return (
+        <div className="facet">
+            <h5>{facetTitle}</h5>
+            {sortedKeys.map(item =>
+                <div className={`facet-term-${item.replace(/ /g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
+                    <div className="facet-term__item">
+                        <div className="facet-term__text">
+                            <span>{item}</span>
+                        </div>
+                        { (facetObject[item] > 0) ?
+                            <div className="facet-term__count">{facetObject[item]}</div>
+                        : null}
+                        <div className="facet-term__bar" style={{ width: `${Math.ceil((facetObject[item] / objSum) * 100)}%` }} />
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+FileFacet.propTypes = {
+    facetObject: PropTypes.object.isRequired,
+    facetTitle: PropTypes.string.isRequired,
+    filterFiles: PropTypes.func.isRequired,
+    facetKey: PropTypes.string.isRequired,
+    selectedFilters: PropTypes.object.isRequired,
+    currentTab: PropTypes.string.isRequired,
+};
+
+function filterItems(array, key, keyValue) {
+    return array.filter((el) => {
+        // check to see if there are multiple values selected for a facet
+        if (keyValue.length > 1) {
+            // if replicate facet, need to construct replicate value and check if value is present in selected values
+            if (key === 'biological_replicates') {
+                const replicate = (el.biological_replicates ? el.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+                return keyValue.indexOf(replicate) > -1;
+            }
+            // otherwise check if value is present in selected values
+            return keyValue.indexOf(el[key]) > -1;
+        }
+        // if there is only one value selected for a facet, can just compare value to selected value
+        // possibly this can all be wrapped into one check and the lines below here are not necessary
+        if (key === 'biological_replicates') {
+            const replicate = (el.biological_replicates ? el.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+            return replicate === keyValue[0];
+        }
+        if (key === 'assembly') {
+            if (keyValue[0] === 'All assemblies') {
+                return true;
+            }
+            return (keyValue.indexOf(el[key]) !== -1);
+        }
+        return el[key] === keyValue[0];
+    });
+}
+
+const TabPanelFacets = (props) => {
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters } = props;
+
+    let fileList = allFiles;
+    fileList = fileList.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+    if (currentTab === 'browser') {
+        fileList = fileList.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+    }
+    const assembly = { 'All assemblies': 0 };
+    const fileType = {};
+    const outputType = {};
+    const replicate = {};
+    fileList.forEach((file) => {
+        // collect 'Assembly'
+        if (!assembly[file.assembly] && file.assembly) {
+            assembly[file.assembly] = 0;
+        }
+    });
+    let fileListFiltered = allFiles;
+    Object.keys(filters).forEach((filter) => {
+        fileListFiltered = filterItems(fileListFiltered, filter, filters[filter]);
+    });
+    fileListFiltered = fileListFiltered.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+    if (currentTab === 'browser') {
+        fileListFiltered = fileListFiltered.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+    }
+
+    const singleFilter = Object.keys(filters).length === 1;
+    if (filters.file_type || singleFilter) {
+        fileList.forEach((file) => {
+            if (!((file.file_type === 'fastq') && (currentTab === 'graph'))) {
+                // collect 'File type'
+                if (fileType[file.file_type]) {
+                    fileType[file.file_type] += 1;
+                } else {
+                    fileType[file.file_type] = 1;
+                }
+            }
+        });
+    } else {
+        fileListFiltered.forEach((file) => {
+            // collect 'File type'
+            if (fileType[file.file_type]) {
+                fileType[file.file_type] += 1;
+            } else {
+                fileType[file.file_type] = 1;
+            }
+        });
+    }
+    if (filters.output_type || singleFilter) {
+        fileList.forEach((file) => {
+            // collect 'Output type'
+            if (outputType[file.output_type]) {
+                outputType[file.output_type] += 1;
+            } else {
+                outputType[file.output_type] = 1;
+            }
+        });
+    } else {
+        fileListFiltered.forEach((file) => {
+            // collect 'Output type'
+            if (outputType[file.output_type]) {
+                outputType[file.output_type] += 1;
+            } else {
+                outputType[file.output_type] = 1;
+            }
+        });
+    }
+    if (filters.biological_replicates || singleFilter) {
+        fileList.forEach((file) => {
+            // collect 'replicate'
+            const fileReplicate = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+            if (replicate[fileReplicate]) {
+                replicate[fileReplicate] += 1;
+            } else {
+                replicate[fileReplicate] = 1;
+            }
+        });
+    } else {
+        fileListFiltered.forEach((file) => {
+            // collect 'replicate'
+            const fileReplicate = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+            if (replicate[fileReplicate]) {
+                replicate[fileReplicate] += 1;
+            } else {
+                replicate[fileReplicate] = 1;
+            }
+        });
+    }
+
+    return (
+        <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
+            <h4>Choose an assembly </h4>
+            <AssemblyFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+            <h4>Filter files </h4>
+            <button className="show-hide-facets" onClick={toggleFacets}>
+                <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
+            </button>
+            { (Object.keys(filters).length >= 1 && !(Object.keys(filters).length === 1 && filters.assembly)) ?
+                <button className="clear-file-facets" onClick={clearFileFilters}>
+                    <i className="icon icon-times-circle" />
+                    <span> Clear all filters</span>
+                </button>
+            : null }
+            <FileFacet facetTitle={'File format'} facetObject={fileType} filterFiles={filterFiles} facetKey={'file_type'} selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle={'Output type'} facetObject={outputType} filterFiles={filterFiles} facetKey={'output_type'} selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle={'Replicates'} facetObject={replicate} filterFiles={filterFiles} facetKey={'biological_replicates'} selectedFilters={filters} currentTab={currentTab} />
+        </div>
+    );
+};
+
+TabPanelFacets.propTypes = {
+    open: PropTypes.bool.isRequired,
+    currentTab: PropTypes.string.isRequired,
+    filters: PropTypes.object.isRequired,
+    allFiles: PropTypes.array.isRequired,
+    filterFiles: PropTypes.func.isRequired,
+    toggleFacets: PropTypes.func.isRequired,
+    clearFileFilters: PropTypes.func.isRequired,
+};
+
+function arraysUnequal(array1, array2) {
+    return !(_.isEqual(array1, array2));
+}
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
@@ -1807,13 +2059,38 @@ class FileGalleryRendererComponent extends React.Component {
             currentBrowser: '',
             /** Files selected for a browser */
             selectedBrowserFiles: [],
-            /** All files associated with this dataset */
+            /** Files associated with this dataset, filtered by all facets (assembly and others) */
             files: datasetFiles,
+            /** Files associated with this dataset, filtered by assembly  */
+            filesFilteredByAssembly: datasetFiles,
+            /** Files associated with this dataset, for graph (filtered by everything but assembly)  */
+            graphFiles: datasetFiles,
+            /** All files associated with this dataset, with only assembly filtering  */
+            allFiles: datasetFiles,
             /** True to exclude files with certain statuses */
             inclusionOn: adminUser,
             /** Array of objects with the assemblies and annotations available for the files */
             availableAssembliesAnnotations: collectAssembliesAnnotations(datasetFiles),
+            /** Display facets sidebar */
+            facetsOpen: true,
+            /** Filters for files */
+            fileFilters: {},
+            /** Current tab: 'browser', 'graph', or 'files' */
+            currentTab: 'browser',
+            /** Possible assemblies */
+            assemblyList: [],
+            /** For drop down to external browsers */
+            selectedBrowserAssembly: null,
+            selectedBrowserAnnotation: null,
+            browsers: [],
         };
+
+        const { selectedBrowserAssembly, selectedBrowserAnnotation } = this.getSelectedAssemblyAnnotation();
+        this.state.selectedBrowserAssembly = selectedBrowserAssembly;
+        this.state.selectedBrowserAnnotation = selectedBrowserAnnotation;
+
+        const browsers = this.getAvailableBrowsers();
+        this.state.browsers = browsers;
 
         /** Used to see if related_files has been updated */
         this.prevRelatedFiles = [];
@@ -1822,24 +2099,46 @@ class FileGalleryRendererComponent extends React.Component {
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
         this.setInfoNodeVisible = this.setInfoNodeVisible.bind(this);
-        this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
-        this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
-        this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
         this.updateFiles = this.updateFiles.bind(this);
-        this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
         this.handleInclusionChange = this.handleInclusionChange.bind(this);
         this.filterForInclusion = this.filterForInclusion.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.handleNodeClick = this.handleNodeClick.bind(this);
+        this.toggleFacets = this.toggleFacets.bind(this);
+        this.filterFiles = this.filterFiles.bind(this);
+        this.clearFileFilters = this.clearFileFilters.bind(this);
+        this.handleTabClick = this.handleTabClick.bind(this);
+        this.setAssemblyList = this.setAssemblyList.bind(this);
+
         this.handleBrowserChange = this.handleBrowserChange.bind(this);
         this.handleBrowserFileSelect = this.handleBrowserFileSelect.bind(this);
         this.handleVisualize = this.handleVisualize.bind(this);
+        this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
+        this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
+        this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
+        this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
     }
 
-    // Set the default filter after the graph has been analyzed once.
     componentDidMount() {
+        // Set the default filter after the graph has been analyzed once.
         if (!this.props.altFilterDefault) {
             this.setState({ selectedFilterValue: '0' });
+        }
+        // Determing how many visualizable files there are
+        let tempFiles = this.state.files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+        tempFiles = tempFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        // Determine available assemblies in visualizable files
+        const assemblyList = this.setAssemblyList(this.state.files);
+        // Set default tab
+        if (this.props.hideGraph && tempFiles.length < 1) {
+            // graph is hidden and there are no files
+            this.setState({ currentTab: 'tables' });
+            this.filterFiles('All assemblies', 'assembly');
+        } else if (tempFiles.length < 1) {
+            this.setState({ currentTab: 'graph' });
+            this.filterFiles(Object.keys(assemblyList)[1], 'assembly');
+        } else {
+            this.filterFiles(Object.keys(assemblyList)[1], 'assembly');
         }
     }
 
@@ -1856,6 +2155,27 @@ class FileGalleryRendererComponent extends React.Component {
         this.setState({ infoNodeVisible: visible });
     }
 
+    setAssemblyList(allFiles) {
+        const assembly = { 'All assemblies': 0 };
+        let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+        if (this.state.currentTab === 'browser') {
+            fileList = fileList.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        }
+        if (this.state.currentTab === 'graph') {
+            fileList = fileList.filter(file => file.file_format !== 'fastq');
+        }
+        fileList.forEach((file) => {
+            if (!assembly[file.assembly] && file.assembly) {
+                assembly[file.assembly] = 0;
+            }
+        });
+        if (this.state.assemblyList !== assembly) {
+            this.setState({ assemblyList: assembly });
+            return assembly;
+        }
+        return this.state.assemblyList;
+    }
+
     /**
      * Get the currently selected assembly and annotation.
      * @param {string} filterValue Optional <select> value for current assembly/annotation.
@@ -1865,12 +2185,16 @@ class FileGalleryRendererComponent extends React.Component {
         const currentFilterValue = filterValue || this.state.selectedFilterValue;
         if (currentFilterValue && this.state.availableAssembliesAnnotations[currentFilterValue]) {
             const selectedAssemblyAnnotation = this.state.availableAssembliesAnnotations[currentFilterValue];
+            // On load, set assembly filter to be dropdown value
+            if (!this.state.fileFilters.assembly) {
+                this.filterFiles(selectedAssemblyAnnotation.assembly, 'assembly');
+            }
             return {
-                selectedAssembly: selectedAssemblyAnnotation.assembly,
-                selectedAnnotation: selectedAssemblyAnnotation.annotation,
+                selectedBrowserAssembly: selectedAssemblyAnnotation.assembly,
+                selectedBrowserAnnotation: selectedAssemblyAnnotation.annotation,
             };
         }
-        return { selectedAssembly: null, selectedAnnotation: null };
+        return { selectedBrowserAssembly: null, selectedBrowserAnnotation: null };
     }
 
     /**
@@ -1879,9 +2203,12 @@ class FileGalleryRendererComponent extends React.Component {
      *                             state.selectedFilterValue used if not given.
      */
     getAvailableBrowsers(filterValue) {
-        const { selectedAssembly } = this.getSelectedAssemblyAnnotation(filterValue);
-        if (selectedAssembly && this.props.context.visualize && this.props.context.visualize[selectedAssembly]) {
-            return visSortBrowsers(this.props.context.visualize[selectedAssembly]);
+        const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation(filterValue);
+        if (this.state.selectedBrowserAssembly !== selectedBrowserAssembly) {
+            this.setState({ selectedBrowserAssembly });
+        }
+        if (selectedBrowserAssembly && this.props.context.visualize && this.props.context.visualize[selectedBrowserAssembly]) {
+            return visSortBrowsers(this.props.context.visualize[selectedBrowserAssembly]);
         }
         return [];
     }
@@ -1900,6 +2227,7 @@ class FileGalleryRendererComponent extends React.Component {
             // Current browser not available for new assembly/annotation. Set the current browser
             // to the first available.
             this.setState({
+                browsers,
                 currentBrowser: browsers[0],
                 selectedBrowserFiles: visFilterBrowserFiles(files, browsers[0], true),
             });
@@ -1934,15 +2262,58 @@ class FileGalleryRendererComponent extends React.Component {
         relatedPromise.then((relatedFiles) => {
             this.prevRelatedFiles = relatedFiles;
             const allFiles = datasetFiles.concat(relatedFiles);
-            if (allFiles.length !== this.state.files.length) {
-                this.setState({ files: allFiles });
 
+            // check for filters
+            let filteredFiles = allFiles;
+            let graphFiles = allFiles;
+            let filesFilteredByAssembly = allFiles;
+            if (Object.keys(this.state.fileFilters).length > 0) {
+                Object.keys(this.state.fileFilters).forEach((fileFilter) => {
+                    if (fileFilter === 'assembly') {
+                        filesFilteredByAssembly = filterItems(filesFilteredByAssembly, fileFilter, this.state.fileFilters[fileFilter]);
+                    }
+                    if (fileFilter !== 'assembly') {
+                        graphFiles = filterItems(graphFiles, fileFilter, this.state.fileFilters[fileFilter]);
+                    }
+                    filteredFiles = filterItems(filteredFiles, fileFilter, this.state.fileFilters[fileFilter]);
+                });
+            }
+
+            if (arraysUnequal(allFiles, this.state.allFiles)) {
+                this.setState({ allFiles });
+                this.setAssemblyList(this.state.allFiles);
+            }
+
+            if (arraysUnequal(filesFilteredByAssembly, this.state.filesFilteredByAssembly)) {
+                this.setState({ filesFilteredByAssembly });
+                this.setAssemblyList(this.state.allFiles);
+            }
+
+            if (arraysUnequal(graphFiles, this.state.graphFiles)) {
+                this.setState({ graphFiles });
+            }
+
+            if (arraysUnequal(filteredFiles, this.state.files)) {
+                this.setState({ files: filteredFiles });
                 // From the new set of files, calculate the currently selected assembly and annotation to display in
                 // the graph and tables.
-                this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
+                // this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
             }
-            this.resetCurrentBrowser(null, allFiles);
+            // this.resetCurrentBrowser(null, allFiles);
         });
+    }
+
+    /**
+     * Clear selected filters
+     */
+    clearFileFilters() {
+        // we want to keep the assembly filter which will exist unless it is 'all assemblies and annotations'
+        if (this.state.fileFilters.assembly) {
+            this.setState({ fileFilters: { assembly: [this.state.fileFilters.assembly[0]] } });
+        // if there is no assembly filter, then 'all assemblies and annotations' is selected and there should be no filters at all
+        } else {
+            this.setState({ fileFilters: {} });
+        }
     }
 
     /**
@@ -1965,7 +2336,7 @@ class FileGalleryRendererComponent extends React.Component {
     // FileGalleryRenderer.inclusionStatuses.
     filterForInclusion(files) {
         if (!this.state.inclusionOn) {
-            // The user has chosen to not see file swith statuses in
+            // The user has chosen to not see files with statuses in
             // FileGalleryRenderer.inclusionStatuses. Create an array with files having those
             // statuses filtered out. Start by making an array of files with a filtered-out status
             return files.filter(file => FileGalleryRendererComponent.inclusionStatuses.indexOf(file.status) === -1);
@@ -2003,8 +2374,11 @@ class FileGalleryRendererComponent extends React.Component {
      * Called when the user clicks the Visualize button.
      */
     handleVisualize() {
-        const { selectedAssembly } = this.getSelectedAssemblyAnnotation();
-        visOpenBrowser(this.props.context, this.state.currentBrowser, selectedAssembly, this.state.selectedBrowserFiles, this.context.location_href);
+        const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation();
+        if (selectedBrowserAssembly !== this.state.selectedBrowserAssembly) {
+            this.setState({ selectedBrowserAssembly });
+        }
+        visOpenBrowser(this.props.context, this.state.currentBrowser, selectedBrowserAssembly, this.state.selectedBrowserFiles, this.context.location_href);
     }
 
     /**
@@ -2021,10 +2395,62 @@ class FileGalleryRendererComponent extends React.Component {
                 const matchingFile = state.files.find(file => file['@id'] === clickedFileAtId);
                 return { selectedBrowserFiles: state.selectedBrowserFiles.concat(matchingFile) };
             }
-
             // Remove clicked file from array of selected files.
             return { selectedBrowserFiles: state.selectedBrowserFiles.slice(0, matchingIndex).concat(state.selectedBrowserFiles.slice(matchingIndex + 1)) };
         });
+    }
+
+    toggleFacets() {
+        this.setState(prevState => ({ facetsOpen: !prevState.facetsOpen }));
+    }
+
+    filterFiles(value, facet) {
+        if (facet === 'assembly') {
+            this.setState({ selectedAssembly: value });
+        }
+        // check to see if there are already filters
+        if (Object.keys(this.state.fileFilters).length > 0) {
+            const currentFilters = this.state.fileFilters;
+            // check to see if a filter for this facet exists, or an assembly filter which is an "OR" type filter not an "AND" type filter like the others
+            if ((currentFilters[facet]) && facet !== 'assembly') {
+                // there is a filter for this facet and this value
+                if (currentFilters[facet].indexOf(value) > -1) {
+                    // the value already exists in the filter so we want to reverse it
+                    if (currentFilters[facet].length > 1) {
+                        // this value is not the only value in the filter so we delete just that value
+                        const allValues = currentFilters[facet];
+                        allValues.splice(allValues.indexOf(value), 1);
+                        currentFilters[facet] = allValues;
+                    } else {
+                        // there was only one value in the filter so we just delete the whole filter
+                        delete currentFilters[facet];
+                    }
+                // there is a filter for this facet but not this value so we add it
+                } else {
+                    // add a value to an existing filter
+                    currentFilters[facet] = [...currentFilters[facet], value];
+                }
+            } else {
+                // create a new filter with the new value
+                currentFilters[facet] = [value];
+            }
+            this.setState({ fileFilters: currentFilters });
+        // if there are no filters yet, set this to be the first filter
+        } else {
+            this.setState({ fileFilters: { [facet]: [value] } });
+        }
+    }
+
+    // Handle a click on a tab
+    handleTabClick(tab) {
+        if (tab !== this.state.currentTab) {
+            this.setState({ currentTab: tab });
+            if (tab === 'tables') {
+                this.filterFiles('All assemblies', 'assembly');
+            } else if (tab === 'browser' || tab === 'graph') {
+                this.filterFiles(Object.keys(this.state.assemblyList)[1], 'assembly');
+            }
+        }
     }
 
     render() {
@@ -2034,15 +2460,14 @@ class FileGalleryRendererComponent extends React.Component {
         if (this.state.files.length === 0) {
             return null;
         }
-        const { selectedAssembly, selectedAnnotation } = this.getSelectedAssemblyAnnotation();
-
         // Get a list of files for the graph (filters out excluded files if requested by the user).
-        const includedFiles = this.filterForInclusion(this.state.files);
+        const includedFiles = this.filterForInclusion(this.state.graphFiles);
+        const tableIncludedFiles = this.filterForInclusion(this.state.files);
 
         const fileTable = (
             <FileTable
                 {...this.props}
-                items={includedFiles}
+                items={tableIncludedFiles}
                 selectedFilterValue={this.state.selectedFilterValue}
                 filterOptions={this.state.availableAssembliesAnnotations}
                 graphedFiles={allGraphedFiles}
@@ -2097,29 +2522,44 @@ class FileGalleryRendererComponent extends React.Component {
                     visualizeHandler={this.handleVisualize}
                 />
 
-                {!hideGraph ?
+                <div className="file-gallery-container">
+                    <TabPanelFacets
+                        open={this.state.facetsOpen}
+                        currentTab={this.state.currentTab}
+                        filters={this.state.fileFilters}
+                        allFiles={this.state.allFiles}
+                        filterFiles={this.filterFiles}
+                        toggleFacets={this.toggleFacets}
+                        clearFileFilters={this.clearFileFilters}
+                    />
                     <TabPanel
-                        tabPanelCss="file-gallery-tab-bar"
-                        tabs={{ graph: 'Association graph', tables: 'File details' }}
+                        tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
+                        tabs={{ browser: 'Genome browser', graph: 'Association graph', tables: 'File details' }}
                         decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
                         decorationClasses="file-gallery__inclusion-selector"
+                        selectedTab={this.state.currentTab}
+                        handleTabClick={this.handleTabClick}
                     >
-                        <TabPanelPane key="graph">
-                            <FileGraph
-                                dataset={context}
-                                files={includedFiles}
-                                infoNode={this.state.infoNode}
-                                selectedAssembly={selectedAssembly}
-                                selectedAnnotation={selectedAnnotation}
-                                schemas={schemas}
-                                colorize={this.state.inclusionOn}
-                                handleNodeClick={this.handleNodeClick}
-                                loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
-                                auditIndicators={this.props.auditIndicators}
-                                auditDetail={this.props.auditDetail}
-                            />
+                        <TabPanelPane key="browser">
+                            <GenomeBrowser files={this.state.files} expanded={this.state.facetsOpen} assembly={this.state.selectedAssembly} annotation={this.state.selectedAnnotation} />
                         </TabPanelPane>
-
+                        { (!hideGraph) ?
+                            <TabPanelPane key="graph">
+                                <FileGraph
+                                    dataset={context}
+                                    files={includedFiles}
+                                    infoNode={this.state.infoNode}
+                                    selectedAssembly={this.state.selectedAssembly}
+                                    selectedAnnotation={this.state.selectedAnnotation}
+                                    schemas={schemas}
+                                    colorize={this.state.inclusionOn}
+                                    handleNodeClick={this.handleNodeClick}
+                                    loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
+                                    auditIndicators={this.props.auditIndicators}
+                                    auditDetail={this.props.auditDetail}
+                                />
+                            </TabPanelPane>
+                        : null}
                         <TabPanelPane key="tables">
                             {/* If logged in and dataset is released, need to combine search of files that reference
                                 this dataset to get released and unreleased ones. If not logged in, then just get
@@ -2127,9 +2567,7 @@ class FileGalleryRendererComponent extends React.Component {
                             {fileTable}
                         </TabPanelPane>
                     </TabPanel>
-                :
-                    <div>{fileTable}</div>
-                }
+                </div>
 
                 {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>

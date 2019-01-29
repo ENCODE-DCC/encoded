@@ -9,3 +9,180 @@
         padding-right: 10px;
     }
 }
+
+.valis-browser {
+    width: 100%;
+    min-height: 200px;
+    margin-top: 5px;
+    button {
+        svg {
+            margin-left: 0 !important;
+            margin-top: 0 !important;
+        }
+    }
+    &.browser-error {
+        margin: 10px;
+    }
+}
+
+.valis-genome-visualizer {
+    .react-object-container {
+        div {
+            background-color: white !important;
+            color: #333333;
+        }
+    }
+}
+
+.hpgv_ui-block {
+    color: #364565;
+    background-color: #f2f2f2;//#d8e0e8;
+    font-size: 16px;
+    box-shadow: none;
+    border: 0;
+    border: 1px solid #BFBFBF;
+    &.hpgv_track-header {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+}
+
+.hpgv_panel {
+    color: #333;
+    font-size: 12px;
+}
+
+.hpgv_track-sequence {
+    --nucleobase-a: #0C7489;//#d06fa9;
+    --nucleobase-t: #F9CE70;//#e89188;
+    --nucleobase-g: #0FA3B1;//#4bd897;
+    --nucleobase-c: #C14953;//#44a4dc;
+    --gc-banding-low: #0C7489;
+    --gc-banding-high: #F9CE70;
+    --text-color: rgba(255, 255, 255, 0.7);
+    --text-additive-blending: 1.0; /* set to 0.0 for dark text colors */
+}
+
+// styles for bigBed files / annotation files
+.hpgv_track-annotation {
+    --transcript-arrow: rgba(0, 0, 0, 1.0);
+    --transcript: #BDC5C0;//rgba(156, 163, 175, 0.13);
+    --coding: #575F5A; //#575F5A;//rgba(0, 44, 95, 0.79); // WE ARE USING THIS
+    --non-coding: #F9CE70;
+    --untranslated: #C14953;
+
+    --coding-max-score: #575F5A;//rgba(87, 95, 90, 0.79);
+    --non-coding-max-score: red;
+}
+
+// .hpgv_track-sequence {
+//     --cursor: #ffffffcc;
+//     --loading-indicator: white;
+// 
+//     --nucleobase-a: #d06fa9;
+//     --nucleobase-t: #e89188;
+//     --nucleobase-g: #4bd897;
+//     --nucleobase-c: #44a4dc;
+// 
+//     --gc-banding-low: #d45591;
+//     --gc-banding-high: #60ffff;
+// 
+//     color: rgba(255, 255, 255, 0.7);
+//     --text-additive-blending: 1.0; /* set to 0.0 for dark text colors */
+// }
+
+// styles for signal track
+.hpgv_track-signal {
+    --signal-color: #2A6496;//#A54747;
+}
+
+.hpgv_track {
+    background-color: #fff;
+    border-bottom: 1px solid #d2d2d2;
+    --loading-indicator: #8ea1bf;
+    --cursor: #3645653b;
+    --secondary-cursor: #3645653b;
+}
+
+.hpgv_track-close-button {
+    display: none;
+}
+
+.hpgv {
+    color: black;
+}
+
+.hpgv_ui-block {
+    color: black;
+}
+
+.hpgv_track-sequence {
+    color: black;
+}
+
+.gene-search {
+    padding: 20px;
+    display: flex;
+    width: 80%;
+    margin: auto;
+    align-items: center;
+    .icon-search {
+        margin-right: 5px;
+    }
+    .search-instructions {
+        flex: 0 1 135px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .searchform {
+        flex: 1 0 0;
+        position: relative;
+        input {
+            width: 100%;
+            border-radius: 5px;
+            padding: 4px;
+        }
+        .done {
+            position: absolute;
+            height: 0;
+            top: 30px;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            border: 1px solid #bdbdbd;
+            background: white;
+            z-index: 99999;
+        }
+        .adv-search-autocomplete {
+            right: 0;
+            top: 0;
+            background: white;
+            color: black;
+        }
+        
+    }
+    .btn {
+        margin-left: 10px;
+    }
+}
+
+.facet-term-Allassemblies-browser, .facet-term-Allassemblies-graph {
+    pointer-events: none;
+    .facet-term__item, .icon {
+        color: #A0A0A0;
+    }
+}
+
+.file-gallery-facets {
+    .assembly-facet {
+        .facet-term {
+            padding: 0 2px;
+            &.selected {
+                background-color: white;
+                .facet-term__text {
+                    color: #000;
+                }
+            }
+        }
+    }
+}
