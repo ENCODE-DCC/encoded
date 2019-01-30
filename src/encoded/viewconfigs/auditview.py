@@ -25,7 +25,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
     set_facets,
     set_filters,
 )
-
+import time
 
 class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
     '''Audit View'''
@@ -339,7 +339,15 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             self._view_item.tabular_report
         ]
         query, audit_field_list, used_filters = self._construct_query()
+        print('---------------------------------------------------------------------------------------------------------------')
+        print('audit search')
+        t0 = time.time()
+        print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
+        print('---------------------------------------------------------------------------------------------------------------')
+        print('end audit search')
+        print(time.time() - t0)
+        print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']
         self._result['matrix']['doc_count'] = total

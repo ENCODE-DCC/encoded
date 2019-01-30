@@ -21,7 +21,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
     set_facets,
 )
 from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-error
-
+import time
 
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     '''Matrix View'''
@@ -213,7 +213,16 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._matrix['clear_matrix'] = matrix_route + '?type=' + self._doc_types[0]
         self._result['views'] = self._construct_result_views(type_info)
         query, used_filters = self._construct_query()
+        print('---------------------------------------------------------------------------------------------------------------')
+        #raise ValueError('abc')
+        print('matrix')
+        t0 = time.time()
+        print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
+        print('---------------------------------------------------------------------------------------------------------------')
+        print('end matrix')
+        print(time.time() - t0)
+        print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']
         self._result['matrix']['doc_count'] = total

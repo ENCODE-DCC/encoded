@@ -20,7 +20,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
     set_facets,
     set_filters,
 )
-
+import time
 
 class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
     '''Summary View'''
@@ -161,7 +161,15 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         clear_qs_str = ('?' + clear_qs) if clear_qs else ''
         self._result['clear_filters'] = summary_route + clear_qs_str
         query, used_filters = self._construct_query()
+        print('---------------------------------------------------------------------------------------------------------------')
+        print('size not none')
+        t0 = time.time()
+        print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
+        print('---------------------------------------------------------------------------------------------------------------')
+        print('size not none')
+        print(time.time() - t0)
+        print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['summary']['doc_count']
         self._result['summary']['doc_count'] = total
