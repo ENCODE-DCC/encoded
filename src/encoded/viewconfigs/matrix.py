@@ -22,6 +22,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 )
 from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-error
 import time
+import logging
 
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     '''Matrix View'''
@@ -40,6 +41,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
         self._schema = None
+        logging.basicConfig(filename='program.log',level=logging.DEBUG)
 
     @staticmethod
     def _set_result_title(type_info):
@@ -215,13 +217,13 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         query, used_filters = self._construct_query()
         print('---------------------------------------------------------------------------------------------------------------')
         #raise ValueError('abc')
-        print('matrix')
+        logging.warning('matrix')
         t0 = time.time()
         print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
         print('---------------------------------------------------------------------------------------------------------------')
         print('end matrix')
-        print(time.time() - t0)
+        logging.warning(time.time() - t0)
         print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']

@@ -24,6 +24,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 from snovault.viewconfigs.searchview import SearchView  # pylint: disable=import-error
 
 import time
+import logging
 
 class NewsView(SearchView):  # pylint: disable=too-few-public-methods
     '''News View'''
@@ -34,6 +35,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
         self._from_ = 0
         self._size = 25
         self._es_index = 'page'
+        logging.basicConfig(filename='search_test_1.log',level=logging.DEBUG)
 
     def preprocess_view(self):
         '''
@@ -72,7 +74,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             facets.extend(self._types[doc_types[0]].schema['facets'].items())
         query['aggs'] = set_facets(facets, used_filters, self._principals, doc_types)
         print('---------------------------------------------------------------------------------------------------------------')
-        print('size not none')
+        logging.warning('size not none')
         t0 = time.time()
         print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(
@@ -83,7 +85,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             size=25)
         print('---------------------------------------------------------------------------------------------------------------')
         print('size not none')
-        print(time.time() - t0)
+        logging.warning(time.time() - t0)
         print('---------------------------------------------------------------------------------------------------------------')         
         total = es_results['hits']['total']
         if not total:
