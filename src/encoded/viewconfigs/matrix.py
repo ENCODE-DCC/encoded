@@ -24,6 +24,8 @@ from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-er
 import time
 import logging
 
+logging.basicConfig(filename='search_test_1.log', level=logging.DEBUG)
+
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     '''Matrix View'''
     _view_name = 'matrix'
@@ -41,7 +43,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
         self._schema = None
-        logging.basicConfig(filename='program.log',level=logging.DEBUG)
+        
 
     @staticmethod
     def _set_result_title(type_info):
