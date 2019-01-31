@@ -1912,15 +1912,15 @@ class FileGalleryRendererComponent extends React.Component {
                 // From the new set of files, calculate the currently selected assembly and annotation to display in
                 // the graph and tables.
                 this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
+            }
 
-                // Generate the array of browsers for the currently selected assembly.
-                const browsers = this.getAvailableBrowsers();
-                if (browsers.length > 0 && !this.state.currentBrowser) {
-                    this.setState({
-                        currentBrowser: browsers[0],
-                        selectedBrowserFiles: visFilterBrowserFiles(allFiles, browsers[0], true),
-                    });
-                }
+            // Generate the array of browsers for the currently selected assembly.
+            const browsers = this.getAvailableBrowsers();
+            if (browsers.length > 0 && !this.state.currentBrowser) {
+                this.setState({
+                    currentBrowser: browsers[0],
+                    selectedBrowserFiles: visFilterBrowserFiles(allFiles, browsers[0], true),
+                });
             }
         });
     }
