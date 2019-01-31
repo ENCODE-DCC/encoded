@@ -139,7 +139,7 @@ export const visFilterBrowserFiles = (files, browser, limits = false) => {
     // Filter the given files to ones qualified for the given browser, and only those files with
     // "released" status.
     const qualifiedFileTypes = browserFileTypes[browser];
-    let qualifiedFiles = files.filter(file => qualifiedFileTypes.indexOf(file.file_type) !== -1 && file.status === 'released');
+    let qualifiedFiles = files.filter(file => qualifiedFileTypes.indexOf(file.file_format) !== -1 && file.status === 'released');
 
     // For the hic browser, sort to prioritize "mapping quality thresholded chromatin interactions"
     // output_types.
@@ -166,10 +166,10 @@ export const visFileSelectable = (file, selectedFiles, browser) => {
         // Always not selectable.
         break;
     case 'Quick View':
-        selectable = browserFileTypes[browser].indexOf(file.file_type) !== -1;
+        selectable = browserFileTypes[browser].indexOf(file.file_format) !== -1;
         break;
     case 'hic':
-        selectable = (browserFileTypes[browser].indexOf(file.file_type) !== -1) && (selectedFiles.length < MAX_HIC_FILES_SELECTED);
+        selectable = (browserFileTypes[browser].indexOf(file.file_format) !== -1) && (selectedFiles.length < MAX_HIC_FILES_SELECTED);
         break;
     case 'Ensembl':
         // Always not selectable.
