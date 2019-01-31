@@ -24,7 +24,8 @@ from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-er
 import time
 import logging
 
-logging.basicConfig(filename='search_test_1.log', level=logging.DEBUG)
+#logger = logging.getLogger(__name__)
+#logging.basicConfig(filename='search_test_1.log', level=logging.DEBUG)
 
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     '''Matrix View'''
@@ -43,6 +44,24 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
         self._schema = None
+
+        # Create the Logger
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+ 
+        # Create the Handler for logging data to a file
+        logger_handler = logging.FileHandler('search_test_1.log')
+        logger_handler.setLevel(logging.DEBUG)
+ 
+        # Create a Formatter for formatting the log messages
+        logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+ 
+        # Add the Formatter to the Handler
+        logger_handler.setFormatter(logger_formatter)
+ 
+        # Add the Handler to the Logger
+        self.logger.addHandler(logger_handler)
+        self.logger.info('Completed configuring logger()!')
         
 
     @staticmethod
@@ -219,13 +238,13 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         query, used_filters = self._construct_query()
         print('---------------------------------------------------------------------------------------------------------------')
         #raise ValueError('abc')
-        logging.warning('matrix')
+        self.logger.debug('matrix')
         t0 = time.time()
         print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
         print('---------------------------------------------------------------------------------------------------------------')
         print('end matrix')
-        logging.warning(time.time() - t0)
+        self.logger.debug(time.time() - t0)
         print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']
