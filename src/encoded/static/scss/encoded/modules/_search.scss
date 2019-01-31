@@ -201,7 +201,7 @@ $form-bg: #f3f3f3;
         left: 0;
         text-align:center;
         cursor: pointer;
-        pointer-events: inherit;
+        // pointer-events: inherit;
         box-shadow: inset 0px -10px 20px -10px rgba(0, 0, 0, 0.4);
         opacity: 1;
         transition: opacity 1s ease-in-out;
