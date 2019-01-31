@@ -30,6 +30,25 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         super(SummaryView, self).__init__(context, request)
         self._summary = None
 
+        # Create the Logger
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+ 
+        # Create the Handler for logging data to a file
+        logger_handler = logging.FileHandler('search_test_1.log')
+        logger_handler.setLevel(logging.DEBUG)
+ 
+        # Create a Formatter for formatting the log messages
+        logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+ 
+        # Add the Formatter to the Handler
+        logger_handler.setFormatter(logger_formatter)
+ 
+        # Add the Handler to the Logger
+        self.logger.addHandler(logger_handler)
+        self.logger.info('Completed configuring logger()!')
+
+
     def _construct_query(self):
         '''Helper method for preprocessing view'''
         search_fields, _ = get_search_fields(self._request, self._doc_types)
@@ -167,8 +186,8 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
         print('---------------------------------------------------------------------------------------------------------------')
-        print('size not none')
-        print(time.time() - t0)
+        print('summary, size not none')
+        self.logger.debug(time.time() - t0)
         print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['summary']['doc_count']

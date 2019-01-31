@@ -38,6 +38,24 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             'no.audit.not_compliant',
             'no.audit.warning'
         ]
+        
+        # Create the Logger
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+ 
+        # Create the Handler for logging data to a file
+        logger_handler = logging.FileHandler('search_test_1.log')
+        logger_handler.setLevel(logging.DEBUG)
+ 
+        # Create a Formatter for formatting the log messages
+        logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+ 
+        # Add the Formatter to the Handler
+        logger_handler.setFormatter(logger_formatter)
+ 
+        # Add the Handler to the Logger
+        self.logger.addHandler(logger_handler)
+        self.logger.info('Completed configuring logger()!')
 
     def _construct_aggs(self, x_grouping, audit_field_list):
         '''Helper Method for constructing query'''
@@ -345,8 +363,8 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(body=query, index=self._es_index)
         print('---------------------------------------------------------------------------------------------------------------')
-        print('end audit search')
-        print(time.time() - t0)
+        print('audit search')
+        self.logger.debug(time.time() - t0)
         print('---------------------------------------------------------------------------------------------------------------')         
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']

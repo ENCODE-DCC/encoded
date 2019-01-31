@@ -35,7 +35,23 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
         self._from_ = 0
         self._size = 25
         self._es_index = 'page'
-        logging.basicConfig(filename='search_test_1.log',level=logging.DEBUG)
+        # Create the Logger
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+ 
+        # Create the Handler for logging data to a file
+        logger_handler = logging.FileHandler('search_test_1.log')
+        logger_handler.setLevel(logging.DEBUG)
+ 
+        # Create a Formatter for formatting the log messages
+        logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+ 
+        # Add the Formatter to the Handler
+        logger_handler.setFormatter(logger_formatter)
+ 
+        # Add the Handler to the Logger
+        self.logger.addHandler(logger_handler)
+        self.logger.info('Completed configuring logger()!')
 
     def preprocess_view(self):
         '''
@@ -74,7 +90,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             facets.extend(self._types[doc_types[0]].schema['facets'].items())
         query['aggs'] = set_facets(facets, used_filters, self._principals, doc_types)
         print('---------------------------------------------------------------------------------------------------------------')
-        logging.warning('size not none')
+        #logging.warning('size not none')
         t0 = time.time()
         print('---------------------------------------------------------------------------------------------------------------')         
         es_results = self._elastic_search.search(
@@ -84,8 +100,8 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             from_=0,
             size=25)
         print('---------------------------------------------------------------------------------------------------------------')
-        print('size not none')
-        logging.warning(time.time() - t0)
+        print('news, size not none')
+        self.logger.debug(time.time() - t0)
         print('---------------------------------------------------------------------------------------------------------------')         
         total = es_results['hits']['total']
         if not total:
