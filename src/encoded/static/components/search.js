@@ -841,15 +841,30 @@ class TypeaheadFacet extends React.Component {
 
         // Bind `this` to non-React methods.
         this.handleSearch = this.handleSearch.bind(this);
-        this.handleScroll = this.handleScroll.bind(this);
+        this.scrollEvent = this.scrollEvent.bind(this);
     }
-
-    handleScroll(event) {
+    
+    scrollEvent(e) {
+        
         // scroll overflowing facet term lists to the bottom on click
-        let overflowingList = event.target.parentNode.getElementsByClassName('facet-term');
+        let overflowingList = e.target.getElementsByClassName('facet-term');
         let lastOverflowIdx = overflowingList.length-1;
         let overflowingListLastElement = overflowingList[lastOverflowIdx];
-        overflowingListLastElement.parentNode.scrollTop = overflowingListLastElement.offsetTop;
+        let scrollDistance = 0;
+
+        if (e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0] != undefined) {
+            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight - e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0].clientHeight - 20;
+        } else {
+            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight;
+        }
+        let scrolledToEnd = scrollDistance < 40;
+        
+        let arrow = e.target.parentNode.getElementsByClassName('icon-chevron-down')[0];
+        if (scrolledToEnd) {
+            arrow.classList.add("hide-arrow");
+        } else {
+            arrow.classList.remove("hide-arrow");
+        }
     }
     
     handleSearch(event){
@@ -914,7 +929,7 @@ class TypeaheadFacet extends React.Component {
                 selectedTerms.push(filter);
             }
         });
-        let displayedTermsCount = 8;
+        let displayedTermsCount = 3;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -957,14 +972,14 @@ class TypeaheadFacet extends React.Component {
                                 </div>
                             : 
                                 <div>
-                                    <div className="term-list">
+                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
                                         {/* Display the first five terms of the facet */}
                                         {this.state.filteredTerms.map(term =>
                                             <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                         )}
                                     </div>
                                     {(this.state.filteredTerms.length > displayedTermsCount) ?
-                                        <i className="icon icon-caret-down" onClick={this.handleScroll}/>
+                                        <i className='icon icon-chevron-down'/>
                                     : null}
                                 </div>
                             }
@@ -973,13 +988,13 @@ class TypeaheadFacet extends React.Component {
                         <div>
                             {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
                                 <div>
-                                    <div className="term-list">
+                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
                                         {terms.map(term =>
                                             <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                         )}
                                     </div>
                                     {(terms.length > displayedTermsCount) ?
-                                        <i className="icon icon-caret-down" onClick={this.handleScroll}/>
+                                        <i className='icon icon-chevron-down' />
                                     : null}
                                 </div>
                             : null}
@@ -1138,6 +1153,8 @@ export class FacetList extends React.Component {
         // are the negation facet terms that need to get merged into the regular facets that their
         // non-negated versions inhabit.
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
+        
+        const typeaheadList = ["biosample_summary", "biosample_ontology.term_name", "target.label", "biosample_ontology.classification", "biosample_ontology.organ_slims", "biosample_ontology.cell_slims"];
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
@@ -1155,7 +1172,7 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        if ((facet.field === "organ_slims") || (facet.field === "biosample_summary") || (facet.field == "cell_slims")){
+                        if (typeaheadList.indexOf(facet.field) > -1){
                             return (
                                 <TypeaheadFacet
                                     {...this.props}

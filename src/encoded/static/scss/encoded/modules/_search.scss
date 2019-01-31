@@ -188,24 +188,39 @@ $form-bg: #f3f3f3;
 
 .searcherror {
     font-style: italic;
+    padding-bottom: 15px;
 }
 
 .typeahead-facet {
     margin-bottom: 10px;
-    box-shadow: inset 0px -10px 20px -10px rgba(0, 0, 0, 0.1);
-    .icon-caret-down {
+    .icon-chevron-down {
         position: absolute;
-        bottom: 1px;
+        padding-bottom: 2px;
+        bottom: 0;
         right: 0;
         left: 0;
         text-align:center;
         cursor: pointer;
+        pointer-events: inherit;
+        box-shadow: inset 0px -10px 20px -10px rgba(0, 0, 0, 0.4);
+        opacity: 1;
+        transition: opacity 1s ease-in-out;
+        -moz-transition: opacity 1s ease-in-out;
+        -webkit-transition: opacity 1s ease-in-out;
+        &.hide-arrow {
+            opacity: 0;
+        }
+    }
+    .facet-list {
+        padding-bottom: 0;
     }
     .term-list {
-        max-height: 150px;
+        max-height: 65px;
         overflow-y: scroll;
+        padding-bottom: 15px;
     }
     position: relative;
+    padding-bottom: 0;
 }
 
 .filter-container {
