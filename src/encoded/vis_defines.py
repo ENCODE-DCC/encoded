@@ -1522,9 +1522,9 @@ def visualizable_assemblies(
     return list(file_assemblies)
 
 
-def _file_to_type(process_file):
+def _file_to_format(process_file):
     '''Used with map to convert list of files to their types'''
-    return process_file['file_type']
+    return process_file['file_format']
 
 # Currently called in types/shared_calculated_properties.py
 def browsers_available(
@@ -1557,7 +1557,7 @@ def browsers_available(
         vis_cache = VisCache(request)
     if files is not None:
         # Make a set of all file types in all dataset files
-        file_types = set(map(_file_to_type, files))
+        file_types = set(map(_file_to_format, files))
     for assembly in assemblies:
         mapped_assembly = ASSEMBLY_DETAILS.get(assembly)
         if not mapped_assembly:

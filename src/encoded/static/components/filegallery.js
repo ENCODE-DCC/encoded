@@ -1085,7 +1085,7 @@ class FilterControls extends React.Component {
                 </div>
             );
         }
-        return null;        
+        return null;
     }
 }
 
@@ -1787,9 +1787,9 @@ class FileGalleryRendererComponent extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        // Determine if the user's logged in as admin.
         const loggedIn = !!(context.session && context.session['auth.userid']);
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
+        const datasetFiles = props.data ? props.data['@graph'] : [];
 
         // Initialize React state variables.
         this.state = {
@@ -1800,13 +1800,13 @@ class FileGalleryRendererComponent extends React.Component {
             /** Files selected for a browser */
             selectedBrowserFiles: [],
             /** All files associated with this dataset */
-            files: [],
+            files: datasetFiles,
             /** True to exclude files with certain statuses */
             inclusionOn: adminUser,
+            /** Array of objects with the assemblies and annotations available for the files */
+            availableAssembliesAnnotations: collectAssembliesAnnotations(datasetFiles),
         };
 
-        /** Array of objects with the assemblies and annotations available for the files */
-        this.availableAssembliesAnnotations = [];
         /** used to see if related_files has been updated */
         this.prevRelatedFileAtIds = [];
 
@@ -1825,10 +1825,6 @@ class FileGalleryRendererComponent extends React.Component {
         this.handleBrowserChange = this.handleBrowserChange.bind(this);
         this.handleBrowserFileSelect = this.handleBrowserFileSelect.bind(this);
         this.handleVisualize = this.handleVisualize.bind(this);
-    }
-
-    componentWillMount() {
-        this.updateFiles();
     }
 
     // Set the default filter after the graph has been analyzed once.
@@ -1860,8 +1856,8 @@ class FileGalleryRendererComponent extends React.Component {
      * Get the currently selected assembly and annotation.
      */
     getSelectedAssemblyAnnotation() {
-        if (this.state.selectedFilterValue && this.availableAssembliesAnnotations[this.state.selectedFilterValue]) {
-            const selectedAssemblyAnnotation = this.availableAssembliesAnnotations[this.state.selectedFilterValue];
+        if (this.state.selectedFilterValue && this.state.availableAssembliesAnnotations[this.state.selectedFilterValue]) {
+            const selectedAssemblyAnnotation = this.state.availableAssembliesAnnotations[this.state.selectedFilterValue];
             return {
                 selectedAssembly: selectedAssemblyAnnotation.assembly,
                 selectedAnnotation: selectedAssemblyAnnotation.annotation,
@@ -1898,18 +1894,13 @@ class FileGalleryRendererComponent extends React.Component {
         if (relatedFileAtIds.length !== this.prevRelatedFileAtIds.length) {
             this.prevRelatedFileAtIds = relatedFileAtIds;
             if (relatedFileAtIds.length > 0) {
-                relatedPromise = requestFiles(relatedFileAtIds, datasetFiles).then((relatedFiles) => {
-                    if (relatedFiles.length !== this.state.relatedFiles.length) {
-                        return datasetFiles.concat(relatedFiles);
-                    }
-                    return null;
-                });
+                relatedPromise = requestFiles(relatedFileAtIds, datasetFiles).then(relatedFiles => datasetFiles.concat(relatedFiles));
             } else {
                 // No related_files, so just use files directly in the dataset.files.
-                relatedPromise = Promise.resolve(datasetFiles);
+                relatedPromise = Promise.resolve(this.state.files);
             }
         } else {
-            relatedPromise = Promise.resolve(datasetFiles);
+            relatedPromise = Promise.resolve(this.state.files);
         }
 
         // Whether we have related_files or not, get all files' assemblies and annotations, and
@@ -1920,16 +1911,16 @@ class FileGalleryRendererComponent extends React.Component {
 
                 // From the new set of files, calculate the currently selected assembly and annotation to display in
                 // the graph and tables.
-                this.availableAssembliesAnnotations = collectAssembliesAnnotations(allFiles);
+                this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
+            }
 
-                // Generate the array of browsers for the currently selected assembly.
-                const browsers = this.getAvailableBrowsers();
-                if (browsers.length > 0 && !this.state.currentBrowser) {
-                    this.setState({
-                        currentBrowser: browsers[0],
-                        selectedBrowserFiles: visFilterBrowserFiles(allFiles, browsers[0], true),
-                    });
-                }
+            // Generate the array of browsers for the currently selected assembly.
+            const browsers = this.getAvailableBrowsers();
+            if (browsers.length > 0 && !this.state.currentBrowser) {
+                this.setState({
+                    currentBrowser: browsers[0],
+                    selectedBrowserFiles: visFilterBrowserFiles(allFiles, browsers[0], true),
+                });
             }
         });
     }
@@ -1943,7 +1934,7 @@ class FileGalleryRendererComponent extends React.Component {
 
     /**
      * Called when the user checks/unchecks the inclusion filter checkbox.
-     */ 
+     */
     handleInclusionChange() {
         this.setState(state => ({ inclusionOn: !state.inclusionOn }));
     }
@@ -2032,7 +2023,7 @@ class FileGalleryRendererComponent extends React.Component {
                 {...this.props}
                 items={includedFiles}
                 selectedFilterValue={this.state.selectedFilterValue}
-                filterOptions={this.availableAssembliesAnnotations}
+                filterOptions={this.state.availableAssembliesAnnotations}
                 graphedFiles={allGraphedFiles}
                 handleFilterChange={this.handleFilterChange}
                 browserOptions={{
@@ -2074,7 +2065,7 @@ class FileGalleryRendererComponent extends React.Component {
 
                 <FilterControls
                     selectedFilterValue={this.state.selectedFilterValue}
-                    filterOptions={this.availableAssembliesAnnotations}
+                    filterOptions={this.state.availableAssembliesAnnotations}
                     inclusionOn={this.state.inclusionOn}
                     browsers={browsers}
                     currentBrowser={this.state.currentBrowser}
