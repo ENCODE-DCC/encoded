@@ -129,7 +129,7 @@ class CalculatedFileSetBiosample:
     })
     def organism(self, request, related_files):
         return request.select_distinct_values(
-            'replicate.library.biosample.organism', *related_files)
+            'library.biosample.organism', *related_files)
 
 
 class CalculatedFileSetAssay:
@@ -206,7 +206,7 @@ class CalculatedSeriesBiosample:
     })
     def organism(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.library.biosample.organism', *related_datasets)
+            'replicates.libraries.biosample.organism', *related_datasets)
 
 
 class CalculatedSeriesTreatment:
@@ -219,7 +219,7 @@ class CalculatedSeriesTreatment:
     })
     def treatment_term_name(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.library.biosample.treatments.treatment_term_name',
+            'replicates.libraries.biosample.treatments.treatment_term_name',
             *related_datasets)
 
 
