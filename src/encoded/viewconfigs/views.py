@@ -26,6 +26,7 @@ DEFAULT_DOC_TYPES = [
     'AntibodyLot',
     'Award',
     'Biosample',
+    'BiosampleType',
     'Dataset',
     'GeneticModification',
     'Page',

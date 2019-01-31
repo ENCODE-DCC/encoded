@@ -98,8 +98,8 @@
                     "biosample_ontology": {
                         "linkTo": "BiosampleType",
                         "linkEnum": [
-                            "50276608-b1e0-47cc-8cbc-330f0c0a0694",
-                            "3df0d6c4-6baf-4def-803c-22093ed028a7"
+                            "25d5ad53-15fd-4a44-878a-ece2f7e86509",
+                            "2b3b4181-45b6-4da1-82f8-104e28601d1e"
                         ]
                     },
                     "organism": {
