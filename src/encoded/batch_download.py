@@ -440,7 +440,7 @@ def format_row(columns):
 
 
 @view_config(route_name='report_download', request_method='GET')
-def report_download(context, request, full_path_header):
+def report_download(context, request):
     types = request.params.getall('type')
     if len(types) != 1:
         msg = 'Report view requires specifying a single type.'
@@ -463,10 +463,10 @@ def report_download(context, request, full_path_header):
     if len(columns) == 1 and '@id' in columns:
         columns['@id']['title'] = 'id'
 
-    if full_path_header:
-        header = [field for field, column in columns.items()]
-    else:
-        header = [column.get('title') or field for field, column in columns.items()]
+    #if full_path_header:
+    header = [field for field, column in columns.items()]
+    #else:
+    #    header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
         yield format_header(header)
