@@ -23,6 +23,25 @@ def file_with_external_sheet(file, root):
     return file
 
 
+def test_get_external_sheet(root, file_with_external_sheet):
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    external = file_item._get_external_sheet()
+    assert external.get('key') == 'xyz.bed'
+    assert external.get('bucket') == 'test_file_bucket'
+
+
+def test_set_external_sheet(root, file_with_external_sheet):
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    external = file_item._get_external_sheet()
+    assert external.get('key') == 'xyz.bed'
+    assert external.get('bucket') == 'test_file_bucket'
+    new_external = {'bucket': 'new_test_file_bucket', 'key': 'abc.bam'}
+    file_item._set_external_sheet(new_external)
+    external = file_item._get_external_sheet()
+    assert external.get('key') == 'abc.bam'
+    assert external.get('bucket') == 'new_test_file_bucket'
+
+
 @mock_sts
 @mock_s3
 @pytest.mark.parametrize("file_status", [

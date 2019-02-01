@@ -455,6 +455,13 @@ class File(Item):
         else:
             raise HTTPNotFound()
 
+    def _set_external_sheet(self, new_external):
+        external = self._get_external_sheet()
+        external = external.copy()
+        external.update(new_external)
+        properties = self.upgrade_properties()
+        self.update(properties, {'external': external})
+
     def set_public_s3(self):
         external = self._get_external_sheet()
         boto3.resource('s3').ObjectAcl(
