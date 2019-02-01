@@ -123,8 +123,8 @@ class File(Item):
         'step_run',
     ]
     set_status_down = []
-    public_s3_statuses = ['released', 'archived', 'revoked']
-    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted']
+    public_s3_statuses = ['released', 'archived']
+    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted', 'revoked']
 
     @property
     def __name__(self):
@@ -422,6 +422,20 @@ class File(Item):
             return None
         return 's3://{bucket}/{key}'.format(**external)
 
+    @calculated_property(
+         condition='replicate',
+         define=True,
+         schema={
+            "title": "Library",
+            "description": "The nucleic acid library sequenced to produce this file.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+         }
+     )
+    def library(self, request, replicate):
+        return request.embed(replicate, '@@object?skip_calculated=true').get('library')
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
@@ -512,15 +526,23 @@ class File(Item):
                     raise e
         return True
 
-    @calculated_property(condition='replicate', define=True, schema={
-            "title": "Library",
-            "description": "The nucleic acid library sequenced to produce this file.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-    })
-    def library(self, request, replicate):
-        return request.embed(replicate, '@@object?skip_calculated=true').get('library')
+    def _file_in_correct_bucket(self, request):
+        public_bucket = request.registry.settings['pds_public_bucket']
+        private_bucket = request.registry.settings['pds_private_bucket']
+        properties = self.upgrade_properties()
+        external = self._get_external_sheet()
+        current_bucket = external.get('bucket')
+        file_status = properties.get('status')
+        if not self._should_set_object_acl():
+            # Released restricted files should be in private bucket.
+            if current_bucket == private_bucket:
+                return True
+            return False
+        if file_status in self.public_s3_statuses and current_bucket == public_bucket:
+            return True
+        if file_status in self.private_s3_statuses and current_bucket == private_bucket:
+            return True
+        return False
 
 
 @view_config(name='upload', context=File, request_method='GET',

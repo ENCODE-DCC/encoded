@@ -42,6 +42,106 @@ def test_set_external_sheet(root, file_with_external_sheet):
     assert external.get('bucket') == 'new_test_file_bucket'
 
 
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in File.public_s3_statuses
+])
+def test_public_file_not_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': file_status
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    external = file_item._get_external_sheet()
+    assert external.get('bucket') == 'test_file_bucket'
+    result = file_item._file_in_correct_bucket(dummy_request)
+    assert result is False
+
+
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in File.public_s3_statuses
+])
+def test_public_file_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': file_status
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    file_item._set_external_sheet({'bucket': 'pds_public_bucket_test'})
+    external = file_item._get_external_sheet()
+    assert external.get('bucket') == 'pds_public_bucket_test'
+    result = file_item._file_in_correct_bucket(dummy_request)
+    assert result is True
+
+
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in File.private_s3_statuses
+])
+def test_private_file_not_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': file_status
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    external = file_item._get_external_sheet()
+    assert external.get('bucket') == 'test_file_bucket'
+    result = file_item._file_in_correct_bucket(dummy_request)
+    assert result is False
+
+
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in File.private_s3_statuses
+])
+def test_private_file_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': file_status
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
+    external = file_item._get_external_sheet()
+    assert external.get('bucket') == 'pds_private_bucket_test'
+    result = file_item._file_in_correct_bucket(dummy_request)
+    assert result is True
+
+
+def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'restricted': True
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
+    external = file_item._get_external_sheet()
+    assert external.get('bucket') == 'pds_private_bucket_test'
+    result = file_item._file_in_correct_bucket(dummy_request)
+    assert result is True
+
+
 @mock_sts
 @mock_s3
 @pytest.mark.parametrize("file_status", [
