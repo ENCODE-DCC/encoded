@@ -94,7 +94,7 @@ export class PickerActions extends React.Component {
     render() {
         if (this.context.actions && this.context.actions.length) {
             return (
-                <div className="pull-right">
+                <div className="fade-out-pull-right">
                     {this.context.actions.map(action => React.cloneElement(action, { key: this.props.context.name, id: this.props.context['@id'] }))}
                 </div>
             );
@@ -559,7 +559,7 @@ globals.listingViews.register(Image, 'Image');
  *                        negated: true if the selected term is for negation.
  *                    }
  */
-function termSelected(term, facet, filters) {
+function termSelected(term, facet, filters, linkKey) {
     let matchingFilter;
     let negated = false;
     const exists = facet.type === 'exists';
@@ -574,12 +574,12 @@ function termSelected(term, facet, filters) {
         if (exists) {
             // Facets with an "exists" property defined in the schema need special handling to
             // allow for yes/no display.
-            if ((filter.field === `${facet.field}!` && term === 'no') ||
-                (filter.field === facet.field && term === 'yes')) {
+            if (((filter.field === `${facet.field}!` || filter.field === `${linkKey}!`) && term === 'no') ||
+                ((filter.field === facet.field || filter.field === linkKey) && term === 'yes')) {
                 matchingFilter = filter;
                 return true;
             }
-        } else if (filterFieldName === facet.field && filter.term === term) {
+        } else if ((filterFieldName === facet.field || filterFieldName === linkKey) && filter.term === term) {
             // The facet field and the given term match a filter, so save that filter so we can
             // extract its `remove` link.
             matchingFilter = filter;
@@ -613,7 +613,7 @@ function termSelected(term, facet, filters) {
 function countSelectedTerms(terms, facet, filters) {
     let count = 0;
     terms.forEach((term) => {
-        const { selected } = termSelected(term.key, facet, filters);
+        const { selected } = termSelected(term.key, facet, filters, term.linkKey);
         if (selected) {
             count += 1;
         }
@@ -625,19 +625,19 @@ function countSelectedTerms(terms, facet, filters) {
 const Term = (props) => {
     const { filters, facet, total, canDeselect, searchBase, onFilter, statusFacet } = props;
     const term = props.term.key;
-    const count = props.term.doc_count;
+    const count = (props.term.doc_count > 999) ? props.term.doc_count.toPrecision(3) : props.term.doc_count;
     const title = props.title || term;
-    const field = facet.field;
+    const field = props.term.linkKey || facet.field;
     const em = field === 'target.organism.scientific_name' ||
                 field === 'organism.scientific_name' ||
                 field === 'replicates.library.biosample.donor.organism.scientific_name';
     const barStyle = {
-        width: `${Math.ceil((count / total) * 100)}%`,
+        width: `${Math.ceil((count / total) * 28)}%`,
     };
 
     // Determine if the given term should display selected, as well as what the href for the term
     // should be. If it *is* selected, also indicate whether it was selected for negation or not.
-    const { selected, negated, exists } = termSelected(term, facet, filters);
+    const { selected, negated, exists } = termSelected(term, facet, filters, props.term.linkKey);
     let href;
     let negationHref = '';
     if (selected && !canDeselect) {
@@ -655,15 +655,19 @@ const Term = (props) => {
         href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
         negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
     }
+    
+    const fieldVar = field === 'status' ? 'statusField' : field;
 
     return (
-        <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
-            {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
+        <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')} ${fieldVar}`}>
             <a className="facet-term__item" href={href} onClick={href ? onFilter : null}>
                 <div className="facet-term__text">
+                    {(selected && !negated) ? <i className="icon icon-check-square-o" /> : null}
+                    {negated ? <i className="icon icon-minus-circle" /> : null}
+                    {(!selected && !negated) ? <i className="icon icon-square-o" /> : null}
                     {em ? <em>{title}</em> : <span>{title}</span>}
                 </div>
-                {negated ? null : <div className="facet-term__count">{count}</div>}
+                {negated ? null : <div className="facet-term__count">{(count < 1000) ? count : count/1000+"k"}</div>}
                 {(selected || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
             </a>
             <div className="facet-term__negator">
@@ -712,6 +716,44 @@ TypeTerm.propTypes = {
     total: PropTypes.number.isRequired,
 };
 
+export class FilterList extends React.Component {
+    
+    constructor(){
+        super();
+    }
+    
+    render() {
+        const filters = this.props.context.filters;
+        const context = this.props.context;
+        const negationFilters = filters.map(filter => filter.field.charAt(filter.field.length - 1) === '!');
+        
+        if (filters.length > 0 && filters.length < 15) {
+            
+            return(
+                <div className="filter-container">
+                    <div className="filter-hed">Selected filters:</div>
+                    {filters.map((filter, filterIdx) =>
+                        <a href={filter.remove} key={filter.term} className={negationFilters[filterIdx] ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                    )}
+                </div>
+            );
+        } 
+        
+        return null;
+    };
+};
+
+// Display header of facet list
+const FacetLabel = (props) => {
+    if (props.termHeader === 0 || props.link !== props.termHeader){
+        if (props.link === undefined) {
+            return <div className="facet-label experiments">Experiments</div>;
+        } else if (props.link === "annotation_type"){
+            return <div className="facet-label annotations">Annotations</div>;
+        }
+    }
+    return null;
+};
 
 class Facet extends React.Component {
     constructor() {
@@ -744,7 +786,7 @@ class Facet extends React.Component {
             if (term.key) {
                 // See if the facet term also exists in the search result filters (i.e. the term
                 // exists in the URL query string).
-                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
+                const found = filters.some(filter => ((filter.field === facet.field || filter.field === term.linkKey) && filter.term === term.key));
 
                 // If the term wasn't in the filters list, allow its display only if it has a non-
                 // zero doc_count. If the term *does* exist in the filters list, display it
@@ -783,7 +825,8 @@ class Facet extends React.Component {
                 titleComponent = <span>{title}</span>;
             }
         }
-
+        
+        // if ((terms.length && terms.some(term => term.doc_count))) {
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
@@ -791,21 +834,31 @@ class Facet extends React.Component {
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
                         <div>
                             {/* Display the first five terms of the facet */}
-                            {terms.slice(0, 5).map(term =>
-                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                            {terms.slice(0, 5).map((term,termIdx) =>
+                                <div key={term.key} >
+                                    {(field === "assay_term_name") ? 
+                                        <FacetLabel {...this.props} field={field} link={term.linkKey} termHeader={(termIdx===0) ? termIdx : terms[termIdx-1]["linkKey"] }/>
+                                    : null}
+                                    <TermComponent {...this.props} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                </div>
                             )}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {/* If the user has expanded the "+ See more" button, then display
                                      the rest of the terms beyond 5 */}
-                                {moreTerms.map(term =>
-                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                {moreTerms.map((term,termIdx) =>
+                                    <div key={term.key} >
+                                        {(field === "assay_term_name") ? 
+                                            <FacetLabel {...this.props} field={field} link={term.linkKey} termHeader={terms[termIdx+5-1]["linkKey"] }/>
+                                        : null}
+                                        <TermComponent {...this.props} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                    </div>
                                 )}
                             </div>
                         : null}
                         {(terms.length > 5 && !moreTermSelected) ?
-                            <div className="pull-right">
+                            <div className="fade-out-pull-right">
                                 {/* Display the "+ See more" button if more than five terms exist for this facet */}
                                 <small>
                                     <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
@@ -922,14 +975,46 @@ TextFilter.propTypes = {
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
 /* eslint-disable react/prefer-stateless-function */
 export class FacetList extends React.Component {
+    
+    shouldComponentUpdate(nextProps) {
+        console.log("should the facet list update?");
+        console.log(!_.isEqual(this.props, nextProps));
+        return !_.isEqual(this.props, nextProps);
+    }
+    
     render() {
-        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses } = this.props;
+        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, modifyFacetsFlag } = this.props;
+        
+        let facetsModified = facets;
+        if (modifyFacetsFlag){
+            console.log("we are modifying the facets for regulome results");
+            // eliminate facets that we do not want to enable search for
+            facetsModified = facets.filter( facet => (facet.field !== 'files.file_type' && facet.field !=='status' && facet.field !== 'replicates.library.biosample.donor.organism.scientific_name' && facet.field !== 'assembly' && facet.field !== 'annotation_type'));
+        
+            // this is an extremely long-winded approach but my more abbreviated attempts did not work
+            facetsModified[0].terms = facets[0].terms;
+            facets[1].terms.forEach(function(f){
+                let flag = 0;
+                facets[0].terms.forEach(function(ff){
+                    if (f === ff){
+                        flag = 1;
+                    }
+                });
+                if (flag === 0){
+                    f.linkKey = 'annotation_type';
+                    facetsModified[0].terms.push(f);
+                }
+            });
+        
+            facetsModified[0].title = 'Method';
+            facetsModified[1].title = 'Biosample';
+        }
 
         // Get "normal" facets, meaning non-audit facets.
-        const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
+        const normalFacets = facetsModified.filter(facet => facet.field.substring(0, 6) !== 'audit.');
 
         let width = 'inherit';
-        if (!facets.length && mode !== 'picker') return <div />;
+        if (!facetsModified.length && mode !== 'picker') return <div />;
         let hideTypes;
         if (mode === 'picker') {
             // The edit forms item picker (search results in an edit item) shows the Types facet.
@@ -940,7 +1025,7 @@ export class FacetList extends React.Component {
             hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
         }
         if (orientation === 'horizontal') {
-            width = `${100 / facets.length}%`;
+            width = `${100 / facetsModified.length}%`;
         }
 
         // See if we need the Clear Filters link or not. context.clear_filters.
@@ -966,17 +1051,16 @@ export class FacetList extends React.Component {
         // are the negation facet terms that need to get merged into the regular facets that their
         // non-negated versions inhabit.
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
+        
+        console.log("building facets");
+        
+        console.log(width);
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {clearButton ?
-                        <div className="clear-filters-control">
-                            <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
-                        </div>
-                    : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map((facet) => {
+                    {facetsModified.map((facet) => {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
@@ -1296,6 +1380,7 @@ export class ResultTable extends React.Component {
                 <div className="row">
                     {facets.length ?
                         <div className="col-sm-5 col-md-4 col-lg-3">
+                            <FilterList {...this.props} />
                             <FacetList
                                 {...this.props}
                                 facets={facets}
@@ -1409,7 +1494,7 @@ ResultTable.contextTypes = {
 
 
 const BrowserTabQuickView = function BrowserTabQuickView() {
-    return <div>Quick View <span className="beta-badge">BETA</span></div>;
+    return <div>Quick View</div>;
 };
 
 
@@ -1439,9 +1524,6 @@ ResultTableList.defaultProps = {
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
 export const ResultBrowser = (props) => {
-
-    console.log(props);
-    console.log(props.assembly);
 
     let visUrl = '';
     const datasetCount = props.datasets.length;

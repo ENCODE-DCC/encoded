@@ -14,7 +14,8 @@ table>thead>tr>th {
     border-top: none !important;
     border-bottom: 2px solid #fff !important;
     border-left: 2px solid #fff !important;
-    padding: 8px 11px 9px 11px !important;
+    padding: 12px 20px 8px 10px !important;
+    font-size: 1.1em;
 
     &:first-child {
         border-left: none !important;
@@ -183,6 +184,11 @@ form.table-filter {
         tr {
             td {
                 height: 4em;
+                a {
+                    display: inline-block;
+                    width: 100%;
+                    height: 100%;
+                }
             }
 
             &.file-restricted {
