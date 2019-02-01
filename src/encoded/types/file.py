@@ -527,6 +527,9 @@ class File(Item):
         return True
 
     def _file_in_correct_bucket(self, request):
+        '''
+        Returns : boolean, current_bucket, destination_bucket
+        '''
         public_bucket = request.registry.settings['pds_public_bucket']
         private_bucket = request.registry.settings['pds_private_bucket']
         properties = self.upgrade_properties()
@@ -536,13 +539,16 @@ class File(Item):
         if not self._should_set_object_acl():
             # Released restricted files should be in private bucket.
             if current_bucket == private_bucket:
-                return True
-            return False
-        if file_status in self.public_s3_statuses and current_bucket == public_bucket:
-            return True
-        if file_status in self.private_s3_statuses and current_bucket == private_bucket:
-            return True
-        return False
+                return (True, current_bucket, private_bucket)
+            return (False, current_bucket, private_bucket)
+        if file_status in self.public_s3_statuses:
+            if current_bucket == public_bucket:
+                return (True, current_bucket, public_bucket)
+            return (False, current_bucket, public_bucket)
+        if file_status in self.private_s3_statuses:
+            if current_bucket == private_bucket:
+                return (True, current_bucket, private_bucket)
+            return (False, current_bucket, private_bucket)
 
 
 @view_config(name='upload', context=File, request_method='GET',

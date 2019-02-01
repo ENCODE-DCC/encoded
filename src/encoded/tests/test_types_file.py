@@ -58,8 +58,10 @@ def test_public_file_not_in_correct_bucket(testapp, root, dummy_request, file_wi
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
-    result = file_item._file_in_correct_bucket(dummy_request)
+    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
     assert result is False
+    assert current_bucket == 'test_file_bucket'
+    assert destination_bucket == 'pds_public_bucket_test'
 
 
 @pytest.mark.parametrize("file_status", [
@@ -79,8 +81,9 @@ def test_public_file_in_correct_bucket(testapp, root, dummy_request, file_with_e
     file_item._set_external_sheet({'bucket': 'pds_public_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_public_bucket_test'
-    result = file_item._file_in_correct_bucket(dummy_request)
+    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
+    assert current_bucket == destination_bucket == 'pds_public_bucket_test'
 
 
 @pytest.mark.parametrize("file_status", [
@@ -99,8 +102,10 @@ def test_private_file_not_in_correct_bucket(testapp, root, dummy_request, file_w
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
-    result = file_item._file_in_correct_bucket(dummy_request)
+    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
     assert result is False
+    assert current_bucket == 'test_file_bucket'
+    assert destination_bucket == 'pds_private_bucket_test'
 
 
 @pytest.mark.parametrize("file_status", [
@@ -120,8 +125,9 @@ def test_private_file_in_correct_bucket(testapp, root, dummy_request, file_with_
     file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_private_bucket_test'
-    result = file_item._file_in_correct_bucket(dummy_request)
+    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
+    assert current_bucket == destination_bucket == 'pds_private_bucket_test'
 
 
 def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_request, file_with_external_sheet):
@@ -138,7 +144,7 @@ def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_reque
     file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_private_bucket_test'
-    result = file_item._file_in_correct_bucket(dummy_request)
+    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
 
 
