@@ -53,4 +53,4 @@ def audit_genetic_modification_reagents(value, system):
                 value['@id'],
                 method,
             )
-            yield AuditFailure('missing genetic modification reagents', detail, level='ERROR')
+            yield AuditFailure('missing genetic modification reagents', detail, level='WARNING')
