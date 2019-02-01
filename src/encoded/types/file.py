@@ -549,6 +549,8 @@ class File(Item):
             if current_bucket == private_bucket:
                 return (True, current_bucket, private_bucket)
             return (False, current_bucket, private_bucket)
+        # Assume correct bucket for unaccounted file statuses
+        return (True, current_bucket, private_bucket)
 
 
 @view_config(name='upload', context=File, request_method='GET',
