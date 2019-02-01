@@ -477,7 +477,7 @@ def report_download(context, request, full_path_header):
 
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}_{}.tsv'.format(
+    request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}_{}.tsv"'.format(
         type,
         currenttime.year,
         currenttime.month,
