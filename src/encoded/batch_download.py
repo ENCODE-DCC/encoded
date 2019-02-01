@@ -440,7 +440,7 @@ def format_row(columns):
 
 
 @view_config(route_name='report_download', request_method='GET')
-def report_download(context, request):
+def report_download(context, request, full_path_header):
     types = request.params.getall('type')
     if len(types) != 1:
         msg = 'Report view requires specifying a single type.'
@@ -449,7 +449,7 @@ def report_download(context, request):
     # Make sure we get all results
     request.GET['limit'] = 'all'
 
-    type = types[0]
+    type = types[0].lower()
     schemas = [request.registry[TYPES][type].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
     type = type.replace("'", '')
@@ -463,8 +463,10 @@ def report_download(context, request):
     if len(columns) == 1 and '@id' in columns:
         columns['@id']['title'] = 'id'
 
-    #header = [column.get('title') or field for field, column in columns.items()]
-    header = [field for field, column in columns.items()]
+    if full_path_header:
+        header = [field for field, column in columns.items()]
+    else:
+        header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
         yield format_header(header)
@@ -475,6 +477,13 @@ def report_download(context, request):
 
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': currenttime.year, 'mm': currenttime.month, 'dd': currenttime.day, 'doctype': type} #change file name
+    request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}_{}.tsv'.format(
+        type,
+        currenttime.year,
+        currenttime.month,
+        currenttime.day,
+        currenttime.hour,
+        currenttime.minute
+    )
     request.response.app_iter = generate_rows()
     return request.response
