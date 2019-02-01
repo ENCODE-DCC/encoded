@@ -388,6 +388,18 @@ class RegionIndexer(Indexer):
         '''Returns composite json blob from elastic-search, or None if not found.'''
         return None
 
+    def update_objects(self, request, uuids, force):
+        # pylint: disable=too-many-arguments, unused-argument
+        '''Run indexing process on uuids'''
+        errors = []
+        for i, uuid in enumerate(uuids):
+            error = self.update_object(request, uuid, force)
+            if error is not None:
+                errors.append(error)
+            if (i + 1) % 1000 == 0:
+                log.info('Indexing %d', i + 1)
+        return errors
+
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
 

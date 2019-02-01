@@ -20,6 +20,7 @@ import copy
 import json
 import requests
 from pkg_resources import resource_filename
+from snovault import STORAGE
 from snovault.elasticsearch.indexer import (
     Indexer,
     get_current_xmin
@@ -245,11 +246,26 @@ def all_visualizable_uuids(registry):
 class VisIndexer(Indexer):
     def __init__(self, registry):
         super(VisIndexer, self).__init__(registry)
+        self.es = registry[ELASTIC_SEARCH]
+        self.esstorage = registry[STORAGE]
+        self.index = registry.settings['snovault.elasticsearch.index']
         self.state = VisIndexerState(self.es, self.index)  # WARNING, race condition is avoided because there is only one worker
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
         return None
+
+    def update_objects(self, request, uuids, xmin):
+        # pylint: disable=too-many-arguments, unused-argument
+        '''Run indexing process on uuids'''
+        errors = []
+        for i, uuid in enumerate(uuids):
+            error = self.update_object(request, uuid, xmin)
+            if error is not None:
+                errors.append(error)
+            if (i + 1) % 1000 == 0:
+                log.info('Indexing %d', i + 1)
+        return errors
 
     def update_object(self, request, uuid, xmin, restart=False):
 
