@@ -272,10 +272,11 @@ export class Graph extends React.Component {
             if (BrowserFeat.getBrowserCaps('svg')) {
                 // Delay loading dagre for Jest testing compatibility;
                 // Both D3 and Jest have their own conflicting JSDOM instances
-                require.ensure(['dagre-d3', 'd3'], (require) => {
+                require.ensure(['dagre-d3'], (require) => {
                     if (this.graphdisplay) {
-                        this.d3 = require('d3');
+
                         this.dagreD3 = require('dagre-d3');
+                        this.d3 = this.dagreD3.d3ver3;
 
                         const el = this.graphdisplay;
 

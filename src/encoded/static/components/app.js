@@ -709,20 +709,18 @@ class App extends React.Component {
         let search = serialize(target);
 
         // Coding for multi-line inputs on forms
-        // ********** go back and delete count **************
         let summaryFlag = 0;
         if (search.indexOf('%0D%0A') !== -1){
             summaryFlag = 1;
         }
         search = search.split('%0D%0A').join('&region=');
         let indexStart = search.indexOf('%23');
-        let indexEnd = 0, count = 0;
+        let indexEnd = 0;
         let searchNew = search;
-        while (indexStart !== -1 && count < 10) {
+        while (indexStart !== -1) {
             indexEnd = searchNew.indexOf('&', indexStart);
             searchNew = search.replace(search.substring(indexStart, indexEnd+1),'');
             indexStart = searchNew.indexOf('%23');
-            count++;
         }
         search = searchNew;
 
@@ -1071,7 +1069,9 @@ class App extends React.Component {
                     />
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-                            <div className="loading-spinner" />
+                            <div className="loading-spinner">
+                                <div className="loading-spinner-circle"><img src='/static/img/spinner1.gif'></img></div>
+                            </div>
                             <div id="layout">
                                 <Provider store={this.cartStore}>
                                     <div>

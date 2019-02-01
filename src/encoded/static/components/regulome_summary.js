@@ -17,7 +17,17 @@ const SNPSummary = (props) => {
     const snpsColumns = {
         chrom: {
             title: 'Chromosome location',
-            getValue: item => item.chrom+":"+item.start+".."+item.end,
+            display: (item) => {
+                let href_score = '../regulome-search/?region='+item.chrom+':'+item.start+'-'+item.end+'&genome=GRCh37';
+                return <a href={href_score}>{item.chrom+":"+item.start+".."+item.end}</a>;
+            },
+        },
+        rsids: {
+            title: 'dbSNP IDs',
+            display: (item) => {
+                let href_score = '../regulome-search/?region='+item.chrom+':'+item.start+'-'+item.end+'&genome=GRCh37';
+                return <a href={href_score}>{item.rsids.join(', ')}</a>;
+            },
         },
         regulome_score: {
             title: 'Regulome score',
@@ -30,10 +40,6 @@ const SNPSummary = (props) => {
                     return <a href={href_score}>See related experiments</a>;
                 }
             },
-        },
-        rsids: {
-            title: 'dbSNP IDs',
-            getValue: item => item.rsids.join(', '),
         },
     };
     return (
@@ -50,6 +56,8 @@ class RegulomeSummary extends React.Component {
     render() {
         const context = this.props.context;
         const summaries = context.summaries;
+        const notifications = context.notifications;
+        const coordinates = context.coordinates;
 
         let snp_count = 0;
         summaries.forEach(summary => {
@@ -58,15 +66,21 @@ class RegulomeSummary extends React.Component {
 
         return (
             <div>
-                <div className="lead-logo"><img src="/static/img/RegulomeLogoFinal.gif"></img></div>
+                <div className="lead-logo"><a href="/"><img src="/static/img/RegulomeLogoFinal.gif"></img></a></div>
 
                 <div className="results-summary">
                     <p>This search has evaluated {context.notifications.length} input lines and found {snp_count} SNP(s).</p>
-                    <p>Click on the scores for detailed information.</p>
+                    {notifications.map((notification,idx) => {
+                        if (notification[coordinates[idx]] !== "Success") {
+                            return (<p key={idx}>Region {coordinates[idx]} {notification[coordinates[idx]]}</p>)
+                        }
+                    })}
 
                 </div>
 
-                <SNPSummary {...this.props} />
+                <div className="summary-table-hoverable">
+                    <SNPSummary {...this.props} />
+                </div>
 
             </div>
         );

@@ -117,7 +117,6 @@
 
 .facet-list {
     margin: 0;
-    padding: 4px;
 }
 
 .facet-list {
@@ -132,18 +131,18 @@
     display: flex;
     position: relative;
     align-items: center;
-    margin: 1px 0;
-    padding: 0;
+    margin: 2px 0;
+    padding: 0 0 2px 10px;
     border-radius: 3px;
     font-size: 0.9rem;
     line-height: 1;
 
     &:hover {
-        background-color: lighten(#4183c4, 40%);
+        background-color: lighten(#276A8E, 40%);
     }
 
     &.selected {
-        background-color: #4183c4;
+        background-color: #276A8E;
 
         .facet-term__item {
             color: white;
@@ -164,12 +163,10 @@
     @at-root #{&}__item {
         position: relative;
         display: flex;
-        padding: 2px 2px 2px 10px;
         justify-content: space-between;
         align-items: center;
         flex: 1 1 auto;
         align-self: stretch;
-        text-align: left;
         color: #000;
 
         &:hover, &:focus {
@@ -191,7 +188,7 @@
     @at-root #{&}__bar {
         position: absolute;
         background-color: #E5E5E5;
-        right: 0;
+        right: 15px;
         top: 0;
         bottom:0;
         z-index: -1;
@@ -227,20 +224,22 @@
     max-width: 200px;
 }
 
-.facet-list__expander {
+.facet-list button {
     padding: 0;
+}
 
-    &.collapsed:before {
-        content:'+ See more...' ;
-        text-decoration: none;
-        font-size: 0.85rem;
-    }
+.facet-list button.btn.collapsed:before {
+    content:'+ See more...' ;
+    text-decoration: none;
+    font-size: 0.85rem;
+    width: 100%;
+}
 
-    &:before {
-        content:'- See fewer';
-        text-decoration: none;
-        font-size: 0.85rem;
-    }
+.facet-list button.btn:before {
+    content:'- See fewer';
+    text-decoration: none;
+    font-size: 0.85rem;
+    width: 100%;
 }
 
 .facet-list label {
@@ -373,9 +372,6 @@ div.meta-status {
             font-size: 0.9rem;
         }
 
-        &:last-child {
-            border-bottom: none;
-        }
     }
 
     &:before {
@@ -468,5 +464,34 @@ div.meta-status {
         font-size: inherit;
         vertical-align: baseline;
         border: none;
+    }
+}
+
+.facet-label {
+    font-size: 0.9rem;
+    color: #7F7F7F;
+    padding-top: 10px;
+    &.experiments {
+        border-bottom: 5px solid #75BBA7;
+    }
+    &.annotations {
+        border-bottom: 5px solid #FFE391;
+    }
+}
+
+.fade-out-pull-right {
+    width: 100%;
+    background-image: linear-gradient(to bottom, transparent, #F2F2F2);
+    .small {
+        width: 100%;
+    }
+    button {
+        height: 30px;
+        width: 100%;
+        text-align: center;
+        color: $regulomeGreen;
+        &:hover {
+            color: darken($regulomeGreen,10%);
+        }
     }
 }

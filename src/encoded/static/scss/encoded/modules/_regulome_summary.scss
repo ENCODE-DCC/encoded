@@ -2,4 +2,64 @@
     text-align: center;
     padding: 20px;
     font-style: italic;
+    .icon {
+        margin-right: 5px;
+    }
+}
+
+.chart-display {
+    .tick {
+        text {
+            font-size: 12px;
+        }
+    }
+}
+
+svg {
+    text {
+        font-family: 'Khula', sans-serif !important;
+    }
+    .chart-title {
+        font-weight: 700;
+        font-size: 15px;
+    }
+}
+
+.panel-heading {
+    padding-top: 15px;
+}
+
+.barchart_tooltip {
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #E5E5E5;
+    -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.result-summary {
+    text-align: center;
+    font-size: 15px;
+    p {
+        margin-bottom: 2px;
+    }
+    .bold-class {
+        font-weight: 700;
+    }
+    .regulomescore {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+}
+ .centered-btn {
+    width: 120px;
+    margin: auto auto 30px !important;
+    display: block !important;
+}
+
+.facet-term__text {
+    .icon {
+        margin-right: 5px;
+    }
 }
