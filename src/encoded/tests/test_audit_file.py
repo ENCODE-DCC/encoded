@@ -237,6 +237,41 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
+@pytest.fixture
+def file_with_external_sheet(file, root):
+    file_item = root.get_by_uuid(file['uuid'])
+    properties = file_item.upgrade_properties()
+    file_item.update(
+        properties,
+        sheets={
+            'external': {
+                'service': 's3',
+                'key': 'xyz.bed',
+                'bucket': 'test_file_bucket',
+            }
+        }
+    )
+    return file
+
+
+@pytest.fixture
+def public_file_with_public_external_sheet(file, root):
+    file_item = root.get_by_uuid(file['uuid'])
+    properties = file_item.upgrade_properties()
+    properties['status'] = 'released'
+    file_item.update(
+        properties,
+        sheets={
+            'external': {
+                'service': 's3',
+                'key': 'xyz.bed',
+                'bucket': 'pds_public_bucket_test',
+            }
+        }
+    )
+    return file
+
+
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                        'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
@@ -798,3 +833,47 @@ def test_audit_file_no_duplicate_quality_metrics(testapp,
         error['category'] != 'duplicate quality metric'
         for error in errors_list
     )
+
+
+def test_audit_public_file_in_private_bucket(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert errors_list
+    assert errors_list[0]['detail'].split('to')[-1].strip() == 'pds_public_bucket_test'
+
+
+def test_audit_public_file_in_public_bucket(testapp, dummy_request, public_file_with_public_external_sheet):
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(public_file_with_public_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v]
+    assert all([
+        error['category'] != 'incorrect file bucket'
+        for error in errors_list]
+    )
+
+
+def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'deleted'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v]
+    assert errors_list
+    assert errors_list[0]['detail'].split('to')[-1].strip() == 'pds_private_bucket_test'
