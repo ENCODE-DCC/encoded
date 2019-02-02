@@ -732,24 +732,12 @@ class Facet extends React.Component {
     
     scrollEvent(e) {
         
-        // scroll overflowing facet term lists to the bottom on click
-        let overflowingList = e.target.getElementsByClassName('facet-term');
-        let lastOverflowIdx = overflowingList.length-1;
-        let overflowingListLastElement = overflowingList[lastOverflowIdx];
-        let scrollDistance = 0;
-
-        if (e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0] != undefined) {
-            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight - e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0].clientHeight - 20;
-        } else {
-            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight;
-        }
-        let scrolledToEnd = scrollDistance < 40;
-        
+        // shading element that indicates there is further to scroll
         let arrow = e.target.parentNode.getElementsByClassName('shading')[0];
-        if (scrolledToEnd) {
-            arrow.classList.add("hide-arrow");
+        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight){
+            arrow.classList.add("hide-shading");
         } else {
-            arrow.classList.remove("hide-arrow");
+            arrow.classList.remove("hide-shading");
         }
     }
 
@@ -869,29 +857,16 @@ class TypeaheadFacet extends React.Component {
 
         // Bind `this` to non-React methods.
         this.handleSearch = this.handleSearch.bind(this);
-        this.scrollTypeahead = this.scrollTypeahead.bind(this);
+        this.scrollEvent = this.scrollEvent.bind(this);
     }
     
-    scrollTypeahead(e) {
-        
-        // scroll overflowing facet term lists to the bottom on click
-        let overflowingList = e.target.getElementsByClassName('facet-term');
-        let lastOverflowIdx = overflowingList.length-1;
-        let overflowingListLastElement = overflowingList[lastOverflowIdx];
-        let scrollDistance = 0;
-
-        if (e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0] != undefined) {
-            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight - e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0].clientHeight - 20;
-        } else {
-            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight;
-        }
-        let scrolledToEnd = scrollDistance < 40;
-        
+    scrollEvent(e) {
+        // shading element that indicates there is further to scroll
         let arrow = e.target.parentNode.getElementsByClassName('shading')[0];
-        if (scrolledToEnd && arrow !== undefined) {
-            arrow.classList.add("hide-arrow");
-        } else if (arrow !== undefined){
-            arrow.classList.remove("hide-arrow");
+        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight){
+            arrow.classList.add("hide-shading");
+        } else {
+            arrow.classList.remove("hide-shading");
         }
     }
     
@@ -1000,7 +975,7 @@ class TypeaheadFacet extends React.Component {
                                 </div>
                             : 
                                 <div>
-                                    <div className="term-list" onScroll={(e) => this.scrollTypeahead(e)}>
+                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
                                         {/* Display the first five terms of the facet */}
                                         {this.state.filteredTerms.map(term =>
                                             <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
@@ -1016,7 +991,7 @@ class TypeaheadFacet extends React.Component {
                         <div>
                             {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
                                 <div>
-                                    <div className="term-list" onScroll={(e) => this.scrollTypeahead(e)}>
+                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
                                         {terms.map(term =>
                                             <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                         )}
