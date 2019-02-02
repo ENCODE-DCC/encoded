@@ -463,10 +463,7 @@ def report_download(context, request):
     if len(columns) == 1 and '@id' in columns:
         columns['@id']['title'] = 'id'
 
-    #if full_path_header:
-    header = [field for field, column in columns.items()]
-    #else:
-    #    header = [column.get('title') or field for field, column in columns.items()]
+    header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
         yield format_header(header)
@@ -477,7 +474,7 @@ def report_download(context, request):
 
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}_{}.tsv"'.format(
+    request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}h_{}m.tsv"'.format(
         type,
         currenttime.year,
         currenttime.month,
