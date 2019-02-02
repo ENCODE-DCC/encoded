@@ -9,8 +9,8 @@
 
 
 .box.facets {
-    padding: 10px;
-    border: 1px #ccc solid;
+    // padding: 10px;
+    // border: 1px #ccc solid;
     border-radius: 3px;
     overflow: hidden;
 
@@ -99,14 +99,20 @@
 }
 
 .facets h5 {
-    margin: 2px 0;
+    margin: 2px 0 5px 0;
 }
 
 .facet {
-    padding-bottom: 7px;
-    margin-bottom: 7px;
+    margin-bottom: 15px;
     border-bottom: 1px solid #eee;
     overflow: hidden;
+    position: relative;
+    padding-bottom: 0;
+    .term-list {
+        height: 85px;
+        overflow-y: scroll;
+        padding: 5px 0;
+    }
 }
 
 .facet:last-child {
@@ -117,7 +123,8 @@
 
 .facet-list {
     margin: 0;
-    padding: 4px;
+    padding: 0 4px;
+    border: 1px solid #9F9F9F;
 }
 
 .facet-list {
@@ -245,6 +252,81 @@
 
 .facet-list label {
     margin: 0;
+}
+
+.typeahead-entry {
+    padding: 2px 10px 2px;
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    .icon-search {
+        margin-right: 5px;
+        float: left;
+    }
+    input {
+        border-radius: 5px;
+        padding: 4px;
+        flex-grow: 1;
+    }
+}
+
+.searcherror {
+    font-style: italic;
+    height: 85px;
+}
+
+.typeahead-facet {
+    .facet-list {
+        padding-bottom: 0;
+    }
+    .term-list {
+        height: 85px;
+        overflow-y: scroll;
+        padding: 5px 0;
+    }
+    position: relative;
+    padding-bottom: 0;
+}
+
+.shading {
+    position: absolute;
+    padding-bottom: 2px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 10px;
+    text-align:center;
+    cursor: pointer;
+    pointer-events: none;
+    box-shadow: inset 0px -10px 20px -10px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -webkit-transition: opacity 1s ease-in-out;
+    &.hide-arrow {
+        opacity: 0;
+    }
+}
+
+.filter-container {
+    display: block;
+    margin: 10px auto;
+    .filter-hed {
+        display: inline-block;
+        padding: 0 5px;
+    }
+    .negationFilter {
+        color: #e50400;
+    }
+    .filter-link {
+        display: inline-block;
+        text-align: center;
+        padding: 0 5px;
+        cursor: pointer;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 .accession {

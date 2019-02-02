@@ -722,11 +722,35 @@ class Facet extends React.Component {
         };
 
         // Bind `this` to non-React methods.
+        this.scrollEvent = this.scrollEvent.bind(this);
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
         this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
+    }
+    
+    scrollEvent(e) {
+        
+        // scroll overflowing facet term lists to the bottom on click
+        let overflowingList = e.target.getElementsByClassName('facet-term');
+        let lastOverflowIdx = overflowingList.length-1;
+        let overflowingListLastElement = overflowingList[lastOverflowIdx];
+        let scrollDistance = 0;
+
+        if (e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0] != undefined) {
+            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight - e.target.parentNode.parentNode.parentNode.parentNode.getElementsByClassName('filter-container')[0].clientHeight - 20;
+        } else {
+            scrollDistance = overflowingListLastElement.offsetTop - e.target.scrollTop - e.target.clientHeight;
+        }
+        let scrolledToEnd = scrollDistance < 40;
+        
+        let arrow = e.target.parentNode.getElementsByClassName('shading')[0];
+        if (scrolledToEnd) {
+            arrow.classList.add("hide-arrow");
+        } else {
+            arrow.classList.remove("hide-arrow");
+        }
     }
 
     render() {
@@ -762,6 +786,16 @@ class Facet extends React.Component {
         const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
         const seeMoreClass = `btn btn-link facet-list__expander${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
         const statusFacet = field === 'status' || field === 'lot_reviews.status';
+        
+        // collecting selected search terms to display at the top of the facet
+        let selectedTerms = [];
+        filters.map(filter => {
+            if (filter.field === field || filter.field === field+"!"){
+                selectedTerms.push(filter);
+            }
+        });
+        
+        let displayedTermsCount = 4;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -787,30 +821,24 @@ class Facet extends React.Component {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
-                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
-                        <div>
-                            {/* Display the first five terms of the facet */}
-                            {terms.slice(0, 5).map(term =>
-                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                    {(selectedTerms.length > 0) ?
+                        <div className="filter-container">
+                            <div className="filter-hed">Selected filters:</div>
+                            {selectedTerms.map((filter, filterIdx) =>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
                             )}
                         </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {/* If the user has expanded the "+ See more" button, then display
-                                     the rest of the terms beyond 5 */}
-                                {moreTerms.map(term =>
-                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                )}
-                            </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <div className="pull-right">
-                                {/* Display the "+ See more" button if more than five terms exist for this facet */}
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
-                                </small>
-                            </div>
-                        : null}
+                    : null}
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                        <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
+                            {/* Display the first five terms of the facet */}
+                            {terms.map(term =>
+                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                            )}
+                            {(terms.length > displayedTermsCount) ?
+                                <div className='shading'/>
+                            : null}
+                        </div>
                     </ul>
                 </div>
             );
@@ -841,10 +869,10 @@ class TypeaheadFacet extends React.Component {
 
         // Bind `this` to non-React methods.
         this.handleSearch = this.handleSearch.bind(this);
-        this.scrollEvent = this.scrollEvent.bind(this);
+        this.scrollTypeahead = this.scrollTypeahead.bind(this);
     }
     
-    scrollEvent(e) {
+    scrollTypeahead(e) {
         
         // scroll overflowing facet term lists to the bottom on click
         let overflowingList = e.target.getElementsByClassName('facet-term');
@@ -859,10 +887,10 @@ class TypeaheadFacet extends React.Component {
         }
         let scrolledToEnd = scrollDistance < 40;
         
-        let arrow = e.target.parentNode.getElementsByClassName('icon-chevron-down')[0];
-        if (scrolledToEnd) {
+        let arrow = e.target.parentNode.getElementsByClassName('shading')[0];
+        if (scrolledToEnd && arrow !== undefined) {
             arrow.classList.add("hide-arrow");
-        } else {
+        } else if (arrow !== undefined){
             arrow.classList.remove("hide-arrow");
         }
     }
@@ -929,7 +957,7 @@ class TypeaheadFacet extends React.Component {
                 selectedTerms.push(filter);
             }
         });
-        let displayedTermsCount = 3;
+        let displayedTermsCount = 5;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -972,14 +1000,14 @@ class TypeaheadFacet extends React.Component {
                                 </div>
                             : 
                                 <div>
-                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
+                                    <div className="term-list" onScroll={(e) => this.scrollTypeahead(e)}>
                                         {/* Display the first five terms of the facet */}
                                         {this.state.filteredTerms.map(term =>
                                             <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                         )}
                                     </div>
                                     {(this.state.filteredTerms.length > displayedTermsCount) ?
-                                        <i className='icon icon-chevron-down'/>
+                                        <div className='shading'/>
                                     : null}
                                 </div>
                             }
@@ -988,13 +1016,13 @@ class TypeaheadFacet extends React.Component {
                         <div>
                             {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
                                 <div>
-                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
+                                    <div className="term-list" onScroll={(e) => this.scrollTypeahead(e)}>
                                         {terms.map(term =>
                                             <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                         )}
                                     </div>
                                     {(terms.length > displayedTermsCount) ?
-                                        <i className='icon icon-chevron-down' />
+                                        <div className='shading' />
                                     : null}
                                 </div>
                             : null}
