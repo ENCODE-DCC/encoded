@@ -474,7 +474,9 @@ def report_download(context, request):
         columns['@id']['title'] = 'id'
 
     header = [column.get('title') or field for field, column in columns.items()]
-
+    #
+    # header = [field for field, column in columns.items()]
+    #
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
