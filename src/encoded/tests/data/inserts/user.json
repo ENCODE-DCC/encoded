@@ -96,6 +96,17 @@
         "uuid": "de7f5444-ee87-4e4e-b621-9c136ea1d4b1"
     },
     {
+        "email": "khzlin@stanford.edu",
+        "first_name":"Khine",
+        "last_name":"Lin",
+        "lab": "/labs/j-michael-cherry/",
+        "status": "current",
+        "groups": [
+            "admin"
+        ],
+        "uuid": "6667a92a-d202-493a-8c7d-7a56d1380356"
+    },
+    {
         "email": "massa.porta@varius.mauris",
         "first_name": "J. Michael",
         "job_title": "PI",
@@ -893,5 +904,65 @@
              "/labs/j-michael-cherry/"
          ],
          "uuid": "97d2dfcd-0919-4a27-9797-a6ef25f470a2"
+    },
+    {
+        "email": "zackm23@stanford.edu",
+        "first_name": "Zachary",
+         "groups": [
+             "admin"
+         ],
+         "job_title": "Data Insert Updater",
+         "lab": "/labs/j-michael-cherry/",
+         "last_name": "Myers",
+         "status": "current",
+         "submits_for": [
+             "/labs/j-michael-cherry/"
+         ],
+         "uuid": "7e944358-625c-426c-975c-7d875e22f753"
+    },
+    {
+        "email": "jahilton@stanford.edu",
+        "first_name": "Jason",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Hilton",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "ENCODE3",
+            "REMC",
+            "GGR",
+            "ENCODE4",
+            "community"
+        ],
+        "uuid": "332d0e03-a907-4f53-8358-bb00118277c8"
+    },
+    {
+        "email": "clitton@stanford.edu",
+        "first_name": "Casey",
+        "groups": [
+            "admin"
+        ],
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Litton",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "ENCODE3",
+            "REMC",
+            "GGR",
+            "ENCODE4",
+            "community"
+        ],
+        "uuid": "75659c39-eaea-47b7-ba26-92e9ff183e6c"
     }
 ]

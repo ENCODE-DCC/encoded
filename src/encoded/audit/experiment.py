@@ -2278,6 +2278,42 @@ def audit_experiment_technical_replicates_same_library(value, system, excluded_t
     return
 
 
+def audit_experiment_tagging_genetic_modification(value, system, excluded_types):
+    if check_award_condition(value, ["ENCODE4"]):
+        level = 'ERROR'
+    else:
+        level = 'WARNING'
+    if 'replicates' in value:
+        mods = []
+        mods_ids = []
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and
+               'library' in rep and
+               rep['library']['status'] not in excluded_types and
+               'biosample' in rep['library'] and
+               rep['library']['biosample']['status'] not in excluded_types):
+                biosample = rep['library']['biosample']
+                if 'applied_modifications' in biosample:
+                    for m in biosample['applied_modifications']:
+                        if m['@id'] not in mods_ids:
+                            mods_ids.append(m['@id'])
+                            mods.append(m)
+        for modification in mods:
+            if (modification['status'] not in excluded_types and
+                modification['purpose'] == 'tagging' and
+                not modification.get('characterizations')):
+                    detail = ('Genetic modification {} performed for the '
+                              'purpose of {} is missing validating characterization '
+                              'that is required by ENCODE4 standards.').format(
+                        modification['@id'],
+                        modification['purpose']
+                    )
+                    yield AuditFailure(
+                        'missing genetic modification characterization',
+                        detail,
+                        level)
+
+
 def audit_experiment_replicates_biosample(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -2904,6 +2940,21 @@ def audit_library_RNA_size_range(value, system, excluded_types):
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
     return
+
+
+def audit_RNA_library_RIN(value, system, excluded_types):
+    '''
+    An RNA library should have a RIN specified.
+    '''
+    RNAs = ['RNA', 'polyadenylated mRNA', 'miRNA']
+    for rep in value['replicates']:
+        if (rep['status'] not in excluded_types and
+           'library' in rep and rep['library']['status'] not in excluded_types and
+           rep['library']['nucleic_acid_term_name'] in RNAs and
+           'rna_integrity_number' not in rep['library']):
+            detail = ('Metadata of RNA library {} lacks specification of '
+                      'the rna integrity number.').format(rep['library']['@id'])
+            yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
 
 
 # if experiment target is recombinant protein, the biosamples should have at
@@ -3590,6 +3641,7 @@ def check_award_condition(experiment, awards):
 function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
+    'audit_tagging_genetic_modification_characterization': audit_experiment_tagging_genetic_modification,
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
@@ -3601,6 +3653,7 @@ function_dispatcher_without_files = {
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
+    'audit_RNA_library_RIN': audit_RNA_library_RIN,
     'audit_missing_modifiction': audit_missing_modification,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,

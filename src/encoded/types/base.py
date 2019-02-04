@@ -1,3 +1,4 @@
+import itertools
 from datetime import datetime
 from functools import lru_cache
 import logging
@@ -287,16 +288,23 @@ class Item(snovault.Item):
 
     @staticmethod
     def _block_on_audits(item_id, force_audit, request, parent, new_status):
-        if new_status != 'released':
+        if new_status not in ['released', 'submitted']:
             return
         if not parent or force_audit:
             return
         audits = request.embed(item_id, '@@audit')
-        if audits and audits.get('audit', {}).get('ERROR'):
+        errors = audits.get('audit', {}).get('ERROR', [])
+        not_compliants = audits.get('audit', {}).get('NOT_COMPLIANT', [])
+        details = {
+            detail.get('detail')
+            for detail in itertools.chain(errors, not_compliants)
+            if detail.get('detail')
+        }
+        if audits and any([errors, not_compliants]):
             raise ValidationFailure(
                 'body',
                 ['status'],
-                'ERROR audit on parent object. Must use ?force_audit=true to change status.'
+                'Audit on parent object. Must use ?force_audit=true to change status. {}'.format(list(details))
             )
 
     @staticmethod

@@ -1,6 +1,24 @@
 Changes
 =======
 
+75.1 (released)
+-----------------
+1. ENCD-4214 Update to snovault 1.0.17 (#2406)
+
+75.0 (released)
+-----------------
+1. ENCD-4204 Update to snovault 1.0.16 (#2394)
+2. ENCD-4193 block-on-orange-audit (#2390)
+3. ENCD-4153 alter-select-distinct-values (#2389)
+4. ENCD-4135 integrity-num (#2375)
+5. ENCD-4188 add khine to testdata (#2391)
+6. ENCD-4187 fix ENSEMBL links for mouse. (#2380)
+7. ENCD-4160 Added Casey, Jason, and Zack to users (#2371)
+8. ENCD-4159 adjusting GM characterization audit (#2366)
+9. ENCD-4038 Adding matrix bdd tests (#2335)
+10. ENCD-4182 Patch dbxref pattern in Gene. (#23
+11. ENCD-4166 RIN internal action audit (#2365)
+
 74.0 (released)
 -----------------
 1. ENCD-4169 Update to snovault 1.0.15

@@ -1,7 +1,7 @@
 [{
     "geneid": "912",
     "uuid": "0c9a9a6f-02de-4072-a5a3-6628f13070f6",
-    "dbxrefs": ["MIM:188410", "HGNC:HGNC:1637", "ENSEMBL:ENSG00000158473", "IMGT/GENE-DB:CD1D", "Vega:OTTHUMG00000022436", "UniProtKB:P15813"],
+    "dbxrefs": ["MIM:188410", "HGNC:1637", "ENSEMBL:ENSG00000158473", "IMGT/GENE-DB:CD1D", "Vega:OTTHUMG00000022436", "UniProtKB:P15813"],
     "go_annotations": [{
         "go_id": "GO:0005737",
         "go_name": "cytoplasm",
@@ -172,7 +172,7 @@
 }, {
     "geneid": "2995",
     "uuid": "83a311d1-7ed3-41bb-85f0-1f00c458e6fc",
-    "dbxrefs": ["MIM:110750", "HGNC:HGNC:4704", "ENSEMBL:ENSG00000136732", "Vega:OTTHUMG00000131464", "UniProtKB:P04921"],
+    "dbxrefs": ["MIM:110750", "HGNC:4704", "ENSEMBL:ENSG00000136732", "Vega:OTTHUMG00000131464", "UniProtKB:P04921"],
     "go_annotations": [{
         "go_id": "GO:0005515",
         "go_name": "protein binding",
@@ -228,7 +228,7 @@
 }, {
     "geneid": "6482",
     "uuid": "2cb7d65a-342e-4ab0-a5c4-6e7365f200a2",
-    "dbxrefs": ["MIM:607187", "HGNC:HGNC:10862", "ENSEMBL:ENSG00000008513", "Vega:OTTHUMG00000164534", "UniProtKB:Q11201", "UniProtKB:A0A024R9L6"],
+    "dbxrefs": ["MIM:607187", "HGNC:10862", "ENSEMBL:ENSG00000008513", "Vega:OTTHUMG00000164534", "UniProtKB:Q11201", "UniProtKB:A0A024R9L6"],
     "go_annotations": [{
         "go_id": "GO:0000139",
         "go_name": "Golgi membrane",
@@ -314,7 +314,7 @@
 }, {
     "geneid": "15077",
     "uuid": "c1bce75a-44ee-49a0-b950-926fabd6b2db",
-    "dbxrefs": ["MGI:MGI:2448355", "ENSEMBL:ENSMUSG00000093769", "Vega:OTTMUSG00000021930", "UniProtKB:P84228", "UniProtKB:B9EI85"],
+    "dbxrefs": ["MGI:2448355", "ENSEMBL:ENSMUSG00000093769", "Vega:OTTMUSG00000021930", "UniProtKB:P84228", "UniProtKB:B9EI85"],
     "go_annotations": [{
         "go_id": "GO:0000122",
         "go_name": "negative regulation of transcription by RNA polymerase II",
@@ -385,7 +385,7 @@
 }, {
     "geneid": "126961",
     "uuid": "f57eac34-29e1-4c21-b94a-f3a2c32e4fa7",
-    "dbxrefs": ["MIM:142780", "HGNC:HGNC:20503", "ENSEMBL:ENSG00000203811", "Vega:OTTHUMG00000012190", "UniProtKB:Q71DI3"],
+    "dbxrefs": ["MIM:142780", "HGNC:20503", "ENSEMBL:ENSG00000203811", "Vega:OTTHUMG00000012190", "UniProtKB:Q71DI3"],
     "go_annotations": [{
         "go_id": "GO:0000122",
         "go_name": "negative regulation of transcription by RNA polymerase II",
@@ -506,7 +506,7 @@
 }, {
     "geneid": "3178",
     "uuid": "51fe6251-4079-4467-b74a-f48f31d2e2de",
-    "dbxrefs": ["MIM:164017", "HGNC:HGNC:5031", "ENSEMBL:ENSG00000135486", "Vega:OTTHUMG00000169702", "UniProtKB:P09651", "UniProtKB:A0A024RB53", "UniProtKB:A0A024RAZ7"],
+    "dbxrefs": ["MIM:164017", "HGNC:5031", "ENSEMBL:ENSG00000135486", "Vega:OTTHUMG00000169702", "UniProtKB:P09651", "UniProtKB:A0A024RB53", "UniProtKB:A0A024RAZ7"],
     "go_annotations": [{
         "go_id": "GO:0000381",
         "go_name": "regulation of alternative mRNA splicing, via spliceosome",
@@ -697,7 +697,7 @@
 }, {
     "geneid": "6872",
     "uuid": "7a125d82-d95b-4123-8b11-a0d6809a9106",
-    "dbxrefs": ["MIM:313650", "HGNC:HGNC:11535", "ENSEMBL:ENSG00000147133", "Vega:OTTHUMG00000022723", "UniProtKB:P21675"],
+    "dbxrefs": ["MIM:313650", "HGNC:11535", "ENSEMBL:ENSG00000147133", "Vega:OTTHUMG00000022723", "UniProtKB:P21675"],
     "go_annotations": [{
         "go_id": "GO:0000209",
         "go_name": "protein polyubiquitination",
@@ -1083,7 +1083,7 @@
 }, {
     "geneid": "6925",
     "uuid": "567d7d65-0b85-4676-be8c-24c07af418d6",
-    "dbxrefs": ["MIM:602272", "HGNC:HGNC:11634", "ENSEMBL:ENSG00000196628", "Vega:OTTHUMG00000132713", "UniProtKB:P15884", "UniProtKB:A0A1B0GWD5", "UniProtKB:E9PH57", "UniProtKB:B3KVA4", "UniProtKB:A0A024R2C0", "UniProtKB:H3BPJ7", "UniProtKB:A0A1B0GVR6", "UniProtKB:H3BTP3", "UniProtKB:A0A1B0GW91"],
+    "dbxrefs": ["MIM:602272", "HGNC:11634", "ENSEMBL:ENSG00000196628", "Vega:OTTHUMG00000132713", "UniProtKB:P15884", "UniProtKB:A0A1B0GWD5", "UniProtKB:E9PH57", "UniProtKB:B3KVA4", "UniProtKB:A0A024R2C0", "UniProtKB:H3BPJ7", "UniProtKB:A0A1B0GVR6", "UniProtKB:H3BTP3", "UniProtKB:A0A1B0GW91"],
     "go_annotations": [{
         "go_id": "GO:0000790",
         "go_name": "nuclear chromatin",
@@ -1279,7 +1279,7 @@
 }, {
     "geneid": "7025",
     "uuid": "75866336-b42b-4341-9b70-240eb469c231",
-    "dbxrefs": ["MIM:132890", "HGNC:HGNC:7975", "ENSEMBL:ENSG00000175745", "Vega:OTTHUMG00000119079", "UniProtKB:P10589"],
+    "dbxrefs": ["MIM:132890", "HGNC:7975", "ENSEMBL:ENSG00000175745", "Vega:OTTHUMG00000119079", "UniProtKB:P10589"],
     "go_annotations": [{
         "go_id": "GO:0000122",
         "go_name": "negative regulation of transcription by RNA polymerase II",
@@ -1675,7 +1675,7 @@
 }, {
     "geneid": "1879",
     "uuid": "cd05d34d-9a51-4efc-b0ec-9245a1d83b40",
-    "dbxrefs": ["MIM:164343", "HGNC:HGNC:3126", "ENSEMBL:ENSG00000164330", "Vega:OTTHUMG00000130304", "UniProtKB:Q9UH73", "UniProtKB:B4E2U8"],
+    "dbxrefs": ["MIM:164343", "HGNC:3126", "ENSEMBL:ENSG00000164330", "Vega:OTTHUMG00000130304", "UniProtKB:Q9UH73", "UniProtKB:B4E2U8"],
     "go_annotations": [{
         "go_id": "GO:0000981",
         "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
@@ -1962,7 +1962,7 @@
 }, {
     "geneid": "79068",
     "uuid": "4e0994eb-e669-450d-99f4-7e19fc217c0a",
-    "dbxrefs": ["MIM:610966", "HGNC:HGNC:24678", "ENSEMBL:ENSG00000140718", "Vega:OTTHUMG00000158780", "UniProtKB:Q9C0B1", "UniProtKB:A0A1B0GTC5", "UniProtKB:B3KU60", "UniProtKB:Q99770"],
+    "dbxrefs": ["MIM:610966", "HGNC:24678", "ENSEMBL:ENSG00000140718", "Vega:OTTHUMG00000158780", "UniProtKB:Q9C0B1", "UniProtKB:A0A1B0GTC5", "UniProtKB:B3KU60", "UniProtKB:Q99770"],
     "go_annotations": [{
         "go_id": "GO:0001659",
         "go_name": "temperature homeostasis",
@@ -2179,7 +2179,7 @@
 }, {
     "geneid": "8335",
     "uuid": "9a591682-cb1e-4bb1-bc24-d5093d65433a",
-    "dbxrefs": ["MIM:602795", "HGNC:HGNC:4734", "ENSEMBL:ENSG00000278463", "Vega:OTTHUMG00000014420", "UniProtKB:P04908", "UniProtKB:Q08AJ9"],
+    "dbxrefs": ["MIM:602795", "HGNC:4734", "ENSEMBL:ENSG00000278463", "Vega:OTTHUMG00000014420", "UniProtKB:P04908", "UniProtKB:Q08AJ9"],
     "go_annotations": [{
         "go_id": "GO:0000786",
         "go_name": "nucleosome",
@@ -2245,7 +2245,7 @@
 }, {
     "geneid": "3012",
     "uuid": "6e23b54c-1a2e-41f5-b925-578f359f8eb7",
-    "dbxrefs": ["MIM:602786", "HGNC:HGNC:4724", "ENSEMBL:ENSG00000277075", "Vega:OTTHUMG00000014440", "UniProtKB:P04908", "UniProtKB:Q08AJ9"],
+    "dbxrefs": ["MIM:602786", "HGNC:4724", "ENSEMBL:ENSG00000277075", "Vega:OTTHUMG00000014440", "UniProtKB:P04908", "UniProtKB:Q08AJ9"],
     "go_annotations": [{
         "go_id": "GO:0000786",
         "go_name": "nucleosome",
@@ -2311,7 +2311,7 @@
 }, {
     "geneid": "503538",
     "uuid": "17ba934c-8a56-4c02-b08c-011ad4adcde9",
-    "dbxrefs": ["HGNC:HGNC:37133", "ENSEMBL:ENSG00000268895"],
+    "dbxrefs": ["HGNC:37133", "ENSEMBL:ENSG00000268895"],
     "name": "A1BG antisense RNA 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2321,7 +2321,7 @@
 }, {
     "geneid": "284837",
     "uuid": "4ceb141b-9276-485b-8865-5a833044e952",
-    "dbxrefs": ["HGNC:HGNC:51526", "ENSEMBL:ENSG00000215458"],
+    "dbxrefs": ["HGNC:51526", "ENSEMBL:ENSG00000215458"],
     "name": "apoptosis associated transcript in bladder cancer",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2330,7 +2330,7 @@
 }, {
     "geneid": "80161",
     "uuid": "00522a7c-1dd0-4f8b-abe3-633c514ec760",
-    "dbxrefs": ["HGNC:HGNC:25811"],
+    "dbxrefs": ["HGNC:25811"],
     "name": "ASMTL antisense RNA 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2340,7 +2340,7 @@
 }, {
     "geneid": "388699",
     "uuid": "c99ce1d3-5ca2-4cdf-85dc-d69d18f227c0",
-    "dbxrefs": ["HGNC:HGNC:31825"],
+    "dbxrefs": ["HGNC:31825"],
     "name": "long intergenic non-protein coding RNA 302",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2350,7 +2350,7 @@
 }, {
     "geneid": "406904",
     "uuid": "f982bb50-dd2b-4f39-9daa-3d4445a37ffd",
-    "dbxrefs": ["MIM:609326", "HGNC:HGNC:31499", "ENSEMBL:ENSG00000199017", "miRBase:MI0000651"],
+    "dbxrefs": ["MIM:609326", "HGNC:31499", "ENSEMBL:ENSG00000199017", "miRBase:MI0000651"],
     "name": "microRNA 1-1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2360,7 +2360,7 @@
 }, {
     "geneid": "407053",
     "uuid": "c7c7722d-89c5-4c53-a314-8a67b6e129a9",
-    "dbxrefs": ["MIM:611606", "HGNC:HGNC:31648", "ENSEMBL:ENSG00000199158", "miRBase:MI0000098"],
+    "dbxrefs": ["MIM:611606", "HGNC:31648", "ENSEMBL:ENSG00000199158", "miRBase:MI0000098"],
     "name": "microRNA 96",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2370,7 +2370,7 @@
 }, {
     "geneid": "100847068",
     "uuid": "0947ecdc-96c8-4815-ac7b-eaa75c8a21b3",
-    "dbxrefs": ["HGNC:HGNC:43539", "ENSEMBL:ENSG00000263372", "miRBase:MI0017871"],
+    "dbxrefs": ["HGNC:43539", "ENSEMBL:ENSG00000263372", "miRBase:MI0017871"],
     "name": "microRNA 548ao",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2379,7 +2379,7 @@
 }, {
     "geneid": "100500894",
     "uuid": "4b1bfaad-184d-4bda-9652-92c51d67e956",
-    "dbxrefs": ["HGNC:HGNC:38967", "ENSEMBL:ENSG00000265658", "miRBase:MI0016091"],
+    "dbxrefs": ["HGNC:38967", "ENSEMBL:ENSG00000265658", "miRBase:MI0016091"],
     "name": "microRNA 3690",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2389,7 +2389,7 @@
 }, {
     "geneid": "4550",
     "uuid": "63aec915-ee40-4514-8a20-e5e461d53b61",
-    "dbxrefs": ["MIM:561010", "HGNC:HGNC:7471"],
+    "dbxrefs": ["MIM:561010", "HGNC:7471"],
     "name": "mitochondrially encoded 16S RNA",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2399,7 +2399,7 @@
 }, {
     "geneid": "100189478",
     "uuid": "f29c5f47-e473-45d3-bb0e-f2b9358f7418",
-    "dbxrefs": ["HGNC:HGNC:35051"],
+    "dbxrefs": ["HGNC:35051"],
     "name": "nuclear-encoded mitochondrial transfer RNA-Gln (TTG) 12-1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2409,7 +2409,7 @@
 }, {
     "geneid": "6023",
     "uuid": "7b573441-ce01-423c-9160-e23b5afa0c16",
-    "dbxrefs": ["MIM:157660", "HGNC:HGNC:10031", "ENSEMBL:ENSG00000269900"],
+    "dbxrefs": ["MIM:157660", "HGNC:10031", "ENSEMBL:ENSG00000269900"],
     "name": "RNA component of mitochondrial RNA processing endoribonuclease",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2419,7 +2419,7 @@
 }, {
     "geneid": "125050",
     "uuid": "3217c0b6-66ed-4446-ab42-9cc6ee337355",
-    "dbxrefs": ["MIM:606515", "HGNC:HGNC:10037", "ENSEMBL:ENSG00000202198"],
+    "dbxrefs": ["MIM:606515", "HGNC:10037", "ENSEMBL:ENSG00000202198"],
     "name": "RNA, 7SK small nuclear",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2429,7 +2429,7 @@
 }, {
     "geneid": "6029",
     "uuid": "034842a9-077f-4b8c-be10-b1d73d2c5093",
-    "dbxrefs": ["MIM:612177", "HGNC:HGNC:10038", "ENSEMBL:ENSG00000276168"],
+    "dbxrefs": ["MIM:612177", "HGNC:10038", "ENSEMBL:ENSG00000276168"],
     "name": "RNA, 7SL, cytoplasmic 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2439,7 +2439,7 @@
 }, {
     "geneid": "100008587",
     "uuid": "d120b568-9ec0-4dfd-8655-2a1d30386203",
-    "dbxrefs": ["HGNC:HGNC:53533"],
+    "dbxrefs": ["HGNC:53533"],
     "name": "RNA, 5.8S ribosomal N5",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2449,7 +2449,7 @@
 }, {
     "geneid": "100169751",
     "uuid": "e9833860-a123-4402-be71-14c72bf35c98",
-    "dbxrefs": ["HGNC:HGNC:34362", "ENSEMBL:ENSG00000199352"],
+    "dbxrefs": ["HGNC:34362", "ENSEMBL:ENSG00000199352"],
     "name": "RNA, 5S ribosomal 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2459,7 +2459,7 @@
 }, {
     "geneid": "26871",
     "uuid": "6461de1a-7c5c-4abb-9506-f16f8d7c1da7",
-    "dbxrefs": ["HGNC:HGNC:10120", "ENSEMBL:ENSG00000206652"],
+    "dbxrefs": ["HGNC:10120", "ENSEMBL:ENSG00000206652"],
     "name": "RNA, U1 small nuclear 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2469,7 +2469,7 @@
 }, {
     "geneid": "6066",
     "uuid": "5812b697-cd0c-417c-a231-711bc0afacf3",
-    "dbxrefs": ["MIM:180690", "HGNC:HGNC:10142", "ENSEMBL:ENSG00000274585"],
+    "dbxrefs": ["MIM:180690", "HGNC:10142", "ENSEMBL:ENSG00000274585"],
     "name": "RNA, U2 small nuclear 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2479,7 +2479,7 @@
 }, {
     "geneid": "26835",
     "uuid": "ab493d18-fbe8-4d53-a847-5675009ac8d2",
-    "dbxrefs": ["HGNC:HGNC:10192", "ENSEMBL:ENSG00000200795"],
+    "dbxrefs": ["HGNC:10192", "ENSEMBL:ENSG00000200795"],
     "name": "RNA, U4 small nuclear 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2489,7 +2489,7 @@
 }, {
     "geneid": "100151683",
     "uuid": "fb65b660-e245-4275-ad17-426b309c2f90",
-    "dbxrefs": ["MIM:601428", "HGNC:HGNC:34016", "ENSEMBL:ENSG00000264229"],
+    "dbxrefs": ["MIM:601428", "HGNC:34016", "ENSEMBL:ENSG00000264229"],
     "name": "RNA, U4atac small nuclear (U12-dependent splicing)",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2499,7 +2499,7 @@
 }, {
     "geneid": "26831",
     "uuid": "d68a9602-f2fa-4c49-b55e-4ae590de211e",
-    "dbxrefs": ["MIM:180691", "HGNC:HGNC:10211", "ENSEMBL:ENSG00000199568"],
+    "dbxrefs": ["MIM:180691", "HGNC:10211", "ENSEMBL:ENSG00000199568"],
     "name": "RNA, U5A small nuclear 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2509,7 +2509,7 @@
 }, {
     "geneid": "26827",
     "uuid": "5d47b7dd-fe3a-4520-b243-05c8927c673e",
-    "dbxrefs": ["MIM:180692", "HGNC:HGNC:10227", "ENSEMBL:ENSG00000206625"],
+    "dbxrefs": ["MIM:180692", "HGNC:10227", "ENSEMBL:ENSG00000206625"],
     "name": "RNA, U6 small nuclear 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2519,7 +2519,7 @@
 }, {
     "geneid": "26824",
     "uuid": "a469aa70-c618-46c6-8157-6f7fead8f4e4",
-    "dbxrefs": ["HGNC:HGNC:10108", "ENSEMBL:ENSG00000274978"],
+    "dbxrefs": ["HGNC:10108", "ENSEMBL:ENSG00000274978"],
     "name": "RNA, U11 small nuclear",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2529,7 +2529,7 @@
 }, {
     "geneid": "26767",
     "uuid": "5ad4f405-741e-4877-bad1-953bedce2899",
-    "dbxrefs": ["HGNC:HGNC:10103", "ENSEMBL:ENSG00000201348"],
+    "dbxrefs": ["HGNC:10103", "ENSEMBL:ENSG00000201348"],
     "name": "RNA, U105B small nucleolar",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2539,7 +2539,7 @@
 }, {
     "geneid": "6084",
     "uuid": "0372fbb8-e89f-43fb-bc7f-f95aec0ea92e",
-    "dbxrefs": ["MIM:601821", "HGNC:HGNC:10242", "ENSEMBL:ENSG00000201098"],
+    "dbxrefs": ["MIM:601821", "HGNC:10242", "ENSEMBL:ENSG00000201098"],
     "name": "RNA, Ro-associated Y1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2549,7 +2549,7 @@
 }, {
     "geneid": "677774",
     "uuid": "5c44a122-d27a-4d6b-86b5-9b0db1f0e42a",
-    "dbxrefs": ["HGNC:HGNC:32555", "ENSEMBL:ENSG00000252947"],
+    "dbxrefs": ["HGNC:32555", "ENSEMBL:ENSG00000252947"],
     "name": "small Cajal body-specific RNA 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2559,7 +2559,7 @@
 }, {
     "geneid": "677792",
     "uuid": "ff8c979b-2172-448c-bbd7-329a9fa094a6",
-    "dbxrefs": ["HGNC:HGNC:32557", "ENSEMBL:ENSG00000206834"],
+    "dbxrefs": ["HGNC:32557", "ENSEMBL:ENSG00000206834"],
     "name": "small nucleolar RNA, H/ACA box 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2569,7 +2569,7 @@
 }, {
     "geneid": "677848",
     "uuid": "4afdd01a-2511-4ee9-a6fa-e6f7201d89e8",
-    "dbxrefs": ["HGNC:HGNC:32556", "ENSEMBL:ENSG00000278261"],
+    "dbxrefs": ["HGNC:32556", "ENSEMBL:ENSG00000278261"],
     "name": "small nucleolar RNA, C/D box 1A",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2579,7 +2579,7 @@
 }, {
     "geneid": "56664",
     "uuid": "74daa5bf-f36f-4bd4-aa72-dba6c6232dc4",
-    "dbxrefs": ["MIM:612695", "HGNC:HGNC:12654", "ENSEMBL:ENSG00000199990"],
+    "dbxrefs": ["MIM:612695", "HGNC:12654", "ENSEMBL:ENSG00000199990"],
     "name": "vault RNA 1-1",
     "ncbi_entrez_status": "live",
     "organism": "human",
@@ -2589,7 +2589,7 @@
 }, {
     "geneid": "100128260",
     "uuid": "de15fbe2-0d2d-4573-8d39-01f5c957061c",
-    "dbxrefs": ["HGNC:HGNC:38513", "ENSEMBL:ENSG00000185203"],
+    "dbxrefs": ["HGNC:38513", "ENSEMBL:ENSG00000185203"],
     "name": "WASH and IL9R antisense RNA 1",
     "ncbi_entrez_status": "live",
     "organism": "human",
