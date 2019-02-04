@@ -1,6 +1,23 @@
 Changes
 =======
 
+80.0 (released) / snovault 1.0.24
+-----------------
+1. ENCD-4423 Update dalliance to version 1.0 (#2566)
+2. ENCD-4417 Update to snovault 1.0.24 (#2563)
+3. ENCD-3971 Update node npm to version 10 (#2553)
+4. ENCD-4359 Fix recursive is_part_of audit function (#2552)
+5. ENCD-4325 Juicebox browser (#2554)
+6. ENCD-4360 connect biosample type (#2560)
+7. ENCD-4396 Citation note (#2555)
+8. ENCD-4388 excluding not relevant experiments form RE audits (#2551)
+9. ENCD-4355 add introduced gene link (#2559)
+10. ENCD-4375 Restore SRA dbxrefs linkouts (#2558)
+11. ENCD-4393 add-gene-alignments (#2556)
+12. ENCD-4369 Install redis server (#2543)
+13. ENCD-4377 Add Ubiquitination to target mod enum (#2550)
+14. ENCD-4399 fix-linux-travis-option (#2547)
+
 79.0 (released) / snovault 1.0.22-23
 -----------------
 1. ENCD-4340 get-or-create-carts-with-types (#2541)
