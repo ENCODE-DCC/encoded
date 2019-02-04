@@ -39,7 +39,6 @@ class Characterization(ItemWithAttachment, Item):
     STATUS_ACL = {
         'in progress': ALLOW_REVIEWER_EDIT,
         'released': ALLOW_CURRENT,
-        'not submitted for review by lab': ALLOW_CURRENT,
         'deleted': DELETED,
     }
 

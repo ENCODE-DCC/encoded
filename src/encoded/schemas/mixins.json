@@ -109,20 +109,6 @@
             ]
         }
     },
-    "characterization_status":{
-        "status": {
-            "title": "Status",
-            "description": "The current state of the characterization.",
-            "comment": "Submit a status of 'in progress' to indicate that another lab should begin reviewing characterization. Submit a status of 'not submitted for review by lab' to indicate that no review is needed for the characterization.'",
-            "type": "string",
-            "default": "in progress",
-            "enum" : [
-                "deleted",
-                "in progress",
-                "not submitted for review by lab"
-            ]
-        }
-    },
     "submitted": {
         "date_created": {
             "rdfs:subPropertyOf": "dc:created",
