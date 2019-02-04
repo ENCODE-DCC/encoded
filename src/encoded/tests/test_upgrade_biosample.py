@@ -5,7 +5,7 @@ import pytest
 def biosample_0(submitter, lab, award, source, organism):
     return {
         'award': award['uuid'],
-        'biosample_term_id': 'UBERON:349829',
+        'biosample_term_id': 'UBERON:0000948',
         'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
@@ -322,7 +322,7 @@ def test_biosample_upgrade_model_organism_mouse(upgrader, biosample_6):
     assert value['mouse_life_stage'] == 'postnatal'
 
 
-def test_biosample_upgrade_inline(testapp, biosample_1):
+def test_biosample_upgrade_inline(testapp, biosample_1, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
@@ -343,7 +343,7 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
-def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1):
+def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
     biosample_1['starting_amount'] = 666
@@ -369,7 +369,7 @@ def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1):
     assert res.json['starting_amount_units'] == 'g'
 
 
-def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1):
+def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
     biosample_1['starting_amount'] = 0.632
@@ -395,7 +395,7 @@ def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1):
     assert res.json['starting_amount_units'] == 'g'
 
 
-def test_biosample_upgrade_starting_amount_unknown(testapp, biosample_1):
+def test_biosample_upgrade_starting_amount_unknown(testapp, biosample_1, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
     biosample_1['starting_amount'] = 'unknown'
@@ -515,3 +515,11 @@ def test_upgrade_biosample_19_to_20(upgrader, biosample_19, biosample):
 def test_upgrade_biosample_21_to_22(upgrader, biosample_21, biosample):
     value = upgrader.upgrade('biosample', biosample_21, current_version='21', target_version='22')
     assert value['biosample_type'] == 'cell line'
+
+
+def test_upgrade_biosample_22_to_23(root, upgrader, biosample_0, heart):
+    value = upgrader.upgrade(
+        'biosample', biosample_0, current_version='22', target_version='23',
+        context=root.get_by_uuid(heart['uuid'])
+    )
+    assert value['biosample_ontology'] == heart['uuid']

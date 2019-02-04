@@ -12,8 +12,6 @@ from .base import (
 )
 from .dataset import Dataset
 from .shared_calculated_properties import (
-    CalculatedBiosampleSlims,
-    CalculatedBiosampleSynonyms,
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
     CalculatedVisualize
@@ -36,20 +34,20 @@ from .assay_data import assay_terms
         'description': 'Listing of Experiments',
     })
 class Experiment(Dataset,
-                 CalculatedBiosampleSlims,
-                 CalculatedBiosampleSynonyms,
                  CalculatedAssaySynonyms,
                  CalculatedAssayTermID,
                  CalculatedVisualize):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
+        'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
         'related_series',
         'replicates.antibody',
         'replicates.library',
+        'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
         'replicates.library.biosample.applied_modifications',
@@ -78,11 +76,14 @@ class Experiment(Dataset,
         'lab',
         'award',
         'documents',
+        'replicates.antibody.characterizations.biosample_ontology',
+        'replicates.antibody.characterizations.characterization_reviews.biosample_ontology',
         'replicates.antibody.characterizations',
         'replicates.antibody.targets',
         'replicates.library',
         'replicates.library.documents',
         'replicates.library.biosample',
+        'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.organism',
         'replicates.library.biosample.treatments',
         'replicates.library.biosample.applied_modifications',
@@ -90,8 +91,11 @@ class Experiment(Dataset,
         'replicates.library.biosample.donor',
         'replicates.library.biosample.treatments',
         'replicates.library.biosample.originated_from',
+        'replicates.library.biosample.originated_from.biosample_ontology',
         'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.biosample_ontology',
         'replicates.library.biosample.pooled_from',
+        'replicates.library.biosample.pooled_from.biosample_ontology',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
         'target.organism',
@@ -150,7 +154,11 @@ class Experiment(Dataset,
                         if biosampleObject['accession'] not in biosample_accessions:
                             biosample_accessions.add(biosampleObject['accession'])
 
-                            if biosampleObject.get('biosample_type') in [
+                            biosampleTypeObject = request.embed(
+                                biosampleObject['biosample_ontology'],
+                                '@@object'
+                            )
+                            if biosampleTypeObject.get('classification') in [
                                     'in vitro differentiated cells']:
                                 drop_age_sex_flag = True
 
@@ -209,8 +217,8 @@ class Experiment(Dataset,
                                 biosampleObject.get('age_units'),
                                 biosampleObject.get('life_stage'),
                                 biosampleObject.get('sex'),
-                                biosampleObject.get('biosample_term_name'),
-                                biosampleObject.get('biosample_type'),
+                                biosampleTypeObject.get('term_name'),
+                                biosampleTypeObject.get('classification'),
                                 biosampleObject.get('starting_amount'),
                                 biosampleObject.get('starting_amount_units'),
                                 biosampleObject.get('depleted_in_term_name'),
@@ -392,7 +400,11 @@ class Experiment(Dataset,
                     biosample_donor_list.append(biosampleObject.get('donor'))
                     biosample_number_list.append(replicateObject.get('biological_replicate_number'))
                     biosample_species = biosampleObject.get('organism')
-                    biosample_type = biosampleObject.get('biosample_type')
+                    biosampleTypeObject = request.embed(
+                        biosampleObject['biosample_ontology'],
+                        '@@object'
+                    )
+                    biosample_type = biosampleTypeObject.get('classification')
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind
@@ -436,16 +448,16 @@ class Experiment(Dataset,
             'facets': [
                 'status',
                 'replicates.library.biosample.donor.organism.scientific_name',
-                'biosample_type',
-                'organ_slims',
-                'cell_slims',
+                'biosample_ontology.classification',
+                'biosample_ontology.organ_slims',
+                'biosample_ontology.cell_slims',
                 'award.project',
                 'assembly',
                 'internal_status',
                 'audit_category', # Added for auditmatrix
                 'lab.title'
             ],
-            'group_by': ['biosample_type', 'biosample_term_name'],
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
             'label': 'Biosample',
         },
         'x': {
@@ -465,9 +477,9 @@ class Experiment(Dataset,
         'y': {
             'facets': [
                 'replicates.library.biosample.donor.organism.scientific_name',
-                'biosample_type',
-                'organ_slims',
-                'cell_slims',
+                'biosample_ontology.classification',
+                'biosample_ontology.organ_slims',
+                'biosample_ontology.cell_slims',
                 'award.project',
                 'award.rfa',
                 'status',
@@ -476,7 +488,7 @@ class Experiment(Dataset,
                 'audit_category',
                 'lab.title'
             ],
-            'group_by': ['biosample_type', 'biosample_term_name'],
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
             'label': 'Biosample',
         },
         'x': {

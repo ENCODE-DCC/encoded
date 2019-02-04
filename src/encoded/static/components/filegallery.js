@@ -9,11 +9,12 @@ import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
-import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
+import { requestFiles, DownloadableAccession } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
+import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers } from './vis_defines';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -85,7 +86,8 @@ export class FileTable extends React.Component {
     }
 
     fileClick(file) {
-        if (this.props.setInfoNodeId && this.props.setInfoNodeVisible) {
+        const { setInfoNodeId, setInfoNodeVisible } = this.props;
+        if (setInfoNodeId && setInfoNodeVisible) {
             const node = {
                 '@type': ['File'],
                 metadata: {
@@ -93,16 +95,17 @@ export class FileTable extends React.Component {
                 },
                 schemas: this.props.schemas,
             };
-            this.props.setInfoNodeId(node);
-            this.props.setInfoNodeVisible(true);
+            setInfoNodeId(node);
+            setInfoNodeVisible(true);
         }
     }
 
     handleCollapse(table) {
-        // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
-        const collapsed = _.clone(this.state.collapsed);
-        collapsed[table] = !collapsed[table];
-        this.setState({ collapsed });
+        this.setState((state) => {
+            const collapsed = _.clone(state.collapsed);
+            collapsed[table] = !collapsed[table];
+            return { collapsed };
+        });
     }
 
     handleCollapseProc() {
@@ -122,28 +125,29 @@ export class FileTable extends React.Component {
             context,
             items,
             graphedFiles,
+            filterOptions,
             filePanelHeader,
             encodevers,
-            selectedFilterValue,
-            filterOptions,
             showFileCount,
+            browserOptions,
             session,
             adminUser,
+            selectedFilterValue,
             showReplicateNumber,
         } = this.props;
-        let selectedAssembly;
-        let selectedAnnotation;
         const loggedIn = !!(session && session['auth.userid']);
 
+        // Establish the selected assembly and annotation.
+        let selectedAssembly = null;
+        let selectedAnnotation = null;
+        if (selectedFilterValue && filterOptions[selectedFilterValue]) {
+            selectedAssembly = filterOptions[selectedFilterValue].assembly;
+            selectedAnnotation = filterOptions[selectedFilterValue].annotation;
+        }
+
         let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
-
-        if (datasetFiles.length) {
+        if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
-
-            if (selectedFilterValue && filterOptions[selectedFilterValue]) {
-                selectedAssembly = filterOptions[selectedFilterValue].assembly;
-                selectedAnnotation = filterOptions[selectedFilterValue].annotation;
-            }
 
             // Filter all the files according to the given filters, and remove duplicates
             datasetFiles = _(datasetFiles).filter((file) => {
@@ -226,6 +230,7 @@ export class FileTable extends React.Component {
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
                                 graphedFiles,
+                                browserOptions,
                                 loggedIn,
                                 adminUser,
                             }}
@@ -262,21 +267,44 @@ export class FileTable extends React.Component {
 }
 
 FileTable.propTypes = {
-    context: PropTypes.object.isRequired, // Dataset-type object being rendered
-    items: PropTypes.array.isRequired, // Array of files to appear in the table
-    graphedFiles: PropTypes.object, // Specifies which files are in the graph
-    filePanelHeader: PropTypes.object, // Table header component
-    encodevers: PropTypes.string, // ENCODE version of the experiment
-    selectedFilterValue: PropTypes.string, // Selected filter from popup menu
-    filterOptions: PropTypes.array, // Array of assambly/annotation from file array
-    showFileCount: PropTypes.bool, // True to show count of files in table
-    setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
-    setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
-    session: PropTypes.object, // Persona user session
-    adminUser: PropTypes.bool, // True if user is an admin user
-    schemas: PropTypes.object, // Object from /profiles/ containing all schemas
-    noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
-    showReplicateNumber: PropTypes.bool, // True to show replicate number
+    /** Dataset-type object being rendered */
+    context: PropTypes.object.isRequired,
+    /** Array of files to appear in the table */
+    items: PropTypes.array.isRequired,
+    /** Specifies which files are in the graph */
+    graphedFiles: PropTypes.object,
+    /** Table header component */
+    filePanelHeader: PropTypes.object,
+    /** ENCODE version of the experiment */
+    encodevers: PropTypes.string,
+    browserOptions: PropTypes.shape({
+        /** Currently selected genome browser */
+        currentBrowser: PropTypes.string,
+        /** Called when user selects a browser */
+        browserFileSelectHandler: PropTypes.func.isRequired,
+        /** Files selected for browsing */
+        selectedBrowserFiles: PropTypes.array,
+    }),
+    /** Selected filter from popup menu */
+    selectedFilterValue: PropTypes.string,
+    /** Array of assambly/annotation from file array */
+    filterOptions: PropTypes.array,
+    /** True to show count of files in table */
+    showFileCount: PropTypes.bool,
+    /** Function to call to set the currently selected node ID */
+    setInfoNodeId: PropTypes.func,
+    /** Function to call to set the visibility of the node's modal */
+    setInfoNodeVisible: PropTypes.func,
+    /** User session */
+    session: PropTypes.object,
+    /** True if user is an admin user */
+    adminUser: PropTypes.bool,
+    /** Object from /profiles/ containing all schemas */
+    schemas: PropTypes.object,
+    /** True to strip SortTable panel of default CSS classes */
+    noDefaultClasses: PropTypes.bool,
+    /** True to show replicate number */
+    showReplicateNumber: PropTypes.bool,
 };
 
 FileTable.defaultProps = {
@@ -286,6 +314,10 @@ FileTable.defaultProps = {
     selectedFilterValue: 'default',
     filterOptions: [],
     showFileCount: false,
+    browserOptions: {
+        currentBrowser: '',
+        selectedBrowserFiles: [],
+    },
     setInfoNodeId: null,
     setInfoNodeVisible: null,
     session: null,
@@ -303,6 +335,19 @@ FileTable.contextTypes = {
 
 // Configuration for process file table
 FileTable.procTableColumns = {
+    visualize: {
+        title: 'Visualize',
+        display: (item, meta) => {
+            const selectedFile = meta.browserOptions.selectedBrowserFiles.find(file => file['@id'] === item['@id']);
+            const selectable = visFileSelectable(item, meta.browserOptions.selectedBrowserFiles, meta.browserOptions.currentBrowser);
+            return (
+                <div className="file-table-visualizer">
+                    <input name={item['@id']} type="checkbox" checked={!!selectedFile} disabled={!selectable && !selectedFile} onClick={meta.browserOptions.browserFileSelectHandler} />
+                </div>
+            );
+        },
+        sorter: false,
+    },
     accession: {
         title: 'Accession',
         display: (item, meta) => {
@@ -951,6 +996,64 @@ function collectAssembliesAnnotations(files) {
 }
 
 
+/**
+ * Render the visualization controls, including the browser selector and Visulize button.
+ */
+class VisualizationControls extends React.Component {
+    constructor() {
+        super();
+        this.handleBrowserChange = this.handleBrowserChange.bind(this);
+        this.handleVisualize = this.handleVisualize.bind(this);
+    }
+
+    /**
+     * Called when the user selects a new option from the browser menu.
+     */
+    handleBrowserChange(e) {
+        const { browserChangeHandler } = this.props;
+        browserChangeHandler(e.target.value);
+    }
+
+    /**
+     * Called when the user clicks the Visualize button.
+     */
+    handleVisualize() {
+        const { visualizeHandler } = this.props;
+        visualizeHandler();
+    }
+
+    render() {
+        const { browsers, currentBrowser } = this.props;
+
+        return (
+            <div className="file-gallery-controls__visualization-selector">
+                <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
+                    {browsers.map(browser => (
+                        <option key={browser} value={browser}>{browser}</option>
+                    ))}
+                </select>
+                <button className="btn btn-info" onClick={this.handleVisualize} type="button">Visualize</button>
+            </div>
+        );
+    }
+}
+
+VisualizationControls.propTypes = {
+    /** All available browsers */
+    browsers: PropTypes.array.isRequired,
+    /** Currently selected browser */
+    currentBrowser: PropTypes.string,
+    /** Callback to handle new browser selection */
+    browserChangeHandler: PropTypes.func.isRequired,
+    /** Callback to handle click in Visualize button */
+    visualizeHandler: PropTypes.func.isRequired,
+};
+
+VisualizationControls.defaultProps = {
+    currentBrowser: '',
+};
+
+
 // Displays the file filtering controls for the file association graph and file tables.
 
 class FilterControls extends React.Component {
@@ -959,51 +1062,54 @@ class FilterControls extends React.Component {
 
         // Bind this to non-React methods.
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
-        this.handleInclusionChange = this.handleInclusionChange.bind(this);
     }
 
     handleAssemblyAnnotationChange(e) {
         this.props.handleAssemblyAnnotationChange(e.target.value);
     }
 
-    // Called when the switch button is clicked.
-    handleInclusionChange() {
-        this.props.handleInclusionChange(!this.props.inclusionOn);
-    }
-
     render() {
-        const { filterOptions, selectedFilterValue, inclusionOn } = this.props;
+        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler } = this.props;
 
-        return (
-            <div className="file-gallery-controls">
-                <div className="file-gallery-controls__assembly-selector">
-                    {filterOptions.length ?
-                        <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
+        if (filterOptions.length > 0 || browsers.length > 0) {
+            return (
+                <div className="file-gallery-controls">
+                    {filterOptions.length > 0 ?
+                        <div className="file-gallery-controls__assembly-selector">
+                            <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
+                        </div>
+                    : null}
+                    {browsers.length > 0 ?
+                        <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} />
                     : null}
                 </div>
-                <div className="file-gallery-controls__inclusion-selector">
-                    <div className="checkbox--right">
-                        <label htmlFor="filterIncArchive">Include deprecated files
-                            <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
-                        </label>
-                    </div>
-                </div>
-            </div>
-        );
+            );
+        }
+        return null;
     }
 }
 
 FilterControls.propTypes = {
+    /** Assembly/annotation combos available */
     filterOptions: PropTypes.array.isRequired,
+    /** Currently-selected assembly/annotation <select> value */
     selectedFilterValue: PropTypes.string,
+    /** Array of browsers available in this experiment */
+    browsers: PropTypes.array,
+    /** Name of currently selected browser */
+    currentBrowser: PropTypes.string,
+    /** File @ids selected for the browser */
     handleAssemblyAnnotationChange: PropTypes.func.isRequired,
-    handleInclusionChange: PropTypes.func.isRequired,
-    inclusionOn: PropTypes.bool, // True to make the inclusion box checked
+    /** Called then the user selects a different browser */
+    browserChangeHandler: PropTypes.func.isRequired,
+    /** Called when the user clicks the Visualize button */
+    visualizeHandler: PropTypes.func.isRequired,
 };
 
 FilterControls.defaultProps = {
     selectedFilterValue: '0',
-    inclusionOn: false,
+    browsers: [],
+    currentBrowser: '',
 };
 
 
@@ -1653,6 +1759,27 @@ FileGraph.defaultProps = {
 };
 
 
+/**
+ * Display the checkbox for the user to choose whether to include depcrecated files in the graph
+ * and table displays.
+ */
+const InclusionSelector = ({ inclusionOn, handleInclusionChange }) => (
+    <div className="checkbox--right">
+        <label htmlFor="filterIncArchive">
+            Include deprecated files
+            <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={handleInclusionChange} />
+        </label>
+    </div>
+);
+
+InclusionSelector.propTypes = {
+    /** True if the inclusion checkbox should be on */
+    inclusionOn: PropTypes.bool.isRequired,
+    /** Function to call when checkbox is clicked */
+    handleInclusionChange: PropTypes.func.isRequired,
+};
+
+
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
 
@@ -1660,37 +1787,44 @@ class FileGalleryRendererComponent extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        // Determine if the user's logged in as admin.
         const loggedIn = !!(context.session && context.session['auth.userid']);
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
+        const datasetFiles = props.data ? props.data['@graph'] : [];
 
         // Initialize React state variables.
         this.state = {
-            selectedFilterValue: 'default', // <select> value of selected filter
-            relatedFiles: [],
-            inclusionOn: adminUser, // True to exclude files with certain statuses
+            /** <select> value of selected assembly/annotation */
+            selectedFilterValue: 'default',
+            /** <select> value of selected browser */
+            currentBrowser: '',
+            /** Files selected for a browser */
+            selectedBrowserFiles: [],
+            /** All files associated with this dataset */
+            files: datasetFiles,
+            /** True to exclude files with certain statuses */
+            inclusionOn: adminUser,
+            /** Array of objects with the assemblies and annotations available for the files */
+            availableAssembliesAnnotations: collectAssembliesAnnotations(datasetFiles),
         };
+
+        /** used to see if related_files has been updated */
+        this.prevRelatedFileAtIds = [];
 
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
         this.setInfoNodeVisible = this.setInfoNodeVisible.bind(this);
         this.setFilter = this.setFilter.bind(this);
+        this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
+        this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
+        this.updateFiles = this.updateFiles.bind(this);
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
         this.handleInclusionChange = this.handleInclusionChange.bind(this);
         this.filterForInclusion = this.filterForInclusion.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.handleNodeClick = this.handleNodeClick.bind(this);
-    }
-
-    componentWillMount() {
-        const { context, data } = this.props;
-        const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
-        if (relatedFileIds.length) {
-            const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
-                this.setState({ relatedFiles });
-            });
-        }
+        this.handleBrowserChange = this.handleBrowserChange.bind(this);
+        this.handleBrowserFileSelect = this.handleBrowserFileSelect.bind(this);
+        this.handleVisualize = this.handleVisualize.bind(this);
     }
 
     // Set the default filter after the graph has been analyzed once.
@@ -1701,16 +1835,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     componentDidUpdate() {
-        const { context, data } = this.props;
-        const relatedFileIds = context.related_files && context.related_files.length ? context.related_files : [];
-        if (relatedFileIds.length) {
-            const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
-            requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
-                if (relatedFiles.length !== this.state.relatedFiles.length) {
-                    this.setState({ relatedFiles });
-                }
-            });
-        }
+        this.updateFiles();
     }
 
     // Called from child components when the selected node changes.
@@ -1727,15 +1852,91 @@ class FileGalleryRendererComponent extends React.Component {
         this.setState({ selectedFilterValue: value });
     }
 
-    // React to a filter menu selection. The synthetic event given in `e`
+    /**
+     * Get the currently selected assembly and annotation.
+     */
+    getSelectedAssemblyAnnotation() {
+        if (this.state.selectedFilterValue && this.state.availableAssembliesAnnotations[this.state.selectedFilterValue]) {
+            const selectedAssemblyAnnotation = this.state.availableAssembliesAnnotations[this.state.selectedFilterValue];
+            return {
+                selectedAssembly: selectedAssemblyAnnotation.assembly,
+                selectedAnnotation: selectedAssemblyAnnotation.annotation,
+            };
+        }
+        return { selectedAssembly: null, selectedAnnotation: null };
+    }
+
+    /**
+     * Given the currently selected assembly/annotation, get a list of the available browsers.
+     */
+    getAvailableBrowsers() {
+        const { selectedAssembly } = this.getSelectedAssemblyAnnotation();
+        if (selectedAssembly && this.props.context.visualize && this.props.context.visualize[selectedAssembly]) {
+            return visSortBrowsers(this.props.context.visualize[selectedAssembly]);
+        }
+        return [];
+    }
+
+    /**
+     * Retrieve dataset.related_files to combine with the files directly associated with the
+     * dataset and update the `files` state variable. I only check for length changes and not
+     * content changes. In addition, collect all the assemblies/annotations associated with the
+     * combined files so we can choose a visualization browser.
+     */
+    updateFiles() {
+        const { context, data } = this.props;
+        let relatedPromise;
+        const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
+        const datasetFiles = data ? data['@graph'] : [];
+
+        // The number of related_files has changed (or we have related_files for the first time).
+        // Request them and add them to the files from the original file request.
+        if (relatedFileAtIds.length !== this.prevRelatedFileAtIds.length) {
+            this.prevRelatedFileAtIds = relatedFileAtIds;
+            if (relatedFileAtIds.length > 0) {
+                relatedPromise = requestFiles(relatedFileAtIds, datasetFiles).then(relatedFiles => datasetFiles.concat(relatedFiles));
+            } else {
+                // No related_files, so just use files directly in the dataset.files.
+                relatedPromise = Promise.resolve(this.state.files);
+            }
+        } else {
+            relatedPromise = Promise.resolve(this.state.files);
+        }
+
+        // Whether we have related_files or not, get all files' assemblies and annotations, and
+        // the first genome browser for them.
+        relatedPromise.then((allFiles) => {
+            if (allFiles.length !== this.state.files.length) {
+                this.setState({ files: allFiles });
+
+                // From the new set of files, calculate the currently selected assembly and annotation to display in
+                // the graph and tables.
+                this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
+            }
+
+            // Generate the array of browsers for the currently selected assembly.
+            const browsers = this.getAvailableBrowsers();
+            if (browsers.length > 0 && !this.state.currentBrowser) {
+                this.setState({
+                    currentBrowser: browsers[0],
+                    selectedBrowserFiles: visFilterBrowserFiles(allFiles, browsers[0], true),
+                });
+            }
+        });
+    }
+
+    /**
+     * Called when the user selects an assembly/annotation to view.
+     */
     handleAssemblyAnnotationChange(value) {
         this.setFilter(value);
     }
 
-    // When the exclusion filter changes from typcially the user clicking the checkbox in
-    // <FilterControls>,
-    handleInclusionChange(checked) {
-        this.setState({ inclusionOn: checked });
+    /**
+     * Called when the user checks/unchecks the inclusion filter checkbox.
+     */
+    handleInclusionChange() {
+        this.setState(state => ({ inclusionOn: !state.inclusionOn }));
     }
 
     // If the inclusionOn state property is enabled, we'll just display all the files we got. If
@@ -1766,35 +1967,70 @@ class FileGalleryRendererComponent extends React.Component {
         this.setInfoNodeVisible(false);
     }
 
+    /**
+     * Called when the user chooses a new browser from the menu.
+     * @param {string} browser Name of browser user selected
+     */
+    handleBrowserChange(browser) {
+        this.setState({
+            currentBrowser: browser,
+            selectedBrowserFiles: visFilterBrowserFiles(this.state.files, browser),
+        });
+    }
+
+    /**
+     * Called when the user clicks the Visualize button.
+     */
+    handleVisualize() {
+        const { selectedAssembly } = this.getSelectedAssemblyAnnotation();
+        visOpenBrowser(this.props.context, this.state.currentBrowser, selectedAssembly, this.state.selectedBrowserFiles, this.context.location_href);
+    }
+
+    /**
+     * Called when the user selects/deselects a file for visualization in the file table.
+     * @param {object} synthEvent Event from React event handler
+     */
+    handleBrowserFileSelect(synthEvent) {
+        // The @id of the affected file is in the name of the clicked <input>.
+        const clickedFileAtId = synthEvent.target.name;
+        this.setState((state) => {
+            const matchingIndex = state.selectedBrowserFiles.findIndex(file => file['@id'] === clickedFileAtId);
+            if (matchingIndex === -1) {
+                // Add clicked file to array of selected files.
+                const matchingFile = state.files.find(file => file['@id'] === clickedFileAtId);
+                return { selectedBrowserFiles: state.selectedBrowserFiles.concat(matchingFile) };
+            }
+
+            // Remove clicked file from array of selected files.
+            return { selectedBrowserFiles: state.selectedBrowserFiles.slice(0, matchingIndex).concat(state.selectedBrowserFiles.slice(matchingIndex + 1)) };
+        });
+    }
+
     render() {
-        const { context, data, schemas, hideGraph, showReplicateNumber } = this.props;
-        let selectedAssembly = '';
-        let selectedAnnotation = '';
+        const { context, schemas, hideGraph, showReplicateNumber } = this.props;
         let allGraphedFiles;
         let meta;
-        const files = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
-        if (files.length === 0) {
+        if (this.state.files.length === 0) {
             return null;
         }
-
-        const filterOptions = files.length ? collectAssembliesAnnotations(files) : [];
-
-        if (this.state.selectedFilterValue && filterOptions[this.state.selectedFilterValue]) {
-            selectedAssembly = filterOptions[this.state.selectedFilterValue].assembly;
-            selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
-        }
+        const { selectedAssembly, selectedAnnotation } = this.getSelectedAssemblyAnnotation();
 
         // Get a list of files for the graph (filters out excluded files if requested by the user).
-        const includedFiles = this.filterForInclusion(files);
+        const includedFiles = this.filterForInclusion(this.state.files);
 
         const fileTable = (
             <FileTable
                 {...this.props}
                 items={includedFiles}
                 selectedFilterValue={this.state.selectedFilterValue}
-                filterOptions={filterOptions}
+                filterOptions={this.state.availableAssembliesAnnotations}
                 graphedFiles={allGraphedFiles}
                 handleFilterChange={this.handleFilterChange}
+                browserOptions={{
+                    browserFileSelectHandler: this.handleBrowserFileSelect,
+                    currentBrowser: this.state.currentBrowser,
+                    selectedBrowserFiles: this.state.selectedBrowserFiles,
+                }}
                 encodevers={globals.encodeVersion(context)}
                 session={this.context.session}
                 infoNodeId={this.state.infoNode}
@@ -1819,29 +2055,34 @@ class FileGalleryRendererComponent extends React.Component {
             QualityMetric: 'quality-metric',
         };
         const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
+        const browsers = this.getAvailableBrowsers();
 
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
-                    <div className="file-gallery-visualize">
-                        {context.visualize ?
-                            <BrowserSelector visualizeCfg={context.visualize} />
-                        : null}
-                    </div>
                 </PanelHeading>
 
-                {/* Display the strip of filgering controls */}
                 <FilterControls
                     selectedFilterValue={this.state.selectedFilterValue}
-                    filterOptions={filterOptions}
+                    filterOptions={this.state.availableAssembliesAnnotations}
                     inclusionOn={this.state.inclusionOn}
+                    browsers={browsers}
+                    currentBrowser={this.state.currentBrowser}
+                    selectedBrowserFiles={this.state.selectedBrowserFiles}
                     handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
                     handleInclusionChange={this.handleInclusionChange}
+                    browserChangeHandler={this.handleBrowserChange}
+                    visualizeHandler={this.handleVisualize}
                 />
 
                 {!hideGraph ?
-                    <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
+                    <TabPanel
+                        tabPanelCss="file-gallery-tab-bar"
+                        tabs={{ graph: 'Association graph', tables: 'File details' }}
+                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                        decorationClasses="file-gallery__inclusion-selector"
+                    >
                         <TabPanelPane key="graph">
                             <FileGraph
                                 dataset={context}
@@ -1916,6 +2157,7 @@ FileGalleryRendererComponent.contextTypes = {
     session: PropTypes.object,
     session_properties: PropTypes.object,
     location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
 const FileGalleryRenderer = auditDecor(FileGalleryRendererComponent);

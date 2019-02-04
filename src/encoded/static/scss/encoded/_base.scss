@@ -65,8 +65,23 @@ body { background: $mainThemeColor; font-size: 1rem; }
 
 [hidden] { display: none !important; }
 
-#slot-application, #application {
-	height: 100%;
+#slot-application {
+	height: 100vh;
+}
+
+#application {
+    min-height: 100%;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+#page-footer {
+    @media screen and (min-width: $screen-sm-min) {
+        flex-shrink: 0;
+    }
 }
 
 hr { clear: both; }

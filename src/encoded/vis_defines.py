@@ -28,6 +28,7 @@ ASSEMBLY_DETAILS = {
                         'ucsc_assembly':    'hg38',
                         'ensembl_host':     'www.ensembl.org',
                         'quickview':        True,
+                        'hic':              True,
                         'comment':          'Ensembl works'
     },
     'GRCh38-minimal': { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
@@ -40,6 +41,7 @@ ASSEMBLY_DETAILS = {
                         'ucsc_assembly':    'hg19',
                         'NA_ensembl_host':  'grch37.ensembl.org',
                         'quickview':        True,
+                        'hic':              True,
                         'comment':          'Ensembl DOES NOT WORK'
     },
     'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
@@ -101,6 +103,13 @@ ASSEMBLY_DETAILS = {
     },
 }
 
+BROWSER_FILE_TYPES = {
+    'ucsc': {'bigWig', 'bigBed'},
+    'ensembl': {'bigWig', 'bigBed'},
+    'quickview': {'bigWig', 'bigBed'},
+    'hic': {'hic'},
+}
+
 # Distinct from ASSEMBLY_DETAILS['ucsc_assembly'] as that defines allowed mappings
 ASSEMBLY_TO_UCSC_ID = {
     'GRCh38-minimal': 'hg38',
@@ -121,7 +130,8 @@ VISIBLE_DATASET_STATUSES = ["released"]
 VISIBLE_FILE_STATUSES = ["released"]
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
-VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES
+HIC_FILE_TYPES = ['hic']
+VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
 
@@ -163,7 +173,7 @@ SUPPORTED_MASK_TOKENS = [
     ]
 
 # Simple tokens are a straight lookup, no questions asked
-SIMPLE_DATASET_TOKENS = ["{biosample_term_name}", "{accession}", "{assay_title}",
+SIMPLE_DATASET_TOKENS = ["{accession}", "{assay_title}",
                          "{assay_term_name}", "{annotation_type}", "{@id}", "{@type}"]
 
 # static group defs are keyed by group title (or special token) and consist of
@@ -240,8 +250,10 @@ COMPOSITE_SETTINGS = ["longLabel", "shortLabel", "visibility", "pennantIcon", "a
 TRACK_SETTINGS = ["bigDataUrl", "longLabel", "shortLabel", "type", "color", "altColor"]
 
 # This dataset terms (among others) are needed in vis_dataset formatting
-ENCODED_DATASET_TERMS = ['biosample_term_name', 'biosample_term_id', 'biosample_summary',
-                    'biosample_type', 'assay_term_id', 'assay_term_name']
+ENCODED_DATASET_TERMS = ['biosample_ontology.term_name',
+                         'biosample_ontology.term_id', 'biosample_summary',
+                         'biosample_ontology.classification', 'assay_term_id',
+                         'assay_term_name']
 
 # This dataset terms (among others) are needed in vis_dataset formatting
 ENCODED_DATASET_EMBEDDED_TERMS = {
@@ -451,8 +463,9 @@ class VisDefines(object):
     # Loads vis_def static files and other defines for vis formatting
     # This class is also a swiss army knife of vis formatting conversions
 
-    def __init__(self, dataset=None):
+    def __init__(self, request, dataset=None):
         # Make these global so that the same files are not continually reloaded
+        self._request = request
         global VIS_DEFS_BY_TYPE
         global VIS_DEFS_DEFAULT
         self.vis_defs = VIS_DEFS_BY_TYPE
@@ -601,31 +614,25 @@ class VisDefines(object):
         color = None
         altColor = None
         coloring = {}
-        biosample_term = self.dataset.get('biosample_type')
-        if biosample_term is not None:
-            if isinstance(biosample_term, list):
-                if len(biosample_term) == 1:
-                    biosample_term = biosample_term[0]
-                else:
-                    log.debug("%s has biosample_type %s that is unexpectedly a list" %
-                            (self.dataset['accession'], str(biosample_term)))
-                    biosample_term = "unknown"  # really only seen in test data!
-            coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
-        if not coloring:
-            biosample_term = self.dataset.get('biosample_term_name')
-            if biosample_term is not None:
-                if isinstance(biosample_term, list):
-                    if len(biosample_term) == 1:
-                        biosample_term = biosample_term[0]
-                    else:
-                        log.debug("%s has biosample_term_name %s that is unexpectedly a list" %
-                                (self.dataset['accession'], str(biosample_term)))
-                        biosample_term = "unknown"  # really only seen in test data!
-                coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
-        if not coloring:
-            organ_slims = self.dataset.get('organ_slims', [])
-            if len(organ_slims) > 1:
-                coloring = BIOSAMPLE_COLOR.get(organ_slims[1])
+        ontology = self.dataset.get('biosample_ontology')
+        term = "unknown"  # really only seen in test data!
+        if ontology is not None:
+            if not isinstance(ontology, list):
+                ontology = [ontology]
+            if len(ontology) == 1:
+                if isinstance(ontology[0], dict):
+                    term = ontology[0]['term_name']
+            else:
+                log.debug("%s has biosample_ontology %s that is unexpectedly a list",
+                          self.dataset['accession'],
+                          str([bo['@id'] for bo in ontology]))
+            coloring = BIOSAMPLE_COLOR.get(term, {})
+            if not coloring:
+                for organ_slim in (os for bo in ontology
+                                   for os in bo['organ_slims']):
+                    coloring = BIOSAMPLE_COLOR.get(organ_slim, {})
+                    if coloring:
+                        break
         if coloring:
             assert("color" in coloring)
             if "altColor" not in coloring:
@@ -750,8 +757,45 @@ class VisDefines(object):
             if token.endswith("|multiple}"):
                 return "multiple biosamples"
             return "Unknown Biosample"
+        elif token == "{biosample_term_name}":
+            biosample_ontology = dataset.get('biosample_ontology')
+            if biosample_ontology is None:
+                return "Unknown Biosample"
+            if isinstance(biosample_ontology, dict):
+                return biosample_ontology['term_name']
+            if isinstance(biosample_ontology, list) and len(biosample_ontology) > 3:
+                return "Collection of %d Biosamples" % (len(biosample_ontology))
+            # The following got complicated because general Dataset objects
+            # cannot have biosample_ontology embedded properly. As a base class,
+            # some of the children, PublicationData, Project and 8 Series
+            # objects, have biosample_ontology embedded as array of objects,
+            # while experiment and annotation have it embedded as one single
+            # object. This becomes a problem when File object linkTo Dataset in
+            # general rather than one specific type. Current embedding system
+            # don't know how to map a property with type = ["array", "string"]
+            # in elasticsearch. Therefore, it is possible the
+            # "biosample_ontology" we got here is @id which should be embedded
+            # with the following code.
+            if not isinstance(biosample_ontology, list):
+                biosample_ontology = [biosample_ontology]
+            term_names = []
+            for type_obj in biosample_ontology:
+                if isinstance(type_obj, str):
+                    term_names.append(
+                        self._request.embed(type_obj, '@@object')['term_name']
+                    )
+                elif 'term_name' in type_obj:
+                    term_names.append(type_obj['term_name'])
+            if len(term_names) == 1:
+                return term_names[0]
+            else:
+                return term_names
+
         elif token == "{biosample_term_name|multiple}":
-            return dataset.get("biosample_term_name", "multiple biosamples")
+            biosample_ontology = dataset.get('biosample_ontology')
+            if biosample_ontology is None:
+                return "multiple biosamples"
+            return biosample_ontology.get('term_name')
         # TODO: rna_species
         # elif token == "{rna_species}":
         #     if replicates.library.nucleic_acid = polyadenylated mRNA
@@ -985,7 +1029,8 @@ class VisDefines(object):
 class IhecDefines(object):
     # Defines and formatting code for IHEC JSON
 
-    def __init__(self):
+    def __init__(self, request):
+        self._request = request
         self.samples = {}
         self.vis_defines = None
 
@@ -1139,7 +1184,7 @@ class IhecDefines(object):
         # returns an ihec sample appropriate for the dataset
         if vis_defines is None:
             if self.vis_defines is None:
-                self.vis_defines = VisDefines()
+                self.vis_defines = VisDefines(self._request)
             vis_defines = self.vis_defines
 
         sample = {}
@@ -1156,12 +1201,12 @@ class IhecDefines(object):
         sample['molecule'] = molecule
         sample['lineage'] = self.lineage(biosample, 'unknown')
         sample['differentiation_stage'] = self.differentiation(biosample, 'unknown')
-        biosample_term_id = biosample.get('biosample_term_id')
-        if biosample_term_id:
-            sample["sample_ontology_uri"] = biosample_term_id
+        term_id = biosample.get('biosample_ontology', {}).get('term_id')
+        if term_id:
+            sample["sample_ontology_uri"] = term_id
 
-        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_type')) # ["Cell Line","Primary Cell", ...
-        sample["line"] = biosample.get('biosample_term_name', 'none')
+        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_ontology', {}).get('classification')) # ["Cell Line","Primary Cell", ...
+        sample["line"] = biosample.get('biosample_ontology', {}).get('term_name', 'none')
         sample["medium"] = "unknown"                                                    # We don't have
         sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
         if sample["disease"] == "Healthy":
@@ -1477,6 +1522,10 @@ def visualizable_assemblies(
     return list(file_assemblies)
 
 
+def _file_to_format(process_file):
+    '''Used with map to convert list of files to their types'''
+    return process_file['file_format']
+
 # Currently called in types/shared_calculated_properties.py
 def browsers_available(
     status,
@@ -1501,10 +1550,14 @@ def browsers_available(
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
     browsers = set()
-    full_set = {'ucsc', 'ensembl', 'quickview'}
+    full_set = {'ucsc', 'ensembl', 'quickview', 'hic'}
     file_assemblies = None
+    file_types = None
     if request is not None:
         vis_cache = VisCache(request)
+    if files is not None:
+        # Make a set of all file types in all dataset files
+        file_types = set(map(_file_to_format, files))
     for assembly in assemblies:
         mapped_assembly = ASSEMBLY_DETAILS.get(assembly)
         if not mapped_assembly:
@@ -1517,23 +1570,33 @@ def browsers_available(
             vis_blob = vis_cache.get(accession=accession, assembly=assembly)
         if not vis_blob and file_assemblies is None and files is not None:
             file_assemblies = visualizable_assemblies(assemblies, files)
+        if file_types is None:
+            continue
         if ('ucsc' not in browsers
-                and 'ucsc_assembly' in mapped_assembly.keys()):
+                and 'ucsc_assembly' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['ucsc'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
-                browsers.add('ucsc')
+                browsers.add('UCSC')
         if ('ensembl' not in browsers
-                and 'ensembl_host' in mapped_assembly.keys()):
+                and 'ensembl_host' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['ensembl'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
-                browsers.add('ensembl')
+                browsers.add('Ensembl')
         if ('quickview' not in browsers
-                and 'quickview' in mapped_assembly.keys()):
+                and 'quickview' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['quickview'].isdisjoint(file_types)):
             # NOTE: quickview may not have vis_blob as 'in progress'
             #   files can also be displayed
             #       Ideally we would also look at files' statuses and formats.
             #   However, the (calculated)files property only contains
             #   'released' files so it doesn't really help for quickview!
             if vis_blob is not None or status not in QUICKVIEW_STATUSES_BLOCKED:
-                browsers.add('quickview')
+                browsers.add('Quick View')
+        if ('hic' not in browsers
+                and 'hic' in mapped_assembly.keys()
+                and not BROWSER_FILE_TYPES['hic'].isdisjoint(file_types)):
+            if file_assemblies is not None and assembly in file_assemblies:
+                browsers.add('hic')
         if browsers == full_set:  # No use continuing
             break
     return list(browsers)
@@ -1565,7 +1628,7 @@ def object_is_visualizable(
         return len(browsers) > 0
 
 
-# Currently called in types/shared_calculated_properties.py and in search.py
+# Currently called in search.py
 def vis_format_url(browser, path, assembly, position=None):
     '''Given a url to hub.txt, returns the url to an external browser or None.'''
     mapped_assembly = ASSEMBLY_DETAILS[assembly]
@@ -1608,4 +1671,3 @@ def vis_format_url(browser, path, assembly, position=None):
     #else:
         # ERROR: not supported at this time
     return None
-

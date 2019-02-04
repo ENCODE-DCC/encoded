@@ -218,11 +218,22 @@ def gene(ctcf):
 
 
 @pytest.fixture
-def biosample(testapp, source, lab, award, organism):
+def heart(testapp):
+    item = {
+        'term_id': 'UBERON:0000948',
+        'term_name': 'heart',
+        'classification': 'tissue',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample(testapp, source, lab, award, organism, heart):
     item = {
         'biosample_term_id': 'UBERON:349829',
         "biosample_term_name": "heart",
         'biosample_type': 'tissue',
+        'biosample_ontology': heart['uuid'],
         'source': source['@id'],
         'lab': lab['@id'],
         'award': award['@id'],
@@ -243,7 +254,17 @@ def library(testapp, lab, award, biosample):
 
 
 @pytest.fixture
-def experiment(testapp, lab, award):
+def cell_free(testapp):
+    item = {
+        'term_id': 'NTR:0000471',
+        'term_name': 'cell-free sample',
+        'classification': 'cell-free sample',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment(testapp, lab, award, cell_free):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
@@ -251,13 +272,14 @@ def experiment(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
+        'biosample_ontology': cell_free['uuid'],
         'experiment_classification': ['functional genomics assay'],
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
 
 @pytest.fixture
-def base_experiment(testapp, lab, award):
+def base_experiment(testapp, lab, award, heart):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -265,6 +287,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'tissue',
         'biosample_term_name': 'heart',
         'biosample_term_id': 'UBERON:349829',
+        'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'experiment_classification': ['functional genomics assay']
     }
@@ -712,12 +735,13 @@ def replicate_2_1(testapp, base_experiment):
 
 
 @pytest.fixture
-def base_biosample(testapp, lab, award, source, organism):
+def base_biosample(testapp, lab, award, source, organism, heart):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         "biosample_term_name": "heart",
         'biosample_type': 'tissue',
+        'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
         'source': source['uuid']
@@ -726,12 +750,23 @@ def base_biosample(testapp, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_1(testapp, lab, award, source, organism):
+def liver(testapp):
+    item = {
+        'term_id': 'UBERON:0002107',
+        'term_name': 'liver',
+        'classification': 'tissue',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_1(testapp, lab, award, source, organism, liver):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         "biosample_term_name": "liver",
         'biosample_type': 'tissue',
+        'biosample_ontology': liver['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
         'source': source['uuid']
@@ -740,12 +775,13 @@ def biosample_1(testapp, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_2(testapp, lab, award, source, organism):
+def biosample_2(testapp, lab, award, source, organism, liver):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         "biosample_term_name": "liver",
         'biosample_type': 'tissue',
+        'biosample_ontology': liver['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
         'source': source['uuid']
@@ -894,3 +930,113 @@ def a549(testapp):
 @pytest.fixture
 def biosample_type(a549):
     return a549
+
+
+@pytest.fixture
+def k562(testapp):
+    item = {
+        'term_id': 'EFO:0001086',
+        'term_name': 'K562',
+        'classification': 'cell line',
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def hepg2(testapp):
+    item = {
+        'term_id': 'EFO:0001187',
+        'term_name': 'HepG2',
+        'classification': 'cell line',
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def mel(testapp):
+    item = {
+            'term_name': 'MEL cell line',
+            'term_id': 'EFO:0003971',
+            'classification': 'cell line',
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def h1(testapp):
+    item = {
+            'term_id': "EFO:0003042",
+            'term_name': 'H1-hESC',
+            'classification': 'cell line'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def ileum(testapp):
+    item = {
+            'term_id': "UBERON:0002116",
+            'term_name': 'ileum',
+            'classification': 'tissue'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def brain(testapp):
+    item = {
+            'term_id': "UBERON:0000955",
+            'term_name': 'brain',
+            'classification': 'tissue'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def whole_organism(testapp):
+    item = {
+            'term_id': "UBERON:0000468",
+            'term_name': 'multi-cellular organism',
+            'classification': 'whole organisms'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def erythroblast(testapp):
+    item = {
+            'term_id': "CL:0000765",
+            'term_name': 'erythroblast',
+            'classification': 'primary cell'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def gm12878(testapp):
+    item = {
+            'term_id': "EFO:0002784",
+            'term_name': 'GM12878',
+            'classification': 'cell line'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def s2r_plus(testapp):
+    item = {
+            'term_id': "EFO:0005837",
+            'term_name': 'S2R+',
+            'classification': 'cell line'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def single_cell(testapp):
+    item = {
+            'term_id': "UBERON:349829",
+            'term_name': 'heart',
+            'classification': 'single cell'
+    }
+    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]

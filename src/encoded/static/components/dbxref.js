@@ -146,8 +146,8 @@ export const dbxrefPrefixMap = {
         pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',
         postprocessor: (context, dbxref, urlPattern) => (
             // Experiments with RBPImage need to replace one urlPattern element with
-            // biosample_term_name.
-            (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_term_name) : urlPattern)
+            // BiosampleType term_name.
+            (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_ontology.term_name) : urlPattern)
         ),
     },
     RefSeq: {
@@ -212,6 +212,9 @@ export const dbxrefPrefixMap = {
     },
     'IMGT/GENE-DB': {
         pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
+    },
+    SRA: {
+        pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
     },
 };
 

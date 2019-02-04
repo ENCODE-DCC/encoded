@@ -108,8 +108,14 @@ BiosampleTable.columns = {
         title: 'Accession',
         display: biosample => <a href={biosample['@id']}>{biosample.accession}</a>,
     },
-    biosample_type: { title: 'Type' },
-    biosample_term_name: { title: 'Term' },
+    'biosample_ontology.classification': {
+        title: 'Type',
+        getValue: item => item.biosample_ontology && item.biosample_ontology.classification,
+    },
+    'biosample_ontology.term_name': {
+        title: 'Term',
+        getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
+    },
     summary: { title: 'Summary', sorter: false },
 };
 
@@ -352,8 +358,9 @@ const experimentTableColumns = {
         title: 'Assay',
     },
 
-    biosample_term_name: {
+    'biosample_ontology.term_name': {
         title: 'Biosample term name',
+        getValue: item => item.biosample_ontology && item.biosample_ontology.term_name,
     },
 
     target: {

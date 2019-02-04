@@ -322,7 +322,7 @@
         "lab": {
             "title": "Lab"
         },
-        "biosample.biosample_term_name": {
+        "biosample.biosample_ontology.term_name": {
             "title": "Biosample"
         },
         "biosample.organism.name": {

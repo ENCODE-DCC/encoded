@@ -39,13 +39,13 @@ _REGION_FIELDS = [
 
 _FACETS = [
     ('assay_term_name', {'title': 'Assay'}),
-    ('biosample_term_name', {'title': 'Biosample term'}),
+    ('biosample_ontology.term_name', {'title': 'Biosample term'}),
     ('target.label', {'title': 'Target'}),
     ('replicates.library.biosample.donor.organism.scientific_name', {
         'title': 'Organism'
     }),
-    ('organ_slims', {'title': 'Organ'}),
-    ('cell_slims', {'title': 'Cell'}),
+    ('biosample_ontology.organ_slims', {'title': 'Organ'}),
+    ('biosample_ontology.cell_slims', {'title': 'Cell'}),
     ('assembly', {'title': 'Genome assembly'}),
     ('files.file_type', {'title': 'Available data'})
 ]

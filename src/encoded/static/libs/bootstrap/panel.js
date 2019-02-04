@@ -157,7 +157,7 @@ class TabPanel extends React.Component {
     }
 
     render() {
-        const { tabs, addClasses, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
+        const { tabs, tabPanelCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
@@ -179,9 +179,9 @@ class TabPanel extends React.Component {
         }
 
         return (
-            <div>
+            <div className={tabPanelCss}>
                 <div className="tab-nav">
-                    <ul className={`nav nav-tabs${addClasses ? ` ${addClasses}` : ''}`} role="tablist">
+                    <ul className={`nav nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {Object.keys(tabs).map((tab, i) => {
                             const currentTab = this.props.selectedTab ? this.props.selectedTab : this.state.currentTab ? this.state.currentTab : i === 0 ? tab : '';
 
@@ -207,26 +207,38 @@ class TabPanel extends React.Component {
 }
 
 TabPanel.propTypes = {
-    tabs: PropTypes.object.isRequired, // Object with tab=>pane specifications
-    selectedTab: PropTypes.string, // key of tab to select (must provide handleTabClick) too.
-    addClasses: PropTypes.string, // Classes to add to navigation <ul>
-    moreComponents: PropTypes.object, // Other components to render in the tab bar
-    moreComponentsClasses: PropTypes.string, // Classes to add to moreComponents wrapper <div>
-    tabFlange: PropTypes.bool, // True to show a small full-width strip under active tab
-    decoration: PropTypes.object, // Component to render in the tab bar
-    decorationClasses: PropTypes.string, // CSS classes to wrap decoration in
-    handleTabClick: PropTypes.func, // If selectedTab is provided, then parent must keep track of it
+    /** Object with tab=>pane specifications */
+    tabs: PropTypes.object.isRequired,
+    /** CSS class for the entire tab panel <div> */
+    tabPanelCss: PropTypes.string,
+    /** key of tab to select (must provide handleTabClick) too. */
+    selectedTab: PropTypes.string,
+    /** Classes to add to navigation <ul> */
+    navCss: PropTypes.string,
+    /** Other components to render in the tab bar */
+    moreComponents: PropTypes.object,
+    /** Classes to add to moreComponents wrapper <div> */
+    moreComponentsClasses: PropTypes.string,
+    /** True to show a small full-width strip under active tab */
+    tabFlange: PropTypes.bool,
+    /** Component to render in the tab bar */
+    decoration: PropTypes.object,
+    /** CSS classes to wrap decoration in */
+    decorationClasses: PropTypes.string,
+    /** If selectedTab is provided, then parent must keep track of it */
+    handleTabClick: PropTypes.func,
     children: PropTypes.node,
 };
 
 TabPanel.defaultProps = {
     selectedTab: '',
-    addClasses: '',
+    tabPanelCss: null,
+    navCss: null,
     moreComponents: null,
     moreComponentsClasses: '',
     tabFlange: false,
     decoration: null,
-    decorationClasses: '',
+    decorationClasses: null,
     handleTabClick: null,
     children: null,
 };

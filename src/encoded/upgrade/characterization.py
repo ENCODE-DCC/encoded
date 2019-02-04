@@ -246,3 +246,15 @@ def antibody_characterization_13_14(value, system):
                     'dedifferentiated amniotic fluid mesenchymal stem cell', 'leukemia stem cell', 'neuronal stem cell',
                     'neuroepithelial stem cell', 'neural stem progenitor cell']:
                     characterization_review['biosample_type'] = 'primary cell'
+
+
+@upgrade_step('antibody_characterization', '14', '15')
+def antibody_characterization_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4360
+    for char_review in value.get('characterization_reviews', []):
+        biosample_type_name = u'{}_{}'.format(
+            char_review['biosample_type'], char_review['biosample_term_id']
+        ).replace(' ', '_').replace(':', '_')
+        char_review['biosample_ontology'] = str(
+            find_root(system['context'])['biosample-types'][biosample_type_name].uuid
+        )

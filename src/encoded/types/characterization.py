@@ -58,6 +58,7 @@ class AntibodyCharacterization(Characterization, SharedItem):
     item_type = 'antibody_characterization'
     schema = load_schema('encoded:schemas/antibody_characterization.json')
     embedded = [
+        'characterization_reviews.biosample_ontology',
         'submitted_by',
         'lab',
         'award',
@@ -65,6 +66,9 @@ class AntibodyCharacterization(Characterization, SharedItem):
         'target.organism',
         'documents',
         'characterizes.targets',
+    ]
+    audit_inherit = [
+        'characterization_reviews.biosample_ontology',
     ]
 
     @calculated_property(schema={

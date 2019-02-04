@@ -6,13 +6,14 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 
 
 @pytest.fixture
-def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody_lot, organism):
+def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody_lot, organism, k562):
     characterization_review_list = [{
         'lane': 2,
         'organism': organism['uuid'],
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'cell line',
+        'biosample_ontology': k562['uuid'],
         'lane_status': 'pending dcc review'
     }]
     item = {
@@ -29,25 +30,27 @@ def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody
 
 
 @pytest.fixture
-def base_characterization_review(testapp, organism):
+def base_characterization_review(testapp, organism, k562):
     return {
         'lane': 2,
         'organism': organism['uuid'],
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
         'biosample_type': 'cell line',
+        'biosample_ontology': k562['uuid'],
         'lane_status': 'pending dcc review'
     }
 
 
 @pytest.fixture
-def base_characterization_review2(testapp, organism):
+def base_characterization_review2(testapp, organism, hepg2):
     return {
         'lane': 3,
         'organism': organism['uuid'],
         'biosample_term_name': 'HepG2',
         'biosample_term_id': 'EFO:0001187',
         'biosample_type': 'cell line',
+        'biosample_ontology': hepg2['uuid'],
         'lane_status': 'compliant'
     }
 

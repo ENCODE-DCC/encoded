@@ -15,8 +15,15 @@ def antibody_characterization(submitter, award, lab, antibody_lot, target):
     }
 
 
-def test_antibody_characterization_reviews(testapp, antibody_characterization):
-    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2, "biosample_type": "cell line", "biosample_term_name": "K562", "biosample_term_id": "EFO:0002067"}]
+def test_antibody_characterization_reviews(testapp, antibody_characterization, k562):
+    antibody_characterization['characterization_reviews'] = [{
+        "organism": "human",
+        "lane": 2,
+        "biosample_type": "cell line",
+        "biosample_term_name": "K562",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_ontology": k562['uuid'],
+    }]
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
 
 
@@ -40,12 +47,14 @@ def test_no_attachment(testapp, antibody_characterization):
 
 def test_antibody_characterization_exemption_no_explanation(testapp,
                                                             antibody_characterization,
-                                                            document):
+                                                            document,
+                                                            k562):
     antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
                                                               "biosample_type":
                                                               "cell line",
                                                               "biosample_term_name": "K562",
                                                               "biosample_term_id": "EFO:0002067",
+                                                              "biosample_ontology": k562['uuid'],
                                                               "lane_status":
                                                               "exempt from standards"}]
     antibody_characterization['documents'] = [document]
@@ -53,7 +62,7 @@ def test_antibody_characterization_exemption_no_explanation(testapp,
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
 
 
-def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characterization):
+def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characterization, k562):
     antibody_characterization['attachment'] = {'download': 'red-dot.png', 'href': RED_DOT}
     antibody_characterization['primary_characterization_method'] = 'immunoblot'
     antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
@@ -61,6 +70,7 @@ def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characteriz
                                                               "cell line",
                                                               "biosample_term_name": "K562",
                                                               "biosample_term_id": "UBERON:0002067",
+                                                              "biosample_ontology": k562['uuid'],
                                                               "lane_status":
                                                               "exempt from standards"}]
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
@@ -69,6 +79,7 @@ def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characteriz
                                                               "cell line",
                                                               "biosample_term_name": "K562",
                                                               "biosample_term_id": "EFO:0002067",
+                                                              "biosample_ontology": k562['uuid'],
                                                               "lane_status":
                                                               "exempt from standards"}]
     testapp.post_json('/antibody_characterization', antibody_characterization, status=201)

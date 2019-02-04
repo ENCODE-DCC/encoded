@@ -318,7 +318,14 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
-            const context = { '@type': ['Experiment'], biosample_term_name: 'HepG2' };
+            const context = {
+                '@type': ['Experiment'],
+                biosample_ontology: {
+                    classification: 'cell line',
+                    term_id: 'EFO:0001187',
+                    term_name: 'HepG2',
+                },
+            };
             const wrapper = mount(
                 <DbxrefList
                     dbxrefs={['RBPImage:DNAJC2', 'RBPImage:SRSF9']}

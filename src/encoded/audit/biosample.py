@@ -8,7 +8,7 @@ from snovault import (
 # flag biosamples that have a GM that was specified in donor detecting redundant GM
 def audit_biosample_modifications(value, system):
     
-    if value['biosample_type'] == 'whole organisms':
+    if value['biosample_ontology']['classification'] == 'whole organisms':
         model_modifications_present = True
         model_modifications_ids = set()
         modifications_ids = set()
@@ -46,56 +46,27 @@ def audit_biosample_modifications(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-3538
 
 
-def audit_biosample_term(value, system):
-    '''
-    Biosample_term_id and biosample_term_name
-    and biosample_type should all be present.
-    This should be handled by schemas.
-    Biosample_term_id should be in the ontology.
-    Biosample_term_name should match biosample_term_id.
-    '''
-
-    if value['status'] in ['deleted']:
-        return
-
-    ontology = system['registry']['ontology']
-    term_id = value['biosample_term_id']
-    term_name = value.get('biosample_term_name')
-
-    if term_id.startswith('NTR:'):
-        detail = 'Biosample {} has a New Term Request {} - {}'.format(
-            value['@id'],
-            term_id,
-            term_name)
-        yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
-        return
-
-    #  biosample term_type and term_name consistency moved to schema, release 56
-
-    if term_id not in ontology:
-        detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
-            value['@id'],
-            term_id)
-        yield AuditFailure('term_id not in ontology', detail, level='INTERNAL_ACTION')
-        return
-
-    ontology_term_name = ontology[term_id]['name']
-    if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = 'Biosample {} has '.format(value['@id']) + \
-                 'a mismatch between biosample term_id ({}) '.format(term_id) + \
-                 'and term_name ({}), ontology term_name for term_id {} '.format(
-                     term_name, term_id) + \
-                 'is {}.'.format(ontology_term_name)
-        yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
-        return
-
-
 def audit_biosample_culture_date(value, system):
     '''
+    Culture date is allowed only in cultured biosamples.
+
     A culture_harvest_date should not precede
     a culture_start_date.
     This should move to the schema.
     '''
+
+    restricted_type = ["single cell", "primary cell", "cell line",
+                       "in vitro differentiated cells", "organoid"]
+    if (('culture_harvest_date' in value or 'culture_start_date' in value)
+        and value['biosample_ontology']['classification'] not in restricted_type):
+        detail = 'Biosample {} is classified as {}, ' + \
+                 'which is not from culture, ' + \
+                 'thus shouldn\'t have culture dates specified.'.format(
+                     value['@id'],
+                     value['biosample_ontology']['classification'],
+                 )
+        yield AuditFailure('biosample not from culture', detail,
+                           level='ERROR')
 
     if value['status'] in ['deleted']:
         return
@@ -144,17 +115,10 @@ def audit_biosample_part_of_consistency(value, system):
         return
     else:
         part_of_biosample = value['part_of']
-        term_id = value['biosample_term_id']
-        part_of_term_id = part_of_biosample['biosample_term_id']
-
-        if 'biosample_term_name' in value:
-            term_name = value['biosample_term_name']
-        else:
-            term_name = term_id
-        if 'biosample_term_name' in part_of_biosample:
-            part_of_term_name = part_of_biosample['biosample_term_name']
-        else:
-            part_of_term_name = part_of_term_id
+        term_id = value['biosample_ontology']['term_id']
+        term_name = value['biosample_ontology']['term_name']
+        part_of_term_id = part_of_biosample['biosample_ontology']['term_id']
+        part_of_term_name = part_of_biosample['biosample_ontology']['term_name']
 
         if term_id == part_of_term_id or part_of_term_id == 'UBERON:0000468':
             return
@@ -170,14 +134,107 @@ def audit_biosample_part_of_consistency(value, system):
                  'with biosample term {}. '.format(part_of_term_name) + \
                  'The {} '.format(term_id) + \
                  'ontology does not note that part_of relationship.'
-        yield AuditFailure('inconsistent biosample_term_id', detail,
+        yield AuditFailure('inconsistent BiosampleType term', detail,
                            level='INTERNAL_ACTION')
         return
 
 
+def audit_biosample_phase(value, system):
+    restricted_type = ["single cell", "primary cell", "cell line",
+                       "in vitro differentiated cells"]
+    if ('phase' in value
+        and value['biosample_ontology']['classification'] not in restricted_type):
+        detail = 'Biosample {} is classified as {}, ' + \
+                 'which shouldn\'t have a defined cell cycle phase {}.'.format(
+                     value['@id'],
+                     value['biosample_ontology']['classification'],
+                     value['phase']
+                 )
+        yield AuditFailure('biosample cannot have defined cell cycle phase',
+                           detail, level='ERROR')
+
+
+def audit_biosample_pmi(value, system):
+    if (('PMI' in value or 'PMI_units' in value)
+        and value['biosample_ontology']['classification'] not in ['tissue']):
+        detail = 'PMI is for tissue sample only. ' + \
+                 'Biosample {} is classified as {}.'.format(
+                     value['@id'],
+                     value['biosample_ontology']['classification'],
+                 )
+        yield AuditFailure('non-tissue sample has PMI',
+                           detail, level='ERROR')
+
+
+def audit_biosample_cell_isolation_method(value, system):
+    excluded_type = ["whole organisms", "tissue", "organoid"]
+    if ('cell_isolation_method' in value
+        and value['biosample_ontology']['classification'] in excluded_type):
+        detail = 'Biosample {} is classified as {}, ' + \
+                 'which is not cell ' + \
+                 'and shouldn\'t have cell_isolation_method {}.'.format(
+                     value['@id'],
+                     value['biosample_ontology']['classification'],
+                     value['cell_isolation_method']
+                 )
+        yield AuditFailure('non-cell sample has cell_isolation_method',
+                           detail, level='ERROR')
+
+
+def audit_biosample_depleted_in_term_name(value, system):
+    restricted_type = ["whole organisms", "tissue"]
+    if ('depleted_in_term_name' in value
+        and value['biosample_ontology']['classification'] not in restricted_type):
+        detail = 'Biosample {} is classified as {}, ' + \
+                 'which cannot have {} depleted.'.format(
+                     value['@id'],
+                     value['biosample_ontology']['classification'],
+                     value['depleted_in_term_name']
+                 )
+        yield AuditFailure('non-tissue sample has parts depleted',
+                           detail, level='ERROR')
+
+
 # utility functions
 
-def is_part_of(term_id, part_of_term_id, ontology):
+def is_part_of(term_id, part_of_term_id, ontology, parent_term_id=None):
+    """
+    Given the term_ids for a child and parent biosample pair as obtained from the
+    portal, check that the part_of relationship is reflected in the ontology as
+    well. While the portal model insinuates a direct parent-child relation, in
+    the ontology the relationship may traverse several levels of inheritance.
+    As such, this function traverses up the ontology tree until it has found the
+    ancestor node with the matching term_id.
+
+    Parameters
+    ----------
+    term_id : str
+        The biosample_term_id of the child biosample
+    part_of_term_id : str
+        The biosample_term_id of the biosample specified by the child biosample's
+        "part_of" property, i.e. the biosample_term_id of the parent biosample
+    ontology : dict
+        The ontology generated by ontology.py, from system['registry']['ontology']
+    parent_term_id : str, optional
+        The term id of the previous node in the traversal. This argument is passed
+        for recursive is_part_of calls to ensure that the search does not bounce
+        between two ontology terms pointing to each other.
+
+    Returns
+    -------
+    bool
+        Returns True if the ontology term of any ancestor of the term_id in the
+        ontology, or the term_id itself, matches part_of_term_id. Otherwise,
+        returns False after the search over all ancestor nodes has been exhausted.
+
+    Examples
+    --------
+    >>> is_part_of('CL:0000598', 'UBERON:0002037', ontology)
+    False
+
+    >>> is_part_of('CL:0000121', 'UBERON:0002037', ontology)
+    True
+    """
     if 'part_of' not in ontology[term_id] or ontology[term_id]['part_of'] == []:
         return False
     if part_of_term_id in ontology[term_id]['part_of']:
@@ -185,22 +242,30 @@ def is_part_of(term_id, part_of_term_id, ontology):
     else:
         parents = []
         for x in ontology[term_id]['part_of']:
-            parents.append(is_part_of(x, part_of_term_id, ontology))
+            if not parent_term_id == x:
+                parents.append(
+                    is_part_of(x, part_of_term_id, ontology, parent_term_id=term_id)
+                )
         return any(parents)
 
 
 function_dispatcher = {
     'audit_modification': audit_biosample_modifications,
-    'audit_bio_term': audit_biosample_term,
     'audit_culture_date': audit_biosample_culture_date,
     'audit_donor': audit_biosample_donor,
-    'audit_part_of': audit_biosample_part_of_consistency
+    'audit_part_of': audit_biosample_part_of_consistency,
+    'audit_phase': audit_biosample_phase,
+    'audit_pmi': audit_biosample_pmi,
+    'audit_cell_isolation_method': audit_biosample_cell_isolation_method,
+    'audit_depleted_in_term_name': audit_biosample_depleted_in_term_name
 }
 
 @audit_checker('Biosample',
                frame=['award',
+                      'biosample_ontology',
                       'donor',
-                      'part_of'])
+                      'part_of',
+                      'part_of.biosample_ontology'])
 def audit_biosample(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):

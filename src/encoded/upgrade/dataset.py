@@ -411,3 +411,18 @@ def dataset_22_23(value, system):
             'dedifferentiated amniotic fluid mesenchymal stem cell', 'leukemia stem cell', 'neuronal stem cell',
             'neuroepithelial stem cell', 'neural stem progenitor cell']:
             value['biosample_type'] = 'primary cell'
+
+
+@upgrade_step('experiment', '22', '23')
+@upgrade_step('annotation', '20', '21')
+def dataset_23_24(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4360
+    classification = value.get('biosample_type')
+    term_id = value.get('biosample_term_id')
+    if classification and term_id:
+        biosample_type_name = u'{}_{}'.format(
+            value['biosample_type'], value['biosample_term_id']
+        ).replace(' ', '_').replace(':', '_')
+        value['biosample_ontology'] = str(
+            find_root(system['context'])['biosample-types'][biosample_type_name].uuid
+        )

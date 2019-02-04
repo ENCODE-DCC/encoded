@@ -354,17 +354,11 @@ export class Modal extends React.Component {
     // Open the modal
     openModal() {
         this.setState({ modalOpen: true });
-
-        // Add class to body element to make modal-backdrop div visible
-        document.body.classList.add('modal-open');
     }
 
     // Default function to close the modal without doing anything.
     closeModal() {
         this.setState({ modalOpen: false });
-
-        // Remove class from body element to make modal-backdrop div visible
-        document.body.classList.remove('modal-open');
     }
 
     // Render the modal JSX into the element this component appended to the <body> element. that

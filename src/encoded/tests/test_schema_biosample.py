@@ -2,12 +2,13 @@ import pytest
 
 
 @pytest.fixture
-def biosample(submitter, lab, award, source, organism):
+def biosample(submitter, lab, award, source, organism, heart):
     return {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
+        'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
         'source': source['uuid'],
@@ -15,12 +16,13 @@ def biosample(submitter, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_depleted_in(mouse_biosample):
+def biosample_depleted_in(mouse_biosample, whole_organism):
     item = mouse_biosample.copy()
     item.update({
         'depleted_in_term_name': ['head'],
+        'biosample_ontology': whole_organism['uuid'],
         'biosample_term_name': 'multicellular organism',
-        "biosample_type": "whole organisms"
+        "biosample_type": "whole organisms",
     })
     return item
 

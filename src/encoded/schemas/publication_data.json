@@ -61,13 +61,13 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "biosample_type": {
+        "biosample_ontology.classification": {
             "title": "Biosample type"
         },
-        "organ_slims": {
+        "biosample_ontology.organ_slims": {
             "title": "Organ"
         },
-        "cell_slims": {
+        "biosample_ontology.cell_slims": {
             "title": "Cell"
         },
         "files.file_type": {
@@ -104,7 +104,7 @@
             "title": "Assay Type",
             "type": "string"
         },
-        "biosample_term_name": {
+        "biosample_ontology.term_name": {
             "title": "Biosample",
             "type": "string"
         },
@@ -133,9 +133,9 @@
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "assay_term_name": 1.0,
-        "biosample_term_name": 1.0,
-        "biosample_type": 1.0,
-        "cell_slims": 1.0,
+        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.classification": 1.0,
+        "biosample_ontology.cell_slims": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
         "award.title": 1.0,

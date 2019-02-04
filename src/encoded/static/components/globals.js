@@ -98,15 +98,16 @@ export function encodedURI(uri) {
 
 
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
-// `space` parameter, or '+' if not provided.
+// `options.space` parameter, or '+' if not provided. Encodes equals sign if `options.encodeEquals`
+// set to true, or leaves the equals sign unencoded.
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
-export function encodedURIComponent(str, space) {
-    const spaceReplace = space || '+';
-    return encodeURIComponent(str)
+export function encodedURIComponent(str, options = {}) {
+    const spaceReplace = options.space || '+';
+    const preEquals = encodeURIComponent(str)
         .replace(/\(/g, '%28')
         .replace(/\)/g, '%29')
-        .replace(/%20/g, spaceReplace)
-        .replace(/%3D/g, '=');
+        .replace(/%20/g, spaceReplace);
+    return options.encodeEquals ? preEquals : preEquals.replace(/%3D/g, '=');
 }
 
 
