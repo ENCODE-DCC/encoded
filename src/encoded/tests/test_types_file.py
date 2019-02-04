@@ -232,3 +232,61 @@ def test_public_restricted_file_does_not_have_s3_uri(testapp, file_with_external
     )
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' not in res.json
+
+
+def test_file_update_bucket_as_admin(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.patch_json(file_with_external_sheet['@id'] + '@@update_bucket', {'new_bucket': 'pds_public_bucket_test'})
+    assert res.json['old_bucket'] == 'test_file_bucket'
+    assert res.json['new_bucket'] == 'pds_public_bucket_test'
+
+
+def test_file_update_bucket_as_admin_unkown_bucket(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.patch_json(
+        file_with_external_sheet['@id'] + '@@update_bucket',
+        {'new_bucket': 'unknown bucket'},
+        status=422
+    )
+
+
+def test_file_update_bucket_as_admin_unkown_bucket_with_force(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.patch_json(file_with_external_sheet['@id'] + '@@update_bucket?force=true', {'new_bucket': 'unknown bucket'})
+    assert res.json['old_bucket'] == 'test_file_bucket'
+    assert res.json['new_bucket'] == 'unknown bucket'
+
+
+def test_file_update_bucket_as_submitter(submitter_testapp, dummy_request, file_with_external_sheet):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = submitter_testapp.patch_json(
+        file_with_external_sheet['@id'] + '@@update_bucket',
+        {'new_bucket': 'unknown bucket'},
+        status=403
+    )

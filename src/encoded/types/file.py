@@ -9,6 +9,7 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
+from snovault.validation import ValidationFailure
 from .base import (
     Item,
     paths_filtered_by_status
@@ -470,6 +471,7 @@ class File(Item):
             raise HTTPNotFound()
 
     def _set_external_sheet(self, new_external):
+        # This just updates external sheet, doesn't overwrite.
         external = self._get_external_sheet()
         external = external.copy()
         external.update(new_external)
@@ -680,3 +682,30 @@ def download(context, request):
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
+
+
+@view_config(context=File, permission='edit_bucket', request_method='PATCH',
+             name='update_bucket')
+def file_update_bucket(context, request):
+    new_bucket = request.json_body.get('new_bucket')
+    if not new_bucket:
+        raise ValidationFailure('body', ['bucket'], 'New bucket not specified')
+    force = asbool(request.params.get('force'))
+    known_buckets = [
+        request.registry.settings['file_upload_bucket'],
+        request.registry.settings['pds_public_bucket'],
+        request.registry.settings['pds_private_bucket'],
+    ]
+    # Try to validate input to a known bucket.
+    if new_bucket not in known_buckets and not force:
+        raise ValidationFailure('body', ['bucket'], 'Unknown bucket and force not specified')
+    current_bucket = context._get_external_sheet().get('bucket')
+    # Don't bother setting if already the same.
+    if current_bucket != new_bucket:
+        context._set_external_sheet({'bucket': new_bucket})
+    return {
+        'status': 'success',
+        '@type': ['result'],
+        'old_bucket': current_bucket,
+        'new_bucket': new_bucket
+    }
