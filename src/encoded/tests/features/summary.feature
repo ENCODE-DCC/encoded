@@ -4,7 +4,7 @@ Feature: Title
     Scenario: Title updates
         When I visit "/summary/?type=Experiment"
         And I wait for the content to load
-        Then the title should contain the text "Experiment Summary – ENCODE"
+        Then the title should contain the text "Experiment summary – ENCODE"
 
 @Summary @usefixtures(workbook)
 Feature: Summary
@@ -14,7 +14,7 @@ Feature: Summary
 
 
     Scenario: Summary
-        Then the title should contain the text "Summary"
+        Then the title should contain the text "summary"
         Then I should see at least 2 elements with the css selector ".summary-content__data > div"
 
     Scenario: Summary Buttons and Links

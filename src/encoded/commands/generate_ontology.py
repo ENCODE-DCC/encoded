@@ -103,7 +103,7 @@ organ_slims = {
     'UBERON:0000996': 'vagina',
     'UBERON:0000992': 'ovary',
     'UBERON:0000473': 'testis',
-    'UBERON:0001637': 'artery',
+    'UBERON:0003509': 'arterial blood vessel',
     'UBERON:0001638': 'vein',
     'UBERON:0000160': 'intestine',
     'UBERON:0002384': 'connective tissue',
@@ -117,6 +117,37 @@ organ_slims = {
     'UBERON:0000483': 'epithelium',
     'UBERON:0002407': 'pericardium',
     'UBERON:0001744': 'lymphoid tissue'
+}
+
+cell_slims = {
+    'CL:0000236': 'B cell',
+    'EFO:0001640': 'B cell',# B cell derived cell line
+    'EFO:0001639': 'cancer cell', # cancer cell line
+    'CL:0002494': 'cardiocyte',
+    'CL:0000115': 'endothelial cell',
+    'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
+    'CL:0000066': 'epithelial cell',
+    'EFO:0001641': 'epithelial cell', # epithelial cell derived cell line
+    'CL:0000057': 'fibroblast',
+    'EFO:0002009': 'fibroblast',# fibroblast derived cell line
+    'CL:0000988': 'hematopoietic cell',
+    'EFO:0004905': 'induced pluripotent stem cell',
+    'EFO:0005740': 'induced pluripotent stem cell', # induced pluripotent stem cell derived cell line
+    'CL:0000312': 'keratinocyte',
+    'CL:0000738': 'leukocyte',
+    'EFO:0005292': 'lymphoblast', # lymphoblastoid cell line
+    'CL:0000148': 'melanocyte',
+    'CL:0000576': 'monocyte',
+    'CL:0000763': 'myeloid cell',
+    'CL:0000056': 'myoblast',
+    'CL:0002319': 'neural cell',
+    'EFO:0005214': 'neuroblastoma cell', # neuroblastoma cell line
+    'CL:0000669': 'pericyte',
+    'CL:0000192': 'smooth muscle cell',
+    'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
+    'CL:0000034': 'stem cell',
+    'EFO:0002886': 'stem cell', # stem cell derived cell line
+    'CL:0000084': 'T cell'
 }
 
 assay_slims = {
@@ -153,9 +184,13 @@ slim_shims = {
         'OBI:0001863': ['DNA methylation'],  # WGBS
         'OBI:0001862': ['DNA methylation'],  # RRBS
         'OBI:0001861': ['DNA methylation'],  # MRE-seq
-        'OBI:0002086': ['DNA methylation']  # TAB-seq
+        'OBI:0002086': ['DNA methylation'],  # TAB-seq
+        'OBI:0000716': ['DNA binding'], # ChIP-seq
+        'OBI:0001919': ['3D chromatin structure'], # 5C
+        'OBI:0002160': ['DNA binding']  # Mint-ChIP-seq
     },
     'organ': {
+        'NTR:0001407': ['brain'],
         'UBERON:0001871': ['brain'],
         'UBERON:0002686': ['brain'],
         'EFO:0005723': ['connective tissue', 'limb', 'skin of body'],
@@ -1009,6 +1044,8 @@ def getSlims(goid, terms, slimType):
         slimTerms = developental_slims
     elif slimType == 'organ':
         slimTerms = organ_slims
+    elif slimType == 'cell':
+        slimTerms = cell_slims
     elif slimType == 'system':
         slimTerms = system_slims
     elif slimType == 'assay':
@@ -1048,6 +1085,7 @@ def getTermStructure():
         'develops_from': [],
         'achieves_planned_objective': [],
         'organs': [],
+        'cells': [],
         'closure': [],
         'slims': [],
         'data': [],
@@ -1164,6 +1202,7 @@ def main():
 
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
+        terms[term]['cells'] = getSlims(term, terms, 'cell')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
         terms[term]['assay'] = getSlims(term, terms, 'assay')
         terms[term]['category'] = getSlims(term, terms, 'category')

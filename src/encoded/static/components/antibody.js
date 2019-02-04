@@ -7,13 +7,13 @@ import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
 import { AlternateAccession, DisplayAsJson } from './objectutils';
 import { PickerActions } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
+import { ExperimentTable } from './typeutils';
 
 
 // Order that antibody statuses should be displayed.

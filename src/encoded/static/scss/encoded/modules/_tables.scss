@@ -81,7 +81,10 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 .table-responsive {
     position: relative;
     overflow-x: auto;
-    margin-top: 10px;
+}
+
+.results-table-control {
+    margin-bottom: 10px;
 }
 
 table thead tr th button {

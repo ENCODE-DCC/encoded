@@ -151,7 +151,6 @@ class Experiment(Dataset,
                             biosample_accessions.add(biosampleObject['accession'])
 
                             if biosampleObject.get('biosample_type') in [
-                                    'stem cell',
                                     'in vitro differentiated cells']:
                                 drop_age_sex_flag = True
 
@@ -202,7 +201,7 @@ class Experiment(Dataset,
 
                                     modifications_list.append((gm_object['method'], modification_dict))
 
-
+                            preservation_method = None
                             dictionary_to_add = generate_summary_dictionary(
                                 organismObject,
                                 donorObject,
@@ -223,6 +222,7 @@ class Experiment(Dataset,
                                 biosampleObject.get('post_treatment_time'),
                                 biosampleObject.get('post_treatment_time_units'),
                                 treatment_objects_list,
+                                preservation_method,
                                 part_of_object,
                                 originated_from_object,
                                 modifications_list,
@@ -437,6 +437,7 @@ class Experiment(Dataset,
                 'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
+                'cell_slims',
                 'award.project',
                 'assembly',
                 'internal_status',
@@ -465,6 +466,7 @@ class Experiment(Dataset,
                 'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
+                'cell_slims',
                 'award.project',
                 'award.rfa',
                 'status',

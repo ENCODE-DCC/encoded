@@ -34,13 +34,11 @@ def item_is_revoked(request, path):
 
 def calculate_assembly(request, files_list, status):
     assembly = set()
-    viewable_file_formats = ['bigWig', 'bigBed']
     viewable_file_status = ['released','in progress']
 
     for path in files_list:
         properties = request.embed(path, '@@object?skip_calculated=true')
-        if properties['file_format'] in viewable_file_formats and \
-                properties['status'] in viewable_file_status:
+        if properties['status'] in viewable_file_status:
             if 'assembly' in properties:
                 assembly.add(properties['assembly'])
     return list(assembly)
@@ -311,6 +309,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 'organism.scientific_name',
                 'biosample_type',
                 'organ_slims',
+                'cell_slims',
                 'award.project',
                 'assembly',
                 'encyclopedia_version'

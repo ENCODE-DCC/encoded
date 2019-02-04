@@ -332,9 +332,6 @@ OUTPUT_TYPE_8CHARS = {
 
 # Track coloring is defined by biosample
 BIOSAMPLE_COLOR = {
-    "induced pluripotent stem cell line":       {"color": "80,49,120",
-                                                 "altColor": "107,95,102"},  # Purple
-    "stem cell":        {"color": "0,107,27",    "altColor": "0.0,77,20"},   # Dark Green
     "GM12878":          {"color": "153,38,0",    "altColor": "115,31,0"},    # Dark Orange-Red
     "H1-hESC":          {"color": "0,107,27",    "altColor": "0,77,20"},     # Dark Green
     "K562":             {"color": "46,0,184",    "altColor": "38,0,141"},    # Dark Blue
@@ -1134,7 +1131,7 @@ class IhecDefines(object):
             biosample_type = biosample_type.lower()
             if biosample_type in ["tissue", "whole organism"]:  # "whole organism" (but really they should add another enum) - hitz
                 return "Primary Tissue"
-            if biosample_type in ["primary cell", "stem cell"]: # "stem cell" (I think) = hitz
+            if biosample_type in ["primary cell"]:
                 return "Primary Cell Culture"
             return "Cell Line"
 

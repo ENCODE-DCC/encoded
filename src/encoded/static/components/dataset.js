@@ -11,13 +11,13 @@ import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import Status from './status';
 import pubReferenceList from './reference';
-import { donorDiversity, publicDataset, AlternateAccession, DisplayAsJson } from './objectutils';
+import { donorDiversity, publicDataset, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef, Supersede } from './typeutils';
+import { AwardRef, Supersede, ControllingExperiments } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -56,6 +56,7 @@ class AnnotationComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -77,12 +78,6 @@ class AnnotationComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -213,10 +208,10 @@ class AnnotationComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -227,6 +222,8 @@ class AnnotationComponent extends React.Component {
 
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} showReplicateNumber={false} />
+
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
@@ -258,6 +255,7 @@ class PublicationDataComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -273,12 +271,6 @@ class PublicationDataComponent extends React.Component {
 
         // Render the publication links
         const referenceList = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -376,10 +368,10 @@ class PublicationDataComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -390,6 +382,8 @@ class PublicationDataComponent extends React.Component {
 
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} showReplicateNumber={false} hideGraph />
+
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
@@ -421,6 +415,7 @@ class ReferenceComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -436,12 +431,6 @@ class ReferenceComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -539,10 +528,10 @@ class ReferenceComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -553,6 +542,8 @@ class ReferenceComponent extends React.Component {
 
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
+
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
@@ -584,6 +575,7 @@ class ProjectComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -602,12 +594,6 @@ class ProjectComponent extends React.Component {
 
         // Get a list of reference links
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -726,10 +712,10 @@ class ProjectComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -740,6 +726,8 @@ class ProjectComponent extends React.Component {
 
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
@@ -771,6 +759,7 @@ class UcscBrowserCompositeComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -789,12 +778,6 @@ class UcscBrowserCompositeComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -899,10 +882,10 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -913,6 +896,8 @@ class UcscBrowserCompositeComponent extends React.Component {
 
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
+
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
@@ -1230,6 +1215,7 @@ export class SeriesComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
         let experiments = {};
         context.files.forEach((file) => {
             const experiment = file.replicate && file.replicate.experiment;
@@ -1274,12 +1260,6 @@ export class SeriesComponent extends React.Component {
             );
         }
         const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);
@@ -1390,10 +1370,10 @@ export class SeriesComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -1424,6 +1404,8 @@ export class SeriesComponent extends React.Component {
                     session={this.context.session}
                 />
 
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
@@ -1445,95 +1427,3 @@ SeriesComponent.contextTypes = {
 const Series = auditDecor(SeriesComponent);
 
 globals.contentViews.register(Series, 'Series');
-
-
-// Display a count of experiments in the footer, with a link to the corresponding search if needed
-const ExperimentTableFooter = (props) => {
-    const { items, total, url } = props;
-
-    return (
-        <div>
-            <span>Displaying {items.length} of {total} </span>
-            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-        </div>
-    );
-};
-
-ExperimentTableFooter.propTypes = {
-    items: PropTypes.array.isRequired, // Array of experiments that were displayed in the table
-    total: PropTypes.number, // Total number of experiments
-    url: PropTypes.string.isRequired, // URL to link to equivalent experiment search results
-};
-
-ExperimentTableFooter.defaultProps = {
-    total: 0,
-};
-
-
-const experimentTableColumns = {
-    accession: {
-        title: 'Accession',
-        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
-    },
-
-    assay_term_name: {
-        title: 'Assay',
-    },
-
-    biosample_term_name: {
-        title: 'Biosample term name',
-    },
-
-    target: {
-        title: 'Target',
-        getValue: item => item.target && item.target.label,
-    },
-
-    description: {
-        title: 'Description',
-    },
-
-    title: {
-        title: 'Lab',
-        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-    },
-};
-
-export const ExperimentTable = (props) => {
-    let experiments;
-
-    // If there's a limit on entries to display and the array is greater than that
-    // limit, then clone the array with just that specified number of elements
-    if (props.limit && (props.limit < props.items.length)) {
-        // Limit the experiment list by cloning first {limit} elements
-        experiments = props.items.slice(0, props.limit);
-    } else {
-        // No limiting; just reference the original array
-        experiments = props.items;
-    }
-
-    return (
-        <div>
-            <SortTablePanel title={props.title}>
-                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={props.total} url={props.url} />} />
-            </SortTablePanel>
-        </div>
-    );
-};
-
-ExperimentTable.propTypes = {
-    items: PropTypes.array.isRequired, // List of experiments to display in the table
-    limit: PropTypes.number, // Maximum number of experiments to display in the table
-    total: PropTypes.number, // Total number of experiments
-    url: PropTypes.string.isRequired, // URI to go to equivalent search results
-    title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
-        PropTypes.string,
-        PropTypes.node,
-    ]),
-};
-
-ExperimentTable.defaultProps = {
-    limit: 0,
-    total: 0,
-    title: '',
-};

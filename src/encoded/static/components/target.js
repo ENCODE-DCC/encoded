@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { RelatedItems } from './item';
 import { DisplayAsJson } from './objectutils';
+import { ExperimentTable } from './typeutils';
 
 
 /* eslint-disable react/prefer-stateless-function */

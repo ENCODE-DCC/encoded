@@ -12,7 +12,7 @@ import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
-import { BrowserSelector, DisplayAsJson, requestSearch } from './objectutils';
+import { BrowserSelector, DisplayAsJson, requestSearch, DocTypeTitle } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
@@ -22,6 +22,7 @@ import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 const types = {
     annotation: { title: 'Annotation file set' },
     antibody_lot: { title: 'Antibodies' },
+    biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
@@ -923,7 +924,7 @@ TextFilter.propTypes = {
 /* eslint-disable react/prefer-stateless-function */
 export class FacetList extends React.Component {
     render() {
-        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses } = this.props;
+        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix } = this.props;
 
         // Get "normal" facets, meaning non-audit facets.
         const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
@@ -970,6 +971,7 @@ export class FacetList extends React.Component {
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
+                    {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
                     {clearButton ?
                         <div className="clear-filters-control">
                             <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
@@ -1008,6 +1010,7 @@ FacetList.propTypes = {
     mode: PropTypes.string,
     orientation: PropTypes.string,
     hideTextFilter: PropTypes.bool,
+    docTypeTitleSuffix: PropTypes.string,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
 };
 
@@ -1017,6 +1020,7 @@ FacetList.defaultProps = {
     orientation: 'vertical',
     hideTextFilter: false,
     addClasses: '',
+    docTypeTitleSuffix: 'search',
 };
 
 FacetList.contextTypes = {

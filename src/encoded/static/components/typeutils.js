@@ -316,3 +316,132 @@ export const Supersede = ({ context }) => {
 Supersede.propTypes = {
     context: PropTypes.object.isRequired, // Object containing supersedes/superseded_by to display
 };
+
+
+/**
+ * Display a count of experiments in the footer, with a link to the corresponding search if needed.
+ */
+const ExperimentTableFooter = ({ items, total, url }) => (
+    <div>
+        <span>Displaying {items.length} of {total} </span>
+        {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+    </div>
+);
+
+ExperimentTableFooter.propTypes = {
+    /** Array of experiments that were displayed in the table */
+    items: PropTypes.array.isRequired,
+    /** Total number of experiments */
+    total: PropTypes.number,
+    /** URL to link to equivalent experiment search results */
+    url: PropTypes.string.isRequired,
+};
+
+ExperimentTableFooter.defaultProps = {
+    total: 0,
+};
+
+
+const experimentTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
+    },
+
+    assay_term_name: {
+        title: 'Assay',
+    },
+
+    biosample_term_name: {
+        title: 'Biosample term name',
+    },
+
+    target: {
+        title: 'Target',
+        getValue: item => item.target && item.target.label,
+    },
+
+    description: {
+        title: 'Description',
+    },
+
+    title: {
+        title: 'Lab',
+        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+};
+
+
+export const ExperimentTable = ({ items, limit, total, url, title }) => {
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements.
+    const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+
+    return (
+        <div>
+            <SortTablePanel title={title}>
+                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
+            </SortTablePanel>
+        </div>
+    );
+};
+
+ExperimentTable.propTypes = {
+    /** List of experiments to display in the table */
+    items: PropTypes.array.isRequired,
+    /** Maximum number of experiments to display in the table */
+    limit: PropTypes.number,
+    /** Total number of experiments */
+    total: PropTypes.number,
+    /** URI to go to equivalent search results */
+    url: PropTypes.string.isRequired,
+    /** Title for the table of experiments; can be string or component */
+    title: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.node,
+    ]),
+};
+
+ExperimentTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    title: '',
+};
+
+
+/**
+ * Display a table of experiments with the dataset in `context` as a possible_controls.
+ */
+export const ControllingExperiments = ({ context, items, total, url }) => {
+    if (items.length > 0) {
+        return (
+            <div>
+                <ExperimentTable
+                    items={items}
+                    limit={5}
+                    total={total}
+                    url={url}
+                    title={`Experiments with ${context.accession} as a control:`}
+                />
+            </div>
+        );
+    }
+    return null;
+};
+
+ControllingExperiments.propTypes = {
+    /** Dataset object containing the table being rendered */
+    context: PropTypes.object.isRequired,
+    /** Experiments to display in the table */
+    items: PropTypes.array,
+    /** Total number of items from search (can be larger than items.length) */
+    total: PropTypes.number,
+    /** URL to retrieve search results to fill the table */
+    url: PropTypes.string,
+};
+
+ControllingExperiments.defaultProps = {
+    items: [],
+    total: 0,
+    url: '',
+};

@@ -144,7 +144,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
                 type_info = self._types[self._doc_types[0]]
                 self._schema = type_info.schema
         self._validate_items(type_info)
-        self._result['title'] = type_info.name + ' Summary'
+        self._result['title'] = type_info.name + ' summary'
         self._result['summary'] = type_info.factory.summary_data.copy()
         self._summary = self._result['summary']
         search_route = self._request.route_path('search', slash='/')

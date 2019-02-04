@@ -6,8 +6,8 @@ import { DbxrefList, dbxrefHref } from './dbxref';
 import { PickerActions } from './search';
 import { auditDecor } from './audit';
 import { DisplayAsJson } from './objectutils';
-import { ExperimentTable } from './dataset';
 import { RelatedItems } from './item';
+import { ExperimentTable } from './typeutils';
 
 
 const Gene = (props) => {

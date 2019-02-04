@@ -57,7 +57,7 @@
             "title": "Series status"
         },
         "assembly": {
-            "title": "Genome assembly (visualization)"
+            "title": "Genome assembly"
         },
         "organism.scientific_name": {
             "title": "Organism"
@@ -70,6 +70,9 @@
         },
         "organ_slims": {
             "title": "Organ"
+        },
+        "cell_slims": {
+            "title": "Cell"
         },
         "biosample_term_name": {
             "title": "Biosample term name"
@@ -229,6 +232,7 @@
         "related_datasets.assay_term_id": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "cell_slims": 1.0,
         "related_datasets.biosample_term_id": 1.0,
         "related_datasets.biosample_term_name": 1.0,
         "related_datasets.biosample_type": 1.0,

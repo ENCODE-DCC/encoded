@@ -145,7 +145,7 @@ class AdvSearch extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
-        this.closeAutocompleteBox = this.closeAutocompleteBox.bind(this);
+        this.handleOnFocus = this.handleOnFocus.bind(this);
         this.tick = this.tick.bind(this);
     }
 
@@ -184,8 +184,9 @@ class AdvSearch extends React.Component {
         this.setState({ genome: event.target.value });
     }
 
-    closeAutocompleteBox() {
+    handleOnFocus() {
         this.setState({ showAutoSuggest: false });
+        this.context.navigate(this.context.location_href);
     }
 
     tick() {
@@ -212,7 +213,7 @@ class AdvSearch extends React.Component {
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.closeAutocompleteBox} >
+                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.handleOnFocus} >
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <div className="form-group">
                             <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
@@ -256,6 +257,7 @@ AdvSearch.contextTypes = {
     autocompleteHidden: PropTypes.bool,
     onAutocompleteHiddenChange: PropTypes.func,
     location_href: PropTypes.string,
+    navigate: PropTypes.func,
 };
 
 

@@ -1007,7 +1007,7 @@ def test_audit_experiment_biosample_match(testapp, base_experiment,
                                           base_library):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': "EFO:0003042",
                                                'biosample_term_name': 'H1-hESC',
-                                               'biosample_type': 'stem cell'})
+                                               'biosample_type': 'cell line'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "UBERON:0002116",
                                                 'biosample_term_name': 'ileum',

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import color from 'color';
+import pluralize from 'pluralize';
 import _ from 'underscore';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
@@ -186,18 +187,21 @@ class Matrix extends React.Component {
 
             // Make an array of colors corresponding to the ordering of biosample_type
             const biosampleTypeColors = globals.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
+            const parsed = url.parse(matrixBase, true);
+            const queryStringType = parsed.query.type || '';
+            const type = pluralize(queryStringType.toLocaleLowerCase());
 
             return (
                 <div>
                     <div className="panel data-display main-panel">
-                        <div className="row">
+                        <div className="row matrix__facet--horizontal">
                             <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{ paddingRight: 0 }}>
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>
-                                            <h3 style={{ marginTop: 0 }}>{context.title}</h3>
+                                            <h1>{context.title}</h1>
                                             <div>
-                                                <p>Click or enter search terms to filter the experiments included in the matrix.</p>
+                                                <p>Click or enter search terms to filter the {type} included in the matrix.</p>
                                                 <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                                             </div>
                                         </div>
@@ -283,8 +287,9 @@ class Matrix extends React.Component {
                                                 // this.state.yGroupOpen[key]), extract just the
                                                 // group rows that are under the display limit.
                                                 const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
+                                                const yGroupQueryComponent = `${primaryYGrouping}=${globals.encodedURIComponent(group.key)}`;
                                                 rows.push(...groupRows.map((yb) => {
-                                                    const href = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}`;
+                                                    const href = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}&${yGroupQueryComponent}`;
                                                     return (
                                                         <tr key={`yb-${yb.key}`}>
                                                             <th style={{ backgroundColor: '#ddd', border: 'solid 1px white' }}><a href={href}>{yb.key}</a></th>
@@ -295,7 +300,7 @@ class Matrix extends React.Component {
                                                                     // scale color between white and the series color
                                                                     cellColor.lightness(cellColor.lightness() + ((1 - (value / matrix.max_cell_doc_count)) * (100 - cellColor.lightness())));
                                                                     const textColor = cellColor.luminosity() > 0.5 ? '#000' : '#fff';
-                                                                    const cellHref = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                                    const cellHref = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}&${yGroupQueryComponent}`;
                                                                     const title = `${yb.key} / ${xb.key}: ${value}`;
                                                                     return (
                                                                         <td key={xb.key} style={{ backgroundColor: cellColor.hexString() }}>

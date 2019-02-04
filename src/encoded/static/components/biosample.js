@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
 import GeneticModificationSummary from './genetic_modification';
@@ -10,10 +9,10 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, DisplayAsJson } from './objectutils';
+import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
-import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
+import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
@@ -56,12 +55,6 @@ class BiosampleComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -332,10 +325,10 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -488,6 +481,8 @@ BiosampleTermId.propTypes = {
 BiosampleTermId.defaultProps = {
     termId: '',
 };
+
+export default BiosampleTermId;
 
 
 const Treatment = (props) => {

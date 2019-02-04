@@ -25,6 +25,21 @@ class CalculatedBiosampleSlims:
         return list(slims)
 
     @calculated_property(condition='biosample_term_id', schema={
+        "title": "Cell slims",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def cell_slims(self, registry, biosample_term_id):
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['cells'])
+        return list(slims)
+
+    @calculated_property(condition='biosample_term_id', schema={
         "title": "System slims",
         "type": "array",
         "items": {
@@ -284,7 +299,17 @@ class CalculatedVisualize:
     def visualize(self, request, hub, accession, assembly, status, files):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
-        for assembly_name in assembly:
+        vis_assembly = set()
+        viewable_file_formats = ['bigWig', 'bigBed']
+        viewable_file_status = ['released', 'in progress']
+        vis_assembly = {
+            properties['assembly']
+            for properties in files
+            if properties.get('file_format') in viewable_file_formats
+            if properties.get('status') in viewable_file_status
+            if 'assembly' in properties
+        }
+        for assembly_name in vis_assembly:
             if assembly_name in viz:
                 continue
             browsers = browsers_available(status, [assembly_name],

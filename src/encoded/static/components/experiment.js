@@ -7,17 +7,16 @@ import { auditDecor } from './audit';
 import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
-import { ExperimentTable } from './dataset';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { CartToggle } from './cart';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, AlternateAccession, DisplayAsJson } from './objectutils';
+import { singleTreatment, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede, ControllingExperiments } from './typeutils';
 
 
 const anisogenicValues = [
@@ -149,37 +148,6 @@ function AssayDetails(replicates, libVals, libSpecials, libComps) {
     // Finally, return the array of JSX renderings of all assay details.
     return components;
 }
-
-
-const ControllingExperiments = (props) => {
-    const context = props.context;
-
-    if (props.items.length) {
-        return (
-            <div>
-                <ExperimentTable
-                    {...props}
-                    items={props.items}
-                    limit={5}
-                    url={props.url}
-                    title={`Experiments with ${context.accession} as a control:`}
-                />
-            </div>
-        );
-    }
-    return null;
-};
-
-ControllingExperiments.propTypes = {
-    context: PropTypes.object.isRequired, // Experiment object containing the table being rendered
-    items: PropTypes.array, // Experiments to display in the table
-    url: PropTypes.string, // URL to go to full search results corresponding to the table
-};
-
-ControllingExperiments.defaultProps = {
-    items: [],
-    url: '',
-};
 
 
 class ExperimentComponent extends React.Component {
@@ -443,10 +411,6 @@ class ExperimentComponent extends React.Component {
         const references = pubReferenceList(context.references);
 
         // Render tags badges.
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
 
         return (
             <div className={itemClass}>
@@ -644,10 +608,10 @@ class ExperimentComponent extends React.Component {
 
                                     {libSubmitterComments}
 
-                                    {tagBadges ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
+                                            <dd><InternalTags context={context} /></dd>
                                         </div>
                                     : null}
                                 </dl>

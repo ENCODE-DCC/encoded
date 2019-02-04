@@ -122,5 +122,29 @@
         "lab": "j-michael-cherry",
         "organism": "human",
         "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
+    },
+    {
+        "accession": "ENCDO271OUW",
+        "age": "51",
+        "age_units": "year",
+        "aliases": [
+            "gtex:ENC-DEJ",
+            "gtex:PT-1LVAN",
+            "gtex:ENC-004",
+            "bradley-bernstein:Donor GTEX-1LVAN"
+        ],
+        "award": "ENCODE2",
+        "external_ids": [
+            "GEO:SAMN05897787"
+        ],
+        "internal_tags": [
+            "ENTEx",
+            "SESCC"
+        ],
+        "lab": "encode2-project",
+        "life_stage": "adult",
+        "organism": "/organisms/human/",
+        "sex": "female",
+        "status": "released"
     }
 ]

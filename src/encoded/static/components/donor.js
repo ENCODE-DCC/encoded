@@ -4,31 +4,24 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { requestObjects, AlternateAccession, DisplayAsJson } from './objectutils';
+import { requestObjects, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleTable } from './typeutils';
+import { BiosampleTable, ExperimentTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
 const HumanDonor = (props) => {
     const { context, biosample } = props;
     const references = pubReferenceList(context.references);
-
-    // Render tags badges
-    let tagBadges;
-    if (context.internal_tags && context.internal_tags.length) {
-        tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-    }
 
     return (
         <div>
@@ -125,10 +118,10 @@ const HumanDonor = (props) => {
                             </div>
                         : null}
 
-                        {tagBadges ?
+                        {context.internal_tags && context.internal_tags.length > 0 ?
                             <div className="tag-badges" data-test="tags">
                                 <dt>Tags</dt>
-                                <dd>{tagBadges}</dd>
+                                <dd><InternalTags context={context} /></dd>
                             </div>
                         : null}
                     </dl>
@@ -210,12 +203,6 @@ const MouseDonor = (props) => {
     if (biosample && biosample.donor && biosample.donor.url) {
         const donorUrl = url.parse(biosample.donor.url);
         donorUrlDomain = donorUrl.hostname || '';
-    }
-
-    // Render tags badges.
-    let tagBadges;
-    if (context.internal_tags && context.internal_tags.length) {
-        tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
     }
 
     return (
@@ -320,13 +307,6 @@ const MouseDonor = (props) => {
                             </div>
                         : null}
 
-                        {tagBadges ?
-                            <div className="tag-badges" data-test="tags">
-                                <dt>Tags</dt>
-                                <dd>{tagBadges}</dd>
-                            </div>
-                        : null}
-
                         {context.submitter_comment ?
                             <div data-test="submittercomment">
                                 <dt>Submitter comment</dt>
@@ -365,12 +345,6 @@ globals.panelViews.register(MouseDonor, 'MouseDonor');
 const FlyWormDonor = (props) => {
     const { context, biosample } = props;
     let donorUrlDomain;
-
-    // Render tags badges.
-    let tagBadges;
-    if (context.internal_tags && context.internal_tags.length) {
-        tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-    }
 
     return (
         <div>
@@ -472,13 +446,6 @@ const FlyWormDonor = (props) => {
                             <div data-test="submittercomment">
                                 <dt>Submitter comment</dt>
                                 <dd>{context.submitter_comment}</dd>
-                            </div>
-                        : null}
-
-                        {tagBadges ?
-                            <div className="tag-badges" data-test="tags">
-                                <dt>Tags</dt>
-                                <dd>{tagBadges}</dd>
                             </div>
                         : null}
                     </dl>

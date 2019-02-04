@@ -39,6 +39,7 @@ require('./summary');
 require('./region_search');
 require('./auditmatrix');
 require('./gene');
+require('./biosample_type');
 
 
 module.exports = require('./app');

@@ -190,6 +190,17 @@ def biosample_19(biosample_0, biosample):
     return item
 
 
+@pytest.fixture
+def biosample_21(biosample_0, biosample):
+    item = biosample_0.copy()
+    item.update({
+        'biosample_type': 'stem cell',
+        'biosample_term_id': 'EFO:0007071',
+        'biosample_term_name': 'BG01'
+    })
+    return item
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -498,4 +509,9 @@ def test_upgrade_biosample_18_to_19(upgrader, biosample_18, biosample):
 
 def test_upgrade_biosample_19_to_20(upgrader, biosample_19, biosample):
     value = upgrader.upgrade('biosample', biosample_19, current_version='19', target_version='20')
+    assert value['biosample_type'] == 'cell line'
+
+
+def test_upgrade_biosample_21_to_22(upgrader, biosample_21, biosample):
+    value = upgrader.upgrade('biosample', biosample_21, current_version='21', target_version='22')
     assert value['biosample_type'] == 'cell line'

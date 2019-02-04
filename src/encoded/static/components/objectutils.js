@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import url from 'url';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import * as globals from './globals';
-import url from 'url';
-
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
@@ -139,8 +138,8 @@ export function requestObjects(atIds, uri, filteringObjects) {
     // complete.
     return Promise.all(objectChunks.map((objectChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
-        const url = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
-        return fetch(url, {
+        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
+        return fetch(objectUrl, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -263,10 +262,10 @@ class DownloadIcon extends React.Component {
     }
 
     render() {
-        const { file, adminUser } = this.props;
+        const { file } = this.props;
 
         return (
-            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
+            <i className="icon icon-download" style={!file.restricted ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
                 <span className="sr-only">Download</span>
             </i>
         );
@@ -276,11 +275,6 @@ class DownloadIcon extends React.Component {
 DownloadIcon.propTypes = {
     hoverDL: PropTypes.func.isRequired, // Function to call when hovering or stop hovering over the icon
     file: PropTypes.object.isRequired, // File associated with this download button
-    adminUser: PropTypes.bool, // True if logged-in user is an admin
-};
-
-DownloadIcon.defaultProps = {
-    adminUser: false,
 };
 
 
@@ -394,9 +388,9 @@ export class RestrictedDownloadButton extends React.Component {
     }
 
     render() {
-        const { file, adminUser } = this.props;
+        const { file } = this.props;
         const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
-        const buttonEnabled = !file.restricted || adminUser;
+        const buttonEnabled = !file.restricted;
 
         // If the user provided us with a component for downloading files, add the download
         // properties to the component before rendering.
@@ -405,13 +399,12 @@ export class RestrictedDownloadButton extends React.Component {
             href: file.href,
             download: file.href.substr(file.href.lastIndexOf('/') + 1),
             hoverDL: this.hoverDL,
-            adminUser,
             buttonEnabled,
         }) : null;
 
         // Supply a default icon for the user to click to download, if the caller didn't supply one
         // in downloadComponent.
-        const icon = (!downloadComponent ? <DownloadIcon file={file} adminUser={adminUser} hoverDL={this.hoverDL} /> : null);
+        const icon = (!downloadComponent ? <DownloadIcon file={file} hoverDL={this.hoverDL} /> : null);
 
         return (
             <div className="dl-tooltip-trigger">
@@ -451,23 +444,21 @@ export class RestrictedDownloadButton extends React.Component {
 
 RestrictedDownloadButton.propTypes = {
     file: PropTypes.object.isRequired, // File containing `href` to use as download link
-    adminUser: PropTypes.bool, // True if logged in user is admin
     downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
 };
 
 RestrictedDownloadButton.defaultProps = {
-    adminUser: false,
     downloadComponent: null,
 };
 
 
 export const DownloadableAccession = (props) => {
-    const { file, clickHandler, loggedIn, adminUser } = props;
+    const { file, clickHandler, loggedIn } = props;
     return (
         <span className="file-table-accession">
             <FileAccessionButton file={file} />
             {clickHandler ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
-            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+            <RestrictedDownloadButton file={file} loggedIn={loggedIn} />
         </span>
     );
 };
@@ -476,13 +467,11 @@ DownloadableAccession.propTypes = {
     file: PropTypes.object.isRequired, // File whose accession to render
     clickHandler: PropTypes.func, // Function to call when button is clicked
     loggedIn: PropTypes.bool, // True if current user is logged in
-    adminUser: PropTypes.bool, // True if current user is logged in and admin
 };
 
 DownloadableAccession.defaultProps = {
     clickHandler: null,
     loggedIn: false,
-    adminUser: false,
 };
 
 
@@ -644,4 +633,69 @@ AlternateAccession.propTypes = {
 
 AlternateAccession.defaultProps = {
     altAcc: null,
+};
+
+
+/**
+ * Display a list of internal_tags for an object as badges that link to a corresponding search. The
+ * object in `context` must have at least one `internal_tags` value or the results are
+ * unpredictable.
+ */
+export const InternalTags = ({ context, css }) => {
+    const tagBadges = context.internal_tags.map((tag) => {
+        const tagSearchUrl = `/search/?type=${context['@type'][0]}&internal_tags=${globals.encodedURIComponent(tag)}`;
+        return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${context['@type'][0]} with internal tag ${tag}`} /></a>;
+    });
+    return <span className={css}>{tagBadges}</span>;
+};
+
+InternalTags.propTypes = {
+    /** encode object being displayed */
+    context: PropTypes.object.isRequired,
+    /** Optional CSS class to assign to <span> surrounding all the badges */
+    css: PropTypes.string,
+};
+
+InternalTags.defaultProps = {
+    css: '',
+};
+
+
+/**
+ * Given a search results object, extract the type of object that was requested in the query
+ * string that generated the search results object and map it to a presentable human-generated
+ * object type name from that kind of object's schema. Optionally wrap the name in a given wrapper
+ * component. Nothing gets rendered if the search result's query string doesn't specify a
+ * "type=anything" or has more than one. The wrapper function must take the form of:
+ * "title => <Wrapper>{title}</Wrapper>". Idea for the component wrapping technique from:
+ * https://gist.github.com/kitze/23d82bb9eb0baabfd03a6a720b1d637f
+ */
+export const DocTypeTitle = ({ searchResults, wrapper }, reactContext) => {
+    // Determine the search page doc_type title to display at the top of the facet list.
+    let facetTitle = '';
+    const docTypes = searchResults.filters.length > 0 ? searchResults.filters.filter(searchFilter => searchFilter.field === 'type') : [];
+    if (docTypes.length === 1) {
+        facetTitle = reactContext.profilesTitles[docTypes[0].term];
+    }
+
+    // If one object type was requested, render it *into* the given wrapper component if one was
+    // given.
+    if (facetTitle) {
+        const facetTitleComponent = <span>{facetTitle}</span>;
+        return wrapper ? wrapper(facetTitleComponent) : facetTitleComponent;
+    }
+    return null;
+};
+
+DocTypeTitle.propTypes = {
+    searchResults: PropTypes.object.isRequired,
+    wrapper: PropTypes.func,
+};
+
+DocTypeTitle.defaultProps = {
+    wrapper: null,
+};
+
+DocTypeTitle.contextTypes = {
+    profilesTitles: PropTypes.object,
 };
