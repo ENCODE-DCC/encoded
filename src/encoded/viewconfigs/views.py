@@ -1,6 +1,10 @@
 """
 Elasticsearch Based View Configs
 """
+from urllib.parse import (
+    parse_qs,
+    urlencode,
+)
 from pyramid.view import view_config  # pylint: disable=import-error
 
 from encoded.helpers.helper import (
@@ -36,6 +40,7 @@ DEFAULT_DOC_TYPES = [
 def includeme(config):
     '''Associated views routes'''
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('search_elements', '/search_elements/{search_params}')
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('news', '/news/')
@@ -150,6 +155,16 @@ def search(context, request, search_type=None, return_generator=False):
         views=views,
         search_result_actions=search_result_actions,
     )
+
+
+@view_config(route_name='search_elements', request_method='POST')
+def search_elements(context, request):  # pylint: disable=unused-argument
+    '''Same as search but takes JSON payload of search filters'''
+    param_list = parse_qs(request.matchdict['search_params'])
+    param_list.update(request.json_body)
+    path = '/search/?%s' % urlencode(param_list, True)
+    results = request.embed(path, as_user=True)
+    return results
 
 
 @view_config(route_name='summary', request_method='GET', permission='search')

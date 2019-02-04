@@ -29,7 +29,7 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
-            const context = { '@type': ['Target'], gene_name: 'CXXC1' };
+            const context = { '@type': ['Target'], genes: [{ symbol: 'CXXC1' }] };
             const wrapper = mount(
                 <DbxrefList
                     dbxrefs={['HGNC:hCGBP', 'HGNC:ZCGPC1']}
@@ -215,8 +215,8 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links', () => {
             expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://flystocks.bio.indiana.edu/Reports/38626');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://flystocks.bio.indiana.edu/Reports/5');
+            expect(dbxLinks.at(0).prop('href')).toEqual('http://flystocks.bio.indiana.edu/stocks/38626');
+            expect(dbxLinks.at(1).prop('href')).toEqual('http://flystocks.bio.indiana.edu/stocks/5');
         });
     });
 

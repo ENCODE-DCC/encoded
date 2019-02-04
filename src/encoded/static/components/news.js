@@ -33,7 +33,7 @@ const NewsPreviews = (props) => {
     const { items } = props;
     if (items && items.length) {
         return (
-            <div className="news-listing">
+            <div className="news-listing" data-test="news-listing">
                 {items.map(item => (
                     <NewsPreviewItem key={item['@id']} item={item} />
                 ))}
@@ -192,14 +192,11 @@ const DateFacet = (props) => {
         // the key `co` with all the terms that need to be coalesced into years.
         const trimmedMonthGroups = _(facet.nonEmptyTerms).groupBy(term => ((term.key >= earliestMonth) ? 'in' : 'co'));
 
-        // Get the terms from the past 11 months we individually render.
-        trimmedMonthTerms = trimmedMonthGroups.in;
-
         // Group the coalesced terms into an object keyed by year, and also make a reverse-
         // sorted list of years. Also group the individual terms in case we need to sum up
         // overlapping years.
         coYearGroups = _(trimmedMonthGroups.co).groupBy(term => term.key.substr(0, 4));
-        inYearGroups = _(trimmedMonthGroups.in).groupBy(term => term.key.substr(0, 4));
+        inYearGroups = trimmedMonthGroups.in ? _(trimmedMonthGroups.in).groupBy(term => term.key.substr(0, 4)) : {};
         years = Object.keys(coYearGroups).sort((a, b) => ((a < b) ? 1 : (b < a ? -1 : 0)));
 
         // If at least one individual month is selected, only include years for those selected
@@ -207,6 +204,9 @@ const DateFacet = (props) => {
         if (selectedMonthYears.length) {
             years = _(years).filter(year => selectedMonthYears.indexOf(year) !== -1);
         }
+
+        // Get the terms from the past 11 months we individually render.
+        trimmedMonthTerms = trimmedMonthGroups.in;
     } else {
         // Not enough months to display in a facet to justify coalescing past years. Just sort
         // and display all available facet terms.
@@ -214,10 +214,10 @@ const DateFacet = (props) => {
     }
 
     // Sort the individual month terms by date.
-    trimmedMonthTerms = trimmedMonthTerms.sort((a, b) => ((a.key < b.key) ? 1 : (b.key < a.key ? -1 : 0)));
+    trimmedMonthTerms = trimmedMonthTerms ? trimmedMonthTerms.sort((a, b) => ((a.key < b.key) ? 1 : (b.key < a.key ? -1 : 0))) : [];
 
     return (
-        <div key={facet.field} className="news-facet">
+        <div key={facet.field} className="news-facet" data-test="news-facets">
             <div className="news-facet__title">
                 Months
                 {yearsSelected ? <span> for {yearsSelected.join(', ')}</span> : null}
@@ -334,7 +334,7 @@ const NewsFacets = (props) => {
     }
 
     return (
-        <div className="news-facets">
+        <div className="news-facets" data-test="news-facets">
             {nonEmptyFacets.map((facet) => {
                 const FacetView = globals.facetView.lookup(facet);
 

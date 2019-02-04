@@ -389,7 +389,7 @@
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
         "targets.aliases": 1.0,
-        "targets.gene_name": 1.0,
+        "targets.genes.symbol": 1.0,
         "targets.label": 1.0,
         "targets.dbxref": 1.0,
         "organism.name": 1.0,

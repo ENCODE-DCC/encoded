@@ -425,7 +425,7 @@
         "target.label": {
             "title": "Target label"
         },
-        "target.gene_name": {
+        "target.genes.symbol": {
             "title": "Target gene"
         },
         "biosample_summary": {
@@ -445,6 +445,9 @@
         },
         "status": {
             "title": "Status"
+        },
+        "files.@id": {
+            "title": "Files"
         },
         "replicates.library.biosample.accession": {
             "title": "Biosample accession"
@@ -560,7 +563,7 @@
         "possible_controls.accession": 1.0,
         "possible_controls.alternate_accessions": 1.0,
         "target.aliases": 1.0,
-        "target.gene_name": 1.0,
+        "target.genes.symbol": 1.0,
         "target.label": 1.0,
         "target.dbxref": 1.0,
         "target.organism.name": 1.0,

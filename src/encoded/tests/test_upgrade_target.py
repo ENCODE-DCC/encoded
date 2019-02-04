@@ -49,6 +49,69 @@ def target_6(target):
     return item
 
 
+@pytest.fixture
+def target_8_no_genes(target):
+    item = target.copy()
+    item.update({
+        'schema_version': '8',
+        'dbxref': [
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_one_gene(target_8_no_genes):
+    item = target_8_no_genes.copy()
+    item.update({
+        'gene_name': 'HIST1H2AE',
+        'dbxref': [
+            'GeneID:3012',
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_two_genes(target_8_one_gene):
+    item = target_8_one_gene.copy()
+    item.update({
+        'gene_name': 'Histone H2A',
+        'dbxref': [
+            'GeneID:8335',
+            'GeneID:3012',
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def gene3012(testapp, organism):
+    item = {
+        'dbxrefs': ['HGNC:4724'],
+        'organism': organism['uuid'],
+        'symbol': 'HIST1H2AE',
+        'ncbi_entrez_status': 'live',
+        'geneid': '3012',
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def gene8335(testapp, organism):
+    item = {
+        'dbxrefs': ['HGNC:4734'],
+        'organism': organism['uuid'],
+        'symbol': 'HIST1H2AB',
+        'ncbi_entrez_status': 'live',
+        'geneid': '8335',
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -113,3 +176,31 @@ def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgr
     )
     assert value['schema_version'] == '8'
     assert value['status'] == new_status
+
+
+def test_target_upgrade_link_to_gene(root, upgrader, target_control,
+                                     target_8_no_genes, target_8_one_gene,
+                                     target_8_two_genes, gene3012, gene8335):
+    context = root.get_by_uuid(target_control['uuid'])
+    no_genes = upgrader.upgrade(
+        'target', target_8_no_genes, current_version='8', target_version='9',
+        context=context)
+    one_gene = upgrader.upgrade(
+        'target', target_8_one_gene, current_version='8', target_version='9',
+        context=context)
+    two_genes = upgrader.upgrade(
+        'target', target_8_two_genes, current_version='8', target_version='9',
+        context=context)
+
+    for new_target in [no_genes, one_gene, two_genes]:
+        assert new_target['schema_version'] == '9'
+        assert 'gene_name' not in new_target
+    assert 'genes' not in no_genes
+    assert 'organism' not in no_genes
+    assert no_genes['target_organism']
+    assert one_gene['genes'] == [gene3012['uuid']]
+    assert 'organism' not in one_gene
+    assert 'target_organism' not in one_gene
+    assert two_genes['genes'] == [gene8335['uuid'], gene3012['uuid']]
+    assert 'organism' not in two_genes
+    assert 'target_organism' not in one_gene

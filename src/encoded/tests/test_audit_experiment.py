@@ -59,10 +59,9 @@ def base_replicate_two(testapp, base_experiment):
 
 
 @pytest.fixture
-def base_target(testapp, organism):
+def base_target(testapp, gene):
     item = {
-        'organism': organism['uuid'],
-        'gene_name': 'XYZ',
+        'genes': [gene['uuid']],
         'label': 'XYZ',
         'investigated_as': ['transcription factor']
     }
@@ -72,7 +71,7 @@ def base_target(testapp, organism):
 @pytest.fixture
 def tag_target(testapp, organism):
     item = {
-        'organism': organism['uuid'],
+        'target_organism': organism['uuid'],
         'label': 'eGFP',
         'investigated_as': ['tag']
     }
@@ -80,10 +79,9 @@ def tag_target(testapp, organism):
 
 
 @pytest.fixture
-def recombinant_target(testapp, organism):
+def recombinant_target(testapp, gene):
     item = {
-        'organism': organism['uuid'],
-        'gene_name': 'CTCF',
+        'genes': [gene['uuid']],
         'label': 'eGFP-CTCF',
         'investigated_as': ['recombinant protein', 'transcription factor']
     }
@@ -103,7 +101,7 @@ def fly_organism(testapp):
 @pytest.fixture
 def mouse_H3K9me3(testapp, mouse):
     item = {
-        'organism': mouse['@id'],
+        'target_organism': mouse['@id'],
         'label': 'H3K9me3',
         'investigated_as': ['histone', 'broad histone mark']
     }
@@ -113,7 +111,7 @@ def mouse_H3K9me3(testapp, mouse):
 @pytest.fixture
 def control_target(testapp, organism):
     item = {
-        'organism': organism['uuid'],
+        'target_organism': organism['uuid'],
         'label': 'Control',
         'investigated_as': ['control']
     }
@@ -822,7 +820,7 @@ def test_audit_experiment_not_tag_antibody(
         testapp, base_experiment, base_replicate, organism, antibody_lot):
     other_target = testapp.post_json(
         '/target',
-        {'organism': organism['uuid'],
+        {'target_organism': organism['uuid'],
             'label': 'eGFP-AVCD',
             'investigated_as': ['recombinant protein']}).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
@@ -837,7 +835,7 @@ def test_audit_experiment_target_tag_antibody(
         testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
     ha_target = testapp.post_json(
         '/target',
-        {'organism': organism['uuid'],
+        {'target_organism': organism['uuid'],
             'label': 'HA-ABCD',
             'investigated_as': ['recombinant protein']}).json['@graph'][0]
     base_antibody['targets'] = [tag_target['@id']]
@@ -3261,3 +3259,37 @@ def test_is_control_dataset(testapp, control_target, ctrl_experiment, publicatio
     file_set = testapp.get(publication_data['@id'] + '@@index-data')
     file_set_embedded = file_set.json['embedded']
     assert is_control_dataset(file_set_embedded) == False
+
+
+def test_audit_experiment_histone_characterized_no_primary(testapp,
+                                                           base_experiment,
+                                                           wrangler,
+                                                           base_antibody,
+                                                           base_replicate,
+                                                           base_library,
+                                                           base_biosample,
+                                                           target_H3K9me3,
+                                                           mouse_H3K9me3,
+                                                           base_antibody_characterization2,
+                                                           mouse):
+    # Supporting antibody only have secondary characterizations
+    testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0003971',
+                                                'biosample_term_name': 'MEL cell line',
+                                                'biosample_type': 'cell line',
+                                                'target': mouse_H3K9me3['@id']})
+    base_antibody['targets'] = [mouse_H3K9me3['@id']]
+    no_primary_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    testapp.patch_json(base_replicate['@id'], {'antibody': no_primary_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(
+        base_antibody_characterization2['@id'],
+        {'target': mouse_H3K9me3['@id'],
+            'characterizes': no_primary_antibody['@id'],
+            'status': 'not compliant',
+            'reviewed_by': wrangler['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'antibody not characterized to standard'
+               for error in collect_audit_errors(res))

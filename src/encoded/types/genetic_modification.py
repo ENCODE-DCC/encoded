@@ -25,6 +25,7 @@ class GeneticModification(Item):
         'characterizations',
         'characterizations.lab',
         'modified_site_by_target_id',
+        'modified_site_by_target_id.genes',
         'treatments',
         'lab'
     ]
@@ -32,6 +33,7 @@ class GeneticModification(Item):
         'reagents.source',
         'characterizations',
         'modified_site_by_target_id',
+        'modified_site_by_target_id.genes',
         'treatments',
         'documents',
     ]

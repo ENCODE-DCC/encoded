@@ -61,6 +61,7 @@ class Dataset(Item):
         'files.replicate.experiment',
         'files.replicate.experiment.lab',
         'files.replicate.experiment.target',
+        'files.replicate.experiment.target.genes',
         'files.submitted_by',
         'files.lab',
         'revoked_files',
@@ -68,6 +69,7 @@ class Dataset(Item):
         'revoked_files.replicate.experiment',
         'revoked_files.replicate.experiment.lab',
         'revoked_files.replicate.experiment.target',
+        'revoked_files.replicate.experiment.target.genes',
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
@@ -120,7 +122,7 @@ class Dataset(Item):
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
         outside_files = list(derived_from.difference(original_files))
-        if status in ('release ready', 'released'):
+        if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
                 include=('released',),
@@ -140,7 +142,7 @@ class Dataset(Item):
         },
     })
     def files(self, request, original_files, status):
-        if status in ('release ready', 'released', 'archived'):
+        if status in ('released', 'archived'):
             return paths_filtered_by_status(
                 request, original_files,
                 include=('released', 'archived'),
@@ -213,7 +215,7 @@ class FileSet(Dataset):
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
         outside_files = list(derived_from.difference(files))
-        if status in ('release ready', 'released'):
+        if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
                 include=('released',),
@@ -233,7 +235,7 @@ class FileSet(Dataset):
         },
     })
     def files(self, request, original_files, related_files, status):
-        if status in ('release ready', 'released'):
+        if status in ('released'):
             return paths_filtered_by_status(
                 request, chain(original_files, related_files),
                 include=('released',),
@@ -284,6 +286,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'software_used.software',
         'organism',
         'targets',
+        'targets.genes',
         'files.dataset',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
@@ -452,6 +455,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
     embedded = Dataset.embedded + [
         'organism',
         'target',
+        'target.genes',
         'target.organism',
         'references',
         'related_datasets.files',

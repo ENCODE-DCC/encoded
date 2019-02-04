@@ -16,7 +16,7 @@ def the_title_should_contain_the_text(browser, text, splinter_selenium_implicit_
 @then(parse('I should see at least {count:d} elements with the css selector "{css}"'))
 def should_see_at_least_count_elements_with_css(browser, css, count):
     element_count = len(browser.find_by_css(css))
-    assert element_count >= count, u'Element has at least that many counts'
+    assert element_count >= count, u'Found %d, expected exactly %d' % (element_count, count)
 
 
 @then(parse('I should see {count:d} elements with the css selector "{css}"'))
@@ -24,6 +24,11 @@ def should_see_count_elements_with_css(browser, css, count):
     element_count = len(browser.find_by_css(css))
     assert element_count == count, u'Found %d (expected %d)' % (element_count, count)
 
+
+@then(parse('I should see exactly one element with the css selector "{css}"'))
+def should_see_one_element_with_css(browser, css):
+    element_count = len(browser.find_by_css(css))
+    assert element_count == 1, u'Found %d (expected 1)' % (element_count)
 
 @then(parse('I should see exactly one element with the css selector "{css}" containing the text "{text}"'))
 def should_see_element_with_css_and_text(browser, css, text):

@@ -1,6 +1,26 @@
 Changes
 =======
 
+77.1 (released) / 3998 Bug Fix
+-----------------
+1. ENCD-3998 Target upgrade to return gene uuid (#2466)
+
+77.0 (released) / snovault 1.0.19
+-----------------
+1. ENCD-4237 bdd-test-for-search (#2435)
+2. ENCD-4274 Update to snovault 1.0.19 (#2446)
+3. ENCD-3159 Initial shopping cart (#2430)
+4. ENCD-4209 Add index flags to indexers and fix logs (#2402)
+5. ENCD-4000 represent histone modification in Target (#2416)
+6. ENCD-3998 Link target to gene and link gene from targets.  (#2416)
+7. ENCD-4229 Fix no story news news crash (#2445)
+8. ENCD-3701 Update events from search page text box (#2428)
+9. ENCD-4185 s3-public-url (#2425)
+10. ENCD-4257 Revert copy to deepcopy for matrix factory(#2439)
+11. ENCD-4220 Remove references to release ready status (#2436)
+12. ENCD-4176 fix BDSC links (#2434)
+13. ENCD-4254 Raise file validation error audit level in exp (#2433)
+
 76.0 (released) / snovault 1.0.18
 -----------------
 1. ENCD-3926 Refactor search related views (#2422) (#2424)

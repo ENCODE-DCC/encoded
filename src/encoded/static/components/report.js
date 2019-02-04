@@ -688,7 +688,7 @@ class Report extends React.Component {
                                 <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
                                     <i className="icon icon-columns" /> Columns
                                 </button>
-                                <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
+                                <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass data-test="download-tsv">Download TSV</a>
                             </div>
                             <Table context={context} more={this.state.more} columns={columns} setSort={this.setSort} />
                             {this.state.to < context.total &&
