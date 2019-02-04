@@ -33,7 +33,8 @@
             "title": "Description",
             "type": "string",
             "default": "",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
+            "formInput": "textarea"
         },
         "access_key_id": {
             "title": "Access key ID",

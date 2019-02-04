@@ -38,7 +38,7 @@
         },
         "biosample_term_id":{
             "oneOf": [
-                { 
+                {
                     "properties": {
                         "biosample_type": {
                             "enum" : [
@@ -50,7 +50,7 @@
                         }
                     }
                 },
-                { 
+                {
                     "properties": {
                         "biosample_type": {
                             "enum" : [
@@ -64,11 +64,11 @@
                         }
                     }
                 },
-                { 
+                {
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "primary cell"                               
+                                "primary cell"
                             ]
                         },
                         "biosample_term_id":{
@@ -76,12 +76,12 @@
                         }
                     }
                 },
-                { 
+                {
                     "properties": {
                         "biosample_type": {
                             "enum" : [
                                 "cell line",
-                                "induced pluripotent stem cell line"                               
+                                "induced pluripotent stem cell line"
                             ]
                         },
                         "biosample_term_id":{
@@ -89,12 +89,12 @@
                         }
                     }
                 },
-                { 
+                {
                     "properties": {
                         "biosample_type": {
                             "enum" : [
                                 "stem cell",
-                                "in vitro differentiated cells"                               
+                                "in vitro differentiated cells"
                             ]
                         },
                         "biosample_term_id":{
@@ -284,7 +284,7 @@
                                     "linkEnum": [
                                         "7745b647-ff15-4ff3-9ced-b897d4e2983c"
                                     ]
-                                }   
+                                }
                             }
                         },
                         {
@@ -298,10 +298,10 @@
                         },
                         {
                             "not": { "required": ["model_organism_age"] }
-                        }                        
+                        }
                     ]
                 }
-            ]              
+            ]
          },
         "post_synchronization_time": {
             "comment": "Human and mouse biosamples are not allowed to have post_synchronization_time property. Biosample with a specified post_synchronization_time requires post_synchronization_time_units specification and model organism synchronization stage.",
@@ -371,11 +371,11 @@
                 "organism": {
                     "linkTo": "Organism",
                     "linkEnum": [
-                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                        "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                        "a7e711b9-534c-44a3-a782-2a15af620739", 
-                        "451f9e49-685d-40d5-ad89-760b2512262a" 
+                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
+                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242",
+                        "69efae2b-4df5-4957-81da-346f1b93cb98",
+                        "a7e711b9-534c-44a3-a782-2a15af620739",
+                        "451f9e49-685d-40d5-ad89-760b2512262a"
                     ]
                 }
             }
@@ -386,10 +386,10 @@
                 "organism": {
                     "linkTo": "Organism",
                     "linkEnum": [
-                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                        "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                        "a7e711b9-534c-44a3-a782-2a15af620739", 
+                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
+                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242",
+                        "69efae2b-4df5-4957-81da-346f1b93cb98",
+                        "a7e711b9-534c-44a3-a782-2a15af620739",
                         "451f9e49-685d-40d5-ad89-760b2512262a"
                     ]
                 }
@@ -444,7 +444,8 @@
                     "not_analyzed"
                 ]
             },
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
+            "formInput": "textarea"
         },
         "treatments": {
             "title": "Treatments",
@@ -602,7 +603,7 @@
                 "nucleolus",
                 "nucleoplasm",
                 "nucleus",
-                "polysome" 
+                "polysome"
             ]
         },
         "phase": {
@@ -634,7 +635,7 @@
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
             "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
-            "type": "string",            
+            "type": "string",
             "format": "date"
         },
         "date_obtained": {
@@ -688,7 +689,7 @@
         "preservation_method": {
             "title": "Preservation method",
             "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
-            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.", 
+            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
             "type": "string",
             "enum": [
                 "cryopreservation",
@@ -698,7 +699,7 @@
         "cell_isolation_method": {
             "title": "Cell isolation method",
             "description": "The method by which the cell(s) in the sampe were isolated.",
-            "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.", 
+            "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.",
             "type": "string",
             "enum": [
                 "micropipetting",
@@ -765,7 +766,7 @@
                 "puff stage: PS (7-9), clear gut",
                 "white prepupa",
                 "eclosion"
-            ]  
+            ]
         },
         "post_synchronization_time": {
             "title": "Post-synchronization time",
@@ -808,7 +809,7 @@
                 "month",
                 "stage"
             ]
-        },              
+        },
         "worm_life_stage":{
             "title": "Worm life stage",
             "type": "string",
@@ -830,7 +831,7 @@
                 "dauer",
                 "adult",
                 "mixed stage"
-            ]    
+            ]
         },
         "worm_synchronization_stage": {
             "title": "Worm synchronization stage",
@@ -954,7 +955,7 @@
         },
         "post_synchronization_time_units": {
             "title": "Post-synchronization time units"
-        },       
+        },
         "organism.scientific_name": {
             "title": "Species"
         },

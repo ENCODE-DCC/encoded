@@ -34,7 +34,8 @@
             "rdfs:subPropertyOf": "dc:description",
             "title": "Description",
             "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
+            "formInput": "textarea"
         },
         "milestones": {
             "title": "Milestones",
@@ -46,7 +47,7 @@
                 "title": "Milestone",
                 "type": "object",
                 "additionalProperties": false,
-                "properties": {             
+                "properties": {
                     "assay_term_name": {
                         "title": "Assay name",
                         "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",

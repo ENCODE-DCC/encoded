@@ -267,6 +267,20 @@
   }
 }
 
+.convert-to-json {
+    background: #4F689E;
+    color: white;
+    border-radius: 5px;
+    font-weight: 500;
+    float: right;
+    padding: 3px 10px 5px;
+    li {
+        button {
+            padding: 0;
+        }
+    }
+}
+
 
 // Component alignment
 //

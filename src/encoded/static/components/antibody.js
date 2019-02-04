@@ -11,7 +11,7 @@ import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
-import { AlternateAccession } from './objectutils';
+import { AlternateAccession, DisplayAsJson } from './objectutils';
 import { PickerActions } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
@@ -110,6 +110,7 @@ const LotComponent = (props, reactContext) => {
                         }
                     </h3>
                     {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
+                    <DisplayAsJson />
                 </div>
             </header>
             {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}

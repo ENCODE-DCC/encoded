@@ -1,9 +1,6 @@
 #cloud-config
-
-# Instance
 ssh_authorized_keys:
   - %(LOCAL_SSH_KEY)s
-
 apt_sources:
 - source: "ppa:webupd8team/java"
 - source: "deb https://deb.nodesource.com/node_6.x trusty main"
@@ -65,10 +62,7 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-
-
 package_upgrade: true
-
 packages:
 - apache2-mpm-worker
 - awscli
@@ -106,13 +100,10 @@ packages:
 - zlib1g-dev
 - libffi-dev
 - bsd-mailx
-
 power_state:
   mode: reboot
-
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
-
 runcmd:
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
@@ -175,7 +166,6 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
-
 users:
 - default
 - name: build
@@ -186,10 +176,7 @@ users:
   gecos: ENCODE Metadata Database daemon user
   inactive: true
   system: true
-  # Specified homedir must exist
-  # https://github.com/rubygems/rubygems/issues/689
   homedir: /srv/encoded
-
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
   content: |
@@ -212,7 +199,6 @@ write_files:
     wal_level = hot_standby
     archive_mode = on
     archive_timeout = 60
-    # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
     checkpoint_timeout = 1h
 - path: /etc/postgresql/9.3/main/demo.conf
   content: |
@@ -222,7 +208,6 @@ write_files:
     archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-push "%%p"'
 - path: /etc/postgresql/9.3/main/recovery.conf
   content: |
-    # recovery.conf must be linked into data dir to do anything
     recovery_target_timeline = 'latest'
     restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
     standby_mode = on

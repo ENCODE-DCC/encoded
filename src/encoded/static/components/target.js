@@ -6,6 +6,7 @@ import { Breadcrumbs } from './navigation';
 import { ExperimentTable } from './dataset';
 import { DbxrefList, dbxrefHref } from './dbxref';
 import { RelatedItems } from './item';
+import { DisplayAsJson } from './objectutils';
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -54,6 +55,7 @@ class Target extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=target" crumbs={crumbs} />
                         <h2>{context.label} (<em>{context.organism.scientific_name}</em>)</h2>
+                        <DisplayAsJson />
                     </div>
                 </header>
 

@@ -1,6 +1,24 @@
 Changes
 =======
 
+76.0 (released) / snovault 1.0.18
+-----------------
+1. ENCD-3926 Refactor search related views (#2422) (#2424)
+2. ENCD-4202 fixing missing control audit (#2398)
+3. ENCD-4197 Red audit for missing step_run (#2397)
+4. ENCD-4221 Fix button styles (#2414)
+5. ENCD-4207 Added emma to user file (#2403)
+6. ENCD-4177 Adding btn to convert page to JSON (#2411)
+7. ENCD-3830 Make text area fields in forms (#2405)
+8. ENCD-4206 calc prop rebased (#2418)
+9. ENCD-4190 no-hypen-on-experiment-values (#2399)
+10. ENCD-4200 show-facebook-share-btn (#2401)
+11. ENCD-4196 Reduce cloud init size (#2392)
+12. ENCD-4208 Add png addition to qc mime types (#2400)
+13. ENCD-4216 Add RefSeq to dbxrefs in gene schema (#2410)
+14. ENCD-4173 Add Paul to test user inserts (#2404)
+15. ENCD-4171 Reset default audit inherit (#2393)
+
 75.1 (released)
 -----------------
 1. ENCD-4214 Update to snovault 1.0.17 (#2406)

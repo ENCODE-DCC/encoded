@@ -156,7 +156,8 @@
                     "not_analyzed"
                 ]
             },
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
+            "formInput": "textarea"
         },
         "analysis_steps": {
             "title": "Analysis steps",

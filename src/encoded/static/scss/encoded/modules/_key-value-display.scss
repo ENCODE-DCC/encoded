@@ -23,6 +23,9 @@ dl.key-value, dl.key-value-doc {
         width: auto;
         word-wrap: break-word;
         word-break: break-word;
+    }
+
+    dd {
         -webkit-hyphens: auto;
         -ms-hyphens: auto;
         hyphens: auto;
@@ -30,7 +33,7 @@ dl.key-value, dl.key-value-doc {
 
     dt {
         font-weight: bold;
-
+      
         &:after {
             content: ":";
         }
