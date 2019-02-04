@@ -14,6 +14,7 @@ class Target extends React.Component {
         let geneIDs = [];
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
+        const source = context.organism ? context.organism.scientific_name : context.investigated_as[0];
 
         if (context.genes) {
             geneIDs = context.genes.map(gene => `GeneID:${gene.geneid}`);
@@ -24,19 +25,23 @@ class Target extends React.Component {
         const crumbs = [
             { id: 'Targets' },
             { id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ') },
-            {
-                id: <i>{context.organism.scientific_name}</i>,
-                query: `organism.scientific_name=${context.organism.scientific_name}`,
-                tip: `${context.investigated_as.join(' + ')} and ${context.organism.scientific_name}`,
-            },
         ];
+        if (context.organism) {
+            crumbs.push({
+                id: <i>{source}</i>,
+                query: `organism.scientific_name=${source}`,
+                tip: `${context.investigated_as.join(' + ')} and ${source}`,
+            });
+        }
+
+        const crumbsReleased = (context.status === 'released');
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=target" crumbs={crumbs} />
-                        <h2>{context.label} (<em>{context.organism.scientific_name}</em>)</h2>
+                        <Breadcrumbs root="/search/?type=target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        <h2>{context.label} (<em>{source}</em>)</h2>
                         <DisplayAsJson />
                     </div>
                 </header>

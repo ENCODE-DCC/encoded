@@ -554,5 +554,20 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "eGFP-avictoria",
         "uuid": "e422093e-8350-44bc-915f-6ef878eb2e3b"
+    },
+    {
+        "_test": "synthetic tag",
+        "award": "U54HG006998",
+        "secondary_characterization_method": "immunoprecipitation followed by mass spectrometry",
+        "lab": "richard-myers",
+        "characterizes": "534171de-26f6-4363-8a1e-a353357daea9",
+        "reviewed_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "documents": ["encode:Antibody_characterization_standards_February_2014"],
+        "target": "FLAG-synthetic_tag",
+        "status": "compliant",
+        "caption": "HepG2 whole cell lysate was immunoprecipitated using the primary antibody (Sigma; F1804). The IP fraction was loaded on a 12% Bio-Rad TGX gel and separated with the Bio-Rad Tetra Cell system. The whole lane was excised and sent to the University of Alabama at Birmingham Cancer Center Mass Spectrometry/Proteomics Shared Facility. Analysis of whole lane gel from HepG2: The sample was analyzed on a LTQ XL Linear Ion Trap Mass Spectrometer by LC-ESI-MS/MS. Peptides were identified using SEQUEST tandem mass spectral analysis with probability based matching at p < 0.05. SEQUEST results were reported with ProteinProphet protXML Viewer (TPP v4.4 JETSTREAM) and filtered for a minimum probability of 0.9. All protein hits that met these criteria were reported, including common contaminants. Fold enrichment for each protein reported was determined using a custom script based on the FC-B score calculation from the reference Mellacheruvu et al., 2013. The CRAPome: a contaminant repository for affinity purification mass spectrometry data. Nat. Methods. 10(8):730-736. Doi:10.1038/nmeth.2557. The target protein, ZNF124, was identified as the 1st enriched protein and the 1st transcription factor based on IP-Mass Spectrometry.",
+        "attachment": "FLAG-ZNF124_HepG2_IP-MS.png",
+        "uuid": "e5467c14-712d-4243-a62d-2a1aa256efba"
     }
 ]

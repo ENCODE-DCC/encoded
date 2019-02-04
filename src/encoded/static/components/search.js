@@ -487,8 +487,7 @@ class TargetComponent extends React.Component {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {result.label}
-                            {result.organism && result.organism.scientific_name ? <em>{` (${result.organism.scientific_name})`}</em> : null}
+                            {result.label} ({result.organism && result.organism.scientific_name ? <i>{result.organism.scientific_name}</i> : <span>{result.investigated_as[0]}</span>})
                         </a>
                     </div>
                     <div className="data-row">
@@ -971,12 +970,14 @@ export class FacetList extends React.Component {
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                    {clearButton ?
-                        <div className="clear-filters-control">
-                            <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
-                        </div>
-                    : null}
+                    <div className="search-header-control">
+                        {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
+                        {clearButton ?
+                            <div className="clear-filters-control">
+                                <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
+                            </div>
+                        : null}
+                    </div>
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
                         if (hideTypes && facet.field === 'type') {
@@ -1453,12 +1454,9 @@ const ResultBrowser = (props) => {
         // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
         for (let ix = 0; ix < datasetCount; ix += 1) {
             const accession = props.datasets[ix].split('/')[2];
-            if (visUrl !== '') {
-                visUrl += '%2C%2C';
-            }
-            visUrl += `accession=${accession}`;
+            visUrl += `%2C%2Caccession=${accession}`;
         }
-        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
+        visUrl = `/batch_hub/type=Experiment${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (

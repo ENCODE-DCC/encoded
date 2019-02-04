@@ -14,23 +14,79 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/standard_status" }
     ],
-    "dependencies": {
-        "label": {
-            "oneOf": [
-                {
-                    "required": ["target_organism"],
-                    "not": {"required": ["genes"]}
-                },
-                {
-                    "required": ["genes"],
-                    "not": {"required": ["target_organism"]}
+    "oneOf": [
+        {
+            "properties": {
+                "investigated_as": {
+                    "items": {
+                        "enum": ["synthetic tag"]
+                    }
                 }
+            },
+            "allOf": [
+                {"not": {"required": ["target_organism"]}},
+                {"not": {"required": ["genes"]}}
             ]
+        },
+        {
+            "required": ["target_organism"],
+            "not": {
+                "required": ["genes"]
+            },
+            "properties": {
+                "investigated_as": {
+                    "items": {
+                        "enum": [
+                            "broad histone mark",
+                            "chromatin remodeller",
+                            "control",
+                            "histone",
+                            "narrow histone mark",
+                            "nucleotide modification",
+                            "other context",
+                            "other post-translational modification",
+                            "recombinant protein",
+                            "RNA binding protein",
+                            "tag",
+                            "transcription factor"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "required": ["genes"],
+            "not": {
+                "required": ["target_organism"]
+            },
+            "properties": {
+                "investigated_as": {
+                    "items": {
+                        "enum": [
+                            "broad histone mark",
+                            "chromatin remodeller",
+                            "control",
+                            "histone",
+                            "narrow histone mark",
+                            "nucleotide modification",
+                            "other context",
+                            "other post-translational modification",
+                            "recombinant protein",
+                            "RNA binding protein",
+                            "tag",
+                            "transcription factor"
+                        ]
+                    }
+                }
+            }
         }
+    ],
+    "dependencies": {
+        "modifications": ["genes"]
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "dbxref": {
             "title": "External identifiers",
@@ -71,7 +127,6 @@
             "description": "List of modifications made to the corresponding gene product of this target.",
             "comment": "This property will be used to calculate the proper label of the target. See computed_label property for details about automatic label calculation.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Modification",
@@ -147,6 +202,7 @@
                     "other post-translational modification",
                     "recombinant protein",
                     "RNA binding protein",
+                    "synthetic tag",
                     "tag",
                     "transcription factor"
                 ]
@@ -167,6 +223,9 @@
     "columns": {
         "label": {
             "title": "Target"
+        },
+        "investigated_as": {
+            "title": "Target category"
         },
         "organism.scientific_name": {
             "title": "Species"

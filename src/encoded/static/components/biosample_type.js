@@ -21,6 +21,8 @@ const BiosampleTypeComponenet = (props, reactContext) => {
         { id: context.term_name, query: `term_name=${context.term_name}`, tip: context.term_name },
     ];
 
+    const crumbsReleased = (context.status === 'released');
+
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
@@ -28,7 +30,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} />
+                    <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>
                         <span className="sentence-case">
                             {context.term_name} / {context.classification}
@@ -47,16 +49,8 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                     </div>
 
                     <div data-test="term-id">
-                        <dt>Term IDs</dt>
-                        <dd>
-                            <ul>
-                                {context.term_ids.map(termID =>
-                                    <li key={termID}>
-                                        <BiosampleTermId termId={termID} />
-                                    </li>
-                                )}
-                            </ul>
-                        </dd>
+                        <dt>Term ID</dt>
+                        <dd><BiosampleTermId termId={context.term_id} /></dd>
                     </div>
 
                     {context.notes ?
@@ -131,14 +125,7 @@ const ListingComponent = (props, reactContext) => {
                     </a>
                 </div>
                 <div className="data-row">
-                    <strong>Ontology ID: </strong>
-                    <ul>
-                        {result.term_ids.map(termID =>
-                            <li key={termID}>
-                                <BiosampleTermId termId={termID} />
-                            </li>
-                        )}
-                    </ul>
+                    <strong>Ontology ID: </strong><BiosampleTermId termId={result.term_id} />
                 </div>
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}

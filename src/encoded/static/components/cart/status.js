@@ -57,12 +57,12 @@ class CartStatusComponent extends React.Component {
         const { cart } = this.props;
 
         if (this.props.cart.length > 0) {
-            const { savedCartObj, openDropdown, dropdownClick, adminUser } = this.props;
+            const { savedCartObj, openDropdown, dropdownClick, loggedIn } = this.props;
 
             // Define the menu items for the Cart Status menu.
             const menuItems = [<a key="view" href="/cart-view/">View cart</a>];
             const savedCartAtIds = (savedCartObj && savedCartObj.elements) || [];
-            if (adminUser && savedCartAtIds.length > 0) {
+            if (loggedIn && savedCartAtIds.length > 0) {
                 menuItems.push(<button key="share" onClick={this.shareCartClick}>Share cart</button>);
             }
 
@@ -97,8 +97,8 @@ CartStatusComponent.propTypes = {
     openDropdown: PropTypes.string,
     /** Function to call when dropdown clicked */
     dropdownClick: PropTypes.func,
-    /** True if user has logged in as admin */
-    adminUser: PropTypes.bool,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool,
 };
 
 CartStatusComponent.defaultProps = {
@@ -106,7 +106,7 @@ CartStatusComponent.defaultProps = {
     savedCartObj: null,
     openDropdown: '',
     dropdownClick: null,
-    adminUser: false,
+    loggedIn: false,
 };
 
 
@@ -115,7 +115,7 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj || null,
     openDropdown: ownProps.openDropdown,
     dropdownClick: ownProps.dropdownClick,
-    adminUser: !!(ownProps.sessionProperties && ownProps.sessionProperties.admin),
+    loggedIn: !!(ownProps.session && ownProps.session['auth.userid']),
 });
 
 const CartStatusInternal = connect(mapStateToProps)(CartStatusComponent);
@@ -129,7 +129,7 @@ const CartStatus = ({ openDropdown, dropdownClick }, reactContext) => (
     <CartStatusInternal
         openDropdown={openDropdown}
         dropdownClick={dropdownClick}
-        sessionProperties={reactContext.session_properties}
+        session={reactContext.session}
     />
 );
 
@@ -147,7 +147,7 @@ CartStatus.defaultProps = {
 };
 
 CartStatus.contextTypes = {
-    session_properties: PropTypes.object,
+    session: PropTypes.object,
 };
 
 export default CartStatus;

@@ -22,12 +22,12 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment' },
-                { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment' },
-                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment' },
+                { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment&status=released' },
+                { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released' },
+                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment&status=released' },
                 { id: 'sep-mm-1' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
-                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome' },
+                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome&status=released' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
             ],
         },
@@ -47,8 +47,8 @@ const portal = {
             id: 'materialsmethods',
             title: 'Materials & Methods',
             children: [
-                { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot' },
-                { id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample' },
+                { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released' },
+                { id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample&status=released' },
                 { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
                 { id: 'sep-mm-1' },
                 { id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/' },
@@ -585,10 +585,9 @@ class App extends React.Component {
 
     // Retrieve the cart contents for the current logged-in user and add them to the in-memory cart.
     initializeCartFromSessionProperties(sessionProperties) {
-        // First retrieve all carts without the `elements` array contents so we can grab the first
-        // cart belonging to the current user without too much large-object stress.
+        // Retrieve the logged-in user's cart.
         cartCacheSaved({}, this.cartStore.dispatch);
-        const savedCartObjPromise = this.fetch('/carts/?datastore=database&remove=elements', {
+        const savedCartObjPromise = this.fetch('/carts/@@get-cart', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -598,19 +597,17 @@ class App extends React.Component {
                 return response.json();
             }
             throw new Error(response);
-        }).then((thinCartResults) => {
-            // Filter collection results to current ones owned by the current user, then retrieve the cart
-            // object for the first cart in `savedCartResults`.
-            const userAtId = sessionProperties.user ? sessionProperties.user['@id'] : '';
-            const userCarts = (userAtId && thinCartResults['@graph'] && thinCartResults['@graph'].length > 0) ? thinCartResults['@graph'].filter(
-                cartObj => cartObj.submitted_by === userAtId && cartObj.status === 'current'
-            ) : [];
-            return userCarts[0] ? this.fetch(`${userCarts[0]['@id']}?datastore=database`, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                },
-            }) : null;
+        }).then((userCart) => {
+            const userCartAtId = userCart['@graph'].length > 0 ? userCart['@graph'][0] : null;
+            if (userCartAtId) {
+                return this.fetch(`${userCartAtId}?datastore=database`, {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+            }
+            return Promise.resolve(null);
         }).then((response) => {
             if (!response) {
                 // No saved cart for the user.
@@ -753,7 +750,6 @@ class App extends React.Component {
 
         const options = {};
         const actionUrl = url.parse(url.resolve(this.state.href, target.action));
-        options.replace = actionUrl.pathname === url.parse(this.state.href).pathname;
         let search = serialize(target);
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');

@@ -62,7 +62,7 @@
         }
     },
     "facets": {
-        "related_datasets.assay_term_name": {
+        "related_datasets.assay_title": {
             "title": "Assay"
         },
         "status": {

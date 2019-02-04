@@ -991,9 +991,6 @@
         "date_obtained": {
             "title": "Date obtained"
         },
-        "donor.mutated_gene.label": {
-            "title": "Mutated gene"
-        },
         "treatments.length": {
             "title": "Treatments length"
         },

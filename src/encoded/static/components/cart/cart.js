@@ -43,7 +43,7 @@ class CartSearchResults extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.currentPage !== this.props.currentPage || !_.isEqual(prevProps.elements, this.props.elements) || (prevProps.adminUser !== this.props.adminUser)) {
+        if (prevProps.currentPage !== this.props.currentPage || !_.isEqual(prevProps.elements, this.props.elements) || (prevProps.loggedIn !== this.props.loggedIn)) {
             this.retrievePageElements();
         }
     }
@@ -80,14 +80,14 @@ CartSearchResults.propTypes = {
     /** True if displaying an active cart */
     activeCart: PropTypes.bool,
     /** True if user has logged in */
-    adminUser: PropTypes.bool,
+    loggedIn: PropTypes.bool,
 };
 
 CartSearchResults.defaultProps = {
     elements: [],
     currentPage: 0,
     activeCart: false,
-    adminUser: false,
+    loggedIn: false,
 };
 
 
@@ -333,7 +333,7 @@ class FileFacets extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.elements.length !== this.props.elements.length || prevProps.adminUser !== this.props.adminUser) {
+        if (prevProps.elements.length !== this.props.elements.length || prevProps.loggedIn !== this.props.loggedIn) {
             this.retrieveFileFacets();
         }
     }
@@ -485,15 +485,15 @@ FileFacets.propTypes = {
     termSelectHandler: PropTypes.func.isRequired,
     /** Callback that receives accumulated search results */
     searchResultHandler: PropTypes.func.isRequired,
-    /** True if user has logged in as admin */
-    adminUser: PropTypes.bool,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool,
 };
 
 FileFacets.defaultProps = {
     elements: [],
     selectedTerms: null,
     fileCount: 0,
-    adminUser: false,
+    loggedIn: false,
 };
 
 FileFacets.contextTypes = {
@@ -653,7 +653,7 @@ class CartComponent extends React.Component {
         }
 
         // If the user has logged in, retrieve relevant data and redraw the page.
-        if (prevProps.adminUser !== this.props.adminUser) {
+        if (prevProps.loggedIn !== this.props.loggedIn) {
             const newState = createInitialCartState();
             this.setState({
                 selectedTerms: newState.selectedTerms,
@@ -746,7 +746,7 @@ class CartComponent extends React.Component {
     }
 
     render() {
-        const { context, savedCartObj, adminUser } = this.props;
+        const { context, savedCartObj, loggedIn } = this.props;
         const { activeCart, cartElements, totalDatasetPages } = this.computePageInfo();
 
         // Calculate nubmer of files facet has selected, or all if none selected.
@@ -783,9 +783,9 @@ class CartComponent extends React.Component {
                                     fileCount={fileCount}
                                     termSelectHandler={this.handleTermSelect}
                                     searchResultHandler={this.handleFileSearchResults}
-                                    adminUser={adminUser}
+                                    loggedIn={loggedIn}
                                 />
-                                <CartSearchResults elements={cartElements} currentPage={this.state.currentDatasetResultsPage} activeCart={activeCart} adminUser={adminUser} />
+                                <CartSearchResults elements={cartElements} currentPage={this.state.currentDatasetResultsPage} activeCart={activeCart} loggedIn={loggedIn} />
                             </div>
                         :
                             <p className="cart__empty-message">Empty cart</p>
@@ -805,19 +805,19 @@ CartComponent.propTypes = {
     /** Cart as it exists in the database */
     savedCartObj: PropTypes.object,
     /** True if user has logged in */
-    adminUser: PropTypes.bool,
+    loggedIn: PropTypes.bool,
 };
 
 CartComponent.defaultProps = {
     savedCartObj: null,
-    adminUser: false,
+    loggedIn: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
     cart: state.cart,
     savedCartObj: state.savedCartObj,
     context: ownProps.context,
-    adminUser: ownProps.adminUser,
+    loggedIn: ownProps.loggedIn,
 });
 
 const CartInternal = connect(mapStateToProps)(CartComponent);
@@ -827,8 +827,8 @@ const CartInternal = connect(mapStateToProps)(CartComponent);
  * Wrapper to receive React <App> context and pass it to CartInternal as regular props.
  */
 const Cart = (props, reactContext) => {
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
-    return <CartInternal context={props.context} fetch={reactContext.fetch} adminUser={adminUser} />;
+    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    return <CartInternal context={props.context} fetch={reactContext.fetch} loggedIn={loggedIn} />;
 };
 
 Cart.propTypes = {
@@ -837,7 +837,7 @@ Cart.propTypes = {
 };
 
 Cart.contextTypes = {
-    session_properties: PropTypes.object,
+    session: PropTypes.object,
     fetch: PropTypes.func,
 };
 

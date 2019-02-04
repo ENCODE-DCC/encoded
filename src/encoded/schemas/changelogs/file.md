@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 13
 
+* *output_type* list was updated to include *mapping quality thresholded chromatin interactions*
 * *read_count*, *file _size*, *read_length*, *mapped_read_length* were set to have a minimum of 0.
 * *barcode_position* in  *flowcell_details* was set to have a minimum of 1.
 * *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only. 

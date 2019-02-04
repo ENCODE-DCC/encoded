@@ -24,11 +24,13 @@ const Gene = (props) => {
         },
     ];
 
+    const crumbsReleased = (context.status === 'released');
+
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} />
+                    <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
                     <DisplayAsJson />
                 </div>

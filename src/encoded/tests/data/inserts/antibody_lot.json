@@ -58,7 +58,7 @@
         "submitted_by": "fames.at@per.varius",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
-        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-mouse"],
+        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-alt-human"],
         "status": "in progress"
     },
     {
@@ -342,5 +342,46 @@
         ],
         "url": "http://www.scbt.com/datasheet-137065-ebf-c-8-antibody.html",
         "uuid": "d48d93fe-5909-4a8a-b78f-2f7aad159dfc"
+    },
+    {
+        "_test": "synthetic tag",
+        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f3165?lang=en&region=US",
+        "award": "U54HG006998",
+        "dbxrefs": ["AR:AB_259529"],
+        "lab": "richard-myers",
+        "antigen_sequence": "DYKDDDDK",
+        "targets": ["FLAG-synthetic_tag"],
+        "product_id": "F3165",
+        "clonality": "monoclonal",
+        "purifications": ["Protein A/G"],
+        "status": "released",
+        "host_organism": "mouse",
+        "isotype": "IgG1",
+        "antigen_description": "An mouse monoclonal antibody to FLAG obtained from SIGMA; used to ChIP MES-4::GFP::3XFLAG",
+        "lot_id": "065K6236",
+        "source": "sigma",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "accession": "ENCAB694YJM",
+        "uuid": "272e1aa6-a5a4-4e07-bcbe-38e529fe3a87"
+    },
+    {
+        "_test": "synthetic tag with 2nd characterization",
+        "status": "released",
+        "lab": "/labs/richard-myers/",
+        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f1804?lang=en&region=US",
+        "dbxrefs": ["AR:AB_262044"],
+        "lot_id": "SLBK1346V",
+        "accession": "ENCAB697XQW",
+        "award": "U54HG006998",
+        "host_organism": "/organisms/mouse/",
+        "isotype": "IgG1",
+        "purifications": ["affinity"],
+        "antigen_description": "Recognizes the FLAG peptide sequence: DYKDDDDK",
+        "source": "/sources/sigma/",
+        "product_id": "F1804",
+        "targets": ["/targets/FLAG-synthetic_tag/"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "clonality": "monoclonal",
+        "uuid": "534171de-26f6-4363-8a1e-a353357daea9"
     }
 ]

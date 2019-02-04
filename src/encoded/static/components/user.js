@@ -205,10 +205,11 @@ const User = (props) => {
     const crumbs = [
         { id: 'Users' },
     ];
+    const crumbsReleased = (context.status === 'released');
     return (
         <div>
             <header className="row">
-                <Breadcrumbs root="/search/?type=user" crumbs={crumbs} />
+                <Breadcrumbs root="/search/?type=user" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <div className="col-sm-12">
                     <h1 className="page-title">{context.title}</h1>
                     <DisplayAsJson />

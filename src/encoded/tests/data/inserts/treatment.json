@@ -1,8 +1,7 @@
 [
      {
         "amount": 5000000,
-        "amount_units": "pfu",      
-        "lab": "john-stamatoyannopoulos",        
+        "amount_units": "pfu",
         "submitted_by": "blandit.orci@conubia.magna",
         "treatment_term_id": "Taxon:11623",
         "treatment_term_name": "LCMV",
@@ -17,7 +16,6 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:diffProtB_6hr"
         ],
-        "lab": "john-stamatoyannopoulos",
         "documents": [
             "encode:diffProtB_6hr_protocol"
         ],
@@ -29,8 +27,7 @@
     },
     {
          "amount": 5000000,
-         "amount_units": "nM",      
-         "lab": "john-stamatoyannopoulos",        
+         "amount_units": "nM",
          "submitted_by": "blandit.orci@conubia.magna",
          "treatment_term_name": "goat-anti-GFP-UC",
          "treatment_type": "antibody",
@@ -45,7 +42,6 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:4OHTAM_100nM_30m"
         ],
-        "lab": "gregory-crawford",
         "documents": [
             "encode:MCF-7_Farnham_treatment_protocol"
         ],
@@ -64,7 +60,6 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:CIP-TAP"
         ],
-        "lab": "thomas-gingeras",
         "submitted_by": "metus.donec@nisl.montes",
         "treatment_term_name": "Antarctic Phosphatase",
         "treatment_type": "protein",
@@ -75,7 +70,6 @@
         "uuid": "8d85581d-d006-42ac-a7f6-b7aab2f6ba58",
         "treatment_term_id": "Taxon:273526",
         "treatment_type": "infection",
-        "lab": "robert-waterston",
         "duration": 48,
         "duration_units": "hour",
         "treatment_term_name": "Serratia marcescens subsp. marcescens Db11"
@@ -85,7 +79,6 @@
         "uuid": "c7e1c1bc-1f9d-4fd4-92d2-cad2e95e2365",
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
-        "lab": "robert-waterston",
         "treatment_term_name": "dexamethasone",
         "duration": 8,
         "duration_units": "hour",
@@ -98,7 +91,6 @@
         "uuid": "377de739-7d3a-434b-867f-dc40f619fb2c",
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
-        "lab": "robert-waterston",
         "treatment_term_name": "dexamethasone",
         "duration": 10,
         "duration_units": "hour",
@@ -111,7 +103,6 @@
         "uuid": "b49c1344-6078-4a1b-b4d2-daa8fb3fd471",
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
-        "lab": "robert-waterston",
         "treatment_term_name": "dexamethasone",
         "duration": 12,
         "duration_units": "hour",
@@ -124,7 +115,6 @@
         "uuid": "6959b077-3e57-4edc-aef4-eb6d63d8be11",
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
-        "lab": "robert-waterston",
         "treatment_term_name": "dexamethasone",
         "duration": 8,
         "duration_units": "hour",
@@ -137,7 +127,6 @@
         "uuid": "add5f3ec-5084-48d8-a877-e32253b90e63",
         "treatment_term_id": "CHEBI:41879",
         "treatment_type": "chemical",
-        "lab": "robert-waterston",
         "treatment_term_name": "dexamethasone",
         "duration": 8,
         "duration_units": "hour",

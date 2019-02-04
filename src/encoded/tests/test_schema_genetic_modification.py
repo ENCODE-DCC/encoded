@@ -19,7 +19,8 @@ def tale_deletion(lab, award):
         'award': award['@id'],
         'category': 'deletion',
         'purpose': 'repression',
-        'method': 'TALEN'
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
     }
 
 
@@ -107,7 +108,8 @@ def tale_replacement(lab, award):
         'award': award['@id'],
         'category': 'replacement',
         'purpose': 'characterization',
-        'method': 'TALEN'
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
     }
 
 
@@ -132,6 +134,7 @@ def test_crispr_deletion_two_sites(testapp, crispr_deletion, target):
 
 def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_deletion, source):
     # TALEN modifications either need RVD sequence and/or reagent_availability properties specified
+    del tale_deletion['zygosity']
     tale_deletion.update({'modified_site_by_coordinates': 
                           {'assembly': 'hg19', 'start': 88943, 'end': 123829, 'chromosome': 'chr3'}})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
@@ -143,6 +146,7 @@ def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_de
                             {'left_RVD_sequence': 'NN,NH,NH', 'right_RVD_sequence': 'NN,NI,NI'}]})
     '''
     tale_deletion.update({'reagents': [{'source': source['@id'], 'identifier': '12345'}]})
+    tale_deletion.update({'zygosity': 'heterozygous'})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
     assert res.status_code == 201
 
@@ -155,7 +159,7 @@ def test_tag_targeting_gene(testapp, ctcf, crispr_tag, source):
     assert res.status_code == 422
     crispr_tag.update({'category': 'insertion'})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
-    assert res.status_code == 422
+    assert res.status_code == 201
     crispr_tag.update({'reagents': [{'source': source['@id'], 
                                     'identifier': '12345'}]})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
@@ -214,7 +218,7 @@ def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, tra
     assert res.status_code == 422
     transfection_tag.update({'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
-    assert res.status_code == 422
+    assert res.status_code == 201
     transfection_tag.update({'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 201
@@ -297,17 +301,17 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
     # Modifications by mutagen treatment should have non-specific modified sites
     mutagen.update({'modified_site_by_target_id': target['@id'], 'treatments': [treatment['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
-    assert res.status_code == 422
+    assert res.status_code == 201
     del mutagen['modified_site_by_target_id']
     mutagen.update({'modified_site_by_sequence': 'ATTATGACAT', 'treatments': [treatment['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
-    assert res.status_code == 422
+    assert res.status_code == 201
     del mutagen['modified_site_by_sequence']
     mutagen.update({'modified_site_by_coordinates': 
                     {'assembly': 'GRCh38', 'start': 383892, 'end': 482980, 'chromosome': 'chr11'},
                      'treatments': [treatment['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
-    assert res.status_code == 422
+    assert res.status_code == 201
     del mutagen['modified_site_by_coordinates']
     mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment['@id']],
                     'documents': [document['@id']]})

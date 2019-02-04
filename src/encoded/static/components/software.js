@@ -28,6 +28,8 @@ class SoftwareComponent extends React.Component {
             },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // See if there’s a version number to highlight
         let highlightVersion;
         const queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
@@ -49,7 +51,7 @@ class SoftwareComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=software" crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.title}</h2>
                         {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
                         <DisplayAsJson />

@@ -177,3 +177,10 @@ def target_8_9(value, system):
         value.pop('organism')
     else:
         value['target_organism'] = value.pop('organism')
+
+
+@upgrade_step('target', '9', '10')
+def target_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4250
+    if not value['modifications']:
+        value.pop('modifications')

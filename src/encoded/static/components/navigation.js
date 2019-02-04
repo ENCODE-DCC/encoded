@@ -301,13 +301,17 @@ export const Breadcrumbs = (props) => {
                     accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
                 }
 
+                // Append released tag to link and link title if the object is released itself
+                const releasedLink = (props.crumbsReleased) ? '&status=released' : '';
+                const releasedTag = (props.crumbsReleased) ? 'released ' : '';
+
                 // Render the breadcrumbs
                 return (
                     <li key={i}>
                         {(crumb.query || crumb.uri) ?
                             <a
-                                href={crumb.uri ? crumb.uri : props.root + accretingQuery}
-                                title={crumb.wholeTip ? crumb.wholeTip : `Search for ${accretingTip} in ${rootTitle}`}
+                                href={crumb.uri ? crumb.uri : props.root + accretingQuery + releasedLink}
+                                title={crumb.wholeTip ? crumb.wholeTip : `Search for ${accretingTip} in ${releasedTag}${rootTitle}`}
                             >
                                 {crumb.id}
                             </a>
@@ -322,8 +326,10 @@ export const Breadcrumbs = (props) => {
 Breadcrumbs.propTypes = {
     root: PropTypes.string, // Root URI for searches
     crumbs: PropTypes.arrayOf(PropTypes.object).isRequired, // Object with breadcrumb contents
+    crumbsReleased: PropTypes.bool,
 };
 
 Breadcrumbs.defaultProps = {
     root: '',
+    crumbsReleased: false,
 };

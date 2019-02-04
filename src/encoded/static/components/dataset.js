@@ -76,6 +76,8 @@ class AnnotationComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -83,7 +85,7 @@ class AnnotationComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased}/>
                         <h2>Summary for annotation file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
@@ -269,6 +271,8 @@ class PublicationDataComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Render the publication links
         const referenceList = pubReferenceList(context.references);
 
@@ -276,7 +280,7 @@ class PublicationDataComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for publication file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
@@ -429,6 +433,8 @@ class ReferenceComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -436,7 +442,7 @@ class ReferenceComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for reference file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
@@ -592,6 +598,8 @@ class ProjectComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Get a list of reference links
         const references = pubReferenceList(context.references);
 
@@ -599,7 +607,7 @@ class ProjectComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for project file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
@@ -776,6 +784,8 @@ class UcscBrowserCompositeComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -783,7 +793,7 @@ class UcscBrowserCompositeComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
@@ -1237,6 +1247,8 @@ export class SeriesComponent extends React.Component {
             { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
         ];
 
+        const crumbsReleased = (context.status === 'released');
+
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -1271,7 +1283,7 @@ export class SeriesComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />

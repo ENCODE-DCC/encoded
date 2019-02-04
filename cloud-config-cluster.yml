@@ -164,7 +164,7 @@ runcmd:
 - service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-- if test "%(ROLE)s" = "demo"
+- if test "%(ROLE)s" != "candidate"
 - then
 -   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
 -   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
@@ -174,7 +174,7 @@ runcmd:
 - mkdir /srv/encoded
 - chown encoded:encoded /srv/encoded
 - cd /srv/encoded
-- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
+- sudo -u encoded git clone --no-checkout %(GIT_REPO)s .
 - sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/cloudwatchmon
 - chown build:build /opt/cloudwatchmon

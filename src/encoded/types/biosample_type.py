@@ -33,7 +33,7 @@ class BiosampleType(SharedItem):
         if properties is None:
             properties = self.upgrade_properties()
         return u'{}_{}'.format(
-            properties['classification'], sorted(properties['term_ids'])[0]
+            properties['classification'], properties['term_id']
         ).replace(' ', '_').replace(':', '_')
 
     @property
@@ -41,59 +41,59 @@ class BiosampleType(SharedItem):
         return self.name()
 
     @staticmethod
-    def _get_ontology_slims(registry, term_ids, slim_key):
-        slims = set()
-        for term_id in term_ids:
-            if term_id in registry['ontology']:
-                slims.update(registry['ontology'][term_id][slim_key])
-        return list(slims)
+    def _get_ontology_slims(registry, term_id, slim_key):
+        if term_id not in registry['ontology']:
+            return []
+        return list(set(
+            slim for slim in registry['ontology'][term_id][slim_key]
+        ))
 
-    @calculated_property(condition='term_ids', schema={
+    @calculated_property(condition='term_id', schema={
         "title": "Organ slims",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def organ_slims(self, registry, term_ids):
-        return self._get_ontology_slims(registry, term_ids, 'organs')
+    def organ_slims(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, 'organs')
 
-    @calculated_property(condition='term_ids', schema={
+    @calculated_property(condition='term_id', schema={
         "title": "Cell slims",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def cell_slims(self, registry, term_ids):
-        return self._get_ontology_slims(registry, term_ids, 'cells')
+    def cell_slims(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, 'cells')
 
-    @calculated_property(condition='term_ids', schema={
+    @calculated_property(condition='term_id', schema={
         "title": "Developmental slims",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def developmental_slims(self, registry, term_ids):
-        return self._get_ontology_slims(registry, term_ids, 'developmental')
+    def developmental_slims(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, 'developmental')
 
-    @calculated_property(condition='term_ids', schema={
+    @calculated_property(condition='term_id', schema={
         "title": "System slims",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def system_slims(self, registry, term_ids):
-        return self._get_ontology_slims(registry, term_ids, 'systems')
+    def system_slims(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, 'systems')
 
-    @calculated_property(condition='term_ids', schema={
+    @calculated_property(condition='term_id', schema={
         "title": "Synonyms for biosample type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def synonyms(self, registry, term_ids):
-        return self._get_ontology_slims(registry, term_ids, 'synonyms')
+    def synonyms(self, registry, term_id):
+        return self._get_ontology_slims(registry, term_id, 'synonyms')

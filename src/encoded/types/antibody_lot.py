@@ -154,7 +154,7 @@ class AntibodyLot(SharedItem):
 })
 def lot_reviews(characterizations, targets, request):
     characterizations = paths_filtered_by_status(request, characterizations)
-    target_organisms = {}
+    target_organisms = set()
 
     is_control = False
     is_histone = False
@@ -165,16 +165,15 @@ def lot_reviews(characterizations, targets, request):
         if 'histone' in target['investigated_as']:
             is_histone = True
 
-        organism = target['organism']
-        target_organisms = {'all': []}
-        target_organisms['all'].append(organism)
-        target_organisms[organism] = target['@id']
+        organism = target.get('organism')
+        if organism:  # None (synthetic tag) triggers indexinng error
+            target_organisms.add(organism)
 
     # The default base characterization if no characterizations have been submitted
     base_review = {
         'biosample_term_name': 'any cell type or tissue',
         'biosample_term_id': 'NTR:99999999',
-        'organisms': sorted(target_organisms['all']),
+        'organisms': sorted(target_organisms),
         'targets': sorted(targets),
         'status': 'characterized to standards with exemption'
         if is_control else ab_states[(None, None)],
@@ -223,7 +222,7 @@ def lot_reviews(characterizations, targets, request):
         # organism not in the antibody_lot.targets list so it'll have to be reviewed and
         # added if legitimate.
         review_targets.add(target['@id'])
-        char_organisms[characterization['@id']] = target['organism']
+        char_organisms[characterization['@id']] = target.get('organism')
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
@@ -279,7 +278,7 @@ def build_lot_reviews(primary_chars,
         base_review = {
             'biosample_term_name': 'at least one cell type or tissue',
             'biosample_term_id': 'NTR:00000000',
-            'organisms': [char_organisms[primary['@id']]],
+            'organisms': [char_organisms[primary['@id']]] if char_organisms[primary['@id']] else [],
             'targets': [primary['target']]
         }
         if not primary.get('characterization_reviews', []):
