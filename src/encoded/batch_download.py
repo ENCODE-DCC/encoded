@@ -256,6 +256,26 @@ def _get_annotation_metadata(request, search_path):
     """
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['limit'] = ['all']
+    # Handle metadata.tsv lines from cart-generated files.txt.
+    # TODO: When rewriting this file, refactor this duplicated cart code.
+    cart_uuids = param_list.get('cart', [])
+    if cart_uuids:
+        cart_uuid = cart_uuids.pop()
+        del param_list['cart']
+        try:
+            cart = request.embed(cart_uuid, '@@object')
+        except KeyError:
+            pass
+        else:
+            if cart.get('elements'):
+                param_list['@id'] = cart['elements']
+    else:
+        try:
+            elements = request.json.get('elements')
+        except ValueError:
+            pass
+        else:
+            param_list['@id'] = elements
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     annotation_graph = results['@graph']
