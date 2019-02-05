@@ -73,3 +73,28 @@ def audit_genetic_modification_reagents(value, system):
                 method,
             )
             yield AuditFailure('missing genetic modification reagents', detail, level='WARNING')
+
+
+@audit_checker('GeneticModification', frame='object')
+def audit_genetic_modification_reagent_source(value, system):
+    reagents = value.get('reagents', [])
+    for reagent in reagents:
+        source = reagent['source']
+        identifier = reagent['identifier']
+        source_name = source.split('/')[2]
+        source_name_from_identifer = identifer.split(':')[0]
+        if source_name != source_name_from_identifer:
+            detail = (
+                'Genetic modification {} has a reagent specifying its source '
+                'as {},  but its identifier, {}, has a prefix indicating a '
+                'different source.'
+            ).format(
+                value['@id'],
+                source,
+                identifier,
+            )
+            yield AuditFailure(
+                'inconsistent genetic modification reagent source and identifier',
+                detail,
+                level='ERROR'
+            )
