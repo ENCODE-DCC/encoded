@@ -38,7 +38,7 @@
                     "items": {
                         "enum": [
                             "broad histone mark",
-                            "chromatin remodeller",
+                            "chromatin remodeler",
                             "histone",
                             "narrow histone mark",
                             "other context",
@@ -66,7 +66,7 @@
                     "items": {
                         "enum": [
                             "broad histone mark",
-                            "chromatin remodeller",
+                            "chromatin remodeler",
                             "histone",
                             "narrow histone mark",
                             "other context",
@@ -198,7 +198,7 @@
                 "type": "string",
                 "enum": [
                     "broad histone mark",
-                    "chromatin remodeller",
+                    "chromatin remodeler",
                     "histone",
                     "narrow histone mark",
                     "other context",
