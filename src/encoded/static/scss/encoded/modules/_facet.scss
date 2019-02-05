@@ -100,6 +100,13 @@
 
 .facets h5 {
     margin: 2px 0 5px 0;
+    &:hover {
+        cursor: pointer;
+        font-weight: 700;
+    }
+    .icon {
+        padding-left: 10px;
+    }
 }
 
 .facet {
@@ -125,6 +132,10 @@
     margin: 0;
     padding: 0 4px;
     border: 1px solid #9F9F9F;
+    display: none;
+    &.showTerms {
+        display: block;
+    }
 }
 
 .facet-list {

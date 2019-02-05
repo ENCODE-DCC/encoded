@@ -719,15 +719,23 @@ class Facet extends React.Component {
         // Set initial React commponent state.
         this.state = {
             facetOpen: false,
+            showTerms: false,
         };
 
         // Bind `this` to non-React methods.
         this.scrollEvent = this.scrollEvent.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.toggleFacet = this.toggleFacet.bind(this);
     }
 
     handleClick() {
         this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
+    }
+    
+    toggleFacet(e){
+        this.setState({showTerms: !this.state.showTerms});
+        e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-right");
+        e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-down");
     }
     
     scrollEvent(e) {
@@ -808,7 +816,9 @@ class Facet extends React.Component {
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
-                    <h5>{titleComponent}</h5>
+                    <h5 onClick={(e) => this.toggleFacet(e)}>{titleComponent}
+                        <i className="icon icon-caret-right" />
+                    </h5>
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
@@ -817,7 +827,7 @@ class Facet extends React.Component {
                             )}
                         </div>
                     : null}
-                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''} ${this.state.showTerms ? 'showTerms' : ''}`}>
                         <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
                             {/* Display the first five terms of the facet */}
                             {terms.map(term =>
@@ -853,11 +863,13 @@ class TypeaheadFacet extends React.Component {
         // Set initial React commponent state.
         this.state = {
             filteredTerms: null,
+            showTerms: false,
         };
 
         // Bind `this` to non-React methods.
         this.handleSearch = this.handleSearch.bind(this);
         this.scrollEvent = this.scrollEvent.bind(this);
+        this.toggleFacet = this.toggleFacet.bind(this);
     }
     
     scrollEvent(e) {
@@ -868,6 +880,12 @@ class TypeaheadFacet extends React.Component {
         } else {
             arrow.classList.remove("hide-shading");
         }
+    }
+    
+    toggleFacet(e){
+        this.setState({showTerms: !this.state.showTerms});
+        e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-right");
+        e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-down");
     }
     
     handleSearch(event){
@@ -957,7 +975,9 @@ class TypeaheadFacet extends React.Component {
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet typeahead-facet">
-                    <h5>{titleComponent}</h5>
+                    <h5 onClick={(e) => this.toggleFacet(e)}>{titleComponent}
+                        <i className="icon icon-caret-right" />
+                    </h5>
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
@@ -966,7 +986,7 @@ class TypeaheadFacet extends React.Component {
                             )}
                         </div>
                     : null}
-                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''} ${this.state.showTerms ? 'showTerms' : ''}`}>
                         {(terms.length >= displayedTermsCount) ?
                             <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
                         : null}
