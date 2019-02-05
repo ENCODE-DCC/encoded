@@ -17,7 +17,8 @@ targetBasedAssayList = [
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
-    'CRISPRi followed by RNA-seq'
+    'CRISPRi followed by RNA-seq',
+    'PLAC-seq'
 ]
 
 controlRequiredAssayList = [
@@ -45,6 +46,7 @@ seq_assays = [
     'CAGE',
     'RAMPAGE',
     'RIP-seq',
+    'PLAC-seq'
 ]
 
 
