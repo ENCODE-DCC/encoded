@@ -146,6 +146,7 @@ def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_reque
     assert external.get('bucket') == 'pds_private_bucket_test'
     result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
+    assert current_bucket == destination_bucket == 'pds_private_bucket_test'
 
 
 @mock_sts
@@ -259,7 +260,7 @@ def test_file_update_bucket_as_admin_unkown_bucket(testapp, dummy_request, file_
     dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
-    res = testapp.patch_json(
+    testapp.patch_json(
         file_with_external_sheet['@id'] + '@@update_bucket',
         {'new_bucket': 'unknown bucket'},
         status=422
@@ -285,7 +286,7 @@ def test_file_update_bucket_as_submitter(submitter_testapp, dummy_request, file_
     dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
-    res = submitter_testapp.patch_json(
+    submitter_testapp.patch_json(
         file_with_external_sheet['@id'] + '@@update_bucket',
         {'new_bucket': 'unknown bucket'},
         status=403
