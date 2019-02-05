@@ -6,23 +6,6 @@ from moto import (
 )
 
 
-@pytest.fixture
-def file_with_external_sheet(file, root):
-    file_item = root.get_by_uuid(file['uuid'])
-    properties = file_item.upgrade_properties()
-    file_item.update(
-        properties,
-        sheets={
-            'external': {
-                'service': 's3',
-                'key': 'xyz.bed',
-                'bucket': 'test_file_bucket',
-            }
-        }
-    )
-    return file
-
-
 def test_get_external_sheet(root, file_with_external_sheet):
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
@@ -62,6 +45,16 @@ def test_public_file_not_in_correct_bucket(testapp, root, dummy_request, file_wi
     assert result is False
     assert current_bucket == 'test_file_bucket'
     assert destination_bucket == 'pds_public_bucket_test'
+
+
+def test_file_in_correct_bucket_no_external_sheet(root, dummy_request, file_with_no_external_sheet):
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    file_item = root.get_by_uuid(file_with_no_external_sheet['uuid'])
+    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    assert result is True
+    assert current_bucket is None
+    assert destination_bucket is None
 
 
 @pytest.mark.parametrize("file_status", [

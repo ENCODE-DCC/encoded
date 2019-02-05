@@ -237,41 +237,6 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-@pytest.fixture
-def file_with_external_sheet(file, root):
-    file_item = root.get_by_uuid(file['uuid'])
-    properties = file_item.upgrade_properties()
-    file_item.update(
-        properties,
-        sheets={
-            'external': {
-                'service': 's3',
-                'key': 'xyz.bed',
-                'bucket': 'test_file_bucket',
-            }
-        }
-    )
-    return file
-
-
-@pytest.fixture
-def public_file_with_public_external_sheet(file, root):
-    file_item = root.get_by_uuid(file['uuid'])
-    properties = file_item.upgrade_properties()
-    properties['status'] = 'released'
-    file_item.update(
-        properties,
-        sheets={
-            'external': {
-                'service': 's3',
-                'key': 'xyz.bed',
-                'bucket': 'pds_public_bucket_test',
-            }
-        }
-    )
-    return file
-
-
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                        'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
@@ -893,3 +858,18 @@ def test_audit_file_statuses_in_s3_statuses(testapp):
     file_statuses = [f for f in file_statuses if f not in ['content error', 'upload failed']]
     # If this fails sync public/private_s3_statuses with statuses in file schema.
     assert not set(file_statuses) - set(public_s3_statuses + private_s3_statuses)
+
+
+def test_audit_incorrect_bucket_file_no_external_sheet(testapp, dummy_request, file_with_no_external_sheet):
+    testapp.patch_json(
+        file_with_no_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_no_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert not errors_list

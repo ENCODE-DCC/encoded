@@ -535,7 +535,11 @@ class File(Item):
         public_bucket = request.registry.settings['pds_public_bucket']
         private_bucket = request.registry.settings['pds_private_bucket']
         properties = self.upgrade_properties()
-        external = self._get_external_sheet()
+        try:
+            external = self._get_external_sheet()
+        except HTTPNotFound:
+            # File object doesn't exist, leave it alone.
+            return (True, None, None)
         current_bucket = external.get('bucket')
         file_status = properties.get('status')
         if not self._should_set_object_acl():
