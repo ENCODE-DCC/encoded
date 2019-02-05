@@ -109,7 +109,7 @@
     position: relative;
     padding-bottom: 0;
     .term-list {
-        height: 85px;
+        max-height: 85px;
         overflow-y: scroll;
         padding: 5px 0;
     }
@@ -272,7 +272,8 @@
 
 .searcherror {
     font-style: italic;
-    height: 85px;
+    padding: 10px;
+    // height: 85px;
 }
 
 .typeahead-facet {
@@ -280,7 +281,7 @@
         padding-bottom: 0;
     }
     .term-list {
-        height: 85px;
+        max-height: 85px;
         overflow-y: scroll;
         padding: 5px 0;
     }

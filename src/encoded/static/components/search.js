@@ -954,58 +954,62 @@ class TypeaheadFacet extends React.Component {
             }
         }
         
-        return (
-            <div className="facet typeahead-facet">
-                <h5>{titleComponent}</h5>
-                {(selectedTerms.length > 0) ?
-                    <div className="filter-container">
-                        <div className="filter-hed">Selected filters:</div>
-                        {selectedTerms.map((filter, filterIdx) =>
-                            <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
-                        )}
-                    </div>
-                : null}
-                <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
-                    <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
-                    {(this.state.filteredTerms !== null) ?
-                        <div>
-                            {(this.state.filteredTerms.length === 0) ?
-                                <div className="searcherror">
-                                    Try a different search term for results.
-                                </div>
-                            : 
-                                <div>
-                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
-                                        {/* Display the first five terms of the facet */}
-                                        {this.state.filteredTerms.map(term =>
-                                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                        )}
-                                    </div>
-                                    {(this.state.filteredTerms.length > displayedTermsCount) ?
-                                        <div className='shading'/>
-                                    : null}
-                                </div>
-                            }
+        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className="facet typeahead-facet">
+                    <h5>{titleComponent}</h5>
+                    {(selectedTerms.length > 0) ?
+                        <div className="filter-container">
+                            <div className="filter-hed">Selected filters:</div>
+                            {selectedTerms.map((filter, filterIdx) =>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                            )}
                         </div>
-                    : 
-                        <div>
-                            {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
-                                <div>
-                                    <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
-                                        {terms.map(term =>
-                                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                        )}
+                    : null}
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                        {(terms.length >= displayedTermsCount) ?
+                            <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
+                        : null}
+                        {(this.state.filteredTerms !== null) ?
+                            <div>
+                                {(this.state.filteredTerms.length === 0) ?
+                                    <div className="searcherror">
+                                        Try a different search term for results.
                                     </div>
-                                    {(terms.length > displayedTermsCount) ?
-                                        <div className='shading' />
-                                    : null}
-                                </div>
-                            : null}
-                        </div>
-                    }
-                </ul>
-            </div>
-        );
+                                : 
+                                    <div>
+                                        <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
+                                            {/* Display the first five terms of the facet */}
+                                            {this.state.filteredTerms.map(term =>
+                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                            )}
+                                        </div>
+                                        {(this.state.filteredTerms.length >= displayedTermsCount) ?
+                                            <div className='shading'/>
+                                        : null}
+                                    </div>
+                                }
+                            </div>
+                        : 
+                            <div>
+                                {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
+                                    <div>
+                                        <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
+                                            {terms.map(term =>
+                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                            )}
+                                        </div>
+                                        {(terms.length >= displayedTermsCount) ?
+                                            <div className='shading' />
+                                        : null}
+                                    </div>
+                                : null}
+                            </div>
+                        }
+                    </ul>
+                </div>
+            );
+        }
 
         // Facet had all zero terms and was not a "not" facet.
         return null;
@@ -1175,7 +1179,8 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        if (typeaheadList.indexOf(facet.field) > -1){
+                        // if (typeaheadList.indexOf(facet.field) > -1){
+                        if (facet.terms.length > 5){
                             return (
                                 <TypeaheadFacet
                                     {...this.props}
