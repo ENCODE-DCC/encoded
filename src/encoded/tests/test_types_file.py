@@ -41,20 +41,20 @@ def test_public_file_not_in_correct_bucket(testapp, root, dummy_request, file_wi
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is False
-    assert current_bucket == 'test_file_bucket'
-    assert destination_bucket == 'pds_public_bucket_test'
+    assert current_path == 's3://test_file_bucket/xyz.bed'
+    assert destination_path == 's3://pds_public_bucket_test/xyz.bed'
 
 
 def test_file_in_correct_bucket_no_external_sheet(root, dummy_request, file_with_no_external_sheet):
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
     file_item = root.get_by_uuid(file_with_no_external_sheet['uuid'])
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
-    assert current_bucket is None
-    assert destination_bucket is None
+    assert current_path is None
+    assert destination_path is None
 
 
 @pytest.mark.parametrize("file_status", [
@@ -74,9 +74,9 @@ def test_public_file_in_correct_bucket(testapp, root, dummy_request, file_with_e
     file_item._set_external_sheet({'bucket': 'pds_public_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_public_bucket_test'
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
-    assert current_bucket == destination_bucket == 'pds_public_bucket_test'
+    assert current_path == destination_path == 's3://pds_public_bucket_test/xyz.bed'
 
 
 @pytest.mark.parametrize("file_status", [
@@ -95,10 +95,10 @@ def test_private_file_not_in_correct_bucket(testapp, root, dummy_request, file_w
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is False
-    assert current_bucket == 'test_file_bucket'
-    assert destination_bucket == 'pds_private_bucket_test'
+    assert current_path == 's3://test_file_bucket/xyz.bed'
+    assert destination_path == 's3://pds_private_bucket_test/xyz.bed'
 
 
 @pytest.mark.parametrize("file_status", [
@@ -118,9 +118,9 @@ def test_private_file_in_correct_bucket(testapp, root, dummy_request, file_with_
     file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_private_bucket_test'
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
-    assert current_bucket == destination_bucket == 'pds_private_bucket_test'
+    assert current_path == destination_path == 's3://pds_private_bucket_test/xyz.bed'
 
 
 def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_request, file_with_external_sheet):
@@ -137,9 +137,9 @@ def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_reque
     file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_private_bucket_test'
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
-    assert current_bucket == destination_bucket == 'pds_private_bucket_test'
+    assert current_path == destination_path == 's3://pds_private_bucket_test/xyz.bed'
 
 
 @mock_sts

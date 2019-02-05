@@ -344,13 +344,13 @@ def audit_duplicate_quality_metrics(value, system):
 def audit_file_in_correct_bucket(value, system):
     request = system.get('request')
     file_item = request.root.get_by_uuid(value['uuid'])
-    result, current_bucket, destination_bucket = file_item._file_in_correct_bucket(request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(request)
     if not result:
         detail = 'Move {} file {} from {} to {}'.format(
             value.get('status'),
             value.get('accession', value.get('uuid')),
-            current_bucket,
-            destination_bucket
+            current_path,
+            destination_path
         )
         yield AuditFailure(
             'incorrect file bucket',

@@ -530,8 +530,9 @@ class File(Item):
 
     def _file_in_correct_bucket(self, request):
         '''
-        Returns : boolean, current_bucket, destination_bucket
+        Returns : boolean, current_path, destination_path
         '''
+        return_flag = True
         public_bucket = request.registry.settings['pds_public_bucket']
         private_bucket = request.registry.settings['pds_private_bucket']
         properties = self.upgrade_properties()
@@ -539,24 +540,27 @@ class File(Item):
             external = self._get_external_sheet()
         except HTTPNotFound:
             # File object doesn't exist, leave it alone.
-            return (True, None, None)
+            return (return_flag, None, None)
         current_bucket = external.get('bucket')
+        current_key = external.get('key')
+        base_uri = 's3://{}/{}'
+        current_path = base_uri.format(current_bucket, current_key)
         file_status = properties.get('status')
-        if not self._should_set_object_acl():
-            # Released restricted files should be in private bucket.
+        # Released restricted files should be in private bucket.
+        if file_status in self.private_s3_statuses or not self._should_set_object_acl():
             if current_bucket == private_bucket:
-                return (True, current_bucket, private_bucket)
-            return (False, current_bucket, private_bucket)
+                return_flag = True
+            else:
+                return_flag = False
+            return (return_flag, current_path, base_uri.format(private_bucket, current_key))
         if file_status in self.public_s3_statuses:
             if current_bucket == public_bucket:
-                return (True, current_bucket, public_bucket)
-            return (False, current_bucket, public_bucket)
-        if file_status in self.private_s3_statuses:
-            if current_bucket == private_bucket:
-                return (True, current_bucket, private_bucket)
-            return (False, current_bucket, private_bucket)
+                return_flag = True
+            else:
+                return_flag = False
+            return (return_flag, current_path, base_uri.format(public_bucket, current_key))
         # Assume correct bucket for unaccounted file statuses
-        return (True, current_bucket, private_bucket)
+        return (return_flag, current_path, base_uri.format(private_bucket, current_key))
 
 
 @view_config(name='upload', context=File, request_method='GET',

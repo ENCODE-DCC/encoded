@@ -813,7 +813,7 @@ def test_audit_public_file_in_private_bucket(testapp, dummy_request, file_with_e
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
     assert errors_list
-    assert errors_list[0]['detail'].split('to')[-1].strip() == 'pds_public_bucket_test'
+    assert errors_list[0]['detail'].split('to')[-1].strip() == 's3://pds_public_bucket_test/xyz.bed'
 
 
 def test_audit_public_file_in_public_bucket(testapp, dummy_request, public_file_with_public_external_sheet):
@@ -827,7 +827,7 @@ def test_audit_public_file_in_public_bucket(testapp, dummy_request, public_file_
         for error in errors_list]
     )
 
-
+ 
 def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],
@@ -841,7 +841,7 @@ def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_e
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v]
     assert errors_list
-    assert errors_list[0]['detail'].split('to')[-1].strip() == 'pds_private_bucket_test'
+    assert errors_list[0]['detail'].split('to')[-1].strip() == 's3://pds_private_bucket_test/xyz.bed'
 
 
 def test_audit_file_statuses_in_s3_statuses(testapp):
