@@ -451,3 +451,12 @@ def dataset_24_25(value, system):
         internal_tags[internal_tags.index('cre_inputv11')] = 'ccre_inputv2'
     except ValueError:
         pass
+
+
+@upgrade_step('experiment', '24', '25')
+@upgrade_step('annotation', '22', '23')
+def dataset_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4420
+    value.pop('biosample_type', None)
+    value.pop('biosample_term_id', None)
+    value.pop('biosample_term_name', None)

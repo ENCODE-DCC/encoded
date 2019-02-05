@@ -30,7 +30,7 @@ def lookup_column_value_item():
         'status': 'released',
         '@id': '/experiments/ENCSR751ISO/',
         '@type': ['Experiment', 'Dataset', 'Item'],
-        'biosample_term_name': 'midbrain'
+        'biosample_ontology': {'term_name': 'midbrain'}
     }
     return item
 

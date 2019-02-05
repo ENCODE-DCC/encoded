@@ -143,10 +143,7 @@ def test_submitter_post_other_lab(submitter_testapp, other_lab, award, cell_free
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
     experiment = {'lab': other_lab['@id'],
                   'award': award['@id'],
-                  'biosample_type': 'cell-free sample',
                   'assay_term_name': 'RNA-seq',
-                  'biosample_term_id': 'NTR:0000471',
-                  'biosample_term_name': 'none',
                   'biosample_ontology': cell_free['uuid'],
                   'experiment_classification': ['functional genomics assay']}
     wrangler_testapp.post_json('/experiment', experiment, status=201)

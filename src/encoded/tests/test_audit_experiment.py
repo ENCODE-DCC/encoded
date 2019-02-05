@@ -158,9 +158,6 @@ def base_antibody_characterization1(testapp, lab, award, target, antibody_lot, o
             {
                 'lane': 2,
                 'organism': organism['uuid'],
-                'biosample_term_name': 'K562',
-                'biosample_term_id': 'EFO:0002067',
-                'biosample_type': 'cell line',
                 'biosample_ontology': k562['uuid'],
                 'lane_status': 'compliant'
             }
@@ -187,9 +184,6 @@ def ctrl_experiment(testapp, lab, award, control_target, cell_free):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'biosample_type': 'cell-free sample',
-        'biosample_term_id': 'NTR:0000471',
-        'biosample_term_name': 'none',
         'biosample_ontology': cell_free['uuid'],
         'status': 'in progress',
         'assay_term_name': 'ChIP-seq',
@@ -275,9 +269,6 @@ def replicate_1_2(testapp, base_experiment):
 def biosample_1(testapp, lab, award, source, organism, heart):
     item = {
         'award': award['uuid'],
-        'biosample_term_id': 'UBERON:349829',
-        'biosample_term_name': 'heart',
-        'biosample_type': 'tissue',
         'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -290,9 +281,6 @@ def biosample_1(testapp, lab, award, source, organism, heart):
 def biosample_2(testapp, lab, award, source, organism, heart):
     item = {
         'award': award['uuid'],
-        'biosample_term_id': 'UBERON:349829',
-        'biosample_term_name': 'heart',
-        'biosample_type': 'tissue',
         'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -877,9 +865,6 @@ def test_audit_experiment_no_characterizations_antibody(testapp,
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'],
                                                'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'biosample_term_id': 'EFO:0002067',
-                                                'biosample_term_name': 'K562',
-                                                'biosample_type': 'cell line',
                                                 'biosample_ontology': k562['uuid'],
                                                 'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -909,18 +894,12 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
     testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
     characterization_reviews = [
         {
-            'biosample_term_name': 'MEL cell line',
-            'biosample_term_id': 'EFO:0003971',
-            'biosample_type': 'cell line',
             'biosample_ontology': mel['uuid'],
             'organism': mouse['@id'],
             'lane_status': 'not compliant',
             'lane': 1
         },
         {
-            'biosample_term_name': 'K562',
-            'biosample_term_id': 'EFO:0002067',
-            'biosample_type': 'cell line',
             'biosample_ontology': k562['uuid'],
             'organism': human['@id'],
             'lane_status': 'compliant',
@@ -944,9 +923,6 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
                                                'library': base_library['@id'],
                                                'experiment': base_experiment['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'biosample_term_id': 'EFO:0003971',
-                                                'biosample_term_name': 'MEL cell line',
-                                                'biosample_type': 'cell line',
                                                 'biosample_ontology': mel['uuid'],
                                                 'target': mouse_H3K9me3['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -973,18 +949,12 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
     TF_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     characterization_reviews = [
         {
-            'biosample_term_name': 'HepG2',
-            'biosample_term_id': 'EFO:0001187',
-            'biosample_type': 'cell line',
             'biosample_ontology': hepg2['uuid'],
             'organism': human['@id'],
             'lane_status': 'not compliant',
             'lane': 1
         },
         {
-            'biosample_term_name': 'K562',
-            'biosample_term_id': 'EFO:0002067',
-            'biosample_type': 'cell line',
             'biosample_ontology': k562['uuid'],
             'organism': human['@id'],
             'lane_status': 'exempt from standards',
@@ -1003,9 +973,6 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
                                                'library': base_library['@id'],
                                                'experiment': base_experiment['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'biosample_term_id': 'EFO:0002067',
-                                                'biosample_term_name': 'K562',
-                                                'biosample_type': 'cell line',
                                                 'biosample_ontology': k562['uuid'],
                                                 'target': base_target['@id']})
 
@@ -1025,15 +992,9 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
 def test_audit_experiment_biosample_match(testapp, base_experiment,
                                           base_biosample, base_replicate,
                                           base_library, h1, ileum):
-    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': "EFO:0003042",
-                                               'biosample_term_name': 'H1-hESC',
-                                               'biosample_type': 'cell line',
-                                               'biosample_ontology': h1['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': h1['uuid']})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "UBERON:0002116",
-                                                'biosample_term_name': 'ileum',
-                                                'biosample_type': 'tissue',
-                                                'biosample_ontology': ileum['uuid']})
+    testapp.patch_json(base_experiment['@id'], {'biosample_ontology': ileum['uuid']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent library biosample'
                for error in collect_audit_errors(res))
@@ -3043,15 +3004,9 @@ def test_audit_experiment_missing_genetic_modification(
         donor_2,
         k562):
 
-    testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
-                                            'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'cell line',
-                                            'biosample_ontology': k562['uuid'],
+    testapp.patch_json(biosample_1['@id'], {'biosample_ontology': k562['uuid'],
                                             'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'biosample_term_name': 'K562',
-                                            'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'cell line',
-                                            'biosample_ontology': k562['uuid'],
+    testapp.patch_json(biosample_2['@id'], {'biosample_ontology': k562['uuid'],
                                             'donor': donor_2['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
@@ -3075,10 +3030,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
         biosample_1,
         donor_1,
         k562):
-    testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
-                                            'biosample_term_id': 'EFO:0002067',
-                                            'genetic_modifications': [construct_genetic_modification['@id']],
-                                            'biosample_type': 'cell line',
+    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [construct_genetic_modification['@id']],
                                             'biosample_ontology': k562['uuid'],
                                             'donor': donor_1['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})  
@@ -3135,15 +3087,9 @@ def test_audit_experiment_wrong_modification(
     testapp.patch_json(construct_genetic_modification['@id'],
                        {'modified_site_by_target_id': base_target['@id'],
                         'introduced_tags': [{'name': 'FLAG', 'location': 'internal'}]})
-    testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
-                                            'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'cell line',
-                                            'biosample_ontology': k562['uuid'],
+    testapp.patch_json(biosample_1['@id'], {'biosample_ontology': k562['uuid'],
                                             'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'biosample_term_name': 'K562',
-                                            'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'cell line',
-                                            'biosample_ontology': k562['uuid'],
+    testapp.patch_json(biosample_2['@id'], {'biosample_ontology': k562['uuid'],
                                             'donor': donor_2['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
@@ -3306,9 +3252,6 @@ def test_audit_experiment_histone_characterized_no_primary(testapp,
     # Supporting antibody only have secondary characterizations
     testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'biosample_term_id': 'EFO:0003971',
-                                                'biosample_term_name': 'MEL cell line',
-                                                'biosample_type': 'cell line',
                                                 'biosample_ontology': mel['uuid'],
                                                 'target': mouse_H3K9me3['@id']})
     base_antibody['targets'] = [mouse_H3K9me3['@id']]

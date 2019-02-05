@@ -185,7 +185,7 @@ class Matrix extends React.Component {
                 summary: 'summary',
             };
 
-            // Make an array of colors corresponding to the ordering of biosample_type
+            // Make an array of colors corresponding to the ordering of biosample_ontology
             const biosampleTypeColors = globals.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
             const parsed = url.parse(matrixBase, true);
             const queryStringType = parsed.query.type || '';
@@ -332,7 +332,7 @@ class Matrix extends React.Component {
                                             })}
 
                                             {/* Display the See Fewer/See All button controlling
-                                                the whole table if at least one biosample_type has
+                                                the whole table if at least one biosample_ontology has
                                                 more than the limit. We know this is the case if at
                                                 least one yGroupOpen state member exists. */}
                                             {Object.keys(this.state.yGroupOpen).length ?

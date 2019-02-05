@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+###Schema version 24
+
+* Remove biosample_type, biosample_term_id and biosample_term_name.
+
 ###Schema version 23
 
 * Link to BiosampleType object.

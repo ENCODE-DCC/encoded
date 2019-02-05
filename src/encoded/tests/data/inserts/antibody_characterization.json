@@ -49,36 +49,24 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "K562",
-                "biosample_term_id": "EFO:0002067",
                 "biosample_ontology": "cell_line_EFO_0002067",
                 "lane_status": "compliant"
             },
             {
                 "organism": "mouse",
                 "lane": 3,
-                "biosample_type": "cell line",
-                "biosample_term_name": "MEL cell line",
-                "biosample_term_id": "EFO:0003971",
                 "biosample_ontology": "cell_line_EFO_0003971",
                 "lane_status": "exempt from standards"
             },
             {
                 "organism": "human",
                 "lane": 4,
-                "biosample_type": "cell line",
-                "biosample_term_name": "GM12878",
-                "biosample_term_id": "EFO:0002784",
                 "biosample_ontology": "cell_line_EFO_0002784",
                 "lane_status": "compliant"
             },
             {
                 "organism": "human",
                 "lane": 5,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "not compliant"
             }
@@ -117,9 +105,6 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "not compliant"
             }
@@ -158,9 +143,6 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "compliant"
             }
@@ -183,27 +165,18 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "K562",
-                "biosample_term_id": "EFO:0002067",
                 "biosample_ontology": "cell_line_EFO_0002067",
                 "lane_status": "pending dcc review"
             },
             {
                 "organism": "human",
                 "lane": 3,
-                "biosample_type": "cell line",
-                "biosample_term_name": "GM12878",
-                "biosample_term_id": "EFO:0002784",
                 "biosample_ontology": "cell_line_EFO_0002784",
                 "lane_status": "pending dcc review"
             },
             {
                 "organism": "human",
                 "lane": 4,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "pending dcc review"
             }
@@ -284,27 +257,18 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "GM12878",
-                "biosample_term_id": "EFO:0002784",
                 "biosample_ontology": "cell_line_EFO_0002784",
                 "lane_status": "compliant"
             },
             {
                 "organism": "human",
                 "lane": 3,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "not compliant"
             },
             {
                 "organism": "human",
                 "lane": 4,
-                "biosample_type": "cell line",
-                "biosample_term_name": "K562",
-                "biosample_term_id": "EFO:0002067",
                 "biosample_ontology": "cell_line_EFO_0002067",
                 "lane_status": "compliant"
             }
@@ -359,18 +323,12 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "compliant"
             },
             {
                 "organism": "mouse",
                 "lane": 3,
-                "biosample_type": "cell line",
-                "biosample_term_name": "MEL cell line",
-                "biosample_term_id": "EFO:0003971",
                 "biosample_ontology": "cell_line_EFO_0003971",
                 "lane_status": "not compliant"
             }
@@ -394,36 +352,24 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "K562",
-                "biosample_term_id": "EFO:0002067",
                 "biosample_ontology": "cell_line_EFO_0002067",
                 "lane_status": "compliant"
             },
             {
                 "organism": "human",
                 "lane": 3,
-                "biosample_type": "cell line",
-                "biosample_term_name": "GM12878",
-                "biosample_term_id": "EFO:0002784",
                 "biosample_ontology": "cell_line_EFO_0002784",
                 "lane_status": "compliant"
             },
             {
                 "organism": "human",
                 "lane": 4,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HepG2",
-                "biosample_term_id": "EFO:0001187",
                 "biosample_ontology": "cell_line_EFO_0001187",
                 "lane_status": "not compliant"
             },
             {
                 "organism": "human",
                 "lane": 5,
-                "biosample_type": "cell line",
-                "biosample_term_name": "HeLa-S3",
-                "biosample_term_id": "EFO:0002791",
                 "biosample_ontology": "cell_line_EFO_0002791",
                 "lane_status": "not compliant"
             }
@@ -483,9 +429,6 @@
             {
                 "organism": "human",
                 "lane": 2,
-                "biosample_type": "cell line",
-                "biosample_term_name": "K562",
-                "biosample_term_id": "EFO:0002067",
                 "biosample_ontology": "cell_line_EFO_0002067",
                 "lane_status": "pending dcc review"
             }
@@ -523,27 +466,18 @@
                 "organism": "human",
                 "lane": 2,
                 "lane_status": "compliant",
-                "biosample_term_name": "neural cell",
-                "biosample_term_id": "CL:0002319",
-                "biosample_type": "primary cell",
                 "biosample_ontology": "in_vitro_differentiated_cells_CL_0002319"
             },
             {
                 "organism": "human",
                 "lane": 3,
                 "lane_status": "not compliant",
-                "biosample_term_name": "HepG2",
-                "biosample_term_id": "EFO:0001187",
-                "biosample_type": "cell line",
                 "biosample_ontology": "cell_line_EFO_0001187"
             },
             {
                 "organism": "mouse",
                 "lane": 4,
                 "lane_status": "compliant",
-                "biosample_term_name": "MEL cell line",
-                "biosample_term_id": "EFO:0003971",
-                "biosample_type": "cell line",
                 "biosample_ontology": "cell_line_EFO_0003971"
             }
         ],
@@ -567,9 +501,6 @@
                 "organism": "human",
                 "lane": 2,
                 "lane_status": "pending dcc review",
-                "biosample_term_name": "K562",
-                "biosample_term_id": "EFO:0002067",
-                "biosample_type": "cell line",
                 "biosample_ontology": "cell_line_EFO_0002067"
             }
         ],

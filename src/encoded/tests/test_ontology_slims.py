@@ -4,9 +4,6 @@ import pytest
 def biosample(submitter, lab, award, source, human, brain):
     return {
         'award': award['@id'],
-        'biosample_term_id': 'UBERON:0000955',
-        'biosample_term_name': 'brain',
-        'biosample_type': 'tissue',
         'biosample_ontology': brain['uuid'],
         'lab': lab['@id'],
         'organism': human['@id'],

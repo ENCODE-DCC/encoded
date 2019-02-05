@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+###Schema version 16
+
+* Remove biosample_type, biosample_term_id and biosample_term_name.
+
 ###Schema version 15
 
 * Link to BiosampleType object.
