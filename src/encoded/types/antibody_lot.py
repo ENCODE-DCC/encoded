@@ -50,7 +50,7 @@ class AntibodyLot(SharedItem):
         'targets',
         'targets.organism',
         'characterizations',
-        'characterizations.biosample_ontology',
+        'characterizations.characterization_reviews.biosample_ontology',
         'characterizations.documents',
         'lot_reviews.targets',
         'lot_reviews.targets.organism',
