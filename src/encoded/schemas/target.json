@@ -37,6 +37,7 @@
                 "investigated_as": {
                     "items": {
                         "enum": [
+                            "control",
                             "broad histone mark",
                             "chromatin remodeler",
                             "histone",
@@ -65,6 +66,7 @@
                 "investigated_as": {
                     "items": {
                         "enum": [
+                            "control",
                             "broad histone mark",
                             "chromatin remodeler",
                             "histone",
@@ -197,6 +199,7 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "control",
                     "broad histone mark",
                     "chromatin remodeler",
                     "histone",
