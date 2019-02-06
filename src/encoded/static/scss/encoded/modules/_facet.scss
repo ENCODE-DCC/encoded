@@ -131,7 +131,7 @@
 .facet-list {
     margin: 0;
     padding: 0 4px;
-    border: 1px solid #9F9F9F;
+    // border: 1px solid #9F9F9F;
     display: none;
     &.showTerms {
         display: block;
@@ -306,11 +306,11 @@
     bottom: 0;
     right: 0;
     left: 0;
-    height: 10px;
+    height: 30px;
     text-align:center;
     cursor: pointer;
     pointer-events: none;
-    box-shadow: inset 0px -10px 20px -10px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0px -20px 40px -20px rgba(0, 0, 0, 0.7);
     opacity: 1;
     transition: opacity 1s ease-in-out;
     -moz-transition: opacity 1s ease-in-out;
