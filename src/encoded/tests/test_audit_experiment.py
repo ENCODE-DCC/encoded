@@ -715,7 +715,10 @@ def test_audit_experiment_target(testapp, base_experiment):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing target'
                for error in collect_audit_errors(res))
-
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'PLAC-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing target'
+               for error in collect_audit_errors(res))
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'status': 'submitted', 'date_submitted': '2015-03-03'})
