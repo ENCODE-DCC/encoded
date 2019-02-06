@@ -175,7 +175,6 @@ slim_shims = {
         'OBI:0001859': ['DNA accessibility'],  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
         'OBI:0002042': ['3D chromatin structure'],  # 'OBI:0000870' (Hi-C)
         'OBI:0001848': ['3D chromatin structure'],  # ChIA-PET / OBI:000870
-        'NTR:0000513': ['3D chromatin structure'], # 'NTR:0000513', / PLAC-seq
         'OBI:0001923': ['Proteomics'],  # OBI:0000615': 'MS-MS'
         'OBI:0001849': ['Genotyping'],  # OBI:0000435 (DNA-PET)
         'OBI:0002044': ['RNA binding'],  # OBI:0001854 (RNA-Bind-N-Seq)
@@ -763,19 +762,7 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
-    },
-    "NTR:0000513": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "Proximity ligation-assisted ChIP-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PLAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
+    }
 }
 
 
