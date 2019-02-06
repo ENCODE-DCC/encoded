@@ -19,7 +19,8 @@ from pyramid.traversal import (
     find_root,
 )
 ALLOW_REVIEWER_EDIT = [
-    (Allow, 'role.lab_reviewer', 'edit')
+    (Allow, 'role.lab_reviewer', 'edit'),
+    (Allow, 'role.lab_reviewer', 'review')
 ] + ALLOW_LAB_SUBMITTER_EDIT
 
 
