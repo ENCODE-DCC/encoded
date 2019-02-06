@@ -857,13 +857,13 @@ Facet.defaultProps = {
 };
 
 class TypeaheadFacet extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         // Set initial React commponent state.
         this.state = {
             filteredTerms: null,
-            showTerms: false,
+            showTerms: (props.orientation === "vertical") ? false : true,
         };
 
         // Bind `this` to non-React methods.
@@ -976,7 +976,11 @@ class TypeaheadFacet extends React.Component {
             return (
                 <div className="facet typeahead-facet">
                     <h5 onClick={(e) => this.toggleFacet(e)}>{titleComponent}
-                        <i className="icon icon-caret-right" />
+                        {this.state.showTerms ? 
+                            <i className="icon icon-caret-down" />
+                        : 
+                            <i className="icon icon-caret-right" />
+                        }
                     </h5>
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
@@ -988,7 +992,12 @@ class TypeaheadFacet extends React.Component {
                     : null}
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''} ${this.state.showTerms ? 'showTerms' : ''}`}>
                         {(terms.length >= displayedTermsCount) ?
-                            <div className="typeahead-entry"><i className="icon icon-search" /><input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} /></div>
+                            <div className="typeahead-entry">
+                                <i className="icon icon-search" />
+                                <div className="searchform">
+                                    <input type="text" placeholder="Search" value={this.state.value} onChange={this.handleSearch} />
+                                </div>
+                            </div>
                         : null}
                         {(this.state.filteredTerms !== null) ?
                             <div>
@@ -1209,6 +1218,7 @@ export class FacetList extends React.Component {
                                     filters={filters}
                                     width={width}
                                     negationFilters={negationFilters}
+                                    orientation={this.props.orientation}
                                 />
                             );
                         } else {
