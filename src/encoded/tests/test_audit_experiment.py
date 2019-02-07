@@ -1021,15 +1021,9 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
 def test_audit_experiment_biosample_match(testapp, base_experiment,
                                           base_biosample, base_replicate,
                                           base_library, h1, ileum):
-    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': "EFO:0003042",
-                                               'biosample_term_name': 'H1-hESC',
-                                               'biosample_type': 'cell line',
-                                               'biosample_ontology': h1['uuid']})
+    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': h1['uuid']})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "UBERON:0002116",
-                                                'biosample_term_name': 'ileum',
-                                                'biosample_type': 'tissue',
-                                                'biosample_ontology': ileum['uuid']})
+    testapp.patch_json(base_experiment['@id'], {'biosample_ontology': ileum['uuid']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent library biosample'
                for error in collect_audit_errors(res))

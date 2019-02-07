@@ -2758,32 +2758,16 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 continue
 
             biosample = lib['biosample']
-            bs_type = biosample.get('biosample_ontology', {}).get('classification')
-            bs_name = biosample.get('biosample_ontology', {}).get('term_name')
-            bs_id = biosample.get('biosample_ontology', {}).get('term_id')
-
-            if bs_type != term_type:
+            bs_type = biosample.get('biosample_ontology', {}).get('@id')
+            bs_name = biosample.get('biosample_ontology', {}).get('name')
+            experiment_bs_type = value.get('biosample_ontology', {}).get('@id')
+            experiment_bs_name = value.get('biosample_ontology', {}).get('name')
+            if bs_type != experiment_bs_type:
                 detail = 'Experiment {} '.format(value['@id']) + \
                          'contains a library {} '.format(lib['@id']) + \
-                         'prepared from biosample type \"{}\", '.format(bs_type) + \
+                         'linked to biosample type \"{}\", '.format(bs_name) + \
                          'while experiment\'s biosample type is \"{}\".'.format(
-                             term_type)
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
-
-            if bs_name != term_name:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains a library {} '.format(lib['@id']) + \
-                         'prepared from biosample {}, '.format(bs_name) + \
-                         'while experiment\'s biosample is {}.'.format(
-                             term_name)
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
-
-            if bs_id != term_id:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains a library {} '.format(lib['@id']) + \
-                         'prepared from biosample with an id \"{}\", '.format(bs_id) + \
-                         'while experiment\'s biosample id is \"{}\".'.format(
-                             term_id)
+                             experiment_bs_name)
                 yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
     return
 
