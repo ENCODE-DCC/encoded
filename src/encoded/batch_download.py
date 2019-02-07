@@ -94,8 +94,6 @@ _tsv_mapping_annotation = OrderedDict([
     ('Targets', ['targets.name']),
     ('Dataset date released', ['date_released']),
     ('Project', ['award.project']),
-    ('Derived from', ['original_files.derived_from']),
-    ('Size', ['original_files.file_size']),
     ('Lab', ['original_files.lab.title']),
     ('md5sum', ['original_files.md5sum']),
     ('dbxrefs', ['original_files.dbxrefs']),
@@ -103,6 +101,11 @@ _tsv_mapping_annotation = OrderedDict([
     ('Assembly', ['original_files.assembly']),
     ('Controlled by', ['original_files.controlled_by']),
     ('File Status', ['original_files.status']),
+    ('Derived from', ['original_files.derived_from']),
+    ('Paired with', ['original_files.paired_with']),
+    ('Paired end', ['original_files.paired_end']),
+    ('S3 URL', ['original_files.cloud_metadata']),
+    ('Size', ['original_files.file_size']),
     ('Restricted', ['original_files.restricted'])
 ])
 
@@ -247,6 +250,7 @@ def peak_metadata(context, request):
     )
 
 
+# pylint: disable-msg=too-many-locals
 def _get_annotation_metadata(request, search_path):
     """
     Get annotation metadata.
@@ -256,40 +260,21 @@ def _get_annotation_metadata(request, search_path):
     """
     param_list = parse_qs(request.matchdict['search_params'])
     param_list['limit'] = ['all']
-    # Handle metadata.tsv lines from cart-generated files.txt.
-    # TODO: When rewriting this file, refactor this duplicated cart code.
-    cart_uuids = param_list.get('cart', [])
-    if cart_uuids:
-        cart_uuid = cart_uuids.pop()
-        del param_list['cart']
-        try:
-            cart = request.embed(cart_uuid, '@@object')
-        except KeyError:
-            pass
-        else:
-            if cart.get('elements'):
-                param_list['@id'] = cart['elements']
-    else:
-        try:
-            elements = request.json.get('elements')
-        except ValueError:
-            pass
-        else:
-            param_list['@id'] = elements
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
     annotation_graph = results['@graph']
     ids = [g['@id'] for g in annotation_graph]
     file_graph = _get_graph('file', request, ids)
     software_graph = _get_graph('software', request, ids)
-    headers = [header for header in _tsv_mapping_annotation]
+    header = [header for header in _tsv_mapping_annotation]
+    header.extend([prop for prop in _audit_mapping])
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
-    writer.writerow(headers)
+    writer.writerow(header)
     for file in file_graph:
         annotation = _get_embedded_schema_by_dataset(annotation_graph, file['dataset'])
         software = _get_embedded_schema_by_dataset(software_graph, file['dataset'])
-        writer.writerow([
+        row = [
             file.get('title', ''),
             file.get('file_type', ''),
             file.get('output_type', ''),
@@ -306,9 +291,7 @@ def _get_annotation_metadata(request, search_path):
             annotation.get('organism', {}).get('scientific_name', ''),
             annotation.get('targets', {}).get('name', ''),
             annotation.get('date_released', ''),
-            annotation.get('award').get('project', ''),
-            file.get('derived_from', ''),
-            file.get('file_size', ''),
+            annotation.get('award', {}).get('project', ''),
             file.get('lab', {}).get('title', ''),
             file.get('md5sum', ''),
             file.get('dbxrefs', ''),
@@ -316,8 +299,17 @@ def _get_annotation_metadata(request, search_path):
             file.get('assembly', ''),
             file.get('controlled_by', ''),
             file.get('status', ''),
+            file.get('derived_from', '')[-7:1],
+            file.get('paired_with', '')[-7:1],
+            file.get('paired_end', '')[-7:1],
+            file.get('cloud_metadata', {}).get('url', ''),
+            file.get('file_size', ''),
             file.get('restricted', ''),
-        ])
+        ]
+        # Note: make_audit_cell function technically takes in experiment as second argument,
+        # not annotation. But the code still works as needed. Address this in a future refactor
+        row.extend([make_audit_cell(audit_type, annotation, file) for audit_type in _audit_mapping])
+        writer.writerow(row)
     return Response(
         content_type='text/tsv',
         body=fout.getvalue(),
