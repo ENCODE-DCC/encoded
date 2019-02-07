@@ -243,6 +243,7 @@ def experiment_22(root, experiment):
         'biosample_type': 'primary cell',
         'biosample_term_id': 'CL:0000765',
         'biosample_term_name': 'erythroblast',
+        'internal_tags': ['cre_inputv10','cre_inputv11', 'ENCYCLOPEDIAv3'],
         'status': 'started'
     })
     return properties
@@ -257,6 +258,7 @@ def annotation_20(award, lab):
         'biosample_type': 'primary cell',
         'biosample_term_id': 'CL:0000765',
         'biosample_term_name': 'erythroblast',
+        'internal_tags': ['cre_inputv10','cre_inputv11', 'ENCYCLOPEDIAv3']
     }
 
 
@@ -533,3 +535,17 @@ def test_upgrade_annotation_20_to_21(root, upgrader, annotation_20, erythroblast
         context=root.get_by_uuid(erythroblast['uuid'])
     )
     assert value['biosample_ontology'] == erythroblast['uuid']
+
+
+def test_upgrade_experiment_23_to_24(root, upgrader, experiment_22):
+    value = upgrader.upgrade(
+        'experiment', experiment_22, current_version='23', target_version='24'
+    )
+    assert value['internal_tags'] == ['ccre_inputv1','ccre_inputv2', 'ENCYCLOPEDIAv3']
+
+
+def test_upgrade_annotation_21_to_22(root, upgrader, annotation_20):
+    value = upgrader.upgrade(
+        'annotation', annotation_20, current_version='21', target_version='22'
+    )
+    assert value['internal_tags'] == ['ccre_inputv1','ccre_inputv2', 'ENCYCLOPEDIAv3']
