@@ -884,8 +884,13 @@ class TypeaheadFacet extends React.Component {
     
     toggleFacet(e){
         this.setState({showTerms: !this.state.showTerms});
-        e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-right");
-        e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-down");
+        if (e.target.classList.contains("icon")){
+            e.target.classList.toggle("icon-caret-right");
+            e.target.classList.toggle("icon-caret-down");
+        } else {
+            e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-right");
+            e.target.getElementsByClassName('icon')[0].classList.toggle("icon-caret-down");
+        }
     }
     
     handleSearch(event){

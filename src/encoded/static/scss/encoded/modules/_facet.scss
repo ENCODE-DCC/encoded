@@ -16,6 +16,7 @@
 
     .horizontal {
         display: block;
+        justify-content: space-between;
 
         @media screen and (min-width: $screen-sm-min) {
             display: flex;
@@ -24,8 +25,8 @@
 
         @media screen and (min-width: $screen-md-min) {
             flex-wrap: nowrap;
-            margin-left: -5px;
-            margin-right: -5px;
+            // margin-left: -5px;
+            // margin-right: -5px;
         }
 
         .facet {
@@ -35,9 +36,9 @@
 
             @media screen and (min-width: $screen-sm-min) {
                 min-width: 150px;
-                // flex: 1 0 auto;
-                margin-left: 5px;
-                margin-right: 5px;
+                flex: 0 0 19.5%;
+                // margin-left: 5px;
+                // margin-right: 5px;
             }
 
             @media screen and (min-width: $screen-md-min) {
@@ -293,6 +294,11 @@
         .typeahead-entry {
             padding: 2px;
         }
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+    .vertical {
+        border-right: 1px solid #ccc;
     }
 }
 
