@@ -756,9 +756,8 @@ def generate_summary_dictionary(
                 originated_from_object['biosample_ontology'],
                 '@@object'
             )
-            dict_of_phrases['originated_from'] = (
-                'originated from '
-                + biosample_object['term_name']
+            dict_of_phrases['originated_from'] = 'originated from {}'.format(
+                biosample_object['term_name']
             )
 
     if modifications_list is not None and len(modifications_list) > 0:
