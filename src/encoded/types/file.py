@@ -533,8 +533,8 @@ class File(Item):
         Returns : boolean, current_path, destination_path
         '''
         return_flag = True
-        public_bucket = request.registry.settings['pds_public_bucket']
-        private_bucket = request.registry.settings['pds_private_bucket']
+        public_bucket = request.registry.settings.get('pds_public_bucket')
+        private_bucket = request.registry.settings.get('pds_private_bucket')
         properties = self.upgrade_properties()
         try:
             external = self._get_external_sheet()
