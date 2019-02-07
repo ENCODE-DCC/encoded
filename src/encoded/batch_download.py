@@ -264,8 +264,9 @@ def _get_annotation_metadata(request, search_path):
     results = request.embed(path, as_user=True)
     annotation_graph = results['@graph']
     ids = [g['@id'] for g in annotation_graph]
-    file_graph = _get_graph('file', request, ids)
-    software_graph = _get_graph('software', request, ids)
+    datasets = ''.join([''.join(['&dataset=', id]) for id in ids])
+    file_graph = _get_graph('file', request, datasets)
+    software_graph = _get_graph('software', request, datasets)
     header = [header for header in _tsv_mapping_annotation]
     header.extend([prop for prop in _audit_mapping])
     fout = io.StringIO()
@@ -328,15 +329,14 @@ def _get_embedded_schema_by_dataset(graph, dataset):
     return schema[0]
 
 
-def _get_graph(schema_type, request, ids):
+def _get_graph(schema_type, request, datasets):
     """
     Get a graph based on schema type and id.
 
         :param schema_type: schema type.
         :param request: request object from pyramid.
-        :param ids: ids.
+        :param datasets: data sets along with ids.
     """
-    datasets = ''.join([''.join(['&dataset=', id]) for id in ids])
     path = '/search/?type={}&status!=revoked{}&format=json'.format(
         schema_type,
         datasets,
