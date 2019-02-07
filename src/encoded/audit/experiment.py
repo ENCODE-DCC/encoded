@@ -2763,11 +2763,15 @@ def audit_experiment_biosample_term(value, system, excluded_types):
             experiment_bs_type = value.get('biosample_ontology', {}).get('@id')
             experiment_bs_name = value.get('biosample_ontology', {}).get('name')
             if bs_type != experiment_bs_type:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains a library {} '.format(lib['@id']) + \
-                         'linked to biosample type \"{}\", '.format(bs_name) + \
-                         'while experiment\'s biosample type is \"{}\".'.format(
-                             experiment_bs_name)
+                detail = (
+                    "Experiment {} contains a library {} linked to biosample "
+                    "type '{}', while experiment's biosample type is '{}'."
+                ).format(
+                    value['@id'],
+                    lib['@id'],
+                    bs_name,
+                    experiment_bs_name
+                )
                 yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
     return
 
