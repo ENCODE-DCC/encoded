@@ -723,10 +723,30 @@ class Facet extends React.Component {
 
         // Bind `this` to non-React methods.
         this.handleClick = this.handleClick.bind(this);
+        this.scrollEvent = this.scrollEvent.bind(this);
     }
 
     handleClick() {
         this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
+    }
+    
+    scrollEvent(e) {
+        
+        // shading element that indicates there is further to scroll
+        let bottomShading = e.target.parentNode.getElementsByClassName('shading')[0];
+        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight){
+            bottomShading.classList.add("hide-shading");
+        } else {
+            bottomShading.classList.remove("hide-shading");
+        }
+        
+        // shading element that indicates there is further to scroll up
+        let topShading = e.target.parentNode.getElementsByClassName('top-shading')[0];
+        if (e.target.scrollTop > 0){
+            topShading.classList.remove("hide-shading");
+        } else {
+            topShading.classList.add("hide-shading");
+        }
     }
 
     render() {
@@ -762,6 +782,17 @@ class Facet extends React.Component {
         const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
         const seeMoreClass = `btn btn-link facet-list__expander${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
         const statusFacet = field === 'status' || field === 'lot_reviews.status';
+        
+        // collecting selected search terms to display at the top of the facet
+        let selectedTerms = [];
+        filters.map(filter => {
+            if (filter.field === field || filter.field === field+"!"){
+                selectedTerms.push(filter);
+            }
+        });
+        
+        // Number of terms to show - the rest will be viewable on scroll
+        let displayedTermsCount = 4;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -787,30 +818,28 @@ class Facet extends React.Component {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
-                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
-                        <div>
-                            {/* Display the first five terms of the facet */}
-                            {terms.slice(0, 5).map(term =>
-                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                    {(selectedTerms.length > 0) ?
+                        <div className="filter-container">
+                            <div className="filter-hed">Selected filters:</div>
+                            {selectedTerms.map((filter, filterIdx) =>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
                             )}
                         </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {/* If the user has expanded the "+ See more" button, then display
-                                     the rest of the terms beyond 5 */}
-                                {moreTerms.map(term =>
+                    : null}
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                        <div className="scroll-container">
+                            {(terms.length > displayedTermsCount) ?
+                                <div className='top-shading hide-shading'/>
+                            : null}
+                            <div className="term-list" onScroll={(e) => this.scrollEvent(e)}>
+                                {terms.map(term =>
                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                 )}
                             </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <div className="pull-right">
-                                {/* Display the "+ See more" button if more than five terms exist for this facet */}
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
-                                </small>
-                            </div>
-                        : null}
+                            {(terms.length > displayedTermsCount) ?
+                                <div className='shading'/>
+                            : null}
+                        </div>
                     </ul>
                 </div>
             );
@@ -830,6 +859,205 @@ Facet.defaultProps = {
     width: 'inherit',
 };
 
+class TypeaheadFacet extends React.Component {
+    constructor(props) {
+        super(props);
+
+        // Set initial React commponent state.
+        this.state = {
+            filteredTerms: null,
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleSearch = this.handleSearch.bind(this);
+        this.scrollEvent = this.scrollEvent.bind(this);
+    }
+    
+    scrollEvent(e) {
+        // shading element that indicates there is further to scroll down
+        let bottomShading = e.target.parentNode.getElementsByClassName('shading')[0];
+        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight){
+            bottomShading.classList.add("hide-shading");
+        } else {
+            bottomShading.classList.remove("hide-shading");
+        }
+        
+        // shading element that indicates there is further to scroll up
+        let topShading = e.target.parentNode.getElementsByClassName('top-shading')[0];
+        if (e.target.scrollTop > 0){
+            topShading.classList.remove("hide-shading");
+        } else {
+            topShading.classList.add("hide-shading");
+        }
+    }
+    
+    handleSearch(event){
+        // search term entered by the user
+        let filterVal = String(event.target.value.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, ''));
+        
+        // which facet terms match the search term entered by the user
+        let terms = this.props.facet.terms.filter((term) => {
+            if (term.doc_count > 0){
+                let termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '')
+                if (termKey.match(filterVal)){
+                    return term;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        });
+        // if the user has entered a value that is all non-alphabet, we want to give them an error message
+        if (event.target.value.length > 0 && filterVal == ''){
+            terms = [];
+        }
+        // when there is a search term entered, we want to show only filtered terms not all terms
+        this.setState({filteredTerms: terms});
+    }
+
+    render() {
+        const { facet, filters } = this.props;
+        const title = facet.title;
+        const field = facet.field;
+        const total = facet.total;
+        const termID = title.replace(/\s+/g, '');
+
+        // Make a list of terms for this facet that should appear, by filtering out terms that
+        // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
+        // the search result filter list.
+        let terms = facet.terms.filter((term) => {
+            if (term.key) {
+                // See if the facet term also exists in the search result filters (i.e. the term
+                // exists in the URL query string).
+                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
+
+                // If the term wasn't in the filters list, allow its display only if it has a non-
+                // zero doc_count. If the term *does* exist in the filters list, display it
+                // regardless of its doc_count.
+                return found || term.doc_count > 0;
+            }
+
+            // The term exists, but without a key, so don't allow its display.
+            return false;
+        });
+        const moreTerms = terms.slice(5);
+        const TermComponent = field === 'type' ? TypeTerm : Term;
+        const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
+        const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
+        const statusFacet = field === 'status' || field === 'lot_reviews.status';
+        
+        // collecting selected search terms to display at the top of the facet
+        let selectedTerms = [];
+        filters.map(filter => {
+            if (filter.field === field || filter.field === field+"!"){
+                selectedTerms.push(filter);
+            }
+        });
+        
+        // Number of terms to show - the rest will be viewable on scroll
+        let displayedTermsCount = 5;
+
+        // Audit facet titles get mapped to a corresponding icon.
+        let titleComponent = title;
+        if (field.substr(0, 6) === 'audit.') {
+            // Get the human-readable part of the audit facet title.
+            const titleParts = title.split(': ');
+
+            // Get the non-human-readable part so we can generate a corresponding CSS class name.
+            const fieldParts = field.match(/^audit.(.+).category$/i);
+            if (fieldParts && fieldParts.length === 2 && titleParts) {
+                // We got something that looks like an audit title. Generate a CSS class name for
+                // the corresponding audit icon, and generate the title.
+                const iconClass = `icon audit-activeicon-${fieldParts[1].toLowerCase()}`;
+                titleComponent = <span>{titleParts[0]}: <i className={iconClass} /></span>;
+            } else {
+                // Something about the audit facet title doesn't match expectations, so just
+                // display the given non-human-readable audit title.
+                titleComponent = <span>{title}</span>;
+            }
+        }
+
+        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className="facet typeahead-facet">
+                    <h5>{titleComponent}</h5>
+                    {(selectedTerms.length > 0) ?
+                        <div className="filter-container">
+                            <div className="filter-hed">Selected filters:</div>
+                            {selectedTerms.map((filter, filterIdx) =>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                            )}
+                        </div>
+                    : null}
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                        {(terms.length >= displayedTermsCount) ?
+                            <div className="typeahead-entry" role="search">
+                                <i className="icon icon-search" />
+                                <div className="searchform">
+                                    <input type="search" aria-label={"search to filter list of terms for facet "+titleComponent} placeholder="Search" value={this.state.value} onChange={this.handleSearch} name={"search"+titleComponent.replace(/\s+/g, '')}/>
+                                </div>
+                            </div>
+                        : null}
+                        {(this.state.filteredTerms !== null) ?
+                            <div>
+                                {(this.state.filteredTerms.length === 0) ?
+                                    <div className="searcherror">
+                                        Try a different search term for results.
+                                    </div>
+                                : 
+                                    <div className="terms-block">
+                                        {(this.state.filteredTerms.length >= displayedTermsCount) ?
+                                            <div className='top-shading hide-shading'/>
+                                        : null}
+                                        <div className={"term-list "+"search"+titleComponent.replace(/\s+/g, '')} onScroll={(e) => this.scrollEvent(e)}>
+                                            {this.state.filteredTerms.map(term =>
+                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                            )}
+                                        </div>
+                                        {(this.state.filteredTerms.length >= displayedTermsCount) ?
+                                            <div className='shading'/>
+                                        : null}
+                                    </div>
+                                }
+                            </div>
+                        : 
+                            <div>
+                                {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
+                                    <div className="terms-block">
+                                        {(terms.length >= displayedTermsCount) ?
+                                            <div className='top-shading hide-shading'/>
+                                        : null}
+                                        <div className={"term-list "+"search"+titleComponent.replace(/\s+/g, '')} onScroll={(e) => this.scrollEvent(e)}>
+                                            {terms.map(term =>
+                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                            )}
+                                        </div>
+                                        {(terms.length >= displayedTermsCount) ?
+                                            <div className='shading' />
+                                        : null}
+                                    </div>
+                                : null}
+                            </div>
+                        }
+                    </ul>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
+    }
+}
+
+TypeaheadFacet.propTypes = {
+    facet: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
+};
+
+TypeaheadFacet.defaultProps = {
+    width: 'inherit',
+};
 
 /**
  * Entry field for filtering the results list when search results appear in edit forms.
@@ -965,6 +1193,9 @@ export class FacetList extends React.Component {
         // are the negation facet terms that need to get merged into the regular facets that their
         // non-negated versions inhabit.
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
+        
+        // Certain facets are typeahead for easy searching and they are listed here
+        const typeaheadList = ["biosample_ontology.term_name", "assay_title", "target.label", "biosample_ontology.organ_slims", "biosample_ontology.cell_slims"];
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
@@ -982,16 +1213,29 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        return (
-                            <Facet
-                                {...this.props}
-                                key={facet.field}
-                                facet={facet}
-                                filters={filters}
-                                width={width}
-                                negationFilters={negationFilters}
-                            />
-                        );
+                        if (typeaheadList.indexOf(facet.field) > -1){
+                            return (
+                                <TypeaheadFacet
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                />
+                            );
+                        } else {
+                            return (
+                                <Facet
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                />
+                            );
+                        }
                     })}
                 </div>
             </div>

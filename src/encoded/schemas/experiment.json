@@ -345,14 +345,20 @@
         "assembly": {
             "title": "Genome assembly"
         },
+        "target.investigated_as": {
+            "title": "Target category"
+        },
+        "target.label": {
+            "title": "Target of assay"
+        },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
         },
-        "target.investigated_as": {
-            "title": "Target of assay"
-        },
         "biosample_ontology.classification": {
             "title": "Biosample type"
+        },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample name"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
