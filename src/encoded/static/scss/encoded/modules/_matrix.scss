@@ -9,6 +9,11 @@ $rotated-th-angle: 30deg;
     overflow: scroll;
 }
 
+.matrix-header {
+    margin-bottom: 20px;
+    padding-right: 0;
+}
+
 .matrix-group-heading {
     flex: 0 1 auto;
     width: 25px;
@@ -136,4 +141,8 @@ table.matrix th.group-all-groups-cell {
 
 .group-all-groups-cell__button {
     @extend .group-more-cell__button;
+}
+
+.matrix-general-search {
+    margin-bottom: 10px;
 }
