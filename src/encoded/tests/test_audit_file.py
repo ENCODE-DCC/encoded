@@ -827,7 +827,7 @@ def test_audit_public_file_in_public_bucket(testapp, dummy_request, public_file_
         for error in errors_list]
     )
 
- 
+
 def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],

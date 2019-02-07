@@ -398,10 +398,6 @@ def audit_file(value, system):
             yield failure
 
 
-#def audit_file_bucket_entry(value, system):
-#    for failure in audit_file_in_correct_bucket(value, system):
-#        yield failure
-
 # def audit_file_chip_seq_control_read_depth(value, system):
 # migrated to experiment https://encodedcc.atlassian.net/browse/ENCD-3493
 
