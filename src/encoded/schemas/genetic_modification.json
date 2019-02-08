@@ -269,7 +269,7 @@
             }
         },
         "method": {
-            "comment": "CRISPR technique requires guide_rna_sequences and/or reagent_availability specified. RNAi requires rnai_sequences and/or reagent availability specified. Specification of reagents for RNAi is not required if the RNAi was a result of a cross between two modified fly strains. TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment needs treatment to be specified. All other techniques need reagent_avialability and/or supporting documents to be specified.",
+            "comment": "CRISPR technique requires guide_rna_sequences and/or reagent_availability specified. RNAi requires rnai_sequences and/or reagent availability specified. Specification of reagents for RNAi is not required if the RNAi was a result of a cross between two modified fly strains. TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment needs treatment to be specified. All other techniques need reagent_availability and/or supporting documents to be specified.",
             "oneOf": [
                 {
                     "properties": {
