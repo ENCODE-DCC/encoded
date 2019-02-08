@@ -609,4 +609,4 @@ def report_download(context, request):
     request.response.content_type = 'text/tsv'
     request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': currenttime.year, 'mm': currenttime.month, 'dd': currenttime.day, 'doctype': type} #change file name
     request.response.app_iter = generate_rows()
-    return request.response 
+    return request.response
