@@ -82,8 +82,8 @@ def audit_genetic_modification_reagent_source(value, system):
         source = reagent['source']
         identifier = reagent['identifier']
         source_name = source.split('/')[2]
-        source_name_from_identifer = identifer.split(':')[0]
-        if source_name != source_name_from_identifer:
+        source_name_from_identifier = identifier.split(':')[0]
+        if source_name != source_name_from_identifier:
             detail = (
                 'Genetic modification {} has a reagent specifying its source '
                 'as {},  but its identifier, {}, has a prefix indicating a '
