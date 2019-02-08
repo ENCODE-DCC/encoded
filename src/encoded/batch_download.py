@@ -262,54 +262,54 @@ def _get_annotation_metadata(request, search_path):
     param_list['limit'] = ['all']
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
     results = request.embed(path, as_user=True)
-    annotation_graph = results['@graph']
-    ids = [g['@id'] for g in annotation_graph]
+    annotation_graphs = results['@graph']
+    ids = [g['@id'] for g in annotation_graphs]
     datasets = ''.join([''.join(['&dataset=', id]) for id in ids])
-    file_graph = _get_graph('file', request, datasets)
-    software_graph = _get_graph('software', request, datasets)
+    file_graphs = _get_graph('file', request, datasets)
+    software_graphs = _get_graph('software', request, datasets)
     header = [header for header in _tsv_mapping_annotation]
     header.extend([prop for prop in _audit_mapping])
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
-    for file in file_graph:
-        annotation = _get_embedded_schema_by_dataset(annotation_graph, file['dataset'])
-        software = _get_embedded_schema_by_dataset(software_graph, file['dataset'])
+    for file_graph in file_graphs:
+        annotation_graph = _get_embedded_schema_by_dataset(annotation_graphs, file_graph['dataset'])
+        software_graph = _get_embedded_schema_by_dataset(software_graphs, file_graph['dataset'])
         row = [
-            file.get('title', ''),
-            file.get('file_type', ''),
-            file.get('output_type', ''),
-            annotation.get('accession', ''),
-            annotation.get('annotation_type', ''),
-            software.get('title', ''),
-            annotation.get('encyclopedia_version', ''),
-            annotation.get('biosample_term_id', ''),
-            annotation.get('biosample_term_name', ''),
-            annotation.get('biosample_type', ''),
-            annotation.get('relevant_life_stage', ''),
-            annotation.get('relevant_timepoint', ''),
-            annotation.get('relevant_timepoint_units', ''),
-            annotation.get('organism', {}).get('scientific_name', ''),
-            annotation.get('targets', {}).get('name', ''),
-            annotation.get('date_released', ''),
-            annotation.get('award', {}).get('project', ''),
-            file.get('lab', {}).get('title', ''),
-            file.get('md5sum', ''),
-            file.get('dbxrefs', ''),
-            file.get('href', ''),
-            file.get('assembly', ''),
-            file.get('controlled_by', ''),
-            file.get('status', ''),
-            file.get('derived_from', '')[-7:1],
-            file.get('paired_with', '')[-7:1],
-            file.get('paired_end', '')[-7:1],
-            file.get('cloud_metadata', {}).get('url', ''),
-            file.get('file_size', ''),
-            file.get('restricted', ''),
+            file_graph.get('title', ''),
+            file_graph.get('file_type', ''),
+            file_graph.get('output_type', ''),
+            annotation_graph.get('accession', ''),
+            annotation_graph.get('annotation_type', ''),
+            software_graph.get('title', ''),
+            annotation_graph.get('encyclopedia_version', ''),
+            annotation_graph.get('biosample_term_id', ''),
+            annotation_graph.get('biosample_term_name', ''),
+            annotation_graph.get('biosample_type', ''),
+            annotation_graph.get('relevant_life_stage', ''),
+            annotation_graph.get('relevant_timepoint', ''),
+            annotation_graph.get('relevant_timepoint_units', ''),
+            annotation_graph.get('organism', {}).get('scientific_name', ''),
+            annotation_graph.get('targets', {}).get('name', ''),
+            annotation_graph.get('date_released', ''),
+            annotation_graph.get('award', {}).get('project', ''),
+            file_graph.get('lab', {}).get('title', ''),
+            file_graph.get('md5sum', ''),
+            file_graph.get('dbxrefs', ''),
+            file_graph.get('href', ''),
+            file_graph.get('assembly', ''),
+            file_graph.get('controlled_by', ''),
+            file_graph.get('status', ''),
+            file_graph.get('derived_from', '')[-7:1],
+            file_graph.get('paired_with', '')[-7:1],
+            file_graph.get('paired_end', '')[-7:1],
+            file_graph.get('cloud_metadata', {}).get('url', ''),
+            file_graph.get('file_size', ''),
+            file_graph.get('restricted', ''),
         ]
         # Note: make_audit_cell function technically takes in experiment as second argument,
         # not annotation. But the code still works as needed. Address this in a future refactor
-        row.extend([make_audit_cell(audit_type, annotation, file) for audit_type in _audit_mapping])
+        row.extend([make_audit_cell(audit_type, annotation_graph, file_graph) for audit_type in _audit_mapping])
         writer.writerow(row)
     return Response(
         content_type='text/tsv',
