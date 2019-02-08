@@ -548,18 +548,14 @@ class File(Item):
         file_status = properties.get('status')
         # Released restricted files should be in private bucket.
         if file_status in self.private_s3_statuses or not self._should_set_object_acl():
-            if current_bucket == private_bucket:
-                return_flag = True
-            else:
+            if current_bucket != private_bucket:
                 return_flag = False
             return (return_flag, current_path, base_uri.format(private_bucket, current_key))
         if file_status in self.public_s3_statuses:
-            if current_bucket == public_bucket:
-                return_flag = True
-            else:
+            if current_bucket != public_bucket:
                 return_flag = False
             return (return_flag, current_path, base_uri.format(public_bucket, current_key))
-        # Assume correct bucket for unaccounted file statuses
+        # Assume correct bucket for unaccounted file statuses.
         return (return_flag, current_path, base_uri.format(private_bucket, current_key))
 
 
