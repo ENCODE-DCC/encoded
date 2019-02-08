@@ -348,7 +348,7 @@ def _get_graph(schema_type, request, datasets):
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
-    type_param = ('type' in param_list and param_list['type'][0] and param_list['type'][0]) or None
+    type_param = param_list.get('type', [''])[0]
     if 'referrer' in param_list:
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
@@ -609,4 +609,4 @@ def report_download(context, request):
     request.response.content_type = 'text/tsv'
     request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': currenttime.year, 'mm': currenttime.month, 'dd': currenttime.day, 'doctype': type} #change file name
     request.response.app_iter = generate_rows()
-    return request.response
+    return request.response 

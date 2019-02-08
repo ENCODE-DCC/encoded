@@ -1,9 +1,11 @@
 from encoded.vis_defines import vis_format_url
 
+
 BATCH_DOWNLOAD_DOC_TYPES = [
     ['Experiment'],
     ['Annotation'],
 ]
+
 
 def format_results(request, hits, result=None):
     """
