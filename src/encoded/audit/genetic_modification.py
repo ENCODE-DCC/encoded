@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 
-@audit_checker('GeneticModification', 
+@audit_checker('GeneticModification',
                frame=['object',
                       'biosamples_modified',
                       'biosamples_modified.organism',
