@@ -415,7 +415,7 @@ class Experiment(Dataset,
         # the smallest technical_replicate_number, per biological replicate.
         # That replicate should have a libraries property which, as calculated
         # in replicate.libraries (ENCD-4251), should have collected all
-        # possible technique replicates belong to the biological replicate.
+        # possible technical replicates belong to the biological replicate.
         # TODO: change this once we remove technical_replicate_number.
         bio_rep_dict = {}
         for rep in replicates:

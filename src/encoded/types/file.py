@@ -284,7 +284,7 @@ class File(Item):
             "linkTo": "Library"
         }
     })
-    def replicate_libraries(self, request, registry, root, dataset, library=None):
+    def replicate_libraries(self, request, dataset, library=None):
         if library is not None:
             return [library]
         # self.uuid can be skipped. It should be skipped here to avoid infinite
