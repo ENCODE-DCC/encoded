@@ -472,15 +472,16 @@ def report_download(context, request):
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
+    downloadtime = datetime.datetime.now()
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
     request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}h_{}m.tsv"'.format(
         type,
-        currenttime.year,
-        currenttime.month,
-        currenttime.day,
-        currenttime.hour,
-        currenttime.minute
+        downloadtime.year,
+        downloadtime.month,
+        downloadtime.day,
+        downloadtime.hour,
+        downloadtime.minute
     )
     request.response.app_iter = generate_rows()
     return request.response
