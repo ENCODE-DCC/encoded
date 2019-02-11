@@ -1807,8 +1807,9 @@ class FileGalleryRendererComponent extends React.Component {
             availableAssembliesAnnotations: collectAssembliesAnnotations(datasetFiles),
         };
 
-        /** used to see if related_files has been updated */
-        this.prevRelatedFileAtIds = [];
+        /** Used to see if related_files has been updated */
+        this.prevRelatedFiles = [];
+        this.relatedFilesRequested = false;
 
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
@@ -1834,8 +1835,8 @@ class FileGalleryRendererComponent extends React.Component {
         }
     }
 
-    componentDidUpdate() {
-        this.updateFiles();
+    componentDidUpdate(prevProps, prevState, prevContext) {
+        this.updateFiles(!!(prevContext.session && prevContext.session['auth.userid']));
     }
 
     // Called from child components when the selected node changes.
@@ -1883,29 +1884,27 @@ class FileGalleryRendererComponent extends React.Component {
      * content changes. In addition, collect all the assemblies/annotations associated with the
      * combined files so we can choose a visualization browser.
      */
-    updateFiles() {
+    updateFiles(prevLoggedIn) {
         const { context, data } = this.props;
-        let relatedPromise;
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
         const datasetFiles = data ? data['@graph'] : [];
 
         // The number of related_files has changed (or we have related_files for the first time).
         // Request them and add them to the files from the original file request.
-        if (relatedFileAtIds.length !== this.prevRelatedFileAtIds.length) {
-            this.prevRelatedFileAtIds = relatedFileAtIds;
-            if (relatedFileAtIds.length > 0) {
-                relatedPromise = requestFiles(relatedFileAtIds, datasetFiles).then(relatedFiles => datasetFiles.concat(relatedFiles));
-            } else {
-                // No related_files, so just use files directly in the dataset.files.
-                relatedPromise = Promise.resolve(this.state.files);
-            }
+        let relatedPromise;
+        if (loggedIn !== prevLoggedIn || !this.relatedFilesRequested) {
+            relatedPromise = requestFiles(relatedFileAtIds, datasetFiles);
+            this.relatedFilesRequested = true;
         } else {
-            relatedPromise = Promise.resolve(this.state.files);
+            relatedPromise = Promise.resolve(this.prevRelatedFiles);
         }
 
         // Whether we have related_files or not, get all files' assemblies and annotations, and
         // the first genome browser for them.
-        relatedPromise.then((allFiles) => {
+        relatedPromise.then((relatedFiles) => {
+            this.prevRelatedFiles = relatedFiles;
+            const allFiles = datasetFiles.concat(relatedFiles);
             if (allFiles.length !== this.state.files.length) {
                 this.setState({ files: allFiles });
 
