@@ -473,10 +473,12 @@ def report_download(context, request):
     if len(columns) == 1 and '@id' in columns:
         columns['@id']['title'] = 'id'
 
-    if request.params.get('path_flag') == 'full':
-        header = [field for field, column in columns.items()]
-    else:
+    if not request.params.get('path_flag') or request.params.get('path_flag') == 'short':
         header = [column.get('title') or field for field, column in columns.items()]
+    elif request.params.get('path_flag') == 'long':
+        header = [field for field, column in columns.items()]
+    elif request.params.get('path_flag') == 'combined':
+        header = [(column.get('title') + ', ' + field) or field for field, column in columns.items()]
     
     def generate_rows():
         yield format_header(header)
