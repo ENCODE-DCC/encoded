@@ -441,6 +441,8 @@ def format_row(columns):
 
 @view_config(route_name='report_download', request_method='GET')
 def report_download(context, request):
+    downloadtime = datetime.datetime.now()
+
     types = request.params.getall('type')
     if len(types) != 1:
         msg = 'Report view requires specifying a single type.'
@@ -455,7 +457,7 @@ def report_download(context, request):
     type = type.replace("'", '')
 
     def format_header(seq):
-        newheader="%s\t%s%s?%s\r\n" % (currenttime, request.host_url, '/report/', request.query_string)
+        newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, '/report/', request.query_string)
         return(bytes(newheader, 'utf-8'))
        
 
@@ -472,7 +474,7 @@ def report_download(context, request):
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
-    downloadtime = datetime.datetime.now()
+    
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
     request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}h_{}m.tsv"'.format(
