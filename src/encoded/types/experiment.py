@@ -317,23 +317,23 @@ class Experiment(Dataset,
                                                                      assay_term_name)
             if preferred_name == 'RNA-seq' and replicates is not None:
                 for rep in replicates:
-                    replicateObject = request.embed(rep, '@@object')
-                    if replicateObject['status'] == 'deleted':
+                    replicate_object = request.embed(rep, '@@object')
+                    if replicate_object['status'] == 'deleted':
                         continue
-                    if 'libraries' in replicateObject:
+                    if 'libraries' in replicate_object:
                         preferred_name = 'total RNA-seq'
-                        for lib in replicateObject['libraries']:
-                            libraryObject = request.embed(lib, '@@object')
-                            if 'size_range' in libraryObject and \
-                            libraryObject['size_range'] == '<200':
+                        for lib in replicate_object['libraries']:
+                            library_object = request.embed(lib, '@@object')
+                            if 'size_range' in library_object and \
+                            library_object['size_range'] == '<200':
                                 preferred_name = 'small RNA-seq'
                                 break
-                            elif 'depleted_in_term_name' in libraryObject and \
-                                'polyadenylated mRNA' in libraryObject['depleted_in_term_name']:
+                            elif 'depleted_in_term_name' in library_object and \
+                                'polyadenylated mRNA' in library_object['depleted_in_term_name']:
                                 preferred_name = 'polyA depleted RNA-seq'
                                 break
-                            elif 'nucleic_acid_term_name' in libraryObject and \
-                                libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                            elif 'nucleic_acid_term_name' in library_object and \
+                                library_object['nucleic_acid_term_name'] == 'polyadenylated mRNA':
                                 preferred_name = 'polyA RNA-seq'
                                 break
                         else:
@@ -419,42 +419,42 @@ class Experiment(Dataset,
         # TODO: change this once we remove technical_replicate_number.
         bio_rep_dict = {}
         for rep in replicates:
-            replicateObject = request.embed(rep, '@@object')
-            if replicateObject['status'] == 'deleted':
+            replicate_object = request.embed(rep, '@@object')
+            if replicate_object['status'] == 'deleted':
                 continue
-            bio_rep_num = replicateObject['biological_replicate_number']
+            bio_rep_num = replicate_object['biological_replicate_number']
             if bio_rep_num not in bio_rep_dict:
-                bio_rep_dict[bio_rep_num] = replicateObject
+                bio_rep_dict[bio_rep_num] = replicate_object
                 continue
-            tech_rep_num = replicateObject['technical_replicate_number']
+            tech_rep_num = replicate_object['technical_replicate_number']
             if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
-                bio_rep_dict[bio_rep_num] = replicateObject
+                bio_rep_dict[bio_rep_num] = replicate_object
 
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
         biosample_donor_list = []
         biosample_number_list = []
 
-        for replicateObject in bio_rep_dict.values():
-            if 'libraries' in replicateObject and replicateObject['libraries']:
+        for replicate_object in bio_rep_dict.values():
+            if 'libraries' in replicate_object and replicate_object['libraries']:
                 biosamples = request.select_distinct_values(
-                    'biosample', *replicateObject['libraries']
+                    'biosample', *replicate_object['libraries']
                 )
                 if biosamples:
                     for b in biosamples:
-                        biosampleObject = request.embed(b, '@@object')
+                        biosample_object = request.embed(b, '@@object')
                         biosample_donor_list.append(
-                            biosampleObject.get('donor')
+                            biosample_object.get('donor')
                         )
                         biosample_number_list.append(
-                            replicateObject.get('biological_replicate_number')
+                            replicate_object.get('biological_replicate_number')
                         )
-                        biosample_species = biosampleObject.get('organism')
-                        biosampleTypeObject = request.embed(
-                            biosampleObject['biosample_ontology'],
+                        biosample_species = biosample_object.get('organism')
+                        biosample_type_object = request.embed(
+                            biosample_object['biosample_ontology'],
                             '@@object'
                         )
-                        biosample_type = biosampleTypeObject.get('classification')
+                        biosample_type = biosample_type_object.get('classification')
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind
