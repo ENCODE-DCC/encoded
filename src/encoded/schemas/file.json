@@ -451,7 +451,8 @@
                                         "bam",
                                         "sam",
                                         "gtf",
-                                        "bigWig"
+                                        "bigWig",
+                                        "idx"
                                     ]
                                 }
                             }
@@ -474,7 +475,8 @@
                                             "sra",
                                             "bigWig",
                                             "csfasta",
-                                            "csqual"
+                                            "csqual",
+                                            "idx"
                                         ]
                                     }
                                 }
@@ -527,6 +529,7 @@
                                         "fasta",
                                         "gff",
                                         "gtf",
+                                        "idx",
                                         "hdf5",
                                         "hic",
                                         "PWM",
@@ -721,7 +724,8 @@
                         "tar",
                         "tsv",
                         "vcf",
-                        "wig"
+                        "wig",
+                        "idx"
                     ]
                 },
                 {
