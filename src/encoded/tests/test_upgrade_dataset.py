@@ -549,3 +549,21 @@ def test_upgrade_annotation_21_to_22(root, upgrader, annotation_20):
         'annotation', annotation_20, current_version='21', target_version='22'
     )
     assert value['internal_tags'] == ['ccre_inputv1', 'ccre_inputv2', 'ENCYCLOPEDIAv3']
+
+
+def test_upgrade_experiment_24_to_25(upgrader, experiment_22):
+    value = upgrader.upgrade(
+        'experiment', experiment_22, current_version='24', target_version='25'
+    )
+    assert 'biosample_type' not in value
+    assert 'biosample_term_id' not in value
+    assert 'biosample_term_name' not in value
+
+
+def test_upgrade_annotation_22_to_23(upgrader, annotation_20):
+    value = upgrader.upgrade(
+        'annotation', annotation_20, current_version='22', target_version='23'
+    )
+    assert 'biosample_type' not in value
+    assert 'biosample_term_id' not in value
+    assert 'biosample_term_name' not in value

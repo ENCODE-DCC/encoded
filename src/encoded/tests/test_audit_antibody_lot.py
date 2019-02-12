@@ -39,18 +39,12 @@ def base_antibody_characterization1(testapp, lab, award, base_target1, antibody_
             {
                 'lane': 2,
                 'organism': organism['uuid'],
-                'biosample_term_name': 'K562',
-                'biosample_term_id': 'EFO:0002067',
-                'biosample_type': 'cell line',
                 'biosample_ontology': k562['uuid'],
                 'lane_status': 'pending dcc review'
             },
             {
                 'lane': 3,
                 'organism': organism['uuid'],
-                'biosample_term_name': 'HepG2',
-                'biosample_term_id': 'EFO:0001187',
-                'biosample_type': 'cell line',
                 'biosample_ontology': hepg2['uuid'],
                 'lane_status': 'pending dcc review'
             }

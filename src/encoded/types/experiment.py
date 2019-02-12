@@ -211,6 +211,7 @@ class Experiment(Dataset,
 
                             preservation_method = None
                             dictionary_to_add = generate_summary_dictionary(
+                                request,
                                 organismObject,
                                 donorObject,
                                 biosampleObject.get('age'),

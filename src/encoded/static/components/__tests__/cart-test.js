@@ -156,17 +156,17 @@ describe('Utility functions', () => {
         const filters = [
             {
                 field: 'type',
-                remove: '/search/?biosample_type=whole+organisms&source.title=ATCC',
+                remove: '/search/?biosample_ontology.classification=whole+organisms&source.title=ATCC',
                 term: 'Biosample',
             },
             {
-                field: 'biosample_type',
+                field: 'biosample_ontology.classification',
                 remove: '/search/?type=Biosample&source.title=ATCC',
                 term: 'whole organisms',
             },
             {
                 field: 'source.title',
-                remove: '/search/?type=Biosample&biosample_type=whole+organisms',
+                remove: '/search/?type=Biosample&biosample_ontology.classification=whole+organisms',
                 term: 'ATCC',
             },
         ];
@@ -178,11 +178,11 @@ describe('Utility functions', () => {
         const filters = [
             {
                 field: 'searchTerm',
-                remove: '/search/?biosample_term_name=A549&format=json',
+                remove: '/search/?biosample_ontology.term_name=A549&format=json',
                 term: 'ChIP-seq',
             },
             {
-                field: 'biosample_term_name',
+                field: 'biosample_ontology.term_name',
                 remove: '/search/?searchTerm=ChIP-seq&format=json',
                 term: 'A549',
             },
