@@ -426,3 +426,28 @@ def dataset_23_24(value, system):
         value['biosample_ontology'] = str(
             find_root(system['context'])['biosample-types'][biosample_type_name].uuid
         )
+
+
+@upgrade_step('experiment', '23', '24')
+@upgrade_step('annotation', '21', '22')
+@upgrade_step('reference', '15', '16')
+@upgrade_step('project', '14', '15')
+@upgrade_step('matched_set', '14', '15')
+@upgrade_step('publication_data', '14', '15')
+@upgrade_step('ucsc_browser_composite', '14', '15')
+@upgrade_step('organism_development_series', '14', '15')
+@upgrade_step('reference_epigenome', '15', '16')
+@upgrade_step('replication_timing_series', '14', '15')
+@upgrade_step('treatment_time_series', '15', '16')
+@upgrade_step('treatment_concentration_series', '14', '15')
+def dataset_24_25(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4435
+    internal_tags = value.get('internal_tags')
+    try:
+        internal_tags[internal_tags.index('cre_inputv10')] = 'ccre_inputv1'
+    except ValueError:
+        pass
+    try:
+        internal_tags[internal_tags.index('cre_inputv11')] = 'ccre_inputv2'
+    except ValueError:
+        pass
