@@ -771,17 +771,14 @@
     {
         "_test": "PLAC-seq test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "biosample_term_name": "midbrain",
         "status": "released",
         "date_submitted": "2015-04-20",
-        "biosample_type": "tissue",
         "biosample_ontology": "tissue_UBERON_0001891",
         "award": "U54HG007010",
         "assay_term_name": "PLAC-seq",
         "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "target": "Control-human",
-        "biosample_term_id": "UBERON:0001891",
         "accession": "ENCSR751STT",
         "uuid": "03485813-0362-41f0-afd5-2bef9f5c52ef",
         "experiment_classification": ["functional genomics assay"]
