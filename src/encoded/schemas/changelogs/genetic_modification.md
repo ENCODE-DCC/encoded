@@ -1,6 +1,6 @@
 ## Changelog for genetic_modification.json
 
-### Minor changes since schema version 7
+### Schema version 8
 
 * A combination of *introduced_elements* and *modified_site_nonspecific* can satisfy the *category* dependency for *insertion*.
 * *episome* was added to the *category* enum, and modifications with this *category* require the *introduced_elements* property.
@@ -23,6 +23,14 @@ identifier is prefixed by 'source-name:'.
   * Source BioScience: '^source-bioscience:[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(\_[A-Z]\\d{2})?$', ex. source-bioscience:WRM0610bH03, source-bioscience:WRM061aG12
   * Thermo Fisher: '^thermo-fisher:[a-zA-Z]{1,3}\\d{5,6}$', ex. thermo-fisher:P36238, thermo-fisher:V601020
   * TRC: '^trc:TRCN\\d{10}$', ex. trc:TRCN0000001243
+
+### Minor changes since schema version 7
+
+* A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
+* The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
+* Zygosity is now required for modifications of *method* TALEN
+* The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
+* *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
 
 ### Schema version 7
 
