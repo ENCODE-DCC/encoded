@@ -86,6 +86,44 @@ def genetic_modification_6(lab, award, crispr, source):
     }
 
 
+@pytest.fixture
+def genetic_modification_7_invalid_reagent(lab, award, crispr, source):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "placeholder_id",
+                "source": source['uuid']
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_valid_reagent(lab, award, crispr, source):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "TRCN1234567890",
+                "source": source['uuid']
+            }
+        ]
+    }
+
+
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
                              current_version='1', target_version='2')
@@ -133,3 +171,15 @@ def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
                              current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert value.get('purpose') == 'characterization'
+
+
+def test_genetic_modification_upgrade_7_8(upgrader, genetic_modification_7_invalid_reagent, genetic_modification_7_valid_reagent):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_invalid_reagent,
+                             current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert not value.get('reagents')
+    assert value.get('notes')
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_valid_reagent,
+                             current_version='7', target_version='8')
+    assert value.get('reagents')
+    assert not value.get('notes')

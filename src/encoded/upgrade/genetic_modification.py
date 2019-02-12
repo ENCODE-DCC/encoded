@@ -186,3 +186,53 @@ def genetic_modification_6_7(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4042
     if value['purpose'] == 'validation':
         value['purpose'] = 'characterization'
+
+
+@upgrade_step('genetic_modification', '7', '8')
+def genetic_modification_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4349
+    import re
+    import copy
+    import time
+    import json
+
+    sources = {
+        'addgene': r'^\d{5,6}$',
+        'bacpac': r'^([A-Z]{2,3}\d{2,3}|[A-Z]{3})-\d{1,4}[A-Z]\d{1,2}$',
+        'dharmacon': r'^[DL]-\d{6}-\d{2}(-\d{2,4})?$',
+        'hugo-bellen': r'^MI\d{5}$',
+        'human-orfeome': r'^([A-Z]{2})?\d{1,9}$',
+        'plasmid-repository': r'^HsCD\d{8}$',
+        'sigma': r'^[A-Z]{3}\d{3}$',
+        'source-bioscience': r'^[A-Z]{3}\d{3,4}[a-z][A-Z]\d{2}(_[A-Z]\d{2})?$',
+        'thermo-fisher': r'^[a-zA-Z]{1,3}\d{5,6}$',
+        'trc': r'^TRCN\d{10}$',
+        'brenton-graveley': r'^BGC#\d{7}$'
+    }
+    reagents = value.get('reagents')
+    if reagents:
+        new_reagents = []
+        unmatched_reagents = ''
+        for reagent in reagents:
+            matched = False
+            identifier = reagent['identifier']
+            new_reagent = copy.deepcopy(reagent)
+            for source, regex in sources.items():
+                if re.match(regex, identifier) is not None:
+                    new_identifier = ('{}:{}'.format(source, identifier))
+                    new_reagent['identifier'] = new_identifier
+                    new_reagents.append(new_reagent)
+                    matched = True
+                    break
+            if not matched:
+                unmatched_reagents += '{} '.format(json.dumps(reagent))
+        if unmatched_reagents:
+            date = time.strftime('%m/%d/%Y')
+            message = 'On {}, the following reagents were removed due to invalid identifer: '.format(date)
+            if 'notes' in value:
+                value['notes'] += ' ' + message + unmatched_reagents
+            else:
+                value['notes'] = message + unmatched_reagents
+        del value['reagents']
+        if new_reagents:
+            value['reagents'] = new_reagents
