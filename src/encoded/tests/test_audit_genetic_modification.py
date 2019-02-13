@@ -34,7 +34,23 @@ def test_genetic_modification_reagents(testapp, genetic_modification, source):
     res = testapp.get(genetic_modification['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v]
-    print (errors_list)
     assert all(error['category'] != 'missing genetic modification reagents' for
                error in errors_list)        
-   
+
+
+def test_genetic_modification_reagents_fly(testapp, genetic_modification_RNAi, fly_donor):
+    res = testapp.get(genetic_modification_RNAi['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing genetic modification reagents' for
+               error in errors_list)
+    testapp.patch_json(fly_donor['@id'], {'genetic_modifications': [genetic_modification_RNAi['@id']]})
+    res = testapp.get(genetic_modification_RNAi['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing genetic modification reagents' for
+               error in errors_list)
