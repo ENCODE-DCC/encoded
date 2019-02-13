@@ -2500,20 +2500,19 @@ def audit_experiment_target(value, system, excluded_types):
     for rep in value['replicates']:
         # Check target of experiment matches target of genetic modifications
         biosample = rep.get('library', {}).get('biosample', {})
-        if biosample:
-            for modification in biosample.get('applied_modifications', []):
-                gm_target = modification.get('modified_site_by_target_id')
-                if gm_target and gm_target['@id'] != target['@id']:
-                    detail = ('This experiment {} targeting {} has a '
-                              'biosample {} with a genetic modification {} '
-                              'targeting {}.')
-                    yield AuditFailure(
-                        'inconsistent genetic modification targets',
-                        detail.format(value['accession'], target['@id'],
-                                      biosample['accession'],
-                                      modification['@id'], gm_target['@id']),
-                        level='INTERNAL_ACTION'
-                    )
+        modifications = biosample.get('applied_modifications', [])
+        if modifications:
+            if all(mod['modified_site_by_target_id']['@id'] != target['@id']
+                   for mod in modifications
+                   if 'modified_site_by_target_id' in mod):
+                detail = ('This experiment {} targeting {} has a '
+                          'biosample {} with no genetic modification targeting {}.')
+                yield AuditFailure(
+                    'inconsistent genetic modification targets',
+                    detail.format(value['accession'], target['@id'],
+                                  biosample['accession'], target['@id']),
+                    level='INTERNAL_ACTION'
+                )
         # Check that target of experiment matches target of antibody
         if 'antibody' not in rep:
             detail = '{} assays require an antibody specification. '.format(
