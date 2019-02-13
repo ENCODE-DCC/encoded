@@ -93,6 +93,7 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
+        'library',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -107,6 +108,7 @@ class File(Item):
         'replicate.experiment',
         'replicate.experiment.target',
         'replicate.library',
+        'library',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -268,6 +270,36 @@ class File(Item):
             for uuid in replicates
         }
         return sorted(techreps)
+
+    @calculated_property(schema={
+        "title": "Related libraries",
+        "description": "Libraries the file belong to or derived from",
+        "comment": "More useful for files without library property, like raw data files.",
+        "type": "array",
+        "items": {
+            "title": "Library",
+            "description": "The nucleic acid library sequenced.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        }
+    })
+    def replicate_libraries(self, request, dataset, library=None):
+        if library is not None:
+            return [library]
+        # self.uuid can be skipped. It should be skipped here to avoid infinite
+        # embedding/calculating loop
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
+        obj_props = (request.embed(uuid, '@@object')
+                     for uuid in derived_from_closure)
+        # dataset is a required property of file and should be @id which
+        # matches props['dataset']
+        libraries = {
+            props['library']
+            for props in obj_props
+            if props['dataset'] == dataset and 'library' in props
+        }
+        return sorted(libraries)
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
@@ -472,6 +504,16 @@ class File(Item):
                 else:
                     raise e
         return True
+
+    @calculated_property(condition='replicate', define=True, schema={
+            "title": "Library",
+            "description": "The nucleic acid library sequenced to produce this file.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+    })
+    def library(self, request, replicate):
+        return request.embed(replicate, '@@object?skip_calculated=true').get('library')
 
 
 @view_config(name='upload', context=File, request_method='GET',

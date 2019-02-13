@@ -59,6 +59,18 @@ class Experiment(Dataset,
         'replicates.library.biosample.part_of.treatments',
         'replicates.library.biosample.treatments',
         'replicates.library.treatments',
+        'replicates.libraries',
+        'replicates.libraries.biosample.submitted_by',
+        'replicates.libraries.biosample.source',
+        'replicates.libraries.biosample.applied_modifications',
+        'replicates.libraries.biosample.organism',
+        'replicates.libraries.biosample.donor',
+        'replicates.libraries.biosample.donor.organism',
+        'replicates.libraries.biosample.part_of',
+        'replicates.libraries.biosample.part_of.donor',
+        'replicates.libraries.biosample.part_of.treatments',
+        'replicates.libraries.biosample.treatments',
+        'replicates.libraries.treatments',
         'possible_controls',
         'target.genes',
         'target.organism',
@@ -98,6 +110,19 @@ class Experiment(Dataset,
         'replicates.library.biosample.pooled_from.biosample_ontology',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
+        'replicates.libraries.documents',
+        'replicates.libraries.biosample',
+        'replicates.libraries.biosample.organism',
+        'replicates.libraries.biosample.treatments',
+        'replicates.libraries.biosample.applied_modifications',
+        'replicates.libraries.biosample.donor.organism',
+        'replicates.libraries.biosample.donor',
+        'replicates.libraries.biosample.treatments',
+        'replicates.libraries.biosample.originated_from',
+        'replicates.libraries.biosample.part_of',
+        'replicates.libraries.biosample.pooled_from',
+        'replicates.libraries.spikeins_used',
+        'replicates.libraries.treatments',
         'target.organism',
     ]
     set_status_up = [
@@ -293,24 +318,28 @@ class Experiment(Dataset,
                                                                      assay_term_name)
             if preferred_name == 'RNA-seq' and replicates is not None:
                 for rep in replicates:
-                    replicateObject = request.embed(rep, '@@object')
-                    if replicateObject['status'] == 'deleted':
+                    replicate_object = request.embed(rep, '@@object')
+                    if replicate_object['status'] == 'deleted':
                         continue
-                    if 'library' in replicateObject:
+                    if 'libraries' in replicate_object:
                         preferred_name = 'total RNA-seq'
-                        libraryObject = request.embed(replicateObject['library'], '@@object')
-                        if 'size_range' in libraryObject and \
-                           libraryObject['size_range'] == '<200':
-                            preferred_name = 'small RNA-seq'
-                            break
-                        elif 'depleted_in_term_name' in libraryObject and \
-                             'polyadenylated mRNA' in libraryObject['depleted_in_term_name']:
-                            preferred_name = 'polyA depleted RNA-seq'
-                            break
-                        elif 'nucleic_acid_term_name' in libraryObject and \
-                             libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
-                            preferred_name = 'polyA RNA-seq'
-                            break
+                        for lib in replicate_object['libraries']:
+                            library_object = request.embed(lib, '@@object')
+                            if 'size_range' in library_object and \
+                            library_object['size_range'] == '<200':
+                                preferred_name = 'small RNA-seq'
+                                break
+                            elif 'depleted_in_term_name' in library_object and \
+                                'polyadenylated mRNA' in library_object['depleted_in_term_name']:
+                                preferred_name = 'polyA depleted RNA-seq'
+                                break
+                            elif 'nucleic_acid_term_name' in library_object and \
+                                library_object['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                                preferred_name = 'polyA RNA-seq'
+                                break
+                        else:
+                            continue
+                        break
             return preferred_name or assay_term_name
         return assay_term_name
 
@@ -383,29 +412,50 @@ class Experiment(Dataset,
         "type": "string"
     })
     def replication_type(self, request, replicates=None, assay_term_name=None):
+        # ENCD-4251 loop through replicates and select one replicate, which has
+        # the smallest technical_replicate_number, per biological replicate.
+        # That replicate should have a libraries property which, as calculated
+        # in replicate.libraries (ENCD-4251), should have collected all
+        # possible technical replicates belong to the biological replicate.
+        # TODO: change this once we remove technical_replicate_number.
+        bio_rep_dict = {}
+        for rep in replicates:
+            replicate_object = request.embed(rep, '@@object')
+            if replicate_object['status'] == 'deleted':
+                continue
+            bio_rep_num = replicate_object['biological_replicate_number']
+            if bio_rep_num not in bio_rep_dict:
+                bio_rep_dict[bio_rep_num] = replicate_object
+                continue
+            tech_rep_num = replicate_object['technical_replicate_number']
+            if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
+                bio_rep_dict[bio_rep_num] = replicate_object
+
         # Compare the biosamples to see if for humans they are the same donor and for
         # model organisms if they are sex-matched and age-matched
-        biosample_dict = {}
         biosample_donor_list = []
         biosample_number_list = []
 
-        for rep in replicates:
-            replicateObject = request.embed(rep, '@@object')
-            if replicateObject['status'] == 'deleted':
-                continue
-            if 'library' in replicateObject:
-                libraryObject = request.embed(replicateObject['library'], '@@object')
-                if 'biosample' in libraryObject:
-                    biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                    biosample_dict[biosampleObject['accession']] = biosampleObject
-                    biosample_donor_list.append(biosampleObject.get('donor'))
-                    biosample_number_list.append(replicateObject.get('biological_replicate_number'))
-                    biosample_species = biosampleObject.get('organism')
-                    biosampleTypeObject = request.embed(
-                        biosampleObject['biosample_ontology'],
-                        '@@object'
-                    )
-                    biosample_type = biosampleTypeObject.get('classification')
+        for replicate_object in bio_rep_dict.values():
+            if 'libraries' in replicate_object and replicate_object['libraries']:
+                biosamples = request.select_distinct_values(
+                    'biosample', *replicate_object['libraries']
+                )
+                if biosamples:
+                    for b in biosamples:
+                        biosample_object = request.embed(b, '@@object')
+                        biosample_donor_list.append(
+                            biosample_object.get('donor')
+                        )
+                        biosample_number_list.append(
+                            replicate_object.get('biological_replicate_number')
+                        )
+                        biosample_species = biosample_object.get('organism')
+                        biosample_type_object = request.embed(
+                            biosample_object['biosample_ontology'],
+                            '@@object'
+                        )
+                        biosample_type = biosample_type_object.get('classification')
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind
@@ -448,7 +498,7 @@ class Experiment(Dataset,
         'y': {
             'facets': [
                 'status',
-                'replicates.library.biosample.donor.organism.scientific_name',
+                'replicates.libraries.biosample.donor.organism.scientific_name',
                 'biosample_ontology.classification',
                 'biosample_ontology.organ_slims',
                 'biosample_ontology.cell_slims',
@@ -477,7 +527,7 @@ class Experiment(Dataset,
     summary_data = {
         'y': {
             'facets': [
-                'replicates.library.biosample.donor.organism.scientific_name',
+                'replicates.libraries.biosample.donor.organism.scientific_name',
                 'biosample_ontology.classification',
                 'biosample_ontology.organ_slims',
                 'biosample_ontology.cell_slims',
@@ -525,6 +575,10 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
+        'libraries',
+        'libraries.biosample',
+        'libraries.biosample.donor',
+        'libraries.biosample.donor.organism',
     ]
     set_status_up = [
         'library',
@@ -544,3 +598,45 @@ class Replicate(Item):
         root = find_root(self)
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()
+
+    @calculated_property(schema={
+        "title": "Libraries",
+        "description": "The nucleic acid libraries used in this replicate.",
+        "type": "array",
+        "uniqueItems": True,
+        "items": {
+            "title": "Library",
+            "description": "The nucleic acid library used in this replicate.",
+            "comment": "See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        }
+    })
+    def libraries(self, status, biological_replicate_number,
+                  technical_replicate_number):
+        if status == 'deleted':
+            return []
+        # Use root.get_by_uuid instead of embed to get reverse link
+        # specifically. This helps avoid infinite loop since calculated
+        # properties of experiment need to embed replicate.
+        properties = self.upgrade_properties()
+        root = find_root(self)
+        experiment = root.get_by_uuid(properties['experiment'])
+        libraries = set()
+        for rep_uuid in experiment.get_rev_links('replicates'):
+            rep_props = root.get_by_uuid(rep_uuid).upgrade_properties()
+            # Only care (check and add to the list) about non-deleted technical
+            # replicates of this replicate, meaning belonging to the same
+            # biological replicate.
+            if (rep_props['biological_replicate_number'] != biological_replicate_number
+                or rep_props['status'] == 'deleted'):
+                continue
+            if rep_props['technical_replicate_number'] < technical_replicate_number:
+                # Found smaller technical replicate, libraries will be
+                # calculated there rather than here.
+                return []
+            if 'library' in rep_props:
+                libraries.add(rep_props['library'])
+        # This is the "first" techinical replicate within the isogenic
+        # replciate. Therefore, libraries should be calculated.
+        return list(libraries)
