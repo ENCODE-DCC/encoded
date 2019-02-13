@@ -34,6 +34,29 @@ DisplayAsJson.contextTypes = {
     location_href: PropTypes.string,
 };
 
+export function shadeOverflowOnScroll(e) {
+    
+    // shading element that indicates there is further to scroll down
+    let bottomShading = e.target.parentNode.getElementsByClassName('shading')[0];
+    if (bottomShading){
+        if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight){
+            bottomShading.classList.add("hide-shading");
+        } else {
+            bottomShading.classList.remove("hide-shading");
+        }
+    }
+    
+    // shading element that indicates there is further to scroll up
+    let topShading = e.target.parentNode.getElementsByClassName('top-shading')[0];
+    if (topShading){
+        if (e.target.scrollTop > 0){
+            topShading.classList.remove("hide-shading");
+        } else {
+            topShading.classList.add("hide-shading");
+        }
+    }
+}
+
 
 // Display a summary sentence for a single treatment.
 export function singleTreatment(treatment) {
