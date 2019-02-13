@@ -3,6 +3,21 @@ from snovault import (
     audit_checker,
 )
 
+
+@audit_checker('GeneticModification', frame=['modified_site_by_target_id'])
+def audit_genetic_modification_target(value, system):
+    '''
+    Genetic modifications should targeting (modified_site_by_target_id) a wild
+    type gene, i.e. a target without modifications, as defined in the schema.
+    '''
+    if value.get('modified_site_by_target_id', {}).get('modifications'):
+        detail = ('Genetic modification {} is targeting {} which has already '
+                  'been modified.'.format(
+                      value['@id'], value['modified_site_by_target_id']['@id']))
+        yield AuditFailure('target already modified', detail,
+                           level='INTERNAL_ACTION')
+
+
 @audit_checker('GeneticModification',
                frame=['object',
                       'biosamples_modified',

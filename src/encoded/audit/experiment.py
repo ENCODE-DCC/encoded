@@ -2475,6 +2475,22 @@ def audit_experiment_target(value, system, excluded_types):
     if 'control' in target['investigated_as']:
         return
 
+    # Experiment target should be untagged after ENCD-4425
+    non_tag_mods = ['Methylation',
+                    'Monomethylation',
+                    'Dimethylation',
+                    'Trimethylation',
+                    'Acetylation',
+                    'Ubiquitination',
+                    'Phosphorylation']
+    if any(mod['modification'] not in non_tag_mods
+           for mod in target.get('modifications', [])
+           if 'modification' in mod):
+        detail = 'Experiment {} has a tagged target {}.'.format(value['@id'],
+                                                                target['@id'])
+        yield AuditFailure('tagged target', detail,
+                           level='INTERNAL_ACTION')
+
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
                                     'shRNA knockdown followed by RNA-seq',
@@ -2483,8 +2499,24 @@ def audit_experiment_target(value, system, excluded_types):
                                     'CRISPR genome editing followed by RNA-seq']:
         return
 
-    # Check that target of experiment matches target of antibody
     for rep in value['replicates']:
+        # Check target of experiment matches target of genetic modifications
+        if 'library' in rep and 'biosample' in rep['library']:
+            biosample = rep['library']['biosample']
+            for modification in biosample.get('applied_modifications', []):
+                gm_target = modification.get('modified_site_by_target_id')
+                if gm_target and gm_target['@id'] != target['@id']:
+                    detail = ('This experiment {} targeting {} has a '
+                              'biosample {} with a genetic modification {} '
+                              'targeting {}.')
+                    yield AuditFailure(
+                        'inconsistent genetic modification targets',
+                        detail.format(value['accession'], target['@id'],
+                                      biosample['accession'],
+                                      modification['@id'], gm_target['@id']),
+                        level='INTERNAL_ACTION'
+                    )
+        # Check that target of experiment matches target of antibody
         if 'antibody' not in rep:
             detail = '{} assays require an antibody specification. '.format(
                 value['assay_term_name']) + \
@@ -2496,15 +2528,15 @@ def audit_experiment_target(value, system, excluded_types):
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
             antibody = rep['antibody']
+            unique_antibody_target = set()
+            unique_investigated_as = set()
+            for antibody_target in antibody['targets']:
+                label = antibody_target['label']
+                unique_antibody_target.add(label)
+                for investigated_as in antibody_target['investigated_as']:
+                    unique_investigated_as.add(investigated_as)
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
-                unique_antibody_target = set()
-                unique_investigated_as = set()
-                for antibody_target in antibody['targets']:
-                    label = antibody_target['label']
-                    unique_antibody_target.add(label)
-                    for investigated_as in antibody_target['investigated_as']:
-                        unique_investigated_as.add(investigated_as)
                 if ('tag' not in unique_investigated_as
                     and 'synthetic tag' not in unique_investigated_as):
                     detail = '{} is not to tagged protein'.format(
@@ -2517,7 +2549,10 @@ def audit_experiment_target(value, system, excluded_types):
                             antibody['@id']
                         )
                         yield AuditFailure('mismatched tag target', detail, level='ERROR')
-            else:
+            elif ('tag' not in unique_investigated_as
+                  and 'synthetic tag' not in unique_investigated_as):
+                # Target matching for tag antibody is only between antibody and
+                # genetic modification within replicate after ENCD-4425.
                 target_matches = False
                 antibody_targets = []
                 for antibody_target in antibody['targets']:
