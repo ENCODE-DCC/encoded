@@ -230,9 +230,11 @@ def genetic_modification_7_8(value, system):
             date = time.strftime('%m/%d/%Y')
             message = 'On {}, the following reagents were removed due to invalid identifer: '.format(date)
             if 'notes' in value:
-                value['notes'] += ' ' + message + unmatched_reagents
+                new_notes = value['notes'] + ' ' + message + unmatched_reagents
             else:
-                value['notes'] = message + unmatched_reagents
+                new_notes = message + unmatched_reagents
+            new_notes = new_notes.strip()
+            value['notes'] = new_notes
         del value['reagents']
         if new_reagents:
             value['reagents'] = new_reagents
