@@ -140,7 +140,7 @@ def test_submitter_post_other_lab(submitter_testapp, other_lab, award, cell_free
     assert "not in user submits_for" in res.json['errors'][0]['description']
 
 
-def test_reviewer_patch_other_lab_charcaterization(submitter_testapp, testapp, submitter, attachment, construct_genetic_modification_N, other_lab, lab, award):
+def test_reviewer_patch_other_lab_characterization(submitter_testapp, testapp, submitter, attachment, construct_genetic_modification_N, other_lab, lab, award):
     testapp.patch_json(submitter['@id'], {'submits_for': [other_lab['@id']]}),
     item = {
         'characterizes': construct_genetic_modification_N['@id'],
