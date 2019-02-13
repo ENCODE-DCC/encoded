@@ -2475,7 +2475,7 @@ def audit_experiment_target(value, system, excluded_types):
     if 'control' in target['investigated_as']:
         return
 
-    # Experiment target should be untagged after ENCD-4425
+    # Experiment target should be untagged
     non_tag_mods = ['Methylation',
                     'Monomethylation',
                     'Dimethylation',
@@ -2486,10 +2486,8 @@ def audit_experiment_target(value, system, excluded_types):
     if any(mod['modification'] not in non_tag_mods
            for mod in target.get('modifications', [])
            if 'modification' in mod):
-        detail = 'Experiment {} has a tagged target {}.'.format(value['@id'],
-                                                                target['@id'])
-        yield AuditFailure('tagged target', detail,
-                           level='INTERNAL_ACTION')
+        detail = 'Experiment {} has a tagged target {}.'.format(value['@id'], target['@id'])
+        yield AuditFailure('tagged target', detail, level='INTERNAL_ACTION')
 
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
@@ -2501,8 +2499,8 @@ def audit_experiment_target(value, system, excluded_types):
 
     for rep in value['replicates']:
         # Check target of experiment matches target of genetic modifications
-        if 'library' in rep and 'biosample' in rep['library']:
-            biosample = rep['library']['biosample']
+        biosample = rep.get('library', {}).get('biosample', {})
+        if biosample:
             for modification in biosample.get('applied_modifications', []):
                 gm_target = modification.get('modified_site_by_target_id')
                 if gm_target and gm_target['@id'] != target['@id']:

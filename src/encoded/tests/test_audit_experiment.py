@@ -3303,10 +3303,12 @@ def test_audit_experiment_histone_characterized_no_primary(testapp,
 def test_audit_experiment_tag_target(testapp, experiment, ctcf):
     tag_target = testapp.post_json(
         '/target',
-        {'genes': [ctcf['uuid']],
-         'modifications': [{'modification': 'eGFP'}],
-         'label': 'eGFP-CTCF',
-         'investigated_as': ['recombinant protein']}
+        {
+            'genes': [ctcf['uuid']],
+            'modifications': [{'modification': 'eGFP'}],
+            'label': 'eGFP-CTCF',
+            'investigated_as': ['recombinant protein']
+        }
     ).json['@graph'][0]
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                            'target': tag_target['@id']})
@@ -3320,10 +3322,12 @@ def test_audit_experiment_inconsist_mod_target(testapp, experiment, replicate,
                                                construct_genetic_modification):
     tag_target = testapp.post_json(
         '/target',
-        {'genes': [ctcf['uuid']],
-         'modifications': [{'modification': 'eGFP'}],
-         'label': 'eGFP-CTCF',
-         'investigated_as': ['recombinant protein']}
+        {
+            'genes': [ctcf['uuid']],
+            'modifications': [{'modification': 'eGFP'}],
+            'label': 'eGFP-CTCF',
+            'investigated_as': ['recombinant protein']
+        }
     ).json['@graph'][0]
     testapp.patch_json(
         biosample['@id'],
