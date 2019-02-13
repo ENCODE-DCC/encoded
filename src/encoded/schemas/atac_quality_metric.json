@@ -4,7 +4,7 @@
     "id": "/profiles/atac_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "name", "award", "lab"],
+    "required": ["step_run", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -54,6 +54,127 @@
                     "title": "MD5sum"
                 }
             }
+        },
+        "aligned_fragments": {
+            "title": "Filtered and deduplicated aligned fragments",
+            "comment": "Mitochondrial alignments are filtered",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "",
+                "description": "",
+                "type": "object",
+                "required": ["replicate", "aligned_fragments"],
+                "properties": {
+                    "replicate": {
+                        "title": "Replicate",
+                        "description": "",
+                        "comment": "",
+                        "type": "string",
+                        "linkTo": "Replicate"
+                    },
+                    "aligned_fragments": {
+                        "title": "Aligned fragments",
+                        "description": "",
+                        "type": "number",
+                        "minimum":0
+                    }
+                }
+            }
+        },
+        "IDR_stats": {
+            "title": "IDR",
+            "comment": "",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "",
+                "description": "",
+                "type": "object",
+                "required": ["self_consistency_ratio", "rescue_ratio"],
+                "properties": {
+                    "self_consistency_ratio": {
+                        "title": "Self-consistency ratio",
+                        "type": "number",
+                        "description": "IDR self-consistency ratio for this experiment"
+                    },
+                    "rescue_ratio": {
+                        "title": "Rescue ratio",
+                        "type": "number",
+                        "description": "IDR rescue ratio for this experiment"
+                    }
+                }
+            }
+        },
+        "library_stats": {
+            "title": "Library stats",
+            "comment": "",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "",
+                "description": "",
+                "type": "object",
+                "required": ["library", "PBC1", "PBC2", "NRF"],
+                "properties": {
+                    "library": {
+                        "title": "Library",
+                        "description": "",
+                        "comment": "",
+                        "type": "string",
+                        "linkTo": "Library"
+                    },
+                    "PBC1": {
+                        "title": "PCR bottlenecking coefficient 1",
+                        "type": "number",
+                        "description": "PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely"
+                    },
+                    "PBC2": {
+                        "title": "PCR bottlenecking coefficient 2",
+                        "type": ["number", "string"],
+                        "minimum":0,
+                        "pattern": "^Infinity$",
+                        "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
+                    },
+                    "NRF": {
+                        "title": "Non-redundant fraction",
+                        "type": "number",
+                        "description": "Non redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads"
+                    }
+                }
+            }
+        },
+        "replicated_peaks": {
+            "title": "Replicated peaks number",
+            "description": "",
+            "type": "number",
+            "minimum":0
+        },
+        "IDR_thresholded_peaks": {
+            "title": "IDR thresholded peaks number",
+            "description": "",
+            "type": "number",
+            "minimum":0
+        },
+        "nucleosome_free_region": {
+            "title": "Nucleosome free region",
+            "description": "",
+            "comment": "",
+            "type": "boolean"
+        },
+        "mononucleosome_peak_presence": {
+            "title": "Presence of mononucleosome peak in the fragment length distribution",
+            "description": "",
+            "comment": "",
+            "type": "boolean"
+        },
+        "Fp": {
+            "title": "FRiP score from pooled pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in IDR peaks (FRiP) from pooled pseudoreplicates"
+        },
+        "TSS_enrichment": {
+
         }
     },
     "facets": {
