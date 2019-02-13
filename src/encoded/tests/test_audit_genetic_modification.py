@@ -35,7 +35,7 @@ def test_genetic_modification_reagents(testapp, genetic_modification, source):
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v]
     assert all(error['category'] != 'missing genetic modification reagents' for
-               error in errors_list)        
+               error in errors_list)
 
 
 def test_genetic_modification_reagents_fly(testapp, genetic_modification_RNAi, fly_donor):
