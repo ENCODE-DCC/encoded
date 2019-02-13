@@ -68,6 +68,10 @@
     margin-bottom: 0;
 }
 
+.navbar-collapse {
+    max-height: none;
+}
+
 .test-warning {
     position: relative;
     padding: 5px 0 7px;
