@@ -149,13 +149,18 @@ def test_not_reviewer_patch_other_lab_charcaterization(submitter_testapp, testap
         'attachment': attachment
         
     }
-    gm = testapp.post_json('/genetic_modification_characterization', item)
-    print (gm)
+    gm = testapp.post_json('/genetic_modification_characterization', item).json['@graph'][0]
     res = submitter_testapp.patch_json(
-        gm.json['@id'],
+        gm['@id'],
         {'review': {'reviewer': submitter['@id'], 'status': 'compliant'}}, expect_errors=True)
     
     assert "not in user submits_for" in res.json['errors'][0]['description']
+    testapp.patch_json(gm['@id'],
+        {'review': {'lab': other_lab['@id']}})
+    res = submitter_testapp.patch_json(
+        gm['@id'],
+        {'review': {'reviewer': submitter['@id'], 'status': 'compliant'}}, expect_errors=False)
+
 
 
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
