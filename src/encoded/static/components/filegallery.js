@@ -1886,7 +1886,8 @@ class FileGalleryRendererComponent extends React.Component {
      */
     updateFiles(prevLoggedIn) {
         const { context, data } = this.props;
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const { session } = this.context;
+        const loggedIn = !!(session && session['auth.userid']);
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
         const datasetFiles = data ? data['@graph'] : [];
 
