@@ -21,6 +21,23 @@ def genetic_modification(testapp, lab, award):
 
 
 @pytest.fixture
+def genetic_modification_RNAi(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'modified_site_by_coordinates': {
+            'assembly': 'GRCh38',
+            'chromosome': '11',
+            'start': 20000,
+            'end': 21000
+        },
+        'purpose': 'repression',
+        'category': 'deletion',
+        'method': 'RNAi'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
 def tagged_target(testapp, gene):
     item = {
         'genes': [gene['uuid']],
@@ -34,7 +51,10 @@ def tagged_target(testapp, gene):
 def test_genetic_modification_reagents(testapp, genetic_modification, source):
     res = testapp.get(genetic_modification['@id'] + '@@index-data')
     errors = res.json['audit']
-    errors_list = [error for error in errors.get('WARNING', [])]
+    errors_list = []
+    for error_type in errors:
+        if error_type == 'WARNING':
+            errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing genetic modification reagents' for
                error in errors_list)
     testapp.patch_json(genetic_modification['@id'], {'reagents': [
@@ -44,9 +64,11 @@ def test_genetic_modification_reagents(testapp, genetic_modification, source):
         }]})
     res = testapp.get(genetic_modification['@id'] + '@@index-data')
     errors = res.json['audit']
-    errors_list = [error for v in errors.values() for error in v]
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing genetic modification reagents' for
-               error in errors_list)
+        error in errors_list)
 
 
 def test_genetic_modification_reagents_fly(testapp, genetic_modification_RNAi, fly_donor):
