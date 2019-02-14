@@ -38,6 +38,7 @@ def genetic_modification_RNAi(testapp, lab, award):
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
 
+@pytest.fixture
 def tagged_target(testapp, gene):
     item = {
         'genes': [gene['uuid']],
