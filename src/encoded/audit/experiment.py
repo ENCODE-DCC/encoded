@@ -2486,8 +2486,14 @@ def audit_experiment_target(value, system, excluded_types):
     if any(mod['modification'] not in non_tag_mods
            for mod in target.get('modifications', [])
            if 'modification' in mod):
-        detail = 'Experiment {} has a tagged target {}.'.format(value['@id'], target['@id'])
-        yield AuditFailure('tagged target', detail, level='INTERNAL_ACTION')
+        detail = (
+            'Experiment {} has a tagged target {}. Should consider using '
+            'untagged target version for experiment.'.format(
+                value['@id'],
+                target['@id']
+            )
+        )
+        yield AuditFailure('inconsistent experiment target', detail, level='INTERNAL_ACTION')
 
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',

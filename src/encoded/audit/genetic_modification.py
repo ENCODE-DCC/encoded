@@ -12,13 +12,14 @@ def audit_genetic_modification_target(value, system):
     '''
     if value.get('modified_site_by_target_id', {}).get('modifications'):
         detail = (
-            'Genetic modification {} is targeting {} which has already '
-            'been modified.'.format(
+            'Genetic modification {} is targeting {} which has already been '
+            'modified. Should consider using unmodified target version for '
+            'genetic modification.'.format(
                 value['@id'],
                 value['modified_site_by_target_id']['@id'],
             )
         )
-        yield AuditFailure('target already modified', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent modification target', detail, level='INTERNAL_ACTION')
 
 
 @audit_checker('GeneticModification',
