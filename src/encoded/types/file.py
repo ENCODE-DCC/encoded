@@ -706,7 +706,9 @@ def file_update_bucket(context, request):
     current_bucket = context._get_external_sheet().get('bucket')
     # Don't bother setting if already the same.
     if current_bucket != new_bucket:
+        request.registry.notify(BeforeModified(context, request))
         context._set_external_sheet({'bucket': new_bucket})
+        request.registry.notify(AfterModified(context, request))
     return {
         'status': 'success',
         '@type': ['result'],
