@@ -1033,3 +1033,51 @@ def inconsistent_biosample_type(testapp):
         'classification': 'single cell',
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_with_external_sheet(file, root):
+    file_item = root.get_by_uuid(file['uuid'])
+    properties = file_item.upgrade_properties()
+    file_item.update(
+        properties,
+        sheets={
+            'external': {
+                'service': 's3',
+                'key': 'xyz.bed',
+                'bucket': 'test_file_bucket',
+            }
+        }
+    )
+    return file
+
+
+@pytest.fixture
+def public_file_with_public_external_sheet(file, root):
+    file_item = root.get_by_uuid(file['uuid'])
+    properties = file_item.upgrade_properties()
+    properties['status'] = 'released'
+    file_item.update(
+        properties,
+        sheets={
+            'external': {
+                'service': 's3',
+                'key': 'xyz.bed',
+                'bucket': 'pds_public_bucket_test',
+            }
+        }
+    )
+    return file
+
+
+@pytest.fixture
+def file_with_no_external_sheet(file, root):
+    file_item = root.get_by_uuid(file['uuid'])
+    properties = file_item.upgrade_properties()
+    file_item.update(
+        properties,
+        sheets={
+            'external': {}
+        }
+    )
+    return file

@@ -798,3 +798,78 @@ def test_audit_file_no_duplicate_quality_metrics(testapp,
         error['category'] != 'duplicate quality metric'
         for error in errors_list
     )
+
+
+def test_audit_public_file_in_private_bucket(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert errors_list
+    assert errors_list[0]['detail'].split('to')[-1].strip() == 's3://pds_public_bucket_test/xyz.bed'
+
+
+def test_audit_public_file_in_public_bucket(testapp, dummy_request, public_file_with_public_external_sheet):
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(public_file_with_public_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v]
+    assert all([
+        error['category'] != 'incorrect file bucket'
+        for error in errors_list]
+    )
+
+
+def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'deleted'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v]
+    assert errors_list
+    assert errors_list[0]['detail'].split('to')[-1].strip() == 's3://pds_private_bucket_test/xyz.bed'
+
+
+def test_audit_file_statuses_in_s3_statuses(testapp):
+    # Make sure public_s3_statuses and private_s3_statuses lists in File item include
+    # all statuses in File schema, except upload failed and content error.
+    from ..types.file import File
+    public_s3_statuses = File.public_s3_statuses
+    private_s3_statuses = File.private_s3_statuses
+    assert public_s3_statuses
+    assert private_s3_statuses
+    file_schema = testapp.get('/profiles/file.json').json
+    file_statuses = file_schema.get('properties', {}).get('status', {}).get('enum')
+    assert file_statuses
+    file_statuses = [f for f in file_statuses if f not in ['content error', 'upload failed']]
+    # If this fails sync public/private_s3_statuses with statuses in file schema.
+    assert not set(file_statuses) - set(public_s3_statuses + private_s3_statuses)
+
+
+def test_audit_incorrect_bucket_file_no_external_sheet(testapp, dummy_request, file_with_no_external_sheet):
+    testapp.patch_json(
+        file_with_no_external_sheet['@id'],
+        {
+            'status': 'released'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_no_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert not errors_list
