@@ -7,8 +7,21 @@ from snovault import (
 from .base import (
     Item,
     SharedItem,
+    ALLOW_LAB_SUBMITTER_EDIT,
+    ALLOW_CURRENT,
+    DELETED,
 )
 from snovault.attachment import ItemWithAttachment
+from pyramid.security import (
+    Allow,
+)
+from pyramid.traversal import (
+    find_root,
+)
+ALLOW_REVIEWER_EDIT = [
+    (Allow, 'role.lab_reviewer', 'edit'),
+    (Allow, 'role.lab_reviewer', 'review')
+] + ALLOW_LAB_SUBMITTER_EDIT
 
 
 @abstract_collection(
@@ -24,6 +37,31 @@ class Characterization(ItemWithAttachment, Item):
         'documents',
     ]
     set_status_down = []
+    STATUS_ACL = {
+        'in progress': ALLOW_REVIEWER_EDIT,
+        'released': ALLOW_CURRENT,
+        'deleted': DELETED,
+    }
+
+    def __ac_local_roles__(self):
+        roles = {}
+        properties = self.upgrade_properties().copy()
+        if 'lab' in properties:
+            lab_submitters = 'submits_for.%s' % properties['lab']
+            roles[lab_submitters] = 'role.lab_submitter'
+        if 'review' in properties:
+            reviewing_lab = properties['review'].get('lab')
+            if reviewing_lab is not None:
+                lab_reviewers = 'submits_for.%s' % reviewing_lab
+                roles[lab_reviewers] = 'role.lab_reviewer'
+        if 'award' in properties:
+            root = find_root(self)
+            award = root.get_by_uuid(properties['award'])
+            viewing_group = award.upgrade_properties().get('viewing_group')
+            if viewing_group is not None:
+                viewing_group_members = 'viewing_group.%s' % viewing_group
+                roles[viewing_group_members] = 'role.viewing_group_member'
+        return roles
 
 
 @collection(

@@ -38,6 +38,17 @@ def genetic_modification_RNAi(testapp, lab, award):
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
 
+@pytest.fixture
+def tagged_target(testapp, gene):
+    item = {
+        'genes': [gene['uuid']],
+        'modifications': [{'modification': 'eGFP'}],
+        'label': 'eGFP-CTCF',
+        'investigated_as': ['recombinant protein', 'transcription factor']
+    }
+    return testapp.post_json('/target', item, status=201).json['@graph'][0]
+
+
 def test_genetic_modification_reagents(testapp, genetic_modification, source):
     res = testapp.get(genetic_modification['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -76,4 +87,17 @@ def test_genetic_modification_reagents_fly(testapp, genetic_modification_RNAi, f
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing genetic modification reagents' for
+               error in errors_list)
+
+
+def test_genetic_modification_target(testapp, construct_genetic_modification,
+                                     tagged_target):
+    testapp.patch_json(construct_genetic_modification['@id'],
+                       {'modified_site_by_target_id': tagged_target['@id']})
+    res = testapp.get(construct_genetic_modification['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent modification target' for
                error in errors_list)

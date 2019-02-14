@@ -140,6 +140,44 @@ def test_submitter_post_other_lab(submitter_testapp, other_lab, award, cell_free
     assert "not in user submits_for" in res.json['errors'][0]['description']
 
 
+def test_not_reviewer_patch_other_lab_characterization(submitter_testapp, testapp, submitter, attachment, construct_genetic_modification_N, other_lab, lab, award):
+    testapp.patch_json(submitter['@id'], {'submits_for': [other_lab['@id']]}),
+    item = {
+        'characterizes': construct_genetic_modification_N['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'review': {
+            'lab': lab['@id']
+        }
+        
+    }
+    gm = testapp.post_json('/genetic_modification_characterization', item).json['@graph'][0]
+    res = submitter_testapp.patch_json(
+        gm['@id'],
+        {'review': {'lab': lab['@id'], 
+                    'reviewed_by': submitter['@id'],
+                    'status': 'compliant'}}, expect_errors=True)
+    assert "not in user submits_for" in res.json['errors'][0]['description']
+
+
+def test_reviewer_patch_other_lab_characterization(submitter_testapp, testapp, submitter, attachment, construct_genetic_modification_N, other_lab, lab, award):
+    testapp.patch_json(submitter['@id'], {'submits_for': [other_lab['@id']]}),
+    item = {
+        'characterizes': construct_genetic_modification_N['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'review': {
+            'lab': other_lab['@id']
+        }
+    }
+    gm = testapp.post_json('/genetic_modification_characterization', item).json['@graph'][0]
+    submitter_testapp.patch_json(
+        gm['@id'],
+        {'review': {'lab': other_lab['@id'], 'reviewed_by': submitter['@id'], 'status': 'compliant'}}, status=200)
+
+
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
     experiment = {'lab': other_lab['@id'],
                   'award': award['@id'],

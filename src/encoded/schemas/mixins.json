@@ -133,6 +133,67 @@
             "permission": "import_items"
         }
     },
+    "review": { 
+        "review": {
+            "title": "Characterization review",
+            "description": "Review of the characterization results by an independent reviewer.",
+            "type": "object",
+            "additionalProperties": false,
+            "dependencies": {
+                "status": {
+                    "oneOf": [
+                         {
+                            "required": ["lab", "reviewed_by"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["not compliant", "compliant"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "properties": {
+                                    "status": {
+                                        "enum": ["not compliant", "compliant"]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "properties": {
+                "status": {
+                    "title": "Review status",
+                    "description": "The current state of review.",
+                    "type": "string",
+                    "enum" : [
+                        "compliant",
+                        "not compliant"
+                    ]
+                },
+                "lab": {
+                    "title": "Reviewing lab",
+                    "description": "Reviewing lab.",
+                    "comment": "Both the submitting and reviewing labs can edit the object.",
+                    "type": "string",
+                    "linkTo": "Lab"
+                },
+                "reviewed_by": {
+                    "title": "Reviewer",
+                    "description": "Person from the reviewing lab who reviewed the data.",
+                    "type": "string",
+                    "linkTo": "User"
+                },
+                "reviewer_comment": {
+                    "title": "Reviewer comment",
+                    "description": "Additional information specified by the reviewer.",            
+                    "type": "string",
+                    "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+                }
+            }
+        }
+    },
     "references": {
         "references": {
             "title": "References",
