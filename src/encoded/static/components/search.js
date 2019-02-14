@@ -723,30 +723,28 @@ class Facet extends React.Component {
         // Bind `this` to non-React methods.
         this.handleSearch = this.handleSearch.bind(this);
     }
-    
-    handleSearch(event){
+
+    handleSearch(event) {
         // search term entered by the user
-        let filterVal = String(event.target.value.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, ''));
-        
+        const filterVal = String(event.target.value.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, ''));
+
         // which facet terms match the search term entered by the user
         let terms = this.props.facet.terms.filter((term) => {
-            if (term.doc_count > 0){
-                let termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '')
-                if (termKey.match(filterVal)){
+            if (term.doc_count > 0) {
+                const termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '');
+                if (termKey.match(filterVal)) {
                     return term;
-                } else {
-                    return false;
                 }
-            } else {
                 return false;
             }
+            return false;
         });
         // if the user has entered a value that is all non-alphabet, we want to give them an error message
-        if (event.target.value.length > 0 && filterVal == ''){
+        if (event.target.value.length > 0 && filterVal === '') {
             terms = [];
         }
         // when there is a search term entered, we want to show only filtered terms not all terms
-        this.setState({filteredTerms: terms});
+        this.setState({ filteredTerms: terms });
     }
 
     render() {
@@ -754,13 +752,12 @@ class Facet extends React.Component {
         const title = facet.title;
         const field = facet.field;
         const total = facet.total;
-        const termID = title.replace(/\s+/g, '');
         const typeahead = this.props.typeaheadFlag;
 
         // Make a list of terms for this facet that should appear, by filtering out terms that
         // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
         // the search result filter list.
-        let terms = facet.terms.filter((term) => {
+        const terms = facet.terms.filter((term) => {
             if (term.key) {
                 // See if the facet term also exists in the search result filters (i.e. the term
                 // exists in the URL query string).
@@ -780,13 +777,13 @@ class Facet extends React.Component {
         const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
         const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         const statusFacet = field === 'status' || field === 'lot_reviews.status';
-        
+
         // collecting selected search terms to display at the top of the facet
-        let selectedTerms = filters.filter(filter => (filter.field === field || filter.field === field+"!"));
-        
+        const selectedTerms = filters.filter(filter => (filter.field === field || filter.field === `${field}!`));
+
         // Number of terms to show - the rest will be viewable on scroll
-        let displayedTermsCount = (typeahead === true) ? 5 : 4;
-        
+        const displayedTermsCount = (typeahead === true) ? 5 : 4;
+
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
         if (field.substr(0, 6) === 'audit.') {
@@ -814,8 +811,8 @@ class Facet extends React.Component {
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
-                            {selectedTerms.map((filter, filterIdx) =>
-                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? "negationFilter" : ""}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                            {selectedTerms.map(filter =>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negationFilter' : ''}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
                             )}
                         </div>
                     : null}
@@ -824,7 +821,7 @@ class Facet extends React.Component {
                             <div className="typeahead-entry" role="search">
                                 <i className="icon icon-search" />
                                 <div className="searchform">
-                                    <input type="search" aria-label={"search to filter list of terms for facet "+titleComponent} placeholder="Search" value={this.state.value} onChange={this.handleSearch} name={"search"+titleComponent.replace(/\s+/g, '')}/>
+                                    <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.value} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
                                 </div>
                             </div>
                         : null}
@@ -835,36 +832,36 @@ class Facet extends React.Component {
                                         <div className="searcherror">
                                             Try a different search term for results.
                                         </div>
-                                    : 
+                                    :
                                         <div className="terms-block">
                                             {(this.state.filteredTerms.length >= displayedTermsCount) ?
-                                                <div className='top-shading hide-shading'/>
+                                                <div className="top-shading hide-shading" />
                                             : null}
-                                            <div className={"term-list "+"search"+titleComponent.replace(/\s+/g, '')} onScroll={shadeOverflowOnScroll}>
+                                            <div className={`term-list search${titleComponent.replace(/\s+/g, '')}`} onScroll={shadeOverflowOnScroll}>
                                                 {this.state.filteredTerms.map(term =>
                                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                                 )}
                                             </div>
                                             {(this.state.filteredTerms.length >= displayedTermsCount) ?
-                                                <div className='shading'/>
+                                                <div className="shading" />
                                             : null}
                                         </div>
                                     }
                                 </div>
-                            : 
+                            :
                                 <div>
-                                    {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
+                                    {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
                                         <div className="terms-block">
                                             {(terms.length >= displayedTermsCount) ?
-                                                <div className='top-shading hide-shading'/>
+                                                <div className="top-shading hide-shading" />
                                             : null}
-                                            <div className={`term-list${typeahead ? ' search'+titleComponent.replace(/\s+/g, '') : ''}`} onScroll={shadeOverflowOnScroll}>
+                                            <div className={`term-list${typeahead ? ` search${titleComponent.replace(/\s+/g, '')}` : ''}`} onScroll={shadeOverflowOnScroll}>
                                                 {terms.map(term =>
                                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                                 )}
                                             </div>
                                             {(terms.length >= displayedTermsCount) ?
-                                                <div className='shading' />
+                                                <div className="shading" />
                                             : null}
                                         </div>
                                     : null}
@@ -884,10 +881,7 @@ class Facet extends React.Component {
 Facet.propTypes = {
     facet: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
-};
-
-Facet.defaultProps = {
-    width: 'inherit',
+    typeaheadFlag: PropTypes.bool.isRequired,
 };
 
 /**
@@ -1024,9 +1018,9 @@ export class FacetList extends React.Component {
         // are the negation facet terms that need to get merged into the regular facets that their
         // non-negated versions inhabit.
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
-        
+
         // Certain facets are typeahead for easy searching and they are listed here
-        const typeaheadList = ["biosample_ontology.term_name", "assay_title", "target.label", "biosample_ontology.organ_slims", "biosample_ontology.cell_slims"];
+        const typeaheadList = ['biosample_ontology.term_name', 'assay_title', 'target.label', 'biosample_ontology.organ_slims', 'biosample_ontology.cell_slims'];
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
@@ -1052,7 +1046,7 @@ export class FacetList extends React.Component {
                                 filters={filters}
                                 width={width}
                                 negationFilters={negationFilters}
-                                typeaheadFlag={typeaheadList.indexOf(facet.field) > -1 ? true : false}
+                                typeaheadFlag={(typeaheadList.indexOf(facet.field) > -1)}
                             />
                         );
                     })}
