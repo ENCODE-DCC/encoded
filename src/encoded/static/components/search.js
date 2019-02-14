@@ -785,8 +785,8 @@ class Facet extends React.Component {
         let selectedTerms = filters.filter(filter => (filter.field === field || filter.field === field+"!"));
         
         // Number of terms to show - the rest will be viewable on scroll
-        let displayedTermsCount = 5;
-
+        let displayedTermsCount = (typeahead === true) ? 5 : 4;
+        
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
         if (field.substr(0, 6) === 'audit.') {
@@ -809,7 +809,7 @@ class Facet extends React.Component {
 
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
-                <div className="facet typeahead-facet">
+                <div className="facet">
                     <h5>{titleComponent}</h5>
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
@@ -828,65 +828,49 @@ class Facet extends React.Component {
                                 </div>
                             </div>
                         : null}
-                        {typeahead ? 
-                            <div>
-                                {(this.state.filteredTerms !== null) ?
-                                    <div>
-                                        {(this.state.filteredTerms.length === 0) ?
-                                            <div className="searcherror">
-                                                Try a different search term for results.
+                        <div>
+                            {(this.state.filteredTerms !== null) ?
+                                <div>
+                                    {(this.state.filteredTerms.length === 0) ?
+                                        <div className="searcherror">
+                                            Try a different search term for results.
+                                        </div>
+                                    : 
+                                        <div className="terms-block">
+                                            {(this.state.filteredTerms.length >= displayedTermsCount) ?
+                                                <div className='top-shading hide-shading'/>
+                                            : null}
+                                            <div className={"term-list "+"search"+titleComponent.replace(/\s+/g, '')} onScroll={shadeOverflowOnScroll}>
+                                                {this.state.filteredTerms.map(term =>
+                                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                                )}
                                             </div>
-                                        : 
-                                            <div className="terms-block">
-                                                {(this.state.filteredTerms.length >= displayedTermsCount) ?
-                                                    <div className='top-shading hide-shading'/>
-                                                : null}
-                                                <div className={"term-list "+"search"+titleComponent.replace(/\s+/g, '')} onScroll={shadeOverflowOnScroll}>
-                                                    {this.state.filteredTerms.map(term =>
-                                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                                    )}
-                                                </div>
-                                                {(this.state.filteredTerms.length >= displayedTermsCount) ?
-                                                    <div className='shading'/>
-                                                : null}
-                                            </div>
-                                        }
-                                    </div>
-                                : 
-                                    <div>
-                                        {(typeahead && ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!'))) ? 
-                                            <div className="terms-block">
-                                                {(terms.length >= displayedTermsCount) ?
-                                                    <div className='top-shading hide-shading'/>
-                                                : null}
-                                                <div className={"term-list "+"search"+titleComponent.replace(/\s+/g, '')} onScroll={shadeOverflowOnScroll}>
-                                                    {terms.map(term =>
-                                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                                    )}
-                                                </div>
-                                                {(terms.length >= displayedTermsCount) ?
-                                                    <div className='shading' />
-                                                : null}
-                                            </div>
-                                        : null}
-                                    </div>
-                                }
-                            </div>
-                        : 
-                            <div className="scroll-container">
-                                {(terms.length > displayedTermsCount) ?
-                                    <div className='top-shading hide-shading'/>
-                                : null}
-                                <div className="term-list" onScroll={shadeOverflowOnScroll}>
-                                    {terms.map(term =>
-                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                    )}
+                                            {(this.state.filteredTerms.length >= displayedTermsCount) ?
+                                                <div className='shading'/>
+                                            : null}
+                                        </div>
+                                    }
                                 </div>
-                                {(terms.length > displayedTermsCount) ?
-                                    <div className='shading'/>
-                                : null}
-                            </div>
-                        }
+                            : 
+                                <div>
+                                    {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ? 
+                                        <div className="terms-block">
+                                            {(terms.length >= displayedTermsCount) ?
+                                                <div className='top-shading hide-shading'/>
+                                            : null}
+                                            <div className={`term-list${typeahead ? ' search'+titleComponent.replace(/\s+/g, '') : ''}`} onScroll={shadeOverflowOnScroll}>
+                                                {terms.map(term =>
+                                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                                )}
+                                            </div>
+                                            {(terms.length >= displayedTermsCount) ?
+                                                <div className='shading' />
+                                            : null}
+                                        </div>
+                                    : null}
+                                </div>
+                            }
+                        </div>
                     </ul>
                 </div>
             );
