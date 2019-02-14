@@ -781,8 +781,8 @@ class Facet extends React.Component {
         // collecting selected search terms to display at the top of the facet
         const selectedTerms = filters.filter(filter => (filter.field === field || filter.field === `${field}!`));
 
-        // Number of terms to show - the rest will be viewable on scroll
-        const displayedTermsCount = (typeahead === true) ? 5 : 4;
+        // Number of terms to show, the rest will be viewable on scroll
+        const displayedTermsCount = 5;
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -804,10 +804,12 @@ class Facet extends React.Component {
             }
         }
 
+        // Return Facet component if there are terms with doc_count > 1 or for negated facet
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
+                    {/* Group terms that results are filtered by at the top */}
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
@@ -817,6 +819,7 @@ class Facet extends React.Component {
                         </div>
                     : null}
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                        {/* Display searchbar for typeahead if there are more than the limit of terms */}
                         {(typeahead && (terms.length >= displayedTermsCount)) ?
                             <div className="typeahead-entry" role="search">
                                 <i className="icon icon-search" />
@@ -825,49 +828,48 @@ class Facet extends React.Component {
                                 </div>
                             </div>
                         : null}
-                        <div>
-                            {(this.state.filteredTerms !== null) ?
-                                <div>
-                                    {(this.state.filteredTerms.length === 0) ?
-                                        <div className="searcherror">
-                                            Try a different search term for results.
+                        {/* If user has searched using the typeahead, we will not display the full set of facet terms, just those matching the search */}
+                        {(this.state.filteredTerms !== null) ?
+                            <div>
+                                {/* Display error message if there is a search but no results found */}
+                                {(this.state.filteredTerms.length === 0) ?
+                                    <div className="searcherror">
+                                        Try a different search term for results.
+                                    </div>
+                                :
+                                    <div className="terms-block">
+                                        {/* List of results does not overflow top on initialization */}
+                                        <div className="top-shading hide-shading" />
+                                        {/* List of filtered terms */}
+                                        <div className={`term-list search${titleComponent.replace(/\s+/g, '')}`} onScroll={shadeOverflowOnScroll}>
+                                            {this.state.filteredTerms.map(term =>
+                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                            )}
                                         </div>
-                                    :
-                                        <div className="terms-block">
-                                            {(this.state.filteredTerms.length >= displayedTermsCount) ?
-                                                <div className="top-shading hide-shading" />
-                                            : null}
-                                            <div className={`term-list search${titleComponent.replace(/\s+/g, '')}`} onScroll={shadeOverflowOnScroll}>
-                                                {this.state.filteredTerms.map(term =>
-                                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                                )}
-                                            </div>
-                                            {(this.state.filteredTerms.length >= displayedTermsCount) ?
-                                                <div className="shading" />
-                                            : null}
+                                        {/* Only show bottom shading when list of results overflows */}
+                                        <div className={`shading ${(this.state.filteredTerms.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
+                                    </div>
+                                }
+                            </div>
+                        :
+                            <div>
+                                {/* If the user has not searched, we will display the full set of facet terms */}
+                                {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
+                                    <div className="terms-block">
+                                        {/* List of results does not overflow top on initialization */}
+                                        <div className="top-shading hide-shading" />
+                                        {/* List of terms */}
+                                        <div className={`term-list${typeahead ? ` search${titleComponent.replace(/\s+/g, '')}` : ''}`} onScroll={shadeOverflowOnScroll}>
+                                            {terms.map(term =>
+                                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                            )}
                                         </div>
-                                    }
-                                </div>
-                            :
-                                <div>
-                                    {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
-                                        <div className="terms-block">
-                                            {(terms.length >= displayedTermsCount) ?
-                                                <div className="top-shading hide-shading" />
-                                            : null}
-                                            <div className={`term-list${typeahead ? ` search${titleComponent.replace(/\s+/g, '')}` : ''}`} onScroll={shadeOverflowOnScroll}>
-                                                {terms.map(term =>
-                                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                                )}
-                                            </div>
-                                            {(terms.length >= displayedTermsCount) ?
-                                                <div className="shading" />
-                                            : null}
-                                        </div>
-                                    : null}
-                                </div>
-                            }
-                        </div>
+                                        {/* Only show bottom shading when list of results overflows */}
+                                        <div className={`shading ${(terms.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
+                                    </div>
+                                : null}
+                            </div>
+                        }
                     </ul>
                 </div>
             );
