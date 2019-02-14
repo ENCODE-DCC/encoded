@@ -752,7 +752,7 @@ class Facet extends React.Component {
         const title = facet.title;
         const field = facet.field;
         const total = facet.total;
-        const typeahead = this.props.typeaheadFlag;
+        const typeahead = facet.type === 'typeahead';
 
         // Make a list of terms for this facet that should appear, by filtering out terms that
         // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
@@ -804,12 +804,12 @@ class Facet extends React.Component {
             }
         }
 
-        // Return Facet component if there are terms with doc_count > 1 or for negated facet
+        // Return Facet component if there are terms with doc_count > 0 or for negated facet
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
-                    {/* Group terms that results are filtered by at the top */}
+                    {/* Display selected filters at the top */}
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
@@ -819,7 +819,7 @@ class Facet extends React.Component {
                         </div>
                     : null}
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
-                        {/* Display searchbar for typeahead if there are more than the limit of terms */}
+                        {/* Display searchbar for typeahead facets if there are more than 5 terms */}
                         {(typeahead && (terms.length >= displayedTermsCount)) ?
                             <div className="typeahead-entry" role="search">
                                 <i className="icon icon-search" />
@@ -883,7 +883,6 @@ class Facet extends React.Component {
 Facet.propTypes = {
     facet: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
-    typeaheadFlag: PropTypes.bool.isRequired,
 };
 
 /**
@@ -1048,7 +1047,6 @@ export class FacetList extends React.Component {
                                 filters={filters}
                                 width={width}
                                 negationFilters={negationFilters}
-                                typeaheadFlag={(typeaheadList.indexOf(facet.field) > -1)}
                             />
                         );
                     })}

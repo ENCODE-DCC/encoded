@@ -331,7 +331,8 @@
             "title": "Assay category"
         },
         "assay_title": {
-            "title": "Assay"
+            "title": "Assay",
+            "type": "typeahead"
         },
         "status": {
             "title": "Experiment status"
@@ -349,7 +350,8 @@
             "title": "Target category"
         },
         "target.label": {
-            "title": "Target of assay"
+            "title": "Target of assay",
+            "type": "typeahead"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
@@ -358,13 +360,16 @@
             "title": "Biosample type"
         },
         "biosample_ontology.term_name" : {
-            "title": "Biosample name"
+            "title": "Biosample name",
+            "type": "typeahead"
         },
         "biosample_ontology.organ_slims": {
-            "title": "Organ"
+            "title": "Organ",
+            "type": "typeahead"
         },
         "biosample_ontology.cell_slims": {
-            "title": "Cell"
+            "title": "Cell",
+            "type": "typeahead"
         },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
