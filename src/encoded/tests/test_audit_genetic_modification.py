@@ -98,5 +98,5 @@ def test_genetic_modification_target(testapp, construct_genetic_modification,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'target already modified' for
+    assert any(error['category'] == 'inconsistent modification target' for
                error in errors_list)

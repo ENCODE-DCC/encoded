@@ -3313,7 +3313,7 @@ def test_audit_experiment_tag_target(testapp, experiment, ctcf):
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                            'target': tag_target['@id']})
     audits = testapp.get(experiment['@id'] + '@@index-data').json['audit']
-    assert any(detail['category'] == 'tagged target'
+    assert any(detail['category'] == 'inconsistent experiment target'
                for audit in audits.values() for detail in audit)
 
 
