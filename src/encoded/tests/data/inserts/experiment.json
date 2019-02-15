@@ -494,6 +494,23 @@
     },
     {
         "_test": "worm development series 2",
+        "accession": "ENCSR375GSQ",
+        "assay_term_name": "RNA-seq",
+        "award": "U41HG007355",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "target": "fkh-10-celegans",
+        "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "date_submitted": "2015-02-21",
+        "aliases": ["robert-waterston:life_stage_bug_experiment"],
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "21ee48a4-d172-42a2-9306-13a8ca317daf",
+        "experiment_classification": ["functional genomics assay"]
+    },
+    {
+        "_test": "worm development series 2",
         "accession": "ENCSR862BAF",
         "assay_term_name": "RNA-seq",
         "award": "U41HG007355",
