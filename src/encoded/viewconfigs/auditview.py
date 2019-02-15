@@ -15,6 +15,9 @@ AuditView<-MatrixView<-BaseView
 - _format_facets
 """
 import copy
+import time
+import logging
+import datetime
 
 from encoded.helpers.helper import search_result_actions
 from encoded.viewconfigs.matrix import MatrixView
@@ -25,7 +28,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
     set_facets,
     set_filters,
 )
-import time
+
 
 class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
     '''Audit View'''
@@ -58,6 +61,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         self.logger.info('Completed configuring logger()!')
 
     def _construct_aggs(self, x_grouping, audit_field_list):
+        t_start = time.time()
         '''Helper Method for constructing query'''
         # pylint: disable=too-many-locals
         x_agg = {
@@ -130,10 +134,16 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             aggs_nest_thr['no.audit.internal_action'] = very_nested_obj
             self._no_audits_groupings.append("no.audit.internal_action")
         aggs['x'] = x_agg
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _construct_aggs',
+            (t_end - t_start)*1000
+        ))
         return aggs
 
     def _construct_query(self):
         '''Helper method for preprocessing view'''
+        t_start = time.time()
         search_fields, _ = get_search_fields(self._request, self._doc_types)
         query = get_filtered_query(
             self._search_term,
@@ -149,6 +159,11 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
             )
         audit_field_list, used_filters = self._set_query_aggs(query)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _construct_query',
+            (t_end - t_start)*1000
+        ))
         return query, audit_field_list, used_filters
 
     def _construct_xygroupings(
@@ -160,6 +175,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         ):
         '''Helper Method for constructing query'''
         # pylint: disable=arguments-differ
+        t_start = time.time()
         x_grouping = self._matrix['x']['group_by']
         aggs = self._construct_aggs(x_grouping, audit_field_list)
         query['aggs']['matrix'] = {
@@ -171,6 +187,12 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             },
             "aggs": aggs,
         }
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _construct_xygroupings',
+            (t_end - t_start)*1000
+        ))
+
 
     def _summarize_buckets(self, x_buckets, outer_bucket, audit_field_list, bucket_key):
         """
@@ -182,6 +204,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             :param bucket_key: buckey key
         """
         # pylint: disable=arguments-differ
+        t_start = time.time()
         for category in audit_field_list:
             counts = {}
             for bucket in outer_bucket[category]['buckets']:
@@ -196,12 +219,18 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 for xbucket in x_buckets:
                     summary.append(counts.get(xbucket['key'], 0))
                 bucket[bucket_key] = summary
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _summarize_buckets',
+            (t_end - t_start)*1000
+        ))
 
     def _set_query_aggs(self, query):
         '''Helper method for preprocessing view'''
         # Setting filters.
         # Rather than setting them at the top level of the query
         # we collect them for use in aggregations later.
+        t_start = time.time()
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
         used_filters = set_filters(
@@ -244,6 +273,11 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             negative_filters,
             audit_field_list
         )
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _set_query_aggs',
+            (t_end - t_start)*1000
+        ))
         return audit_field_list, used_filters
 
     def _summarize_no_audits(
@@ -263,6 +297,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             :param aggregations: aggregations
             :param bucket_key: bucket key
         """
+        t_start = time.time()
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
         if grouping_fields:
@@ -288,9 +323,16 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         aggregations[group_by].pop("buckets", None)
         aggregations[group_by].pop("sum_other_doc_count", None)
         aggregations[group_by].pop("doc_count_error_upper_bound", None)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _summarize_no_audits',
+            (t_end - t_start)*1000
+        ))
+
 
     def _update_aggregations(self, aggregations):
         '''Helper method for preprocessing view'''
+        t_start = time.time()
         aggregations['matrix']['no.audit.error']['key'] = 'no errors'
         aggregations['matrix']['no.audit.not_compliant']['key'] = 'no errors and compliant'
         no_audit_warning_key = 'no errors, compliant, and no warnings'
@@ -320,12 +362,19 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
         self._result['matrix']['y']['group_by'][1] = "audit_label"
         self._result['matrix']['y']['audit_category'] = bucket_audit_category_dict
         self._result['matrix']['x'].update(aggregations['matrix']['x'])
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit _update_aggregations',
+            (t_end - t_start)*1000
+        ))
+
 
     def preprocess_view(self):
         '''
         Main function to construct query and build view results json
         * Only publicly accessible function
         '''
+        t_start = time.time()
         audit_route = self._request.route_path('audit', slash='/')
         self._result['@id'] = audit_route + self._search_base
         self._result['@type'] = ['AuditMatrix']
@@ -339,6 +388,11 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 self._schema = type_info.schema
         self._validate_items(type_info)
         self._result['title'] = self._set_result_title(type_info)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit preprocess_view _a_',
+            (t_end - t_start)*1000
+        ))
         # Because the formatting of the query edits the sub-objects of the matrix, we need to
         # deepcopy the matrix so the original type_info.factory.matrix is not modified, allowing
         # /matrix to get the correct data and to not be able to access the /audit data.
@@ -357,15 +411,17 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             self._view_item.tabular_report
         ]
         query, audit_field_list, used_filters = self._construct_query()
-        print('---------------------------------------------------------------------------------------------------------------')
-        print('audit search')
-        t0 = time.time()
-        print('---------------------------------------------------------------------------------------------------------------')         
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit preprocess_view _b_',
+            (t_end - t_start)*1000
+        ))
         es_results = self._elastic_search.search(body=query, index=self._es_index)
-        print('---------------------------------------------------------------------------------------------------------------')
-        print('audit search')
-        self.logger.debug(time.time() - t0)
-        print('---------------------------------------------------------------------------------------------------------------')         
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit preprocess_view _c_',
+            (t_end - t_start)*1000
+        ))
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']
         self._result['matrix']['doc_count'] = total
@@ -392,6 +448,11 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             aggregations['matrix'],
             bucket_key)
         self._update_aggregations(aggregations)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit preprocess_view _d_',
+            (t_end - t_start)*1000
+        ))
         self._result.update(
             search_result_actions(
                 self._request,
@@ -399,10 +460,20 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 es_results
             )
         )
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit preprocess_view _e_',
+            (t_end - t_start)*1000
+        ))
         self._result['total'] = es_results['hits']['total']
         if self._result['total']:
             self._result['notification'] = 'Success'
         else:
             self._request.response.status_code = 404
             self._result['notification'] = 'No results found'
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Audit preprocess_view',
+            (t_end - t_start)*1000
+        ))
         return self._result

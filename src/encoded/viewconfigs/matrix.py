@@ -23,9 +23,10 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
 from snovault.viewconfigs.base_view import BaseView  # pylint: disable=import-error
 import time
 import logging
+import datetime
 
 #logger = logging.getLogger(__name__)
-#logging.basicConfig(filename='search_test_1.log', level=logging.DEBUG)
+logging.basicConfig(filename='search_test_1.log', level=logging.DEBUG)
 
 class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
     '''Matrix View'''
@@ -48,21 +49,24 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         # Create the Logger
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
- 
+
         # Create the Handler for logging data to a file
         logger_handler = logging.FileHandler('search_test_1.log')
         logger_handler.setLevel(logging.DEBUG)
- 
+
         # Create a Formatter for formatting the log messages
         logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
- 
+
         # Add the Formatter to the Handler
         logger_handler.setFormatter(logger_formatter)
- 
+
         # Add the Handler to the Logger
         self.logger.addHandler(logger_handler)
         self.logger.info('Completed configuring logger()!')
-        
+        self.logger.debug('------------------')
+        self.logger.debug(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+        self.logger.debug('------------------')
+
 
     @staticmethod
     def _set_result_title(type_info):
@@ -71,6 +75,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         return title
 
     def _construct_query(self):
+        t_start = time.time()
         '''Helper method for preprocessing view'''
         search_fields, _ = get_search_fields(self._request, self._doc_types)
         query = get_filtered_query(
@@ -87,20 +92,32 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
             )
         used_filters = self._set_query_aggs(query)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix _construct_query',
+            (t_end - t_start)*1000
+        ))
         return query, used_filters
 
     def _construct_result_views(self, type_info):
         '''Helper method for preprocessing view'''
+        t_start = time.time()
         views = [
             self._view_item.result_list,
             self._view_item.tabular_report
         ]
         if hasattr(type_info.factory, 'summary_data'):
             views.append(self._view_item.summary_report)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix _construct_result_views',
+            (t_end - t_start)*1000
+        ))
         return views
 
     def _construct_xygroupings(self, query, filters, negative_filters):
         '''Helper Method for constructing query'''
+        t_start = time.time()
         x_grouping = self._matrix['x']['group_by']
         y_groupings = self._matrix['y']['group_by']
         x_agg = {
@@ -130,8 +147,15 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             },
             "aggs": aggs,
         }
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix _construct_xygroupings',
+            (t_end - t_start)*1000
+        ))
+
 
     def _validate_items(self, type_info):
+        t_start = time.time()
         '''Helper function for class and child classes'''
         msg = None
         if len(self._doc_types) != 1:
@@ -150,9 +174,16 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             )
         if msg:
             raise HTTPBadRequest(explanation=msg)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix _validate_items',
+            (t_end - t_start)*1000
+        ))
+
 
     def _set_query_aggs(self, query):
         '''Helper Method for constructing query'''
+        t_start = time.time()
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
         used_filters = set_filters(
@@ -188,9 +219,15 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             self._doc_types
         )
         self._construct_xygroupings(query, filters, negative_filters)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix _set_query_aggs',
+            (t_end - t_start)*1000
+        ))
         return used_filters
 
     def _summarize_buckets(self, x_buckets, outer_bucket, grouping_fields):
+        t_start = time.time()
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
         if not grouping_fields:
@@ -207,8 +244,14 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         else:
             for bucket in outer_bucket[group_by]['buckets']:
                 self._summarize_buckets(x_buckets, bucket, grouping_fields)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix _summarize_buckets',
+            (t_end - t_start)*1000
+        ))
 
     def preprocess_view(self):
+        t_start = time.time()
         '''
         Main function to construct query and build view results json
         * Only publicly accessible function
@@ -220,6 +263,11 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         # TODO: Validate doc types in base class in one location
         # Now we do it here and in _validate_items
         type_info = None
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view _a',
+            (t_end - t_start)*1000
+        ))
         if len(self._doc_types) == 1:
             if self._doc_types[0] in self._types:
                 type_info = self._types[self._doc_types[0]]
@@ -231,25 +279,36 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._matrix['x']['limit'] = self._request.params.get('x.limit', 20)
         self._matrix['y']['limit'] = self._request.params.get('y.limit', 5)
         search_route = self._request.route_path('search', slash='/')
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view _b',
+            (t_end - t_start)*1000
+        ))
         self._matrix['search_base'] = search_route + self._search_base
         matrix_route = self._request.route_path('matrix', slash='/')
         self._matrix['clear_matrix'] = matrix_route + '?type=' + self._doc_types[0]
         self._result['views'] = self._construct_result_views(type_info)
         query, used_filters = self._construct_query()
-        print('---------------------------------------------------------------------------------------------------------------')
-        #raise ValueError('abc')
-        #self.logger.debug('matrix')
-        t0 = time.time()
-        print('---------------------------------------------------------------------------------------------------------------')         
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view _c',
+            (t_end - t_start)*1000
+        ))
         es_results = self._elastic_search.search(body=query, index=self._es_index)
-        print('---------------------------------------------------------------------------------------------------------------')
-        print('matrix')
-        self.logger.debug(time.time() - t0)
-        print('---------------------------------------------------------------------------------------------------------------')         
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view _d',
+            (t_end - t_start)*1000
+        ))
         aggregations = es_results['aggregations']
         total = aggregations['matrix']['doc_count']
         self._result['matrix']['doc_count'] = total
         self._result['matrix']['max_cell_doc_count'] = 0
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view _e',
+            (t_end - t_start)*1000
+        ))
         self._result['facets'] = self._format_facets(
             es_results,
             self._facets,
@@ -265,6 +324,11 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             aggregations['matrix'],
             y_groupings + [x_grouping]
         )
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view',
+            (t_end - t_start)*1000
+        ))
         self._result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
         self._result['matrix']['x'].update(aggregations['matrix']['x'])
         self._result.update(
@@ -274,10 +338,20 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 es_results
             )
         )
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix preprocess_view _e',
+            (t_end - t_start)*1000
+        ))
         self._result['total'] = es_results['hits']['total']
         if self._result['total']:
             self._result['notification'] = 'Success'
         else:
             self._request.response.status_code = 404
             self._result['notification'] = 'No results found'
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Matrix TOTAL preprocess_view',
+            (t_end - t_start)*1000
+        ))
         return self._result

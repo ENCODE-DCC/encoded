@@ -10,6 +10,9 @@ SummaryView<-MatrixView<-BaseView
 ### BaseView function dependencies
 - _format_facets
 """
+import time
+import logging
+import datetime
 from urllib.parse import urlencode
 
 from encoded.viewconfigs.matrix import MatrixView
@@ -20,7 +23,7 @@ from snovault.helpers.helper import (  # pylint: disable=import-error
     set_facets,
     set_filters,
 )
-import time
+
 
 class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
     '''Summary View'''
@@ -51,6 +54,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
 
     def _construct_query(self):
         '''Helper method for preprocessing view'''
+        t_start = time.time()
         search_fields, _ = get_search_fields(self._request, self._doc_types)
         query = get_filtered_query(
             self._search_term,
@@ -67,6 +71,11 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
             )
         used_filters = self._set_query_aggs(query)
         query['size'] = 0
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary _construct_query',
+            (t_end - t_start)*1000
+        ))
         return query, used_filters
 
     def _construct_xygroupings(
@@ -76,6 +85,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         ):
         '''Helper Method for constructing query'''
         # pylint: disable=arguments-differ
+        t_start = time.time()
         x_grouping = self._summary['x']['group_by']
         y_groupings = self._summary['y']['group_by']
         summary_groupings = self._summary['grouping']
@@ -118,9 +128,16 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
             },
             "aggs": summary_aggs,
         }
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary _construct_xygroupings',
+            (t_end - t_start)*1000
+        ))
+
 
     def _set_query_aggs(self, query):
         '''Helper Method for constructing query'''
+        t_start = time.time()
         query_filters = query['post_filter'].pop('bool')
         filter_collector = {'post_filter': {'bool': query_filters}}
         used_filters = set_filters(
@@ -144,6 +161,11 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
             self._doc_types
         )
         self._construct_xygroupings(query, filters)
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary _set_query_aggs',
+            (t_end - t_start)*1000
+        ))
         return used_filters
 
     def preprocess_view(self):
@@ -151,6 +173,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         Main function to construct query and build view results json
         * Only publicly accessible function
         '''
+        t_start = time.time()
         summary_route = self._request.route_path('summary', slash='/')
         self._result['@id'] = summary_route + self._search_base
         self._result['@type'] = ['Summary']
@@ -158,6 +181,11 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         # TODO: Validate doc types in base class in one location
         # Now we do it here and in _validate_items
         type_info = None
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary preprocess_view _a_',
+            (t_end - t_start)*1000
+        ))
         if len(self._doc_types) == 1:
             if self._doc_types[0] in self._types:
                 type_info = self._types[self._doc_types[0]]
@@ -170,6 +198,11 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         self._summary['search_base'] = search_route + self._search_base
         clear_summary = summary_route + '?type=' + self._doc_types[0]
         self._summary['clear_summary'] = clear_summary
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary preprocess_view _b_',
+            (t_end - t_start)*1000
+        ))
         self._result['views'] = [
             self._view_item.result_list,
             self._view_item.tabular_report,
@@ -180,21 +213,28 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
         clear_qs_str = ('?' + clear_qs) if clear_qs else ''
         self._result['clear_filters'] = summary_route + clear_qs_str
         query, used_filters = self._construct_query()
-        print('---------------------------------------------------------------------------------------------------------------')
-        print('size not none')
-        t0 = time.time()
-        print('---------------------------------------------------------------------------------------------------------------')         
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary preprocess_view _c_',
+            (t_end - t_start)*1000
+        ))
         es_results = self._elastic_search.search(body=query, index=self._es_index)
-        print('---------------------------------------------------------------------------------------------------------------')
-        print('summary, size not none')
-        self.logger.debug(time.time() - t0)
-        print('---------------------------------------------------------------------------------------------------------------')         
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary preprocess_view _e_',
+            (t_end - t_start)*1000
+        ))
         aggregations = es_results['aggregations']
         total = aggregations['summary']['doc_count']
         self._result['summary']['doc_count'] = total
         self._result['summary']['max_cell_doc_count'] = 0
         summary_groupings = self._summary['grouping']
         self._result['summary'][summary_groupings[0]] = es_results['aggregations']['summary']
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary preprocess_view _f_',
+            (t_end - t_start)*1000
+        ))
         self._result['facets'] = self._format_facets(
             es_results,
             self._facets,
@@ -203,4 +243,9 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
             total,
             self._principals
         )
+        t_end = time.time()
+        self.logger.debug('{} time: {:.20f}'.format(
+            'ENCODED Summary preprocess_view',
+            (t_end - t_start)*1000
+        ))
         return self._result
