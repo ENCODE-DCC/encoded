@@ -34,6 +34,7 @@ class AntibodyLot(SharedItem):
         'targets.genes',
         'targets.organism',
         'characterizations.award',
+        'characterizations.characterization_reviews.biosample_ontology',
         'characterizations.documents',
         'characterizations.lab',
         'characterizations.submitted_by',
