@@ -498,7 +498,7 @@ class Experiment(Dataset,
         'y': {
             'facets': [
                 'status',
-                'replicates.libraries.biosample.donor.organism.scientific_name',
+                'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_ontology.classification',
                 'biosample_ontology.organ_slims',
                 'biosample_ontology.cell_slims',
@@ -527,7 +527,7 @@ class Experiment(Dataset,
     summary_data = {
         'y': {
             'facets': [
-                'replicates.libraries.biosample.donor.organism.scientific_name',
+                'replicates.library.biosample.donor.organism.scientific_name',
                 'biosample_ontology.classification',
                 'biosample_ontology.organ_slims',
                 'biosample_ontology.cell_slims',
