@@ -37,11 +37,7 @@ class Characterization(ItemWithAttachment, Item):
         'documents',
     ]
     set_status_down = []
-    STATUS_ACL = {
-        'in progress': ALLOW_REVIEWER_EDIT,
-        'released': ALLOW_CURRENT,
-        'deleted': DELETED,
-    }
+    
 
     def __ac_local_roles__(self):
         roles = {}
@@ -84,7 +80,11 @@ class DonorCharacterization(Characterization):
 class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
     schema = load_schema('encoded:schemas/biosample_characterization.json')
-
+    STATUS_ACL = {
+        'released': ALLOW_CURRENT,
+        'in progress': ALLOW_REVIEWER_EDIT,
+        'deleted': DELETED,
+    }
 
 @collection(
     name='antibody-characterizations',
@@ -127,3 +127,8 @@ class AntibodyCharacterization(Characterization, SharedItem):
 class GeneticModificationCharacterization(Characterization):
     item_type = 'genetic_modification_characterization'
     schema = load_schema('encoded:schemas/genetic_modification_characterization.json')
+    STATUS_ACL = {
+        'released': ALLOW_CURRENT,
+        'in progress': ALLOW_REVIEWER_EDIT,
+        'deleted': DELETED,
+    }
