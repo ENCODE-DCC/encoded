@@ -37,26 +37,17 @@ class Characterization(ItemWithAttachment, Item):
         'documents',
     ]
     set_status_down = []
-    
+    STATUS_ACL = Item.STATUS_ACL.copy()
+    STATUS_ACL['in progress'] = ALLOW_REVIEWER_EDIT
 
     def __ac_local_roles__(self):
-        roles = {}
+        roles = super().__ac_local_roles__()
         properties = self.upgrade_properties().copy()
-        if 'lab' in properties:
-            lab_submitters = 'submits_for.%s' % properties['lab']
-            roles[lab_submitters] = 'role.lab_submitter'
         if 'review' in properties:
             reviewing_lab = properties['review'].get('lab')
             if reviewing_lab is not None:
                 lab_reviewers = 'submits_for.%s' % reviewing_lab
                 roles[lab_reviewers] = 'role.lab_reviewer'
-        if 'award' in properties:
-            root = find_root(self)
-            award = root.get_by_uuid(properties['award'])
-            viewing_group = award.upgrade_properties().get('viewing_group')
-            if viewing_group is not None:
-                viewing_group_members = 'viewing_group.%s' % viewing_group
-                roles[viewing_group_members] = 'role.viewing_group_member'
         return roles
 
 
@@ -80,11 +71,6 @@ class DonorCharacterization(Characterization):
 class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
     schema = load_schema('encoded:schemas/biosample_characterization.json')
-    STATUS_ACL = {
-        'released': ALLOW_CURRENT,
-        'in progress': ALLOW_REVIEWER_EDIT,
-        'deleted': DELETED,
-    }
 
 @collection(
     name='antibody-characterizations',
@@ -127,8 +113,3 @@ class AntibodyCharacterization(Characterization, SharedItem):
 class GeneticModificationCharacterization(Characterization):
     item_type = 'genetic_modification_characterization'
     schema = load_schema('encoded:schemas/genetic_modification_characterization.json')
-    STATUS_ACL = {
-        'released': ALLOW_CURRENT,
-        'in progress': ALLOW_REVIEWER_EDIT,
-        'deleted': DELETED,
-    }
