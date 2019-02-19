@@ -193,7 +193,7 @@ class Matrix extends React.Component {
                 <div>
                     <div className="panel data-display main-panel">
                         <div className="row matrix__facet--horizontal">
-                            <div className="matrix-header" style={{ paddingRight: 0 }}>
+                            <div className="matrix-header">
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>

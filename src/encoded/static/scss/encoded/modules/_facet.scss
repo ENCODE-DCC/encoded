@@ -206,7 +206,7 @@
     @at-root #{&}__negator {
         flex: 0 0 15px;
         margin-left: 5px;
-        padding: 0;
+        padding: 0 2px 0 0;
         width: 15px;
         height: 10px;
         text-align: right;
@@ -301,12 +301,12 @@
 .shading {
     padding-bottom: 2px;
     bottom: 0;
-    box-shadow: inset 0px -20px 40px -20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
 }
 
 .top-shading {
     top: 0;
-    box-shadow: inset 0px 20px 40px -20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(rgba(0,0,0,0.2), 30%, rgba(0,0,0,0));
 }
 
 .filter-container {
@@ -316,7 +316,7 @@
         display: inline-block;
         padding: 0 5px;
     }
-    .negationFilter {
+    .negation-filter {
         color: #e50400;
     }
     .filter-link {

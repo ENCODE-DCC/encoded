@@ -711,9 +711,12 @@ TypeTerm.propTypes = {
     total: PropTypes.number.isRequired,
 };
 
+// Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
+const sanitizedString = inputString => inputString.toLowerCase().replace(/ /g, '').replace(/[*]/g, '');
+
 class Facet extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
         // Set initial React commponent state.
         this.state = {
@@ -726,12 +729,12 @@ class Facet extends React.Component {
 
     handleSearch(event) {
         // search term entered by the user
-        const filterVal = String(event.target.value.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, ''));
+        const filterVal = String(sanitizedString(event.target.value));
 
         // which facet terms match the search term entered by the user
         let terms = this.props.facet.terms.filter((term) => {
             if (term.doc_count > 0) {
-                const termKey = term.key.toLowerCase().replace(/ /g, '').replace(/[^\w\s]/gi, '');
+                const termKey = sanitizedString(term.key);
                 if (termKey.match(filterVal)) {
                     return term;
                 }
@@ -739,7 +742,7 @@ class Facet extends React.Component {
             }
             return false;
         });
-        // if the user has entered a value that is all non-alphabet, we want to give them an error message
+        // if the user has entered a value that is all spaces or asterisks, we want to give them an error message
         if (event.target.value.length > 0 && filterVal === '') {
             terms = [];
         }
@@ -805,7 +808,7 @@ class Facet extends React.Component {
         }
 
         // Return Facet component if there are terms with doc_count > 0 or for negated facet
-        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
@@ -814,7 +817,7 @@ class Facet extends React.Component {
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
                             {selectedTerms.map(filter =>
-                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negationFilter' : ''}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
                             )}
                         </div>
                     : null}
@@ -854,7 +857,7 @@ class Facet extends React.Component {
                         :
                             <div>
                                 {/* If the user has not searched, we will display the full set of facet terms */}
-                                {((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
+                                {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
                                     <div className="terms-block">
                                         {/* List of results does not overflow top on initialization */}
                                         <div className="top-shading hide-shading" />
@@ -1019,9 +1022,6 @@ export class FacetList extends React.Component {
         // are the negation facet terms that need to get merged into the regular facets that their
         // non-negated versions inhabit.
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
-
-        // Certain facets are typeahead for easy searching and they are listed here
-        const typeaheadList = ['biosample_ontology.term_name', 'assay_title', 'target.label', 'biosample_ontology.organ_slims', 'biosample_ontology.cell_slims'];
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
