@@ -351,7 +351,8 @@
         },
         "target.label": {
             "title": "Target of assay",
-            "type": "typeahead"
+            "type": "typeahead",
+            "length": "long"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
@@ -361,7 +362,8 @@
         },
         "biosample_ontology.term_name" : {
             "title": "Biosample name",
-            "type": "typeahead"
+            "type": "typeahead",
+            "length": "long"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -408,7 +410,8 @@
             "title": "Date released"
         },
         "date_submitted": {
-            "title": "Date Submitted"
+            "title": "Date Submitted",
+            "length": "long"
         },
         "lab.title": {
             "title": "Lab"
