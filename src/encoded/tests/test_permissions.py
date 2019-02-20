@@ -178,6 +178,15 @@ def test_reviewer_patch_other_lab_characterization(submitter_testapp, testapp, s
         {'review': {'lab': other_lab['@id'], 'reviewed_by': submitter['@id'], 'status': 'compliant'}}, status=200)
 
 
+def test_not_submitted_for_review_antibody_characterizations_view_basic_anon(antibody_characterization, testapp, anontestapp):
+    testapp.patch_json(antibody_characterization['@id'], {"status": "not submitted for review by lab"})
+    anontestapp.get(antibody_characterization['@id'], status=200)
+
+
+def test_in_progress_antibody_characterizations_view_basic_anon(antibody_characterization, testapp, anontestapp):
+    anontestapp.get(antibody_characterization['@id'], status=403)
+
+
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
     experiment = {'lab': other_lab['@id'],
                   'award': award['@id'],
