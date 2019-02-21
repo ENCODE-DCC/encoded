@@ -139,7 +139,7 @@ class File(Item):
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
-            if ((properties.get('lab') != '/labs/encode-processing-pipeline/' or
+            if ((properties.get('lab').get('@id') != '/labs/encode-processing-pipeline/' or
                  properties.get('file_format') == 'fastq') and 'md5sum' in properties):
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
