@@ -44,15 +44,6 @@ _tsv_mapping = OrderedDict([
                                      'replicates.library.biosample.treatments.amount_units']),
     ('Biosample treatments duration', ['replicates.library.biosample.treatments.duration',
                                        'replicates.library.biosample.treatments.duration_units']),
-    ('Biosample genetic modifications methods', ['replicates.library.biosample.applied_modifications.method']),
-    ('Biosample genetic modifications categories', ['replicates.library.biosample.applied_modifications.category']),                                   
-    ('Biosample genetic modifications targets', ['replicates.library.biosample.applied_modifications.modified_site_by_target_id']),                                   
-    ('Biosample genetic modifications gene targets', ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id']),                                   
-    ('Biosample genetic modifications site coordinates', ['replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
-                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
-                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
-                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end']),                                   
-    ('Biosample genetic modifications zygosity', ['replicates.library.biosample.applied_modifications.zygosity']), 
     ('Experiment target', ['target.name']),
     ('Library made from', ['replicates.library.nucleic_acid_term_name']),
     ('Library depleted in', ['replicates.library.depleted_in_term_name']),
@@ -79,7 +70,6 @@ _tsv_mapping = OrderedDict([
     ('dbxrefs', ['files.dbxrefs']),
     ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
-    ('Genome annotation', ['files.genome_annotation']),
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
@@ -451,8 +441,6 @@ def format_row(columns):
 
 @view_config(route_name='report_download', request_method='GET')
 def report_download(context, request):
-    downloadtime = datetime.datetime.now()
-
     types = request.params.getall('type')
     if len(types) != 1:
         msg = 'Report view requires specifying a single type.'
@@ -461,13 +449,13 @@ def report_download(context, request):
     # Make sure we get all results
     request.GET['limit'] = 'all'
 
-    type = types[0].lower()
+    type = types[0]
     schemas = [request.registry[TYPES][type].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
     type = type.replace("'", '')
 
     def format_header(seq):
-        newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, '/report/', request.query_string)
+        newheader="%s\t%s%s?%s\r\n" % (currenttime, request.host_url, '/report/', request.query_string)
         return(bytes(newheader, 'utf-8'))
        
 
@@ -484,16 +472,8 @@ def report_download(context, request):
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
-    
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}h_{}m.tsv"'.format(
-        type,
-        downloadtime.year,
-        downloadtime.month,
-        downloadtime.day,
-        downloadtime.hour,
-        downloadtime.minute
-    )
+    request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': currenttime.year, 'mm': currenttime.month, 'dd': currenttime.day, 'doctype': type} #change file name
     request.response.app_iter = generate_rows()
     return request.response

@@ -9,7 +9,6 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
-from snovault.validation import ValidationFailure
 from .base import (
     Item,
     paths_filtered_by_status
@@ -94,7 +93,6 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
-        'library',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -109,7 +107,6 @@ class File(Item):
         'replicate.experiment',
         'replicate.experiment.target',
         'replicate.library',
-        'library',
         'lab',
         'submitted_by',
         'analysis_step_version.analysis_step',
@@ -124,8 +121,8 @@ class File(Item):
         'step_run',
     ]
     set_status_down = []
-    public_s3_statuses = ['released', 'archived']
-    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted', 'revoked']
+    public_s3_statuses = ['released', 'archived', 'revoked']
+    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted']
 
     @property
     def __name__(self):
@@ -273,36 +270,6 @@ class File(Item):
         return sorted(techreps)
 
     @calculated_property(schema={
-        "title": "Related libraries",
-        "description": "Libraries the file belong to or derived from",
-        "comment": "More useful for files without library property, like raw data files.",
-        "type": "array",
-        "items": {
-            "title": "Library",
-            "description": "The nucleic acid library sequenced.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-        }
-    })
-    def replicate_libraries(self, request, dataset, library=None):
-        if library is not None:
-            return [library]
-        # self.uuid can be skipped. It should be skipped here to avoid infinite
-        # embedding/calculating loop
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
-        obj_props = (request.embed(uuid, '@@object')
-                     for uuid in derived_from_closure)
-        # dataset is a required property of file and should be @id which
-        # matches props['dataset']
-        libraries = {
-            props['library']
-            for props in obj_props
-            if props['dataset'] == dataset and 'library' in props
-        }
-        return sorted(libraries)
-
-    @calculated_property(schema={
         "title": "Analysis Step Version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",
@@ -423,20 +390,6 @@ class File(Item):
             return None
         return 's3://{bucket}/{key}'.format(**external)
 
-    @calculated_property(
-         condition='replicate',
-         define=True,
-         schema={
-            "title": "Library",
-            "description": "The nucleic acid library sequenced to produce this file.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-         }
-     )
-    def library(self, request, replicate):
-        return request.embed(replicate, '@@object?skip_calculated=true').get('library')
-
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
@@ -469,14 +422,6 @@ class File(Item):
             return external
         else:
             raise HTTPNotFound()
-
-    def _set_external_sheet(self, new_external):
-        # This just updates external sheet, doesn't overwrite.
-        external = self._get_external_sheet()
-        external = external.copy()
-        external.update(new_external)
-        properties = self.upgrade_properties()
-        self.update(properties, {'external': external})
 
     def set_public_s3(self):
         external = self._get_external_sheet()
@@ -527,36 +472,6 @@ class File(Item):
                 else:
                     raise e
         return True
-
-    def _file_in_correct_bucket(self, request):
-        '''
-        Returns : boolean, current_path, destination_path
-        '''
-        return_flag = True
-        public_bucket = request.registry.settings.get('pds_public_bucket')
-        private_bucket = request.registry.settings.get('pds_private_bucket')
-        properties = self.upgrade_properties()
-        try:
-            external = self._get_external_sheet()
-        except HTTPNotFound:
-            # File object doesn't exist, leave it alone.
-            return (return_flag, None, None)
-        current_bucket = external.get('bucket')
-        current_key = external.get('key')
-        base_uri = 's3://{}/{}'
-        current_path = base_uri.format(current_bucket, current_key)
-        file_status = properties.get('status')
-        # Released restricted files should be in private bucket.
-        if file_status in self.private_s3_statuses or not self._should_set_object_acl():
-            if current_bucket != private_bucket:
-                return_flag = False
-            return (return_flag, current_path, base_uri.format(private_bucket, current_key))
-        if file_status in self.public_s3_statuses:
-            if current_bucket != public_bucket:
-                return_flag = False
-            return (return_flag, current_path, base_uri.format(public_bucket, current_key))
-        # Assume correct bucket for unaccounted file statuses.
-        return (return_flag, current_path, base_uri.format(private_bucket, current_key))
 
 
 @view_config(name='upload', context=File, request_method='GET',
@@ -686,32 +601,3 @@ def download(context, request):
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
-
-
-@view_config(context=File, permission='edit_bucket', request_method='PATCH',
-             name='update_bucket')
-def file_update_bucket(context, request):
-    new_bucket = request.json_body.get('new_bucket')
-    if not new_bucket:
-        raise ValidationFailure('body', ['bucket'], 'New bucket not specified')
-    force = asbool(request.params.get('force'))
-    known_buckets = [
-        request.registry.settings['file_upload_bucket'],
-        request.registry.settings['pds_public_bucket'],
-        request.registry.settings['pds_private_bucket'],
-    ]
-    # Try to validate input to a known bucket.
-    if new_bucket not in known_buckets and not force:
-        raise ValidationFailure('body', ['bucket'], 'Unknown bucket and force not specified')
-    current_bucket = context._get_external_sheet().get('bucket')
-    # Don't bother setting if already the same.
-    if current_bucket != new_bucket:
-        request.registry.notify(BeforeModified(context, request))
-        context._set_external_sheet({'bucket': new_bucket})
-        request.registry.notify(AfterModified(context, request))
-    return {
-        'status': 'success',
-        '@type': ['result'],
-        'old_bucket': current_bucket,
-        'new_bucket': new_bucket
-    }

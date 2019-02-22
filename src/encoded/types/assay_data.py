@@ -59,6 +59,5 @@ assay_terms = {
       'direct RNA-seq': 'NTR:0000444',
       'PRO-seq': 'NTR:0000455',
       '4C': 'NTR:0000456',
-      'Clone-seq': 'NTR:0000458',
-      'PLAC-seq' : 'NTR:0000513',
+      'Clone-seq': 'NTR:0000458'
 }

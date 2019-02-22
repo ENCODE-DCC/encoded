@@ -390,7 +390,7 @@ class AuditMatrix extends React.Component {
                                             })}
 
                                             {/* Display the See Fewer/See All button controlling
-                                                the whole table if at least one biosample_ontology has
+                                                the whole table if at least one biosample_type has
                                                 more than the limit. We know this is the case if at
                                                 least one yGroupOpen state member exists. */}
                                             {Object.keys(this.state.yGroupOpen).length ?

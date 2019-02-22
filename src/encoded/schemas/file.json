@@ -451,8 +451,7 @@
                                         "bam",
                                         "sam",
                                         "gtf",
-                                        "bigWig",
-                                        "idx"
+                                        "bigWig"
                                     ]
                                 }
                             }
@@ -475,8 +474,7 @@
                                             "sra",
                                             "bigWig",
                                             "csfasta",
-                                            "csqual",
-                                            "idx"
+                                            "csqual"
                                         ]
                                     }
                                 }
@@ -529,7 +527,6 @@
                                         "fasta",
                                         "gff",
                                         "gtf",
-                                        "idx",
                                         "hdf5",
                                         "hic",
                                         "PWM",
@@ -724,8 +721,7 @@
                         "tar",
                         "tsv",
                         "vcf",
-                        "wig",
-                        "idx"
+                        "wig"
                     ]
                 },
                 {
@@ -1209,7 +1205,7 @@
         "assembly": {
             "title": "Mapping assembly",
             "description": "Genome assembly that files were mapped to.",
-            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
+            "comment": "Required property for bam, sam, gtf, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
             "type": "string",
             "enum": [
                 "ce10",
@@ -1553,7 +1549,6 @@
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
-        "idx": ".idx",
         "hic": ".hic",
         "hdf5": ".h5",
         "idat": ".idat",

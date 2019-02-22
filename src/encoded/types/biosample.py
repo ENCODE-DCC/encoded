@@ -485,7 +485,6 @@ class Biosample(Item):
             biosample_type = None
 
         biosample_dictionary = generate_summary_dictionary(
-            request,
             organismObject,
             donorObject,
             age,
@@ -515,7 +514,6 @@ class Biosample(Item):
 
 
 def generate_summary_dictionary(
-        request,
         organismObject=None,
         donorObject=None,
         age=None,
@@ -751,14 +749,9 @@ def generate_summary_dictionary(
         dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
 
     if originated_from_object is not None:
-        if 'biosample_ontology' in originated_from_object:
-            biosample_object = request.embed(
-                originated_from_object['biosample_ontology'],
-                '@@object'
-            )
-            dict_of_phrases['originated_from'] = 'originated from {}'.format(
-                biosample_object['term_name']
-            )
+        if 'biosample_term_name' in originated_from_object:
+            dict_of_phrases['originated_from'] = ('originated from ' +
+                                                   originated_from_object['biosample_term_name'])
 
     if modifications_list is not None and len(modifications_list) > 0:
         gm_methods = set()

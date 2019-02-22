@@ -341,24 +341,6 @@ def audit_duplicate_quality_metrics(value, system):
             )
 
 
-def audit_file_in_correct_bucket(value, system):
-    request = system.get('request')
-    file_item = request.root.get_by_uuid(value['uuid'])
-    result, current_path, destination_path = file_item._file_in_correct_bucket(request)
-    if not result:
-        detail = 'Move {} file {} from {} to {}'.format(
-            value.get('status'),
-            value.get('accession', value.get('uuid')),
-            current_path,
-            destination_path
-        )
-        yield AuditFailure(
-            'incorrect file bucket',
-            detail,
-            level='INTERNAL_ACTION'
-        )
-
-
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
@@ -368,14 +350,12 @@ function_dispatcher = {
     'audit_specifications': audit_file_format_specifications,
     'audit_controlled_by': audit_file_controlled_by,
     'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
-    'audit_file_in_correct_bucket': audit_file_in_correct_bucket,
 }
 
 
 @audit_checker('File',
                frame=['derived_from',
                       'replicate',
-                      'library',
                       'paired_with',
                       'file_format_specifications',
                       'dataset',

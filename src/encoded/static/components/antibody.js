@@ -357,7 +357,7 @@ const CharacterizationHeader = (props) => {
             {doc.characterization_reviews && doc.characterization_reviews.length ?
                 <div className="document__characterization-reviews">
                     {doc.characterization_reviews.map(review => (
-                        <span key={review.biosample_ontology.term_name} className="document__characterization-biosample-term">{review.biosample_ontology.term_name}</span>
+                        <span key={review.biosample_term_name} className="document__characterization-biosample-term">{review.biosample_term_name}</span>
                     ))}
                 </div>
             : null}

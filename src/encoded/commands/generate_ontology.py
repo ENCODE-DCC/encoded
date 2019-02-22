@@ -116,8 +116,7 @@ organ_slims = {
     'UBERON:0002049': 'vasculature',
     'UBERON:0000483': 'epithelium',
     'UBERON:0002407': 'pericardium',
-    'UBERON:0001744': 'lymphoid tissue',
-    'UBERON:0001155': 'colon'
+    'UBERON:0001744': 'lymphoid tissue'
 }
 
 cell_slims = {
@@ -759,19 +758,6 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "Clone-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000513": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "proximity ligation-assisted ChIP-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PLAC-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],

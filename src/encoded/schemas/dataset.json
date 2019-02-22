@@ -95,13 +95,12 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "ccre_inputv1",
-                    "ccre_inputv2",
+                    "cre_inputv10",
+                    "cre_inputv11",
                     "dbGaP",
                     "DREAM",
                     "ENCYCLOPEDIAv3",
                     "ENCYCLOPEDIAv4",
-                    "ENCYCLOPEDIAv5",
                     "ENCORE",
                     "ENTEx",
                     "SESCC",

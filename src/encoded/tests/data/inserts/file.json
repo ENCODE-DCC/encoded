@@ -1008,21 +1008,6 @@
         "derived_from": ["ENCFF019HGN"]
     },
     {
-        "status": "in progress",
-        "submitted_file_name": "kallisto.idx",
-        "uuid": "7e34ba24-7938-4f6c-ae74-342d1ceff0eb",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "md5sum": "7da87b14b0861d70e7bc7a42fa42e4b9",
-        "accession": "ENCFF120KLS",
-        "file_format": "idx",
-        "assembly": "hg19",
-        "award": "/awards/U54HG006998/",
-        "dataset": "ENCSR001REF",
-        "file_size": 583336340790,
-        "lab":"j-michael-cherry",
-        "output_type": "transcriptome index"
-    },
-    {
         "status": "replaced",
         "submitted_file_name": "female.hg19.bisulfite.tgz",
         "uuid": "b9cb0beb-2568-4a5c-a89b-ea4728ce5dbb",

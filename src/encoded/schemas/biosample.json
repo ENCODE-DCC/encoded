@@ -10,6 +10,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/genetic_modifications"},
+        {"$ref": "mixins.json#/biosample_classification"},
         {"$ref": "mixins.json#/biosample_ontology"},
         {"$ref": "mixins.json#/product_id"},
         {"$ref": "mixins.json#/lot_id"},
@@ -28,6 +29,95 @@
         {"$ref": "mixins.json#/uuid"}
     ],
     "dependencies": {
+        "phase": {
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
+            "properties": {
+                "biosample_type": {
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells"]
+                }
+            }
+        },
+        "biosample_term_id":{
+            "oneOf": [
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "single cell"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "tissue",
+                                "whole organisms",
+                                "organoid"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "primary cell"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "cell line"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "in vitro differentiated cells"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                }
+            ]
+        },
+        "biosample_type": {
+            "not": {
+                "properties": {
+                    "biosample_type": {
+                        "enum": ["whole organisms"]
+                    },
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
         "biosample_ontology": {
             "not": {
                 "properties": {
@@ -101,6 +191,22 @@
                 }
             }
         },
+        "culture_harvest_date":{
+            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, organoid].",
+            "properties": {
+                "biosample_type": {
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "organoid"]
+                }
+            }
+        },
+        "culture_start_date": {
+            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, organoid].",
+            "properties": {
+                "biosample_type": {
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "organoid"]
+                }
+            }
+        },
         "starting_amount":{
             "required": ["starting_amount_units"],
             "comment": "Biosamples with a specified starting_amount require starting_amount_units to also be specified."
@@ -111,15 +217,46 @@
         },
         "PMI":{
             "required": ["PMI_units"],
-            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified."
+            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified.",
+            "properties": {
+                "biosample_type": {
+                    "comment": "The PMI property is restricted to biosamples with biosample_type = tissue.",
+                    "enum": ["tissue"]
+                }
+            }
         },
         "PMI_units": {
             "required":["PMI"],
-            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified."
+            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified.",
+            "properties": {
+                "biosample_type": {
+                    "comment": "The PMI_units property is restricted to biosamples with biosample_type = tissue.",
+                    "enum": ["tissue"]
+                }
+            }
+        },
+        "cell_isolation_method": {
+            "not": {
+                "properties": {
+                    "biosample_type": {
+                        "enum": [
+                            "whole organisms",
+                            "tissue",
+                            "organoid"
+                        ]
+                    }
+                }
+            }
         },
         "model_organism_age_units": {
             "required":["model_organism_age"],
             "comment": "Biosample with a specified model_organism_age_units requires model_organism_age specification."
+        },
+        "depleted_in_term_name": {
+            "comment": "Only biosamples with biosample_type whole organisms or tissue are allowed to have depleted_in_term_name property.",
+            "properties": {
+                "biosample_type": {"enum": ["whole organisms", "tissue"]}
+            }
         },
         "model_organism_age": {
             "comment": "Biosample with a specified model_organism_age requires model_organism_age_units specification.",
@@ -130,7 +267,7 @@
             "required": ["model_organism_sex"]
         },
         "organism":{
-            "comment": "Human biosamples are not allowed to have model organism properties, and biosample_ontology classification should be different from whole organisms.",
+            "comment": "Human biosamples are not allowed to have model organism properties, and biosample_type should be different from whole organisms.",
             "oneOf": [
                 {
                     "not": {
@@ -276,7 +413,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "24"
+            "default": "23"
         },
         "accession": {
             "accessionType": "BS"
@@ -478,7 +615,7 @@
         "phase": {
             "title": "Cell-cycle phase",
             "description": "Specification of cell cycle phase of the biosample.",
-            "comment": "The phase property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
             "enum": [
                 "G1",
@@ -496,14 +633,14 @@
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
             "format": "date"
         },
         "culture_start_date": {
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
             "format": "date"
         },
@@ -538,14 +675,14 @@
         "PMI": {
             "title": "Post-mortem interval",
             "description": "The amount of time elapsed since death.",
-            "comment": "Post-mortem interval for tissues should be reported, if known. Using for biosamples other than tissue is currently not allowed.",
+            "comment": "Post-mortem interval for tissues should be reported, if known. Use for other biosample_types currently not allowed.",
             "type": "integer",
             "minimum": 1
         },
         "PMI_units": {
             "title": "Post-mortem interval units",
             "description": "The unit in which the PMI time was reported.",
-            "comment": "Post-mortem interval units for tissues should be reported with PMI value, if known. Using for biosamples other than tissue is currently not allowed.",
+            "comment": "Post-mortem interval units for tissues should be reported with PMI value, if known. Use for other biosample_types currently not allowed.",
             "type": "string",
             "enum": [
                 "second",

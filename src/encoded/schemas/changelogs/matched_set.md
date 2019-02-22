@@ -1,9 +1,5 @@
 ## Changelog for matched_set.json
 
-### Schema version 15
-
-* *internal_tags* removes cre_inputv10 and cre_inputv11, and adds ENCYCLOPEDIAv5, ccre_inputv1, and ccre_inputv2.
-
 ### Schema version 14
 
 * Replace started status with in progress.

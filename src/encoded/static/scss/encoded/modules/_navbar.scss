@@ -68,10 +68,6 @@
     margin-bottom: 0;
 }
 
-.navbar-collapse {
-    max-height: none;
-}
-
 .test-warning {
     position: relative;
     padding: 5px 0 7px;
@@ -129,7 +125,7 @@
     &>li {
         &>a {
             padding: 5px 20px;
-            color: white !important;
+            color: #444 !important;
             font-weight: 300;
         }
     }
