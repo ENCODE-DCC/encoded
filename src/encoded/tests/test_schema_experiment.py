@@ -8,9 +8,6 @@ def experiment_pipeline_error(testapp, lab, award, cell_free):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
-        'biosample_type': 'cell-free sample',
-        'biosample_term_id': 'NTR:0000471',
-        'biosample_term_name': 'none',
         'biosample_ontology': cell_free['uuid'],
         'internal_status': 'pipeline error',
         'experiment_classification': ['functional genomics assay']
@@ -24,9 +21,6 @@ def experiment_no_error(testapp, lab, award, cell_free):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
-        'biosample_type': 'cell-free sample',
-        'biosample_term_id': 'NTR:0000471',
-        'biosample_term_name': 'none',
         'biosample_ontology': cell_free['uuid'],
         'internal_status': 'release ready',
         'experiment_classification': ['functional genomics assay']

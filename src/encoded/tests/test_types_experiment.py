@@ -6,9 +6,6 @@ def base_experiment(testapp, lab, award, cell_free):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
-        'biosample_type': 'cell-free sample',
-        'biosample_term_id': 'NTR:0000471',
-        'biosample_term_name': 'none',
         'biosample_ontology': cell_free['uuid'],
         'experiment_classification': ['functional genomics assay'],
         'status': 'in progress'
@@ -112,16 +109,10 @@ def test_experiment_biosample_summary(testapp,
     testapp.patch_json(donor_2['@id'], {'sex': 'male'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             'treatments': [treatment['@id']],
-                                            "biosample_term_id": "EFO:0005837",
-                                            "biosample_term_name": "S2R+",
-                                            "biosample_type": "cell line",
                                             'biosample_ontology': s2r_plus['uuid'],
                                             "subcellular_fraction_term_name": "nucleus",
                                             })
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
-                                            "biosample_term_id": "UBERON:0002784",
-                                            "biosample_term_name": "liver",
-                                            "biosample_type": "tissue",
                                             'biosample_ontology': liver['uuid'],
                                             'treatments': [treatment['@id']]})
 
@@ -154,17 +145,11 @@ def test_experiment_biosample_summary_2(testapp,
     testapp.patch_json(donor_1['@id'], {'sex': 'male'})
     testapp.patch_json(donor_2['@id'], {'sex': 'male'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
-                                            "biosample_term_id": "UBERON:0002784",
-                                            "biosample_term_name": "liver",
-                                            "biosample_type": "tissue",
                                             'biosample_ontology': liver['uuid'],
                                             'treatments': [treatment['@id']]})
 
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
-                                            'biosample_ontology': liver['uuid'],
-                                            "biosample_term_id": "UBERON:0002784",
-                                            "biosample_term_name": "liver",
-                                            "biosample_type": "tissue"})
+                                            'biosample_ontology': liver['uuid']})
 
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})

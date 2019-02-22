@@ -21,16 +21,6 @@ def id_nonexist_biosample_type(testapp):
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
 
-@pytest.fixture
-def inconsistent_biosample_type(testapp):
-    item = {
-        'term_id': 'EFO:0002067',
-        'term_name': 'heart',
-        'classification': 'single cell',
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
 def test_audit_none(testapp, biosample_type):
     res = testapp.get(biosample_type['@id'] + '@@index-data')
     assert res.json['audit'] == {}

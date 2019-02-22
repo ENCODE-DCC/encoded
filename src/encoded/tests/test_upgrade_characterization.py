@@ -272,3 +272,15 @@ def test_upgrade_antibody_characterization_14_to_15(root, upgrader,
                              context=root.get_by_uuid(a549['uuid']))
     for characterization_review in value['characterization_reviews']:
         assert characterization_review['biosample_ontology'] == a549['uuid']
+
+
+def test_upgrade_antibody_characterization_15_to_16(upgrader,
+                                                    antibody_characterization_14):
+    value = upgrader.upgrade(
+        'antibody_characterization', antibody_characterization_14,
+        current_version='15', target_version='16'
+    )
+    for char_review in value['characterization_reviews']:
+        assert 'biosample_type' not in char_review
+        assert 'biosample_term_id' not in char_review
+        assert 'biosample_term_name' not in char_review
