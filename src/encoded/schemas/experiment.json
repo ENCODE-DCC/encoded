@@ -259,11 +259,11 @@
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
         },
-        "replicates.library.size_range": {
-            "title": "Library insert size (nt)"
-        },
         "replicates.library.nucleic_acid_term_name": {
             "title": "Library made from"
+        },
+        "replicates.library.size_range": {
+            "title": "Library insert size (nt)"
         },
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
