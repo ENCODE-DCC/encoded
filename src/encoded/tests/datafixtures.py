@@ -230,6 +230,9 @@ def heart(testapp):
 @pytest.fixture
 def biosample(testapp, source, lab, award, organism, heart):
     item = {
+        'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "heart",
+        'biosample_type': 'tissue',
         'biosample_ontology': heart['uuid'],
         'source': source['@id'],
         'lab': lab['@id'],
@@ -266,6 +269,9 @@ def experiment(testapp, lab, award, cell_free):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'RNA-seq',
+        'biosample_type': 'cell-free sample',
+        'biosample_term_id': 'NTR:0000471',
+        'biosample_term_name': 'none',
         'biosample_ontology': cell_free['uuid'],
         'experiment_classification': ['functional genomics assay'],
     }
@@ -278,6 +284,9 @@ def base_experiment(testapp, lab, award, heart):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
+        'biosample_type': 'tissue',
+        'biosample_term_name': 'heart',
+        'biosample_term_id': 'UBERON:349829',
         'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'experiment_classification': ['functional genomics assay']
@@ -729,6 +738,9 @@ def replicate_2_1(testapp, base_experiment):
 def base_biosample(testapp, lab, award, source, organism, heart):
     item = {
         'award': award['uuid'],
+        'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "heart",
+        'biosample_type': 'tissue',
         'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -751,6 +763,9 @@ def liver(testapp):
 def biosample_1(testapp, lab, award, source, organism, liver):
     item = {
         'award': award['uuid'],
+        'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "liver",
+        'biosample_type': 'tissue',
         'biosample_ontology': liver['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -763,6 +778,9 @@ def biosample_1(testapp, lab, award, source, organism, liver):
 def biosample_2(testapp, lab, award, source, organism, liver):
     item = {
         'award': award['uuid'],
+        'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "liver",
+        'biosample_type': 'tissue',
         'biosample_ontology': liver['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -977,7 +995,6 @@ def brain(testapp):
 @pytest.fixture
 def whole_organism(testapp):
     item = {
-            'uuid': '25d5ad53-15fd-4a44-878a-ece2f7e86509',
             'term_id': "UBERON:0000468",
             'term_name': 'multi-cellular organism',
             'classification': 'whole organisms'
@@ -1023,61 +1040,3 @@ def single_cell(testapp):
             'classification': 'single cell'
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def inconsistent_biosample_type(testapp):
-    item = {
-        'term_id': 'EFO:0002067',
-        'term_name': 'heart',
-        'classification': 'single cell',
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_with_external_sheet(file, root):
-    file_item = root.get_by_uuid(file['uuid'])
-    properties = file_item.upgrade_properties()
-    file_item.update(
-        properties,
-        sheets={
-            'external': {
-                'service': 's3',
-                'key': 'xyz.bed',
-                'bucket': 'test_file_bucket',
-            }
-        }
-    )
-    return file
-
-
-@pytest.fixture
-def public_file_with_public_external_sheet(file, root):
-    file_item = root.get_by_uuid(file['uuid'])
-    properties = file_item.upgrade_properties()
-    properties['status'] = 'released'
-    file_item.update(
-        properties,
-        sheets={
-            'external': {
-                'service': 's3',
-                'key': 'xyz.bed',
-                'bucket': 'pds_public_bucket_test',
-            }
-        }
-    )
-    return file
-
-
-@pytest.fixture
-def file_with_no_external_sheet(file, root):
-    file_item = root.get_by_uuid(file['uuid'])
-    properties = file_item.upgrade_properties()
-    file_item.update(
-        properties,
-        sheets={
-            'external': {}
-        }
-    )
-    return file

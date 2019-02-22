@@ -5,6 +5,9 @@ import pytest
 def biosample(submitter, lab, award, source, organism, heart):
     return {
         'award': award['uuid'],
+        'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
+        'biosample_type': 'tissue',
         'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -18,6 +21,8 @@ def biosample_depleted_in(mouse_biosample, whole_organism):
     item.update({
         'depleted_in_term_name': ['head'],
         'biosample_ontology': whole_organism['uuid'],
+        'biosample_term_name': 'multicellular organism',
+        "biosample_type": "whole organisms",
     })
     return item
 
@@ -45,22 +50,17 @@ def mouse_biosample(biosample, mouse):
     return item
 
 
-@pytest.fixture
-def organoid(testapp):
-    item = {
-            'term_id': 'UBERON:0000955',
-            'term_name': 'brain',
-            'classification': 'organoid'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
 def test_biosample_depleted_in(testapp, biosample_depleted_in):
     testapp.post_json('/biosample', biosample_depleted_in)
 
 
 def test_biosample_depleted_in_name_required(testapp, biosample_depleted_in):
     biosample_depleted_in.update({'depleted_in_term_id': ['UBERON:0000033']})
+    testapp.post_json('/biosample', biosample_depleted_in,  status=422)
+
+
+def test_biosample_depleted_in_type_whole_organism(testapp, biosample_depleted_in):
+    biosample_depleted_in['biosample_type'] = 'whole organism'
     testapp.post_json('/biosample', biosample_depleted_in,  status=422)
 
 
@@ -113,8 +113,8 @@ def test_biosmple_post_synchronization_no_unit_fail(testapp, mouse_biosample, fl
     testapp.post_json('/biosample', mouse_biosample, status=422)
 
 
-def test_biosample_human_whole_organism_fail(testapp, biosample, whole_organism):
-    biosample['biosample_ontology'] = whole_organism['uuid']
+def test_biosample_human_whole_organism_fail(testapp, biosample):
+    biosample['biosample_type'] = 'whole organisms'
     testapp.post_json('/biosample', biosample, status=422)
 
 
@@ -130,6 +130,19 @@ def test_alt_accession_ENCBS_regex(testapp, biosample):
     assert res.status_code == 200
 
 
-def test_biosample_organoid_success(testapp, biosample, organoid):
-    biosample['biosample_ontology'] = organoid['uuid']
+def test_biosample_tissue_cell_isolated_fail(testapp, biosample):
+    biosample['cell_isolation_method'] = 'micropipetting'
+    testapp.post_json('/biosample', biosample, status=422)
+
+
+def test_biosample_tissue_cell_isolated_success(testapp, biosample):
+    biosample['biosample_type'] = 'primary cell'
+    biosample['biosample_term_id'] = 'CL:349829'
+    biosample['cell_isolation_method'] = 'micropipetting'
+    testapp.post_json('/biosample', biosample, status=201)
+
+
+def test_biosample_organoid_success(testapp, biosample):
+    biosample['biosample_type'] = 'organoid'
+    biosample['biosample_term_id'] = 'UBERON:1234567'
     testapp.post_json('/biosample', biosample, status=201)

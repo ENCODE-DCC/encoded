@@ -7,21 +7,8 @@ from snovault import (
 from .base import (
     Item,
     SharedItem,
-    ALLOW_LAB_SUBMITTER_EDIT,
-    ALLOW_CURRENT,
-    DELETED,
 )
 from snovault.attachment import ItemWithAttachment
-from pyramid.security import (
-    Allow,
-)
-from pyramid.traversal import (
-    find_root,
-)
-ALLOW_REVIEWER_EDIT = [
-    (Allow, 'role.lab_reviewer', 'edit'),
-    (Allow, 'role.lab_reviewer', 'review')
-] + ALLOW_LAB_SUBMITTER_EDIT
 
 
 @abstract_collection(
@@ -37,18 +24,6 @@ class Characterization(ItemWithAttachment, Item):
         'documents',
     ]
     set_status_down = []
-    STATUS_ACL = Item.STATUS_ACL.copy()
-    STATUS_ACL['in progress'] = ALLOW_REVIEWER_EDIT
-
-    def __ac_local_roles__(self):
-        roles = super().__ac_local_roles__()
-        properties = self.upgrade_properties().copy()
-        if 'review' in properties:
-            reviewing_lab = properties['review'].get('lab')
-            if reviewing_lab is not None:
-                lab_reviewers = 'submits_for.%s' % reviewing_lab
-                roles[lab_reviewers] = 'role.lab_reviewer'
-        return roles
 
 
 @collection(
@@ -71,6 +46,7 @@ class DonorCharacterization(Characterization):
 class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
     schema = load_schema('encoded:schemas/biosample_characterization.json')
+
 
 @collection(
     name='antibody-characterizations',

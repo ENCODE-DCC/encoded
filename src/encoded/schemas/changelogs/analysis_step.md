@@ -6,8 +6,6 @@
 
 * *major_version* was set to have a minimum of 1.
 
-* Added *enrichment* to *analysis_step_types* enums.
-
 ### Schema version 6
 
 * *status* property was restricted to one of  

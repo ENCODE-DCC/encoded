@@ -96,7 +96,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "15"
         },
         "reviewed_by": {
             "title": "Reviewed by",
@@ -153,6 +153,62 @@
                 "type": "object",
                 "additionalProperties": false,
                 "required": [ "organism", "lane", "biosample_ontology"],
+                "dependencies": {
+                     "biosample_term_id":{
+                        "oneOf": [
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "tissue",
+                                            "whole organisms",
+                                            "organoid"
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            },
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "primary cell"                               
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(CL|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            },
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "cell line"
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            },
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "in vitro differentiated cells"                               
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
                 "properties": {
                     "biosample_ontology": {
                         "title": "Biosample type",
@@ -182,6 +238,34 @@
                             "exempt from standards",
                             "not compliant",
                             "pending dcc review"
+                        ]
+                    },
+                    "biosample_term_id": {
+                        "title": "Ontology ID",
+                        "description": "Ontology identifier describing biosample.",
+                        "comment": "NTR is a new term request identifier provided by the DCC.",
+                        "type": "string",
+                        "permission": "import_items",
+                        "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
+                    },
+                    "biosample_term_name": {
+                        "title": "Ontology term",
+                        "description": "Ontology term describing biosample.",
+                        "permission": "import_items",
+                        "type":  "string"
+                    },
+                    "biosample_type": {
+                        "title": "Biosample type",
+                        "description": "The categorization of the biosample.",
+                        "type": "string",
+                        "permission": "import_items",
+                        "enum" : [
+                            "cell line",
+                            "in vitro differentiated cells",
+                            "primary cell",
+                            "tissue",
+                            "whole organisms",
+                            "organoid"
                         ]
                     }
                 }

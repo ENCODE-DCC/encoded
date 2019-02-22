@@ -258,12 +258,3 @@ def antibody_characterization_14_15(value, system):
         char_review['biosample_ontology'] = str(
             find_root(system['context'])['biosample-types'][biosample_type_name].uuid
         )
-
-
-@upgrade_step('antibody_characterization', '15', '16')
-def antibody_characterization_15_16(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-4420
-    for char_review in value.get('characterization_reviews', []):
-        char_review.pop('biosample_type', None)
-        char_review.pop('biosample_term_id', None)
-        char_review.pop('biosample_term_name', None)

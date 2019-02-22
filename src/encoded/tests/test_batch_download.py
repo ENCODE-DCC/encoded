@@ -30,7 +30,7 @@ def lookup_column_value_item():
         'status': 'released',
         '@id': '/experiments/ENCSR751ISO/',
         '@type': ['Experiment', 'Dataset', 'Item'],
-        'biosample_ontology': {'term_name': 'midbrain'}
+        'biosample_term_name': 'midbrain'
     }
     return item
 
@@ -53,7 +53,7 @@ def test_batch_download_report_download(testapp, workbook):
     res = testapp.get('/report.tsv?type=Experiment&sort=accession')
     assert res.headers['content-type'] == 'text/tsv; charset=UTF-8'
     disposition = res.headers['content-disposition']
-    assert disposition.startswith('attachment;filename="experiment_report') and disposition.endswith('.tsv"')
+    assert disposition.startswith('attachment;filename="Experiment Report') and disposition.endswith('.tsv"')
     lines = res.body.splitlines()
     assert lines[1].split(b'\t') == [
         b'ID', b'Accession', b'Assay Type', b'Assay Nickname', b'Target label',
@@ -73,7 +73,7 @@ def test_batch_download_report_download(testapp, workbook):
     #     b'', b'', b'', b'', b'', b'', b'', b'', b'',
     #     b'', b'', b'', b'', b'', b'', b''
     # ]
-    assert len(lines) == 48
+    assert len(lines) == 47
 
 
 def test_batch_download_files_txt(testapp, workbook):

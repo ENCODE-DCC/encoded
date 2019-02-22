@@ -133,67 +133,6 @@
             "permission": "import_items"
         }
     },
-    "review": { 
-        "review": {
-            "title": "Characterization review",
-            "description": "Review of the characterization results by an independent reviewer.",
-            "type": "object",
-            "additionalProperties": false,
-            "dependencies": {
-                "status": {
-                    "oneOf": [
-                         {
-                            "required": ["lab", "reviewed_by"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["not compliant", "compliant"]
-                                }
-                            }
-                        },
-                        {
-                            "not": {
-                                "properties": {
-                                    "status": {
-                                        "enum": ["not compliant", "compliant"]
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                }
-            },
-            "properties": {
-                "status": {
-                    "title": "Review status",
-                    "description": "The current state of review.",
-                    "type": "string",
-                    "enum" : [
-                        "compliant",
-                        "not compliant"
-                    ]
-                },
-                "lab": {
-                    "title": "Reviewing lab",
-                    "description": "Reviewing lab.",
-                    "comment": "Both the submitting and reviewing labs can edit the object.",
-                    "type": "string",
-                    "linkTo": "Lab"
-                },
-                "reviewed_by": {
-                    "title": "Reviewer",
-                    "description": "Person from the reviewing lab who reviewed the data.",
-                    "type": "string",
-                    "linkTo": "User"
-                },
-                "reviewer_comment": {
-                    "title": "Reviewer comment",
-                    "description": "Additional information specified by the reviewer.",            
-                    "type": "string",
-                    "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
-                }
-            }
-        }
-    },
     "references": {
         "references": {
             "title": "References",
@@ -288,6 +227,40 @@
             "comment": "See biosample_type.json for available identifiers.",
             "type": "string",
             "linkTo": "BiosampleType"
+        }
+    },
+    "biosample_classification": {
+        "biosample_term_id": {
+            "@type": "@id",
+            "title": "Ontology ID",
+            "description": "Ontology identifier describing biosample.",
+            "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
+            "type": "string",
+            "permission": "import_items",
+            "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
+        },
+        "biosample_term_name": {
+            "title": "Ontology term",
+            "description": "Ontology term describing biosample.",
+            "comment": "The term should match the ontology identifier specified in biosample_term_id. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
+            "permission": "import_items",
+            "type":  "string"
+        },
+        "biosample_type": {
+            "title": "Biosample type",
+            "description": "The general category of the biosample.",
+            "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
+            "type": "string",
+            "permission": "import_items",
+            "enum" : [
+                "single cell",
+                "cell line",
+                "in vitro differentiated cells",
+                "primary cell",
+                "tissue",
+                "whole organisms",
+                "organoid"
+            ]
         }
     },
     "product_id": {
@@ -425,7 +398,6 @@
                 "MNase-seq",
                 "MRE-seq",
                 "PAS-seq",
-                "PLAC-seq",
                 "PRO-seq",
                 "protein sequencing by tandem mass spectrometry assay",
                 "RAMPAGE",

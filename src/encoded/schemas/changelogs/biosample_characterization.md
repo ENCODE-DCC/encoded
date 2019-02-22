@@ -1,9 +1,5 @@
 ## Changelog for biosample_characterization.json
 
-### Minor changes since schema version 11 
-
-* *review* has been added to the schema to allow other lab to review the characterization.
-
 ### Schema version 11
 
 * *comment* has been replaced with *submitter_comment*

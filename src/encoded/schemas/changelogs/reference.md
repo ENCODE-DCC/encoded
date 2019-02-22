@@ -1,9 +1,5 @@
 ## Changelog for reference.json
 
-### Schema version 16
-
-* *internal_tags* removes cre_inputv10 and cre_inputv11, and adds ENCYCLOPEDIAv5, ccre_inputv1, and ccre_inputv2.
-
 ### Schema version 15
 
 * Replace started status with in progress.

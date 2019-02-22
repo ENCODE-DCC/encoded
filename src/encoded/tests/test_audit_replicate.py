@@ -23,6 +23,32 @@ def rep2(experiment, testapp):
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def non_concord_experiment(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'RNA-seq',
+        'biosample_type': 'cell line',
+        'biosample_term_id': 'NTR:000945',
+        'biosample_term_name': 'bad name',
+        'experiment_classification': ['functional genomics assay']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def non_concordant_rep(non_concord_experiment, library, testapp):
+    item = {
+        'experiment': non_concord_experiment['uuid'],
+        'biological_replicate_number': 5,
+        'technical_replicate_number': 4,
+        'status': 'released',
+        'library': library['uuid']
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
 def test_audit_status_replicate(testapp, rep1):
     res = testapp.get(rep1['@id'] + '@@index-data')
     errors = res.json['audit']

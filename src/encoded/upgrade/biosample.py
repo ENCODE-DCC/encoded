@@ -361,11 +361,3 @@ def biosample_22_23(value, system):
     value['biosample_ontology'] = str(
         find_root(system['context'])['biosample-types'][biosample_type_name].uuid
     )
-
-
-@upgrade_step('biosample', '23', '24')
-def biosample_23_24(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-4420
-    value.pop('biosample_type', None)
-    value.pop('biosample_term_id', None)
-    value.pop('biosample_term_name', None)
