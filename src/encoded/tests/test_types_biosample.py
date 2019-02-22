@@ -131,12 +131,10 @@ def test_undefined_health_status_mouse(testapp, biosample, mouse):
 
 def test_biosample_summary(testapp,
                            donor_1,
-                           biosample_1, treatment):
+                           biosample_1, treatment, liver):
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
-                                            "biosample_term_id": "UBERON:0002784",
-                                            "biosample_term_name": "liver",
-                                            "biosample_type": "tissue",
+                                            "biosample_ontology": liver['uuid'],
                                             "preservation_method": "cryopreservation",
                                             'treatments': [treatment['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
@@ -148,13 +146,12 @@ def test_biosample_summary_construct(testapp,
                                      fly,
                                      fly_donor,
                                      biosample_1,
-                                     construct_genetic_modification):
+                                     construct_genetic_modification,
+                                     liver):
 
     testapp.patch_json(biosample_1['@id'], {
         'donor': fly_donor['@id'],
-        'biosample_term_id': 'UBERON:0002784',
-        'biosample_term_name': 'liver',
-        'biosample_type': 'tissue',
+        'biosample_ontology': liver['uuid'],
         'genetic_modifications': [construct_genetic_modification['@id']],
         'model_organism_age': '10',
         'model_organism_age_units': 'day',

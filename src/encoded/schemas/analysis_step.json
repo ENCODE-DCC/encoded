@@ -53,6 +53,7 @@
                      "chromatin loop identification",
                      "classification",
                      "depth normalization",
+                     "enrichment",
                      "fastq concatenation",
                      "file format conversion",
                      "filtering",

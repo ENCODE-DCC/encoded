@@ -17,81 +17,11 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
     "dependencies": {
-        "biosample_term_id":{
-            "oneOf": [
-                { 
-                    "properties": {
-                        "biosample_type": {
-                            "enum" : [
-                                "tissue",
-                                "whole organisms",
-                                "organoid"
-                            ]
-                        },
-                        "biosample_term_id":{
-                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "biosample_type": {
-                            "enum" : [
-                                "primary cell"                               
-                            ]
-                        },
-                        "biosample_term_id":{
-                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "biosample_type": {
-                            "enum" : [
-                                "cell line"
-                            ]
-                        },
-                        "biosample_term_id":{
-                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "biosample_type": {
-                            "enum" : [
-                                "in vitro differentiated cells"                               
-                            ]
-                        },
-                        "biosample_term_id":{
-                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                }
-            ]
-        },
-        "biosample_type": {
-            "not": {
-                "properties": {
-                    "biosample_type": {
-                        "enum": ["whole organisms"]
-                    },
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        },
         "biosample_ontology": {
             "not": {
                 "properties": {
@@ -137,7 +67,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "21"
+            "default": "23"
         },
         "annotation_type": {
             "title": "Type",

@@ -17,7 +17,8 @@ targetBasedAssayList = [
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
-    'CRISPRi followed by RNA-seq'
+    'CRISPRi followed by RNA-seq',
+    'PLAC-seq',
 ]
 
 controlRequiredAssayList = [
@@ -45,7 +46,51 @@ seq_assays = [
     'CAGE',
     'RAMPAGE',
     'RIP-seq',
+    'PLAC-seq',
 ]
+
+
+def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
+    '''
+    Libraries for HiC experiments should use the same restriction enzyme
+    '''
+    if value['assay_term_name'] != 'HiC':
+        return
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    frag_methods = set()
+    using_restriction_enzyme = 0
+    for rep in value['replicates']:
+        rep_lib = rep.get('library')
+        rep_status = rep.get('status')
+        if rep_lib and rep_status and rep_status not in excluded_types:
+            rep_lib_status = rep_lib.get('status')
+            if rep_lib_status and rep_lib_status not in excluded_types:
+                if 'fragmentation_method' in rep_lib:
+                    frag_methods.add(rep_lib['fragmentation_method'])
+                    if 'restriction' in rep_lib['fragmentation_method']:
+                        using_restriction_enzyme = 1
+                else:
+                    detail = ('Experiment {} contains a library {} '
+                              'lacking the specification of the fragmentation '
+                              'method used to generate it'.format(
+                                    value['@id'],
+                                    rep_lib.get('accession')
+                               )
+                              )
+                    yield AuditFailure('missing fragmentation method', detail, level='WARNING')
+
+    if len(frag_methods) > 1 and using_restriction_enzyme > 0:
+        detail = ('Experiment {} contains libraries generated '
+                  'following fragmentation with '
+                  'inconsistent restriction enzymes {} '.format(
+                        value['@id'],
+                        frag_methods
+                    )
+                  )
+        yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
@@ -2430,6 +2475,26 @@ def audit_experiment_target(value, system, excluded_types):
     if 'control' in target['investigated_as']:
         return
 
+    # Experiment target should be untagged
+    non_tag_mods = ['Methylation',
+                    'Monomethylation',
+                    'Dimethylation',
+                    'Trimethylation',
+                    'Acetylation',
+                    'Ubiquitination',
+                    'Phosphorylation']
+    if any(mod['modification'] not in non_tag_mods
+           for mod in target.get('modifications', [])
+           if 'modification' in mod):
+        detail = (
+            'Experiment {} has a tagged target {}. Should consider using '
+            'untagged target version for experiment.'.format(
+                value['@id'],
+                target['@id']
+            )
+        )
+        yield AuditFailure('inconsistent experiment target', detail, level='INTERNAL_ACTION')
+
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
                                     'shRNA knockdown followed by RNA-seq',
@@ -2438,8 +2503,23 @@ def audit_experiment_target(value, system, excluded_types):
                                     'CRISPR genome editing followed by RNA-seq']:
         return
 
-    # Check that target of experiment matches target of antibody
     for rep in value['replicates']:
+        # Check target of experiment matches target of genetic modifications
+        biosample = rep.get('library', {}).get('biosample', {})
+        modifications = biosample.get('applied_modifications', [])
+        if modifications:
+            if all(mod['modified_site_by_target_id']['@id'] != target['@id']
+                   for mod in modifications
+                   if 'modified_site_by_target_id' in mod):
+                detail = ('This experiment {} targeting {} has a '
+                          'biosample {} with no genetic modification targeting {}.')
+                yield AuditFailure(
+                    'inconsistent genetic modification targets',
+                    detail.format(value['accession'], target['@id'],
+                                  biosample['accession'], target['@id']),
+                    level='INTERNAL_ACTION'
+                )
+        # Check that target of experiment matches target of antibody
         if 'antibody' not in rep:
             detail = '{} assays require an antibody specification. '.format(
                 value['assay_term_name']) + \
@@ -2451,15 +2531,15 @@ def audit_experiment_target(value, system, excluded_types):
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
             antibody = rep['antibody']
+            unique_antibody_target = set()
+            unique_investigated_as = set()
+            for antibody_target in antibody['targets']:
+                label = antibody_target['label']
+                unique_antibody_target.add(label)
+                for investigated_as in antibody_target['investigated_as']:
+                    unique_investigated_as.add(investigated_as)
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
-                unique_antibody_target = set()
-                unique_investigated_as = set()
-                for antibody_target in antibody['targets']:
-                    label = antibody_target['label']
-                    unique_antibody_target.add(label)
-                    for investigated_as in antibody_target['investigated_as']:
-                        unique_investigated_as.add(investigated_as)
                 if ('tag' not in unique_investigated_as
                     and 'synthetic tag' not in unique_investigated_as):
                     detail = '{} is not to tagged protein'.format(
@@ -2472,7 +2552,10 @@ def audit_experiment_target(value, system, excluded_types):
                             antibody['@id']
                         )
                         yield AuditFailure('mismatched tag target', detail, level='ERROR')
-            else:
+            elif ('tag' not in unique_investigated_as
+                  and 'synthetic tag' not in unique_investigated_as):
+                # Target matching for tag antibody is only between antibody and
+                # genetic modification within replicate after ENCD-4425.
                 target_matches = False
                 antibody_targets = []
                 for antibody_target in antibody['targets']:
@@ -2758,32 +2841,20 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 continue
 
             biosample = lib['biosample']
-            bs_type = biosample.get('biosample_ontology', {}).get('classification')
-            bs_name = biosample.get('biosample_ontology', {}).get('term_name')
-            bs_id = biosample.get('biosample_ontology', {}).get('term_id')
-
-            if bs_type != term_type:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains a library {} '.format(lib['@id']) + \
-                         'prepared from biosample type \"{}\", '.format(bs_type) + \
-                         'while experiment\'s biosample type is \"{}\".'.format(
-                             term_type)
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
-
-            if bs_name != term_name:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains a library {} '.format(lib['@id']) + \
-                         'prepared from biosample {}, '.format(bs_name) + \
-                         'while experiment\'s biosample is {}.'.format(
-                             term_name)
-                yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
-
-            if bs_id != term_id:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'contains a library {} '.format(lib['@id']) + \
-                         'prepared from biosample with an id \"{}\", '.format(bs_id) + \
-                         'while experiment\'s biosample id is \"{}\".'.format(
-                             term_id)
+            bs_type = biosample.get('biosample_ontology', {}).get('@id')
+            bs_name = biosample.get('biosample_ontology', {}).get('name')
+            experiment_bs_type = value.get('biosample_ontology', {}).get('@id')
+            experiment_bs_name = value.get('biosample_ontology', {}).get('name')
+            if bs_type != experiment_bs_type:
+                detail = (
+                    "Experiment {} contains a library {} linked to biosample "
+                    "type '{}', while experiment's biosample type is '{}'."
+                ).format(
+                    value['@id'],
+                    lib['@id'],
+                    bs_name,
+                    experiment_bs_name
+                )
                 yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
     return
 
@@ -3678,6 +3749,7 @@ function_dispatcher_without_files = {
     'audit_library_biosample': audit_experiment_library_biosample,
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
+    'audit_hic_restriction_enzyme_in_libaries': audit_hic_restriction_enzyme_in_libaries,
     'audit_internal_tags': audit_experiment_internal_tag,
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_replication': audit_experiment_replicated,
@@ -3721,6 +3793,12 @@ function_dispatcher_with_files = {
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
         'replicates.library.biosample.donor',
+        'replicates.libraries',
+        'replicates.libraries.spikeins_used',
+        'replicates.libraries.biosample',
+        'replicates.libraries.biosample.applied_modifications',
+        'replicates.libraries.biosample.applied_modifications.modified_site_by_target_id',
+        'replicates.libraries.biosample.donor',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.antibody.lot_reviews',

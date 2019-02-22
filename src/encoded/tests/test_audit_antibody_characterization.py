@@ -10,9 +10,6 @@ def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody
     characterization_review_list = [{
         'lane': 2,
         'organism': organism['uuid'],
-        'biosample_term_name': 'K562',
-        'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'cell line',
         'biosample_ontology': k562['uuid'],
         'lane_status': 'pending dcc review'
     }]
@@ -34,9 +31,6 @@ def base_characterization_review(testapp, organism, k562):
     return {
         'lane': 2,
         'organism': organism['uuid'],
-        'biosample_term_name': 'K562',
-        'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'cell line',
         'biosample_ontology': k562['uuid'],
         'lane_status': 'pending dcc review'
     }
@@ -47,9 +41,6 @@ def base_characterization_review2(testapp, organism, hepg2):
     return {
         'lane': 3,
         'organism': organism['uuid'],
-        'biosample_term_name': 'HepG2',
-        'biosample_term_id': 'EFO:0001187',
-        'biosample_type': 'cell line',
         'biosample_ontology': hepg2['uuid'],
         'lane_status': 'compliant'
     }
@@ -128,9 +119,11 @@ def ENCODE3_award(testapp):
     return testapp.post_json('/award', item, status=201).json['@graph'][0]
 
 
-def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characterization):
+def test_audit_antibody_mismatched_in_review(testapp,
+                                             base_antibody_characterization,
+                                             inconsistent_biosample_type):
     characterization_review_list = base_antibody_characterization.get('characterization_reviews')
-    characterization_review_list[0]['biosample_term_name'] = 'qwijibo'
+    characterization_review_list[0]['biosample_ontology'] = inconsistent_biosample_type['uuid']
     testapp.patch_json(base_antibody_characterization['@id'],
                        {'characterization_reviews': characterization_review_list})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
@@ -139,21 +132,6 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent ontology term' for error in errors_list)
-
-
-def test_audit_antibody_biosample_ntr_term_in_review(testapp, base_antibody_characterization):
-    characterization_review_list = base_antibody_characterization.get('characterization_reviews')
-    characterization_review_list[0]['biosample_term_id'] = 'NTR:0001264'
-    characterization_review_list[0]['biosample_term_name'] = 'pancreas'
-    testapp.patch_json(base_antibody_characterization['@id'],
-                       {'characterization_reviews': characterization_review_list})
-    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] !=
-               'characterization review with invalid biosample term id' for error in errors_list)
 
 
 def test_audit_antibody_duplicate_review_subobject(testapp, base_antibody_characterization, base_characterization_review, base_document):

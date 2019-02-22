@@ -7,6 +7,7 @@
 * *barcode_position* in  *flowcell_details* was set to have a minimum of 1.
 * *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only.
 * added "gene alignments" to *output_type* enum.
+* added idx "file_format" to support kallisto indexes.
 
 ### Schema version 13
 

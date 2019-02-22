@@ -523,3 +523,12 @@ def test_upgrade_biosample_22_to_23(root, upgrader, biosample_0, heart):
         context=root.get_by_uuid(heart['uuid'])
     )
     assert value['biosample_ontology'] == heart['uuid']
+
+
+def test_upgrade_biosample_23_to_24(upgrader, biosample_0):
+    value = upgrader.upgrade(
+        'biosample', biosample_0, current_version='23', target_version='24'
+    )
+    assert 'biosample_type' not in value
+    assert 'biosample_term_id' not in value
+    assert 'biosample_term_name' not in value

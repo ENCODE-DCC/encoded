@@ -578,7 +578,7 @@ function termSelected(term, facet, filters) {
                 matchingFilter = filter;
                 return true;
             }
-        } else if (filterFieldName === facet.field && filter.term === term) {
+        } else if (filterFieldName === facet.field && filter.term === String(term)) {
             // The facet field and the given term match a filter, so save that filter so we can
             // extract its `remove` link.
             matchingFilter = filter;
