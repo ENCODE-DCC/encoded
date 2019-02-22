@@ -1,6 +1,37 @@
 Changes
 =======
 
+81.0 (released) / snovault 1.0.25
+-----------------
+1. ENCD-4462 fixing the AB characterization view bug (#2606)
+2. ENCD-4463 embed BiosampleType in antibody characterization (#2603)
+3. ENCD-4460 Update AnalysisStep changelog (#2605)
+4. ENCD-4461 Revert libraries for exp type matrix (#2602)
+5. ENCD-4429 Lower audit severity for missing reagents in GM (#2601)
+6. ENCD-4458 Update snovault 1.0.25 (#2600)
+7. ENCD-4240 Allow review characterizations (#2591)
+8. ENCD-4425 Update audits exp and genetic mod targets (#2598)
+9. ENCD-4445 Handle login for related files in file tables. (#2597)
+10. ENCD-4455 Notify indexer for file update bucket (#2599)
+11. ENCD-4453 Add idx file format (#2594)
+12. ENCD-4427 file-bucket-audit (#2580)
+13. ENCD-4298 Ontology update colon and PLAC-seq (#2590)
+14. ENCD-4251 Combine reorganize technical replicates (#2567)
+15. ENCD-4431 Change report file download name (#2571)
+16. ENCD-4444 Highlight selected facet terms numbers (#2587)
+17. ENCD-4408 mobile menu readability (#2593)
+18. ENCD-4420 Remove biosample type name id props (#2585)
+19. ENCD-4014 library restriction enzyme audit (#2537)
+20. ENCD-4419 use biosample ontology for audit (#2589)
+21. ENCD-4435 Add ENCv5 ccre internal_tags to datasets (#2588)
+22. ENCD-4406 exclude fly RNAi from reagents audit (#2570)
+23. ENCD-4227 add-PLAC-seq-to-assays (#2584)
+24. ENCD-4405 Add enrichment to analysis step types enum (#2582)
+25. ENCD-4416 Revise audit_inherit list of AntibodyLots (#2583)
+26. ENCD-4402 Add Jennifer Z to submitters (#2572)
+27. ENCD-4397 introducing GM in metadata tsv (#2557)
+28. ENCD-4439 add PLAC-seq in generate-ontology (also #2590)
+
 80.0 (released) / snovault 1.0.24
 -----------------
 1. ENCD-4423 Update dalliance to version 1.0 (#2566)
