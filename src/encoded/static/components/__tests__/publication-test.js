@@ -96,30 +96,6 @@ describe('Publication', () => {
         });
     });
 
-    describe('Publication with datasets', () => {
-        let publication;
-
-        beforeAll(() => {
-            const contextDs = _.clone(context);
-            contextDs.datasets = [require('../testdata/dataset/ENCSR000AJW.js'), require('../testdata/dataset/ENCSR999BLA.js')];
-            publication = mount(
-                <Publication context={contextDs} />
-            );
-        });
-
-        test('has two dataset links', () => {
-            const pubdata = publication.find('.key-value');
-            const item = pubdata.find('[data-test="datasets"]');
-            const itemDescription = item.find('dd');
-            const anchors = itemDescription.find('a');
-            expect(anchors).toHaveLength(2);
-            expect(anchors.at(0).prop('href')).toEqual('/datasets/ENCSR000AJW/');
-            expect(anchors.at(0).text()).toEqual('ENCSR000AJW');
-            expect(anchors.at(1).prop('href')).toEqual('/datasets/ENCSR999BLA/');
-            expect(anchors.at(1).text()).toEqual('ENCSR999BLA');
-        });
-    });
-
     describe('Publication with supplementary data', () => {
         let publication;
 
