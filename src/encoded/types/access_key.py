@@ -1,4 +1,3 @@
-from pyramid.security import effective_principals
 from pyramid.view import view_config
 from pyramid.security import (
     Allow,
@@ -87,7 +86,7 @@ def access_key_add(context, request):
     if 'user' not in request.validated:
         request.validated['user'], = [
             principal.split('.', 1)[1]
-            for principal in effective_principals(request)
+            for principal in request.effective_principals
             if principal.startswith('userid.')
         ]
 
