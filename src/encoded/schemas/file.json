@@ -540,7 +540,8 @@
                                         "vcf",
                                         "wig",
                                         "2bit",
-                                        "btr"
+                                        "btr",
+                                        "txt"
                                     ]
                                 },
                                 "output_type": {
@@ -725,7 +726,8 @@
                         "tsv",
                         "vcf",
                         "wig",
-                        "idx"
+                        "idx",
+                        "txt"
                     ]
                 },
                 {
@@ -1090,6 +1092,7 @@
                         "replication timing profile",
                         "reporter code counts",
                         "representative dnase hypersensitivity sites",
+                        "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",           
                         "rRNA reference",
                         "semi-automated genome annotation",
@@ -1527,6 +1530,7 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
+        "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
 
@@ -1566,7 +1570,8 @@
         "csv": ".csv",
         "vcf": ".vcf.gz",
         "wig": ".wig.gz",
-        "sam": ".sam.gz"
+        "sam": ".sam.gz",
+        "txt": ".txt"
     },
     "changelog": "/profiles/changelogs/file.md"
 }

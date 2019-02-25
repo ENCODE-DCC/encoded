@@ -8,6 +8,7 @@
 * *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only.
 * added "gene alignments" to *output_type* enum.
 * added idx "file_format" to support kallisto indexes.
+* added *txt* to *file_format* enum and *restriction enzyme site locations* to *output_type* enum
 
 ### Schema version 13
 
