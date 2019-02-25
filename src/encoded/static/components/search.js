@@ -719,18 +719,89 @@ class Facet extends React.Component {
         // Set initial React commponent state.
         this.state = {
             facetOpen: false,
+            possibleYearsAndMonths: [],
+            startYears: [],
+            endYears: [],
+            startMonths: [],
+            endMonths: [],
+            startYear: null,
+            startMonth: null,
+            endYear: null,
+            endMonth: null,
         };
 
         // Bind `this` to non-React methods.
         this.handleClick = this.handleClick.bind(this);
+        this.selectStartYear = this.selectStartYear.bind(this);
+        this.selectStartMonth = this.selectStartMonth.bind(this);
+        this.selectEndYear = this.selectEndYear.bind(this);
+        this.selectEndMonth = this.selectEndMonth.bind(this);
+    }
+
+    componentDidMount() {
+        const dateSubmitted = this.props.facets.filter(facet => facet.field === 'date_submitted');
+        const dateSubmittedTerms = dateSubmitted[0].terms.sort((a, b) => (new Date(a.key) - new Date(b.key)));
+
+        // Collect available years and months for date submitted drop-down options
+        if (dateSubmittedTerms) {
+            const possibleYearsAndMonths = dateSubmittedTerms.map(term => `${term.key.split('-')[0]}-${term.key.split('-')[1]}`).filter((item, i, ar) => (ar.indexOf(item) === i));
+            this.setState({ possibleYearsAndMonths });
+            console.log("possible years and months");
+            console.log(possibleYearsAndMonths);
+
+            // Determine range of available years
+            const uniqueYears = dateSubmittedTerms.map(term => term.key.split('-')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
+            this.setState({ startYear: uniqueYears[0] });
+            this.setState({ endYear: uniqueYears[uniqueYears.length - 1].split('-')[0] });
+            this.setState({ startYears: uniqueYears });
+            this.setState({ endYears: uniqueYears });
+
+            // Determine range of available months
+            const uniqueMonths = dateSubmittedTerms.map(term => term.key.split('-')[1]).filter((item, i, ar) => (ar.indexOf(item) === i));
+            uniqueMonths.sort((a, b) => (a - b));
+            const startMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[0]).map(date => date.split('-')[1]);
+            const endMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[uniqueYears.length - 1]).map(date => date.split('-')[1]);
+            this.setState({ startMonth: uniqueMonths[0] });
+            this.setState({ endMonth: uniqueMonths[uniqueMonths.length - 1] });
+            this.setState({ startMonths });
+            this.setState({ endMonths });
+        }
     }
 
     handleClick() {
         this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
     }
 
+    selectStartYear(event) {
+        this.setState({ startYear: event.target.value });
+        const filteredYearsAndMonths = this.state.possibleYearsAndMonths.filter(year => year.split('-')[0] >= event.target.value).filter(date => date.split('-')[0] <= this.state.endYear);
+        let endYears = this.state.possibleYearsAndMonths.filter(year => year.split('-')[0] >= event.target.value);
+        endYears = endYears.map(date => date.split('-')[0]);
+        this.setState({ endYears });
+        const startMonths = filteredYearsAndMonths.filter(date => date.split('-')[0] === event.target.value).map(date => date.split('-')[1]);
+        this.setState({ startMonths });
+    }
+
+    selectStartMonth(event) {
+        this.setState({ startMonth: event.target.value });
+    }
+
+    selectEndYear(event) {
+        this.setState({ endYear: event.target.value });
+        const filteredYearsAndMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] <= event.target.value).filter(date => date.split('-')[0] >= this.state.startYear);
+        let startYears = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] <= event.target.value);
+        startYears = startYears.map(date => date.split('-')[0]);
+        this.setState({ startYears });
+        const endMonths = filteredYearsAndMonths.filter(date => date.split('-')[0] === event.target.value).map(date => date.split('-')[1]);
+        this.setState({ endMonths });
+    }
+
+    selectEndMonth(event) {
+        this.setState({ endMonth: event.target.value });
+    }
+
     render() {
-        const { facet, filters } = this.props;
+        const { facet, filters, searchBase } = this.props;
         const title = facet.title;
         const field = facet.field;
         const total = facet.total;
@@ -783,35 +854,78 @@ class Facet extends React.Component {
             }
         }
 
+        // if a date range has already been selected, we want to over-write that date range with a new one
+        let searchBaseForDateRange = searchBase;
+        if (this.props.filters.filter(filter => filter.field === 'searchTerm').length > 0) {
+            const searchTermFilter = this.props.filters.filter(filter => filter.field === 'searchTerm');
+            searchBaseForDateRange = `${searchTermFilter[0].remove}&`;
+        }
+
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
-                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                    {(field === 'date_submitted') ?
                         <div>
-                            {/* Display the first five terms of the facet */}
-                            {terms.slice(0, 5).map(term =>
-                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                            )}
+                            <h6>Start date:</h6>
+                            <div className="date-selector">
+                                <select value={this.state.startYear} onChange={this.selectStartYear}>
+                                    {this.state.startYears.map(year =>
+                                        <option value={year} key={year}>{year}</option>
+                                    )}
+                                </select>
+                                <select value={this.state.startMonth} onChange={this.selectStartMonth}>
+                                    {this.state.startMonths.map(month =>
+                                        <option value={month} key={month}>{month}</option>
+                                    )}
+                                </select>
+                            </div>
+                            <h6>End date:</h6>
+                            <div className="date-selector">
+                                <select value={this.state.endYear} onChange={this.selectEndYear}>
+                                    {this.state.endYears.map(year =>
+                                        <option value={year} key={year}>{year}</option>
+                                    )}
+                                </select>
+                                <select value={this.state.endMonth} onChange={this.selectEndMonth}>
+                                    {this.state.endMonths.map(month =>
+                                        <option value={month} key={month}>{month}</option>
+                                    )}
+                                </select>
+                            </div>
+                            <a href={`${searchBaseForDateRange}searchTerm=@type:Experiment date_submitted:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${new Date(this.state.endYear, this.state.endMonth, 0).getDate()}]`}>
+                                <button className="btn btn-info btn-sm apply-date-selector">
+                                    Apply changes
+                                </button>
+                            </a>
                         </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {/* If the user has expanded the "+ See more" button, then display
-                                     the rest of the terms beyond 5 */}
-                                {moreTerms.map(term =>
+                    :
+                        <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
+                            <div>
+                                {/* Display the first five terms of the facet */}
+                                {terms.slice(0, 5).map(term =>
                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                 )}
                             </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <div className="pull-right">
-                                {/* Display the "+ See more" button if more than five terms exist for this facet */}
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
-                                </small>
-                            </div>
-                        : null}
-                    </ul>
+                            {terms.length > 5 ?
+                                <div id={termID} className={moreSecClass}>
+                                    {/* If the user has expanded the "+ See more" button, then display
+                                         the rest of the terms beyond 5 */}
+                                    {moreTerms.map(term =>
+                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                                    )}
+                                </div>
+                            : null}
+                            {(terms.length > 5 && !moreTermSelected) ?
+                                <div className="pull-right">
+                                    {/* Display the "+ See more" button if more than five terms exist for this facet */}
+                                    <small>
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
+                                    </small>
+                                </div>
+                            : null}
+                        </ul>
+                    }
                 </div>
             );
         }
@@ -824,6 +938,8 @@ class Facet extends React.Component {
 Facet.propTypes = {
     facet: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
+    facets: PropTypes.array.isRequired,
+    searchBase: PropTypes.string.isRequired, // Base URI for the search
 };
 
 Facet.defaultProps = {

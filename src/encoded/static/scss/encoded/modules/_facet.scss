@@ -247,6 +247,20 @@
     margin: 0;
 }
 
+.date-selector {
+    select {
+         border-radius: 2px;
+         border: 1px solid #cccccc !important;
+         font-weight: 400;
+         color: inherit !important;
+         margin-right: 2px;
+    }
+}
+
+.apply-date-selector {
+    margin: 10px auto;
+}
+
 .accession {
     position: relative;
     font-size: 1.2rem;
