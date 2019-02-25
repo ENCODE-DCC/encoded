@@ -131,13 +131,15 @@ def write_line(request, when, line):
     if terminal.verbosity <= 0:
         return
     capman = request.config.pluginmanager.getplugin('capturemanager')
-    out, err = capman.suspendcapture()
+    outerr = capman.suspend_global_capture()
     try:
-        request.node.add_report_section(when, 'out', out)
-        request.node.add_report_section(when, 'err', err)
+        if outerr is not None:
+            out, err = outerr
+            request.node.add_report_section(when, 'out', out)
+            request.node.add_report_section(when, 'err', err)
         terminal.write_line(line)
     finally:
-        capman.resumecapture()
+        capman.resume_global_capture()
 
 
 @pytest.mark.trylast
