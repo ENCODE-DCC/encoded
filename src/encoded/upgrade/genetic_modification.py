@@ -214,18 +214,22 @@ def genetic_modification_7_8(value, system):
         new_reagents = []
         unmatched_reagents = ''
         for reagent in reagents:
-            matched = False
             identifier = reagent['identifier']
             new_reagent = copy.deepcopy(reagent)
+            matching = []
             for source, regex in sources.items():
                 if re.match(regex, identifier) is not None:
-                    new_identifier = ('{}:{}'.format(source, identifier))
-                    new_reagent['identifier'] = new_identifier
-                    new_reagents.append(new_reagent)
-                    matched = True
-                    break
-            if not matched:
+                    matching.append((reagent['source'], source, identifier))
+            if not matching:
                 unmatched_reagents += '{} '.format(json.dumps(reagent))
+            else:
+                if len(matching) >= 2:
+                    matching = [i for i in matching if i[0].split('/')[2] == i[1]]
+                _, source, identifier = matching[0]
+                new_identifier = ('{}:{}'.format(source, identifier))
+                new_reagent['identifier'] = new_identifier
+                new_reagents.append(new_reagent)
+
         if unmatched_reagents:
             date = time.strftime('%m/%d/%Y')
             message = 'On {}, the following reagents were removed due to invalid identifer: '.format(date)
