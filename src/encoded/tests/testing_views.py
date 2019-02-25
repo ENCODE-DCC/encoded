@@ -283,13 +283,13 @@ def testing_retry(context, request):
     from transaction.interfaces import TransientError
 
     model = context.model
-    request._attempt = getattr(request, '_attempt', 0) + 1
+    attempt = request.environ.get('retry.attempt')
 
-    if request._attempt == 1:
+    if attempt == 0:
         raise TransientError()
 
     return {
-        'attempt': request._attempt,
+        'retry.attempt': attempt,
         'detached': inspect(model).detached,
     }
 
