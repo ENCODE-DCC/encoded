@@ -410,8 +410,7 @@
             "title": "Date released"
         },
         "date_submitted": {
-            "title": "Date Submitted",
-            "length": "long"
+            "title": "Date Submitted"
         },
         "lab.title": {
             "title": "Lab"
