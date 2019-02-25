@@ -8,6 +8,13 @@ pytestmark = [
     pytest.mark.usefixtures('workbook'),
 ]
 
+
+def test_auditview(testapp, workbook):
+    res = testapp.get('/audit/?type=Experiment')
+    assert res.json['matrix']
+
+
 scenarios(
     'audit.feature',
+    strict_gherkin=False,
 )

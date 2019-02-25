@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.parametrize('expected', [
-    "# http://localhost/batch_hub/type%3DExperiment/hub.txt",
+    "# http://localhost/batch_hub/type=Experiment/hub.txt",
     "hub ENCODE_DCC_search",
     "shortLabel Hub (search:)",
     "longLabel ENCODE Data Coordination Center Data Hub",

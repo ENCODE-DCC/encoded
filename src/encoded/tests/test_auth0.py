@@ -48,19 +48,25 @@ def auth0_encode_user_profile(auth0_access_token):
     user_info = requests.get(user_url).json()
     return user_info
 
-@pytest.fixture(scope='session')
-def mock_requests_get(**kwargs):
+
+def _mock_requests_get(**kwargs):
     class MockRequestsGet:
+
         def __init__(self, kwargs):
-            self.json_data = kwargs['json_data']	
+            self.json_data = kwargs['json_data']
             self.status_code = kwargs['status_code']
+
         def json(self):
             return self.json_data
     return MockRequestsGet(kwargs)
 
 
 @pytest.fixture(scope='session')
-def mock_request(data={}):
+def mock_requests_get(**kwargs):
+    return _mock_requests_get(**kwargs)
+
+
+def _mock_request(data={}):
     request = mock.Mock()
     request.json = {
         'accessToken': data.get('accessToken', 'access-token-200-unverified-email'),
@@ -77,13 +83,22 @@ def mock_request(data={}):
 
 
 @pytest.fixture(scope='session')
-def mock_context():
+def mock_request(data={}):
+    return _mock_request(data)
+
+
+def _mock_context():
     context = mock.Mock()
     context.type_info.schema = ''
     return context
 
+
 @pytest.fixture(scope='session')
-def mock_collection_add(users, request, render):
+def mock_context():
+    return _mock_context()
+
+
+def _mock_collection_add(users, request, render):
     result = {
         'status': 'success',
         '@type': ['result'],
@@ -93,7 +108,11 @@ def mock_collection_add(users, request, render):
 
 
 @pytest.fixture(scope='session')
-def mock_validate_request(schema, request, user_info):
+def mock_collection_add(users, request, render):
+    return _mock_collection_add(users, request, render)
+
+
+def _mock_validate_request(schema, request, user_info):
     if not user_info or not user_info['first_name'] or not user_info['last_name'] or not user_info['email']:
         request.errors = ['invalid user info']
     else:
@@ -102,8 +121,17 @@ def mock_validate_request(schema, request, user_info):
 
 
 @pytest.fixture(scope='session')
-def mock_collection_add_return_none(users, request, render):
+def mock_validate_request(schema, request, user_info):
+    return _mock_validate_request(schema, request, user_info)
+
+
+def _mock_collection_add_return_none(users, request, render):
     return None
+
+
+@pytest.fixture(scope='session')
+def mock_collection_add_return_none(users, request, render):
+    return _mock_collection_add_return_none(users, request, render)
 
 
 @pytest.fixture(scope='session')
@@ -120,27 +148,27 @@ def test_login_unknown_user(anontestapp, auth0_encode_user_token):
     assert 'Set-Cookie' in res.headers
 
 
-@mock.patch('requests.get', return_value=mock_requests_get(url='', json_data={}, status_code=400))
+@mock.patch('requests.get', return_value=_mock_requests_get(url='', json_data={}, status_code=400))
 def test_signup_verify_invalid_status_code_throws_exception(mock_get):
     with pytest.raises(HTTPBadRequest):
-        request = mock_request()
-        context = mock_context()
+        request = _mock_request()
+        context = _mock_context()
         auth0.signup(context, request)
 
 
-@mock.patch('requests.get', return_value=mock_requests_get(url='', json_data={'email_verified':False,}, status_code=400))
+@mock.patch('requests.get', return_value=_mock_requests_get(url='', json_data={'email_verified':False,}, status_code=400))
 def test_signup_verify_unauthenticated_email_causes_exception(mock_get):
     with pytest.raises(HTTPBadRequest):
-        request = mock_request()
-        context = mock_context()
+        request = _mock_request()
+        context = _mock_context()
         auth0.signup(context, request)
 
 
-@mock.patch('requests.get', return_value=mock_requests_get(url='', json_data={'email_verified':False,}, status_code=400))
+@mock.patch('requests.get', return_value=_mock_requests_get(url='', json_data={'email_verified':False,}, status_code=400))
 def test_signup_verify_not_providing_access_token_raises_exception(mock_get):
     with pytest.raises(HTTPBadRequest):
-        request = mock_request({'accessToken': None})
-        context = mock_context()
+        request = _mock_request({'accessToken': None})
+        context = _mock_context()
         auth0.signup(context, request)
 
 
@@ -164,14 +192,14 @@ def test_signup_verify_not_providing_access_token_raises_exception(mock_get):
     'email': 'fakeemail@email.com',
     'name': 'fakefirstame',
 }])
-@mock.patch('encoded.auth0.validate_request', side_effect=mock_validate_request)
-@mock.patch('encoded.auth0.collection_add', side_effect=mock_collection_add)
+@mock.patch('encoded.auth0.validate_request', side_effect=_mock_validate_request)
+@mock.patch('encoded.auth0.collection_add', side_effect=_mock_collection_add)
 @mock.patch('requests.get')
 def test_signup_verify_account_is_created(mock_get, mock_collection_add, mock_validate_request, json_data):
-    request = mock_request()
+    request = _mock_request()
     request.errors = []
-    context = mock_context()
-    mock_get.return_value = mock_requests_get(
+    context = _mock_context()
+    mock_get.return_value = _mock_requests_get(
         url='',
         json_data=json_data,
         status_code=200
@@ -243,19 +271,19 @@ def test_signup_verify_account_is_created(mock_get, mock_collection_add, mock_va
     'email': '',
     'name': 'name',
 }])
-@mock.patch('encoded.auth0.validate_request', side_effect=mock_validate_request)
-@mock.patch('encoded.auth0.collection_add', side_effect=mock_collection_add)
+@mock.patch('encoded.auth0.validate_request', side_effect=_mock_validate_request)
+@mock.patch('encoded.auth0.collection_add', side_effect=_mock_collection_add)
 @mock.patch('requests.get')
 def test_signup_fails_if_given_improper_credentials(mock_get, mock_collection_add, mock_validate_request, json_data):
     with pytest.raises(ValidationError):
-        request = mock_request()
-        mock_get.return_value = mock_requests_get(
+        request = _mock_request()
+        mock_get.return_value = _mock_requests_get(
             url='',
             json_data=json_data,
             status_code=200
         )
         request.errors = []
-        context = mock_context()
+        context = _mock_context()
         signup = auth0.signup(context, request)
 
 
@@ -312,9 +340,9 @@ def test_get_user_info_throws_proper_exception(json_data, expected):
         user_info = auth0._get_user_info(json_data)
     
 
-@mock.patch('encoded.auth0.validate_request', side_effect=mock_validate_request)
-@mock.patch('encoded.auth0.collection_add', side_effect=mock_collection_add)
-@mock.patch('requests.get', return_value=mock_requests_get(
+@mock.patch('encoded.auth0.validate_request', side_effect=_mock_validate_request)
+@mock.patch('encoded.auth0.collection_add', side_effect=_mock_collection_add)
+@mock.patch('requests.get', return_value=_mock_requests_get(
     url='',
     json_data={
         'email_verified': True,
@@ -324,17 +352,17 @@ def test_get_user_info_throws_proper_exception(json_data, expected):
     },
     status_code=200,))
 def test_signup_verify_email_is_verified_with_given_and_family_name(mock_get, mock_collection_add, mock_validate_request):
-    request = mock_request()
+    request = _mock_request()
     request.errors = []
-    context = mock_context()
+    context = _mock_context()
     signup = auth0.signup(context, request)
     assert isinstance(signup, HTTPCreated)
     assert signup.status == '201 Created'
 
 
-@mock.patch('encoded.auth0.validate_request', side_effect=mock_validate_request)
-@mock.patch('encoded.auth0.collection_add', side_effect=mock_collection_add)
-@mock.patch('requests.get', return_value=mock_requests_get(
+@mock.patch('encoded.auth0.validate_request', side_effect=_mock_validate_request)
+@mock.patch('encoded.auth0.collection_add', side_effect=_mock_collection_add)
+@mock.patch('requests.get', return_value=_mock_requests_get(
     url='',
     json_data={
         'email_verified': True,
@@ -343,18 +371,18 @@ def test_signup_verify_email_is_verified_with_given_and_family_name(mock_get, mo
     },
     status_code=200,))
 def test_signup_verify_email_is_verified_with_name(mock_get, mock_collection_add, mock_validate_request):
-    request = mock_request()
+    request = _mock_request()
     request.errors = []
-    context = mock_context()
+    context = _mock_context()
     signup = auth0.signup(context, request)
     assert isinstance(signup, HTTPCreated)
     assert signup.status == '201 Created'
 
 
 
-@mock.patch('encoded.auth0.validate_request', side_effect=mock_validate_request)
-@mock.patch('encoded.auth0.collection_add', side_effect=mock_collection_add_return_none)
-@mock.patch('requests.get', return_value=mock_requests_get(
+@mock.patch('encoded.auth0.validate_request', side_effect=_mock_validate_request)
+@mock.patch('encoded.auth0.collection_add', side_effect=_mock_collection_add_return_none)
+@mock.patch('requests.get', return_value=_mock_requests_get(
     url='',
     json_data={
         'email_verified': True,
@@ -365,9 +393,9 @@ def test_signup_verify_email_is_verified_with_name(mock_get, mock_collection_add
     status_code=200,))
 def test_signup_verify_exception_thrown_if_user_is_not_created(mock_get, mock_collection_add_return_none, mock_validate_request):
     with pytest.raises(HTTPInternalServerError):
-        request = mock_request()
+        request = _mock_request()
         request.errors = ['Smooth Criminal']
-        context = mock_context()
+        context = _mock_context()
         signup = auth0.signup(context, request)
 
 
@@ -375,7 +403,7 @@ def test_signup_verify_exception_thrown_if_user_is_not_created(mock_get, mock_co
 @mock.patch('encoded.auth0.forget', return_value='')
 @mock.patch('encoded.auth0.remember', return_value='')
 @mock.patch('encoded.auth0.signup', return_value='userid-uuid')
-@mock.patch('requests.get', return_value=mock_requests_get(
+@mock.patch('requests.get', return_value=_mock_requests_get(
     url='',
     json_data={
         'email_verified': True,
