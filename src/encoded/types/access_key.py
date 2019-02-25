@@ -93,7 +93,7 @@ def access_key_add(context, request):
     password = None
     if 'secret_access_key_hash' not in request.validated:
         password = generate_password()
-        request.validated['secret_access_key_hash'] = crypt_context.encrypt(password)
+        request.validated['secret_access_key_hash'] = crypt_context.hash(password)
 
     result = collection_add(context, request)
 
@@ -113,7 +113,7 @@ def access_key_reset_secret(context, request):
     request.validated = context.properties.copy()
     crypt_context = request.registry[CRYPT_CONTEXT]
     password = generate_password()
-    new_hash = crypt_context.encrypt(password)
+    new_hash = crypt_context.hash(password)
     request.validated['secret_access_key_hash'] = new_hash
     result = item_edit(context, request, render=False)
     result['access_key_id'] = request.validated['access_key_id']
