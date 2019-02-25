@@ -6,7 +6,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "experiment_classification", "biosample_ontology"],
-    "approvalRequired": ["assay_term_id", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
