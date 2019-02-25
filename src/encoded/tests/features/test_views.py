@@ -8,6 +8,13 @@ pytestmark = [
     pytest.mark.usefixtures('workbook'),
 ]
 
+
+def test_newsview(testapp, workbook):
+    res = testapp.get('/news/')
+    assert res.json['@graph']
+
+
 scenarios(
     'views.feature',
+    strict_gherkin=False,
 )

@@ -9,8 +9,7 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
-@pytest.fixture(scope='session')
-def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
@@ -33,8 +32,12 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     return settings
 
 
-@pytest.yield_fixture(scope='session')
-def app(app_settings):
+@pytest.fixture(scope='session')
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+
+
+def _app(app_settings):
     from encoded import main
     app = main({}, **app_settings)
 
@@ -48,6 +51,12 @@ def app(app_settings):
     DBSession = app.registry[DBSESSION]
     # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
+
+
+@pytest.yield_fixture(scope='session')
+def app(app_settings):
+    for app in _app(app_settings):
+        yield app
 
 
 @pytest.fixture(scope='session')
@@ -110,7 +119,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
 
-    from ..loadxl import load_all
+    from encoded.loadxl import load_all
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]

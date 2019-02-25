@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'batch_hubs.feature',
+    strict_gherkin=False,
 )
