@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'news.feature',
+    strict_gherkin=False
 )

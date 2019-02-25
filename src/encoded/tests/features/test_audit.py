@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'audit.feature',
+    strict_gherkin=False
 )

@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'matrix.feature',
+    strict_gherkin=False
 )
