@@ -48,6 +48,10 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
             )
         used_filters = self._set_query_aggs(query)
         query['size'] = 0
+        if not query['query']:
+            del query['query']
+        if not query['post_filter']:
+            del query['post_filter']
         return query, used_filters
 
     def _construct_xygroupings(

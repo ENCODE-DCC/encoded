@@ -61,6 +61,10 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
             )
         used_filters = self._set_query_aggs(query, result_filters, matrix_x_y)
+        if not query['query']:
+            del query['query']
+        if not query['post_filter']:
+            del query['post_filter']
         return query, used_filters
 
     def _construct_result_views(self, type_info):

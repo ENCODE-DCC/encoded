@@ -8,6 +8,16 @@ pytestmark = [
     pytest.mark.usefixtures('workbook'),
 ]
 
+
+@pytest.mark.parametrize('url', [
+    '/matrix/?type=Experiment&status=released',
+    '/matrix/?type=Annotation&encyclopedia_version=4',
+])
+def test_matrixview(testapp, workbook, url):
+    res = testapp.get(url)
+    assert res.json['matrix']
+
+
 scenarios(
     'matrix.feature',
     strict_gherkin=False
