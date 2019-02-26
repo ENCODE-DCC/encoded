@@ -246,17 +246,28 @@ export const setCartStatus = status => (
 export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, fetch) => (
     dispatch => (
         new Promise((resolve, reject) => {
+            const nameIdentifierSetList = { name };
+
+            // Determine whether the cart identifer needs to be set or removed from the cart
+            // object entirely.
+            let identifierRemovalList;
+            if (identifier) {
+                nameIdentifierSetList.identifier = identifier;
+                identifierRemovalList = null;
+            } else {
+                identifierRemovalList = ['identifier'];
+            }
+
+            // Attempt to update the cart database object.
             cartSetOperationInProgress(true, dispatch);
-            return cartPatch(cart['@id'], { name, identifier }, null, fetch).then((updatedSavedCartObj) => {
+            return cartPatch(cart['@id'], nameIdentifierSetList, identifierRemovalList, fetch).then((updatedSavedCartObj) => {
                 // We know the update of the cart object in the database succeeded, so update the
                 // cart Redux store as well.
                 cartSetOperationInProgress(false, dispatch);
                 if (name) {
                     dispatch(setCartName(name));
                 }
-                if (identifier) {
-                    dispatch(setCartIdentifier(identifier));
-                }
+                dispatch(setCartIdentifier(identifier || null));
 
                 // The current cart settings track the current cart's identifier, so that needs to
                 // be updated if the identifer for the current cart gets updated.
