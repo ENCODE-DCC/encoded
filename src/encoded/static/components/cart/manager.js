@@ -476,7 +476,7 @@ class DeleteCartButton extends React.Component {
                 </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleCloseClick}>
-                        <ModalHeader title={<h4>Delete cart &ldquo;{cart.name}&rdquo;</h4>} closeModal={this.handleCloseClick} />
+                        <ModalHeader title={<h4>Delete cart: {cart.name}</h4>} closeModal={this.handleCloseClick} />
                         <ModalBody>
                             This cart contains {cart.element_count} item{cart.element_count !== 1 ? 's' : ''}. Deleting carts is not reversible.
                         </ModalBody>

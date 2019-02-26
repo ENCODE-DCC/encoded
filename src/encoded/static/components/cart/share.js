@@ -53,7 +53,7 @@ class CartShareComponent extends React.Component {
 
         return (
             <Modal closeModal={closeShareCart} labelId="share-cart-label" descriptionId="share-cart-description" focusId="share-cart-close">
-                <ModalHeader title="Share cart" labelId="share-cart-label" closeModal={closeShareCart} />
+                <ModalHeader title={`Share cart: ${userCart.name}`} labelId="share-cart-label" closeModal={closeShareCart} />
                 <ModalBody>
                     <p id="share-cart-description" role="document">
                         Copy the URL below to share with other people. Some items might not appear
