@@ -645,6 +645,14 @@
 
                 }
             ]
+        },
+        "restriction_enzymes": {
+            "comment": "Only files with output_type of restriction enzyme site locations can specify restriction_enzymes.",
+            "properties": {
+                "output_type": {
+                    "enum": ["restriction enzyme site locations"]
+                }
+            }
         }
     },
     "properties": {
@@ -1293,6 +1301,22 @@
             "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
             "type": "string",
             "linkTo": "AnalysisStepRun"
+        },
+        "restriction_enzymes": {
+            "title": "Restriction enzymes",
+            "description": "The restriction enzymes the restriction site locations file applies to.",
+            "type": "array",
+            "items": {
+                "title": "Restriction enzyme",
+                "description": "The name of a restriction enzyme",
+                "type": "string",
+                "enum": [
+                    "DpnII",
+                    "MboI",
+                    "HindIII"
+                ]
+            }
+
         },
         "content_error_detail": {
             "title": "Content error detail",

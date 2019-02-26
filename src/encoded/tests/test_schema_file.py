@@ -222,6 +222,22 @@ def file_raw_output_processed_format(testapp, experiment, award, lab, replicate)
     return item
 
 
+@pytest.fixture
+def file_restriction_map(testapp, experiment, award, lab):
+    item = {
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'txt',
+        'file_size': 3456,
+        'assembly': 'hg19',
+        'md5sum': 'e002cd204df36d93dd070ef0712b8e12',
+        'output_type': 'restriction enzyme site locations',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -396,3 +412,17 @@ def test_raw_output_processed_format(testapp, file_raw_output_processed_format):
     file_raw_output_processed_format.update({'output_type': 'alignments'})
     res = testapp.post_json('/file', file_raw_output_processed_format, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_restriction_map(testapp, file_restriction_map):
+    res = testapp.patch_json(
+        file_restriction_map['@id'],
+        {'restriction_enzymes': ['MboI']}
+    )
+    assert res.status_code == 200
+    res = testapp.patch_json(
+        file_restriction_map['@id'],
+        {'output_type': ['male genome reference']},
+        expect_errors=True
+    )
+    assert res.status_code == 422

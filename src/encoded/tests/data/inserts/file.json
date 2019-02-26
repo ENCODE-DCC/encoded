@@ -2383,6 +2383,9 @@
         "lab": "ali-mortazavi",
         "md5sum": "e77a125126ea493e1159fbee8da014e6",
         "output_type": "restriction enzyme site locations",
+        "restriction_enzymes": [
+            "MboI"
+        ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
