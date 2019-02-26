@@ -86,7 +86,7 @@ def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
 
 
 def test_submitter_cant_see_deleted_cart(cart_submitter_testapp, deleted_cart, submitter):
-    res = cart_submitter_testapp.get(deleted_cart['@id'], status=403)
+    cart_submitter_testapp.get(deleted_cart['@id'], status=403)
 
 
 def test_submitter_cannot_add_own_cart(cart_submitter_testapp, submitter):
