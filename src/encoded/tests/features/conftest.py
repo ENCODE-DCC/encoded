@@ -28,7 +28,7 @@ def app(app_settings):
 
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
-def workbook(app):
+def workbook(request, app):
     from snovault import DBSESSION
     connection = app.registry[DBSESSION].bind.pool.unique_connection()
     connection.detach()
@@ -39,7 +39,7 @@ def workbook(app):
     cursor.close()
 
     from webtest import TestApp
-    log_level = pytest.config.getoption("--log")
+    log_level = request.config.getoption("--log")
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST',
