@@ -240,6 +240,7 @@ class NameCartButtonComponent extends React.Component {
             modalOpen: false,
             newName: '',
             newIdentifier: '',
+            nameConflict: false,
             identifierConflict: false,
         });
     }
