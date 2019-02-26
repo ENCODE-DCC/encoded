@@ -224,7 +224,7 @@ def genetic_modification_7_8(value, system):
                 unmatched_reagents += '{} '.format(json.dumps(reagent))
             else:
                 if len(matching) >= 2:
-                    matching = [i for i in matching if i[0].split('/')[2] == i[1]]
+                    matching = [i for i in matching if i[1] in i[0]]
                 _, source, identifier = matching[0]
                 new_identifier = ('{}:{}'.format(source, identifier))
                 new_reagent['identifier'] = new_identifier
