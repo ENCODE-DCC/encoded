@@ -1182,9 +1182,14 @@ const organismDevelopmentSeriesTableColumns = {
             if (biosamples && biosamples.length) {
                 lifeStageBiosample = _(biosamples).find(biosample => biosample.life_stage);
             }
+            console.log("biosamples");
+            console.log(biosamples);
             if (lifeStageBiosample) {
+                console.log("lifeStageBiosample");
+                console.log(lifeStageBiosample);
                 return lifeStageBiosample.life_stage;
             }
+            console.log("returning null");
             return null;
         },
     },
