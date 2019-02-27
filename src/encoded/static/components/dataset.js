@@ -1173,6 +1173,8 @@ const organismDevelopmentSeriesTableColumns = {
     life_stage: {
         title: 'Life stage',
         getValue: (experiment) => {
+            console.log("experiment");
+            console.log(experiment);
             let biosamples;
             let lifeStageBiosample;
 
