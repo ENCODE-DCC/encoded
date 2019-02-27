@@ -77,7 +77,7 @@
                             ]
                         },
                         "term_id":{
-                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
                         }
                     }
                 },
