@@ -153,6 +153,31 @@ def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr, gene
     }
 
 
+@pytest.fixture
+def genetic_modification_7_multiple_reagents(lab, award, crispr, genetic_modification_7_addgene_source):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "12345",
+                "source": genetic_modification_7_addgene_source['@id'],
+                "url": "http://www.addgene.org"
+            },
+            {
+                "identifier": "67890",
+                "source": genetic_modification_7_addgene_source['@id'],
+                "url": "http://www.addgene.org"
+            }
+        ]
+    }
+
+
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
                              current_version='1', target_version='2')
@@ -204,7 +229,8 @@ def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
 
 def test_genetic_modification_upgrade_7_8(upgrader, genetic_modification_7_invalid_reagent,
                                           genetic_modification_7_valid_reagent,
-                                          genetic_modification_7_multiple_matched_identifiers):
+                                          genetic_modification_7_multiple_matched_identifiers,
+                                          genetic_modification_7_multiple_reagents):
     value = upgrader.upgrade('genetic_modification', genetic_modification_7_invalid_reagent,
                              current_version='7', target_version='8')
     assert value['schema_version'] == '8'
@@ -222,3 +248,12 @@ def test_genetic_modification_upgrade_7_8(upgrader, genetic_modification_7_inval
     assert len(reagents) == 1
     assert reagents[0]['identifier'].startswith('addgene')
     assert 'addgene' in reagents[0]['source']
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_multiple_reagents,
+                             current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    reagents = value.get('reagents', [])
+    assert len(reagents) == 2
+    for reagent in reagents:
+        assert reagent['identifier'].startswith('addgene')
+        assert 'addgene' in reagent['source']
+        assert 'url' in reagent
