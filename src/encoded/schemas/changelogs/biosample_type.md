@@ -1,4 +1,4 @@
-## Changelog for biosample.json
+## Changelog for biosample_type.json
 
 ### Minor changes since schema version 1
 
