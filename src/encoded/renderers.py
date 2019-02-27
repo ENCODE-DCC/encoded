@@ -18,6 +18,7 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
+from pyramid.tweens import EXCVIEW
 
 from snovault.validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
@@ -55,7 +56,7 @@ def includeme(config):
         under=renderer_tween,
     )
 
-    config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
+    config.add_tween('.renderers.security_tween_factory', under=EXCVIEW)
     config.scan(__name__)
 
 
