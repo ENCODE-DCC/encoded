@@ -264,6 +264,7 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
                 // We know the update of the cart object in the database succeeded, so update the
                 // cart Redux store as well.
                 cartSetOperationInProgress(false, dispatch);
+                dispatch(cacheSavedCart(updatedSavedCartObj));
                 if (name) {
                     dispatch(setCartName(name));
                 }
