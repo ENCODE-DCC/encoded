@@ -235,7 +235,7 @@ def file_restriction_map(testapp, experiment, award, lab):
         'output_type': 'restriction enzyme site locations',
         'status': 'in progress',  # avoid s3 upload codepath
     }
-    return testapp.post_json('/file', item).json['@graph'][0]
+    return item
 
 
 def test_file_post(file_no_replicate):
@@ -415,14 +415,20 @@ def test_raw_output_processed_format(testapp, file_raw_output_processed_format):
 
 
 def test_restriction_map(testapp, file_restriction_map):
-    res = testapp.patch_json(
-        file_restriction_map['@id'],
-        {'restriction_enzymes': ['MboI']}
-    )
-    assert res.status_code == 200
-    res = testapp.patch_json(
-        file_restriction_map['@id'],
-        {'output_type': ['male genome reference']},
-        expect_errors=True
-    )
+    res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
     assert res.status_code == 422
+    file_restriction_map.update({'restriction_enzymes': ['MboI', 'MboI']})
+    res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
+    assert res.status_code == 422
+    file_restriction_map.update({'restriction_enzymes': []})
+    res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
+    assert res.status_code == 422
+    file_restriction_map.update({
+        'output_type': 'male genome reference',
+        'restriction_enzymes': ['MboI']
+    })
+    res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
+    assert res.status_code == 422
+    file_restriction_map.update({'output_type': 'restriction enzyme site locations'})
+    res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
+    assert res.status_code == 201
