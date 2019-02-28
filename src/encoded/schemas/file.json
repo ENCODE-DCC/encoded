@@ -266,7 +266,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
             "oneOf":[
                 {
                     "properties": {
@@ -329,10 +329,18 @@
                     ]
                 },
                 {
+                    "required": ["restriction_enzymes"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["restriction enzyme site locations"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads"]
+                                "enum": ["reads", "restriction enzyme site locations"]
                             }
                         }
                     }
@@ -1306,6 +1314,8 @@
             "title": "Restriction enzymes",
             "description": "The restriction enzymes the restriction site locations file applies to.",
             "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
             "items": {
                 "title": "Restriction enzyme",
                 "description": "The name of a restriction enzyme",
