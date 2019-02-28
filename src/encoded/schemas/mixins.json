@@ -163,6 +163,12 @@
                 }
             },
             "properties": {
+                "lane": {
+                    "title": "Lane",
+                    "description": "Lane being reviewed.",
+                    "type": "integer",
+                    "minimum": 1
+                },
                 "status": {
                     "title": "Review status",
                     "description": "The current state of review.",

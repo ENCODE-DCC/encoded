@@ -14,6 +14,10 @@
         "documents": [
             "encode:Antibody_characterization_standards_February_2014"
         ],
-        "submitter_comment": "I submitted this!"
+        "submitter_comment": "I submitted this!",
+        "review": {
+            "lane": 1,
+            "lab": "cc2272f4-10de-4310-8233-33a3ace62643"
+        }
     }
 ]
