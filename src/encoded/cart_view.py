@@ -1,9 +1,13 @@
 from pyramid.view import view_config
-from collections import OrderedDict
-from snovault import COLLECTIONS
 from pyramid.httpexceptions import HTTPBadRequest
 
+from collections import OrderedDict
+
+from snovault import COLLECTIONS
+
+
 CART_USER_MAX = 30  # Maximum number of non-deleted carts allowed per user
+
 
 def includeme(config):
     # config.scan()
@@ -17,8 +21,15 @@ def get_cart_objects_by_user(request, userid):
     return [
         request.embed(request.resource_path(v), '@@object')
         for k, v in request.registry[COLLECTIONS]['cart'].items()
-        if v.properties['submitted_by'] == userid and (v.properties['status'] != 'deleted' or 'group.admin' in request.effective_principals)
+        if v.properties['submitted_by'] == userid
     ]
+
+
+def filter_carts_to_visible(request, carts):
+    '''Filter cart list to those visible to current user'''
+    if 'group.admin' in request.effective_principals:
+        return carts
+    return [cart for cart in carts if cart['status'] != 'deleted']
 
 
 @view_config(route_name='cart-view', request_method='GET', permission='search')
@@ -48,10 +59,11 @@ def cart_manager(context, request):
         raise HTTPBadRequest()
     else:
         userid = userid[0]
-    carts = get_cart_objects_by_user(request, userid)
+    user_carts = get_cart_objects_by_user(request, userid)
+    visible_user_carts = filter_carts_to_visible(request, user_carts)
     # Calculate the element count in each cart, but remove the elements
     # themselves as this list can be huge.
-    for c in carts:
+    for c in visible_user_carts:
         c['element_count'] = len(c['elements'])
         del c['elements']
     result = {
@@ -59,7 +71,7 @@ def cart_manager(context, request):
         '@type': ['cart-manager'],
         'title': 'Cart',
         'facets': [],
-        '@graph': carts,
+        '@graph': visible_user_carts,
         'columns': OrderedDict(),
         'notification': '',
         'filters': [],

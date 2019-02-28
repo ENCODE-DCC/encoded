@@ -98,7 +98,7 @@ export const cartCreate = ({ name, identifier, status }, fetch) => {
     if (status) {
         body.status = status;
     }
-    return fetch('/carts/@@get-cart', {
+    return fetch('/carts/@@put-cart', {
         method: 'PUT',
         body: JSON.stringify(body),
         headers: {

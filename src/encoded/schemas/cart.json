@@ -26,7 +26,7 @@
         "identifier": {
             "title": "URI-compatible cart identifier",
             "description": "User-specified identifer for this cart that can be used in a URI for the cart.",
-            "comment": "This can only contain non-space characters, and must be unique througout the system.",
+            "comment": "This can only contain non-space characters, and must be unique throughout the system.",
             "uniqueKey": "cart:identifier",
             "type": "string",
             "pattern": "^(?!\\s)[\\S]*\\S$"
