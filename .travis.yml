@@ -14,6 +14,7 @@ addons:
       - oracle-java8-set-default
       - bsdtar
       - graphviz
+      - redis-server
 env:
   global:
     - secure: |-
@@ -43,7 +44,7 @@ before_install:
   - node --version
   - npm config set python /usr/bin/python2.7
   - curl -O  ${ES_DOWNLOAD_URL} && sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb && sudo service elasticsearch stop
-  - pip install -U zc.buildout setuptools
+  - pip install -U zc.buildout setuptools redis
 install:
   - buildout bootstrap
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
