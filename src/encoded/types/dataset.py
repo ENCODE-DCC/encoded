@@ -88,6 +88,7 @@ class Dataset(Item):
     name_key = 'accession'
     rev = {
         'original_files': ('File', 'dataset'),
+        'analyses': ('Analysis', 'dataset')
     }
 
     @calculated_property(schema={
@@ -186,6 +187,21 @@ class Dataset(Item):
     })
     def month_released(self, date_released):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
+
+    @calculated_property(schema={
+        "title": "Analyses",
+        "description": "A collection of complete analyses performed on this experiment.",
+        "comment": "See analysis.json for available identifiers.",
+        "type": "array",
+        "items": {
+            "title": "Analysis",
+            "type": "string",
+            "linkFrom": "Analysis.dataset"
+        },
+        "notSubmittable": True,
+    })
+    def analyses(self, request, analyses):
+        return paths_filtered_by_status(request, analyses)
 
 
 class FileSet(Dataset):

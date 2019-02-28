@@ -1,0 +1,35 @@
+[
+    {
+        "uuid": "dda4d30c-97f2-4d3d-a2b3-09adf13acf2b",
+        "accession": "ENCAN522RJU",
+        "dataset": "ENCSR000AEN",
+        "pipeline": "ENCPL001GRV",
+        "execution_id": "analysis-TestExecutionID0123456789",
+        "execution_status": "Succeeded",
+        "status": "released"
+    },
+    {
+        "uuid": "f64751a3-1808-4093-8028-c6456a363aa6",
+        "accession": "ENCAN756PCB",
+        "dataset": "ENCSR001REF",
+        "pipeline": "ENCPL000MEG",
+        "execution_status": "Succeeded",
+        "status": "released"
+    },
+    {
+        "uuid": "a5fb1fdb-7857-4cb5-866e-fe294c1b2b0f",
+        "accession": "ENCAN442SFU",
+        "dataset": "ENCSR765JPC",
+        "pipeline": "ENCPL001GRV",
+        "execution_status": "Succeeded",
+        "status": "released"
+    },
+    {
+        "uuid": "8cd6c409-4b4e-4c21-b31c-6153468e41d3",
+        "accession": "ENCAN476NXM",
+        "dataset": "ENCSR000DZQ",
+        "pipeline": "ENCPL001ENC",
+        "execution_status": "Succeeded",
+        "status": "released"
+    }
+]
