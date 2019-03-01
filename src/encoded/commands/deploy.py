@@ -278,6 +278,7 @@ def _get_instances_tag_data(main_args):
     instances_tag_data = {
         'branch': main_args.branch,
         'commit': None,
+        'short_name': _short_name(main_args.name),
         'name': main_args.name,
         'username': None,
     }
@@ -295,9 +296,10 @@ def _get_instances_tag_data(main_args):
         sys.exit(1)
     instances_tag_data['username'] = getpass.getuser()
     if instances_tag_data['name'] is None:
+        instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
         instances_tag_data['name'] = nameify(
             '%s-%s-%s' % (
-                instances_tag_data['branch'],
+                instances_tag_data['short_name'],
                 instances_tag_data['commit'],
                 instances_tag_data['username'],
             )
@@ -393,6 +395,15 @@ def _get_run_args(main_args, instances_tag_data):
     return run_args
 
 
+def _get_instance_output(instances_tag_data, instance_id, domain):
+    return [
+        'Host %s-dm.*' % instances_tag_data['short_name'],
+        '  # https://%s.demo.encodedcc.org' % instances_tag_data['name'],
+        '  # ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain),
+        '  # %s' % instance_id,
+    ]
+
+
 def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
     domain = 'production' if main_args.profile_name == 'production' else 'instance'
@@ -414,22 +425,14 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
             instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
         elif is_cluster:
             instances_tag_data['name'] = "{}{}".format(tmp_name, i)
-        short_name = _short_name(instances_tag_data['name'])
         if not main_args.spot_instance:
             if is_cluster_master or (is_cluster and not created_cluster_master):
                 created_cluster_master = True
-                output_list.append('Host %s-dm.*' % short_name)
-                output_list.append('  Hostname %s.%s.encodedcc.org' % (instance.id, domain))
-                output_list.append('  # https://%s.demo.encodedcc.org' % instances_tag_data['name'])
-                output_list.append('  # ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
-                output_list.append('  # %s' % instance.id)
+                output_list.extend(_get_instance_output(instances_tag_data, instance.id, domain))
             elif is_cluster:
                 output_list.append('  # %s' % instance.id)
             elif not is_cluster:
-                output_list.append('Host %s.*' % short_name)
-                output_list.append('  Hostname %s.%s.encodedcc.org' % (instance.id, domain))
-                output_list.append('  # https://%s.demo.encodedcc.org' % instances_tag_data['name'])
-                output_list.append('  # ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
+                output_list.extend(_get_instance_output(instances_tag_data, instance.id, domain))
             instance.wait_until_exists()
             tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
     for output in output_list:
