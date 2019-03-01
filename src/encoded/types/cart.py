@@ -55,12 +55,12 @@ class Cart(Item):
         pass
 
 
-def _get_carts_by_user(request, userid):
+def _get_carts_by_user(request, userid, blocked_statuses=[]):
     request.datastore = 'database'
     return [
         request.resource_path(v, '')
         for k, v in request.registry[COLLECTIONS]['cart'].items()
-        if v.properties['submitted_by'] == userid
+        if v.properties['submitted_by'] == userid and not v.properties['status'] in blocked_statuses
     ]
 
 
@@ -99,7 +99,7 @@ def get_or_create_cart_by_user(context, request):
     user = request.registry[COLLECTIONS]['user'].get(userid)
     if not user:
         raise HTTPBadRequest()
-    carts = _get_carts_by_user(request, userid)
+    carts = _get_carts_by_user(request, userid, ['disabled', 'deleted '])
     if not carts:
         cart = _create_cart(request, user)
     request.response.status = 200
