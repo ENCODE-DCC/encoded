@@ -397,13 +397,15 @@ def _get_run_args(main_args, instances_tag_data):
 
 def _get_instance_output(instances_tag_data, is_cluster_master=False):
     suffix = '-dm' if is_cluster_master else ''
+    hostname = '{}.{}.encodedcc.org'.format(
+        instances_tag_data['id'],
+        instances_tag_data['domain'],
+    )
     return [
         'Host %s%s.*' % (instances_tag_data['short_name'], suffix),
+        '  Hostname %s' % hostname,
         '  # https://%s.demo.encodedcc.org' % instances_tag_data['name'],
-        '  # ssh %s.%s.encodedcc.org' % (
-            instances_tag_data['name'],
-            instances_tag_data['domain']
-        ),
+        '  # ssh %s' % hostname,
         '  # %s' % instances_tag_data['id'],
     ]
 
@@ -411,7 +413,7 @@ def _get_instance_output(instances_tag_data, is_cluster_master=False):
 def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
     instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
-    output_list = []
+    output_list = ['']
     is_cluster_master = False
     is_cluster = False
     if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
