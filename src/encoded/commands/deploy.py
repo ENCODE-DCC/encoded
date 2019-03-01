@@ -199,7 +199,6 @@ def _short_name(long_name):
     return result[:10].lower()
 
 
-
 def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     tags = [
         {'Key': 'Name', 'Value': tag_data['name']},
