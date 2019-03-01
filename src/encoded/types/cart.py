@@ -42,7 +42,7 @@ class Cart(Item):
     STATUS_ACL = {
         'current': [(Allow, 'role.owner', ['view', 'edit'])] + ALLOW_CURRENT,
         'deleted': [(Allow, 'role.owner', ['edit'])] + DELETED,
-        'disabled': [(Allow, 'role.owner', ['view', 'edit'])],
+        'disabled': [(Allow, 'role.owner', ['view', 'edit'])] + ONLY_ADMIN_VIEW,
     }
 
     def __ac_local_roles__(self):
