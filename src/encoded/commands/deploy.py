@@ -194,15 +194,13 @@ def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     return instance
 
 
-def read_ssh_key():
-    home = expanduser("~")
-    ssh_key_path = home + '/' + '.ssh/id_rsa.pub'
-    ssh_keygen_args = ['ssh-keygen', '-l', '-f', ssh_key_path]
+def read_ssh_key(identity_file):
+    ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
     fingerprint = subprocess.check_output(
         ssh_keygen_args
     ).decode('utf-8').strip()
     if fingerprint:
-        with open(ssh_key_path, 'r') as key_file:
+        with open(identity_file, 'r') as key_file:
             ssh_pub_key = key_file.readline().strip()
             return ssh_pub_key
     return None
@@ -232,7 +230,7 @@ def _get_bdm(main_args):
 def get_user_data(commit, config_file, data_insert, main_args):
     cmd_list = ['git', 'show', commit + config_file]
     config_template = subprocess.check_output(cmd_list).decode('utf-8')
-    ssh_pub_key = read_ssh_key()
+    ssh_pub_key = read_ssh_key(main_args.identity_file)
     if not ssh_pub_key:
         print(
             "WARNING: User is not authorized with ssh access to "
@@ -525,6 +523,12 @@ def parse_args():
 
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
+    )
+    parser.add_argument(
+        '-i',
+        '--identity-file',
+        default="{}/.ssh/id_rsa.pub".format(expanduser("~")),
+        help="ssh identity file path"
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
