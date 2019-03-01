@@ -395,18 +395,22 @@ def _get_run_args(main_args, instances_tag_data):
     return run_args
 
 
-def _get_instance_output(instances_tag_data, instance_id, domain):
+def _get_instance_output(instances_tag_data, is_cluster_master=False):
+    suffix = '-dm' if is_cluster_master else ''
     return [
-        'Host %s-dm.*' % instances_tag_data['short_name'],
+        'Host %s%s.*' % (instances_tag_data['short_name'], suffix),
         '  # https://%s.demo.encodedcc.org' % instances_tag_data['name'],
-        '  # ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain),
-        '  # %s' % instance_id,
+        '  # ssh %s.%s.encodedcc.org' % (
+            instances_tag_data['name'],
+            instances_tag_data['domain']
+        ),
+        '  # %s' % instances_tag_data['id'],
     ]
 
 
 def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
-    domain = 'production' if main_args.profile_name == 'production' else 'instance'
+    instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
     output_list = []
     is_cluster_master = False
     is_cluster = False
@@ -420,6 +424,7 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
     created_cluster_master = False
     for i, instance in enumerate(instances):
         instances_tag_data['name'] = tmp_name
+        instances_tag_data['id'] = instance.id
         if is_cluster_master:
             # Hack: current tmp_name was the last data cluster, so remove '4'
             instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
@@ -428,11 +433,14 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
         if not main_args.spot_instance:
             if is_cluster_master or (is_cluster and not created_cluster_master):
                 created_cluster_master = True
-                output_list.extend(_get_instance_output(instances_tag_data, instance.id, domain))
+                output_list.extend(_get_instance_output(
+                    instances_tag_data,
+                    is_cluster_master=is_cluster_master,
+                ))
             elif is_cluster:
                 output_list.append('  # %s' % instance.id)
             elif not is_cluster:
-                output_list.extend(_get_instance_output(instances_tag_data, instance.id, domain))
+                output_list.extend(_get_instance_output(instances_tag_data))
             instance.wait_until_exists()
             tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
     for output in output_list:
