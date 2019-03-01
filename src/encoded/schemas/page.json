@@ -67,7 +67,7 @@
             "default": "3"
         },
         "parent": {
-            "title": "Parent Page",
+            "title": "Parent page",
             "type": [
                 "string",
                 "null"
@@ -78,7 +78,7 @@
             ]
         },
         "name": {
-            "title": "URL Name",
+            "title": "Name",
             "description": "The name shown in this page's URL.",
             "type": "string",
             "pattern": "^[a-z0-9_-]+$"
@@ -124,7 +124,7 @@
             }
         },
         "layout": {
-            "title": "Page Layout",
+            "title": "Page layout",
             "description": "Hierarchical description of the page layout.",
             "type": "object",
             "formInput": "layout",
@@ -197,16 +197,13 @@
             "title": "Topics"
         },
         "month_released": {
-            "title": "Date"
+            "title": "Date released"
         },
         "award.project": {
             "title": "Project"
         }
     },
     "columns": {
-        "@id": {
-            "title": "Path"
-        },
         "title": {
             "title": "Title"
         },
@@ -217,7 +214,7 @@
             "title": "News excerpt"
         },
         "date_created": {
-            "title": "Created"
+            "title": "Date created"
         },
         "status": {
             "title": "Status"

@@ -48,7 +48,7 @@
             }
         },
          "assay_term_names": {
-            "title": "Assay term names",
+            "title": "Assay names",
             "description": "Assay names the pipeline is compatible with.",
             "comment": "A list of assay names that could be processed by the pipeline.",
             "type": "array",
@@ -196,19 +196,19 @@
     },
     "facets": {
         "assay_term_names": {
-            "title": "Assay"
+            "title": "Assay names"
         },
         "status": {
-            "title": "Pipeline status"
+            "title": "Status"
         },
         "title": {
-            "title": "Pipeline groups"
+            "title": "Title"
         },
         "analysis_steps.versions.software_versions.software.title": {
             "title": "Software"
         },
         "lab.title": {
-            "title": "Developed by"
+            "title": "Lab"
         }
     },
     "columns": {
@@ -216,10 +216,10 @@
             "title": "Accession"
         },
         "title": {
-            "title": "Pipeline"
+            "title": "Title"
         },
         "assay_term_names": {
-            "title": "Assay type"
+            "title": "Assay names"
         },
         "version": {
             "title": "Version"
@@ -228,19 +228,16 @@
             "title": "Status"
         },
         "analysis_steps.versions.software_versions.downloaded_url": {
-            "title": "URL"
+            "title": "Software URLs"
         },
         "analysis_steps.versions.software_versions.download_checksum": {
-            "title": "Checksum"
+            "title": "Software checksum"
         },
         "analysis_steps.versions.software_versions.software.title": {
             "title": "Software"
         },
-        "analysis_steps.versions.software_versions.software.@id": {
-            "title": "ID"
-        },
-        "analysis_steps.versions.software_versions.software.references.published_by": {
-            "title": "Created by"
+        "analysis_steps.versions.software_versions.software.name": {
+            "title": "Software used"
         }
     },
     "boost_values": {
