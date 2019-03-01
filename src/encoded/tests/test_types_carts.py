@@ -31,6 +31,17 @@ def deleted_cart(testapp, submitter):
 
 
 @pytest.fixture
+def autosave_cart(testapp, submitter):
+    item = {
+        'name': 'test cart',
+        'status': 'disabled',
+        'elements': [],
+        'submitted_by': submitter['uuid'],
+    }
+    return testapp.post_json('/cart', item).json['@graph'][0]
+
+
+@pytest.fixture
 def cart_submitter_testapp(app, submitter):
     '''TestApp with JSON accept header for non-admin user.
     '''
@@ -87,6 +98,14 @@ def test_other_can_see_cart(cart_submitter_testapp, other_cart, remc_member):
 
 def test_submitter_cant_see_deleted_cart(cart_submitter_testapp, deleted_cart, submitter):
     cart_submitter_testapp.get(deleted_cart['@id'], status=403)
+
+
+def test_other_cant_see_autosave_cart(other_cart_submitter_testapp, autosave_cart, remc_member):
+    other_cart_submitter_testapp.get(autosave_cart['@id'], status=403)
+
+
+def test_submitter_can_see_autosave_cart(cart_submitter_testapp, autosave_cart, submitter):
+    cart_submitter_testapp.get(autosave_cart['@id'], status=200)
 
 
 def test_submitter_cannot_add_own_cart(cart_submitter_testapp, submitter):
