@@ -29,7 +29,7 @@ class CalculatedAssaySynonyms:
 
 class CalculatedFileSetBiosample:
     @calculated_property(condition='related_files', schema={
-        "title": "Biosample type",
+        "title": "Biosample ontology",
         "type": "array",
         "items": {
             "type": 'string',
@@ -55,7 +55,7 @@ class CalculatedFileSetBiosample:
 
 class CalculatedFileSetAssay:
     @calculated_property(define=True, condition='related_files', schema={
-        "title": "Assay term name",
+        "title": "Assay name",
         "type": "array",
         "items": {
             "type": 'string',
@@ -66,7 +66,7 @@ class CalculatedFileSetAssay:
             'dataset.assay_term_name', *related_files)
 
     @calculated_property(define=True, condition='assay_term_name', schema={
-        "title": "Assay term id",
+        "title": "Assay term ID",
         "type": "array",
         "items": {
             "type": 'string',
@@ -93,7 +93,7 @@ class CalculatedSeriesAssay:
             'assay_term_name', *related_datasets)
 
     @calculated_property(define=True, condition='related_datasets', schema={
-        "title": "Assay term id",
+        "title": "Assay term ID",
         "type": "array",
         "items": {
             "type": 'string',

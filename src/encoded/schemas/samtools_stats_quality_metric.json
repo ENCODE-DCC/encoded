@@ -92,7 +92,7 @@
             "description": "samtools --stats: last fragments"
         },
         "maximum length": {
-            "title": "Max length",
+            "title": "Maximum length",
             "type": "number",
             "description": "samtools --stats: maximum length"
         },

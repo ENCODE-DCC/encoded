@@ -24,7 +24,7 @@
     ],
     "facets": {
         "status": {
-            "title": "Library status"
+            "title": "Status"
         }
     },
     "dependencies": {
@@ -123,7 +123,7 @@
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
         "nucleic_acid_term_name": {
-            "title": "Molecule term",
+            "title": "Library material",
             "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
             "enum": [
@@ -137,7 +137,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects..",
             "type": "array",
             "default": [],
@@ -323,13 +323,13 @@
             "title": "Lab"
         },
         "biosample.biosample_ontology.term_name": {
-            "title": "Biosample"
+            "title": "Biosample term name"
         },
-        "biosample.organism.name": {
-            "title": "Species"
+        "biosample.donor.organism.scientific_name": {
+            "title": "Organism"
         },
         "nucleic_acid_term_name": {
-            "title": "Nucleic Acid Term Name"
+            "title": "Library material"
         }
     },
     "boost_values": {

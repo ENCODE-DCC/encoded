@@ -23,7 +23,7 @@
             "default": "5"
         },
         "software_type": {
-            "title": "Types",
+            "title": "Software type",
             "description": "The classification of the software",
             "type": "array",
             "uniqueItems": true,
@@ -72,7 +72,7 @@
             "format": "uri"
         },
         "purpose": {
-            "title": "Purpose in project",
+            "title": "Purpose",
             "description": "The purpose that the software was used for in the project.",
             "type": "array",
             "uniqueItems": true,
@@ -178,10 +178,7 @@
             "title": "Software type"
         },
         "purpose": {
-            "title": "Purpose in project"
-        },
-        "references.published_by": {
-            "title": "Created by"
+            "title": "Purpose"
         }
     },
    "columns": {
@@ -204,16 +201,16 @@
             "title": "Source URL"
         },
         "references": {
-            "title": "references"
+            "title": "References"
         },
         "used_by": {
             "title": "Use by project"
         },
         "software_type": {
-            "title": "The classification of the software"
+            "title": "Software type"
         },
         "purpose": {
-            "title": "Purpose in project"
+            "title": "Purpose"
         }
     },
     "boost_values": {
