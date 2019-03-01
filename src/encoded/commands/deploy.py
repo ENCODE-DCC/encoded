@@ -179,6 +179,27 @@ def nameify(in_str):
     return re.subn(r'\-+', '-', name)[0]
 
 
+def _short_name(long_name):
+    """
+    Returns a short name for the branch name if found
+    """
+    if not long_name:
+        return None
+    regexes = [
+        '(?:encd|sno)-[0-9]+',  # Demos
+        '^v[0-9]+rc[0-9]+',     # RCs
+        '^v[0-9]+x[0-9]+',      # Prod, Test
+    ]
+    result = long_name
+    for regex_str in regexes:
+        res = re.findall(regex_str, long_name, re.IGNORECASE)
+        if res:
+            result = res[0]
+            break
+    return result[:10].lower()
+
+
+
 def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     tags = [
         {'Key': 'Name', 'Value': tag_data['name']},
@@ -376,23 +397,44 @@ def _get_run_args(main_args, instances_tag_data):
 def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
     domain = 'production' if main_args.profile_name == 'production' else 'instance'
-    for i, instance in enumerate(instances):
-        if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
-            if cluster_master and run_args['master_user_data']:
-                print('Creating Elasticsearch Master Node for cluster')
-                # Hack: current tmp_name was the last data cluster, so remove '4'
-                instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
-            else:
-                print('Creating Elasticsearch cluster')
-                instances_tag_data['name'] = "{}{}".format(tmp_name, i)
+    output_list = []
+    is_cluster_master = False
+    is_cluster = False
+    if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
+        if cluster_master and run_args['master_user_data']:
+            is_cluster_master = True
+            output_list.append('Creating Elasticsearch Master Node for cluster')
         else:
-            instances_tag_data['name'] = tmp_name
+            is_cluster = True
+            output_list.append('Creating Elasticsearch cluster')
+    created_cluster_master = False
+    for i, instance in enumerate(instances):
+        instances_tag_data['name'] = tmp_name
+        if is_cluster_master:
+            # Hack: current tmp_name was the last data cluster, so remove '4'
+            instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
+        elif is_cluster:
+            instances_tag_data['name'] = "{}{}".format(tmp_name, i)
+        short_name = _short_name(instances_tag_data['name'])
         if not main_args.spot_instance:
-            print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+            if is_cluster_master or (is_cluster and not created_cluster_master):
+                created_cluster_master = True
+                output_list.append('Host %s-dm.*' % short_name)
+                output_list.append('  Hostname %s.%s.encodedcc.org' % (instance.id, domain))
+                output_list.append('  # https://%s.demo.encodedcc.org' % instances_tag_data['name'])
+                output_list.append('  # ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
+                output_list.append('  # %s' % instance.id)
+            elif is_cluster:
+                output_list.append('  # %s' % instance.id)
+            elif not is_cluster:
+                output_list.append('Host %s.*' % short_name)
+                output_list.append('  Hostname %s.%s.encodedcc.org' % (instance.id, domain))
+                output_list.append('  # https://%s.demo.encodedcc.org' % instances_tag_data['name'])
+                output_list.append('  # ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
             instance.wait_until_exists()
             tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
-            print('ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
-            print('https://%s.demo.encodedcc.org' % instances_tag_data['name'])
+    for output in output_list:
+        print(output)
 
 
 def main():
@@ -582,7 +624,6 @@ def parse_args():
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
-    print(args.role)
     return args
 
 
