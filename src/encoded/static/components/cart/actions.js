@@ -244,7 +244,7 @@ export const setCartStatus = status => (
  * @return {Promise} Resolves to the updated cart object
  */
 export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, fetch) => (
-    dispatch => (
+    (dispatch, getState) => (
         new Promise((resolve, reject) => {
             const nameIdentifierSetList = { name };
 
@@ -264,7 +264,14 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
                 // We know the update of the cart object in the database succeeded, so update the
                 // cart Redux store as well.
                 cartSetOperationInProgress(false, dispatch);
-                dispatch(cacheSavedCart(updatedSavedCartObj));
+                const currentCartAtId = cartGetSettings(user).current;
+
+                // If we updated the current cart, re-cache the cart object.
+                if (updatedSavedCartObj['@id'] === currentCartAtId) {
+                    dispatch(cacheSavedCart(updatedSavedCartObj));
+                }
+
+                // Update the name and identifier in the cart store.
                 if (name) {
                     dispatch(setCartName(name));
                 }
@@ -275,8 +282,7 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
                 if (cart['@id'] !== updatedSavedCartObj['@id']) {
                     // At this point we know the identifier changed, but we don't know if that
                     // affects the current cart.
-                    const oldCurrent = cartGetSettings(user).current;
-                    if (cart['@id'] === oldCurrent) {
+                    if (cart['@id'] === currentCartAtId) {
                         // The identifier changed AND it affects the current cart, so update the
                         // current cart settings and cart Redux store with the new identifier.
                         cartSetSettingsCurrent(user, updatedSavedCartObj['@id']);
