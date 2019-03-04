@@ -27,7 +27,7 @@
             "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
-            "title": "Relative cross-correlation coefficient",
+            "title": "Relative cross correlation coefficient",
             "type": "number",
             "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length  and at read length"
         },
@@ -44,7 +44,7 @@
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
         },
         "fragment length": {
-            "title": "fragment length",
+            "title": "Fragment length",
             "type": "number",
             "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis"
         },

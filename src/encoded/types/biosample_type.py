@@ -49,7 +49,7 @@ class BiosampleType(SharedItem):
         ))
 
     @calculated_property(condition='term_id', schema={
-        "title": "Organ slims",
+        "title": "Organ",
         "type": "array",
         "items": {
             "type": "string",
@@ -59,7 +59,7 @@ class BiosampleType(SharedItem):
         return self._get_ontology_slims(registry, term_id, 'organs')
 
     @calculated_property(condition='term_id', schema={
-        "title": "Cell slims",
+        "title": "Cell",
         "type": "array",
         "items": {
             "type": "string",
@@ -89,7 +89,7 @@ class BiosampleType(SharedItem):
         return self._get_ontology_slims(registry, term_id, 'systems')
 
     @calculated_property(condition='term_id', schema={
-        "title": "Synonyms for biosample type",
+        "title": "Synonyms",
         "type": "array",
         "items": {
             "type": "string",

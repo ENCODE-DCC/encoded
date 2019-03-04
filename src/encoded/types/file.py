@@ -303,7 +303,7 @@ class File(Item):
         return sorted(libraries)
 
     @calculated_property(schema={
-        "title": "Analysis Step Version",
+        "title": "Analysis step version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",
         "type": "string",
