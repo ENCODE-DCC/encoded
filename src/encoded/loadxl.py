@@ -59,6 +59,7 @@ ORDER = [
     'analysis_step_run',
     'file',
     'star_quality_metric',
+    'atac_quality_metric',
     'bismark_quality_metric',
     'cpg_correlation_quality_metric',
     'chipseq_filter_quality_metric',

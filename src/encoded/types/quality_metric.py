@@ -223,3 +223,14 @@ class HistoneChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
 class GenericQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'generic_quality_metric'
     schema = load_schema('encoded:schemas/generic_quality_metric.json')
+
+
+@collection(
+    name='atac-quality-metrics',
+    properties={
+        'title': "ATAC-seq Quality Metrics",
+        'description': 'A set of ATAC QC metrics',
+    })
+class AtacQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_quality_metric'
+    schema = load_schema('encoded:schemas/atac_quality_metric.json')
