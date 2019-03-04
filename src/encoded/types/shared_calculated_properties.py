@@ -82,7 +82,7 @@ class CalculatedFileSetAssay:
 
 class CalculatedSeriesAssay:
     @calculated_property(condition='related_datasets', schema={
-        "title": "Assay term name",
+        "title": "Assay name",
         "type": "array",
         "items": {
             "type": 'string',
@@ -106,7 +106,7 @@ class CalculatedSeriesAssay:
 
 class CalculatedSeriesBiosample:
     @calculated_property(condition='related_datasets', schema={
-        "title": "Biosample type",
+        "title": "Biosample ontology",
         "type": "array",
         "items": {
             "type": 'string',
@@ -132,7 +132,7 @@ class CalculatedSeriesBiosample:
 
 class CalculatedSeriesTreatment:
     @calculated_property(condition='related_datasets', schema={
-        "title": "Treatment term name",
+        "title": "Biosample treatment",
         "type": "array",
         "items": {
             "type": 'string',
@@ -159,7 +159,7 @@ class CalculatedSeriesTarget:
 
 class CalculatedAssayTermID:
     @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay ID",
+        "title": "Assay term ID",
         "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
         "type": "string",
         "comment": "Calculated based on the choice of assay_term_name"
