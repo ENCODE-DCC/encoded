@@ -35,7 +35,7 @@
             "type": "string"
         },
         "date_published": {
-            "title": "Date published",
+            "title": "Publication date",
             "type": "string"
         },
         "date_revised": {
@@ -195,7 +195,7 @@
     },
     "facets": {
         "status": {
-            "title": "Publication status"
+            "title": "Status"
         },
         "categories": {
             "title": "Category"
@@ -214,7 +214,7 @@
         },
         "datasets.accession": {
             "type": "exists",
-            "title": "Has dataset"
+            "title": "Associated dataset"
         }
     },
     "columns": {
@@ -255,13 +255,13 @@
             "title": "File format"
         },
         "supplementary_data.url": {
-            "title": "URL"
+            "title": "Supplementary data URL"
         },
         "supplementary_data.data_summary": {
-            "title": "Data summary"
+            "title": "Supplementary data summary"
         },
         "identifiers": {
-            "title": "identifiers"
+            "title": "Identifiers"
         }
     },
     "boost_values": {

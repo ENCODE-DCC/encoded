@@ -20,7 +20,7 @@
             "default": "5"
         },
         "analysis_step_version": {
-            "title": "Analysis Step Version",
+            "title": "Analysis step version",
             "description": "Reference to template step in pipeline",
             "type": "string",
             "linkTo": "AnalysisStepVersion"

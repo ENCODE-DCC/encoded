@@ -51,19 +51,19 @@
     },
     "facets": {
         "related_datasets.assay_term_name": {
-            "title": "Assay"
+            "title": "Assay name"
         },
         "status": {
-            "title": "Series status"
+            "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
         },
         "target.investigated_as": {
-            "title": "Target of assay"
+            "title": "Target category"
         },
         "biosample_ontology.classification": {
-            "title": "Biosample type"
+            "title": "Biosample classification"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -78,19 +78,22 @@
             "title": "Biosample treatment"
         },
         "related_datasets.files.file_type": {
-            "title": "Available data"
+            "title": "Available file types"
         },
         "related_datsets.files.run_type": {
             "title": "Run type"
         },
         "related_datasets.files.read_length": {
-            "title": "Read length"
+            "title": "Read length (nt)"
         },
         "related_datasets.files.mapped_read_length": {
-            "title": "Mapped read length"
+            "title": "Mapped read length (nt)"
+        },
+        "related_datasets.replicates.library.size_range": {
+            "title": "Library fragment size (nt)"
         },
         "related_datasets.replicates.library.nucleic_acid_term_name": {
-            "title": "Library made from"
+            "title": "Library material"
         },
         "related_datasets.replicates.library.size_range": {
             "title": "Library insert size (nt)"
@@ -117,15 +120,11 @@
             "type": "string"
         },
         "related_datasets.assay_term_name": {
-            "title": "Assay Type",
-            "type": "string"
-        },
-        "related_datasets.target.label":{
-            "title": "Target",
+            "title": "Assay name",
             "type": "string"
         },
         "related_datasets.biosample_ontology.term_name": {
-            "title": "Biosample",
+            "title": "Biosample name",
             "type": "string"
         },
         "description": {
@@ -153,15 +152,15 @@
             "type": "string"
         },
         "related_datasets.replicates.antibody.accession": {
-            "title": "Linked Antibody",
+            "title": "Linked antibody",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.organism.scientific_name": {
-            "title": "Species",
+            "title": "Organism",
             "type": "array"
         },
         "related_datasets.replicates.library.biosample.age_display": {
-            "title": "Age display",
+            "title": "Biosample age",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.life_stage": {
@@ -169,27 +168,27 @@
             "type": "array"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Treatment",
+            "title": "Biosample treatment",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_id": {
-            "title": "Term ID",
+            "title": "Biosample treatment ontology ID",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.concentration": {
-            "title": "Concentration",
+            "title": "Biosample treatment concentration",
             "type": "number"
         },
         "related_datasets.replicates.library.biosample.treatments.concentration_units": {
-            "title": "Concentration units",
+            "title": "Biosample treatement concentration units",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.duration": {
-            "title": "Duration",
+            "title": "Biosample treatment duration",
             "type": "number"
         },
         "related_datasets.replicates.library.biosample.treatments.duration_units": {
-            "title": "Duration units",
+            "title": "Biosample treatment duration units",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.synchronization": {

@@ -144,6 +144,7 @@ class Library(Item):
         'biosample',
         'biosample.donor',
         'biosample.donor.organism',
+        'biosample.biosample_ontology'
     ]
     set_status_up = [
         'biosample',
@@ -155,7 +156,7 @@ class Library(Item):
     rev = {'replicates': ('Replicate', 'library')}
 
     @calculated_property(condition='nucleic_acid_term_name', schema={
-        "title": "nucleic_acid_term_id",
+        "title": "Nucleic acid term ID",
         "type": "string",
     })
     def nucleic_acid_term_id(self, request, nucleic_acid_term_name):
@@ -172,7 +173,7 @@ class Library(Item):
         return term_id
 
     @calculated_property(condition='depleted_in_term_name', schema={
-        "title": "depleted_in_term_id",
+        "title": "Depleted in term ID",
         "type": "string",
     })
     def depleted_in_term_id(self, request, depleted_in_term_name):

@@ -44,7 +44,7 @@
             ]
         },
         "attachment": {
-            "title": "Genetic modification characterization document metadata",
+            "title": "Attachment",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

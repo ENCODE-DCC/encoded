@@ -89,13 +89,13 @@
             "default": "10"
         },
         "dbxref": {
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "External identifier",
+                "title": "External identifiers",
                 "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
                 "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
                 "type":  "string"
@@ -123,7 +123,7 @@
             }
         },
         "modifications": {
-            "title": "Modification to the corresponding gene product.",
+            "title": "Target modification",
             "description": "List of modifications made to the corresponding gene product of this target.",
             "comment": "This property will be used to calculate the proper label of the target. See computed_label property for details about automatic label calculation.",
             "type": "array",
@@ -178,7 +178,7 @@
             }
         },
         "label": {
-            "title": "Common name with modification",
+            "title": "Target",
             "description": "Common name for the target including post-translational modifications, if any.",
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
@@ -186,7 +186,7 @@
             "format": "target_label"
         },
         "investigated_as": {
-            "title": "Target project investigation context",
+            "title": "Target category",
             "description": "The context(s) the target was investigated in",
             "type": "array",
             "uniqueItems": true,
@@ -215,10 +215,10 @@
             "title": "Organism"
         },
         "investigated_as": {
-            "title": "Target of assay"
+            "title": "Target category"
         },
         "modifications.modification": {
-            "title": "Modification in targets"
+            "title": "Target modification"
         }
     },
     "columns": {
@@ -229,13 +229,13 @@
             "title": "Target category"
         },
         "organism.scientific_name": {
-            "title": "Species"
+            "title": "Organism"
         },
         "dbxref": {
             "title": "External resources"
         },	
         "genes.symbol": {	
-            "title": "Gene name"	
+            "title": "Gene symbol"
         }
     },
     "boost_values": {

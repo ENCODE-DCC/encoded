@@ -164,7 +164,7 @@ class Dataset(Item):
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Assembly",
+        "title": "Genome assembly",
         "type": "array",
         "items": {
             "type": "string",
@@ -181,7 +181,7 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
     @calculated_property(condition='date_released', schema={
-        "title": "Month released",
+        "title": "Date released",
         "type": "string",
     })
     def month_released(self, date_released):
@@ -257,7 +257,7 @@ class FileSet(Dataset):
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Assembly",
+        "title": "Genome assembly",
         "type": "array",
         "items": {
             "type": "string",
@@ -542,7 +542,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Assembly",
+        "title": "Genome assembly",
         "type": "array",
         "items": {
             "type": "string",

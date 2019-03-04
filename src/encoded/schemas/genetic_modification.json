@@ -442,21 +442,21 @@
             ]
         },
         "modified_site_by_target_id": {
-            "title": "Modification site",
+            "title": "Modification site by target ID",
             "description": "The name (ENCODE target ID) of the gene whose expression or product is modified by the genetic modification.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
         },
         "modified_site_by_gene_id": {
-            "title": "Modification site",
+            "title": "Modification site by gene ID",
             "description": "The name of the gene whose expression or product is modified by the genetic modification.",
             "comment": "See gene.json for available identifiers.",
             "type": "string",
             "linkTo": "Gene"
         },
         "modified_site_by_coordinates": {
-            "title": "Modification site",
+            "title": "Modification site by coordinates",
             "description": "Genomic coordinates specifying the location of the modification.",
             "type": "object",
             "additionalProperties": false,
@@ -500,13 +500,13 @@
             }
         },
         "modified_site_by_sequence" : {
-            "title": "Modification site",
+            "title": "Modification site by sequence",
             "description": "Genomic sequence specifying location of the modification.",
             "type": "string",
             "pattern": "^[ACTG]+$"
         },
         "modified_site_nonspecific": {
-            "title": "Modification site",
+            "title": "Nonspecific modification site",
             "description": "Site of modification that is not known (i.e. is random, not targeted).",
             "type": "string",
             "comment": "May be expanded to include extrachromosomal arrays if need arises.",
@@ -730,16 +730,16 @@
             "type": "string"
         },
         "aliases": {
-            "title": "Lab aliases"
+            "title": "Aliases"
         },
         "category": {
             "title": "Category"
         },
         "modified_site_by_target_id.name": {
-            "title": "Target name"
+            "title": "Modification site by target ID"
         },
         "lab.title": {
-            "title": "Title"
+            "title": "Lab"
         },
         "purpose": {
             "title": "Purpose"
@@ -765,7 +765,7 @@
             "title": "Lab"
         },
         "status": {
-            "title": "Genetic modification status"
+            "title": "Status"
         }
     },
     "boost_values": {
