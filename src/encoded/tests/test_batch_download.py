@@ -76,6 +76,12 @@ def test_batch_download_report_download(testapp, workbook):
     assert len(lines) == 48
 
 
+def test_batch_download_matched_set_report_download(testapp, workbook):
+    res = testapp.get('/report.tsv?type=MatchedSet&sort=accession')
+    disposition = res.headers['content-disposition']
+    assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
+
+
 def test_batch_download_files_txt(testapp, workbook):
     results = testapp.get('/batch_download/type%3DExperiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'

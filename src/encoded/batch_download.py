@@ -461,10 +461,10 @@ def report_download(context, request):
     # Make sure we get all results
     request.GET['limit'] = 'all'
 
-    type = types[0].lower()
+    type = types[0]
     schemas = [request.registry[TYPES][type].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    type = type.replace("'", '')
+    type = type.lower().replace("'", '')
 
     def format_header(seq):
         newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, '/report/', request.query_string)
