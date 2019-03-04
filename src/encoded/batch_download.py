@@ -15,6 +15,7 @@ import csv
 import io
 import json
 import datetime
+import re
 
 ELEMENT_CHUNK_SIZE = 1000
 currenttime = datetime.datetime.now()
@@ -464,7 +465,9 @@ def report_download(context, request):
     type = types[0]
     schemas = [request.registry[TYPES][type].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    type = type.lower().replace("'", '')
+    
+    snake_case_type = type[0].lower() + re.sub(r'(?!^)[A-Z]', lambda x: '_' + x.group(0).lower(), type[1:])
+    type = snake_case_type.replace("'", '')
 
     def format_header(seq):
         newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, '/report/', request.query_string)

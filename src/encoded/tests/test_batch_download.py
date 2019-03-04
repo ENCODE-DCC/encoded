@@ -80,6 +80,9 @@ def test_batch_download_matched_set_report_download(testapp, workbook):
     res = testapp.get('/report.tsv?type=MatchedSet&sort=accession')
     disposition = res.headers['content-disposition']
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
+    res = testapp.get('/report.tsv?type=matched_set&sort=accession')
+    disposition = res.headers['content-disposition']
+    assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
 
 
 def test_batch_download_files_txt(testapp, workbook):
