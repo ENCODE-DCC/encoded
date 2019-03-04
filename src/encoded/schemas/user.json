@@ -32,7 +32,7 @@
             "type": "string"
         },
         "lab": {
-            "title": "Affiliation",
+            "title": "Lab",
             "description": "Lab user is primarily associated with.",
             "comment": "See lab.json for available identifiers.",
             "permission": "import-items",
