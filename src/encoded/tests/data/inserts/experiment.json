@@ -783,7 +783,7 @@
         "date_released": "2015-08-31",
         "accession": "ENCSR751STR",
         "uuid": "a4460c54-aece-43d2-bf52-dbaaa9298aaa",
-        "experiment_classification": ["functional genomics assay"]
+        "experiment_classification": ["functional characterization assay"]
     },
     {
         "_test": "PLAC-seq test",
@@ -812,6 +812,6 @@
         "date_released": "2015-08-31",
         "accession": "ENCSR751STU",
         "uuid": "e828ec77-8f74-438f-8bf7-8535ee34819e",
-        "experiment_classification": ["functional genomics assay"]
+        "experiment_classification": ["functional characterization assay"]
     }
 ]
