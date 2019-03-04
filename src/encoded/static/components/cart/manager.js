@@ -642,7 +642,7 @@ const CartManagerFooter = () => (
  * rename, and remove carts, and set the current cart.
  */
 const CartManagerComponent = ({ context, currentCart, sessionProperties }, reactContext) => {
-    const extantCartCount = context['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' ? sum + 1 : sum), 0);
+    const extantCartCount = context['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
     const user = sessionProperties && sessionProperties.user;
     const cartPanelHeader = (
         <div className="cart-manager-header">

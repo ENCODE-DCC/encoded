@@ -16,20 +16,13 @@ def includeme(config):
     config.scan(__name__)
 
 
-def get_cart_objects_by_user(request, userid):
+def get_cart_objects_by_user(request, userid, blocked_statuses=[]):
     request.datastore = 'database'
     return [
         request.embed(request.resource_path(v), '@@object')
         for k, v in request.registry[COLLECTIONS]['cart'].items()
-        if v.properties['submitted_by'] == userid
+        if v.properties['submitted_by'] == userid and not v.properties['status'] in blocked_statuses
     ]
-
-
-def filter_carts_to_visible(request, carts):
-    '''Filter cart list to those visible to current user'''
-    if 'group.admin' in request.effective_principals:
-        return carts
-    return [cart for cart in carts if cart['status'] != 'deleted']
 
 
 @view_config(route_name='cart-view', request_method='GET', permission='search')
@@ -59,11 +52,10 @@ def cart_manager(context, request):
         raise HTTPBadRequest()
     else:
         userid = userid[0]
-    user_carts = get_cart_objects_by_user(request, userid)
-    visible_user_carts = filter_carts_to_visible(request, user_carts)
+    user_carts = get_cart_objects_by_user(request, userid, ['deleted'] if not 'group.admin' in request.effective_principals else [])
     # Calculate the element count in each cart, but remove the elements
     # themselves as this list can be huge.
-    for c in visible_user_carts:
+    for c in user_carts:
         c['element_count'] = len(c['elements'])
         del c['elements']
     result = {
@@ -71,7 +63,7 @@ def cart_manager(context, request):
         '@type': ['cart-manager'],
         'title': 'Cart',
         'facets': [],
-        '@graph': visible_user_carts,
+        '@graph': user_carts,
         'columns': OrderedDict(),
         'notification': '',
         'filters': [],
