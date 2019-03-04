@@ -61,21 +61,19 @@
             "type":  "array",
             "uniqueItems": true,
             "items": {
-                "title": "",
-                "description": "",
+                "title": "Filtered and deduplicated aligned fragments per replicate",
                 "type": "object",
                 "required": ["replicate", "aligned_fragments"],
                 "properties": {
                     "replicate": {
                         "title": "Replicate",
-                        "description": "",
-                        "comment": "",
+                        "description": "Isogenic replicate",
                         "type": "string",
                         "linkTo": "Replicate"
                     },
                     "aligned_fragments": {
                         "title": "Aligned fragments",
-                        "description": "",
+                        "description": "Quantity of filtered and deduplicated aligned fragments",
                         "type": "number",
                         "minimum":0
                     }
@@ -84,12 +82,10 @@
         },
         "IDR_stats": {
             "title": "IDR",
-            "comment": "",
             "type":  "array",
             "uniqueItems": true,
             "items": {
-                "title": "",
-                "description": "",
+                "title": "IDR statistics",
                 "type": "object",
                 "required": ["self_consistency_ratio", "rescue_ratio"],
                 "properties": {
@@ -107,20 +103,16 @@
             }
         },
         "library_stats": {
-            "title": "Library stats",
-            "comment": "",
+            "title": "Library statistics",
             "type":  "array",
             "uniqueItems": true,
             "items": {
-                "title": "",
-                "description": "",
+                "title": "Library QC statistics",
                 "type": "object",
                 "required": ["library", "PBC1", "PBC2", "NRF"],
                 "properties": {
                     "library": {
                         "title": "Library",
-                        "description": "",
-                        "comment": "",
                         "type": "string",
                         "linkTo": "Library"
                     },
@@ -146,26 +138,20 @@
         },
         "replicated_peaks": {
             "title": "Replicated peaks number",
-            "description": "",
             "type": "number",
             "minimum":0
         },
         "IDR_thresholded_peaks": {
             "title": "IDR thresholded peaks number",
-            "description": "",
             "type": "number",
             "minimum":0
         },
         "nucleosome_free_region": {
             "title": "Nucleosome free region",
-            "description": "",
-            "comment": "",
             "type": "boolean"
         },
         "mononucleosome_peak_presence": {
             "title": "Presence of mononucleosome peak in the fragment length distribution",
-            "description": "",
-            "comment": "",
             "type": "boolean"
         },
         "Fp": {
@@ -174,7 +160,8 @@
             "description": "Fraction reads in IDR peaks (FRiP) from pooled pseudoreplicates"
         },
         "TSS_enrichment": {
-
+            "title": "TSS enrichement",
+            "type": "number"
         }
     },
     "facets": {
