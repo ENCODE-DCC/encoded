@@ -75,7 +75,7 @@ def _create_cart(request, user, name=None, identifier=None, status=None):
     return cart_path
 
 
-def _get_user_carts(request, blocked_statuses=[]):
+def _get_userid(request):
     userid = [
         p.replace('userid.', '')
         for p in request.effective_principals
@@ -83,18 +83,21 @@ def _get_user_carts(request, blocked_statuses=[]):
     ]
     if not userid:
         raise HTTPBadRequest()
-    else:
-        userid = userid[0]
+    return userid[0]
+
+
+def _get_user(request, userid):
     user = request.registry[COLLECTIONS]['user'].get(userid)
     if not user:
         raise HTTPBadRequest()
-    carts = get_cart_objects_by_user(request, userid, blocked_statuses)
-    return carts, user
+    return user
 
 
 @view_config(context=Cart.Collection, request_method='GET', permission='save-carts', name='get-cart')
 def get_or_create_cart_by_user(context, request):
-    carts, user = _get_user_carts(request, ['disabled', 'deleted '])
+    userid = _get_userid(request)
+    user = _get_user(request, userid)
+    carts = get_cart_objects_by_user(request, userid, ['disabled', 'deleted '])
     if not carts:
         cart = _create_cart(request, user)
         cart_atids = None
@@ -110,7 +113,9 @@ def get_or_create_cart_by_user(context, request):
 
 @view_config(context=Cart.Collection, request_method='PUT', permission='save-carts', name='put-cart')
 def create_cart_by_user(context, request):
-    user_carts, user = _get_user_carts(request, ['deleted'] if not 'group.admin' in request.effective_principals else [])
+    userid = _get_userid(request)
+    user = _get_user(request, userid)
+    user_carts = get_cart_objects_by_user(request, userid, ['deleted'] if not 'group.admin' in request.effective_principals else [])
     cart_atids = [cart['@id'] for cart in user_carts]
     cart_status = request.json.get('status', None)
     cart_name = request.json.get('name', '').strip()
