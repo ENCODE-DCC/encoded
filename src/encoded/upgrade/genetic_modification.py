@@ -217,9 +217,16 @@ def genetic_modification_7_8(value, system):
             identifier = reagent['identifier']
             new_reagent = copy.deepcopy(reagent)
             matching = []
-            for source, regex in sources.items():
+            source_from_reagent = reagent['source'].split('/')[2]
+            # Preferentially add prefix to reagent that matches the reagent source
+            try:
+                regex = sources[source_from_reagent]
                 if re.match(regex, identifier) is not None:
-                    matching.append((reagent['source'], source, identifier))
+                    matching.append((reagent['source'], source_from_reagent, identifier))
+            except KeyError:
+                for source, regex in sources.items():
+                    if re.match(regex, identifier) is not None:
+                        matching.append((reagent['source'], source, identifier))
             if not matching:
                 unmatched_reagents += '{} '.format(json.dumps(reagent))
             else:

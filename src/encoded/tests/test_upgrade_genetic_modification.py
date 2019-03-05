@@ -87,7 +87,7 @@ def genetic_modification_6(lab, award, crispr, source):
 
 
 @pytest.fixture
-def genetic_modification_7_invalid_reagent(lab, award, crispr, source):
+def genetic_modification_7_invalid_reagent(lab, award, crispr):
     return {
         'purpose': 'characterization',
         'category': 'deletion',
@@ -99,14 +99,14 @@ def genetic_modification_7_invalid_reagent(lab, award, crispr, source):
         "reagents": [
             {
                 "identifier": "placeholder_id",
-                "source": source['uuid']
+                "source": "/sources/sigma/"
             }
         ]
     }
 
 
 @pytest.fixture
-def genetic_modification_7_valid_reagent(lab, award, crispr, source):
+def genetic_modification_7_valid_reagent(lab, award, crispr):
     return {
         'purpose': 'characterization',
         'category': 'deletion',
@@ -117,8 +117,8 @@ def genetic_modification_7_valid_reagent(lab, award, crispr, source):
         "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
         "reagents": [
             {
-                "identifier": "TRCN1234567890",
-                "source": source['uuid']
+                "identifier": "ABC123",
+                "source": "/sources/sigma/"
             }
         ]
     }
@@ -135,7 +135,7 @@ def genetic_modification_7_addgene_source(testapp):
 
 
 @pytest.fixture
-def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr, genetic_modification_7_addgene_source):
+def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr):
     return {
         'purpose': 'characterization',
         'category': 'deletion',
@@ -147,14 +147,14 @@ def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr, gene
         "reagents": [
             {
                 "identifier": "12345",
-                "source": genetic_modification_7_addgene_source['@id']
+                "source": "/sources/addgene/"
             }
         ]
     }
 
 
 @pytest.fixture
-def genetic_modification_7_multiple_reagents(lab, award, crispr, genetic_modification_7_addgene_source):
+def genetic_modification_7_multiple_reagents(lab, award, crispr):
     return {
         'purpose': 'characterization',
         'category': 'deletion',
@@ -166,12 +166,12 @@ def genetic_modification_7_multiple_reagents(lab, award, crispr, genetic_modific
         "reagents": [
             {
                 "identifier": "12345",
-                "source": genetic_modification_7_addgene_source['@id'],
+                "source": "/sources/addgene/",
                 "url": "http://www.addgene.org"
             },
             {
                 "identifier": "67890",
-                "source": genetic_modification_7_addgene_source['@id'],
+                "source": "/sources/addgene/",
                 "url": "http://www.addgene.org"
             }
         ]
