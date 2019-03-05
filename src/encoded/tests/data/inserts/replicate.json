@@ -317,6 +317,19 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },
     {
+        "_test": "organism development series 2 rep 33",
+        "aliases": [
+            "robert-waterston:replicate_life stage bug"
+        ],
+        "library": "ENCLB857STI",
+        "experiment": "/experiments/ENCSR375GSQ/",
+        "technical_replicate_number": 33,
+        "biological_replicate_number": 33,
+        "status": "deleted",
+        "uuid": "c21bc58c-0a11-4b1f-b4b3-d84113cfea0b",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
         "_test": "organism development series 2 rep 1",
         "aliases": [
             "robert-waterston:replicate_RB884_680_1_1"
