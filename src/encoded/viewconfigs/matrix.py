@@ -73,7 +73,6 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             views.append(self._view_item.summary_report)
         return views
 
-    # pylint: disable=no-self-use
     def _construct_xygroupings(self, query, filters, negative_filters, matrix_x_y):
         '''Helper Method for constructing query'''
         x_grouping = matrix_x_y['x']['group_by']
