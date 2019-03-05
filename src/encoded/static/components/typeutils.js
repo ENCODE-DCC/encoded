@@ -296,23 +296,32 @@ export function fileStatusList(session, sessionProperties) {
 
 // Display supersedes/superseded_by lists.
 export const Supersede = ({ context }) => {
-    // Make array of superseded_by accessions
-    let supersededBys = [];
-    if (context.superseded_by && context.superseded_by.length) {
-        supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
-    }
-
     // Make array of supersedes accessions
     let supersedes = [];
     if (context.supersedes && context.supersedes.length) {
         supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
     }
 
-    if (supersededBys.length > 0 || supersedes.length > 0) {
+    let supersededByOutput = null;
+    if (context.superseded_by && context.superseded_by.length > 0) {
+        supersededByOutput = (
+            <h4 className="replacement-accessions__superseded-by">
+                <span>Superseded by </span>
+                {context.superseded_by.map((supersededBy, index) => (
+                    <span key={supersededBy}>
+                        {index > 0 ? <span>, </span> : null}
+                        <a href={supersededBy}>{globals.atIdToAccession(supersededBy)}</a>
+                    </span>
+                ))}
+            </h4>
+        );
+    }
+
+    if ((context.superseded_by && context.superseded_by.length > 0) || supersedes.length > 0) {
         return (
-            <div>
-                {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
-                {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+            <div className="replacement-accessions">
+                {supersededByOutput}
+                {supersedes.length ? <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4> : null}
             </div>
         );
     }
