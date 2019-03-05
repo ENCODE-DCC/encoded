@@ -759,12 +759,12 @@ class Facet extends React.Component {
         // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
         // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
         const numericalTest = a => !isNaN(a.key);
-        // For straightforward numerical facets, just sort by value
-        if (terms.every(numericalTest)) {
-            terms.sort((a, b) => (a.key - b.key));
         // For date facets, sort by date
-        } else if (field.match('date') || field.match('month')) {
+        if (field.match('date') || field.match('month') || field.match('year')) {
             terms.sort((a, b) => (new Date(b.key) - new Date(a.key)));
+        // For straightforward numerical facets, just sort by value
+        } else if (terms.every(numericalTest)) {
+            terms.sort((a, b) => (a.key - b.key));
         }
 
         const moreTerms = terms.slice(5);
