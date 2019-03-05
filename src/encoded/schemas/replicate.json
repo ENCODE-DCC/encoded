@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
-    "approvalRequired": ["library"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
