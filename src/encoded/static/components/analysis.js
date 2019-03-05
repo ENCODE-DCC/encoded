@@ -14,7 +14,7 @@ const ListingComponent = (props, reactContext) => {
                 <div className="result-item__data">
                     <PickerActions {...props} />
                     <div className="pull-right search-meta">
-                        <p className="type meta-title">Analyses</p>
+                        <p className="type meta-title">Analysis</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}

@@ -21,13 +21,13 @@ def audit_mismatch_pipeline(value, system):
             detail = (
                 "The analysis_step_run {} belongs to {} pipelines, "
                 "none of which matches analsis pipeline {}."
+            ).format(
+                step_run['@id'],
+                ', '.join(step['pipelines']),
+                analysis_pipeline
             )
             yield AuditFailure(
                 'mismatch pipeline',
-                detail.format(
-                    step_run['@id'],
-                    ', '.join(step['pipelines']),
-                    analysis_pipeline
-                ),
+                detail,
                 level='INTERNAL_ACTION'
             )
