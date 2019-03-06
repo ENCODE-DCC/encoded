@@ -548,8 +548,7 @@
                                         "vcf",
                                         "wig",
                                         "2bit",
-                                        "btr",
-                                        "txt"
+                                        "btr"
                                     ]
                                 },
                                 "output_type": {
@@ -561,9 +560,24 @@
                                             "reads",
                                             "rejected reads",
                                             "raw data",
-                                            "reporter code counts"
+                                            "reporter code counts",
+                                            "restriction enzyme site locations"
                                         ]
                                     }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "txt"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "restriction enzyme site locations"
+                                    ]
                                 }
                             }
                         }
