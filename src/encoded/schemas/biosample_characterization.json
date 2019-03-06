@@ -29,6 +29,7 @@
         "characterizes": {
             "title": "Biosample characterized",
             "comment": "See biosample.json for available identifiers.",
+            "type": "string",
             "linkTo": "Biosample"
         },
         "characterization_method": {
@@ -48,6 +49,7 @@
         "wildtype_biosample": {
             "title": "Wild type biosample to be used as reference for the biosample being characterized",
             "comment": "See biosample.json for available identifiers.",
+            "type": "string",
             "linkTo": "Biosample"
         }
     },
