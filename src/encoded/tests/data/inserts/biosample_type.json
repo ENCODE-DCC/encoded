@@ -174,4 +174,10 @@
     "term_name": "neural cell",
     "term_id": "CL:0002319",
     "status": "released"
+}, {
+    "classification": "organoid",
+    "uuid": "d5ee35e6-a904-43d1-af5d-4893312cc545",
+    "term_name": "brain organoid",
+    "term_id": "NTR:0002319",
+    "status": "released"
 }]

@@ -356,25 +356,42 @@ def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, single_c
                for error in error_cat)
 
 
+def test_audit_biosample_post_differentiation(testapp, base_biosample):
+    target_err_cat = 'invalid post_differentiation_time details'
+    testapp.patch_json(
+        base_biosample['@id'],
+        {'post_differentiation_time': 20, 'post_differentiation_time_units': 'hour'}
+    )
+    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    assert any(error['category'] == target_err_cat
+               for error_cat in errors.values()
+               for error in error_cat)
+
+
 def test_is_part_of_grandparent(ontology):
     from encoded.audit.biosample import is_part_of
     assert is_part_of('UBERON:0002469', 'UBERON:0001007', ontology)
+
 
 def test_is_part_of_avoid_infinite_recursion(ontology):
     from encoded.audit.biosample import is_part_of
     assert is_part_of('UBERON:0002469', 'UBERON:0006920', ontology)
 
+
 def test_is_part_of_not_related(ontology):
     from encoded.audit.biosample import is_part_of
     assert not is_part_of('UBERON:1111111', 'UBERON:0001043', ontology)
+
 
 def test_is_part_of_part_of_not_in_ontology(ontology):
     from encoded.audit.biosample import is_part_of
     assert not is_part_of('UBERON:1231231', 'UBERON:0001043', ontology)
 
+
 def test_is_part_of_empty_part_of_in_ontology(ontology):
     from encoded.audit.biosample import is_part_of
     assert not is_part_of('UBERON:0001007', 'UBERON:0001043', ontology)
+
 
 def test_is_part_of_parent(ontology):
     from encoded.audit.biosample import is_part_of

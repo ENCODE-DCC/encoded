@@ -93,6 +93,14 @@
                 }
             }
         },
+        "post_differentiation_time": {
+            "required":["post_differentiation_time_units"],
+            "comment": "Biosample with a specified post_differentiation_time requires post_differentiation_time_units specification."
+        },
+        "post_differentiation_time_units": {
+            "required":["post_differentiation_time"],
+            "comment": "Biosample with a specified post_differentiation_time_units requires post_differentiation_time specification."
+        },
         "pooled_from": {
             "comment": "Biosample with a specified pooled_from list requires at least two entries in the list.",
             "properties":{
@@ -669,6 +677,26 @@
             "title": "Post-treatment time units",
             "description": "The units of time that elapsed past the point when biosamples were treated.",
             "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment. post_treatment_time_units specification requires non-empty treatments list and post_treatment_time specification.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "stage"
+            ]
+        },
+        "post_differentiation_time": {
+            "title": "Post-differentiation time",
+            "description": "The time that elapsed past the point when biosamples were differentiated.",
+            "comment": "Use in conjunction with post_differentiation_time_units to specify time elapsed post-differentiation. Use of this property requires post_treatment_time_units specification.",
+            "type": "integer"
+        },
+        "post_differentiation_time_units": {
+            "title": "Post-differentiation time units",
+            "description": "The units of time that elapsed past the point when biosamples were differentiated.",
+            "comment": "Use in conjunction with post_differentiation_time to specify time elapsed post-differentiation. Use of this property requires post_differentiation_time specification.",
             "type": "string",
             "enum": [
                 "minute",

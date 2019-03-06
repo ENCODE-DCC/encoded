@@ -137,6 +137,15 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.post_differentiation_time && context.post_differentiation_time_units ?
+                                        <div data-test="postdifferentiationtime">
+                                            <dt>Post-differentiation time</dt>
+                                            <dd>
+                                                {formatMeasurement(context.post_differentiation_time, context.post_differentiation_time_units)}
+                                            </dd>
+                                        </div>
+                                    : null}
+
                                     {context.subcellular_fraction_term_name ?
                                         <div data-test="subcellulartermname">
                                             <dt>Subcellular fraction</dt>
