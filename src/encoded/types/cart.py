@@ -90,7 +90,7 @@ def get_or_create_cart_by_user(context, request):
     carts = get_cart_objects_by_user(
         request,
         userid,
-        blocked_statuses=['disabled', 'deleted ']
+        blocked_statuses=['disabled', 'deleted']
     )
     carts = [cart['@id'] for cart in carts]
     if not carts:
@@ -108,7 +108,7 @@ def create_cart_by_user(context, request):
     userid = get_userid(request)
     user = _get_user(request, userid)
     blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
-    carts = get_cart_objects_by_user(request, userid, blocked_statuses)
+    carts = get_cart_objects_by_user(request, userid, blocked_statuses=blocked_statuses)
     cart_atids = [cart['@id'] for cart in carts]
     cart_status = request.json.get('status')
     cart_name = request.json.get('name', '').strip()
@@ -127,8 +127,7 @@ def create_cart_by_user(context, request):
         [
             cart
             for cart in carts
-            if (cart['status'] != 'deleted' and
-                cart['status'] != 'disabled' and
+            if (cart['status'] not in ['deleted', 'disabled'] and
                 cart['name'].strip().upper() == cart_name.upper())
         ]
     )
