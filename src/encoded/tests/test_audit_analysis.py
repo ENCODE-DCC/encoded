@@ -32,8 +32,8 @@ def base_analysis_step(testapp):
     return testapp.post_json('/analysis-steps', analysis_step, status=201).json['@graph'][0]
 
 
-def test_audit_mismatch_pipeline(testapp, award, lab, base_analysis,
-                                 base_pipeline, base_analysis_step):
+def test_audit_inconsistent_pipeline(testapp, award, lab, base_analysis,
+                                     base_pipeline, base_analysis_step):
     software = {
         'name': 'do-thing',
         'description': 'It does the thing',
@@ -82,16 +82,16 @@ def test_audit_mismatch_pipeline(testapp, award, lab, base_analysis,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'mismatch pipeline' for error in errors_list)
+    assert all(error['category'] != 'inconsistent pipeline' for error in errors_list)
 
-    # Will show mismatch even when pipeline doesn't have defined analysis_step.
+    # Will show inconsistency even when pipeline doesn't have defined analysis_step.
     testapp.patch_json(base_analysis['@id'], {'pipeline': base_pipeline['@id']})
     res = testapp.get(base_analysis['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatch pipeline' for error in errors_list)
+    assert any(error['category'] == 'inconsistent pipeline' for error in errors_list)
 
     testapp.patch_json(base_pipeline['@id'], {'analysis_steps': [base_analysis_step['@id']]})
     res = testapp.get(base_analysis['@id'] + '@@index-data')
@@ -99,4 +99,4 @@ def test_audit_mismatch_pipeline(testapp, award, lab, base_analysis,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'mismatch pipeline' for error in errors_list)
+    assert all(error['category'] != 'inconsistent pipeline' for error in errors_list)
