@@ -217,13 +217,17 @@ def genetic_modification_7_8(value, system):
             identifier = reagent['identifier']
             new_reagent = copy.deepcopy(reagent)
             matching = []
-            source_from_reagent = reagent['source'].split('/')[2]
+            source_from_reagent = None
+            for source in sources:
+                if source in reagent['source']:
+                    source_from_reagent = reagent['source'].split('/')[2]
+                    break
             # Preferentially add prefix to reagent that matches the reagent source
-            try:
+            if source_from_reagent is not None:
                 regex = sources[source_from_reagent]
                 if re.match(regex, identifier) is not None:
                     matching.append((reagent['source'], source_from_reagent, identifier))
-            except KeyError:
+            else:
                 for source, regex in sources.items():
                     if re.match(regex, identifier) is not None:
                         matching.append((reagent['source'], source, identifier))
