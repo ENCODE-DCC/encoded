@@ -2,6 +2,9 @@
 
 ### Minor changes since schema version 7
 
+* A combination of *introduced_elements* and *modified_site_nonspecific* can satisfy the *category* dependency for *insertion*.
+* *episome* was added to the *category* enum, and modifications with this *category* require the *introduced_elements* property.
+* The *introduced_elements* property was added for characterization of groups of elements.
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
 * Zygosity is now required for modifications of *method* TALEN
