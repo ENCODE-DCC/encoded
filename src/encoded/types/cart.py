@@ -87,7 +87,11 @@ def _get_user(request, userid):
 def get_or_create_cart_by_user(context, request):
     userid = get_userid(request)
     user = _get_user(request, userid)
-    carts = get_cart_objects_by_user(request, userid, ['disabled', 'deleted '])
+    carts = get_cart_objects_by_user(
+        request,
+        userid,
+        blocked_statuses=['disabled', 'deleted ']
+    )
     carts = [cart['@id'] for cart in carts]
     if not carts:
         cart = _create_cart(request, user)
@@ -131,8 +135,14 @@ def create_cart_by_user(context, request):
     if name_conflict:
         msg = 'A cart with the name "{}" already exists'.format(cart_name)
         raise HTTPBadRequest(explanation=msg)
-    cart_identifier = request.json.get('identifier', None)
-    cart = _create_cart(request, user, cart_name, cart_identifier, cart_status)
+    cart_identifier = request.json.get('identifier')
+    cart = _create_cart(
+        request,
+        user,
+        name=cart_name,
+        identifier=cart_identifier,
+        status=cart_status
+    )
     request.response.status = 200
     return {
         'status': 'success',
