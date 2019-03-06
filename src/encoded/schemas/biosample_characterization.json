@@ -44,6 +44,11 @@
                 "PCR",
                 "Sanger sequencing"
             ]
+        },
+        "wildtype_biosample": {
+            "title": "Wild type biosample to be used as reference for the biosample being characterized",
+            "comment": "See biosample.json for available identifiers.",
+            "linkTo": "Biosample"
         }
     },
     "facets": {
