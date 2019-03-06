@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import * as globals from './globals';
+import { AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 
 
@@ -320,6 +321,7 @@ export const Supersede = ({ context }) => {
     if (supersededByOutput || supersedes.length > 0) {
         return (
             <div className="replacement-accessions">
+                <AlternateAccession altAcc={context.alternate_accessions} />
                 {supersededByOutput}
                 {supersedes.length ? <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4> : null}
             </div>
