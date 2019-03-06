@@ -143,10 +143,15 @@
                 "status": {
                     "oneOf": [
                          {
-                            "required": ["lab", "reviewed_by"],
+                            "required": ["lab", "reviewed_by", "lane"],
                             "properties": {
                                 "status": {
-                                    "enum": ["not compliant", "compliant"]
+                                    "enum": [
+                                        "compliant",
+                                        "not compliant",
+                                        "exempt from standards",
+                                        "requires secondary opinion"
+                                    ]
                                 }
                             }
                         },
@@ -154,7 +159,12 @@
                             "not": {
                                 "properties": {
                                     "status": {
-                                        "enum": ["not compliant", "compliant"]
+                                        "enum": [
+                                            "compliant",
+                                            "not compliant",
+                                            "exempt from standards",
+                                            "requires secondary opinion"
+                                        ]
                                     }
                                 }
                             }

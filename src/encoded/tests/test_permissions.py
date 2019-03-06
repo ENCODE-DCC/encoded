@@ -155,7 +155,8 @@ def test_not_reviewer_patch_other_lab_characterization(submitter_testapp, testap
     gm = testapp.post_json('/genetic_modification_characterization', item).json['@graph'][0]
     res = submitter_testapp.patch_json(
         gm['@id'],
-        {'review': {'lab': lab['@id'], 
+        {'review': {'lab': lab['@id'],
+                    'lane': 3, 
                     'reviewed_by': submitter['@id'],
                     'status': 'compliant'}}, expect_errors=True)
     assert "not in user submits_for" in res.json['errors'][0]['description']
@@ -175,7 +176,7 @@ def test_reviewer_patch_other_lab_characterization(submitter_testapp, testapp, s
     gm = testapp.post_json('/genetic_modification_characterization', item).json['@graph'][0]
     submitter_testapp.patch_json(
         gm['@id'],
-        {'review': {'lab': other_lab['@id'], 'reviewed_by': submitter['@id'], 'status': 'compliant'}}, status=200)
+        {'review': {'lab': other_lab['@id'], 'lane': 2, 'reviewed_by': submitter['@id'], 'status': 'compliant'}}, status=200)
 
 
 def test_not_submitted_for_review_antibody_characterizations_view_basic_anon(antibody_characterization, testapp, anontestapp):
