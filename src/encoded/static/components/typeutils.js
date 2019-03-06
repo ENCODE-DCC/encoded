@@ -317,7 +317,7 @@ export const Supersede = ({ context }) => {
         );
     }
 
-    if ((context.superseded_by && context.superseded_by.length > 0) || supersedes.length > 0) {
+    if (supersededByOutput || supersedes.length > 0) {
         return (
             <div className="replacement-accessions">
                 {supersededByOutput}
