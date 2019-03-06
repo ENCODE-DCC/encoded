@@ -349,6 +349,7 @@ def test_tale_replacement_properties(testapp, tale_replacement, source):
     res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
     assert res.status_code == 201
 
+
 def test_mpra_properties(testapp, mpra):
     # introduced_elements combined with modified_site_nonspecific can satisfy insertion dependency
     res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
@@ -359,6 +360,7 @@ def test_mpra_properties(testapp, mpra):
     mpra.update({'modified_site_nonspecific': 'random'})
     res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
     assert res.status_code == 201
+
 
 def test_starr_seq_properties(testapp, starr_seq):
     # Episome modifications need to include introduced_elements and satisfy characterization dependency
