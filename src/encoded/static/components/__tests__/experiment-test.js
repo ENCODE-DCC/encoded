@@ -92,7 +92,7 @@ describe('Experiment Page', () => {
             experiment = mount(
                 <Provider store={store}><Experiment context={contextAlt} store={store} /></Provider>
             );
-            alt = experiment.find('.repl-acc');
+            alt = experiment.find('.replacement-accessions__alternate');
         });
 
         test('displays two alternate accessions', () => {
