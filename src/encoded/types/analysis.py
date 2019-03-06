@@ -67,7 +67,7 @@ class Analysis(Dataset):
             step_run_obj = request.embed(step_run, '@@object?skip_calculated=true')
             if 'output_files' in step_run_obj:
                 output_files |= set(step_run_obj['output_files'])
-        return sorted(output_files)
+        return paths_filtered_by_status(request, output_files)
 
     # Override the analyses property of dataset
     @calculated_property()

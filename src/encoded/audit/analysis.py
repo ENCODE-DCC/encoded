@@ -27,7 +27,7 @@ def audit_mismatch_pipeline(value, system):
                 analysis_pipeline
             )
             yield AuditFailure(
-                'mismatch pipeline',
+                'inconsistent pipeline',
                 detail,
                 level='INTERNAL_ACTION'
             )
