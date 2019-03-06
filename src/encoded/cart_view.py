@@ -16,12 +16,23 @@ def includeme(config):
     config.scan(__name__)
 
 
+def get_userid(request):
+    userid = [
+        p.replace('userid.', '')
+        for p in request.effective_principals
+        if p.startswith('userid.')
+    ]
+    if not userid:
+        raise HTTPBadRequest()
+    return userid[0]
+
+
 def get_cart_objects_by_user(request, userid, blocked_statuses=[]):
     request.datastore = 'database'
     return [
         request.embed(request.resource_path(v), '@@object')
         for k, v in request.registry[COLLECTIONS]['cart'].items()
-        if v.properties['submitted_by'] == userid and not v.properties['status'] in blocked_statuses
+        if v.properties['submitted_by'] == userid and v.properties['status'] not in blocked_statuses
     ]
 
 
@@ -43,16 +54,9 @@ def cart_view(context, request):
 @view_config(route_name='cart-manager', request_method='GET', permission='search')
 def cart_manager(context, request):
     '''Cart manager page context object generation'''
-    userid = [
-        p.replace('userid.', '')
-        for p in request.effective_principals
-        if p.startswith('userid.')
-    ]
-    if not userid:
-        raise HTTPBadRequest()
-    else:
-        userid = userid[0]
-    user_carts = get_cart_objects_by_user(request, userid, ['deleted'] if not 'group.admin' in request.effective_principals else [])
+    userid = get_userid(request)
+    blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
+    user_carts = get_cart_objects_by_user(request, userid, blocked_statuses)
     # Calculate the element count in each cart, but remove the elements
     # themselves as this list can be huge.
     for c in user_carts:

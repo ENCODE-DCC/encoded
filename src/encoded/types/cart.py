@@ -17,6 +17,7 @@ from .base import (
     ONLY_ADMIN_VIEW,
 )
 from ..cart_view import (
+    get_userid,
     get_cart_objects_by_user,
     CART_USER_MAX,
 )
@@ -75,17 +76,6 @@ def _create_cart(request, user, name=None, identifier=None, status=None):
     return cart_path
 
 
-def _get_userid(request):
-    userid = [
-        p.replace('userid.', '')
-        for p in request.effective_principals
-        if p.startswith('userid.')
-    ]
-    if not userid:
-        raise HTTPBadRequest()
-    return userid[0]
-
-
 def _get_user(request, userid):
     user = request.registry[COLLECTIONS]['user'].get(userid)
     if not user:
@@ -95,46 +85,50 @@ def _get_user(request, userid):
 
 @view_config(context=Cart.Collection, request_method='GET', permission='save-carts', name='get-cart')
 def get_or_create_cart_by_user(context, request):
-    userid = _get_userid(request)
+    userid = get_userid(request)
     user = _get_user(request, userid)
     carts = get_cart_objects_by_user(request, userid, ['disabled', 'deleted '])
+    carts = [cart['@id'] for cart in carts]
     if not carts:
         cart = _create_cart(request, user)
-        cart_atids = None
-    else:
-        cart_atids = [cart['@id'] for cart in carts]
     request.response.status = 200
     return {
         'status': 'success',
         '@type': ['result'],
-        '@graph': cart_atids or [cart]
+        '@graph': carts or [cart]
     }
 
 
 @view_config(context=Cart.Collection, request_method='PUT', permission='save-carts', name='put-cart')
 def create_cart_by_user(context, request):
-    userid = _get_userid(request)
+    userid = get_userid(request)
     user = _get_user(request, userid)
-    user_carts = get_cart_objects_by_user(request, userid, ['deleted'] if not 'group.admin' in request.effective_principals else [])
-    cart_atids = [cart['@id'] for cart in user_carts]
-    cart_status = request.json.get('status', None)
+    blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
+    carts = get_cart_objects_by_user(request, userid, blocked_statuses)
+    cart_atids = [cart['@id'] for cart in carts]
+    cart_status = request.json.get('status')
     cart_name = request.json.get('name', '').strip()
     # User writing a new cart; check for cart overflow and naming conflicts
+    countable_carts = []
     if cart_status != 'disabled':
         countable_carts = [
             cart
-            for cart in user_carts
-            if cart['status'] != 'disabled' and cart['status'] != 'deleted'
+            for cart in carts
+            if cart['status'] not in ['disabled', 'deleted']
         ]
-    else:
-        # Creating an auto-save cart, so ignore existing carts
-        countable_carts = []
     if len(countable_carts) >= CART_USER_MAX:
         msg = 'Users cannot have more than {} carts'.format(CART_USER_MAX)
         raise HTTPBadRequest(explanation=msg)
-    elif next((cart for cart in user_carts if (cart['status'] != 'deleted' and
-            cart['status'] != 'disabled' and
-            cart['name'].strip().upper() == cart_name.upper())), None):
+    name_conflict = any(
+        [
+            cart
+            for cart in carts
+            if (cart['status'] != 'deleted' and
+                cart['status'] != 'disabled' and
+                cart['name'].strip().upper() == cart_name.upper())
+        ]
+    )
+    if name_conflict:
         msg = 'A cart with the name "{}" already exists'.format(cart_name)
         raise HTTPBadRequest(explanation=msg)
     cart_identifier = request.json.get('identifier', None)
