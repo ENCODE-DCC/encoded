@@ -15,6 +15,7 @@ import csv
 import io
 import json
 import datetime
+import re
 
 ELEMENT_CHUNK_SIZE = 1000
 currenttime = datetime.datetime.now()
@@ -449,6 +450,11 @@ def format_row(columns):
     return b'\t'.join([bytes_(" ".join(c.strip('\t\n\r').split()), 'utf-8') for c in columns]) + b'\r\n'
 
 
+def _convert_camel_to_snake(type_str):
+    tmp = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', type_str)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', tmp).lower()
+
+
 @view_config(route_name='report_download', request_method='GET')
 def report_download(context, request):
     downloadtime = datetime.datetime.now()
@@ -460,11 +466,10 @@ def report_download(context, request):
 
     # Make sure we get all results
     request.GET['limit'] = 'all'
-
-    type = types[0].lower()
-    schemas = [request.registry[TYPES][type].schema]
+    type_str = types[0]
+    schemas = [request.registry[TYPES][type_str].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    type = type.replace("'", '')
+    snake_type = _convert_camel_to_snake(type_str).replace("'", '')
 
     def format_header(seq):
         newheader="%s\t%s%s?%s\r\n" % (downloadtime, request.host_url, '/report/', request.query_string)
@@ -488,7 +493,7 @@ def report_download(context, request):
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
     request.response.content_disposition = 'attachment;filename="{}_report_{}_{}_{}_{}h_{}m.tsv"'.format(
-        type,
+        snake_type,
         downloadtime.year,
         downloadtime.month,
         downloadtime.day,
