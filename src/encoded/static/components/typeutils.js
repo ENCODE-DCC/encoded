@@ -297,6 +297,8 @@ export function fileStatusList(session, sessionProperties) {
 
 // Display supersedes/superseded_by lists.
 export const Supersede = ({ context }) => {
+    const alternateAccessions = context.alternate_accessions || [];
+
     // Make array of supersedes accessions
     let supersedes = [];
     if (context.supersedes && context.supersedes.length) {
@@ -318,10 +320,10 @@ export const Supersede = ({ context }) => {
         );
     }
 
-    if (supersededByOutput || supersedes.length > 0) {
+    if (supersededByOutput || supersedes.length > 0 || alternateAccessions.length > 0) {
         return (
             <div className="replacement-accessions">
-                <AlternateAccession altAcc={context.alternate_accessions} />
+                <AlternateAccession altAcc={alternateAccessions} />
                 {supersededByOutput}
                 {supersedes.length ? <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4> : null}
             </div>
