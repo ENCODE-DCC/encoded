@@ -215,11 +215,11 @@
         "accession": "ENCGM359MPR",
         "status": "released",
         "award": "/awards/U41HG007355/",
-        "lab": "/labs/jay-shendure/",
+        "lab": "/labs/kevin-white/",
         "uuid": "78b475d5-efd5-43d5-9322-c5e95737cc2d",
         "submitted_by": "amet.fusce@est.fermentum",
         "aliases": [
-            "jay-shendure:MPRA_1"
+            "kevin-white:MPRA_1"
         ],
         "category": "insertion",
         "purpose": "characterization",
