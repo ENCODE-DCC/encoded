@@ -31,5 +31,13 @@
         "pipeline": "ENCPL001ENC",
         "execution_status": "Succeeded",
         "status": "released"
+    },
+    {
+        "uuid": "046b4e2a-4004-4704-80d2-833a9031b496",
+        "accession": "ENCAN018EYK",
+        "dataset": "ENCSR000DZQ",
+        "pipeline": "ENCPL001ENC",
+        "execution_status": "Succeeded",
+        "status": "released"
     }
 ]
