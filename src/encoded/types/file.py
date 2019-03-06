@@ -126,7 +126,7 @@ class File(Item):
     ]
     set_status_down = []
     public_s3_statuses = ['released', 'archived']
-    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted', 'revoked']
+    private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
     @property
     def __name__(self):

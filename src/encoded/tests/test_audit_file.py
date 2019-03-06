@@ -873,7 +873,7 @@ def test_audit_file_statuses_in_s3_statuses(testapp):
     file_schema = testapp.get('/profiles/file.json').json
     file_statuses = file_schema.get('properties', {}).get('status', {}).get('enum')
     assert file_statuses
-    file_statuses = [f for f in file_statuses if f not in ['content error', 'upload failed']]
+    file_statuses = [f for f in file_statuses if f not in ['content error', 'upload failed', 'uploading']]
     # If this fails sync public/private_s3_statuses with statuses in file schema.
     assert not set(file_statuses) - set(public_s3_statuses + private_s3_statuses)
 
@@ -927,12 +927,11 @@ def test_audit_file_analysis(testapp,
                for v in errors.values() for e in v)
 
 
-def test_audit_incorrect_file_bucket_no_audit_restricted_file(testapp, dummy_request, file_with_external_sheet):
+def test_audit_uploading_file_no_incorrect_bucket_audit(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],
         {
-            'status': 'released',
-            'restricted': True
+            'status': 'uploading'
         }
     )
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
