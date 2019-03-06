@@ -123,15 +123,13 @@ def create_cart_by_user(context, request):
     if len(countable_carts) >= CART_USER_MAX:
         msg = 'Users cannot have more than {} carts'.format(CART_USER_MAX)
         raise HTTPBadRequest(explanation=msg)
-    name_conflict = any(
-        [
-            cart
-            for cart in carts
-            if (cart['status'] not in ['deleted', 'disabled'] and
-                cart['name'].strip().upper() == cart_name.upper())
-        ]
-    )
-    if name_conflict:
+    conflicting_names = [
+        cart
+        for cart in carts
+        if (cart['status'] not in ['deleted', 'disabled'] and
+            cart['name'].strip().upper() == cart_name.upper())
+    ]
+    if conflicting_names:
         msg = 'A cart with the name "{}" already exists'.format(cart_name)
         raise HTTPBadRequest(explanation=msg)
     cart_identifier = request.json.get('identifier')
