@@ -73,7 +73,7 @@ def test_batch_download_report_download(testapp, workbook):
     #     b'', b'', b'', b'', b'', b'', b'', b'', b'',
     #     b'', b'', b'', b'', b'', b'', b''
     # ]
-    assert len(lines) == 49
+    assert len(lines) == 50
 
 
 def test_batch_download_files_txt(testapp, workbook):
