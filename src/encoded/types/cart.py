@@ -109,7 +109,6 @@ def create_cart_by_user(context, request):
     user = _get_user(request, userid)
     blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
     carts = get_cart_objects_by_user(request, userid, blocked_statuses=blocked_statuses)
-    cart_atids = [cart['@id'] for cart in carts]
     cart_status = request.json.get('status')
     cart_name = request.json.get('name', '').strip()
     # User writing a new cart; check for cart overflow and naming conflicts
@@ -144,5 +143,5 @@ def create_cart_by_user(context, request):
     return {
         'status': 'success',
         '@type': ['result'],
-        '@graph': [cart] if cart else cart_atids,
+        '@graph': [cart],
     }
