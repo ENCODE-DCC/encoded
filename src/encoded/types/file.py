@@ -539,7 +539,7 @@ class File(Item):
         except HTTPNotFound:
             # File object doesn't exist, leave it alone.
             return (return_flag, None, None)
-        # Released restricted files should not be moved.
+        # Restricted and no_file_available files should not be moved.
         if not self._should_set_object_acl():
             return (return_flag, None, None)
         public_bucket = request.registry.settings.get('pds_public_bucket')
