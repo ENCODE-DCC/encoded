@@ -14,5 +14,5 @@ def test_characterization_review_dependency(testapp, attachment, submitter, cons
     testapp.post_json('/genetic_modification_characterization', item, status=422)
     item['review'] = {'lab' : lab['@id']}
     testapp.post_json('/genetic_modification_characterization', item, status=201)
-    item['review'] = {'lab' : lab['@id'], 'reviewed_by': submitter['@id'], 'status': 'not compliant'}
+    item['review'] = {'lab' : lab['@id'], 'lane': 4, 'reviewed_by': submitter['@id'], 'status': 'not compliant'}
     testapp.post_json('/genetic_modification_characterization', item, status=201)
