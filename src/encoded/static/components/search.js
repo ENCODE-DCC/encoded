@@ -826,7 +826,6 @@ Facet.propTypes = {
     filters: PropTypes.array.isRequired,
 };
 
-
 /**
  * Entry field for filtering the results list when search results appear in edit forms.
  *

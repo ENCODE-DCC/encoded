@@ -67,7 +67,7 @@ CurrentCartButtonComponent.propTypes = {
     user: PropTypes.object,
     /** Dispatch function for setting the current cart in the cart Redux store */
     onCurrentCartClick: PropTypes.func.isRequired,
-    /** FUnction to call when switching operation starts */
+    /** Function to call when switching operation starts */
     onSwitchCartStart: PropTypes.func.isRequired,
     /** Function to call when switching operation complete */
     onSwitchCartComplete: PropTypes.func.isRequired,
