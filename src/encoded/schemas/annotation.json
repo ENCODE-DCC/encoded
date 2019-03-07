@@ -70,7 +70,7 @@
             "default": "23"
         },
         "annotation_type": {
-            "title": "Type",
+            "title": "Annotation type",
             "description": "The category that best describes the annotation set.",
             "type": "string",
             "enum": [
@@ -93,7 +93,7 @@
             ]
         },
         "encyclopedia_version": {
-            "title": "ENCODE encyclopedia version",
+            "title": "Encyclopedia version",
             "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
             "comment": "The model should be something like version 1.0",
             "type": "string"
@@ -105,13 +105,13 @@
             "linkTo": "Organism"
         },
         "relevant_timepoint": {
-            "title": "Relevant timepoint",
+            "title": "Age",
             "description": " The timepoint for which the annotation is relevant.",
             "type": "string",
             "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "relevant_timepoint_units": {
-            "title": "Relevant timepoint unit",
+            "title": "Age units",
             "type": "string",
             "enum": [
                 "minute",
@@ -124,7 +124,7 @@
             ]
         },
         "relevant_life_stage": {
-            "title": "life stage",
+            "title": "Life stage",
             "description": "The life_stage for which the annotation is relevant.",
             "comment": "Note that some of the options are organism-specific so choose carefully.",
             "type": "string",
@@ -156,7 +156,7 @@
             ]
         },
         "targets": {
-            "title": "Targets",
+            "title": "Target",
             "description": "For predictions of particular features (e.g. distribution of a histone mark), specify the predicted feature(s).",
             "comment": "See target.json for available identifiers.",
             "type": "array",
@@ -201,10 +201,10 @@
             "title": "Annotation type"
         },
         "files.replicate.experiment.assay_term_name": {
-            "title": "Assay"
+            "title": "Assay name"
         },
         "files.file_type": {
-            "title": "Available data"
+            "title": "Available file types"
         },
         "files.run_type": {
             "title": "Run type"
@@ -216,7 +216,7 @@
             "title": "Mapped read length (nt)"
         },
         "status": {
-            "title": "File set status"
+            "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
@@ -225,13 +225,13 @@
             "title": "Organism"
         },
         "targets.investigated_as": {
-            "title": "Target(s) of assay"
+            "title": "Target category"
         },
          "targets.label": {
-            "title": "Target(s) of assay"
+            "title": "Target"
         },
        "biosample_ontology.classification": {
-            "title": "Biosample type"
+            "title": "Biosample classification"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -267,7 +267,7 @@
             "type": "string"
         },
         "files.replicate.experiment.assay_term_name": {
-            "title": "Assay Type",
+            "title": "Assay name",
             "type": "string"
         },
         "targets.label":{
@@ -275,7 +275,7 @@
             "type": "string"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample",
+            "title": "Biosample term name",
             "type": "string"
         },
         "description": {
@@ -295,7 +295,7 @@
             "type": "string"
         },
         "organism.scientific_name": {
-            "title": "Species",
+            "title": "Organism",
             "type": "array"
         },
         "relevant_life_stage": {
@@ -307,7 +307,7 @@
             "type": "array"
         },
         "relevant_timepoint_units": {
-            "title": "Age Units",
+            "title": "Age units",
             "type": "array"
         },
         "software_used.software.name": {

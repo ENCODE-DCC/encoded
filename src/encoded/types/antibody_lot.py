@@ -93,7 +93,7 @@ class AntibodyLot(SharedItem):
 
 
 @calculated_property(context=AntibodyLot, schema={
-    "title": "Antibody lot reviews",
+    "title": "Antibody review",
     "description": "Review outcome of an antibody lot in each characterized cell type submitted for review.",
     "type": "array",
     "items": {

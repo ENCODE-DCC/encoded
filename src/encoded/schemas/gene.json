@@ -45,7 +45,7 @@
             "permission": "import_items"
         },
         "name": {
-            "title": "Gene name",
+            "title": "Name",
             "description": "The full gene name preferably approved by the official nomenclature.",
             "type": "string",
             "format": "gene_name",
@@ -66,7 +66,7 @@
             "permission": "import_items"
         },
         "dbxrefs": {
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Unique identifiers from external resources.",
             "comment": "This list should have at least an ID from the official nomenclature. The list of other dbxrefs is maintained using information from NCBI Entrez. Identifiers not included in NCBI gene_info can be added but are not actively maintained.",
 	          "type": "array",
@@ -82,7 +82,7 @@
             "permission": "import_items"
         },
         "go_annotations": {
-            "title": "Gene Ontology annotations",
+            "title": "Gene ontology annotations",
             "descrption": "Gene ontology annotations of the gene, including all three aspects: Biological Process, Cellular Component, and Molecular Function.",
             "comment": "Data imported from the Gene Ontology Consortium.",
             "type": "array",
@@ -150,7 +150,7 @@
             "title": "External resources"
         },
         "organism.scientific_name": {
-            "title": "Species"
+            "title": "Organism"
         }
     },
     "boost_values": {
