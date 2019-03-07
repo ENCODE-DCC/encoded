@@ -61,4 +61,5 @@ assay_terms = {
       '4C': 'NTR:0000456',
       'Clone-seq': 'NTR:0000458',
       'PLAC-seq' : 'NTR:0000513',
+      'MPRA' : 'NTR:0000515',
 }
