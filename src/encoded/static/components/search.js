@@ -711,27 +711,26 @@ TypeTerm.propTypes = {
     total: PropTypes.number.isRequired,
 };
 
-
-class Facet extends React.Component {
+class DateSelectorFacet extends React.Component {
     constructor() {
         super();
 
         // Set initial React commponent state.
         this.state = {
-            facetOpen: false,
             possibleYearsAndMonths: [],
             startYears: [],
             endYears: [],
             startMonths: [],
             endMonths: [],
-            startYear: null,
-            startMonth: null,
-            endYear: null,
-            endMonth: null,
+            startYear: undefined,
+            startMonth: undefined,
+            endYear: undefined,
+            endMonth: undefined,
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth(),
         };
 
         // Bind `this` to non-React methods.
-        this.handleClick = this.handleClick.bind(this);
         this.selectStartYear = this.selectStartYear.bind(this);
         this.selectStartMonth = this.selectStartMonth.bind(this);
         this.selectEndYear = this.selectEndYear.bind(this);
@@ -739,37 +738,49 @@ class Facet extends React.Component {
     }
 
     componentDidMount() {
-        const dateSubmitted = this.props.facets.filter(facet => facet.field === 'date_submitted');
-        const dateSubmittedTerms = dateSubmitted[0].terms.sort((a, b) => (new Date(a.key) - new Date(b.key)));
+        const dateSubmitted = this.props.facet;
+        let dateSubmittedTerms = [];
+        if (dateSubmitted.terms[0].key.split(', ')) {
+            dateSubmittedTerms = dateSubmitted.terms.sort((a, b) => (new Date(a.key) - new Date(b.key)));
+        } else {
+            dateSubmittedTerms = dateSubmitted.terms.sort((a, b) => (new Date(a.key) - new Date(b.key)));
+        }
+
+        const monthNames = { January: 1, February: 2, March: 3, April: 4, May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 };
 
         // Collect available years and months for date submitted drop-down options
-        if (dateSubmittedTerms) {
-            const possibleYearsAndMonths = dateSubmittedTerms.map(term => `${term.key.split('-')[0]}-${term.key.split('-')[1]}`).filter((item, i, ar) => (ar.indexOf(item) === i));
-            this.setState({ possibleYearsAndMonths });
-            console.log("possible years and months");
-            console.log(possibleYearsAndMonths);
+        let possibleYearsAndMonths = [];
+        let uniqueYears = [];
+        let uniqueMonths = [];
+        if (dateSubmitted.terms[0].key.split(', ').length > 1) {
+            possibleYearsAndMonths = dateSubmittedTerms.map(term => `${term.key.split(', ')[1]}-${monthNames[term.key.split(', ')[0]]}`).filter((item, i, ar) => (ar.indexOf(item) === i));
 
-            // Determine range of available years
-            const uniqueYears = dateSubmittedTerms.map(term => term.key.split('-')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
-            this.setState({ startYear: uniqueYears[0] });
-            this.setState({ endYear: uniqueYears[uniqueYears.length - 1].split('-')[0] });
-            this.setState({ startYears: uniqueYears });
-            this.setState({ endYears: uniqueYears });
+            uniqueYears = dateSubmittedTerms.map(term => term.key.split(', ')[1]).filter((item, i, ar) => (ar.indexOf(item) === i));
 
-            // Determine range of available months
-            const uniqueMonths = dateSubmittedTerms.map(term => term.key.split('-')[1]).filter((item, i, ar) => (ar.indexOf(item) === i));
-            uniqueMonths.sort((a, b) => (a - b));
-            const startMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[0]).map(date => date.split('-')[1]);
-            const endMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[uniqueYears.length - 1]).map(date => date.split('-')[1]);
-            this.setState({ startMonth: uniqueMonths[0] });
-            this.setState({ endMonth: uniqueMonths[uniqueMonths.length - 1] });
-            this.setState({ startMonths });
-            this.setState({ endMonths });
+            uniqueMonths = dateSubmittedTerms.map(term => term.key.split(', ')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
+        } else {
+            possibleYearsAndMonths = dateSubmittedTerms.map(term => `${term.key.split('-')[0]}-${term.key.split('-')[1]}`).filter((item, i, ar) => (ar.indexOf(item) === i));
+
+            uniqueYears = dateSubmittedTerms.map(term => term.key.split('-')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
+
+            uniqueMonths = dateSubmittedTerms.map(term => term.key.split('-')[1]).filter((item, i, ar) => (ar.indexOf(item) === i));
         }
-    }
+        this.setState({ possibleYearsAndMonths });
 
-    handleClick() {
-        this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
+        // Determine range of available years
+        this.setState({ startYear: uniqueYears[0] });
+        this.setState({ endYear: uniqueYears[uniqueYears.length - 1].split('-')[0] });
+        this.setState({ startYears: uniqueYears });
+        this.setState({ endYears: uniqueYears });
+
+        // Determine range of available months
+        uniqueMonths.sort((a, b) => (a - b));
+        const startMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[0]).map(date => date.split('-')[1]);
+        const endMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[uniqueYears.length - 1]).map(date => date.split('-')[1]);
+        this.setState({ startMonth: uniqueMonths[0] });
+        this.setState({ endMonth: uniqueMonths[uniqueMonths.length - 1] });
+        this.setState({ startMonths });
+        this.setState({ endMonths });
     }
 
     selectStartYear(event) {
@@ -783,6 +794,10 @@ class Facet extends React.Component {
     }
 
     selectStartMonth(event) {
+        if (this.state.startYear === this.state.endYear) {
+            const endMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] === this.state.endYear).map(date => date.split('-')[1]);
+            this.setState({ endMonths: endMonths.filter(month => month >= event.target.value) });
+        }
         this.setState({ startMonth: event.target.value });
     }
 
@@ -797,11 +812,130 @@ class Facet extends React.Component {
     }
 
     selectEndMonth(event) {
+        if (this.state.startYear === this.state.endYear) {
+            const startMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] === this.state.startYear).map(date => date.split('-')[1]);
+            this.setState({ startMonths: startMonths.filter(month => month <= event.target.value) });
+        }
         this.setState({ endMonth: event.target.value });
     }
 
     render() {
-        const { facet, filters, searchBase } = this.props;
+        const { facet, searchBase } = this.props;
+        const titleComponent = facet.title;
+        const field = facet.field;
+
+        const monthArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // if a date range has already been selected, we want to over-write that date range with a new one
+        let searchBaseForDateRange = searchBase;
+        if (this.props.filters.filter(filter => filter.field === 'searchTerm').length > 0) {
+            const searchTermFilter = this.props.filters.filter(filter => filter.field === 'searchTerm');
+            searchBaseForDateRange = `${searchTermFilter[0].remove}&`;
+        }
+
+        let searchString = '';
+        let currentMonthSearch = '';
+        let currentYearSearch = '';
+        if (field === 'date_submitted') {
+            searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${new Date(this.state.endYear, this.state.endMonth, 0).getDate()}]`;
+            currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear}-${this.state.currentMonth + 1}-01 TO ${this.state.currentYear}-${this.state.currentMonth + 1}-${new Date(this.state.currentYear, this.state.currentMonth + 1, 0).getDate()}]`;
+            currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear - 1}-${this.state.currentMonth + 1}-01 TO ${this.state.currentYear}-${this.state.currentMonth + 1}-${new Date(this.state.currentYear, this.state.currentMonth + 1, 0).getDate()}]`;
+        } else {
+            searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${monthArray[this.state.startMonth]}, ${this.state.startYear} TO ${monthArray[this.state.endMonth]}, ${this.state.endYear}]`;
+            currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${monthArray[this.state.currentMonth]}, ${this.state.currentYear} TO ${monthArray[this.state.currentMonth]}, ${this.state.currentYear}]`;
+            currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${monthArray[this.state.currentMonth]}, ${this.state.currentYear - 1} TO ${monthArray[this.state.currentMonth]}, ${this.state.currentYear}]`;
+        }
+
+        if ((facet.terms.length && facet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className="facet date-selector-facet">
+                    <h5>{titleComponent}</h5>
+                    <a href={currentMonthSearch}>
+                        <div className="date-selector-btn">
+                            <i className="icon icon-caret-right" />
+                            See results for this month
+                        </div>
+                    </a>
+                    <a href={currentYearSearch}>
+                        <div className="date-selector-btn">
+                            <i className="icon icon-caret-right" />
+                            See results for the past year
+                        </div>
+                    </a>
+                    <div className="date-container">
+                        <div className="date-selector-module">
+                            <h6>Start date:</h6>
+                            <div className="date-selector">
+                                <select value={this.state.startMonth} onChange={this.selectStartMonth}>
+                                    {this.state.startMonths.map(month =>
+                                        <option value={month} key={month}>{month}</option>
+                                    )}
+                                </select>
+                                <select value={this.state.startYear} onChange={this.selectStartYear}>
+                                    {this.state.startYears.map(year =>
+                                        <option value={year} key={year}>{year}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="date-arrow">
+                            <i className="icon icon-arrow-right" />
+                        </div>
+                        <div className="date-selector-module">
+                            <h6>End date:</h6>
+                            <div className="date-selector">
+                                <select value={this.state.endMonth} onChange={this.selectEndMonth}>
+                                    {this.state.endMonths.map(month =>
+                                        <option value={month} key={month}>{month}</option>
+                                    )}
+                                </select>
+                                <select value={this.state.endYear} onChange={this.selectEndYear}>
+                                    {this.state.endYears.map(year =>
+                                        <option value={year} key={year}>{year}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <a href={searchString}>
+                        <button className="btn btn-info btn-sm apply-date-selector">
+                            Apply changes
+                        </button>
+                    </a>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
+    }
+}
+
+DateSelectorFacet.propTypes = {
+    facet: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
+    searchBase: PropTypes.string.isRequired, // Base URI for the search
+};
+
+class Facet extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React commponent state.
+        this.state = {
+            facetOpen: false,
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
+    }
+
+    render() {
+        const { facet, filters } = this.props;
         const title = facet.title;
         const field = facet.field;
         const total = facet.total;
@@ -854,78 +988,35 @@ class Facet extends React.Component {
             }
         }
 
-        // if a date range has already been selected, we want to over-write that date range with a new one
-        let searchBaseForDateRange = searchBase;
-        if (this.props.filters.filter(filter => filter.field === 'searchTerm').length > 0) {
-            const searchTermFilter = this.props.filters.filter(filter => filter.field === 'searchTerm');
-            searchBaseForDateRange = `${searchTermFilter[0].remove}&`;
-        }
-
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
-                    {(field === 'date_submitted') ?
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
                         <div>
-                            <h6>Start date:</h6>
-                            <div className="date-selector">
-                                <select value={this.state.startYear} onChange={this.selectStartYear}>
-                                    {this.state.startYears.map(year =>
-                                        <option value={year} key={year}>{year}</option>
-                                    )}
-                                </select>
-                                <select value={this.state.startMonth} onChange={this.selectStartMonth}>
-                                    {this.state.startMonths.map(month =>
-                                        <option value={month} key={month}>{month}</option>
-                                    )}
-                                </select>
-                            </div>
-                            <h6>End date:</h6>
-                            <div className="date-selector">
-                                <select value={this.state.endYear} onChange={this.selectEndYear}>
-                                    {this.state.endYears.map(year =>
-                                        <option value={year} key={year}>{year}</option>
-                                    )}
-                                </select>
-                                <select value={this.state.endMonth} onChange={this.selectEndMonth}>
-                                    {this.state.endMonths.map(month =>
-                                        <option value={month} key={month}>{month}</option>
-                                    )}
-                                </select>
-                            </div>
-                            <a href={`${searchBaseForDateRange}searchTerm=@type:Experiment date_submitted:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${new Date(this.state.endYear, this.state.endMonth, 0).getDate()}]`}>
-                                <button className="btn btn-info btn-sm apply-date-selector">
-                                    Apply changes
-                                </button>
-                            </a>
+                            {/* Display the first five terms of the facet */}
+                            {terms.slice(0, 5).map(term =>
+                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
+                            )}
                         </div>
-                    :
-                        <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
-                            <div>
-                                {/* Display the first five terms of the facet */}
-                                {terms.slice(0, 5).map(term =>
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {/* If the user has expanded the "+ See more" button, then display
+                                     the rest of the terms beyond 5 */}
+                                {moreTerms.map(term =>
                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                 )}
                             </div>
-                            {terms.length > 5 ?
-                                <div id={termID} className={moreSecClass}>
-                                    {/* If the user has expanded the "+ See more" button, then display
-                                         the rest of the terms beyond 5 */}
-                                    {moreTerms.map(term =>
-                                        <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
-                                    )}
-                                </div>
-                            : null}
-                            {(terms.length > 5 && !moreTermSelected) ?
-                                <div className="pull-right">
-                                    {/* Display the "+ See more" button if more than five terms exist for this facet */}
-                                    <small>
-                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
-                                    </small>
-                                </div>
-                            : null}
-                        </ul>
-                    }
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <div className="pull-right">
+                                {/* Display the "+ See more" button if more than five terms exist for this facet */}
+                                <small>
+                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
+                                </small>
+                            </div>
+                        : null}
+                    </ul>
                 </div>
             );
         }
@@ -938,8 +1029,6 @@ class Facet extends React.Component {
 Facet.propTypes = {
     facet: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
-    facets: PropTypes.array.isRequired,
-    searchBase: PropTypes.string.isRequired, // Base URI for the search
 };
 
 Facet.defaultProps = {
@@ -1097,6 +1186,18 @@ export class FacetList extends React.Component {
                     {facets.map((facet) => {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
+                        }
+                        if (facet.field === 'date_submitted' || facet.field === 'month_released') {
+                            return (
+                                <DateSelectorFacet
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                />
+                            );
                         }
                         return (
                             <Facet

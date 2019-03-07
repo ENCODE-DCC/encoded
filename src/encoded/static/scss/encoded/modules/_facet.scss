@@ -257,6 +257,33 @@
     }
 }
 
+.date-selector-facet {
+    h5 {
+        margin-bottom: 10px;
+    }
+}
+
+.date-selector-btn {
+    color: rgb(79,104,158);
+    .icon-caret-right {
+        margin-right: 5px;
+    }
+}
+
+.date-arrow {
+    position: absolute;
+    top: 61%;
+    left: 42%;
+}
+
+.date-container {
+    display: flex;
+    position: relative;
+    .date-selector-module {
+        flex: 0 0 50%;
+    }
+}
+
 .apply-date-selector {
     margin: 10px auto;
 }
