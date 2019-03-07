@@ -836,19 +836,19 @@ class DateSelectorFacet extends React.Component {
         let searchString = '';
         let currentMonthSearch = '';
         let currentYearSearch = '';
-        if (field === 'date_submitted') {
+        // if (field === 'date_submitted') {
             searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${new Date(this.state.endYear, this.state.endMonth, 0).getDate()}]`;
             
             currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear}-${this.state.currentMonth + 1}-01 TO ${this.state.currentYear}-${this.state.currentMonth + 1}-${new Date(this.state.currentYear, this.state.currentMonth + 1, 0).getDate()}]`;
             
             currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear - 1}-${this.state.currentMonth + 1}-01 TO ${this.state.currentYear}-${this.state.currentMonth + 1}-${new Date(this.state.currentYear, this.state.currentMonth + 1, 0).getDate()}]`;
-        } else {
-            searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.startMonth}, ${this.state.startYear} TO ${this.state.endMonth}, ${this.state.endYear}]`;
-            
-            currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${monthArray[this.state.currentMonth]}, ${this.state.currentYear} TO ${monthArray[this.state.currentMonth]}, ${this.state.currentYear}]`;
-            
-            currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${monthArray[this.state.currentMonth]}, ${this.state.currentYear - 1} TO ${monthArray[this.state.currentMonth]}, ${this.state.currentYear}]`;
-        }
+        // } else {
+        //     searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.startMonth}, ${this.state.startYear} TO ${this.state.endMonth}, ${this.state.endYear}]`;
+        // 
+        //     currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${monthArray[this.state.currentMonth]}, ${this.state.currentYear} TO ${monthArray[this.state.currentMonth]}, ${this.state.currentYear}]`;
+        // 
+        //     currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentMonth}, ${this.state.currentYear - 1} TO ${monthArray[this.state.currentMonth]}, ${this.state.currentYear}]`;
+        // }
 
         if ((facet.terms.length && facet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
