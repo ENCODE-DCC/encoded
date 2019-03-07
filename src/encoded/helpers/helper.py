@@ -1,6 +1,12 @@
 from encoded.vis_defines import vis_format_url
 
 
+BATCH_DOWNLOAD_DOC_TYPES = [
+    ['Experiment'],
+    ['Annotation'],
+]
+
+
 def format_results(request, hits, result=None):
     """
     Loads results to pass onto UI
@@ -79,19 +85,20 @@ def search_result_actions(request, doc_types, es_results, position=None):
         if viz:
             actions.setdefault('visualize_batch', viz)
 
-    # generate batch download URL for experiments
-    # TODO we could enable them for Datasets as well here, but not sure how well it will work
+    # generate batch download URL for experiments and annotation
     # batch download disabled for region-search results
-    if '/region-search/' not in request.url:
-        #if (doc_types == ['Experiment'] or doc_types == ['Annotation']) and any(
-        if (doc_types == ['Experiment']) and any(
-                bucket['doc_count'] > 0
-                for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
-            actions['batch_download'] = request.route_url(
-                'batch_download',
-                search_params=request.query_string
-            )
-
+    # TODO: Can potentially be enabled for dataset...
+    bucket_has_doc = any(
+        bucket['doc_count'] > 0
+        for bucket in aggregations.get('files-file_type', {}).get('files-file_type', {}).get('buckets', {})
+    )
+    if ('/region-search/' not in request.url and
+            doc_types in BATCH_DOWNLOAD_DOC_TYPES and
+            bucket_has_doc):
+        actions['batch_download'] = request.route_url(
+            'batch_download',
+            search_params=request.query_string
+        )
     return actions
 
 class View_Item:

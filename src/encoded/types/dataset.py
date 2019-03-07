@@ -346,6 +346,27 @@ class Annotation(FileSet, CalculatedVisualize):
     }
 
     @calculated_property(schema={
+        "title": "Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "File",
+        },
+    })
+    def files(self, request, original_files, status):
+        if status in ('released', 'archived'):
+            return paths_filtered_by_status(
+                request, original_files,
+                include=('released', 'archived'),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, original_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
+
+
+    @calculated_property(schema={
         "title": "Superseded by",
         "type": "array",
         "items": {
