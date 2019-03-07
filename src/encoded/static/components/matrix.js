@@ -150,10 +150,8 @@ class Matrix extends React.Component {
         const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
         const notification = context.notification;
         const visualizeLimit = 500;
+        const facets = context.facets;
         if (notification === 'Success' || notification === 'No results found') {
-            const xFacets = matrix.x.facets.map(f => _.findWhere(context.facets, { field: f })).filter(f => f);
-            let yFacets = matrix.y.facets.map(f => _.findWhere(context.facets, { field: f })).filter(f => f);
-            yFacets = yFacets.concat(_.reject(context.facets, f => _.contains(matrix.x.facets, f.field) || _.contains(matrix.y.facets, f.field)));
             const xGrouping = matrix.x.group_by;
             const primaryYGrouping = matrix.y.group_by[0];
             const secondaryYGrouping = matrix.y.group_by[1];
@@ -195,32 +193,28 @@ class Matrix extends React.Component {
                 <div>
                     <div className="panel data-display main-panel">
                         <div className="row matrix__facet--horizontal">
-                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{ paddingRight: 0 }}>
+                            <div className="matrix-header">
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>
                                             <h1>{context.title}</h1>
-                                            <div>
-                                                <p>Enter search terms to filter the {type} included in the matrix.</p>
-                                                <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{ paddingLeft: 0 }}>
-                                <FacetList
-                                    facets={xFacets}
-                                    filters={context.filters}
-                                    orientation="horizontal"
-                                    searchBase={matrixSearch}
-                                    onFilter={this.onFilter}
-                                />
-                            </div>
                         </div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{ paddingRight: 0 }}>
-                                <FacetList facets={yFacets} filters={context.filters} searchBase={matrixSearch} onFilter={this.onFilter} />
+                                <div className="matrix-general-search">
+                                    <p>Enter search terms to filter the {type} included in the matrix.</p>
+                                    <div className="general-search-entry">
+                                        <i className="icon icon-search" />
+                                        <div className="searchform">
+                                            <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <FacetList facets={facets} filters={context.filters} searchBase={matrixSearch} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding">
                                 <div className="matrix-wrapper">
