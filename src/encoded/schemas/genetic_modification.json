@@ -102,34 +102,37 @@
             "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
-                    "anyOf": [
+                    "oneOf": [
                         {
-                            "required": ["introduced_tags"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["insertion"]
-                                },
-                                "purpose": {
-                                    "enum": ["tagging"]
+                            "anyOf": [
+                            {
+                                "required": ["introduced_tags"],
+                                "properties": {
+                                    "category": {
+                                        "enum": ["insertion"]
+                                    },
+                                    "purpose": {
+                                        "enum": ["tagging"]
+                                    }
+                                }
+                            },
+                            {
+                                "required": ["introduced_sequence"],
+                                "properties": {
+                                    "category": {
+                                        "enum": ["insertion"]
+                                    }
+                                }
+                            },
+                            {
+                                "required": ["introduced_gene"],
+                                "properties": {
+                                    "category": {
+                                        "enum": ["insertion"]
+                                    }
                                 }
                             }
-                        },
-                        {
-                            "required": ["introduced_sequence"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["insertion"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["introduced_gene"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["insertion"]
-                                }
-                            }
-                        },
+                        ]},
                         {
                             "required": ["modified_site_nonspecific", "introduced_elements"],
                             "properties": {
@@ -223,6 +226,30 @@
                     "enum": ["tagging"]
                 }
             }
+        },
+        "introduced_elements": {
+            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["episome"]
+                        },
+                        "purpose": {
+                            "enum": ["characterization"]
+                        }
+                    },
+                    "required": ["modified_site_nonspecific"],
+                    "properties": {
+                        "category": {
+                            "enun": ["insertion"]
+                        },
+                        "purpose": {
+                            "enum": ["characterization"]
+                        }
+                    }
+                }
+            ]
         },
         "guide_rna_sequences": {
             "comment": "Guide RNA sequences apply only to modification_technique = CRISPR.",
