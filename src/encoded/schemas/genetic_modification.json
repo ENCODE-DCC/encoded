@@ -228,7 +228,7 @@
             }
         },
         "introduced_elements": {
-            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized.",
+            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or randomly inserted.",
             "oneOf": [
                 {
                     "properties": {
