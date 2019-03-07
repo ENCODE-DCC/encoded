@@ -98,8 +98,8 @@ const PublicationComponent = (props, reactContext) => {
 
             {context.datasets && context.datasets.length ?
                     <SortTablePanel title="Datasets">
-                        <FetchedData ignoreErrors>
-                            <Param name="datasets" url={datasetsUrl} />
+                        <FetchedData>
+                            <Param name="datasets" url={datasetsUrl} allowMultipleRequest />
                             <DatasetsComponent columns={datasetsColumns} />
                         </FetchedData>
                     </SortTablePanel>
