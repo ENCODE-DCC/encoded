@@ -58,6 +58,9 @@ class BiosampleComponent extends React.Component {
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
+        // Collect dbxrefs from biosample.dbxrefs and biosample.biosample_ontology.dbxrefs.
+        const dbxrefs = (context.dbxrefs || []).concat(context.biosample_ontology.dbxrefs || []);
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -301,10 +304,10 @@ class BiosampleComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
 
-                                    {context.dbxrefs && context.dbxrefs.length ?
+                                    {dbxrefs.length ?
                                         <div data-test="externalresources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
                                         </div>
                                     : null}
 
