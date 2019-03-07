@@ -41,7 +41,7 @@
             "minimum": 1
         },
         "analysis_step_types": {
-            "title": "Types",
+            "title": "Analysis step types",
              "description": "The classification of the software",
              "type": "array",
              "uniqueItems": true,

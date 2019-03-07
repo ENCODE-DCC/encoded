@@ -18,13 +18,13 @@
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
-            "title": "Name",
+            "title": "Title",
             "description": "The grant name from the NIH database, if applicable.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
-            "title": "Number",
+            "title": "Name",
             "description": "The official grant number from the NIH database, if applicable",
             "type": "string",
             "pattern": "^[A-Za-z0-9\\-]+$",
@@ -171,7 +171,7 @@
             "linkTo": "User"
         },
         "rfa": {
-            "title": "Phase",
+            "title": "RFA",
             "description": "The name of the bioproject phase.",
             "type": "string",
             "enum": [
@@ -189,7 +189,7 @@
             ]
         },
         "project": {
-            "title": "BioProject",
+            "title": "Project",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string",
             "enum": [
@@ -229,19 +229,19 @@
     },
     "columns": {
         "title": {
-            "title": "Name"
+            "title": "Title"
         },
         "name": {
-            "title": "Number"
+            "title": "Name"
         },
         "project": {
-            "title": "BioProject"
+            "title": "Project"
         },
         "rfa": {
-            "title": "Phase"
+            "title": "RFA"
         },
         "status": {
-            "title": "status"
+            "title": "Status"
         }
     },
     "boost_values": {

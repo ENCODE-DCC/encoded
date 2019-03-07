@@ -22,12 +22,12 @@
             "default": "6"
         },
         "Reads Examined": {
-            "title": "Reads Examined",
+            "title": "Reads examined",
             "type": "number",
             "description": "Total number of paired and unpaired reads examined"
         },
         "Read Duplicates": {
-            "title": "Read Duplicates",
+            "title": "Read duplicates",
             "type": "number",
             "description": "Total number of paired and unpaired read duplicates"
         },
@@ -37,7 +37,7 @@
             "description": "Number of UMI flagged read duplicates"
         },
         "Percent Duplication": {
-            "title": "Percent Duplication",
+            "title": "Percent duplication",
             "type": "number",
             "description": "Percent of reads that are duplicates"
         },

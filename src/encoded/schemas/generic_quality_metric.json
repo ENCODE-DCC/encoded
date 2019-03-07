@@ -27,7 +27,7 @@
             "type": "string"
         },
         "attachment": {
-            "title": "QC metric document metadata",
+            "title": "Attachment",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

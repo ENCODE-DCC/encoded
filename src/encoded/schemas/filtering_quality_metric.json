@@ -22,7 +22,7 @@
             "default": "7"
         },
         "pre-filter all reads": {
-            "title": "Total reads after filtering",
+            "title": "Total reads before filtering",
             "type": "number",
             "description": "Count of all reads prior to filtering"
         },

@@ -96,7 +96,7 @@ class AntibodyCharacterization(Characterization, SharedItem):
     ]
 
     @calculated_property(schema={
-        "title": "Characterization method",
+        "title": "Method",
         "type": "string",
     })
     def characterization_method(self, primary_characterization_method=None,

@@ -37,7 +37,7 @@ class Gene(SharedItem):
         "description": "List of associated targets.",
         "comment": "Do not submit. Values in the list are reverse links of a"
                    " target that have this gene under its genes property.",
-        "title": "Targets",
+        "title": "Target",
         "type": "array",
         "items": {
             "type": ['string', 'object'],

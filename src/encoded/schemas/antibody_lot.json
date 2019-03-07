@@ -75,7 +75,7 @@
             "type": "string"
         },
         "clonality": {
-            "title": "Antibody clonality",
+            "title": "Clonality",
             "description": "The diversification of the immune cell lineage to make the antibody.",
             "type": "string",
             "enum": [
@@ -86,7 +86,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "default": [],
@@ -99,7 +99,7 @@
             }
         },
         "host_organism": {
-            "title": "Host",
+            "title": "Host organism",
             "description": "The organism the antibody was grown in.",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
@@ -165,7 +165,7 @@
             }
         },
         "targets": {
-            "title": "Targets",
+            "title": "Target",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -180,11 +180,8 @@
         "lot_reviews.status": {
             "title": "Eligibility status"
         },
-        "targets.organism.scientific_name": {
-            "title": "Target Organism"
-        },
         "targets.investigated_as": {
-            "title": "Target of antibody"
+            "title": "Target category"
         },
         "characterizations.characterization_method": {
             "title": "Characterization method"
@@ -213,31 +210,22 @@
             "title": "Accession"
         },
         "lot_reviews.biosample_term_name": {
-            "title": "Ontology term"
+            "title": "Biosample name"
         },
         "lot_reviews.status": {
-            "title": "Status"
-        },
-        "lot_reviews.organisms.@id": {
-            "title": "Organism ID"
+            "title": "Eligibility status"
         },
         "lot_reviews.organisms.scientific_name": {
-            "title": "Organism scientific name"
-        },
-        "lot_reviews.targets.name": {
-            "title": "Target name"
+            "title": "Organism"
         },
         "lot_reviews.targets.investigated_as": {
             "title": "Target category"
         },
         "lot_reviews.targets.label": {
-            "title": "Target label"
-        },
-        "lot_reviews.targets.organism.@id": {
-            "title": "Target organism ID"
+            "title": "Target"
         },
         "lot_reviews.targets.organism.scientific_name": {
-            "title": "Target organism scientific name"
+            "title": "Target organism"
         },
         "source.title": {
             "title": "Source"
