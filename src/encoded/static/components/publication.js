@@ -76,7 +76,7 @@ const PublicationComponent = (props, reactContext) => {
     const accessions = !context.datasets ? '' : context.datasets.reduce((dataset1, dataset2) => `${dataset1}&accession=${dataset2.accession}`, '');
     const fields = ['accession', 'target', '@type', 'target', 'biosample_summary', 'lab', 'assay_term_name', 'assay', 'description', 'status'].reduce((field1, field2) => `${field1}&field=${field2}`, '');
     const datasetsUrl = context.datasets && context.datasets.length ?
-        `/search/?${accessions}${fields}&format=json` :
+        `/search/?${accessions}${fields}` :
         null;
     return (
         <div className={itemClass}>
