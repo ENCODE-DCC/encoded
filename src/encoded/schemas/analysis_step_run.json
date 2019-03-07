@@ -25,6 +25,100 @@
             "type": "string",
             "linkTo": "AnalysisStepVersion"
         },
+        "run_id": {
+            "title": "Identifier of this step run",
+            "type": "string",
+            "pattern": "^[0-9-a-zA-Z]+$",
+            "permission": "import_items"
+        },
+        "run_status": {
+            "title": "Execution status of this step run",
+            "type": "string",
+            "permission": "import_items",
+            "default": "Submitted",
+            "enum" : [
+                "Submitted",
+                "Failed",
+                "Succeeded",
+                "Aborted"
+            ]
+        },
+        "analysis": {
+            "title": "Analysis",
+            "description": "The analysis object the analysis step belongs to.",
+            "comment": "Required. See analysis.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Analysis",
+            "permission": "import_items"
+        },
+        "previous_step_runs": {
+            "title": "Previous step run(s)",
+            "description": "Step(s) run right before the current step.",
+            "type": "array",
+            "permission": "import_items",
+            "items": {
+                "title": "The previous analysis step run",
+                "description": "One analysis step run right before the current step",
+                "type": "string",
+                "linkTo": "AnalysisStepRun"
+            }
+        },
+        "input_files": {
+            "title": "Input files",
+            "description": "Input files to this analysis step run.",
+            "type": "array",
+            "permission": "import_items",
+            "items": {
+                "title": "Input file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
+        "output_files": {
+            "title": "Output files",
+            "description": "Output files to this analysis step fun.",
+            "type": "array",
+            "permission": "import_items",
+            "items": {
+                "title": "Output file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
+        "platform": {
+            "title": "platform",
+            "description": "The platform on which the step run (e.g. JES, SGE, Local).",
+            "type": "string",
+            "enum": [
+                "Local",
+                "DNAnexus",
+                "AWS",
+                "Google Cloud"
+            ],
+            "permission": "import_items"
+        },
+        "begin_time": {
+            "title": "Analysis begin time",
+            "description": "Begin time for the whole analsis.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
+            "permission": "import_items"
+        },
+        "finish_time": {
+            "title": "Analysis finish time",
+            "description": "Finish time for the whole analsis.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
+            "permission": "import_items"
+        },
         "dx_applet_details": {
             "title": "DNA Nexus applet details",
             "description": "Metadata capture from DNA Nexus applets",

@@ -174,9 +174,27 @@ class AnalysisStepVersion(Item):
 class AnalysisStepRun(Item):
     item_type = 'analysis_step_run'
     schema = load_schema('encoded:schemas/analysis_step_run.json')
+    rev = {
+        'following_step_runs': ('AnalysisStepRun', 'previous_step_runs')
+    }
     embedded = [
         'analysis_step_version.analysis_step',
     ]
     audit_inherit = ['*']
     # Avoid using reverse links on this object as invalidating a
     # step_run can cause thousands of objects to be reindexed.
+
+    @calculated_property(schema={
+        "description": "List of steps run right after this step.",
+        "comment": "Do not submit. Values in the list are reverse links of "
+                   "analysis step run(s).",
+        "title": "Following analysis step run(s)",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "AnalysisStepRun.previous_step_runs"
+        },
+        "notSubmittable": True,
+    })
+    def following_step_runs(self, request, following_step_runs):
+        return paths_filtered_by_status(request, following_step_runs)
