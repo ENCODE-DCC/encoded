@@ -286,6 +286,7 @@ def test_file_update_bucket_as_submitter(submitter_testapp, dummy_request, file_
     )
 
 
+@mock_sts
 def test_file_reset_file_upload_bucket_on_upload_credentials(testapp, root, dummy_request, file_with_external_sheet):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
