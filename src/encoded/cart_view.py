@@ -30,7 +30,7 @@ def get_userid(request):
 def get_cart_objects_by_user(request, userid, blocked_statuses=[]):
     request.datastore = 'database'
     return [
-        request.embed(request.resource_path(v), '@@object')
+        dict(v.properties, **{'@id': request.resource_path(v)})
         for k, v in request.registry[COLLECTIONS]['cart'].items()
         if v.properties['submitted_by'] == userid and v.properties['status'] not in blocked_statuses
     ]

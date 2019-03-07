@@ -30,17 +30,18 @@ class CurrentCartButtonComponent extends React.Component {
      * current user in session_properties hasn't yet been set.
      */
     handleRadioButtonChange() {
-        const { cart, user, onCurrentCartClick } = this.props;
+        const { cart, user, onCurrentCartClick, onSwitchCartStart, onSwitchCartComplete } = this.props;
         if (user) {
             // Set the browser's localstorage cart settings to remember this button's cart as the
             // current cart, and update the cart store for the current cart.
+            onSwitchCartStart();
             cartSetSettingsCurrent(user, cart['@id']);
-            onCurrentCartClick();
+            onCurrentCartClick().then(() => onSwitchCartComplete());
         }
     }
 
     render() {
-        const { cart, current } = this.props;
+        const { cart, current, operationInProgress } = this.props;
         const selected = cart['@id'] === current;
         return (
             <input
@@ -49,7 +50,7 @@ class CurrentCartButtonComponent extends React.Component {
                 onChange={this.handleRadioButtonChange}
                 checked={selected}
                 className="cart-manager-table__current-button"
-                disabled={cart.status === 'deleted' || cart.status === 'disabled'}
+                disabled={cart.status === 'deleted' || cart.status === 'disabled' || operationInProgress}
             />
         );
     }
@@ -60,13 +61,20 @@ CurrentCartButtonComponent.propTypes = {
     cart: PropTypes.object.isRequired,
     /** @id of the current cart */
     current: PropTypes.string.isRequired,
+    /** True if cart operation in progress */
+    operationInProgress: PropTypes.bool,
     /** Current user object from session_properties */
     user: PropTypes.object,
     /** Dispatch function for setting the current cart in the cart Redux store */
     onCurrentCartClick: PropTypes.func.isRequired,
+    /** FUnction to call when switching operation starts */
+    onSwitchCartStart: PropTypes.func.isRequired,
+    /** Function to call when switching operation complete */
+    onSwitchCartComplete: PropTypes.func.isRequired,
 };
 
 CurrentCartButtonComponent.defaultProps = {
+    operationInProgress: false,
     user: null,
 };
 
@@ -257,7 +265,7 @@ class NameCartButtonComponent extends React.Component {
         // belonging to the current user. Don't give the warning if the cart with a conflicting
         // name is the cart being renamed.
         const upperCaseName = name.trim().toUpperCase();
-        const conflictingCart = cartManager['@graph'].find(cartItem => cartItem.status !== 'disabled' && cartItem.name.trim().toUpperCase() === upperCaseName);
+        const conflictingCart = cartManager['@graph'].find(cartItem => cartItem.status !== 'disabled' && cartItem.status !== 'deleted' && cartItem.name.trim().toUpperCase() === upperCaseName);
         const nameConflict = conflictingCart && (create || conflictingCart['@id'] !== cart['@id']);
         this.setState({ newName: name, nameConflict });
 
@@ -460,8 +468,8 @@ class DeleteCartButton extends React.Component {
     }
 
     render() {
-        const { cart, current } = this.props;
-        const currentDisabled = cart['@id'] === current;
+        const { cart, current, operationInProgress } = this.props;
+        const currentDisabled = cart['@id'] === current || operationInProgress;
         const deletedDisabled = cart.status === 'deleted';
         return (
             <div className="cart-manager-table__action-button">
@@ -499,6 +507,12 @@ DeleteCartButton.propTypes = {
     cart: PropTypes.object.isRequired,
     /** Current cart @id */
     current: PropTypes.string.isRequired,
+    /** True if cart operation in progress */
+    operationInProgress: PropTypes.bool,
+};
+
+DeleteCartButton.defaultProps = {
+    operationInProgress: false,
 };
 
 DeleteCartButton.contextTypes = {
@@ -535,8 +549,8 @@ class ShareCartButton extends React.Component {
     }
 
     render() {
-        const { cart } = this.props;
-        const buttonDisabled = cart.status === 'deleted' || cart.status === 'disabled';
+        const { cart, operationInProgress } = this.props;
+        const buttonDisabled = cart.status === 'deleted' || cart.status === 'disabled' || operationInProgress;
         return (
             <div className="cart-manager-table__action-button">
                 {buttonDisabled ?
@@ -555,7 +569,14 @@ class ShareCartButton extends React.Component {
 }
 
 ShareCartButton.propTypes = {
+    /** Cart being shared */
     cart: PropTypes.object.isRequired,
+    /** True if cart operation in progress */
+    operationInProgress: PropTypes.bool,
+};
+
+ShareCartButton.defaultProps = {
+    operationInProgress: false,
 };
 
 
@@ -589,20 +610,30 @@ const cartTableColumns = {
                     cartManager={meta.cartManager}
                     cart={item}
                     user={meta.user}
-                    disabled={item.status === 'disabled'}
+                    disabled={item.status === 'disabled' || meta.operationInProgress}
                     disabledTooltip="Cannot rename the auto-save cart"
                     fetch={meta.fetch}
                     navigate={meta.navigate}
                 />
-                <ShareCartButton cart={item} />
-                <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} />
+                <ShareCartButton cart={item} operationInProgress={meta.operationInProgress} />
+                <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} operationInProgress={meta.operationInProgress} />
             </div>
         ),
         sorter: false,
     },
     current: {
         title: 'Current',
-        display: (item, meta) => <CurrentCartButton cart={item} current={meta.current} user={meta.user} fetch={meta.fetch} />,
+        display: (item, meta) => (
+            <CurrentCartButton
+                cart={item}
+                current={meta.current}
+                operationInProgress={meta.operationInProgress}
+                user={meta.user}
+                fetch={meta.fetch}
+                onSwitchCartStart={meta.onSwitchCartStart}
+                onSwitchCartComplete={meta.onSwitchCartComplete}
+            />
+        ),
         sorter: false,
     },
 };
@@ -641,56 +672,80 @@ const CartManagerFooter = () => (
  * Main component of the Cart Manager page. Renders the cart manager table and controls to add,
  * rename, and remove carts, and set the current cart.
  */
-const CartManagerComponent = ({ context, currentCart, sessionProperties }, reactContext) => {
-    const extantCartCount = context['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
-    const user = sessionProperties && sessionProperties.user;
-    const cartPanelHeader = (
-        <div className="cart-manager-header">
-            <h4 className="cart-manager-header__title">Cart manager</h4>
-            <NameCartButton
-                cartManager={context}
-                user={user}
-                fetch={reactContext.fetch}
-                navigate={reactContext.navigate}
-                disabled={extantCartCount >= context.cart_user_max}
-                create
-                actuatorCss="cart-manager-header__control"
-            />
-        </div>
-    );
-    return (
-        <SortTablePanel header={cartPanelHeader}>
-            <CartCounts cartManager={context} />
-            <SortTable
-                list={context['@graph']}
-                columns={cartTableColumns}
-                meta={{
-                    cartManager: context,
-                    current: currentCart,
-                    user: sessionProperties && sessionProperties.user,
-                    admin: !!(sessionProperties && sessionProperties.admin),
-                    fetch: reactContext.fetch,
-                    navigate: reactContext.navigate,
-                }}
-                rowClasses={
-                    (item) => {
-                        if (item['@id'] === currentCart) {
-                            return 'cart-manager-table__current-row';
+class CartManagerComponent extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            operationInProgress: false,
+        };
+        this.onSwitchCartStart = this.onSwitchCartStart.bind(this);
+        this.onSwitchCartComplete = this.onSwitchCartComplete.bind(this);
+    }
+
+    onSwitchCartStart() {
+        this.setState({ operationInProgress: true });
+    }
+
+    onSwitchCartComplete() {
+        this.setState({ operationInProgress: false });
+    }
+
+    render() {
+        const { context, currentCart, sessionProperties } = this.props;
+
+        const extantCartCount = context['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
+        const user = sessionProperties && sessionProperties.user;
+        const cartPanelHeader = (
+            <div className="cart-manager-header">
+                <h4 className="cart-manager-header__title">Cart manager</h4>
+                <NameCartButton
+                    cartManager={context}
+                    user={user}
+                    fetch={this.context.fetch}
+                    navigate={this.context.navigate}
+                    disabled={extantCartCount >= context.cart_user_max}
+                    create
+                    actuatorCss="cart-manager-header__control"
+                />
+            </div>
+        );
+        return (
+            <SortTablePanel header={cartPanelHeader}>
+                <CartCounts cartManager={context} />
+                <SortTable
+                    list={context['@graph']}
+                    columns={cartTableColumns}
+                    meta={{
+                        cartManager: context,
+                        current: currentCart,
+                        operationInProgress: this.state.operationInProgress,
+                        user: sessionProperties && sessionProperties.user,
+                        admin: !!(sessionProperties && sessionProperties.admin),
+                        onSwitchCartStart: this.onSwitchCartStart,
+                        onSwitchCartComplete: this.onSwitchCartComplete,
+                        fetch: this.context.fetch,
+                        navigate: this.context.navigate,
+                    }}
+                    rowClasses={
+                        (item) => {
+                            if (item['@id'] === currentCart) {
+                                return 'cart-manager-table__current-row';
+                            }
+                            if (item.status === 'deleted') {
+                                return 'cart-manager-table__deleted-row';
+                            }
+                            if (item.status === 'disabled') {
+                                return 'cart-manager-table__autosave-row';
+                            }
+                            return '';
                         }
-                        if (item.status === 'deleted') {
-                            return 'cart-manager-table__deleted-row';
-                        }
-                        if (item.status === 'disabled') {
-                            return 'cart-manager-table__autosave-row';
-                        }
-                        return '';
                     }
-                }
-                footer={<CartManagerFooter />}
-            />
-        </SortTablePanel>
-    );
-};
+                    footer={<CartManagerFooter />}
+                />
+            </SortTablePanel>
+        );
+    }
+}
 
 CartManagerComponent.propTypes = {
     /** Cart manager context object */

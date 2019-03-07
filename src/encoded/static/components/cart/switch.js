@@ -17,14 +17,19 @@ import { cartRetrieve } from './database';
  */
 const switchCart = (currentCartAtId, fetch) => (
     dispatch => (
-        cartRetrieve(currentCartAtId, fetch).then((savedCartObj) => {
-            dispatch(setCurrentCart(currentCartAtId));
-            dispatch(replaceCart(savedCartObj.elements));
-            dispatch(setCartName(savedCartObj.name));
-            dispatch(setCartIdentifier(savedCartObj.identifier));
-            dispatch(setCartStatus(savedCartObj.status));
-            dispatch(cacheSavedCart(savedCartObj));
-        })
+        new Promise((resolve, reject) => (
+            cartRetrieve(currentCartAtId, fetch).then((savedCartObj) => {
+                dispatch(setCurrentCart(currentCartAtId));
+                dispatch(replaceCart(savedCartObj.elements));
+                dispatch(setCartName(savedCartObj.name));
+                dispatch(setCartIdentifier(savedCartObj.identifier));
+                dispatch(setCartStatus(savedCartObj.status));
+                dispatch(cacheSavedCart(savedCartObj));
+                resolve(savedCartObj);
+            }, (err) => {
+                reject(err);
+            })
+        ))
     )
 );
 

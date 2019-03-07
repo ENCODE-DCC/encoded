@@ -244,7 +244,7 @@ export const setCartStatus = status => (
  * @return {Promise} Resolves to the updated cart object
  */
 export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, fetch) => (
-    (dispatch, getState) => (
+    dispatch => (
         new Promise((resolve, reject) => {
             const nameIdentifierSetList = { name };
 
