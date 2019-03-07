@@ -266,7 +266,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
             "oneOf":[
                 {
                     "properties": {
@@ -329,10 +329,18 @@
                     ]
                 },
                 {
+                    "required": ["restriction_enzymes"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["restriction enzyme site locations"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads"]
+                                "enum": ["reads", "restriction enzyme site locations"]
                             }
                         }
                     }
@@ -552,9 +560,24 @@
                                             "reads",
                                             "rejected reads",
                                             "raw data",
-                                            "reporter code counts"
+                                            "reporter code counts",
+                                            "restriction enzyme site locations"
                                         ]
                                     }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "txt"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "restriction enzyme site locations"
+                                    ]
                                 }
                             }
                         }
@@ -644,6 +667,14 @@
 
                 }
             ]
+        },
+        "restriction_enzymes": {
+            "comment": "Only files with output_type of restriction enzyme site locations can specify restriction_enzymes.",
+            "properties": {
+                "output_type": {
+                    "enum": ["restriction enzyme site locations"]
+                }
+            }
         }
     },
     "properties": {
@@ -725,7 +756,8 @@
                         "tsv",
                         "vcf",
                         "wig",
-                        "idx"
+                        "idx",
+                        "txt"
                     ]
                 },
                 {
@@ -1090,6 +1122,7 @@
                         "replication timing profile",
                         "reporter code counts",
                         "representative dnase hypersensitivity sites",
+                        "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",           
                         "rRNA reference",
                         "semi-automated genome annotation",
@@ -1290,6 +1323,24 @@
             "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
             "type": "string",
             "linkTo": "AnalysisStepRun"
+        },
+        "restriction_enzymes": {
+            "title": "Restriction enzymes",
+            "description": "The restriction enzymes the restriction site locations file applies to.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Restriction enzyme",
+                "description": "The name of a restriction enzyme",
+                "type": "string",
+                "enum": [
+                    "DpnII",
+                    "MboI",
+                    "HindIII"
+                ]
+            }
+
         },
         "content_error_detail": {
             "title": "Content error detail",
@@ -1527,6 +1578,7 @@
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
+        "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
 
@@ -1566,7 +1618,8 @@
         "csv": ".csv",
         "vcf": ".vcf.gz",
         "wig": ".wig.gz",
-        "sam": ".sam.gz"
+        "sam": ".sam.gz",
+        "txt": ".txt"
     },
     "changelog": "/profiles/changelogs/file.md"
 }
