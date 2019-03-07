@@ -613,7 +613,7 @@ export const AlternateAccession = (props) => {
 
     if (altAcc && altAcc.length) {
         return (
-            <h4 className="repl-acc">
+            <h4 className="replacement-accessions__alternate">
                 {altAcc.length === 1 ?
                     <span>Alternate accession: {altAcc[0]}</span>
                 :

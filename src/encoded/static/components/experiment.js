@@ -12,7 +12,7 @@ import { FileGallery } from './filegallery';
 import { CartToggle } from './cart';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
+import { singleTreatment, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -419,7 +419,6 @@ class ExperimentComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Experiment summary for {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
                         <div className="cart__toggle--header">
                             <CartToggle element={context} />
