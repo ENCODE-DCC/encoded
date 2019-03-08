@@ -125,6 +125,7 @@
 .dropdown-menu {
     background-color: #fff;
     background-image: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
+    overflow: hidden;
 
     &>li {
         &>a {
@@ -146,6 +147,7 @@
                 padding: 2px 30px 2px 20px;
                 font-size: 1.1rem;
                 color: #444 !important;
+                background-color: #fff;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
                 border-left: none;
@@ -153,6 +155,8 @@
                 text-align: left;
                 letter-spacing: 1px;
                 font-weight: 300;
+                white-space: nowrap;
+                max-width: 400px;
 
 
                 &:hover,&:active {

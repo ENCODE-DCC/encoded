@@ -76,11 +76,11 @@ const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 // <ModalFooter> usage details:
 // submitBtn: Pass a React component to render as the submit button. You can also supply a function
 //            that gets used as a click handler for a standard Submit button.
-// closeBtn: Pass True to get a standard "Cancel" button that simply closes the modal in
-//           plug-and-play mode. You can also pass a function that gets used as the click handler
-//           for the standard cancel button that gets called before closing the modal. Finally, you
-//           can pass a React component that handles the closing of the modal in self-management
-//           mode.
+// closeModal: Pass True to get a standard "Cancel" button that simply closes the modal in
+//             plug-and-play mode. You can also pass a function that gets used as the click handler
+//             for the standard cancel button that gets called before closing the modal. Finally, you
+//             can pass a React component that handles the closing of the modal in self-management
+//             mode.
 // dontClose: Supply this as a boolean to prevent the submit button from closing the modal. Of
 //            course you'll need to provide some other way to close the modal.
 //
@@ -156,16 +156,18 @@ ModalHeader.defaultProps = {
 
 
 export const ModalBody = props => (
-    <div className="modal-body">
+    <div className={`modal-body${props.addCss ? ` ${props.addCss}` : ''}`}>
         {props.children}
     </div>
 );
 
 ModalBody.propTypes = {
+    addCss: PropTypes.string,
     children: PropTypes.node,
 };
 
 ModalBody.defaultProps = {
+    addCss: '',
     children: null,
 };
 
@@ -371,7 +373,7 @@ export class Modal extends React.Component {
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>
                         <div className="modal" style={{ display: 'block' }}>
-                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`} role="alertdialog" aria-labelledby={this.props.labelId} aria-describedby={this.props.descriptionId}>
+                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={this.props.labelId} aria-describedby={this.props.descriptionId}>
                                 <div className="modal-content">
                                     {this.modalChildren}
                                 </div>

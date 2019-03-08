@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["name"],
-    "identifyingProperties": ["uuid"],
+    "identifyingProperties": ["uuid", "identifier"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -23,12 +23,19 @@
             "description": "The name of the cart",
             "type": "string"
         },
+        "identifier": {
+            "title": "URI-compatible cart identifier",
+            "description": "User-specified identifer for this cart that can be used in a URI for the cart.",
+            "comment": "This can only contain non-space characters, and must be unique throughout the system.",
+            "uniqueKey": "cart:identifier",
+            "type": "string",
+            "pattern": "^(?!\\s)[\\S]*\\S$"
+        },
         "elements": {
             "title": "Cart elements",
             "description": "Tracks all elements in the cart",
             "type": "array",
             "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "Cart element",
                 "description": "Reference to one element in the cart",

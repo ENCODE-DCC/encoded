@@ -64,22 +64,26 @@ class CartMergeSharedComponent extends React.Component {
     render() {
         const { sharedCartObj, savedCartObj, viewableElements } = this.props;
 
-        // Show the "Add to my cart" button if the shared cart has elements and we're not looking
+        // Show the "Add to current cart" button if the shared cart has elements and we're not looking
         // at our own shared cart.
         if ((viewableElements && viewableElements.length > 0) && (sharedCartObj['@id'] !== savedCartObj['@id'])) {
+            const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
             return (
                 <span>
-                    <button className="btn btn-info btn-sm" disabled={this.props.inProgress} onClick={this.handleMergeButtonClick}>Add to my cart</button>
+                    <button className="btn btn-info btn-sm" disabled={this.props.inProgress} onClick={this.handleMergeButtonClick}>Add to current cart</button>
                     {this.state.mergeCartDisplayed ?
                         <Modal labelId="merge-cart-label" descriptionId="merge-cart-description" focusId="merge-cart-close">
-                            <ModalHeader labelId="merge-cart-label" title="Add shared cart items to my cart" closeModal />
+                            <ModalHeader labelId="merge-cart-label" title={`Add items to cart: ${cartName || ''}`} closeModal />
                             <ModalBody>
-                                <p id="merge-cart-description">Add the contents of this shared cart to your cart. Any items already in your cart won&rsquo;t be affected.</p>
+                                <p id="merge-cart-description">
+                                    Any items already in {cartName ? <span>&ldquo;{cartName}&rdquo;</span> : <span>your cart</span>} won&rsquo;t be affected
+                                    and won&rsquo;t be duplicated.
+                                </p>
                             </ModalBody>
                             <ModalFooter
                                 closeModal={<button id="merge-cart-close" className="btn btn-info" onClick={this.handleMergeModalClose}>Close</button>}
                                 submitBtn={this.handleClick}
-                                submitTitle="Add items to my cart"
+                                submitTitle="Add items to current cart"
                             />
                         </Modal>
                     : null}
@@ -117,7 +121,7 @@ CartMergeSharedComponent.defaultProps = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    cart: state.cart,
+    elements: state.elements,
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     sharedCartObj: ownProps.sharedCartObj,
@@ -126,7 +130,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.sessionProperties.user, ownProps.sessionProperties.admin, ownProps.fetch)),
+    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.loggedIn, ownProps.fetch)),
 });
 
 const CartMergeSharedInternal = connect(mapStateToProps, mapDispatchToProps)(CartMergeSharedComponent);

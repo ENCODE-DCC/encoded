@@ -184,10 +184,6 @@ form.table-filter {
 
     tbody {
         tr {
-            td {
-                height: 4em;
-            }
-
             &.file-restricted {
                 td {
                     background-color: $file-restricted-bg;

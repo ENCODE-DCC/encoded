@@ -303,7 +303,7 @@ export class SortTable extends React.Component {
                                             columnClass = null;
                                         }
                                         const title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, columns, meta) : columns[columnId].title;
-                                        const thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
+                                        const thClass = `${(columns[columnId].sorter !== false) ? 'tcell-sortable' : ''}${columns[columnId].headerCss ? ` ${columns[columnId].headerCss}` : ''}`;
 
                                         return <ColumnSortDir key={columnId} sortDir={this.sortDir} columnId={columnId} thClass={thClass} title={title} columnClass={columnClass} />;
                                     }

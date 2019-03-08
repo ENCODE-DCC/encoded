@@ -256,7 +256,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 const ExperimentComponent = (props, reactContext) => {
-    const { activeCart } = props;
+    const { cartControls } = props;
     const result = props.context;
     let synchronizations;
 
@@ -333,7 +333,7 @@ const ExperimentComponent = (props, reactContext) => {
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                {activeCart ?
+                {cartControls ?
                     <div className="result-item__cart-control">
                         <CartToggle element={result} />
                     </div>
@@ -346,13 +346,13 @@ const ExperimentComponent = (props, reactContext) => {
 
 ExperimentComponent.propTypes = {
     context: PropTypes.object.isRequired, // Experiment search results
-    activeCart: PropTypes.bool, // True if displayed in active cart
+    cartControls: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired,
 };
 
 ExperimentComponent.defaultProps = {
-    activeCart: false,
+    cartControls: false,
 };
 
 ExperimentComponent.contextTypes = {
@@ -1190,7 +1190,6 @@ BatchDownload.propTypes = {
 BatchDownload.defaultProps = {
     context: null,
     query: '',
-    downloadClickHandler: null,
 };
 
 BatchDownload.contextTypes = {
@@ -1455,7 +1454,7 @@ export class ResultTable extends React.Component {
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
-                                    <ResultTableList results={results} columns={columns} activeCart />
+                                    <ResultTableList results={results} columns={columns} cartControls />
                                 }
                             </div>
                         :
@@ -1499,10 +1498,10 @@ const BrowserTabQuickView = function BrowserTabQuickView() {
 
 
 // Display the list of search results.
-export const ResultTableList = ({ results, columns, tabbed, activeCart }) => (
+export const ResultTableList = ({ results, columns, tabbed, cartControls }) => (
     <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
         {results.length ?
-            results.map(result => Listing({ context: result, columns, key: result['@id'], activeCart }))
+            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls }))
         : null}
     </ul>
 );
@@ -1511,13 +1510,13 @@ ResultTableList.propTypes = {
     results: PropTypes.array.isRequired, // Array of search results to display
     columns: PropTypes.object, // Columns from search results
     tabbed: PropTypes.bool, // True if table is in a tab
-    activeCart: PropTypes.bool, // True if items displayed in active cart
+    cartControls: PropTypes.bool, // True if items should display with cart controls
 };
 
 ResultTableList.defaultProps = {
     columns: null,
     tabbed: false,
-    activeCart: false,
+    cartControls: false,
 };
 
 

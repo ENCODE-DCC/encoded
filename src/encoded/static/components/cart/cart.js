@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import Pager from '../../libs/bootstrap/pager';
 import { Panel, PanelBody, PanelHeading } from '../../libs/bootstrap/panel';
-import { contentViews, itemClass, encodedURIComponent, parseAndLogError } from '../globals';
+import { itemClass, encodedURIComponent, parseAndLogError } from '../globals';
 import { requestObjects, DisplayAsJson } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
@@ -68,7 +68,7 @@ class CartSearchResults extends React.Component {
         if (this.state.elementsForDisplay && this.state.elementsForDisplay.length === 0) {
             return <div className="nav result-table cart__empty-message">No visible datasets on this page.</div>;
         }
-        return <ResultTableList results={this.state.elementsForDisplay || []} activeCart={this.props.activeCart} />;
+        return <ResultTableList results={this.state.elementsForDisplay || []} cartControls={this.props.cartControls} />;
     }
 }
 
@@ -78,7 +78,7 @@ CartSearchResults.propTypes = {
     /** Page of results to display */
     currentPage: PropTypes.number,
     /** True if displaying an active cart */
-    activeCart: PropTypes.bool,
+    cartControls: PropTypes.bool,
     /** True if user has logged in */
     loggedIn: PropTypes.bool,
 };
@@ -86,7 +86,7 @@ CartSearchResults.propTypes = {
 CartSearchResults.defaultProps = {
     elements: [],
     currentPage: 0,
-    activeCart: false,
+    cartControls: false,
     loggedIn: false,
 };
 
@@ -506,20 +506,20 @@ FileFacets.contextTypes = {
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
-const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fileCount, activeCart, sharedCart }) => (
+const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fileCount, cartType, sharedCart }) => (
     <div className="cart__tools">
         {elements.length > 0 ?
             <CartBatchDownload
                 elements={elements}
                 selectedTerms={selectedTerms}
-                activeCart={activeCart}
+                cartType={cartType}
                 savedCartObj={savedCartObj}
                 sharedCart={sharedCart}
                 fileCount={fileCount}
             />
         : null}
-        {activeCart ? null : <CartMergeShared sharedCartObj={sharedCart} viewableElements={viewableElements} />}
-        {activeCart ? <CartClear /> : null}
+        {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableElements={viewableElements} /> : null}
+        {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClear /> : null}
     </div>
 );
 
@@ -532,8 +532,8 @@ CartTools.propTypes = {
     savedCartObj: PropTypes.object,
     /** Viewable cart element @ids */
     viewableElements: PropTypes.array,
-    /** True if cart is active, False if cart is shared */
-    activeCart: PropTypes.bool,
+    /** Type of cart: ACTIVE, OBJECT, MEMORY */
+    cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
     /** Number of files batch download will cause to be downloaded */
@@ -545,7 +545,6 @@ CartTools.defaultProps = {
     selectedTerms: null,
     savedCartObj: null,
     viewableElements: null,
-    activeCart: true,
     sharedCart: null,
     fileCount: 0,
 };
@@ -630,8 +629,12 @@ const createInitialCartState = () => {
 
 /**
  * Renders the cart search results page. Display either:
- * 1. Shared cart (/carts/<uuid>) containing a user's saved elements
- * 2. Active cart (/cart-view/) containing saved and in-memory elements
+ * 1. OBJECT (/carts/<uuid>)
+ *    * context contains items to display.
+ * 2. ACTIVE (/cart-view/) containing the current cart's contents
+ *    * savedCartObj contains items to display
+ * 3. MEMORY (/cart-view/) containing nothing
+ *    * this.props.cart contains items to display
  */
 class CartComponent extends React.Component {
     constructor() {
@@ -666,16 +669,39 @@ class CartComponent extends React.Component {
 
     /**
      * Compute information about the currently displayed page of cart contents including:
-     * activeCart: True if cart is active, false if cart coming from database cart object
+     * cartType: Type of cart being displayed:
+     *           'ACTIVE': Viewing the current cart
+     *           'OBJECT': Viewing the cart specified in the URL
+     *           'MEMORY': Viewing carts in browser memory (non-logged-in user)
+     * cartName: Name of cart
      * cartElements: Array of cart element @ids
      * totalDatasetPages: Total number of pages of cart elements to display
      */
     computePageInfo() {
-        const { context, cart } = this.props;
-        const activeCart = context['@type'][0] === 'cart-view';
-        const cartElements = activeCart ? cart : context.elements;
+        const { context, savedCartObj, elements } = this.props;
+        let cartType = '';
+        let cartElements = [];
+        let cartName = '';
+        if (context['@type'][0] === 'cart-view') {
+            // Viewing a current active or memory cart on the /cart-view/ page.
+            if (savedCartObj && Object.keys(savedCartObj).length > 0) {
+                cartType = 'ACTIVE';
+                cartName = savedCartObj.name;
+                cartElements = savedCartObj.elements;
+            } else {
+                cartType = 'MEMORY';
+                cartName = 'Cart';
+                cartElements = elements;
+            }
+        } else {
+            // Viewing a saved cart at its unique path.
+            cartType = 'OBJECT';
+            cartName = context.name;
+            cartElements = context.elements;
+        }
         return {
-            activeCart,
+            cartType,
+            cartName,
             cartElements,
             totalDatasetPages: Math.floor(cartElements.length / PAGE_ELEMENT_COUNT) + (cartElements.length % PAGE_ELEMENT_COUNT !== 0 ? 1 : 0),
         };
@@ -747,9 +773,9 @@ class CartComponent extends React.Component {
 
     render() {
         const { context, savedCartObj, loggedIn } = this.props;
-        const { activeCart, cartElements, totalDatasetPages } = this.computePageInfo();
+        const { cartType, cartElements, cartName, totalDatasetPages } = this.computePageInfo();
 
-        // Calculate nubmer of files facet has selected, or all if none selected.
+        // Calculate number of files facet has selected, or all if none selected.
         let fileCount = 0;
         if (this.state.fileFacets[displayedFacetCountingField]) {
             const hasSelectedTerms = this.state.selectedTerms[displayedFacetCountingField].length > 0;
@@ -762,18 +788,31 @@ class CartComponent extends React.Component {
             <div className={itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>{activeCart ? <span>Cart</span> : <span>{context.name}</span>}</h2>
-                        {activeCart ? null : <DisplayAsJson />}
+                        <h2>{cartName}</h2>
+                        {cartType === 'OBJECT' ? <DisplayAsJson /> : null}
                     </div>
                 </header>
                 <Panel addClasses="cart__result-table">
                     {cartElements.length ?
                         <PanelHeading addClasses="cart__header">
                             <PagerArea currentPage={this.state.currentDatasetResultsPage} totalPageCount={totalDatasetPages} updateCurrentPage={this.updateDatasetCurrentPage} />
-                            <CartTools elements={cartElements} savedCartObj={savedCartObj} selectedTerms={this.state.selectedTerms} viewableElements={this.state.viewableElements} activeCart={activeCart} sharedCart={context} fileCount={fileCount} />
+                            <CartTools
+                                elements={cartElements}
+                                savedCartObj={savedCartObj}
+                                selectedTerms={this.state.selectedTerms}
+                                viewableElements={this.state.viewableElements}
+                                cartType={cartType}
+                                sharedCart={context}
+                                fileCount={fileCount}
+                            />
                         </PanelHeading>
                     : null}
-                    <ElementCountArea count={cartElements.length} viewableElementCount={activeCart ? -1 : this.state.viewableElementCount} typeName="dataset" typeNamePlural="datasets" />
+                    <ElementCountArea
+                        count={cartElements.length}
+                        viewableElementCount={cartType === 'OBJECT' ? this.state.viewableElementCount : -1}
+                        typeName="dataset"
+                        typeNamePlural="datasets"
+                    />
                     <PanelBody>
                         {cartElements.length > 0 ?
                             <div className="cart__display">
@@ -785,7 +824,12 @@ class CartComponent extends React.Component {
                                     searchResultHandler={this.handleFileSearchResults}
                                     loggedIn={loggedIn}
                                 />
-                                <CartSearchResults elements={cartElements} currentPage={this.state.currentDatasetResultsPage} activeCart={activeCart} loggedIn={loggedIn} />
+                                <CartSearchResults
+                                    elements={cartElements}
+                                    currentPage={this.state.currentDatasetResultsPage}
+                                    cartControls={cartType !== 'OBJECT'}
+                                    loggedIn={loggedIn}
+                                />
                             </div>
                         :
                             <p className="cart__empty-message">Empty cart</p>
@@ -801,7 +845,7 @@ CartComponent.propTypes = {
     /** Cart object to display */
     context: PropTypes.object.isRequired,
     /** In-memory cart contents */
-    cart: PropTypes.array.isRequired,
+    elements: PropTypes.array.isRequired,
     /** Cart as it exists in the database */
     savedCartObj: PropTypes.object,
     /** True if user has logged in */
@@ -814,7 +858,7 @@ CartComponent.defaultProps = {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    cart: state.cart,
+    elements: state.elements,
     savedCartObj: state.savedCartObj,
     context: ownProps.context,
     loggedIn: ownProps.loggedIn,
@@ -841,5 +885,4 @@ Cart.contextTypes = {
     fetch: PropTypes.func,
 };
 
-contentViews.register(Cart, 'cart-view'); // /cart-view/ URI
-contentViews.register(Cart, 'Cart'); // /carts/<uuid> URI
+export default Cart;

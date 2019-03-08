@@ -47,7 +47,7 @@ const sharedStatuses = {
         'current',
     ],
     administrator: [
-        'deleteed',
+        'deleted',
         'disabled',
     ],
 };
@@ -99,6 +99,7 @@ const objectStatuses = {
     Award: sharedStatuses,
     BiosampleCharacterization: standardStatuses,
     Biosample: accessionedStatuses,
+    Cart: sharedStatuses,
     Characterization: standardStatuses,
     Dataset: datasetStatuses,
     Document: standardStatuses,

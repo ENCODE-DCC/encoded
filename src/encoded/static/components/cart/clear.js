@@ -29,12 +29,12 @@ class CartClearComponent extends React.Component {
     }
 
     /**
-     * Handle a click on the button in the modal confirming clearing the cart.
+     * Handle a click on the button in the modal confirming clearing the cart. Don't have to set
+     * state.modalOpen to false because props.elements becomes empty here, which unmounts the
+     * modal.
      */
     handleConfirmClearClick() {
-        this.props.onClearCartClick(this.props.cart).then(() => {
-            this.setState({ modalOpen: false });
-        });
+        this.props.onClearCartClick(this.props.elements);
     }
 
     /**
@@ -47,8 +47,8 @@ class CartClearComponent extends React.Component {
     }
 
     render() {
-        const { cart, inProgress } = this.props;
-        if (cart.length > 0) {
+        const { elements, inProgress } = this.props;
+        if (elements.length > 0) {
             return (
                 <span>
                     <button disabled={inProgress} onClick={this.handleClearCartClick} className="btn btn-info btn-sm">Clear cart</button>
@@ -74,7 +74,7 @@ class CartClearComponent extends React.Component {
 
 CartClearComponent.propTypes = {
     /** Current contents of cart */
-    cart: PropTypes.array,
+    elements: PropTypes.array,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool,
     /** Function called to remove all elements */
@@ -82,17 +82,17 @@ CartClearComponent.propTypes = {
 };
 
 CartClearComponent.defaultProps = {
-    cart: [],
+    elements: [],
     inProgress: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    cart: state.cart,
+    elements: state.elements,
     inProgress: state.inProgress,
     user: ownProps.sessionProperties,
 });
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, ownProps.sessionProperties.user, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
 });
 
 const CartClearInternal = connect(mapStateToProps, mapDispatchToProps)(CartClearComponent);

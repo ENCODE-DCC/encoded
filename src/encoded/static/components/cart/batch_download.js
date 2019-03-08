@@ -34,7 +34,7 @@ class CartBatchDownloadComponent extends React.Component {
     batchDownload() {
         let contentDisposition;
         let cartUuid;
-        if (!this.props.activeCart) {
+        if (!this.props.cartType === 'OBJECT') {
             cartUuid = this.props.sharedCart.uuid;
         } else {
             cartUuid = this.props.savedCartObj && this.props.savedCartObj.uuid;
@@ -109,8 +109,8 @@ class CartBatchDownloadComponent extends React.Component {
 }
 
 CartBatchDownloadComponent.propTypes = {
-    /** True if cart is active; false if rendering cart object */
-    activeCart: PropTypes.bool,
+    /** Type of cart, ACTIVE, OBJECT, MEMORY */
+    cartType: PropTypes.string.isRequired,
     /** Cart elements */
     elements: PropTypes.array,
     /** Selected facet terms */
@@ -130,7 +130,6 @@ CartBatchDownloadComponent.propTypes = {
 };
 
 CartBatchDownloadComponent.defaultProps = {
-    activeCart: false,
     elements: [],
     selectedTerms: null,
     savedCartObj: null,

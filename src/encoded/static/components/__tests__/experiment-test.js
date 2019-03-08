@@ -9,7 +9,7 @@ import Experiment from '../experiment';
 import context from '../testdata/experiment';
 
 // Create the Redux mock store.
-const initialCart = { cart: [], name: 'Untitled' };
+const initialCart = { elements: [], name: 'Untitled' };
 const mockStore = configureStore();
 
 
