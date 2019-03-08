@@ -284,3 +284,28 @@ def test_file_update_bucket_as_submitter(submitter_testapp, dummy_request, file_
         {'new_bucket': 'unknown bucket'},
         status=403
     )
+
+
+@mock_s3
+@mock_sts
+def test_file_reset_file_upload_bucket_on_upload_credentials(testapp, root, dummy_request, file_with_external_sheet):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.patch_json(file_with_external_sheet['@id'] + '@@update_bucket', {'new_bucket': 'pds_public_bucket_test'})
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    external = file_item._get_external_sheet()
+    assert external.get('key') == 'xyz.bed'
+    assert external.get('bucket') == 'pds_public_bucket_test'
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'uploading'
+        }
+    )
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    res = testapp.post_json(file_with_external_sheet['@id'] + '@@upload', {})
+    file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
+    external = file_item._get_external_sheet()
+    assert external.get('bucket') == 'test_file_bucket'
+    assert res.json['@graph'][0]['upload_credentials']['upload_url'] == 's3://test_file_bucket/xyz.bed'

@@ -602,10 +602,12 @@ def post_upload(context, request):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
     accession_or_external = properties.get('accession') or properties['external_accession']
+    file_upload_bucket = request.registry.settings['file_upload_bucket']
     external = context.propsheets.get('external', None)
+    registry = request.registry
     if external is None:
         # Handle objects initially posted as another state.
-        bucket = request.registry.settings['file_upload_bucket']
+        bucket = file_upload_bucket
         uuid = context.uuid
         mapping = context.schema['file_format_file_extension']
         file_extension = mapping[properties['file_format']]
@@ -615,6 +617,12 @@ def post_upload(context, request):
             date=date, file_extension=file_extension, uuid=uuid, **properties)
     elif external.get('service') == 's3':
         bucket = external['bucket']
+        # Must reset file to point to file_upload_bucket (keep AWS public dataset in sync).
+        if bucket != file_upload_bucket:
+            registry.notify(BeforeModified(context, request))
+            context._set_external_sheet({'bucket': file_upload_bucket})
+            registry.notify(AfterModified(context, request))
+            bucket = file_upload_bucket
         key = external['key']
     else:
         raise HTTPNotFound(
@@ -636,7 +644,6 @@ def post_upload(context, request):
         new_properties = properties.copy()
         new_properties['status'] = 'uploading'
 
-    registry = request.registry
     registry.notify(BeforeModified(context, request))
     context.update(new_properties, {'external': creds})
     registry.notify(AfterModified(context, request))
