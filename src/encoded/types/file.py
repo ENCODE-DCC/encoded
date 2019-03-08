@@ -534,21 +534,23 @@ class File(Item):
         Returns : boolean, current_path, destination_path
         '''
         return_flag = True
-        public_bucket = request.registry.settings.get('pds_public_bucket')
-        private_bucket = request.registry.settings.get('pds_private_bucket')
-        properties = self.upgrade_properties()
         try:
             external = self._get_external_sheet()
         except HTTPNotFound:
             # File object doesn't exist, leave it alone.
             return (return_flag, None, None)
+        # Restricted and no_file_available files should not be moved.
+        if not self._should_set_object_acl():
+            return (return_flag, None, None)
+        public_bucket = request.registry.settings.get('pds_public_bucket')
+        private_bucket = request.registry.settings.get('pds_private_bucket')
+        properties = self.upgrade_properties()
         current_bucket = external.get('bucket')
         current_key = external.get('key')
         base_uri = 's3://{}/{}'
         current_path = base_uri.format(current_bucket, current_key)
         file_status = properties.get('status')
-        # Released restricted files should be in private bucket.
-        if file_status in self.private_s3_statuses or not self._should_set_object_acl():
+        if file_status in self.private_s3_statuses:
             if current_bucket != private_bucket:
                 return_flag = False
             return (return_flag, current_path, base_uri.format(private_bucket, current_key))

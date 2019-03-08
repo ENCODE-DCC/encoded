@@ -139,7 +139,7 @@ def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_reque
     assert external.get('bucket') == 'pds_private_bucket_test'
     result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
     assert result is True
-    assert current_path == destination_path == 's3://pds_private_bucket_test/xyz.bed'
+    assert current_path == destination_path == None
 
 
 @mock_sts
