@@ -8,20 +8,39 @@ import { connect } from 'react-redux';
 import { DropdownMenu, DropdownMenuSep } from '../../libs/bootstrap/dropdown-menu';
 import { Nav, NavItem } from '../../libs/bootstrap/navbar';
 import { svgIcon } from '../../libs/svg-icons';
+import { BrowserFeat } from '../browserfeat';
 import { truncateString } from '../globals';
 import CartShare from './share';
 
 
 /**
- * Renders the cart icon menu and count in the nav bar.
+ * Renders the cart icon menu and count or in-progress spinner in the nav bar.
  */
-const CartNavTitle = ({ elements }) => (
-    <div className="cart__nav"><div className={`cart__nav-icon${elements.length === 0 ? ' cart__nav-icon--empty' : ''}`}>{svgIcon('cart')}</div> {elements.length > 0 ? <div className="cart__nav-count">{elements.length}</div> : null}</div>
-);
+const CartNavTitle = ({ elements, inProgress }) => {
+    let status;
+
+    if (inProgress) {
+        // Get the proper spinner icon based on whether the browser supports SVG animations or not.
+        const spinnerIcon = svgIcon(BrowserFeat.getBrowserCaps('smil') ? 'spinner' : 'spinnerStatic');
+        status = <div className="cart__nav-spinner">{spinnerIcon}</div>;
+    } else if (elements.length > 0) {
+        status = <div className="cart__nav-count">{elements.length}</div>;
+    }
+    return (
+        <div className="cart__nav">
+            <div className={`cart__nav-icon${status ? '' : ' cart__nav-icon--empty'}`}>
+                {svgIcon('cart')}
+            </div>
+            {status ? <div>{status}</div> : null}
+        </div>
+    );
+};
 
 CartNavTitle.propTypes = {
     /** Array of cart contents */
     elements: PropTypes.array.isRequired,
+    /** True if global cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
 };
 
 
@@ -55,9 +74,9 @@ class CartStatusComponent extends React.Component {
     }
 
     render() {
-        const { elements, savedCartObj, openDropdown, dropdownClick, loggedIn } = this.props;
+        const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
 
-        if (loggedIn || elements.length > 0) {
+        if (loggedIn || elements.length > 0 || inProgress) {
             // Define the menu items for the Cart Status menu.
             const cartName = truncateString(savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '', 30);
             const menuItems = [];
@@ -79,7 +98,7 @@ class CartStatusComponent extends React.Component {
                 <Nav>
                     <NavItem
                         dropdownId="cart-control"
-                        dropdownTitle={<CartNavTitle elements={elements} />}
+                        dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
                         openDropdown={openDropdown}
                         dropdownClick={dropdownClick}
                         label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
@@ -102,6 +121,8 @@ CartStatusComponent.propTypes = {
     elements: PropTypes.array,
     /** Cached saved cart object */
     savedCartObj: PropTypes.object,
+    /** True if global cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
     /** ID of nav dropdown currently visible */
     openDropdown: PropTypes.string,
     /** Function to call when dropdown clicked */
@@ -122,6 +143,7 @@ CartStatusComponent.defaultProps = {
 const mapStateToProps = (state, ownProps) => ({
     elements: state.elements,
     savedCartObj: state.savedCartObj || null,
+    inProgress: state.inProgress,
     openDropdown: ownProps.openDropdown,
     dropdownClick: ownProps.dropdownClick,
     loggedIn: !!(ownProps.session && ownProps.session['auth.userid']),

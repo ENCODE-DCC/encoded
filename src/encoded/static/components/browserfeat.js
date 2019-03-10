@@ -10,6 +10,10 @@ module.exports.BrowserFeat = {
             // Detect SVG
             this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
 
+            // Detect SVG SMIL animations; Creating SVG element returns "SVGElement" if animations
+            // not supported, or SVGAnimateElement if they are.
+            this.feat.smil = /SVGAnimate/.test(document.createElementNS('http://www.w3.org/2000/svg', 'animate').toString());
+
             // Detect <canvas>
             this.feat.canvas = (() => {
                 const elem = document.createElement('canvas');

@@ -127,14 +127,13 @@ export const cartCreateAutosave = fetch => (
 
 
 /**
- * Retrieve a cart and return its data in a promise, bypassing Elasticsearch because this can be
- * called moments after creating a cart, and Elasticsearch might not have caught up yet.
- * @param {string} cartAtId @id of cart to retrieve
+ * Retrieve a cart or related object and return its data in a promise.
+ * @param {string} URI of cart-related object to retrieve
  * @param {func} fetch System XHR fetch function
  * @return {Promise} Resolves to contents of retrieved cart
  */
-export const cartRetrieve = (cartAtId, fetch) => (
-    fetch(`${cartAtId}?datastore=database`, {
+export const cartRetrieve = (cartUri, fetch) => (
+    fetch(cartUri, {
         method: 'GET',
         headers: {
             Accept: 'application/json',
@@ -149,18 +148,18 @@ export const cartRetrieve = (cartAtId, fetch) => (
 
 
 /**
- * Patch a cart object (not actually a PATCH operation).
- * @param {string} cartAtId @id of the cart object to patch
+ * Update a cart object with new, updated, or removed properties.
+ * @param {string} cartAtId @id of the cart object to update
  * @param {object} properties Object containing the properties within the cart object to set
  * @param {array} propertiesForRemoval Names of properties to remove from the object
  * @param {func} fetch Sytem fetch function
  * @param {bool} expectUpdatedObject True to expect updated object in promise; false to ignore.
  *                                   Set to false when setting status to "deleted" to avoid
- *                                   permission error (submitter can't get updated object that's
+ *                                   permission error (submitter can't get updated object that
  *                                   they deleted)
- * @return {object} Promise containing the patched object
+ * @return {object} Promise containing the updated object
  */
-export const cartPatch = (cartAtId, properties, propertiesForRemoval, fetch, expectUpdatedObject = true) => (
+export const cartUpdate = (cartAtId, properties, propertiesForRemoval, fetch, expectUpdatedObject = true) => (
     getWriteableCartObject(cartAtId, fetch).then((writeableCart) => {
         // Remove requested properties from the cart object.
         if (propertiesForRemoval && propertiesForRemoval.length > 0) {

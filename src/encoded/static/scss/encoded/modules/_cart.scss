@@ -31,6 +31,16 @@
             height: 16px;
             line-height: 16px;
         }
+
+        &-spinner {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            bottom: 0;
+            left: 10px;
+            background-color: #ff8800;
+            border-radius: 1.4rem;
+        }
     }
 
     // Indicates if item has been saved.
@@ -482,6 +492,20 @@ $deleted-bg: #ffe0e0;
 
     @at-root #{&}__input {
         width: 100% !important;
+    }
+
+    // Controls in rename modal footer
+    @at-root #{&}__footer-controls {
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        .modal-footer-controls {
+            display: inline-block;
+        }
     }
 }
 
