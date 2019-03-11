@@ -238,7 +238,10 @@
                         "purpose": {
                             "enum": ["characterization"]
                         }
-                    },
+                    }
+                },
+                {
+                    "required": ["modified_site_nonspecific"],
                     "properties": {
                         "category": {
                             "enun": ["insertion"]
