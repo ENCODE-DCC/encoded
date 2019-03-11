@@ -83,8 +83,7 @@ _tsv_mapping = OrderedDict([
     ('Genome annotation', ['files.genome_annotation']),
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
-    ('File Status', ['files.status']),
-    ('Restricted', ['files.restricted'])
+    ('File Status', ['files.status'])
 ])
 
 _audit_mapping = OrderedDict([
@@ -129,8 +128,7 @@ _tsv_mapping_annotation = OrderedDict([
     ('File Status', ['files.status']),
     ('Derived from', ['files.derived_from']),
     ('S3 URL', ['files.cloud_metadata']),
-    ('Size', ['files.file_size']),
-    ('Restricted', ['files.restricted'])
+    ('Size', ['files.file_size'])
 ])
 
 def get_file_uuids(result_dict):
@@ -264,8 +262,7 @@ def _get_annotation_metadata(request, search_path, param_list):
                 result_file.get('status', ''),
                 ', '.join([derived_from[7:-1] for derived_from in result_file.get('derived_from', '')]),
                 result_file.get('cloud_metadata', {}).get('url', ''),
-                result_file.get('file_size', ''),
-                result_file.get('restricted', ''),
+                result_file.get('file_size', '')
             ]
             # make_audit_cell() was designed just for experiment, but works too for annotation
             row.extend(
@@ -436,7 +433,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
+    param_list['field'] = ['files.href', 'files.file_type']
     param_list['limit'] = ['all']
 
     experiments = []
