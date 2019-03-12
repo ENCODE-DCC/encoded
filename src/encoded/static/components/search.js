@@ -788,15 +788,18 @@ class Facet extends React.Component {
         const numericalTest = a => !isNaN(a.key);
         // For date facets, sort by date
         let terms = [];
-        if (field.match('date') || field.match('month') || field.match('year')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key).utc());
+        if (field.match('date')) {
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').utc());
+        } else if (field.match('month')) {
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').utc());
+        } else if (field.match('year')) {
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').utc());
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => +obj.key);
         } else {
             terms = unsortedTerms;
         }
-        console.log(terms);
 
         const moreTerms = terms.slice(5);
         const TermComponent = field === 'type' ? TypeTerm : Term;
