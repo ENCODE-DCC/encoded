@@ -789,14 +789,14 @@ class Facet extends React.Component {
         // For date facets, sort by date
         let terms = [];
         if (field.match('date')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').utc());
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
         } else if (field.match('month')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').utc());
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').toISOString()).reverse();
         } else if (field.match('year')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').utc());
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').toISOString()).reverse();
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
-            terms = _.sortBy(unsortedTerms, obj => +obj.key);
+            terms = _.sortBy(unsortedTerms, obj => obj.key);
         } else {
             terms = unsortedTerms;
         }
