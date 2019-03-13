@@ -402,8 +402,8 @@ class GeneticModificationComponent extends React.Component {
 
     conditionsChanged(previousProperties, previousState, previousContext) {
         // Logged-in state has changed.
-        const previousLoggedIn = !!(previousContext.session && previousContext.session['auth.userid']);
-        const currentLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const previousLoggedIn = previousContext.loggedIn;
+        const currentLoggedIn = this.context.loggedIn;
         if (previousLoggedIn !== currentLoggedIn) {
             return true;
         }
@@ -519,11 +519,11 @@ class GeneticModificationComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-                        {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'genetic-modification-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -617,7 +617,7 @@ GeneticModificationComponent.propTypes = {
 };
 
 GeneticModificationComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
+    loggedIn: PropTypes.bool, // Login information from <App>
 };
 
 const GeneticModification = auditDecor(GeneticModificationComponent);
@@ -636,7 +636,7 @@ const ListingComponent = (props, reactContext) => {
                     <p className="type meta-title">Genetic modification</p>
                     <p className="type">{` ${result.accession}`}</p>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
                 </div>
                 <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>
                 <div className="data-row">
@@ -644,7 +644,7 @@ const ListingComponent = (props, reactContext) => {
                     {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -653,10 +653,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Search results object
     auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
     auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Listing = auditDecor(ListingComponent);

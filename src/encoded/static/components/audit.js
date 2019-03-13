@@ -75,7 +75,6 @@ import { Panel } from '../libs/bootstrap/panel';
 // above example, that would be `blaine-audit`.
 //
 // * options (Optional object):
-//   * options.session (object): session object from app context
 //   * options.search (boolean): `true` if audit displayed on a search result page, so styling's
 //                               different
 //
@@ -88,7 +87,6 @@ import { Panel } from '../libs/bootstrap/panel';
 //                         and `-audit`. In the above example, that would be `blaine-audit`.
 //
 // * options (Optional object):
-//   * options.session (object): session object from app context
 //   * options.except (string): @id to *not* make into a link in the detail text
 //   * options.forcedEditLink (boolean): `true` to make the `except` string a link anyway
 
@@ -231,7 +229,7 @@ AuditGroup.defaultProps = {
 
 
 // Determine whether audits should be displayed or not, given the audits object from a data object,
-// and an optional session to determine logged-in state. It follows this logic:
+// and an optional loggedIn to determine logged-in state. It follows this logic:
 //
 // if audits exist
 //     if logged out
@@ -240,9 +238,7 @@ AuditGroup.defaultProps = {
 //         return don't display audits
 //     return do display audits
 // return don't display audits
-export function auditsDisplayed(audits, session) {
-    const loggedIn = !!(session && session['auth.userid']);
-
+export function auditsDisplayed(audits, loggedIn) {
     return (audits && Object.keys(audits).length) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
 }
 
@@ -251,7 +247,8 @@ export function auditsDisplayed(audits, session) {
 // parameter to this function. This decorator returns a component that's the original component
 // plus the audit rendering functions. These functions get added to the original component's
 // properties. See the documentation at the top of this file for details.
-export const auditDecor = AuditComponent => class extends React.Component {
+export const auditDecor = AuditComponent => {
+  const DecorComponent = class extends React.Component {
     constructor() {
         super();
         this.state = { auditDetailOpen: false };
@@ -265,10 +262,10 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditIndicators(audits, id, options) {
-        const { session, search } = options || {};
-        const loggedIn = !!(session && session['auth.userid']);
+        const { search } = options || {};
+        const { loggedIn } = this.context;
 
-        if (auditsDisplayed(audits, session)) {
+        if (auditsDisplayed(audits, loggedIn)) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
             const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
@@ -304,12 +301,12 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditDetail(audits, id, options) {
-        const { except, forcedEditLink, session } = options || {};
+        const { except, forcedEditLink } = options || {};
         if (audits && this.state.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
             const sortedAuditLevelNames = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
-            const loggedIn = session && session['auth.userid'];
+            const { loggedIn } = this.context;
 
             // First loop by audit level, then by audit group
             return (
@@ -350,4 +347,9 @@ export const auditDecor = AuditComponent => class extends React.Component {
             />
         );
     }
-};
+  };
+  DecorComponent.contextTypes = {
+      loggedIn: PropTypes.bool
+  };
+  return DecorComponent;
+}

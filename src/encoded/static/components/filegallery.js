@@ -130,12 +130,11 @@ export class FileTable extends React.Component {
             encodevers,
             showFileCount,
             browserOptions,
-            session,
+            loggedIn,
             adminUser,
             selectedFilterValue,
             showReplicateNumber,
         } = this.props;
-        const loggedIn = !!(session && session['auth.userid']);
 
         // Establish the selected assembly and annotation.
         let selectedAssembly = null;
@@ -192,7 +191,6 @@ export class FileTable extends React.Component {
                                 replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
-                                session,
                                 loggedIn,
                                 adminUser,
                             }}
@@ -205,7 +203,6 @@ export class FileTable extends React.Component {
                                 replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
-                                session,
                                 loggedIn,
                                 adminUser,
                             }}
@@ -295,8 +292,8 @@ FileTable.propTypes = {
     setInfoNodeId: PropTypes.func,
     /** Function to call to set the visibility of the node's modal */
     setInfoNodeVisible: PropTypes.func,
-    /** User session */
-    session: PropTypes.object,
+    /** True if user logged in */
+    loggedIn: PropTypes.bool,
     /** True if user is an admin user */
     adminUser: PropTypes.bool,
     /** Object from /profiles/ containing all schemas */
@@ -320,18 +317,12 @@ FileTable.defaultProps = {
     },
     setInfoNodeId: null,
     setInfoNodeVisible: null,
-    session: null,
+    loggedIn: false,
     adminUser: false,
     schemas: null,
     noDefaultClasses: false,
     showReplicateNumber: true,
 };
-
-FileTable.contextTypes = {
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
-};
-
 
 // Configuration for process file table
 FileTable.procTableColumns = {
@@ -921,7 +912,7 @@ export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault, 
     <FetchedData>
         <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
         <Param name="schemas" url="/profiles/" />
-        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} showReplicateNumber={showReplicateNumber} />
+        <FileGalleryRenderer context={context} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} showReplicateNumber={showReplicateNumber} />
     </FetchedData>
 );
 
@@ -941,7 +932,6 @@ FileGallery.defaultProps = {
 };
 
 FileGallery.contextTypes = {
-    session: PropTypes.object, // Login information
     location_href: PropTypes.string, // URL of this experiment page, including query string stuff
 };
 
@@ -1787,7 +1777,7 @@ class FileGalleryRendererComponent extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        const loggedIn = !!(context.session && context.session['auth.userid']);
+        const { loggedIn } = context;
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
         const datasetFiles = props.data ? props.data['@graph'] : [];
 
@@ -1836,7 +1826,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, prevContext) {
-        this.updateFiles(!!(prevContext.session && prevContext.session['auth.userid']));
+        this.updateFiles(prevContext.loggedIn);
     }
 
     // Called from child components when the selected node changes.
@@ -1886,8 +1876,7 @@ class FileGalleryRendererComponent extends React.Component {
      */
     updateFiles(prevLoggedIn) {
         const { context, data } = this.props;
-        const { session } = this.context;
-        const loggedIn = !!(session && session['auth.userid']);
+        const { loggedIn } = this.context;
         const relatedFileAtIds = context.related_files && context.related_files.length > 0 ? context.related_files : [];
         const datasetFiles = data ? data['@graph'] : [];
 
@@ -2032,20 +2021,20 @@ class FileGalleryRendererComponent extends React.Component {
                     selectedBrowserFiles: this.state.selectedBrowserFiles,
                 }}
                 encodevers={globals.encodeVersion(context)}
-                session={this.context.session}
                 infoNodeId={this.state.infoNode}
                 setInfoNodeId={this.setInfoNodeId}
                 infoNodeVisible={this.state.infoNodeVisible}
                 setInfoNodeVisible={this.setInfoNodeVisible}
                 showFileCount
                 noDefaultClasses
+                loggedIn={this.context.loggedIn}
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
                 showReplicateNumber={showReplicateNumber}
             />
         );
 
         if (this.state.infoNode) {
-            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
+            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.loggedIn, this.context.sessionProperties);
         }
 
         // Prepare to display the file information modal.
@@ -2093,7 +2082,7 @@ class FileGalleryRendererComponent extends React.Component {
                                 schemas={schemas}
                                 colorize={this.state.inclusionOn}
                                 handleNodeClick={this.handleNodeClick}
-                                loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
+                                loggedIn={this.context.loggedIn}
                                 auditIndicators={this.props.auditIndicators}
                                 auditDetail={this.props.auditDetail}
                             />
@@ -2154,7 +2143,7 @@ FileGalleryRendererComponent.defaultProps = {
 };
 
 FileGalleryRendererComponent.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
     session_properties: PropTypes.object,
     location_href: PropTypes.string,
     navigate: PropTypes.func,
@@ -2249,12 +2238,11 @@ FileQCButton.propTypes = {
 
 
 // Display the metadata of the selected file in the graph
-const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, auditDetail, session, sessionProperties) {
+const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, auditDetail, loggedIn, sessionProperties) {
     // The node is for a file
     const selectedFile = node.metadata.ref;
     let body = null;
     let header = null;
-    const loggedIn = !!(session && session['auth.userid']);
     const adminUser = !!(sessionProperties && sessionProperties.admin);
 
     if (selectedFile && Object.keys(selectedFile).length) {
@@ -2408,12 +2396,12 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                     : null}
                 </dl>
 
-                {auditsDisplayed(selectedFile.audit, session) ?
+                {auditsDisplayed(selectedFile.audit, loggedIn) ?
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
-                            {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
-                            {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session, except: selectedFile['@id'] }) : null}
+                            {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit') : null}
+                            {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { except: selectedFile['@id'] }) : null}
                         </div>
                     </div>
                 : null}

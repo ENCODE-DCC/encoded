@@ -396,11 +396,11 @@ class PipelineComponent extends React.Component {
                     <div className="col-sm-12">
                         {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
                         <h2>{context.title}</h2>
-                        {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'pipeline-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'pipeline-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
@@ -499,10 +499,6 @@ PipelineComponent.propTypes = {
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
 };
 
-PipelineComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
-};
-
 const Pipeline = auditDecor(PipelineComponent);
 
 globals.contentViews.register(Pipeline, 'Pipeline');
@@ -567,7 +563,7 @@ class ListingComponent extends React.Component {
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a>
@@ -586,7 +582,7 @@ class ListingComponent extends React.Component {
                         : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { forcedEditLink: true })}
             </li>
         );
     }
@@ -597,10 +593,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Search result object
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Listing = auditDecor(ListingComponent);

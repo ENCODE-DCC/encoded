@@ -314,18 +314,13 @@ class FileComponent extends React.Component {
         // Now that this page is mounted, request the list of derived_from files and file
         // documents.
         this.requestFileDependencies();
-
-        // In case the logged-in state changes, we have to keep track of the old logged-in state.
-        this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps, nextContext) {
         // If the logged-in state has changed since the last time we rendered, request files again
         // in case logging in changes the list of dependent files.
-        const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
-        if (this.loggedIn !== currLoggedIn) {
+        if (this.context.loggedIn !== nextContext.loggedIn) {
             this.requestFileDependencies();
-            this.loggedIn = currLoggedIn;
         }
     }
 
@@ -359,7 +354,7 @@ class FileComponent extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const loggedIn = this.context.loggedIn;
         const adminUser = !!this.context.session_properties.admin;
 
         // Collect up relevant pipelines and quality metrics.
@@ -377,8 +372,8 @@ class FileComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {context.restricted ? <h4 className="superseded-acc">Restricted file</h4> : null}
                         <Supersede context={context} />
-                        {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
+                        {this.props.auditIndicators(context.audit, 'file-audit')}
+                        {this.props.auditDetail(context.audit, 'file-audit', { except: context['@id'] })}
                         <DisplayAsJson />
                     </div>
                 </header>
@@ -591,7 +586,7 @@ FileComponent.propTypes = {
 };
 
 FileComponent.contextTypes = {
-    session: PropTypes.object, // Login information
+    loggedIn: PropTypes.bool, // Login information
     session_properties: PropTypes.object,
 };
 
@@ -710,7 +705,7 @@ class ListingComponent extends React.Component {
                             <p className="type meta-title">File</p>
                             <p className="type">{` ${result.title}`}</p>
                             <Status item={result.status} badgeSize="small" css="result-table__status" />
-                            {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                            {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                         </div>
                         <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
                         <div className="data-row">
@@ -719,7 +714,7 @@ class ListingComponent extends React.Component {
                         </div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
@@ -730,10 +725,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // File object being rendered
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Listing = auditDecor(ListingComponent);
