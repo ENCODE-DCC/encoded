@@ -824,9 +824,6 @@ class DateSelectorFacet extends React.Component {
         const titleComponent = facet.title;
         const field = facet.field;
 
-        const monthArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const monthNames = { January: 1, February: 2, March: 3, April: 4, May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 };
-
         // if a date range has already been selected, we want to over-write that date range with a new one
         let searchBaseForDateRange = searchBase;
         if (this.props.filters.filter(filter => filter.field === 'searchTerm').length > 0) {
@@ -1181,7 +1178,7 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        if (facet.field === 'date_submitted' || facet.field === 'month_released') {
+                        if (facet.field === 'date_submitted' || facet.field === 'date_released') {
                             return (
                                 <DateSelectorFacet
                                     {...this.props}
