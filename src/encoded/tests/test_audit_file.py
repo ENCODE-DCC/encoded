@@ -942,6 +942,22 @@ def test_audit_uploading_file_no_incorrect_bucket_audit(testapp, dummy_request, 
     assert not errors_list
 
 
+def test_audit_incorrect_file_bucket_no_audit_restricted_file(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'restricted': True
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert not errors_list
+
+
 def test_audit_incorrect_file_bucket_no_audit_no_file_available_true(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],
