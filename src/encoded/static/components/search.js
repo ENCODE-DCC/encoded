@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
+import moment from 'moment';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
@@ -765,7 +766,7 @@ class Facet extends React.Component {
         // Make a list of terms for this facet that should appear, by filtering out terms that
         // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
         // the search result filter list.
-        const terms = facet.terms.filter((term) => {
+        const unsortedTerms = facet.terms.filter((term) => {
             if (term.key) {
                 // See if the facet term also exists in the search result filters (i.e. the term
                 // exists in the URL query string).
@@ -786,11 +787,18 @@ class Facet extends React.Component {
         // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
         const numericalTest = a => !isNaN(a.key);
         // For date facets, sort by date
-        if (field.match('date') || field.match('month') || field.match('year')) {
-            terms.sort((a, b) => (new Date(b.key) - new Date(a.key)));
+        let terms = [];
+        if (field.match('date')) {
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
+        } else if (field.match('month')) {
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').toISOString()).reverse();
+        } else if (field.match('year')) {
+            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').toISOString()).reverse();
         // For straightforward numerical facets, just sort by value
-        } else if (terms.every(numericalTest)) {
-            terms.sort((a, b) => (a.key - b.key));
+        } else if (unsortedTerms.every(numericalTest)) {
+            terms = _.sortBy(unsortedTerms, obj => obj.key);
+        } else {
+            terms = unsortedTerms;
         }
 
         const moreTerms = terms.slice(5);
