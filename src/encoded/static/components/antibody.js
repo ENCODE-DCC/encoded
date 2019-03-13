@@ -31,7 +31,7 @@ const LotComponent = (props, reactContext) => {
     const context = props.context;
 
     // Sort characterization arrays, filtering for the current logged-in and administrative status.
-    const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
+    const accessLevel = sessionToAccessLevel(reactContext.session_properties);
     const viewableStatuses = getObjectStatuses('AntibodyCharacterization', accessLevel);
     let characterizations = context.characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
     characterizations = _(characterizations).sortBy(characterization => ([

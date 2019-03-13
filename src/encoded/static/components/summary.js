@@ -116,7 +116,7 @@ class SummaryStatusChart extends React.Component {
 
     createChart() {
         const { statusData } = this.props;
-        const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
+        const accessLevel = sessionToAccessLevel(this.context.session_properties);
         const experimentStatuses = getObjectStatuses('Dataset', accessLevel);
 
         // Initialize data object to pass to createBarChart.
@@ -147,7 +147,7 @@ class SummaryStatusChart extends React.Component {
 
     updateChart(chart, statusData) {
         const replicateTypeColors = globals.replicateTypeColors.colorList(globals.replicateTypeList);
-        const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
+        const accessLevel = sessionToAccessLevel(this.context.session_properties);
         const experimentStatuses = getObjectStatuses('Dataset', accessLevel);
 
         // For each replicate type, extract the data for each status to assign to the existing
@@ -207,7 +207,6 @@ SummaryStatusChart.propTypes = {
 };
 
 SummaryStatusChart.contextTypes = {
-    session: PropTypes.object,
     session_properties: PropTypes.object,
     navigate: PropTypes.func,
 };

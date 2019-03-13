@@ -168,7 +168,7 @@ export function GraphException(message, file0, file1) {
 const GraphLegend = (props, context) => {
     // Get array of all possible file status strings given the current login state, i.e. logged
     // out, logged in, and logged in as admin.
-    const accessLevel = sessionToAccessLevel(context.session, context.session_properties);
+    const accessLevel = sessionToAccessLevel(context.session_properties);
     const statusList = getObjectStatuses('File', accessLevel).concat(['status unknown']);
 
     return (
@@ -186,7 +186,6 @@ const GraphLegend = (props, context) => {
 };
 
 GraphLegend.contextTypes = {
-    session: PropTypes.object,
     session_properties: PropTypes.object,
 };
 
