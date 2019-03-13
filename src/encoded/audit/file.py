@@ -359,37 +359,6 @@ def audit_file_in_correct_bucket(value, system):
         )
 
 
-def audit_file_analysis(value, system):
-    analyses = [step_run['analysis']
-                for step_run in value.get('output_from_step_run', [])]
-    if len(analyses) > 1:
-        detail = ('File {} is outputted '
-                  'from more than one analyses: {}.').format(value['@id'],
-                                                             analyses)
-        yield AuditFailure('multiple analyses',
-                           detail,
-                           level='INTERNAL_ACTION')
-    elif analyses and (analyses[0] != value['dataset']['@id']):
-        step_runs = [sr['@id'] for sr in value['output_from_step_run']]
-        detail = ('File {} is outputted from AnalysisStepRun [{}] which belong '
-                  'to Analysis {} which fail to match its parental dataset '
-                  '{}').format(value['@id'],
-                               ', '.join(step_runs),
-                               analyses[0],
-                               value['dataset']['accession'])
-        yield AuditFailure('inconsistent analysis',
-                           detail,
-                           level='INTERNAL_ACTION')
-    elif (not analyses) and ('Analysis' in value['dataset']['@type']):
-        detail = ('File {} is said to belong to analysis {} but '
-                  'fails to link to an AnalysisStepRun from which '
-                  'it is outputted.').format(value['@id'],
-                                             value['dataset']['accession'])
-        yield AuditFailure('miss output_from_step_run',
-                           detail,
-                           level='INTERNAL_ACTION')
-
-
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
@@ -400,7 +369,6 @@ function_dispatcher = {
     'audit_controlled_by': audit_file_controlled_by,
     'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
     'audit_file_in_correct_bucket': audit_file_in_correct_bucket,
-    'audit_file_analysis': audit_file_analysis,
 }
 
 
@@ -422,7 +390,6 @@ function_dispatcher = {
                       'controlled_by.paired_with',
                       'controlled_by.platform',
                       'quality_metrics',
-                      'output_from_step_run',
                       ]
                )
 def audit_file(value, system):

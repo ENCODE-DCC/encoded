@@ -237,24 +237,6 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-@pytest.fixture
-def analysis1(testapp, experiment):
-    return testapp.post_json(
-        '/analyses',
-        {'dataset': experiment['@id']},
-        status=201
-    ).json['@graph'][0]
-
-
-@pytest.fixture
-def analysis2(testapp, experiment):
-    return testapp.post_json(
-        '/analyses',
-        {'dataset': experiment['@id']},
-        status=201
-    ).json['@graph'][0]
-
-
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                        'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
@@ -891,40 +873,6 @@ def test_audit_incorrect_bucket_file_no_external_sheet(testapp, dummy_request, f
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
     assert not errors_list
-
-
-def test_audit_file_analysis(testapp,
-                             analysis1, analysis2,
-                             analysis_step_run, analysis_step_run_bam,
-                             file_exp2, file6, file7):
-    res = testapp.get(file6['@id'] + '@@index-data')
-    errors = res.json['audit']
-    assert all(e['category'] not in ['miss output_from_step_run',
-                                     'inconsistent analysis',
-                                     'multiple analyses']
-               for v in errors.values() for e in v)
-
-    testapp.patch_json(file6['@id'], {'dataset': analysis1['uuid']})
-    res = testapp.get(file6['@id'] + '@@index-data')
-    errors = res.json['audit']
-    assert any(e['category'] == 'miss output_from_step_run'
-               for v in errors.values() for e in v)
-
-    testapp.patch_json(analysis_step_run['@id'],
-                       {'analysis': analysis2['uuid'],
-                        'output_files': [file6['uuid']]})
-    res = testapp.get(file6['@id'] + '@@index-data')
-    errors = res.json['audit']
-    assert any(e['category'] == 'inconsistent analysis'
-               for v in errors.values() for e in v)
-
-    testapp.patch_json(analysis_step_run_bam['@id'],
-                       {'analysis': analysis1['uuid'],
-                        'output_files': [file6['uuid']]})
-    res = testapp.get(file6['@id'] + '@@index-data')
-    errors = res.json['audit']
-    assert any(e['category'] == 'multiple analyses'
-               for v in errors.values() for e in v)
 
 
 def test_audit_uploading_file_no_incorrect_bucket_audit(testapp, dummy_request, file_with_external_sheet):

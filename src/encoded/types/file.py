@@ -79,7 +79,6 @@ class File(Item):
     name_key = 'accession'
 
     rev = {
-        'output_from_step_run': ('AnalysisStepRun', 'output_files'),
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
         'superseded_by': ('File', 'supersedes'),
@@ -560,20 +559,6 @@ class File(Item):
             return (return_flag, current_path, base_uri.format(public_bucket, current_key))
         # Assume correct bucket for unaccounted file statuses.
         return (return_flag, current_path, base_uri.format(private_bucket, current_key))
-
-    @calculated_property(schema={
-        "title": "Step run outputs the file",
-        "description": "The step run(s) that output this file.",
-        "comment": "Do not submit. Values in the list are reverse links from step runs.",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "AnalysisStepRun.output_files",
-        },
-        "notSubmittable": True,
-    })
-    def output_from_step_run(self, request, output_from_step_run):
-        return paths_filtered_by_status(request, output_from_step_run)
 
 
 @view_config(name='upload', context=File, request_method='GET',
