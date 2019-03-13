@@ -104,8 +104,8 @@ Title.propTypes = {
 
 // Get the current browser cookie from the DOM.
 function extractSessionCookie() {
-    const cookie = require('cookie-monster');
-    return cookie(document).get('session');
+    const cookie = require('js-cookie');
+    return cookie.get('session');
 }
 
 

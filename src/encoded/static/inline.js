@@ -1,9 +1,9 @@
 'use strict';
 
 // Read and clear stats cookie
-var cookie = require('cookie-monster')(document);
+var cookie = require('js-cookie');
 window.stats_cookie = cookie.get('X-Stats') || '';
-cookie.set('X-Stats', '', {path: '/', expires: new Date(0)});
+cookie.remove('X-Stats');
 
 // Use a separate tracker for dev / test
 var ga = require('google-analytics');
