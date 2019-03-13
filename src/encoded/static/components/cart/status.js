@@ -124,7 +124,7 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj || null,
     openDropdown: ownProps.openDropdown,
     dropdownClick: ownProps.dropdownClick,
-    loggedIn: !!(ownProps.session && ownProps.session['auth.userid']),
+    loggedIn: ownProps.loggedIn,
 });
 
 const CartStatusInternal = connect(mapStateToProps)(CartStatusComponent);
@@ -138,7 +138,7 @@ const CartStatus = ({ openDropdown, dropdownClick }, reactContext) => (
     <CartStatusInternal
         openDropdown={openDropdown}
         dropdownClick={dropdownClick}
-        session={reactContext.session}
+        loggedIn={reactContext.loggedIn}
     />
 );
 
@@ -156,7 +156,7 @@ CartStatus.defaultProps = {
 };
 
 CartStatus.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 export default CartStatus;

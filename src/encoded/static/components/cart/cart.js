@@ -847,7 +847,7 @@ const CartInternal = connect(mapStateToProps)(CartComponent);
  * Wrapper to receive React <App> context and pass it to CartInternal as regular props.
  */
 const Cart = (props, reactContext) => {
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    const loggedIn = reactContext.loggedIn;
     return <CartInternal context={props.context} fetch={reactContext.fetch} loggedIn={loggedIn} />;
 };
 
@@ -857,7 +857,7 @@ Cart.propTypes = {
 };
 
 Cart.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
     fetch: PropTypes.func,
 };
 

@@ -234,7 +234,7 @@ Search.contextTypes = {
 
 const UserActions = (props, context) => {
     const sessionProperties = context.session_properties;
-    if (!sessionProperties['auth.userid']) {
+    if (!context.loggedIn) {
         // Logged out, so no user menu at all
         return null;
     }
@@ -268,6 +268,7 @@ UserActions.defaultProps = {
 
 UserActions.contextTypes = {
     listActionsFor: PropTypes.func,
+    loggedIn: PropTypes.bool,
     session_properties: PropTypes.object,
 };
 

@@ -66,7 +66,7 @@ class CartAddAllComponent extends React.Component {
         requestSearch(searchQuery).then((results) => {
             this.props.setInProgress(false);
             if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
-                const loggedIn = !!(this.props.session && this.props.session['auth.userid']);
+                const loggedIn = this.props.loggedIn;
                 const elementsForCart = results['@graph'].map(result => result['@id']);
                 if (!loggedIn) {
                     // Not logged in, so test whether the merged new and existing carts would have
@@ -125,13 +125,13 @@ CartAddAllComponent.propTypes = {
     /** Function to indicate cart operation in progress */
     setInProgress: PropTypes.func.isRequired,
     /** Logged-in user information */
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 CartAddAllComponent.defaultProps = {
     inProgress: false,
     savedCartObj: null,
-    session: null,
+    loggedIn: null,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -139,17 +139,17 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     searchResults: ownProps.searchResults,
-    session: ownProps.session,
+    loggedIn: ownProps.loggedIn,
 });
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.loggedIn, ownProps.fetch)),
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
 });
 
 const CartAddAllInternal = connect(mapStateToProps, mapDispatchToProps)(CartAddAllComponent);
 
 const CartAddAll = (props, reactContext) => (
-    <CartAddAllInternal searchResults={props.searchResults} session={reactContext.session} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
+    <CartAddAllInternal searchResults={props.searchResults} loggedIn={reactContext.loggedIn} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
 );
 
 CartAddAll.propTypes = {
@@ -158,7 +158,7 @@ CartAddAll.propTypes = {
 };
 
 CartAddAll.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };

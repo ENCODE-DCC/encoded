@@ -48,7 +48,7 @@ class HTTPForbidden extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'panel-gray');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+        const loggedIn = this.context.loggedIn;
         return (
             <div className={itemClass}>
                 <div className="row">
@@ -70,7 +70,7 @@ HTTPForbidden.propTypes = {
 };
 
 HTTPForbidden.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 globals.contentViews.register(HTTPForbidden, 'HTTPForbidden');

@@ -94,7 +94,7 @@ const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartTogg
 const CartToggle = (props, reactContext) => (
     <CartToggleInternal
         element={props.element}
-        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
+        loggedIn={reactContext.loggedIn}
         sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />
@@ -106,7 +106,7 @@ CartToggle.propTypes = {
 };
 
 CartToggle.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };

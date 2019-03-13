@@ -533,7 +533,7 @@ const SchemaPanel = (props, reactContext) => {
 
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    const { loggedIn } = reactContext;
     const decoration = loggedIn ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
     const decorationClasses = loggedIn ? 'profiles-add-obj' : '';
 
@@ -568,7 +568,7 @@ SchemaPanel.propTypes = {
 };
 
 SchemaPanel.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 
@@ -629,7 +629,7 @@ globals.contentViews.register(SchemaPage, 'JSONSchema');
 // add a new object of that type if you're logged in.
 const AllSchemasPage = (props, reactContext) => {
     const { context } = props;
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    const { loggedIn } = reactContext;
 
     // Get a sorted list of all available schema object names (e.g. GeneticModification). Filter
     // out those without any `identifyingProperties` because the user can't add objects of that
@@ -689,7 +689,7 @@ AllSchemasPage.propTypes = {
 };
 
 AllSchemasPage.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 globals.contentViews.register(AllSchemasPage, 'JSONSchemas');

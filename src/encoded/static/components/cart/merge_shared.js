@@ -143,7 +143,7 @@ const CartMergeShared = ({ sharedCartObj, viewableElements }, reactContext) => (
     <CartMergeSharedInternal
         sharedCartObj={sharedCartObj}
         viewableElements={viewableElements}
-        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
+        loggedIn={reactContext.loggedIn}
         sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />
@@ -161,7 +161,7 @@ CartMergeShared.defaultProps = {
 };
 
 CartMergeShared.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
