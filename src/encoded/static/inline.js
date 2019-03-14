@@ -17,9 +17,6 @@ window.onload = function () {
     window._onload_event_fired = true;
 };
 
-var $script = require('scriptjs');
-$script.path('/static/build/');
-
 // Load the rest of the app as a separate chunk.
 require.ensure(['./libs/compat', './browser'], function(require) {
 	require('./libs/compat');  // Shims first
