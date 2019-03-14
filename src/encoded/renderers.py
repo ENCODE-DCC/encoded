@@ -60,18 +60,50 @@ def includeme(config):
 
 
 def fix_request_method_tween_factory(handler, registry):
-    """ Fix Request method changed by mod_wsgi.
+    """ Fix Request method.
+
+    Request method may need to be overriden in the following cases:
+
+    * When running under mod_wsgi:
 
     See: https://github.com/GrahamDumpleton/mod_wsgi/issues/2
 
     Apache config:
         SetEnvIf Request_Method HEAD X_REQUEST_METHOD=HEAD
+
+    * When url length exceeds browser limits (~2000 on IE.)
+
+    * When client only supports GET or POST.
     """
 
     def fix_request_method_tween(request):
-        environ = request.environ
-        if 'X_REQUEST_METHOD' in environ:
-            environ['REQUEST_METHOD'] = environ['X_REQUEST_METHOD']
+        # Fix Request method changed by mod_wsgi.
+        environ_x_request_method = request.environ.get('X_REQUEST_METHOD')
+        if environ_x_request_method is not None:
+            request.method = environ_x_request_method
+
+        # Assumes no http method is more restricted than POST.
+        header_x_request_method = request.headers.get('X-Request-Method')
+        if request.method != 'POST' or header_x_request_method is None:
+            return handler(request)
+
+        # Support for long GET as POST.
+        if (header_x_request_method in ['GET', 'HEAD']
+                and request.content_type == 'application/x-www-form-urlencoded'):
+            request.method = header_x_request_method
+            text = request.text
+            if text:
+                qs = request.query_string
+                if qs:
+                    request.query_string = qs + '&' + text
+                else:
+                    request.query_string = text
+                del request.text
+
+        # Support for clients that only GET or POST.
+        elif header_x_request_method in ['DELETE', 'PATCH', 'PUT']:
+            request.method = header_x_request_method
+
         return handler(request)
 
     return fix_request_method_tween
