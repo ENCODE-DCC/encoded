@@ -13,6 +13,7 @@ import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartClear from './clear';
 import CartMergeShared from './merge_shared';
+import { stringify as querystring_stringify } from 'querystring';
 
 
 /** Number of dataset elements to display per page */
@@ -147,47 +148,27 @@ FacetTerm.defaultProps = {
 
 
 /**
- * Request a search of files whose datasets match those in `items`. Uses search_elements endpoint
- * so we can send all the elements in the cart in the JSON payload of the request.
+ * Request a search of files whose datasets match those in `items`.
  * @param {array} elements `@id`s of datasets to request for a file facet
  * @param {func} fetch System fetch function
  * @param {string} queryString Query string to add to URI being fetched; '' for no additions
- * @param {object} session session object from <App> context
  * @return {object} Promise with search result object
  */
-const requestFacet = (elements, fetch, queryString, session) => {
-    // If <App> hasn't yet retrieved a CSRF token, retrieve one ourselves.
-    let sessionPromise;
-    if (!session || !session._csrft_) {
-        // No session CSRF token, so do a GET of "/session" to retrieve it.
-        sessionPromise = fetch('/session');
-    } else {
-        // We have a session CSRF token, so retrieve it immediately.
-        sessionPromise = Promise.resolve(session._csrft);
-    }
-
-    // We could have more experiment @ids than the /search/ endpoint can handle in the query
-    // string, so pass the @ids in a POST request payload instead to the /search_elements/
-    // endpoint instead.
-    const fieldQuery = displayedFacetFields.reduce((query, field) => `${query}&field=files.${field}`, '');
-    return sessionPromise.then(csrfToken => (
-        fetch(`/search_elements/type=Experiment${fieldQuery}&field=files.restricted&limit=all&filterresponse=off${queryString || ''}`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
-            },
-            body: JSON.stringify({
-                '@id': elements,
-            }),
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            throw new Error(response);
-        })
-    ));
+const requestFacet = (elements, fetch, query) => {
+    const qs = querystring_stringify({
+        type: 'Experiment',
+        field: ['files.restricted'].concat(displayedFacetFields.map(field => `files.${field}`)),
+        '@id': elements,
+        ...query
+    });
+    return fetch(`/search/?${qs}`, {
+        headers: { Accept: 'application/json' }
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(response);
+    });
 };
 
 
@@ -375,8 +356,7 @@ class FileFacets extends React.Component {
 
     /**
      * Perform a special search to get just the facet information for files associated with cart
-     * elements. The cart elements are passed in the JSON body of the POST. No search results get
-     * returned but we do get file facet information.
+     * elements. No search results get returned but we do get file facet information.
      */
     retrieveFileFacets() {
         // Break incoming array of dataset @ids into manageable chunks of arrays, each with
@@ -388,13 +368,10 @@ class FileFacets extends React.Component {
             chunks.push(this.props.elements.slice(elementIndex, elementIndex + CHUNK_SIZE));
         }
 
-        // Assemble the query string from the selected facets.
-        let queryString = '';
+        // Assemble the query from the selected facets.
+        let query = {};
         displayedFacetFields.forEach((field) => {
-            if (this.props.selectedTerms[field].length > 0) {
-                const termQuery = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(term)}`).join('&');
-                queryString += `&${termQuery}`;
-            }
+            query[`files.${field}`] = this.props.selectedTerms[field];
         });
 
         // Using the arrays of dataset @id arrays, do a sequence of searches of CHUNK_SIZE datasets
@@ -406,7 +383,7 @@ class FileFacets extends React.Component {
         const viewableElements = [];
         chunks.reduce((promiseChain, currentChunk, currentChunkIndex) => (
             promiseChain.then(accumulatingResults => (
-                requestFacet(currentChunk, this.context.fetch, queryString, this.context.session).then((currentResults) => {
+                requestFacet(currentChunk, this.context.fetch, query).then((currentResults) => {
                     this.setState({ facetLoadProgress: Math.round(((currentChunkIndex + 1) / chunks.length) * 100) });
                     viewableElementCount += currentResults.total;
                     viewableElements.push(...currentResults['@graph'].map(experiment => experiment['@id']));
@@ -498,7 +475,6 @@ FileFacets.defaultProps = {
 
 FileFacets.contextTypes = {
     fetch: PropTypes.func,
-    session: PropTypes.object,
 };
 
 
