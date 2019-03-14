@@ -419,20 +419,37 @@ class App extends React.Component {
     // Handle http requests to the server, using the given URL and options.
     fetch(uri, options) {
         let reqUri = uri;
+        // Strip url fragment.
+        const uriHash = reqUri.indexOf('#');
+        if (uriHash > -1) {
+            reqUri = reqUri.slice(0, uriHash);
+        }
+
         const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
         const httpMethod = extendedOptions.method || 'GET';
-        if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
+        if (httpMethod === 'GET'|| httpMethod === 'HEAD') {
+            // IE url length limit is 2083 characters.
+            // Apache / Nginx default limit 8K.
+            if (reqUri.length > 2000) {
+                const uriQuery = reqUri.indexOf('?');
+                if (uriQuery > -1) {
+                    extendedOptions.body = reqUri.slice(uriQuery + 1);
+                    reqUri = reqUri.slice(0, uriQuery);
+                    extendedOptions.method = 'POST';
+                    const headers = _.extend({}, extendedOptions.headers, {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Request-Method': httpMethod,
+                    });
+                    extendedOptions.headers = headers;
+                }
+            }
+        } else {
             const headers = _.extend({}, extendedOptions.headers);
             extendedOptions.headers = headers;
             const session = this.state.session;
             if (session && session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
-        }
-        // Strip url fragment.
-        const urlHash = reqUri.indexOf('#');
-        if (urlHash > -1) {
-            reqUri = reqUri.slice(0, urlHash);
         }
         const request = fetch(reqUri, extendedOptions);
         request.xhr_begin = 1 * new Date();
@@ -907,7 +924,7 @@ class App extends React.Component {
                 return null;
             }
             // The URL may have redirected
-            const responseUrl = (response.url || mutatableHref) + fragment;
+            const responseUrl = (response.headers.get('X-Request-URL') || response.url || mutatableHref) + fragment;
             if (mutatableOptions.replace) {
                 window.history.replaceState(null, '', responseUrl);
             } else {
