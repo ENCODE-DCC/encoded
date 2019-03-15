@@ -26,6 +26,10 @@ const MODAL_CONTEXT = {
     fetch: PropTypes.func,
     session: PropTypes.object,
     session_properties: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    adminUser: PropTypes.bool,
+    userDisplayName: PropTypes.string,
+    userURI: PropTypes.string,
     // HistoryAndTriggers
     adviseUnsavedChanges: PropTypes.func,
     navigate: PropTypes.func,

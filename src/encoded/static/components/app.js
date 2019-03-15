@@ -244,6 +244,8 @@ class App extends React.Component {
 
     // Data for child components to subscrie to.
     getChildContext() {
+        const session_properties = this.state.session_properties;
+        const user = session_properties && session_properties.user;
         return {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
@@ -255,6 +257,10 @@ class App extends React.Component {
             adviseUnsavedChanges: this.adviseUnsavedChanges,
             session: this.state.session,
             session_properties: this.state.session_properties,
+            loggedIn: session_properties && Boolean(user),
+            adminUser: user && user.groups && user.groups.includes('group.admin'),
+            userDisplayName: user && user.title,
+            userURI: user && user['@id'],
             profilesTitles: this.state.profilesTitles,
             localInstance: url.parse(this.props.href).hostname === 'localhost',
         };
@@ -1161,6 +1167,10 @@ App.childContextTypes = {
     adviseUnsavedChanges: PropTypes.func,
     session: PropTypes.object,
     session_properties: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    adminUser: PropTypes.bool,
+    userDisplayName: PropTypes.string,
+    userURI: PropTypes.string,
     profilesTitles: PropTypes.object,
     localInstance: PropTypes.bool,
 };
