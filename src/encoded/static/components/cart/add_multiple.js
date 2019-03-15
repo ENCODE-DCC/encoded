@@ -149,7 +149,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 const CartAddAllInternal = connect(mapStateToProps, mapDispatchToProps)(CartAddAllComponent);
 
 const CartAddAll = (props, reactContext) => (
-    <CartAddAllInternal searchResults={props.searchResults} loggedIn={reactContext.loggedIn} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
+    <CartAddAllInternal searchResults={props.searchResults} loggedIn={reactContext.loggedIn} fetch={reactContext.fetch} />
 );
 
 CartAddAll.propTypes = {
@@ -159,7 +159,6 @@ CartAddAll.propTypes = {
 
 CartAddAll.contextTypes = {
     loggedIn: PropTypes.bool,
-    session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
 

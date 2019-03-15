@@ -487,7 +487,8 @@ class App extends React.Component {
             return response.json();
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
-            return this.initializeCartFromSessionProperties(sessionProperties);
+            const userURI = sessionProperties && sessionProperties.user && sessionProperties.user['@id'];
+            return this.initializeCartFromUserURI(userURI);
         });
     }
 
@@ -530,7 +531,8 @@ class App extends React.Component {
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
             this.sessionPropertiesRequest = null;
-            return this.initializeCartFromSessionProperties(sessionProperties);
+            const userURI = sessionProperties && sessionProperties.user && sessionProperties.user['@id'];
+            return this.initializeCartFromUserURI(userURI);
         }).then(() => {
             let nextUrl = window.location.href;
             if (window.location.hash === '#logged-out') {
@@ -621,14 +623,14 @@ class App extends React.Component {
     // Called when the user logs in, or the page loads for a logged-in user. Handle any items
     // collected in the cart while logged out. Retrieve the cart contents for the current logged-
     // in user.
-    initializeCartFromSessionProperties(sessionProperties) {
+    initializeCartFromUserURI(userURI) {
         // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
         // cart (has a "disabled" status) and add the in-memory cart items to it.
         let autosaveCartPromise;
         if (cartIsUnsaved()) {
             // The user has an in-memory cart that needs to be saved to the auto-save cart,
             // so get the auto-save cart with a search.
-            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${sessionProperties.user['@id']}&status=disabled`).then((cartSearchResults) => {
+            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${userURI}&status=disabled`).then((cartSearchResults) => {
                 if (Object.keys(cartSearchResults).length === 0) {
                     // User has no auto-save cart, so create one.
                     return cartCreateAutosave(this.fetch).then(autosaveCartAtId => (
@@ -670,12 +672,12 @@ class App extends React.Component {
         }).then((userCarts) => {
             // Retrieve user's current cart @id from cart settings if available in browser
             // localstorage. Set it as the current cart in the cart Redux store.
-            let cartSettings = cartGetSettings(sessionProperties.user);
+            let cartSettings = cartGetSettings(userURI);
             if (!cartSettings.current || userCarts['@graph'].indexOf(cartSettings.current) === -1) {
                 // Cart settings are new -- not from localstorage -- OR the current cart @id
                 // doesn't match any of the logged-in user's saved carts. Use the first cart in the
                 // user's saved carts as the current and save the new settings to localstorage.
-                cartSettings = cartSetSettingsCurrent(sessionProperties.user, userCarts['@graph'][0]);
+                cartSettings = cartSetSettingsCurrent(userURI, userCarts['@graph'][0]);
             }
             cartSetCurrent(cartSettings.current, cartStore.dispatch);
 

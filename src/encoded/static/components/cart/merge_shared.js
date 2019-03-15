@@ -126,7 +126,7 @@ const mapStateToProps = (state, ownProps) => ({
     inProgress: state.inProgress,
     sharedCartObj: ownProps.sharedCartObj,
     viewableElements: ownProps.viewableElements,
-    adminUser: ownProps.adminUser,
+    loggedIn: ownProps.loggedIn,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -144,7 +144,6 @@ const CartMergeShared = ({ sharedCartObj, viewableElements }, reactContext) => (
         sharedCartObj={sharedCartObj}
         viewableElements={viewableElements}
         loggedIn={reactContext.loggedIn}
-        sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />
 );
@@ -162,7 +161,6 @@ CartMergeShared.defaultProps = {
 
 CartMergeShared.contextTypes = {
     loggedIn: PropTypes.bool,
-    session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
 

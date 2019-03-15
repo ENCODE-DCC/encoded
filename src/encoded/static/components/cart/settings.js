@@ -9,19 +9,19 @@
 
 /**
  * Generate a cart localstorage key from a user object.
- * @param {object} user User object from DB
+ * @param {string} userURI user @id
  * @return {string} User's localstorage key
  */
-const cartLocalstorageKey = user => `encode-cart-${user['@id']}`;
+const cartLocalstorageKey = userURI => `encode-cart-${userURI}`;
 
 
 /**
  * Get the current user's cart settings from browser localstorage.
- * @param {object} user Currently logged-in user's object from DB
+ * @param {string} userURI user @id
  * @return {object} User's cart settings, or basic one if none
  */
-export const cartGetSettings = (user) => {
-    const userKey = cartLocalstorageKey(user);
+export const cartGetSettings = (userURI) => {
+    const userKey = cartLocalstorageKey(userURI);
     const cartSettingsJson = localStorage.getItem(userKey);
     return cartSettingsJson ? JSON.parse(cartSettingsJson) : { current: '', quickSelects: [] };
 };
@@ -29,14 +29,14 @@ export const cartGetSettings = (user) => {
 
 /**
  * Set the current cart in the user's localstorage object.
- * @param {object} user User object from DB
+ * @param {string} userURI user @id
  * @param {string} current Current cart @id
  * @return {object} Updated cart settings object
  */
-export const cartSetSettingsCurrent = (user, current) => {
-    const existingSettings = cartGetSettings(user);
+export const cartSetSettingsCurrent = (userURI, current) => {
+    const existingSettings = cartGetSettings(userURI);
     existingSettings.current = current;
-    const userKey = cartLocalstorageKey(user);
+    const userKey = cartLocalstorageKey(userURI);
     localStorage.setItem(userKey, JSON.stringify(existingSettings));
     return existingSettings;
 };

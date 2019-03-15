@@ -239,11 +239,11 @@ export const setCartStatus = status => (
  * @param {string} {name} Name to assign to cart (optional)
  * @param {string} {identifier} Identifier (URI) to assign to cart (optional)
  * @param {object} cart Cart object being updated
- * @param {object} user Current user object, often from `session` React context variable
+ * @param {string} userURI Current user @id
  * @param {func} fetch System fetch function
  * @return {Promise} Resolves to the updated cart object
  */
-export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, fetch) => (
+export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, userURI, fetch) => (
     dispatch => (
         new Promise((resolve, reject) => {
             const nameIdentifierSetList = { name };
@@ -264,7 +264,7 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
                 // We know the update of the cart object in the database succeeded, so update the
                 // cart Redux store as well.
                 cartSetOperationInProgress(false, dispatch);
-                const currentCartAtId = cartGetSettings(user).current;
+                const currentCartAtId = cartGetSettings(userURI).current;
 
                 // If we updated the current cart, re-cache the cart object.
                 if (updatedSavedCartObj['@id'] === currentCartAtId) {
@@ -285,7 +285,7 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
                     if (cart['@id'] === currentCartAtId) {
                         // The identifier changed AND it affects the current cart, so update the
                         // current cart settings and cart Redux store with the new identifier.
-                        cartSetSettingsCurrent(user, updatedSavedCartObj['@id']);
+                        cartSetSettingsCurrent(userURI, updatedSavedCartObj['@id']);
                         dispatch(setCurrentCart(updatedSavedCartObj['@id']));
                     }
                 }
