@@ -2264,6 +2264,45 @@ def audit_experiment_replicates_with_no_libraries(value, system, excluded_types)
     return
 
 
+def audit_experiment_micro_rna_standards(value, system, excluded_types):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if value['assay_term_name'] != 'microRNA-seq':
+        return
+
+    return
+
+
+def check_micro_rna_qc(micro_rna_qc_metric):
+    rep_alignments = micro_rna_qc_metric.get('miRNA_alignments', None)
+    rep_expression = micro_rna_qc_metric.get('miRNA_expression', None)
+    correlations = micro_rna_qc_metric.get('replicates_correlation', None)
+
+    for corr in correlations:
+        correlation = corr.get(spearman_correlation)
+        reps = corr.get("replicates")
+        if correlation < 0.85 and correlation > 0.8:
+            detail = ('Spearman correlation between replicates {} and {} is ' +
+                '{}, the recommended value is > {}.').format(
+                reps[0].get("biological_replicate_number"),
+                reps[1].get("biological_replicate_number"),
+                correlation,
+                0.85)
+            yield AuditFailure('low spearman correlation', detail, level='WARNING')
+# 'Replicate concordance in RNA-seq expriments is measured by ' + \
+#                         'calculating the Spearman correlation between gene quantifications ' + \
+#                         'of the replicates. ' + \
+#                         'ENCODE processed gene quantification files {} '.format(file_names_string) + \
+#                         'have a Spearman correlation of {0:.2f}. '.format(spearman_correlation) + \
+#                         'According to ENCODE standards, in an {} '.format(replication_type) + \
+#                         'assay analyzed using the {} pipeline, '.format(pipeline) + \
+#                         'a Spearman correlation value > {} '.format(threshold) + \
+#                         'is recommended.'
+
+    
+    
+
+
 def audit_experiment_isogeneity(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
