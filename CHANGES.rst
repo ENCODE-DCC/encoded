@@ -1,6 +1,40 @@
 Changes
 =======
 
+82.0 (released) / snovault 1.0.26
+-----------------
+1. ENCD-4509 Add test back (#2640)
+2. ENCD-4518 Fix javascript error for sorting dates (#2642)
+3. ENCD-4481 Update to snovault 1.0.26 (#2639)
+4. ENCD-4500 remove-uploading-private-status-list (#2636)
+5. ENCD-3901 Support multiple carts per user (#2614)
+6. ENCD-4487 reset-upload-bucket (#2635)
+7. ENCD-4505 fix-file-bucket-audit (#2638)
+8. ENCD-4482 adding lane to characterizations review (#2624)
+9. ENCD-4483 Cleanup deploy output and short aws name(#2626)
+10. ENCD-4353 Refactor-out-matrix-and-result (#2539)
+11. SNO-80 Typeahead for facets (#2632)
+12. ENCD-3877 annotation-download-btn
+13. ENCD-4474 model restriction map (#2617)
+14. ENCD-4473 add-MPRA-assay (#2623)
+15. ENCD-4418 Add ontology dbxrefs to biosample page (#2637)
+16. ENCD-4305 Turn Superseded by into links on exp file pages (#2633)
+17. ENCD-4457 organoid age (#2631)
+18. ENCD-4485 bug report camel case (#2629)
+19. ENCD-4467 Numerical facets sorted by value not frequency (#2628)
+20. ENCD-3877 annotation-download-btn
+21. ENCD-4449 use top level class files property for Annotation
+22. ENCD-4401 remove-approvalrequired (#2616)
+23. ENCD-4217 Rendering error series objects (#2627)
+24. ENCD-4484 Allow deployment set ssh id file (#2625)
+25. ENCD-4348 Restrict ontologies for in vitro diff cells (#2620)
+26. ENCD-4476 add-spaces-schema (#2615)
+27. SNO-73 Add uuid queue module
+28. ENCD-4456 Override update objs in vis reg indexers
+29. ENCD-4450 add two sources to alias namespace (#2618)
+30. ENCD-4475 Fix pub priv bucket variables (#2613)
+
+
 81.0 (released) / snovault 1.0.25
 -----------------
 1. ENCD-4462 fixing the AB characterization view bug (#2606)
