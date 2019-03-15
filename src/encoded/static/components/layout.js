@@ -24,8 +24,6 @@ const LAYOUT_CONTEXT = {
 const MODAL_CONTEXT = {
     // Persona
     fetch: PropTypes.func,
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
     loggedIn: PropTypes.bool,
     adminUser: PropTypes.bool,
     userDisplayName: PropTypes.string,
