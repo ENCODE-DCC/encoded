@@ -681,8 +681,3 @@ Graph.defaultProps = {
     colorize: false,
     children: null,
 };
-
-Graph.contextTypes = {
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
-};
