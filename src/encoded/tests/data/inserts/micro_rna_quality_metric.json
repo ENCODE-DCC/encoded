@@ -1,0 +1,18 @@
+[
+    {
+        "uuid": "54b30291-8128-4240-8114-1ad5b2cd920b",
+        "step_run": "56c6a019-a247-495c-8179-1639f4836ef8",
+        "status": "in progress",
+        "quality_metric_of": [ "9558830f-154f-449f-814b-fd3435417edf"],
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "miRNA_alignments": [{
+            "replicate": "cc236116-825a-465f-ae0c-5ab21f01a6b3",
+            "aligned_reads": 100
+        }],
+        "miRNA_expression" : [{
+                "replicate": "cc236116-825a-465f-ae0c-5ab21f01a6b3",
+                "expressed_mirnas": 100
+        }]
+    }
+]
