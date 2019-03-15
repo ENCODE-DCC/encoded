@@ -408,6 +408,13 @@ class FileComponent extends React.Component {
                                         <dd>{context.output_type}</dd>
                                     </div>
 
+                                    {context.restriction_enzymes ?
+                                        <div data-test="restrictionEnzymes">
+                                            <dt>Restriction enzymes</dt>
+                                            <dd>{context.restriction_enzymes.join(", ")}</dd>
+                                        </div>
+                                    : null}
+
                                     <div data-test="bioreplicate">
                                         <dt>Biological replicate(s)</dt>
                                         <dd>{`[${context.biological_replicates && context.biological_replicates.length ? context.biological_replicates.join(', ') : '-'}]`}</dd>

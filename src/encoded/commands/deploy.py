@@ -179,6 +179,26 @@ def nameify(in_str):
     return re.subn(r'\-+', '-', name)[0]
 
 
+def _short_name(long_name):
+    """
+    Returns a short name for the branch name if found
+    """
+    if not long_name:
+        return None
+    regexes = [
+        '(?:encd|sno)-[0-9]+',  # Demos
+        '^v[0-9]+rc[0-9]+',     # RCs
+        '^v[0-9]+x[0-9]+',      # Prod, Test
+    ]
+    result = long_name
+    for regex_str in regexes:
+        res = re.findall(regex_str, long_name, re.IGNORECASE)
+        if res:
+            result = res[0]
+            break
+    return result[:10].lower()
+
+
 def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     tags = [
         {'Key': 'Name', 'Value': tag_data['name']},
@@ -194,15 +214,13 @@ def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     return instance
 
 
-def read_ssh_key():
-    home = expanduser("~")
-    ssh_key_path = home + '/' + '.ssh/id_rsa.pub'
-    ssh_keygen_args = ['ssh-keygen', '-l', '-f', ssh_key_path]
+def read_ssh_key(identity_file):
+    ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
     fingerprint = subprocess.check_output(
         ssh_keygen_args
     ).decode('utf-8').strip()
     if fingerprint:
-        with open(ssh_key_path, 'r') as key_file:
+        with open(identity_file, 'r') as key_file:
             ssh_pub_key = key_file.readline().strip()
             return ssh_pub_key
     return None
@@ -232,7 +250,7 @@ def _get_bdm(main_args):
 def get_user_data(commit, config_file, data_insert, main_args):
     cmd_list = ['git', 'show', commit + config_file]
     config_template = subprocess.check_output(cmd_list).decode('utf-8')
-    ssh_pub_key = read_ssh_key()
+    ssh_pub_key = read_ssh_key(main_args.identity_file)
     if not ssh_pub_key:
         print(
             "WARNING: User is not authorized with ssh access to "
@@ -258,6 +276,7 @@ def _get_instances_tag_data(main_args):
     instances_tag_data = {
         'branch': main_args.branch,
         'commit': None,
+        'short_name': _short_name(main_args.name),
         'name': main_args.name,
         'username': None,
     }
@@ -275,9 +294,10 @@ def _get_instances_tag_data(main_args):
         sys.exit(1)
     instances_tag_data['username'] = getpass.getuser()
     if instances_tag_data['name'] is None:
+        instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
         instances_tag_data['name'] = nameify(
             '%s-%s-%s' % (
-                instances_tag_data['branch'],
+                instances_tag_data['short_name'],
                 instances_tag_data['commit'],
                 instances_tag_data['username'],
             )
@@ -373,26 +393,58 @@ def _get_run_args(main_args, instances_tag_data):
     return run_args
 
 
+def _get_instance_output(instances_tag_data, is_cluster_master=False):
+    suffix = '-dm' if is_cluster_master else ''
+    hostname = '{}.{}.encodedcc.org'.format(
+        instances_tag_data['id'],
+        instances_tag_data['domain'],
+    )
+    return [
+        'Host %s%s.*' % (instances_tag_data['short_name'], suffix),
+        '  Hostname %s' % hostname,
+        '  # https://%s.demo.encodedcc.org' % instances_tag_data['name'],
+        '  # ssh %s' % hostname,
+        '  # %s' % instances_tag_data['id'],
+    ]
+
+
 def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
-    domain = 'production' if main_args.profile_name == 'production' else 'instance'
-    for i, instance in enumerate(instances):
-        if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
-            if cluster_master and run_args['master_user_data']:
-                print('Creating Elasticsearch Master Node for cluster')
-                # Hack: current tmp_name was the last data cluster, so remove '4'
-                instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
-            else:
-                print('Creating Elasticsearch cluster')
-                instances_tag_data['name'] = "{}{}".format(tmp_name, i)
+    instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
+    output_list = ['']
+    is_cluster_master = False
+    is_cluster = False
+    if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
+        if cluster_master and run_args['master_user_data']:
+            is_cluster_master = True
+            output_list.append('Creating Elasticsearch Master Node for cluster')
         else:
-            instances_tag_data['name'] = tmp_name
+            is_cluster = True
+            output_list.append('Creating Elasticsearch cluster')
+    created_cluster_master = False
+    for i, instance in enumerate(instances):
+        instances_tag_data['name'] = tmp_name
+        instances_tag_data['id'] = instance.id
+        if is_cluster_master:
+            # Hack: current tmp_name was the last data cluster, so remove '4'
+            instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
+        elif is_cluster:
+            instances_tag_data['name'] = "{}{}".format(tmp_name, i)
         if not main_args.spot_instance:
-            print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+            if is_cluster_master or (is_cluster and not created_cluster_master):
+                created_cluster_master = True
+                output_list.extend(_get_instance_output(
+                    instances_tag_data,
+                    is_cluster_master=is_cluster_master,
+                ))
+            elif is_cluster:
+                output_list.append('  # %s' % instance.id)
+            elif not is_cluster:
+                output_list.extend(_get_instance_output(instances_tag_data))
             instance.wait_until_exists()
             tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
-            print('ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
-            print('https://%s.demo.encodedcc.org' % instances_tag_data['name'])
+    for output in output_list:
+        print(output)
 
 
 def main():
@@ -526,6 +578,12 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
     )
+    parser.add_argument(
+        '-i',
+        '--identity-file',
+        default="{}/.ssh/id_rsa.pub".format(expanduser("~")),
+        help="ssh identity file path"
+    )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--dry-run-aws', action='store_true', help="Abort before ec2 requests.")
@@ -569,18 +627,19 @@ def parse_args():
     # Set Role
     # - 'demo' role is default for making single or clustered
     # applications for feature building
+    # - '--test' will set role to test
     # - 'rc' role is for Release-Candidate QA testing and
     # is the same as 'demo' except batchupgrade will be skipped during deployment.
     # This better mimics production but require a command be run after deployment.
     # - 'candidate' role is for production release that potential can
     # connect to produciton data.
     args = parser.parse_args()
-    setattr(args, 'role', 'demo')
-    if args.release_candidate:
-        args.role = 'rc'
-        args.candidate = False
-    elif args.candidate:
-        args.role = 'candidate'
+    if not args.role == 'test':
+        if args.release_candidate:
+            args.role = 'rc'
+            args.candidate = False
+        elif args.candidate:
+            args.role = 'candidate'
     return args
 
 

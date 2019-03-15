@@ -249,6 +249,22 @@ def is_part_of(term_id, part_of_term_id, ontology, parent_term_id=None):
         return any(parents)
 
 
+def audit_biosample_post_differentiation_time(value, system):
+    biosample_type = value['biosample_ontology']['classification']
+    if biosample_type not in ['organoid', 'in vitro differentiated cells']:
+        if value.get('post_differentiation_time') or value.get('post_differentiation_time_units'):
+            detail = (
+                'Biosample {} of type {} has post_differentiation_time and/or '
+                'post_differentiation_time_units specified, properties which are '
+                'restricted to biosamples of type organoid or in vitro differentiated cells'
+            ).format(value['@id'], biosample_type)
+            yield AuditFailure(
+                'invalid post_differentiation_time details',
+                detail,
+                level='WARNING'
+            )
+
+
 function_dispatcher = {
     'audit_modification': audit_biosample_modifications,
     'audit_culture_date': audit_biosample_culture_date,
@@ -257,7 +273,8 @@ function_dispatcher = {
     'audit_phase': audit_biosample_phase,
     'audit_pmi': audit_biosample_pmi,
     'audit_cell_isolation_method': audit_biosample_cell_isolation_method,
-    'audit_depleted_in_term_name': audit_biosample_depleted_in_term_name
+    'audit_depleted_in_term_name': audit_biosample_depleted_in_term_name,
+    'audit_post_differentiation_time': audit_biosample_post_differentiation_time,
 }
 
 @audit_checker('Biosample',

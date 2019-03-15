@@ -288,12 +288,8 @@ class SummaryVerticalFacets extends React.Component {
     render() {
         const { context } = this.props;
 
-        // Get the array of facet field values to display in the horizontal facet area.
-        const vertFacetFields = context.summary.y.facets;
-
-        // Extract the horizontal facets from the list of all facets. We use the array of horizontal
-        // facet field values of facets that should appear in the horizontal facets.
-        const vertFacets = context.facets.filter(facet => vertFacetFields.indexOf(facet.field) >= 0);
+        // All facets are vertical facets
+        const vertFacets = context.facets;
 
         // Calculate the searchBase, which is the current search query string fragment that can have
         // terms added to it.`
@@ -425,7 +421,6 @@ const SummaryHeader = (props) => {
     return (
         <div className="summary-header">
             <SummaryTitle context={context} />
-            <SummaryHorizontalFacets context={context} />
         </div>
     );
 };

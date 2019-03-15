@@ -6,7 +6,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "experiment_classification", "biosample_ontology"],
-    "approvalRequired": ["assay_term_id", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -209,7 +208,8 @@
             "title": "Assay category"
         },
         "assay_title": {
-            "title": "Assay"
+            "title": "Assay",
+            "type": "typeahead"
         },
         "status": {
             "title": "Experiment status"
@@ -223,20 +223,32 @@
         "assembly": {
             "title": "Genome assembly"
         },
+        "target.investigated_as": {
+            "title": "Target category"
+        },
+        "target.label": {
+            "title": "Target of assay",
+            "type": "typeahead",
+            "length": "long"
+        },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
-        },
-        "target.investigated_as": {
-            "title": "Target of assay"
         },
         "biosample_ontology.classification": {
             "title": "Biosample type"
         },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample name",
+            "type": "typeahead",
+            "length": "long"
+        },
         "biosample_ontology.organ_slims": {
-            "title": "Organ"
+            "title": "Organ",
+            "type": "typeahead"
         },
         "biosample_ontology.cell_slims": {
-            "title": "Cell"
+            "title": "Cell",
+            "type": "typeahead"
         },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
@@ -259,11 +271,11 @@
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
         },
-        "replicates.library.size_range": {
-            "title": "Library insert size (nt)"
-        },
         "replicates.library.nucleic_acid_term_name": {
             "title": "Library made from"
+        },
+        "replicates.library.size_range": {
+            "title": "Library insert size (nt)"
         },
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"

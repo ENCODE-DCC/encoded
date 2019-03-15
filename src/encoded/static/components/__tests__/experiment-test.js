@@ -9,7 +9,7 @@ import Experiment from '../experiment';
 import context from '../testdata/experiment';
 
 // Create the Redux mock store.
-const initialCart = { cart: [], name: 'Untitled' };
+const initialCart = { elements: [], name: 'Untitled' };
 const mockStore = configureStore();
 
 
@@ -92,7 +92,7 @@ describe('Experiment Page', () => {
             experiment = mount(
                 <Provider store={store}><Experiment context={contextAlt} store={store} /></Provider>
             );
-            alt = experiment.find('.repl-acc');
+            alt = experiment.find('.replacement-accessions__alternate');
         });
 
         test('displays two alternate accessions', () => {

@@ -58,6 +58,9 @@ class BiosampleComponent extends React.Component {
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
+        // Collect dbxrefs from biosample.dbxrefs and biosample.biosample_ontology.dbxrefs.
+        const dbxrefs = (context.dbxrefs || []).concat(context.biosample_ontology.dbxrefs || []);
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -134,6 +137,15 @@ class BiosampleComponent extends React.Component {
                                         <div data-test="biosample-synchronization">
                                             <dt>Synchronization timepoint</dt>
                                             <dd className="sentence-case">{synchText}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.post_differentiation_time && context.post_differentiation_time_units ?
+                                        <div data-test="postdifferentiationtime">
+                                            <dt>Post-differentiation time</dt>
+                                            <dd>
+                                                {formatMeasurement(context.post_differentiation_time, context.post_differentiation_time_units)}
+                                            </dd>
                                         </div>
                                     : null}
 
@@ -292,10 +304,10 @@ class BiosampleComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
 
-                                    {context.dbxrefs && context.dbxrefs.length ?
+                                    {dbxrefs.length ?
                                         <div data-test="externalresources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
                                         </div>
                                     : null}
 

@@ -28,6 +28,7 @@
         "characterizes": {
             "title": "Genetic modification characterized",
             "comment": "See genetic_modification.json for available identifiers.",
+            "type": "string",
             "linkTo": "GeneticModification"
         },
         "characterization_method": {

@@ -125,7 +125,7 @@ class File(Item):
     ]
     set_status_down = []
     public_s3_statuses = ['released', 'archived']
-    private_s3_statuses = ['uploading', 'in progress', 'replaced', 'deleted', 'revoked']
+    private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
     @property
     def __name__(self):
@@ -533,21 +533,23 @@ class File(Item):
         Returns : boolean, current_path, destination_path
         '''
         return_flag = True
-        public_bucket = request.registry.settings.get('pds_public_bucket')
-        private_bucket = request.registry.settings.get('pds_private_bucket')
-        properties = self.upgrade_properties()
         try:
             external = self._get_external_sheet()
         except HTTPNotFound:
             # File object doesn't exist, leave it alone.
             return (return_flag, None, None)
+        # Restricted and no_file_available files should not be moved.
+        if not self._should_set_object_acl():
+            return (return_flag, None, None)
+        public_bucket = request.registry.settings.get('pds_public_bucket')
+        private_bucket = request.registry.settings.get('pds_private_bucket')
+        properties = self.upgrade_properties()
         current_bucket = external.get('bucket')
         current_key = external.get('key')
         base_uri = 's3://{}/{}'
         current_path = base_uri.format(current_bucket, current_key)
         file_status = properties.get('status')
-        # Released restricted files should be in private bucket.
-        if file_status in self.private_s3_statuses or not self._should_set_object_acl():
+        if file_status in self.private_s3_statuses:
             if current_bucket != private_bucket:
                 return_flag = False
             return (return_flag, current_path, base_uri.format(private_bucket, current_key))
@@ -585,10 +587,12 @@ def post_upload(context, request):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
     accession_or_external = properties.get('accession') or properties['external_accession']
+    file_upload_bucket = request.registry.settings['file_upload_bucket']
     external = context.propsheets.get('external', None)
+    registry = request.registry
     if external is None:
         # Handle objects initially posted as another state.
-        bucket = request.registry.settings['file_upload_bucket']
+        bucket = file_upload_bucket
         uuid = context.uuid
         mapping = context.schema['file_format_file_extension']
         file_extension = mapping[properties['file_format']]
@@ -598,6 +602,12 @@ def post_upload(context, request):
             date=date, file_extension=file_extension, uuid=uuid, **properties)
     elif external.get('service') == 's3':
         bucket = external['bucket']
+        # Must reset file to point to file_upload_bucket (keep AWS public dataset in sync).
+        if bucket != file_upload_bucket:
+            registry.notify(BeforeModified(context, request))
+            context._set_external_sheet({'bucket': file_upload_bucket})
+            registry.notify(AfterModified(context, request))
+            bucket = file_upload_bucket
         key = external['key']
     else:
         raise HTTPNotFound(
@@ -619,7 +629,6 @@ def post_upload(context, request):
         new_properties = properties.copy()
         new_properties['status'] = 'uploading'
 
-    registry = request.registry
     registry.notify(BeforeModified(context, request))
     context.update(new_properties, {'external': creds})
     registry.notify(AfterModified(context, request))

@@ -5,22 +5,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { DropdownMenu } from '../../libs/bootstrap/dropdown-menu';
+import { DropdownMenu, DropdownMenuSep } from '../../libs/bootstrap/dropdown-menu';
 import { Nav, NavItem } from '../../libs/bootstrap/navbar';
 import { svgIcon } from '../../libs/svg-icons';
+import { truncateString } from '../globals';
 import CartShare from './share';
 
 
 /**
  * Renders the cart icon menu and count in the nav bar.
  */
-const CartNavTitle = ({ cart }) => (
-    <div className="cart__nav"><div className="cart__nav-icon">{svgIcon('cart')}</div> <div className="cart__nav-count">{cart.length}</div></div>
+const CartNavTitle = ({ elements }) => (
+    <div className="cart__nav"><div className={`cart__nav-icon${elements.length === 0 ? ' cart__nav-icon--empty' : ''}`}>{svgIcon('cart')}</div> {elements.length > 0 ? <div className="cart__nav-count">{elements.length}</div> : null}</div>
 );
 
 CartNavTitle.propTypes = {
     /** Array of cart contents */
-    cart: PropTypes.array.isRequired,
+    elements: PropTypes.array.isRequired,
 };
 
 
@@ -54,26 +55,34 @@ class CartStatusComponent extends React.Component {
     }
 
     render() {
-        const { cart } = this.props;
+        const { elements, savedCartObj, openDropdown, dropdownClick, loggedIn } = this.props;
 
-        if (this.props.cart.length > 0) {
-            const { savedCartObj, openDropdown, dropdownClick, loggedIn } = this.props;
-
+        if (loggedIn || elements.length > 0) {
             // Define the menu items for the Cart Status menu.
-            const menuItems = [<a key="view" href="/cart-view/">View cart</a>];
-            const savedCartAtIds = (savedCartObj && savedCartObj.elements) || [];
-            if (loggedIn && savedCartAtIds.length > 0) {
-                menuItems.push(<button key="share" onClick={this.shareCartClick}>Share cart</button>);
+            const cartName = truncateString(savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '', 30);
+            const menuItems = [];
+            const viewCartItem = <a key="view" href="/cart-view/">View cart{cartName ? <span>: {cartName}</span> : null}</a>;
+            if (loggedIn) {
+                if (elements.length > 0) {
+                    menuItems.push(
+                        viewCartItem,
+                        <button key="share" onClick={this.shareCartClick}>Share cart{cartName ? <span>: {cartName}</span> : null}</button>,
+                        <DropdownMenuSep key="sep" />
+                    );
+                }
+                menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
+            } else {
+                menuItems.push(viewCartItem);
             }
 
             return (
                 <Nav>
                     <NavItem
                         dropdownId="cart-control"
-                        dropdownTitle={<CartNavTitle cart={cart} />}
+                        dropdownTitle={<CartNavTitle elements={elements} />}
                         openDropdown={openDropdown}
                         dropdownClick={dropdownClick}
-                        label={`Cart containing ${cart.length} ${cart.length > 1 ? 'items' : 'item'}`}
+                        label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
                         buttonCss="cart__nav-button"
                     >
                         <DropdownMenu label="cart-control">
@@ -90,7 +99,7 @@ class CartStatusComponent extends React.Component {
 
 CartStatusComponent.propTypes = {
     /** Cart contents as array of @ids */
-    cart: PropTypes.array,
+    elements: PropTypes.array,
     /** Cached saved cart object */
     savedCartObj: PropTypes.object,
     /** ID of nav dropdown currently visible */
@@ -102,7 +111,7 @@ CartStatusComponent.propTypes = {
 };
 
 CartStatusComponent.defaultProps = {
-    cart: [],
+    elements: [],
     savedCartObj: null,
     openDropdown: '',
     dropdownClick: null,
@@ -111,7 +120,7 @@ CartStatusComponent.defaultProps = {
 
 
 const mapStateToProps = (state, ownProps) => ({
-    cart: state.cart,
+    elements: state.elements,
     savedCartObj: state.savedCartObj || null,
     openDropdown: ownProps.openDropdown,
     dropdownClick: ownProps.dropdownClick,

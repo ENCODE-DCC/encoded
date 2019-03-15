@@ -8,11 +8,23 @@ import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
-import initializeCart, { cartAddElements, cartCacheSaved, cartSave } from './cart';
+import cartStore, {
+    cartCacheSaved,
+    cartCreateAutosave,
+    cartIsUnsaved,
+    cartMergeElements,
+    cartRetrieve,
+    cartSave,
+    cartGetSettings,
+    cartSetSettingsCurrent,
+    cartSetCurrent,
+    cartSwitch,
+} from './cart';
 import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
+import { requestSearch } from './objectutils';
 import newsHead from './page';
 
 const portal = {
@@ -200,8 +212,6 @@ class App extends React.Component {
             unsavedChanges: [],
             promisePending: false,
         };
-
-        this.cartStore = initializeCart();
 
         this.triggers = {
             login: 'triggerLogin',
@@ -585,72 +595,70 @@ class App extends React.Component {
         });
     }
 
-    // Retrieve the cart contents for the current logged-in user and add them to the in-memory cart.
+    // Called when the user logs in, or the page loads for a logged-in user. Handle any items
+    // collected in the cart while logged out. Retrieve the cart contents for the current logged-
+    // in user.
     initializeCartFromSessionProperties(sessionProperties) {
-        // Retrieve the logged-in user's cart.
-        cartCacheSaved({}, this.cartStore.dispatch);
-        const savedCartObjPromise = this.fetch('/carts/@@get-cart', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
+        // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
+        // cart (has a "disabled" status) and add the in-memory cart items to it.
+        let autosaveCartPromise;
+        if (cartIsUnsaved()) {
+            // The user has an in-memory cart that needs to be saved to the auto-save cart,
+            // so get the auto-save cart with a search.
+            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${sessionProperties.user['@id']}&status=disabled`).then((cartSearchResults) => {
+                if (Object.keys(cartSearchResults).length === 0) {
+                    // User has no auto-save cart, so create one.
+                    return cartCreateAutosave(this.fetch).then(autosaveCartAtId => (
+                        // Creating a cart returns its @id, so retrieve the auto-save cart object.
+                        cartRetrieve(autosaveCartAtId, this.fetch)
+                    ));
+                }
+
+                // User should never have more than one signed-out cart, but if they do, get the
+                // first one returned.
+                return cartSearchResults['@graph'][0];
+            }).then((autosaveCart) => {
+                // We now have the auto-save cart object, new or existing. Merge the in-memory cart
+                // with it and write it back to the DB.
+                const memoryCartElements = cartStore.getState().elements;
+                const mergedCart = cartMergeElements(autosaveCart, memoryCartElements);
+                return cartSave(mergedCart.elements, mergedCart, this.fetch);
+            });
+        } else {
+            // Nothing in the in-memory cart, so just pass null downstream.
+            autosaveCartPromise = Promise.resolve(null);
+        }
+
+        // Retrieve the logged-in user's carts. If the user has never logged in before, an initial
+        // empty cart gets created and returned here.
+        cartCacheSaved({}, cartStore.dispatch);
+        autosaveCartPromise.then(() => (
+            this.fetch('/carts/@@get-cart', {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                },
+            })
+        )).then((response) => {
             if (response.ok) {
                 return response.json();
             }
             throw new Error(response);
-        }).then((userCart) => {
-            const userCartAtId = userCart['@graph'].length > 0 ? userCart['@graph'][0] : null;
-            if (userCartAtId) {
-                return this.fetch(`${userCartAtId}?datastore=database`, {
-                    method: 'GET',
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                });
+        }).then((userCarts) => {
+            // Retrieve user's current cart @id from cart settings if available in browser
+            // localstorage. Set it as the current cart in the cart Redux store.
+            let cartSettings = cartGetSettings(sessionProperties.user);
+            if (!cartSettings.current || userCarts['@graph'].indexOf(cartSettings.current) === -1) {
+                // Cart settings are new -- not from localstorage -- OR the current cart @id
+                // doesn't match any of the logged-in user's saved carts. Use the first cart in the
+                // user's saved carts as the current and save the new settings to localstorage.
+                cartSettings = cartSetSettingsCurrent(sessionProperties.user, userCarts['@graph'][0]);
             }
-            return Promise.resolve(null);
-        }).then((response) => {
-            if (!response) {
-                // No saved cart for the user.
-                return null;
-            }
-            if (response.ok) {
-                // Decode the user's saved cart.
-                return response.json();
-            }
-            throw new Error(response);
-        });
+            cartSetCurrent(cartSettings.current, cartStore.dispatch);
 
-        // Once we have the user's first saved cart object, see if we need to merge it into the
-        // user's in-memory cart, and whether we then have to save the updated cart.
-        savedCartObjPromise.then((savedCartObj) => {
-            const savedCart = (savedCartObj && savedCartObj.elements) || [];
-            let memoryCart = this.cartStore.getState().cart;
-            if (memoryCart.length !== savedCart.length || !_.isEqual(memoryCart, savedCart)) {
-                // We now know the saved and in-memory carts are different somehow. If the user has
-                // a saved cart, merge its contents with the in-memory cart.
-                if (savedCartObj) {
-                    cartAddElements(savedCart, this.cartStore.dispatch);
-                    cartCacheSaved(savedCartObj, this.cartStore.dispatch);
-                }
-
-                // Save the (updated if it got merged with the saved cart) in-memory cart if it had
-                // anything in it on page load.
-                if (memoryCart.length > 0) {
-                    memoryCart = this.cartStore.getState().cart;
-                    return cartSave(memoryCart, savedCartObj, sessionProperties.user, this.fetch).then((updatedSavedCartObj) => {
-                        cartCacheSaved(updatedSavedCartObj, this.cartStore.dispatch);
-                    });
-                }
-            } else if (savedCartObj) {
-                // User has a cart object from before. Cache the user's cart so we know what cart
-                // to save to.
-                cartCacheSaved(savedCartObj, this.cartStore.dispatch);
-            }
-            return savedCartObj;
-        }).catch((err) => {
-            globals.parseAndLogError('Load savedCartObj on page load', err);
+            // With the logged-in user's current cart @id, retrieve the cart object and copy it to
+            // the cart Redux store.
+            return cartSwitch(cartSettings.current, this.fetch, cartStore.dispatch);
         });
     }
 
@@ -815,11 +823,7 @@ class App extends React.Component {
     }
 
     handleBeforeUnload() {
-        // Determine if the cart has items in it but no saved cart object exists.
-        const cartState = this.cartStore.getState();
-        const unsavedCart = cartState.cart.length > 0 && Object.keys(cartState.savedCartObj).length === 0;
-
-        if (this.state.unsavedChanges.length || unsavedCart) {
+        if (this.state.unsavedChanges.length || cartIsUnsaved()) {
             return 'You have unsaved changes.';
         }
         return undefined;
@@ -1092,7 +1096,7 @@ class App extends React.Component {
                         <div id="application" className={appClass}>
                             <div className="loading-spinner" />
                             <div id="layout">
-                                <Provider store={this.cartStore}>
+                                <Provider store={cartStore}>
                                     <div>
                                         <Navigation isHomePage={isHomePage} />
                                         <div id="content" className={containerClass} key={key}>

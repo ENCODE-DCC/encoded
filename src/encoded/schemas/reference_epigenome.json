@@ -104,11 +104,11 @@
         "related_datasets.files.mapped_read_length": {
             "title": "Mapped read length"
         },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library insert size (nt)"
-        },
         "related_datasets.replicates.library.nucleic_acid_term_name": {
             "title": "Library made from"
+        },
+        "related_datasets.replicates.library.size_range": {
+            "title": "Library insert size (nt)"
         },
         "related_datasets.replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"

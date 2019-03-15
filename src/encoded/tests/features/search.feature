@@ -75,4 +75,23 @@ Feature: Search
         When I fill in "searchTerm" with "@type:Experiment date_released:[2016-01-01 TO 2016-02-01]"
         Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
 
+    Scenario: Search for Assay term
+        When I press "Data"
+        And I click the link to "/search/?type=Experiment&status=released"
+        And I wait for the content to load
+        When I fill in "searchAssay" with "dna"
+        Then I should see at least 2 elements with the css selector "div.term-list.searchAssay > li"
 
+    Scenario: Search for Target of Assay term
+        When I press "Data"
+        And I click the link to "/search/?type=Experiment&status=released"
+        And I wait for the content to load
+        When I fill in "searchTargetofassay" with "h3k2"
+        Then I should see at least 2 elements with the css selector "div.term-list.searchTargetofassay > li"
+        
+    Scenario: Search for Organ term
+        When I press "Data"
+        And I click the link to "/search/?type=Experiment&status=released"
+        And I wait for the content to load
+        When I fill in "searchOrgan" with "zzz"
+        Then I should see 0 elements with the css selector "div.term-list.searchOrgan > li"

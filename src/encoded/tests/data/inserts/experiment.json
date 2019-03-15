@@ -494,6 +494,23 @@
     },
     {
         "_test": "worm development series 2",
+        "accession": "ENCSR375GSQ",
+        "assay_term_name": "RNA-seq",
+        "award": "U41HG007355",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "target": "fkh-10-celegans",
+        "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_released": "2016-01-01",
+        "date_submitted": "2015-02-21",
+        "aliases": ["robert-waterston:life_stage_bug_experiment"],
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "21ee48a4-d172-42a2-9306-13a8ca317daf",
+        "experiment_classification": ["functional genomics assay"]
+    },
+    {
+        "_test": "worm development series 2",
         "accession": "ENCSR862BAF",
         "assay_term_name": "RNA-seq",
         "award": "U41HG007355",
@@ -766,7 +783,7 @@
         "date_released": "2015-08-31",
         "accession": "ENCSR751STR",
         "uuid": "a4460c54-aece-43d2-bf52-dbaaa9298aaa",
-        "experiment_classification": ["functional genomics assay"]
+        "experiment_classification": ["functional characterization assay"]
     },
     {
         "_test": "PLAC-seq test",
@@ -782,5 +799,19 @@
         "accession": "ENCSR751STT",
         "uuid": "03485813-0362-41f0-afd5-2bef9f5c52ef",
         "experiment_classification": ["functional genomics assay"]
+    },
+    {
+        "_test": "MPRA test",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "award": "U54HG007010",
+        "assay_term_name": "MPRA",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "date_released": "2015-08-31",
+        "accession": "ENCSR751STU",
+        "uuid": "e828ec77-8f74-438f-8bf7-8535ee34819e",
+        "experiment_classification": ["functional characterization assay"]
     }
 ]

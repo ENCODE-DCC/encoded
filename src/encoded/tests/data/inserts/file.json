@@ -2200,7 +2200,6 @@
         "md5sum": "233fb8f21fc7c975ab742ca38caeaad5",
         "submitted_by": "/users/0d48e8c4-5954-4bf5-8c75-1e386eb27e31/",
         "alternate_accessions": [],
-        "superseded_by": [],
         "output_type": "reads",
         "read_length": 50,
         "award": "/awards/U54HG006996/",
@@ -2215,7 +2214,6 @@
         "file_format": "csqual",
         "status": "released",
         "fastq_signature": [],
-        "superseded_by": [],
         "alternate_accessions": [],
         "run_type": "paired-ended",
         "md5sum": "fd942e78195f509cf0454ec7621eaa7a",
@@ -2369,5 +2367,25 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a5"
+    },
+    {
+        "accession": "ENCFF123HIC",
+        "aliases": [
+            "erez-lieberman:hic-map"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "txt",
+        "file_size": 9731729512,
+        "lab": "ali-mortazavi",
+        "md5sum": "e77a125126ea493e1159fbee8da014e6",
+        "output_type": "restriction enzyme site locations",
+        "restriction_enzymes": [
+            "MboI"
+        ],
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
     }
 ]

@@ -1,6 +1,6 @@
 ## Changelog for experiment.json
 
-###Schema version 25
+### Schema version 25
 
 * Remove biosample_type, biosample_term_id and biosample_term_name.
 
@@ -8,11 +8,11 @@
 
 * *internal_tags* removes cre_inputv10 and cre_inputv11, and adds ENCYCLOPEDIAv5, ccre_inputv1, and ccre_inputv2.
 
-###Schema version 23
+### Schema version 23
 
 * Link to BiosampleType object.
 
-###Schema version 22
+### Schema version 22
 
 * Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums.
 

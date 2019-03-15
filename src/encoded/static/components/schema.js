@@ -12,7 +12,6 @@ import { Breadcrumbs } from './navigation';
 const titleMap = {
     required: 'Required',
     comment: 'Comment',
-    approvalRequired: 'Approval required',
     identifyingProperties: 'Identifying properties',
     dependencies: 'Dependencies',
     properties: 'Properties',

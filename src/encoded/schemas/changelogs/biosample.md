@@ -1,10 +1,14 @@
 ## Changelog for biosample.json
 
-###Schema version 24
+### Minor changes since schema version 24
+
+* Added *post_differentiation_time* and *post_differentiation_time_units* properties.
+
+### Schema version 24
 
 * Remove biosample_type, biosample_term_id and biosample_term_name.
 
-###Schema version 23
+### Schema version 23
 
 * Link to BiosampleType object.
 

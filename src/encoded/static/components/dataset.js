@@ -1181,8 +1181,9 @@ const organismDevelopmentSeriesTableColumns = {
             }
             if (biosamples && biosamples.length) {
                 lifeStageBiosample = _(biosamples).find(biosample => biosample.life_stage);
+                return lifeStageBiosample.life_stage;
             }
-            return lifeStageBiosample.life_stage;
+            return null;
         },
     },
 
@@ -1393,7 +1394,7 @@ export class SeriesComponent extends React.Component {
                     </PanelBody>
                 </Panel>
 
-                {context.related_datasets.length ?
+                {experimentList.length ?
                     <div>
                         <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
                             <SortTable

@@ -855,7 +855,7 @@ def test_audit_file_statuses_in_s3_statuses(testapp):
     file_schema = testapp.get('/profiles/file.json').json
     file_statuses = file_schema.get('properties', {}).get('status', {}).get('enum')
     assert file_statuses
-    file_statuses = [f for f in file_statuses if f not in ['content error', 'upload failed']]
+    file_statuses = [f for f in file_statuses if f not in ['content error', 'upload failed', 'uploading']]
     # If this fails sync public/private_s3_statuses with statuses in file schema.
     assert not set(file_statuses) - set(public_s3_statuses + private_s3_statuses)
 
@@ -873,3 +873,66 @@ def test_audit_incorrect_bucket_file_no_external_sheet(testapp, dummy_request, f
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
     assert not errors_list
+
+
+def test_audit_uploading_file_no_incorrect_bucket_audit(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'uploading'
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert not errors_list
+
+
+def test_audit_incorrect_file_bucket_no_audit_restricted_file(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'restricted': True
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert not errors_list
+
+
+def test_audit_incorrect_file_bucket_no_audit_no_file_available_true(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'no_file_available': True
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert not errors_list
+
+
+def test_audit_incorrect_file_bucket_has_audit_no_file_available_false(testapp, dummy_request, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'released',
+            'no_file_available': False
+        }
+    )
+    dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
+    dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
+    res = testapp.get(file_with_external_sheet['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
+    assert errors_list
