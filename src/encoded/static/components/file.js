@@ -355,7 +355,7 @@ class FileComponent extends React.Component {
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
         const loggedIn = this.context.loggedIn;
-        const adminUser = !!this.context.session_properties.admin;
+        const adminUser = this.context.adminUser;
 
         // Collect up relevant pipelines and quality metrics.
         let pipelines = [];
@@ -587,7 +587,7 @@ FileComponent.propTypes = {
 
 FileComponent.contextTypes = {
     loggedIn: PropTypes.bool, // Login information
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const File = auditDecor(FileComponent);

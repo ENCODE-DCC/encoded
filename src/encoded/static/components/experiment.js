@@ -177,7 +177,7 @@ class ExperimentComponent extends React.Component {
         let libSubmitterComments = [];
         const context = this.props.context;
         const loggedIn = this.context.loggedIn;
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const itemClass = globals.itemClass(context, 'view-item');
         const replicates = context.replicates && context.replicates.length ? context.replicates : [];
         if (replicates.length) {
@@ -645,7 +645,7 @@ ExperimentComponent.propTypes = {
 
 ExperimentComponent.contextTypes = {
     loggedIn: PropTypes.bool,
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 // Need to export for Jest tests.

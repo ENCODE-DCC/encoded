@@ -55,7 +55,7 @@ class AnnotationComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -240,7 +240,7 @@ AnnotationComponent.propTypes = {
 };
 
 AnnotationComponent.contextTypes = {
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Annotation = auditDecor(AnnotationComponent);
@@ -254,7 +254,7 @@ class PublicationDataComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -401,7 +401,7 @@ PublicationDataComponent.propTypes = {
 };
 
 PublicationDataComponent.contextTypes = {
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const PublicationData = auditDecor(PublicationDataComponent);
@@ -415,7 +415,7 @@ class ReferenceComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -562,7 +562,7 @@ ReferenceComponent.propTypes = {
 };
 
 ReferenceComponent.contextTypes = {
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Reference = auditDecor(ReferenceComponent);
@@ -576,7 +576,7 @@ class ProjectComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -747,7 +747,7 @@ ProjectComponent.propTypes = {
 };
 
 ProjectComponent.contextTypes = {
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Project = auditDecor(ProjectComponent);
@@ -761,7 +761,7 @@ class UcscBrowserCompositeComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -918,7 +918,7 @@ UcscBrowserCompositeComponent.propTypes = {
 };
 
 UcscBrowserCompositeComponent.contextTypes = {
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
@@ -1219,7 +1219,7 @@ export class SeriesComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
         let experiments = {};
         context.files.forEach((file) => {
@@ -1428,7 +1428,7 @@ SeriesComponent.propTypes = {
 
 SeriesComponent.contextTypes = {
     loggedIn: PropTypes.bool,
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Series = auditDecor(SeriesComponent);

@@ -1777,8 +1777,7 @@ class FileGalleryRendererComponent extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        const { loggedIn } = context;
-        const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
+        const { adminUser } = context;
         const datasetFiles = props.data ? props.data['@graph'] : [];
 
         // Initialize React state variables.
@@ -2028,13 +2027,13 @@ class FileGalleryRendererComponent extends React.Component {
                 showFileCount
                 noDefaultClasses
                 loggedIn={this.context.loggedIn}
-                adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+                adminUser={this.context.adminUser}
                 showReplicateNumber={showReplicateNumber}
             />
         );
 
         if (this.state.infoNode) {
-            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.loggedIn, this.context.sessionProperties);
+            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.loggedIn, this.context.adminUser);
         }
 
         // Prepare to display the file information modal.
@@ -2144,7 +2143,7 @@ FileGalleryRendererComponent.defaultProps = {
 
 FileGalleryRendererComponent.contextTypes = {
     loggedIn: PropTypes.bool,
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
     location_href: PropTypes.string,
     navigate: PropTypes.func,
 };
@@ -2238,12 +2237,11 @@ FileQCButton.propTypes = {
 
 
 // Display the metadata of the selected file in the graph
-const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, auditDetail, loggedIn, sessionProperties) {
+const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, auditDetail, loggedIn, adminUser) {
     // The node is for a file
     const selectedFile = node.metadata.ref;
     let body = null;
     let header = null;
-    const adminUser = !!(sessionProperties && sessionProperties.admin);
 
     if (selectedFile && Object.keys(selectedFile).length) {
         let contributingAccession;
