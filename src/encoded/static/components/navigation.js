@@ -233,7 +233,6 @@ Search.contextTypes = {
 
 
 const UserActions = (props, context) => {
-    const sessionProperties = context.session_properties;
     if (!context.loggedIn) {
         // Logged out, so no user menu at all
         return null;
@@ -243,8 +242,7 @@ const UserActions = (props, context) => {
             {action.title}
         </a>
     );
-    const user = sessionProperties.user;
-    const fullname = (user && user.title) || 'unknown';
+    const fullname = context.userDisplayName || 'unknown';
     return (
         <Nav right>
             <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
@@ -269,7 +267,7 @@ UserActions.defaultProps = {
 UserActions.contextTypes = {
     listActionsFor: PropTypes.func,
     loggedIn: PropTypes.bool,
-    session_properties: PropTypes.object,
+    userDisplayName: PropTypes.string,
 };
 
 
