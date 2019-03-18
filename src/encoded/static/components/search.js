@@ -729,6 +729,257 @@ TypeTerm.propTypes = {
     total: PropTypes.number.isRequired,
 };
 
+class DateSelectorFacet extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React commponent state.
+        this.state = {
+            possibleYearsAndMonths: [], // all years and month combinations with results
+            startYears: [], // possible years for the start year drop-down
+            endYears: [], // possible years for the end year drop-down
+            startMonths: [], // possible months for the start month drop-down
+            endMonths: [], // possible months for the end month drop-down
+            startYear: undefined, // chosen start year
+            startMonth: undefined, // chosen start month
+            endYear: undefined, // chosen end year
+            endMonth: undefined, // chosen end month
+            currentYear: moment().format('YYYY'), // current year
+            currentMonth: moment().format('MM'), // current month
+            activeFacet: 'date_released', // for toggle, either 'date_released' or 'date_submitted'
+        };
+
+        this.selectYear = this.selectYear.bind(this);
+        this.selectMonth = this.selectMonth.bind(this);
+        this.checkForSameYear = this.checkForSameYear.bind(this);
+        this.toggleDateFacet = this.toggleDateFacet.bind(this);
+        this.setActiveFacetParameters = this.setActiveFacetParameters.bind(this);
+    }
+
+    componentDidMount() {
+        this.setActiveFacetParameters();
+    }
+
+    setActiveFacetParameters() {
+        // Filter 'facets' to get selected 'facet' object (either 'date_released' or 'date_submitted' object)
+        const activeFacet = this.props.facets.filter(f => f.field === this.state.activeFacet)[0];
+        // Sorted terms for the selected facet object
+        const activeFacetTerms = _.sortBy(activeFacet.terms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString());
+
+        // All possible year and month combinations with results
+        const possibleYearsAndMonths = activeFacetTerms.map(term => `${term.key.split('-')[0]}-${term.key.split('-')[1]}`).filter((item, i, ar) => (ar.indexOf(item) === i));
+        this.setState({ possibleYearsAndMonths });
+        console.log('possibleYearsAndMonths');
+        console.log(possibleYearsAndMonths);
+
+        // All possible years with results
+        const uniqueYears = activeFacetTerms.map(term => term.key.split('-')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
+
+        // Set start and end years to be first and last possible years
+        this.setState({ startYear: uniqueYears[0] });
+        this.setState({ endYear: uniqueYears[uniqueYears.length - 1].split('-')[0] });
+
+        // Set range of possible startYears and endYears to be full set of possible years
+        this.setState({ startYears: uniqueYears });
+        this.setState({ endYears: uniqueYears });
+
+        // Determine which possible months match the startYear and assign to startMonths
+        // Set startMonth to be the first of these possible months
+        const startMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[0]).map(date => date.split('-')[1]);
+        this.setState({ startMonth: startMonths[0] });
+        this.setState({ startMonths });
+
+        // Determine which possible months match the endYear and assign to endYears
+        // Set endMonth to be the last of the possible months
+        const endMonths = possibleYearsAndMonths.filter(date => date.split('-')[0] === uniqueYears[uniqueYears.length - 1]).map(date => date.split('-')[1]);
+        this.setState({ endMonth: endMonths[endMonths.length - 1] });
+        this.setState({ endMonths });
+    }
+
+    selectYear(event) {
+        // We are changing the start year, which means we need to change the possibilities for the end years and also the possible start months
+        if (event.target.id === 'select-start-year') {
+            // Set startYear to be user choice
+            this.setState({ startYear: event.target.value });
+
+            // Possibilities for endYears must now all be greater than the new startYear
+            const endYears = this.state.possibleYearsAndMonths.filter(year => year.split('-')[0] >= event.target.value).map(date => date.split('-')[0]);
+            this.setState({ endYears });
+
+            // Find possible years and months that match new start year and set startMonth to be the first
+            const startMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] === event.target.value).map(date => date.split('-')[1]);
+            this.setState({ startMonths });
+            this.setState({ startMonth: startMonths[0] });
+        // We are changing the end year, which means we need to change the possiblities for the starting year and also the possible end months
+        } else {
+            // Set endYear to be user choice
+            this.setState({ endYear: event.target.value });
+
+            // Possiblities for startYears must now all be less than the new endYears
+            const startYears = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] <= event.target.value).map(date => date.split('-')[0]);
+            this.setState({ startYears });
+
+            // Find possible years and months that match the new end year and set endMonth to be the last
+            const endMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] === event.target.value).map(date => date.split('-')[1]);
+            this.setState({ endMonths });
+            this.setState({ endMonth: endMonths[endMonths.length - 1] });
+        }
+    }
+
+    // If the start year and the end year match, we have to be careful to not allow the user to pick an end month that is earlier than the start month
+    checkForSameYear() {
+        if (this.state.startYear === this.state.endYear) {
+            // endMonths can only display months that are after the chosen startMonth
+            const endMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] === this.state.endYear).map(date => date.split('-')[1]).filter(month => month >= this.state.startMonth);
+            this.setState({ endMonths });
+            // startMonths can only display months that are before the chosen endMonth
+            const startMonths = this.state.possibleYearsAndMonths.filter(date => date.split('-')[0] === this.state.startYear).map(date => date.split('-')[1]).filter(month => +month <= +this.state.endMonth);
+            this.setState({ startMonths });
+        }
+    }
+
+    selectMonth(event) {
+        if (event.target.id === 'select-start-month') {
+            this.setState({ startMonth: event.target.value }, this.checkForSameYear);
+        } else {
+            this.setState({ endMonth: event.target.value }, this.checkForSameYear);
+        }
+    }
+
+    toggleDateFacet() {
+        // Toggle the 'activeFacet' state and also reset the drop down options by calling 'setActiveFacetParameters'
+        this.setState(prevState => ({ activeFacet: prevState.activeFacet === 'date_released' ? 'date_submitted' : 'date_released' }), this.setActiveFacetParameters);
+    }
+
+    render() {
+        const { facet, searchBase, facets } = this.props;
+        const field = this.state.activeFacet;
+        const activeFacet = facets.filter(f => f.field === this.state.activeFacet)[0];
+
+        // if a date range has already been selected, we want to over-write that date range with a new one
+        const existingFilter = this.props.filters.filter(filter => filter.field === 'searchTerm');
+        let resetString = '';
+        let searchBaseForDateRange = searchBase;
+        if (existingFilter.length > 0) {
+            resetString = `${existingFilter[0].remove}&`;
+            searchBaseForDateRange = `${existingFilter[0].remove}&`;
+        } else {
+            resetString = searchBase;
+        }
+
+        const daysInEndMonth = moment(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
+        const daysInCurrentMonth = moment(`${this.state.currentYear}-${this.state.currentMonth}`, 'YYYY-MM').daysInMonth();
+
+        const searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
+
+        const currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear}-${this.state.currentMonth}-01 TO ${daysInCurrentMonth}]`;
+
+        const currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear - 1}-${this.state.currentMonth}-01 TO ${this.state.currentYear}-${this.state.currentMonth}-${daysInCurrentMonth}]`;
+
+        if ((activeFacet.terms.length && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
+                    <h5>Date range selection</h5>
+                    {existingFilter.length > 0 ?
+                        <div className="selected-date-range">
+                            <div>Selected date range: </div>
+                            {existingFilter.map(filter =>
+                                <div key={filter.term}>{filter.term.substring(filter.term.indexOf('[') + 1, filter.term.indexOf(']')).replace('TO', 'to')}</div>
+                            )}
+                        </div>
+                    : null}
+
+                    <div className="date-selector-toggle-wrapper">
+                        <div className="date-selector-toggle"><input
+                            type="radio"
+                            name="released"
+                            value="released"
+                            checked={this.state.activeFacet === 'date_released'}
+                            onChange={this.toggleDateFacet}
+                        />Released
+                        </div>
+                        <div className="date-selector-toggle"><input
+                            type="radio"
+                            name="submitted"
+                            value="submitted"
+                            checked={this.state.activeFacet === 'date_submitted'}
+                            onChange={this.toggleDateFacet}
+                        />Submitted
+                        </div>
+                    </div>
+                    <a href={currentMonthSearch}>
+                        <div className="date-selector-btn">
+                            <i className="icon icon-caret-right" />
+                            See results for this month
+                        </div>
+                    </a>
+                    <a href={currentYearSearch}>
+                        <div className="date-selector-btn">
+                            <i className="icon icon-caret-right" />
+                            See results for the past year
+                        </div>
+                    </a>
+                    <div className="date-container">
+                        <div className="date-selector-module">
+                            <h6>Start date:</h6>
+                            <div className="date-selector">
+                                <select id="select-start-month" value={this.state.startMonth} onChange={this.selectMonth}>
+                                    {this.state.startMonths.map(month =>
+                                        <option value={month} key={month}>{month}</option>
+                                    )}
+                                </select>
+                                <select id="select-start-year" value={this.state.startYear} onChange={this.selectYear}>
+                                    {this.state.startYears.map(year =>
+                                        <option value={year} key={year}>{year}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="date-arrow">
+                            <i className="icon icon-arrow-right" />
+                        </div>
+                        <div className="date-selector-module">
+                            <h6>End date:</h6>
+                            <div className="date-selector">
+                                <select id="select-end-month" value={this.state.endMonth} onChange={this.selectMonth}>
+                                    {this.state.endMonths.map(month =>
+                                        <option value={month} key={month}>{month}</option>
+                                    )}
+                                </select>
+                                <select id="select-end-year" value={this.state.endYear} onChange={this.selectYear}>
+                                    {this.state.endYears.map(year =>
+                                        <option value={year} key={year}>{year}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <a href={searchString}>
+                        <button className="btn btn-info btn-sm apply-date-selector">
+                            Apply changes
+                        </button>
+                    </a>
+                    <a href={resetString}>
+                        <button className="btn btn-info btn-sm reset-date-selector">
+                            Reset
+                        </button>
+                    </a>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
+    }
+}
+
+DateSelectorFacet.propTypes = {
+    facet: PropTypes.object.isRequired,
+    facets: PropTypes.array.isRequired,
+    filters: PropTypes.array.isRequired,
+    searchBase: PropTypes.string.isRequired, // Base URI for the search
+};
+
 // Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
 const sanitizedString = inputString => inputString.toLowerCase()
     .replace(/ /g, '') // remove spaces (to allow multiple word searches)
@@ -1100,6 +1351,22 @@ export class FacetList extends React.Component {
                     {facets.map((facet) => {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
+                        }
+                        if (facet.field === 'date_released') {
+                            return (
+                                <DateSelectorFacet
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                    facets={facets}
+                                />
+                            );
+                        }
+                        if (facet.field === 'date_submitted') {
+                            return null;
                         }
                         return (
                             <Facet

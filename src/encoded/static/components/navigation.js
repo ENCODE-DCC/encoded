@@ -210,6 +210,7 @@ ContextActions.contextTypes = {
 const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
     const searchTerm = id.query.searchTerm || '';
+    const displayedSearchTerm = searchTerm.replace(searchTerm.substring(searchTerm.indexOf('@'), searchTerm.indexOf(']') + 1), '');
     return (
         <form className="navbar-form navbar-right" action="/search/">
             <div className="search-wrapper">
@@ -219,7 +220,7 @@ const Search = (props, context) => {
                     type="text"
                     placeholder="Search..."
                     name="searchTerm"
-                    defaultValue={searchTerm}
+                    defaultValue={displayedSearchTerm}
                     key={searchTerm}
                 />
             </div>
