@@ -4,6 +4,7 @@ import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import DropdownButton from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { CartToggle, CartAddAllElements } from './cart';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
@@ -85,7 +86,7 @@ class AnnotationComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased}/>
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
@@ -1017,6 +1018,11 @@ const basicTableColumns = {
         title: 'Status',
         display: experiment => <Status item={experiment} badgeSize="small" />,
     },
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+        sorter: false,
+    },
 };
 
 const treatmentSeriesTableColumns = {
@@ -1059,6 +1065,12 @@ const treatmentSeriesTableColumns = {
     status: {
         title: 'Status',
         display: experiment => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+        sorter: false,
     },
 };
 
@@ -1116,6 +1128,12 @@ const replicationTimingSeriesTableColumns = {
     status: {
         title: 'Status',
         display: experiment => <Status item={experiment} badgeSize="small" />,
+    },
+
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+        sorter: false,
     },
 };
 
@@ -1205,6 +1223,12 @@ const organismDevelopmentSeriesTableColumns = {
         title: 'Status',
         display: experiment => <Status item={experiment} badgeSize="small" />,
     },
+
+    cart: {
+        title: 'Cart',
+        display: experiment => <CartToggle element={experiment} />,
+        sorter: false,
+    },
 };
 
 
@@ -1278,6 +1302,18 @@ export class SeriesComponent extends React.Component {
 
         // Filter out any files we shouldn't see.
         const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
+
+        // If we display a table of related experiments, have to render the control to add all of
+        // them to the current cart.
+        let addAllToCartControl;
+        if (experimentList.length > 0) {
+            addAllToCartControl = (
+                <div className="experiment-table__header">
+                    <h4 className="experiment-table__title">{`Experiments in ${seriesTitle} ${context.accession}`}</h4>
+                    <CartAddAllElements elements={experimentList} css="experiment-table__control" />
+                </div>
+            );
+        }
 
         return (
             <div className={itemClass}>
@@ -1394,9 +1430,9 @@ export class SeriesComponent extends React.Component {
                     </PanelBody>
                 </Panel>
 
-                {experimentList.length ?
+                {addAllToCartControl ?
                     <div>
-                        <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
+                        <SortTablePanel header={addAllToCartControl}>
                             <SortTable
                                 list={experimentList}
                                 columns={seriesComponent.table}
@@ -1404,7 +1440,7 @@ export class SeriesComponent extends React.Component {
                             />
                         </SortTablePanel>
                     </div>
-                : null }
+                : null}
 
                 {/* Display list of released and unreleased files */}
                 <FetchedItems
