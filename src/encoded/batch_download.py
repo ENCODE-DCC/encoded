@@ -83,7 +83,7 @@ _tsv_mapping = OrderedDict([
     ('Genome annotation', ['files.genome_annotation']),
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
-    ('File Status', ['files.status'])
+    ('File Status', ['files.status']),
 ])
 
 _audit_mapping = OrderedDict([
@@ -128,7 +128,7 @@ _tsv_mapping_annotation = OrderedDict([
     ('File Status', ['files.status']),
     ('Derived from', ['files.derived_from']),
     ('S3 URL', ['files.cloud_metadata']),
-    ('Size', ['files.file_size'])
+    ('Size', ['files.file_size']),
 ])
 
 def get_file_uuids(result_dict):
