@@ -53,7 +53,7 @@ _tsv_mapping = OrderedDict([
                                                           'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
                                                           'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
                                                           'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end']),                                   
-    ('Biosample genetic modifications zygosity', ['replicates.library.biosample.applied_modifications.zygosity']), 
+    ('Biosample genetic modifications zygosity', ['replicates.library.biosample.applied_modifications.zygosity']),
     ('Experiment target', ['target.name']),
     ('Library made from', ['replicates.library.nucleic_acid_term_name']),
     ('Library depleted in', ['replicates.library.depleted_in_term_name']),
