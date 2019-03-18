@@ -4,7 +4,7 @@
     "id": "/profiles/annotation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab"],
+    "required": [ "award", "lab", "annotation_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -80,6 +80,7 @@
                 "chromatin state",
                 "enhancer predictions",
                 "gene expression",
+                "imputation",
                 "in vivo enhancer evaluations",
                 "long-range chromatin interactions",
                 "methylation summary",
