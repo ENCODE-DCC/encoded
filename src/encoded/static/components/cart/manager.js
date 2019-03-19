@@ -294,7 +294,7 @@ class NameCartButtonComponent extends React.Component {
         const submitFunc = create ? onCreate : onRename;
         submitFunc(newName.trim(), newIdentifier).then(() => {
             // Successfully changed the cart name/identifier. Indicate the cart manager needs
-            // realoading so it displays the new cart information.
+            // reloading so it displays the new cart information.
             this.handleClose();
             updateCartManager();
         }, (err) => {

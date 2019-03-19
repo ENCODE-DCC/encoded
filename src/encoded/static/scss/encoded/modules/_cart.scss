@@ -40,6 +40,16 @@
             left: 10px;
             background-color: #ff8800;
             border-radius: 1.4rem;
+            animation: rotating 600ms linear infinite;
+        }
+
+        @keyframes rotating {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     }
 

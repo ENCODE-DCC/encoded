@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { DropdownMenu, DropdownMenuSep } from '../../libs/bootstrap/dropdown-menu';
 import { Nav, NavItem } from '../../libs/bootstrap/navbar';
 import { svgIcon } from '../../libs/svg-icons';
-import { BrowserFeat } from '../browserfeat';
 import { truncateString } from '../globals';
 import CartShare from './share';
 
@@ -21,7 +20,7 @@ const CartNavTitle = ({ elements, inProgress }) => {
 
     if (inProgress) {
         // Get the proper spinner icon based on whether the browser supports SVG animations or not.
-        const spinnerIcon = svgIcon(BrowserFeat.getBrowserCaps('smil') ? 'spinner' : 'spinnerStatic');
+        const spinnerIcon = svgIcon('spinner');
         status = <div className="cart__nav-spinner">{spinnerIcon}</div>;
     } else if (elements.length > 0) {
         status = <div className="cart__nav-count">{elements.length}</div>;
