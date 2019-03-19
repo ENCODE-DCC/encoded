@@ -26,6 +26,7 @@ PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
 HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
 HAS_PART = "http://purl.obolibrary.org/obo/BFO_0000051"
+DERIVES_FROM = "http://www.obofoundry.org/ro/ro.owl#derives_from"
 ACHIEVES_PLANNED_OBJECTIVE = "http://purl.obolibrary.org/obo/OBI_0000417"
 DEFAULT_LANGUAGE = "en"
 
@@ -149,6 +150,7 @@ cell_slims = {
     'CL:0000034': 'stem cell',
     'EFO:0002886': 'stem cell', # stem cell derived cell line
     'CL:0000084': 'T cell'
+
 }
 
 assay_slims = {
@@ -191,249 +193,12 @@ slim_shims = {
         'OBI:0002160': ['DNA binding']  # Mint-ChIP-seq
     },
     'organ': {
-        'NTR:0001407': ['brain'],
-        'UBERON:0001871': ['brain'],
-        'UBERON:0002686': ['brain'],
-        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'],
-        'EFO:0002782': ['brain'],
-        'EFO:0002246': ['blood', 'bodily fluid'],
-        'EFO:0002034': ['blood', 'bodily fluid'],
-        'EFO:0002055': ['blood', 'bodily fluid'],
-        'EFO:0002234': ['bone element'],
-        'EFO:0002330': ['bone element'],
-        'EFO:0005694': ['bone element'],
-        'EFO:0003971': ['spleen'],
-        'EFO:0002357': ['bodily fluid'],
-        'EFO:0002167': ['bodily fluid'],
-        'EFO:0002791': ['uterus'],
-        'EFO:0002184': ['embryo'],
-        'EFO:0003042': ['embryo'],
-        'EFO:0003045': ['embryo'],
-        'EFO:0005483': ['embryo'],
-        'EFO:0002106': ['musculature of body'],
-        'EFO:0005722': ['musculature of body'],
-        'EFO:0005714': ['musculature of body'],
-        'EFO:0005719': ['blood', 'bodily fluid'],
-        'EFO:0006711': ['blood', 'bodily fluid'],
-        'EFO:0007090': ['blood vessel', 'vasculature'],
-        'EFO:0001221': ['bone element'],
-        'EFO:0005907': ['bone element'],
-        'EFO:0006710': ['bone element'],
-        'EFO:0007599': ['bone element'],
-        'EFO:0007600': ['bone element'],
-        'EFO:0005234': ['brain'],
-        'EFO:0002101': ['brain'],
-        'EFO:0002939': ['brain'],
-        'EFO:0003072': ['brain'],
-        'EFO:0005237': ['brain'],
-        'EFO:0005697': ['brain'],
-        'EFO:0005721': ['brain'],
-        'EFO:0005725': ['brain'],
-        'EFO:0005698': ['brain'],
-        'EFO:0007075': ['embryo'],
-        'EFO:0007076': ['embryo'],
-        'EFO:0007083': ['embryo'],
-        'EFO:0007086': ['embryo'],
-        'EFO:0007089': ['embryo'],
-        'EFO:0007116': ['embryo'],
-        'EFO:0005715': ['eye'],
-        'EFO:0001182': ['kidney'],
-        'EFO:0002179': ['kidney'],
-        'EFO:0005481': ['kidney'],
-        'EFO:0005707': ['kidney'],
-        'EFO:0001099': ['large intestine', 'intestine'],
-        'EFO:0001193': ['large intestine', 'intestine'],
-        'EFO:0001232': ['large intestine', 'intestine'],
-        'EFO:0006639': ['large intestine', 'intestine'],
-        'EFO:0001187': ['liver'],
-        'EFO:0001086': ['lung'],
-        'EFO:0001260': ['lung'],
-        'EFO:0002285': ['lung'],
-        'EFO:0005233': ['lymph node'],
-        'EFO:0005285': ['lymph node'],
-        'EFO:0005333': ['lymph node'],
-        'EFO:0005334': ['lymph node'],
-        'EFO:0005335': ['lymph node'],
-        'EFO:0005337': ['lymph node'],
-        'EFO:0005338': ['lymph node'],
-        'EFO:0005339': ['lymph node'],
-        'EFO:0005340': ['lymph node'],
-        'EFO:0005341': ['lymph node'],
-        'EFO:0005342': ['lymph node'],
-        'EFO:0005343': ['lymph node'],
-        'EFO:0005344': ['lymph node'],
-        'EFO:0005345': ['lymph node'],
-        'EFO:0005346': ['lymph node'],
-        'EFO:0005352': ['lymph node'],
-        'EFO:0005353': ['lymph node'],
-        'EFO:0005482': ['lymph node'],
-        'EFO:0005724': ['lymph node'],
-        'EFO:0006283': ['lymph node'],
-        'EFO:0007074': ['lymph node'],
-        'EFO:0007112': ['lymph node'],
-        'EFO:0001203': ['mammary gland'],
-        'EFO:0001247': ['mammary gland'],
-        'EFO:0007070': ['mouth'],
-        'EFO:0007748': ['penis'],
-        'EFO:0007749': ['penis'],
-        'EFO:0007750': ['penis'],
-        'EFO:0002074': ['prostate gland'],
-        'EFO:0002095': ['prostate gland'],
-        'EFO:0002323': ['prostate gland'],
-        'EFO:0005726': ['prostate gland'],
-        'EFO:0006365': ['prostate gland'],
-        'EFO:0007610': ['prostate gland'],
-        'EFO:0007752': ['prostate gland'],
-        'EFO:0002103': ['skin of body'],
-        'EFO:0005712': ['skin of body'],
-        'EFO:0005720': ['skin of body'],
-        'EFO:0007099': ['skin of body'],
-        'EFO:0007102': ['skin of body'],
-        'EFO:0007105': ['skin of body'],
-        'EFO:0007106': ['skin of body'],
-        'EFO:0007107': ['skin of body'],
-        'EFO:0007108': ['skin of body'],
-        'EFO:0005909': ['skin of body'],
-        'EFO:0005236': ['testis', 'gonad'],
-        'EFO:0005718': ['uterus'],
-        'EFO:0005023': ['adipose tissue', 'connective tissue'],
-        'EFO:0003037': ['blood', 'bodily fluid'],
-        'EFO:0002783': ['blood', 'bodily fluid'],
-        'EFO:0001159': ['blood', 'bodily fluid'],
-        'EFO:0001160': ['blood', 'bodily fluid'],
-        'EFO:0001161': ['blood', 'bodily fluid'],
-        'EFO:0001162': ['blood', 'bodily fluid'],
-        'EFO:0002784': ['blood', 'bodily fluid'],
-        'EFO:0002785': ['blood', 'bodily fluid'],
-        'EFO:0002786': ['blood', 'bodily fluid'],
-        'EFO:0002788': ['blood', 'bodily fluid'],
-        'EFO:0002789': ['blood', 'bodily fluid'],
-        'EFO:0002790': ['blood', 'bodily fluid'],
-        'EFO:0007598': ['blood', 'bodily fluid'],
-        'EFO:0002793': ['blood', 'bodily fluid'],
-        'EFO:0002067': ['blood', 'bodily fluid'],
-        'EFO:0005903': ['blood', 'bodily fluid'],
-        'EFO:0002798': ['blood', 'bodily fluid'],
-        'EFO:0002322': ['blood', 'bodily fluid'],
-        'EFO:0002860': ['brain'],
-        'EFO:0002713': ['pancreas'],
-        'EFO:0001098': ['musculature of body'],
-        'EFO:0003044': ['lung'],
-        'EFO:0002847': ['lung'],
-        'EFO:0002150': ['kidney'],
-        'EFO:0002816': ['embryo'],
-        'EFO:0005901': ['embryo'],
-        'EFO:0005904': ['embryo'],
-        'EFO:0001222': ['embryo'],
-        'EFO:0002059': ['connective tissue'],
-        'EFO:0000586': ['connective tissue'],
-        'EFO:0005282': ['bone element'],
-        'EFO:0005283': ['bone element'],
-        'EFO:0001155': ['blood', 'bodily fluid'],
-        'EFO:0001156': ['blood', 'bodily fluid'],
-        'EFO:0005332': ['blood', 'bodily fluid'],
-        'EFO:0005336': ['blood', 'bodily fluid'],
-        'EFO:0005347': ['blood', 'bodily fluid'],
-        'EFO:0005348': ['blood', 'bodily fluid'],
-        'EFO:0005349': ['blood', 'bodily fluid'],
-        'EFO:0005350': ['blood', 'bodily fluid'],
-        'EFO:0005351': ['blood', 'bodily fluid'],
-        'EFO:0007072': ['blood', 'bodily fluid'],
-        'EFO:0007077': ['blood', 'bodily fluid'],
-        'EFO:0007115': ['blood', 'bodily fluid'],
-        'EFO:0002085': ['brain'],
-        'EFO:0007069': ['breast'],
-        'EFO:0002076': ['embryo'],
-        'EFO:0002778': ['embryo'],
-        'EFO:0005355': ['embryo'],
-        'EFO:0005484': ['embryo'],
-        'EFO:0005485': ['embryo'],
-        'EFO:0005486': ['embryo'],
-        'EFO:0005648': ['embryo'],
-        'EFO:0007071': ['embryo'],
-        'EFO:0007073': ['embryo'],
-        'EFO:0007751': ['embryo'],
-        'EFO:0005910': ['embryo'],
-        'EFO:0005747': ['embryo'],
-        'EFO:0007078': ['embryo'],
-        'EFO:0007079': ['embryo'],
-        'EFO:0007080': ['embryo'],
-        'EFO:0007081': ['embryo'],
-        'EFO:0007082': ['embryo'],
-        'EFO:0007084': ['embryo'],
-        'EFO:0007085': ['embryo'],
-        'EFO:0007087': ['embryo'],
-        'EFO:0007088': ['embryo'],
-        'EFO:0007091': ['embryo'],
-        'EFO:0007092': ['embryo'],
-        'EFO:0007093': ['embryo'],
-        'EFO:0007094': ['embryo'],
-        'EFO:0005819': ['embryo'],
-        'EFO:0005820': ['embryo'],
-        'EFO:0005836': ['embryo'],
-        'EFO:0005837': ['embryo'],
-        'EFO:0005838': ['embryo'],
-        'EFO:0005839': ['embryo'],
-        'EFO:0005745': ['gonad'],
-        'EFO:0005834': ['gonad'],
-        'EFO:0005835': ['gonad'],
-        'EFO:0000681': ['kidney'],
-        'EFO:0001184': ['kidney'],
-        'EFO:0002108': ['kidney'],
-        'EFO:0005703': ['kidney'],
-        'EFO:0002083': ['large intestine', 'intestine'],
-        'EFO:0002824': ['large intestine', 'intestine'],
-        'EFO:0006389': ['large intestine', 'intestine'],
-        'EFO:0005384': ['liver'],
-        'EFO:0005700': ['liver'],
-        'EFO:0005704': ['liver'],
-        'EFO:0001196': ['lung'],
-        'EFO:0007611': ['lymph node'],
-        'EFO:0001200': ['mammary gland'],
-        'EFO:0005702': ['musculature of body'],
-        'EFO:0005705': ['nose'],
-        'EFO:0003061': ['ovary', 'gonad'],
-        'EFO:0005713': ['pancreas'],
-        'EFO:0005711': ['pancreas'],
-        'EFO:0005709': ['placenta', 'extraembryonic component'],
-        'EFO:0002071': ['prostate gland'],
-        'EFO:0002140': ['skin of body'],
-        'EFO:0005706': ['skin of body'],
-        'EFO:0007100': ['skin of body'],
-        'EFO:0007101': ['skin of body'],
-        'EFO:0007103': ['skin of body'],
-        'EFO:0007104': ['skin of body'],
-        'EFO:0007109': ['skin of body'],
-        'EFO:0007110': ['skin of body'],
-        'EFO:0007601': ['spinal cord'],
-        'EFO:0005480': ['spleen'],
-        'EFO:0005912': ['uterus'],
-        'EFO:0005718': ['uterus'],
-        'EFO:0005284': ['blood', 'bodily fluid'],
-        'EFO:0002869': ['bone element'],
-        'EFO:0004389': ['bone element'],
-        'EFO:0002717': ['bone marrow', 'bone element'],
-        'EFO:0001084': ['embryo'],
-        'EFO:0002078': ['embryo'],
-        'EFO:0005914': ['embryo'],
-        'EFO:0005915': ['embryo'],
-        'EFO:0005916': ['embryo'],
-        'EFO:0005650': ['limb'],
-        'EFO:0005744': ['limb'],
-        'EFO:0002324': ['lymphoid tissue'],
-        'EFO:0002787': ['lymphoid tissue'],
-        'EFO:0007096': ['skin of body'],
-        'EFO:0007098': ['skin of body'],
-        'EFO:0007095': ['skin of body'],
-        'EFO:0007097': ['skin of body'],
-        'EFO:0002779': ['skin of body'],
         'CL:0002399': ['blood', 'bodily fluid'],
         'CL:0000236': ['blood', 'bodily fluid'],
         'CL:0000084': ['blood', 'bodily fluid'],
         'CL:0000625': ['blood', 'bodily fluid'],
         'CL:0000624': ['blood', 'bodily fluid'],
         'CL:0000897': ['blood', 'bodily fluid'],
-        'NTR:0003860': ['blood', 'bodily fluid'],
         'CL:0000895': ['blood', 'bodily fluid'],
         'CL:0000792': ['blood', 'bodily fluid'],
         'CL:0000909': ['blood', 'bodily fluid'],
@@ -445,37 +210,42 @@ slim_shims = {
         'CL:0001054': ['blood', 'bodily fluid'],
         'CL:0000515': ['musculature of body'],
         'CL:0000187': ['musculature of body'],
-        'NTR:0004646': ['skin of body', 'penis', 'connective tissue'],
         'CL:0000905': ['blood', 'bodily fluid'],
         'CL:0000037': ['blood', 'bodily fluid'],
         'CL:0000192': ['musculature of body'],
         'CL:0000746': ['musculature of body', 'heart'],
         'CL:0000837': ['blood', 'bodily fluid'],
-        'NTR:0001407': ['brain'],
-        'UBERON:0001872': ['brain'],
-        'UBERON:0002021': ['brain'],
-        'EFO:0000222': ['blood', 'bodily fluid'],
-        'EFO:0002167': ['blood', 'bodily fluid'],
-        'EFO:0002357': ['blood', 'bodily fluid'],
-        'EFO:0007950': ['skin of body'],
-        'UBERON:0002114': ['small intestine', 'intestine'],
-        'UBERON:0002769': ['brain'],
-        'EFO:0002779': ['penis', 'skin of body', 'connective tissue'],
-        'EFO:0006270': ['lung', 'connective tissue'],
-        'NTR:0000475': ['skin of body', 'connective tissue'],
-        'NTR:0000476': ['skin of body', 'connective tissue'],
-        'NTR:0000477': ['skin of body', 'connective tissue'],
-        'NTR:0000478': ['skin of body', 'connective tissue'],
-        'NTR:0000479': ['skin of body', 'connective tissue'],
-        'NTR:0000480': ['mouth', 'connective tissue'],
-        'NTR:0000481': ['skin of body', 'connective tissue'],
-        'NTR:0000482': ['skin of body', 'connective tissue'],
-        'NTR:0000483': ['skin of body', 'connective tissue'],
-        'NTR:0000484': ['lung', 'connective tissue'],
-        'NTR:0000485': ['skin of body', 'connective tissue'],
-        'CL:0002328': ['lung', 'bronchus', 'epithelium'],
-        'CL:0002598': ['lung', 'bronchus'],
-        'CL:2000017': ['connective tissue', 'mouth']
+        'CL:0002328': ['lung', 'bronchus', 'epithelium'], # 'bronchus' & 'epithelium' are ontology-based
+        'CL:0002598': ['lung', 'bronchus'], # 'bronchus' is ontology-based
+        'CL:2000017': ['connective tissue', 'mouth'], # 'connective tissue' is ontology-based
+        'EFO:0005650': ['limb'],
+        'EFO:0005916': ['embryo'],
+        'EFO:0005023': ['adipose tissue', 'connective tissue'],
+        'EFO:0002787': ['lymphoid tissue'],
+        'EFO:0007598': ['blood', 'bodily fluid'],
+        'EFO:0000586': ['connective tissue'],
+        'EFO:0005904': ['embryo'],
+        'EFO:0002939': ['brain'],
+        'EFO:0005694': ['bone element'],
+        'EFO:0005903': ['blood', 'bodily fluid'],
+        'EFO:0000681': ['kidney'],
+        'EFO:0002324': ['lymphoid tissue'],
+        'EFO:0002798': ['blood', 'bodily fluid'],
+        'EFO:0005914': ['embryo'],
+        'EFO:0005915': ['embryo'],
+        'EFO:0002779': ['penis', 'skin of body', 'connective tissue'], # 'connective tissue' & 'penis' are ontology-based
+        'EFO:0005233': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005480': ['blood', 'bodily fluid', 'spleen'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005482': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0005719': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
+        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
+        'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
+        'EFO:0006283': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
+        'EFO:0006711': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
+        'EFO:0007095': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
     }
 
 }
@@ -1096,6 +866,7 @@ def getTermStructure():
         'parents': [],
         'part_of': [],
         'has_part': [],
+        'derives_from': [],
         'develops_from': [],
         'achieves_planned_objective': [],
         'organs': [],
@@ -1186,6 +957,26 @@ def main():
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
                                         terms[term_id]['has_part'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                            elif o.__str__() == DERIVES_FROM:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        terms[term_id]['derives_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                    else:
+                                        for o2 in data.rdfGraph.objects(o1, IntersectionOf):
+                                            for o3 in data.rdfGraph.objects(o2, RDF.first):
+                                                if not isBlankNode(o3):
+                                                    terms[term_id]['derives_from'].append(splitNameFromNamespace(o3)[0].replace('_', ':'))
+                                            for o3 in data.rdfGraph.objects(o2, RDF.rest):
+                                                for o4 in data.rdfGraph.objects(o3, RDF.first):
+                                                    for o5 in data.rdfGraph.objects(o4, SomeValuesFrom):
+                                                        for o6 in data.rdfGraph.objects(o5, IntersectionOf):
+                                                            for o7 in data.rdfGraph.objects(o6, RDF.first):
+                                                                if not isBlankNode(o7):
+                                                                    terms[term_id]['derives_from'].append(splitNameFromNamespace(o7)[0].replace('_', ':'))
+                                                                    for o8 in data.rdfGraph.objects(o6, RDF.rest):
+                                                                        for o9 in data.rdfGraph.objects(o8, RDF.first):
+                                                                            if not isBlankNode(o9):
+                                                                                terms[term_id]['derives_from'].append(splitNameFromNamespace(o9)[0].replace('_', ':'))
                             elif o.__str__() == ACHIEVES_PLANNED_OBJECTIVE:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
@@ -1199,7 +990,7 @@ def main():
                     except:
                         pass
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['achieves_planned_objective']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
