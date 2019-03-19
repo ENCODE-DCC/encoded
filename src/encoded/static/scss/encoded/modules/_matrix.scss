@@ -146,3 +146,13 @@ table.matrix th.group-all-groups-cell {
 .matrix-general-search {
     margin-bottom: 10px;
 }
+
+.matrix-tag {
+    display: inline-block;
+    float: right;
+    img {
+        height: 22px;
+        vertical-align: top;
+        padding-left: 10px;
+    }
+}

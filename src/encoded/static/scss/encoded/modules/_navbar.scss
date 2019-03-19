@@ -134,6 +134,14 @@
             font-weight: 300;
         }
     }
+    .sub-menu {
+        padding-left: 40px;
+    }
+    .disabled-menu-item {
+        pointer-events: none;
+        font-weight: 400;
+        letter-spacing: 0;
+    }
 
     @media screen and (min-width: $grid-float-breakpoint) {
         left: -1px;
