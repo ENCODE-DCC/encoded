@@ -150,7 +150,6 @@ cell_slims = {
     'CL:0000034': 'stem cell',
     'EFO:0002886': 'stem cell', # stem cell derived cell line
     'CL:0000084': 'T cell'
-
 }
 
 assay_slims = {
@@ -165,7 +164,8 @@ assay_slims = {
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
-    'OBI:0000845': 'RNA structure'
+    'OBI:0000845': 'RNA structure',
+    'NTR:0000516': 'Functional characterization'
 }
 
 slim_shims = {
@@ -542,6 +542,19 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "PLAC-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000515": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "massively parallel reporter assay",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "MPRA",
         "slims": [],
         "synonyms": [],
         "systems": [],

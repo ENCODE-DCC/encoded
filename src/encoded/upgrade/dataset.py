@@ -470,7 +470,7 @@ def annotation_23_24(value, system):
 
 
 @upgrade_step('experiment', '25', '26')
-def dataset_25_26(value, system):
+def dataset_26_27(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4384
     if value.get('assay_term_name') == 'ISO-seq':
         value['assay_term_name'] = 'long read RNA-seq'
