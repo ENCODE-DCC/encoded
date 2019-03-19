@@ -1063,7 +1063,7 @@ export class FacetList extends React.Component {
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {(context && clearButton) ?
+                    {(context || clearButton) ?
                         <div className="search-header-control">
                             {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
                             {clearButton ?
