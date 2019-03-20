@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 24
+
+* Adds *annotation_type* imputation and makes *annotation_type* required.
+
 ### Schema version 23
 
 * Remove biosample_type, biosample_term_id and biosample_term_name.
