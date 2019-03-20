@@ -196,6 +196,8 @@ def genetic_modification_7_8(value, system):
     import time
     import json
 
+    conn = system['registry'][CONNECTION]
+
     sources = {
         'addgene': r'^\d{5,6}$',
         'bacpac': r'^([A-Z]{2,3}\d{2,3}|[A-Z]{3})-\d{1,4}[A-Z]\d{1,2}$',
@@ -215,22 +217,25 @@ def genetic_modification_7_8(value, system):
         unmatched_reagents = ''
         for reagent in reagents:
             identifier = reagent['identifier']
+            source_id = reagent['source']
+            source_obj = conn.get_by_uuid(source_id)
+            source_name = source_obj['name']
             new_reagent = copy.deepcopy(reagent)
             matching = []
             source_from_reagent = None
             for source in sources:
-                if source in reagent['source']:
-                    source_from_reagent = reagent['source'].split('/')[2]
+                if source in source_name:
+                    source_from_reagent = source_name
                     break
             # Preferentially add prefix to reagent that matches the reagent source
             if source_from_reagent is not None:
                 regex = sources[source_from_reagent]
                 if re.match(regex, identifier) is not None:
-                    matching.append((reagent['source'], source_from_reagent, identifier))
+                    matching.append((source_name, source_from_reagent, identifier))
             else:
                 for source, regex in sources.items():
                     if re.match(regex, identifier) is not None:
-                        matching.append((reagent['source'], source, identifier))
+                        matching.append((source_name, source, identifier))
             if not matching:
                 unmatched_reagents += '{} '.format(json.dumps(reagent))
             else:
@@ -238,8 +243,8 @@ def genetic_modification_7_8(value, system):
                     # Bring the identifier with matching source to the reagent to the top
                     matching.sort(key=lambda match: int(match[1] in match[0]), reverse=True)
                     # matching = [i for i in matching if i[1] in i[0]]
-                _, source, identifier = matching[0]
-                new_identifier = ('{}:{}'.format(source, identifier))
+                source_name, source, identifier = matching[0]
+                new_identifier = ('{}:{}'.format(source_name, identifier))
                 new_reagent['identifier'] = new_identifier
                 new_reagents.append(new_reagent)
         # Dump the unmatched identifier reagents to the notes
