@@ -221,7 +221,8 @@ def _get_annotation_metadata(request, search_path, param_list):
     path = '{}?{}{}'.format(
         search_path,
         urlencode(param_list, True),
-        ''.join(fields)
+        '&frame=embedded',
+        ''.join(fields),
     )
     results = request.embed(path, as_user=True)
     for result_graph in results['@graph']:
@@ -372,7 +373,7 @@ def metadata_tsv(context, request):
             param_list['@id'] = elements
 
     param_list['limit'] = ['all']
-    path = '{}?{}'.format(search_path, urlencode(param_list, True))
+    path = '{}?{}{}'.format(search_path, urlencode(param_list, True), '&frame=embedded')
     results = request.embed(path, as_user=True)
     rows = []
     for experiment_json in results['@graph']:
