@@ -219,7 +219,7 @@ def genetic_modification_7_8(value, system):
             identifier = reagent['identifier']
             source_id = reagent['source']
             source_obj = conn.get_by_uuid(source_id)
-            source_name = source_obj['name']
+            source_name = source_obj.properties['name']
             new_reagent = copy.deepcopy(reagent)
             matching = []
             source_from_reagent = None
