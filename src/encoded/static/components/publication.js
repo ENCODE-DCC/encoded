@@ -31,8 +31,8 @@ const PublicationComponent = (props, reactContext) => {
         <div className={itemClass}>
             <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
             <h2>{context.title}</h2>
-            {props.auditIndicators(context.audit, 'publication-audit', { session: reactContext.session })}
-            {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, except: context['@id'] })}
+            {props.auditIndicators(context.audit, 'publication-audit')}
+            {props.auditDetail(context.audit, 'publication-audit', { except: context['@id'] })}
             {context.authors ? <div className="authors">{context.authors}.</div> : null}
             <DisplayAsJson />
             <div className="journal">
@@ -61,10 +61,6 @@ PublicationComponent.propTypes = {
     context: PropTypes.object.isRequired,
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired,
-};
-
-PublicationComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 // Note that Publication needs to be exported for Jest tests.
@@ -257,7 +253,7 @@ const ListingComponent = (props, context) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Publication</p>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: context.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
                 </div>
                 <div className="accession"><a href={result['@id']}>{result.title}</a></div>
                 <div className="data-row">
@@ -273,7 +269,7 @@ const ListingComponent = (props, context) => {
                     : null}
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: context.session, forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { forcedEditLink: true })}
         </li>
     );
 };
@@ -282,10 +278,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired,
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Listing = auditDecor(ListingComponent);

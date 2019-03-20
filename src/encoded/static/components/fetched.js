@@ -22,7 +22,7 @@ export class Param extends React.Component {
         if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
-            _.isEqual(nextContext.session, this.context.session)) return;
+            nextContext.loggedIn === this.context.loggedIn) return;
         this.fetch(nextProps.url);
     }
 
@@ -35,6 +35,9 @@ export class Param extends React.Component {
     }
 
     fetch(url) {
+        // Some tests don't mock context.
+        if (!this.context.fetch) return;
+
         let request = this.state.fetchedRequest;
         if (request) request.abort();
 
@@ -104,7 +107,7 @@ Param.defaultProps = {
 
 Param.contextTypes = {
     fetch: PropTypes.func,
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 
@@ -112,11 +115,11 @@ export class FetchedData extends React.Component {
     constructor() {
         super();
         this.state = {};
-        this.componentMounted = false;
+        this.unsubscribed = false;
         this.handleFetch = this.handleFetch.bind(this);
     }
 
-    componentDidMount() {
+    componentWillUnmount() {
         // Need to keep track of whether FetchedData is mounted or not, because `handleFetch` can
         // get called after it has unmounted. I (forresttanaka) had used an abort callback from
         // <Param> to control whether `handleFetch` set the state or not, but I didn't add a way
@@ -124,16 +127,12 @@ export class FetchedData extends React.Component {
         // mounted state of <FetchedData>. The abort tracking caused the forms page to hang when
         // you drop down an embedded form. This comment applies to
         // <FetchedData>.componentWillUnmount as well.
-        this.componentMounted = true;
-    }
-
-    componentWillUnmount() {
-        this.componentMounted = false;
+        this.unsubscribed = true;
     }
 
     handleFetch(result) {
         // Set state to returned search result data to cause rerender of child components.
-        if (this.componentMounted) {
+        if (!this.unsubscribed) {
             this.setState(result);
         }
     }
@@ -167,15 +166,6 @@ export class FetchedData extends React.Component {
         // If no <Param> components, nothing to render here
         if (!params.length) {
             return null;
-        }
-
-        // If no login info yet, keep displaying the loading spinner
-        if (!this.context.session) {
-            return (
-                <div className="communicating">
-                    <div className="loading-spinner" />
-                </div>
-            );
         }
 
         // Detect whether a <Param> component returned an "Error" @type object
@@ -214,10 +204,6 @@ export class FetchedData extends React.Component {
         );
     }
 }
-
-FetchedData.contextTypes = {
-    session: PropTypes.object,
-};
 
 FetchedData.propTypes = {
     children: PropTypes.node.isRequired,

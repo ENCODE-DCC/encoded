@@ -104,8 +104,8 @@ Title.propTypes = {
 
 // Get the current browser cookie from the DOM.
 function extractSessionCookie() {
-    const cookie = require('cookie-monster');
-    return cookie(document).get('session');
+    const cookie = require('js-cookie');
+    return cookie.get('session');
 }
 
 
@@ -244,6 +244,8 @@ class App extends React.Component {
 
     // Data for child components to subscrie to.
     getChildContext() {
+        const session_properties = this.state.session_properties;
+        const user = session_properties && session_properties.user;
         return {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
@@ -253,8 +255,10 @@ class App extends React.Component {
             fetchSessionProperties: this.fetchSessionProperties,
             navigate: this.navigate,
             adviseUnsavedChanges: this.adviseUnsavedChanges,
-            session: this.state.session,
-            session_properties: this.state.session_properties,
+            loggedIn: session_properties && Boolean(user),
+            adminUser: user && user.groups && user.groups.includes('group.admin'),
+            userDisplayName: user && user.title,
+            userURI: user && user['@id'],
             profilesTitles: this.state.profilesTitles,
             localInstance: url.parse(this.props.href).hostname === 'localhost',
         };
@@ -419,20 +423,37 @@ class App extends React.Component {
     // Handle http requests to the server, using the given URL and options.
     fetch(uri, options) {
         let reqUri = uri;
+        // Strip url fragment.
+        const uriHash = reqUri.indexOf('#');
+        if (uriHash > -1) {
+            reqUri = reqUri.slice(0, uriHash);
+        }
+
         const extendedOptions = _.extend({ credentials: 'same-origin' }, options);
         const httpMethod = extendedOptions.method || 'GET';
-        if (!(httpMethod === 'GET' || httpMethod === 'HEAD')) {
+        if (httpMethod === 'GET'|| httpMethod === 'HEAD') {
+            // IE url length limit is 2083 characters.
+            // Apache / Nginx default limit 8K.
+            if (reqUri.length > 2000) {
+                const uriQuery = reqUri.indexOf('?');
+                if (uriQuery > -1) {
+                    extendedOptions.body = reqUri.slice(uriQuery + 1);
+                    reqUri = reqUri.slice(0, uriQuery);
+                    extendedOptions.method = 'POST';
+                    const headers = _.extend({}, extendedOptions.headers, {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Request-Method': httpMethod,
+                    });
+                    extendedOptions.headers = headers;
+                }
+            }
+        } else {
             const headers = _.extend({}, extendedOptions.headers);
             extendedOptions.headers = headers;
             const session = this.state.session;
             if (session && session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
-        }
-        // Strip url fragment.
-        const urlHash = reqUri.indexOf('#');
-        if (urlHash > -1) {
-            reqUri = reqUri.slice(0, urlHash);
         }
         const request = fetch(reqUri, extendedOptions);
         request.xhr_begin = 1 * new Date();
@@ -464,7 +485,8 @@ class App extends React.Component {
             return response.json();
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
-            return this.initializeCartFromSessionProperties(sessionProperties);
+            const userURI = sessionProperties && sessionProperties.user && sessionProperties.user['@id'];
+            return this.initializeCartFromUserURI(userURI);
         });
     }
 
@@ -507,7 +529,8 @@ class App extends React.Component {
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
             this.sessionPropertiesRequest = null;
-            return this.initializeCartFromSessionProperties(sessionProperties);
+            const userURI = sessionProperties && sessionProperties.user && sessionProperties.user['@id'];
+            return this.initializeCartFromUserURI(userURI);
         }).then(() => {
             let nextUrl = window.location.href;
             if (window.location.hash === '#logged-out') {
@@ -598,14 +621,14 @@ class App extends React.Component {
     // Called when the user logs in, or the page loads for a logged-in user. Handle any items
     // collected in the cart while logged out. Retrieve the cart contents for the current logged-
     // in user.
-    initializeCartFromSessionProperties(sessionProperties) {
+    initializeCartFromUserURI(userURI) {
         // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
         // cart (has a "disabled" status) and add the in-memory cart items to it.
         let autosaveCartPromise;
         if (cartIsUnsaved()) {
             // The user has an in-memory cart that needs to be saved to the auto-save cart,
             // so get the auto-save cart with a search.
-            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${sessionProperties.user['@id']}&status=disabled`).then((cartSearchResults) => {
+            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${userURI}&status=disabled`).then((cartSearchResults) => {
                 if (Object.keys(cartSearchResults).length === 0) {
                     // User has no auto-save cart, so create one.
                     return cartCreateAutosave(this.fetch).then(autosaveCartAtId => (
@@ -647,12 +670,12 @@ class App extends React.Component {
         }).then((userCarts) => {
             // Retrieve user's current cart @id from cart settings if available in browser
             // localstorage. Set it as the current cart in the cart Redux store.
-            let cartSettings = cartGetSettings(sessionProperties.user);
+            let cartSettings = cartGetSettings(userURI);
             if (!cartSettings.current || userCarts['@graph'].indexOf(cartSettings.current) === -1) {
                 // Cart settings are new -- not from localstorage -- OR the current cart @id
                 // doesn't match any of the logged-in user's saved carts. Use the first cart in the
                 // user's saved carts as the current and save the new settings to localstorage.
-                cartSettings = cartSetSettingsCurrent(sessionProperties.user, userCarts['@graph'][0]);
+                cartSettings = cartSetSettingsCurrent(userURI, userCarts['@graph'][0]);
             }
             cartSetCurrent(cartSettings.current, cartStore.dispatch);
 
@@ -907,7 +930,7 @@ class App extends React.Component {
                 return null;
             }
             // The URL may have redirected
-            const responseUrl = (response.url || mutatableHref) + fragment;
+            const responseUrl = (response.headers.get('X-Request-URL') || response.url || mutatableHref) + fragment;
             if (mutatableOptions.replace) {
                 window.history.replaceState(null, '', responseUrl);
             } else {
@@ -1142,8 +1165,10 @@ App.childContextTypes = {
     projectColors: PropTypes.object,
     biosampleTypeColors: PropTypes.object,
     adviseUnsavedChanges: PropTypes.func,
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    adminUser: PropTypes.bool,
+    userDisplayName: PropTypes.string,
+    userURI: PropTypes.string,
     profilesTitles: PropTypes.object,
     localInstance: PropTypes.bool,
 };

@@ -253,14 +253,12 @@ const objectStatusLevels = ['external', 'consortium', 'administrator'];
  * Maps the current session information from the <App> React context to an access level from the
  * objectStatusLevels array.
  *
- * @param {object} session - From encoded session context
- * @param {object} sessionProperties - From encoded session_properties context
+ * @param {bool} loggedIn - From context
+ * @param {bool} adminUser - From context
  * @return {string} - access level matching an entry in `objectStatusLevels`
  */
-export const sessionToAccessLevel = (session, sessionProperties) => {
-    const loggedIn = !!(session && session['auth.userid']);
-    const administrativeUser = loggedIn && !!(sessionProperties && sessionProperties.admin);
-    return loggedIn ? (administrativeUser ? 'administrator' : 'consortium') : 'external';
+export const sessionToAccessLevel = (loggedIn, adminUser) => {
+    return loggedIn ? (adminUser ? 'administrator' : 'consortium') : 'external';
 };
 
 

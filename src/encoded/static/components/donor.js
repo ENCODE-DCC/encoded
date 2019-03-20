@@ -473,21 +473,16 @@ class DonorComponent extends React.Component {
             // Now that the component has mounted, we can do a GET request of the donor's children and
             // parents so we can display them once the results come back.
             this.requestRelations();
-
-            // In case the logged-in state changes, we have to keep track of the old logged-in state.
-            this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         }
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps, nextContext) {
         // Humans need to do a couple requests to get the parents and children of the donor.
         if (this.props.context['@type'][0] === 'HumanDonor') {
             // If the logged-in state has changed since the last time we rendered, request files again
             // in case logging in changes the list of dependent files.
-            const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
-            if (this.loggedIn !== currLoggedIn) {
+            if (this.context.loggedIn !== nextContext.loggedIn) {
                 this.requestRelations();
-                this.loggedIn = currLoggedIn;
             }
         }
     }
@@ -571,8 +566,8 @@ class DonorComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
+                        {this.props.auditIndicators(context.audit, 'donor-audit')}
+                        {this.props.auditDetail(context.audit, 'donor-audit', { except: context['@id'] })}
                         <DisplayAsJson />
                     </div>
                 </header>
@@ -618,7 +613,7 @@ DonorComponent.propTypes = {
 };
 
 DonorComponent.contextTypes = {
-    session: PropTypes.object, // Login information
+    loggedIn: PropTypes.bool, // Login information
 };
 
 const Donor = auditDecor(DonorComponent);
@@ -649,7 +644,7 @@ const DonorListingComponent = (props, reactContext) => {
                     <p className="type meta-title">{organismTitle}</p>
                     <p className="type">{` ${result.accession}`}</p>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
                 </div>
                 <div className="accession">
                     <a href={result['@id']}>
@@ -667,7 +662,7 @@ const DonorListingComponent = (props, reactContext) => {
                     : null}
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -677,10 +672,6 @@ DonorListingComponent.propTypes = {
     organismTitle: PropTypes.string.isRequired, // Title to display on the right for each kind of organism
     auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
     auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
-};
-
-DonorListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const DonorListing = auditDecor(DonorListingComponent);

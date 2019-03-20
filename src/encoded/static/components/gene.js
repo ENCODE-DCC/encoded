@@ -122,7 +122,7 @@ const ListingComponent = (props, reactContext) => {
                 <PickerActions {...props} />
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Gene</p>
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
                 </div>
                 <div className="accession">
                     <a href={result['@id']}>
@@ -137,7 +137,7 @@ const ListingComponent = (props, reactContext) => {
                     : <em>None submitted</em> }
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -146,10 +146,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Listing = auditDecor(ListingComponent);

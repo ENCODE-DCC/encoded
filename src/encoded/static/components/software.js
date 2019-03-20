@@ -53,11 +53,11 @@ class SoftwareComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.title}</h2>
-                        {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'software-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'software-audit', { except: context['@id'] })}
 
                 <div className="panel">
                     <dl className="key-value">
@@ -122,7 +122,6 @@ SoftwareComponent.propTypes = {
 
 SoftwareComponent.contextTypes = {
     location_href: PropTypes.string,
-    session: PropTypes.object,
 };
 
 
@@ -186,7 +185,7 @@ class ListingComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Software</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a>
@@ -202,7 +201,7 @@ class ListingComponent extends React.Component {
                         : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
@@ -213,10 +212,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Software object being rendered as a search result.
     auditIndicators: PropTypes.func.isRequired, // From auditDecor
     auditDetail: PropTypes.func.isRequired, // From auditDecor
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

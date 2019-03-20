@@ -70,11 +70,11 @@ class BiosampleComponent extends React.Component {
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_ontology.classification}</span>
                         </h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'biosample-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'biosample-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -420,10 +420,6 @@ BiosampleComponent.propTypes = {
     context: PropTypes.object.isRequired, // ENCODE biosample object to be rendered
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-BiosampleComponent.contextTypes = {
-    session: PropTypes.object, // Login information
 };
 
 const Biosample = auditDecor(BiosampleComponent);

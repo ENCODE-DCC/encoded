@@ -2132,7 +2132,7 @@ class Award extends React.Component {
     render() {
         // const { award } = this.props;
         const { context } = this.props;
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const { loggedIn } = this.context;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -2219,7 +2219,7 @@ Award.propTypes = {
 };
 
 Award.contextTypes = {
-    session: PropTypes.object, // Login information
+    loggedIn: PropTypes.bool, // Login information
 };
 
 globals.contentViews.register(Award, 'Award');

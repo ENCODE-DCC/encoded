@@ -80,7 +80,7 @@ class AccessKeyTable extends React.Component {
     create(e) {
         e.preventDefault();
         const item = {};
-        if (this.props.user['@id'] !== this.context.session_properties.user['@id']) {
+        if (this.props.user['@id'] !== this.context.userURI) {
             item.user = this.props.user['@id'];
         }
         this.store.create('/access-keys/', item);
@@ -159,7 +159,7 @@ AccessKeyTable.defaultProps = {
 
 AccessKeyTable.contextTypes = {
     fetch: PropTypes.func,
-    session_properties: PropTypes.object,
+    userURI: PropTypes.string,
 };
 
 

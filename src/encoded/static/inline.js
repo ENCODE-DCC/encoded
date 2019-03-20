@@ -1,9 +1,9 @@
 'use strict';
 
 // Read and clear stats cookie
-var cookie = require('cookie-monster')(document);
+var cookie = require('js-cookie');
 window.stats_cookie = cookie.get('X-Stats') || '';
-cookie.set('X-Stats', '', {path: '/', expires: new Date(0)});
+cookie.remove('X-Stats');
 
 // Use a separate tracker for dev / test
 var ga = require('google-analytics');
@@ -16,9 +16,6 @@ ga('send', 'pageview');
 window.onload = function () {
     window._onload_event_fired = true;
 };
-
-var $script = require('scriptjs');
-$script.path('/static/build/');
 
 // Load the rest of the app as a separate chunk.
 require.ensure(['./libs/compat', './browser'], function(require) {

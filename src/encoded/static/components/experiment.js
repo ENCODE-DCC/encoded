@@ -176,8 +176,8 @@ class ExperimentComponent extends React.Component {
         let condensedReplicates = [];
         let libSubmitterComments = [];
         const context = this.props.context;
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const loggedIn = this.context.loggedIn;
+        const adminUser = this.context.adminUser;
         const itemClass = globals.itemClass(context, 'view-item');
         const replicates = context.replicates && context.replicates.length ? context.replicates : [];
         if (replicates.length) {
@@ -424,10 +424,10 @@ class ExperimentComponent extends React.Component {
                             <CartToggle element={context} />
                         </div>
                         <DisplayAsJson />
-                        {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'experiment-audit')}
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'experiment-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -644,8 +644,8 @@ ExperimentComponent.propTypes = {
 };
 
 ExperimentComponent.contextTypes = {
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    adminUser: PropTypes.bool,
 };
 
 // Need to export for Jest tests.

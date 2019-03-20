@@ -31,7 +31,7 @@ const LotComponent = (props, reactContext) => {
     const context = props.context;
 
     // Sort characterization arrays, filtering for the current logged-in and administrative status.
-    const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
+    const accessLevel = sessionToAccessLevel(reactContext.loggedIn, reactContext.adminUser);
     const viewableStatuses = getObjectStatuses('AntibodyCharacterization', accessLevel);
     let characterizations = context.characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
     characterizations = _(characterizations).sortBy(characterization => ([
@@ -127,11 +127,11 @@ const LotComponent = (props, reactContext) => {
                             <span>Antibody</span>
                         }
                     </h3>
-                    {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
+                    {props.auditIndicators(context.audit, 'antibody-audit')}
                     <DisplayAsJson />
                 </div>
             </header>
-            {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}
+            {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'] })}
 
             <div className="antibody-statuses">
                 {antibodyStatuses}
@@ -254,8 +254,8 @@ LotComponent.propTypes = {
 };
 
 LotComponent.contextTypes = {
-    session: PropTypes.object, // Login session information
-    session_properties: PropTypes.object, // Logged-in user information
+    loggedIn: PropTypes.bool, // Logged-in user information
+    adminUser: PropTypes.bool,
 };
 
 const Lot = auditDecor(LotComponent);
@@ -623,7 +623,7 @@ StatusIndicators.propTypes = {
 };
 
 
-const ListingComponent = (props, reactContext) => {
+const ListingComponent = (props) => {
     const result = props.context;
 
     // Sort the lot reviews by their status according to our predefined order
@@ -662,7 +662,7 @@ const ListingComponent = (props, reactContext) => {
                     <p className="type meta-title">Antibody</p>
                     <p className="type">{` ${result.accession}`}</p>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
                 </div>
                 <div className="accession">
                     {Object.keys(targetTree).map(target =>
@@ -680,7 +680,7 @@ const ListingComponent = (props, reactContext) => {
                     <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -689,10 +689,6 @@ ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Antibody search results
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Listing = auditDecor(ListingComponent);

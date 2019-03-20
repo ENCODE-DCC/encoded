@@ -55,7 +55,7 @@ class AnnotationComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -89,11 +89,11 @@ class AnnotationComponent extends React.Component {
                         <h2>Summary for annotation file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
-                        {this.props.auditIndicators(context.audit, 'annotation-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'annotation-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'annotation-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'annotation-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -240,8 +240,7 @@ AnnotationComponent.propTypes = {
 };
 
 AnnotationComponent.contextTypes = {
-    session: PropTypes.object, // Login session information
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Annotation = auditDecor(AnnotationComponent);
@@ -255,7 +254,7 @@ class PublicationDataComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -282,11 +281,11 @@ class PublicationDataComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for publication file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'publicationdata-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'publicationdata-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'publicationdata-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -402,8 +401,7 @@ PublicationDataComponent.propTypes = {
 };
 
 PublicationDataComponent.contextTypes = {
-    session: PropTypes.object, // Login session information
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const PublicationData = auditDecor(PublicationDataComponent);
@@ -417,7 +415,7 @@ class ReferenceComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -444,11 +442,11 @@ class ReferenceComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for reference file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'reference-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'reference-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -564,8 +562,7 @@ ReferenceComponent.propTypes = {
 };
 
 ReferenceComponent.contextTypes = {
-    session: PropTypes.object, // Login session information
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Reference = auditDecor(ReferenceComponent);
@@ -579,7 +576,7 @@ class ProjectComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -609,11 +606,11 @@ class ProjectComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for project file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'project-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'project-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -750,8 +747,7 @@ ProjectComponent.propTypes = {
 };
 
 ProjectComponent.contextTypes = {
-    session: PropTypes.object, // Login session information
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const Project = auditDecor(ProjectComponent);
@@ -765,7 +761,7 @@ class UcscBrowserCompositeComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
@@ -795,11 +791,11 @@ class UcscBrowserCompositeComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -922,8 +918,7 @@ UcscBrowserCompositeComponent.propTypes = {
 };
 
 UcscBrowserCompositeComponent.contextTypes = {
-    session: PropTypes.object, // Login session information
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.bool,
 };
 
 const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
@@ -1224,7 +1219,7 @@ export class SeriesComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        const adminUser = this.context.adminUser;
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
         let experiments = {};
         context.files.forEach((file) => {
@@ -1287,11 +1282,11 @@ export class SeriesComponent extends React.Component {
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
-                        {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'series-audit')}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'series-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -1413,7 +1408,7 @@ export class SeriesComponent extends React.Component {
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}
-                    session={this.context.session}
+                    loggedIn={this.context.loggedIn}
                 />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
@@ -1432,8 +1427,8 @@ SeriesComponent.propTypes = {
 };
 
 SeriesComponent.contextTypes = {
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
+    loggedIn: PropTypes.bool,
+    adminUser: PropTypes.bool,
 };
 
 const Series = auditDecor(SeriesComponent);

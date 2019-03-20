@@ -50,6 +50,7 @@ function recordBrowserStats (browser_stats, timingVar) {
 // Inside this function, kick-off all initialization, everything up to this
 // point should be definitions.
 if (!window.TEST_RUNNER) {
+    require('scriptjs').path('/static/build/');
     domready(() => {
         console.log('ready');
         // Set <html> class depending on browser features

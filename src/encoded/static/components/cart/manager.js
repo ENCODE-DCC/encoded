@@ -30,12 +30,12 @@ class CurrentCartButtonComponent extends React.Component {
      * current user in session_properties hasn't yet been set.
      */
     handleRadioButtonChange() {
-        const { cart, user, onCurrentCartClick, onSwitchCartStart, onSwitchCartComplete } = this.props;
-        if (user) {
+        const { cart, userURI, onCurrentCartClick, onSwitchCartStart, onSwitchCartComplete } = this.props;
+        if (userURI) {
             // Set the browser's localstorage cart settings to remember this button's cart as the
             // current cart, and update the cart store for the current cart.
             onSwitchCartStart();
-            cartSetSettingsCurrent(user, cart['@id']);
+            cartSetSettingsCurrent(userURI, cart['@id']);
             onCurrentCartClick().then(() => onSwitchCartComplete());
         }
     }
@@ -63,8 +63,8 @@ CurrentCartButtonComponent.propTypes = {
     current: PropTypes.string.isRequired,
     /** True if cart operation in progress */
     operationInProgress: PropTypes.bool,
-    /** Current user object from session_properties */
-    user: PropTypes.object,
+    /** Current user @id */
+    userURI: PropTypes.string,
     /** Dispatch function for setting the current cart in the cart Redux store */
     onCurrentCartClick: PropTypes.func.isRequired,
     /** Function to call when switching operation starts */
@@ -75,7 +75,7 @@ CurrentCartButtonComponent.propTypes = {
 
 CurrentCartButtonComponent.defaultProps = {
     operationInProgress: false,
-    user: null,
+    userURI: null,
 };
 
 CurrentCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
@@ -421,7 +421,7 @@ NameCartButtonComponent.defaultProps = {
 };
 
 NameCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    onRename: (name, identifier) => dispatch(setCartNameIdentifierAndSave({ name, identifier }, ownProps.cart, ownProps.user, ownProps.fetch)),
+    onRename: (name, identifier) => dispatch(setCartNameIdentifierAndSave({ name, identifier }, ownProps.cart, ownProps.userURI, ownProps.fetch)),
     onCreate: (name, identifier) => cartCreate({ name, identifier }, ownProps.fetch),
 });
 
@@ -600,7 +600,7 @@ const cartTableColumns = {
     status: {
         title: 'Status',
         display: item => <Status item={item} badgeSize="small" />,
-        hide: (item, columns, meta) => !meta.admin,
+        hide: (item, columns, meta) => !meta.adminUser,
     },
     actions: {
         title: 'Actions',
@@ -609,7 +609,7 @@ const cartTableColumns = {
                 <NameCartButton
                     cartManager={meta.cartManager}
                     cart={item}
-                    user={meta.user}
+                    userURI={meta.userURI}
                     disabled={item.status === 'disabled' || meta.operationInProgress}
                     disabledTooltip="Cannot rename the auto-save cart"
                     fetch={meta.fetch}
@@ -628,7 +628,7 @@ const cartTableColumns = {
                 cart={item}
                 current={meta.current}
                 operationInProgress={meta.operationInProgress}
-                user={meta.user}
+                userURI={meta.userURI}
                 fetch={meta.fetch}
                 onSwitchCartStart={meta.onSwitchCartStart}
                 onSwitchCartComplete={meta.onSwitchCartComplete}
@@ -691,16 +691,15 @@ class CartManagerComponent extends React.Component {
     }
 
     render() {
-        const { context, currentCart, sessionProperties } = this.props;
+        const { context, currentCart, userURI, adminUser } = this.props;
 
         const extantCartCount = context['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
-        const user = sessionProperties && sessionProperties.user;
         const cartPanelHeader = (
             <div className="cart-manager-header">
                 <h4 className="cart-manager-header__title">Cart manager</h4>
                 <NameCartButton
                     cartManager={context}
-                    user={user}
+                    userURI={userURI}
                     fetch={this.context.fetch}
                     navigate={this.context.navigate}
                     disabled={extantCartCount >= context.cart_user_max}
@@ -719,8 +718,8 @@ class CartManagerComponent extends React.Component {
                         cartManager: context,
                         current: currentCart,
                         operationInProgress: this.state.operationInProgress,
-                        user: sessionProperties && sessionProperties.user,
-                        admin: !!(sessionProperties && sessionProperties.admin),
+                        userURI: userURI,
+                        adminUser: adminUser,
                         onSwitchCartStart: this.onSwitchCartStart,
                         onSwitchCartComplete: this.onSwitchCartComplete,
                         fetch: this.context.fetch,
@@ -750,8 +749,10 @@ class CartManagerComponent extends React.Component {
 CartManagerComponent.propTypes = {
     /** Cart manager context object */
     context: PropTypes.object.isRequired,
-    /** <App> session_properties */
-    sessionProperties: PropTypes.object.isRequired,
+    /** <App> userURI */
+    userURI: PropTypes.string.isRequired,
+    /** <App> adminUser */
+    adminUser: PropTypes.bool.isRequired,
     /** @id of the current cart */
     currentCart: PropTypes.string.isRequired,
 };
@@ -765,7 +766,8 @@ const mapStateToProps = (state, ownProps) => ({
     currentCart: state.current,
     inProgress: state.inProgress,
     context: ownProps.context,
-    sessionProperties: ownProps.sessionProperties,
+    adminUser: ownProps.adminUser,
+    userURI: ownProps.userURI,
     fetch: ownProps.fetch,
     navigate: ownProps.fetch,
 });
@@ -773,7 +775,7 @@ const mapStateToProps = (state, ownProps) => ({
 const CartManagerInternal = connect(mapStateToProps)(CartManagerComponent);
 
 const CartManager = (props, reactContext) => (
-    <CartManagerInternal context={props.context} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} navigate={reactContext.navigate} />
+    <CartManagerInternal context={props.context} adminUser={reactContext.adminUser} userURI={reactContext.userURI} fetch={reactContext.fetch} navigate={reactContext.navigate} />
 );
 
 CartManager.propTypes = {
@@ -782,7 +784,8 @@ CartManager.propTypes = {
 };
 
 CartManager.contextTypes = {
-    session_properties: PropTypes.object,
+    adminUser: PropTypes.string,
+    userURI: PropTypes.string,
     fetch: PropTypes.func,
     navigate: PropTypes.func,
 };

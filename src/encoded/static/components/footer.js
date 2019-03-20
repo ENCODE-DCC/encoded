@@ -4,12 +4,11 @@ import PropTypes from 'prop-types';
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 const Footer = ({ version }, reactContext) => {
-    const session = reactContext.session;
-    const disabled = !session;
+    const loggedIn = reactContext.loggedIn;
     let userActionRender;
 
-    if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
+    if (!loggedIn) {
+        userActionRender = <a href="#" data-trigger="login">Submitter sign-in</a>;
     } else {
         userActionRender = <a href="#" data-trigger="logout">Submitter sign out</a>;
     }
@@ -52,7 +51,7 @@ const Footer = ({ version }, reactContext) => {
 /* eslint-enable jsx-a11y/anchor-is-valid */
 
 Footer.contextTypes = {
-    session: PropTypes.object,
+    loggedIn: PropTypes.bool,
 };
 
 Footer.propTypes = {

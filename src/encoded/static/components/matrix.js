@@ -232,7 +232,7 @@ class Matrix extends React.Component {
                                                 </tr>
                                             : null}
                                             <tr style={{ borderBottom: 'solid 1px #ddd' }}>
-                                                <th style={{ textAlign: 'center', 'min-width': 200 }}>
+                                                <th style={{ textAlign: 'center', minWidth: 200 }}>
                                                     <h3>
                                                         {matrix.doc_count} results
                                                     </h3>

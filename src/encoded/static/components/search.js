@@ -130,7 +130,7 @@ class ItemComponent extends React.Component {
                     {result.accession ?
                         <div className="pull-right type sentence-case search-meta">
                             <p>{itemType}: {` ${result.accession}`}</p>
-                            {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                            {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                         </div>
                     : null}
                     <div className="accession">
@@ -140,7 +140,7 @@ class ItemComponent extends React.Component {
                         {result.description}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
@@ -151,10 +151,6 @@ ItemComponent.propTypes = {
     context: PropTypes.object.isRequired, // Component to render in a listing view
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-ItemComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Item = auditDecor(ItemComponent);
@@ -212,7 +208,7 @@ class BiosampleComponent extends React.Component {
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -234,7 +230,7 @@ class BiosampleComponent extends React.Component {
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
@@ -245,10 +241,6 @@ BiosampleComponent.propTypes = {
     context: PropTypes.object.isRequired, // Biosample search results
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-BiosampleComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Biosample = auditDecor(BiosampleComponent);
@@ -294,7 +286,7 @@ const ExperimentComponent = (props, reactContext) => {
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                        {props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -340,7 +332,7 @@ const ExperimentComponent = (props, reactContext) => {
                     </div>
                 : null}
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -354,10 +346,6 @@ ExperimentComponent.propTypes = {
 
 ExperimentComponent.defaultProps = {
     cartControls: false,
-};
-
-ExperimentComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Experiment = auditDecor(ExperimentComponent);
@@ -423,7 +411,7 @@ const DatasetComponent = (props, reactContext) => {
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                        {props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -453,7 +441,7 @@ const DatasetComponent = (props, reactContext) => {
                     </div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -462,10 +450,6 @@ DatasetComponent.propTypes = {
     context: PropTypes.object.isRequired, // Dataset search results
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-DatasetComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Dataset = auditDecor(DatasetComponent);
@@ -483,7 +467,7 @@ class TargetComponent extends React.Component {
                     <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Target</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -497,7 +481,7 @@ class TargetComponent extends React.Component {
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
@@ -508,10 +492,6 @@ TargetComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-TargetComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
 };
 
 const Target = auditDecor(TargetComponent);
@@ -1117,10 +1097,6 @@ FacetList.defaultProps = {
     docTypeTitleSuffix: 'search',
 };
 
-FacetList.contextTypes = {
-    session: PropTypes.object,
-};
-
 
 /**
  * Display the modal for batch download, and pass back clicks in the Download button
@@ -1493,10 +1469,6 @@ ResultTable.defaultProps = {
 
 ResultTable.childContextTypes = {
     actions: PropTypes.array,
-};
-
-ResultTable.contextTypes = {
-    session: PropTypes.object,
 };
 
 

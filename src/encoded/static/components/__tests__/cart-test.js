@@ -260,28 +260,21 @@ describe('Cart manager while logged in as submitter', () => {
             cart_user_max: 30,
             title: 'Cart',
         };
-        const sessionProperties = {
-            admin: false,
-            'auth.userid': 'fytanaka@stanford.edu',
-            user: {
-                '@context': '/terms/',
-                '@id': '/users/627eedbc-7cb3-4de3-9743-a86266e435a6/',
-                '@type': ['User', 'Item'],
-                title: 'Forrest Tanaka',
-                uuid: '627eedbc-7cb3-4de3-9743-a86266e435a6',
-            },
-        };
         const store = mockStore(initialCart);
         cartManager = mount(
-            <Provider store={store}><CartManager context={context} sessionProperties={sessionProperties} /></Provider>,
+            <Provider store={store}><CartManager context={context} /></Provider>,
             {
                 context: {
-                    session_properties: sessionProperties,
+                    adminUser: false,
+                    loggedIn: true,
+                    userURI: '/users/627eedbc-7cb3-4de3-9743-a86266e435a6/',
                     navigate: () => { console.log('navigate'); },
                     fetch: () => { console.log('fetch'); },
                 },
                 childContextTypes: {
-                    session_properties: React.PropTypes.object,
+                    adminUser: React.PropTypes.bool,
+                    loggedIn: React.PropTypes.bool,
+                    userURI: React.PropTypes.string,
                     navigate: React.PropTypes.func,
                     fetch: React.PropTypes.func,
                 },
@@ -378,28 +371,22 @@ describe('Cart manager while logged in as admin', () => {
             cart_user_max: 30,
             title: 'Cart',
         };
-        const sessionProperties = {
-            admin: true,
-            'auth.userid': 'fytanaka@stanford.edu',
-            user: {
-                '@context': '/terms/',
-                '@id': '/users/627eedbc-7cb3-4de3-9743-a86266e435a6/',
-                '@type': ['User', 'Item'],
-                title: 'Forrest Tanaka',
-                uuid: '627eedbc-7cb3-4de3-9743-a86266e435a6',
-            },
-        };
+        const userURI = '/users/627eedbc-7cb3-4de3-9743-a86266e435a6/';
+        const adminUser = true;
+
         const store = mockStore(initialCart);
         cartManager = mount(
-            <Provider store={store}><CartManager context={context} sessionProperties={sessionProperties} /></Provider>,
+            <Provider store={store}><CartManager context={context} /></Provider>,
             {
                 context: {
-                    session_properties: sessionProperties,
+                    adminUser,
+                    userURI,
                     navigate: () => { console.log('navigate'); },
                     fetch: () => { console.log('fetch'); },
                 },
                 childContextTypes: {
-                    session_properties: React.PropTypes.object,
+                    adminUser: React.PropTypes.bool,
+                    userURI: React.PropTypes.string,
                     navigate: React.PropTypes.func,
                     fetch: React.PropTypes.func,
                 },
