@@ -243,8 +243,8 @@ def genetic_modification_7_8(value, system):
                     # Bring the identifier with matching source to the reagent to the top
                     matching.sort(key=lambda match: int(match[1] in match[0]), reverse=True)
                     # matching = [i for i in matching if i[1] in i[0]]
-                source_name, source, identifier = matching[0]
-                new_identifier = ('{}:{}'.format(source_name, identifier))
+                _, source, identifier = matching[0]
+                new_identifier = ('{}:{}'.format(source, identifier))
                 new_reagent['identifier'] = new_identifier
                 new_reagents.append(new_reagent)
         # Dump the unmatched identifier reagents to the notes
