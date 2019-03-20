@@ -53,6 +53,22 @@ IntroducedTags.propTypes = {
 };
 
 
+// All possible genetic modification object modification site property names. This might need to
+// change if the genetic_modification.json schema changes.
+const modificationSitePropNames = ['modified_site_by_target_id', 'modified_site_by_coordinates', 'modified_site_by_sequence', 'modified_site_nonspecific'];
+
+
+/**
+ * Determine if a genetic modification object includes any modification site properties.
+ * @param {object} geneticModification GM object
+ * @return {boolean} True if `geneticModification` includes any modification site properties.
+ */
+const hasModificationSiteProps = (geneticModification) => {
+    const gmKeys = Object.keys(geneticModification);
+    return modificationSitePropNames.some(siteType => gmKeys.indexOf(siteType) !== -1);
+};
+
+
 // Render the modification site items into a definition list.
 const ModificationSiteItems = (props) => {
     const { geneticModification, itemClass } = props;
@@ -101,7 +117,7 @@ const ModificationSiteItems = (props) => {
         ),
     };
 
-    const elements = ['modified_site_by_target_id', 'modified_site_by_coordinates', 'modified_site_by_sequence', 'modified_site_nonspecific'].map((siteType) => {
+    const elements = modificationSitePropNames.map((siteType) => {
         if (geneticModification[siteType]) {
             return <div key={siteType}>{renderers[siteType](geneticModification)}</div>;
         }
@@ -129,15 +145,18 @@ ModificationSiteItems.defaultProps = {
 // render into the GM summary panel as its own section;
 const ModificationSite = (props) => {
     const { geneticModification } = props;
-    const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
 
-    return (
-        <div>
-            <hr />
-            <h4>Modification site</h4>
-            <ModificationSiteItems geneticModification={geneticModification} itemClass={itemClass} />
-        </div>
-    );
+    if (hasModificationSiteProps(geneticModification)) {
+        const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
+        return (
+            <div>
+                <hr />
+                <h4>Modification site</h4>
+                <ModificationSiteItems geneticModification={geneticModification} itemClass={itemClass} />
+            </div>
+        );
+    }
+    return null;
 };
 
 ModificationSite.propTypes = {
@@ -561,6 +580,13 @@ class GeneticModificationComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.introduced_elements ?
+                                        <div data-test="introduced-elements">
+                                            <dt>Introduced elements</dt>
+                                            <dd>{context.introduced_elements}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.zygosity ?
                                         <div data-test="zygosity">
                                             <dt>Zygosity</dt>
@@ -693,7 +719,7 @@ GeneticModificationSummary.columns = {
     method: { title: 'Method' },
     site: {
         title: 'Site',
-        display: item => <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} />,
+        display: item => (hasModificationSiteProps(item) ? <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} /> : null),
     },
 };
 
