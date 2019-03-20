@@ -54,5 +54,6 @@
     "boost_values": {
         "term_id": 1.0,
         "term_name": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/platform.md"
 }
