@@ -16,7 +16,7 @@ import { singleTreatment, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede, ControllingExperiments } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
 
 
 const anisogenicValues = [
@@ -419,7 +419,7 @@ class ExperimentComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Experiment summary for {context.accession}</h2>
-                        <Supersede context={context} />
+                        <ReplacementAccessions context={context} />
                         <div className="cart__toggle--header">
                             <CartToggle element={context} />
                         </div>

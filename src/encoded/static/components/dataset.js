@@ -17,7 +17,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef, Supersede, ControllingExperiments } from './typeutils';
+import { AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -85,10 +85,9 @@ class AnnotationComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased}/>
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for annotation file set {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                        <Supersede context={context} />
+                        <ReplacementAccessions context={context} />
                         {this.props.auditIndicators(context.audit, 'annotation-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
@@ -1285,8 +1284,7 @@ export class SeriesComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                        <Supersede context={context} />
+                        <ReplacementAccessions context={context} />
                         {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
