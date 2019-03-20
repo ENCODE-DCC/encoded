@@ -213,7 +213,7 @@ def _get_annotation_metadata(request, search_path, param_list):
         :param search_path: Search url
         :param param_list: Initial param_list
     """
-    header = [header for header in _tsv_mapping_annotation]
+    header = [header for header in _tsv_mapping_annotation if header != 'Restricted']
     header.extend([prop for prop in _audit_mapping])
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
@@ -265,7 +265,6 @@ def _get_annotation_metadata(request, search_path, param_list):
                 ', '.join([derived_from[7:-1] for derived_from in result_file.get('derived_from', '')]),
                 result_file.get('cloud_metadata', {}).get('url', ''),
                 result_file.get('file_size', ''),
-                result_file.get('restricted', ''),
             ]
             # make_audit_cell() was designed just for experiment, but works too for annotation
             row.extend(
@@ -345,7 +344,8 @@ def metadata_tsv(context, request):
     header = []
     file_attributes = []
     for prop in _tsv_mapping:
-        header.append(prop)
+        if prop != 'Restricted':
+            header.append(prop)
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
         if _tsv_mapping[prop][0].startswith('files'):
             file_attributes = file_attributes + [_tsv_mapping[prop][0]]
