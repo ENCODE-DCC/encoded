@@ -756,7 +756,9 @@ class VisDataset(object):
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
                 track["type"] = view["type"]
-                track["bigDataUrl"] = "%s?proxy=true" % a_file["href"]
+                track["bigDataUrl"] = a_file.get("cloud_metadata", {}).get(
+                    "url", "%s?proxy=true" % a_file["href"]
+                )
                 longLabel = self.vis_def.get('file_defs', {}).get('longLabel')
                 if longLabel is None:
                     longLabel = ("{assay_title} of {biosample_term_name} {output_type} "
