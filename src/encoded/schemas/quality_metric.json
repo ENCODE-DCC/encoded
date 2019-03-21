@@ -59,7 +59,8 @@
                     "type": "string",
                     "enum": [
                         "image/png",
-                        "text/plain"
+                        "text/plain",
+                        "application/pdf"
                     ]
                 },
                 "size": {

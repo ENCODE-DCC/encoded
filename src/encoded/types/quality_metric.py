@@ -245,3 +245,25 @@ class MicroRnaQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class MicroRnaMappingQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'micro_rna_mapping_quality_metric'
     schema = load_schema('encoded:schemas/micro_rna_mapping_quality_metric.json')
+
+
+@collection(
+    name='long-read-rna-mapping-quality-metrics',
+    properties={
+        'title': "long read RNA Mapping Quality Metrics",
+        'description': 'A set of long read RNA pipeline mapping QC metrics',
+    })
+class LongReadRnaMappingQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'long_read_rna_mapping_quality_metric'
+    schema = load_schema('encoded:schemas/long_read_rna_mapping_quality_metric.json')
+
+
+@collection(
+    name='long-read-rna-quantification-quality-metrics',
+    properties={
+        'title': "long read RNA Quantification Quality Metrics",
+        'description': 'A set of long read RNA pipeline quantification QC metrics',
+    })
+class LongReadRnaQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'long_read_rna_quantification_quality_metric'
+    schema = load_schema('encoded:schemas/long_read_rna_quantification_quality_metric.json')
