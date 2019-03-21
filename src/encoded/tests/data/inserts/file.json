@@ -2387,5 +2387,22 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
+    },
+    {
+        "_test": "bam file for ISO-seq experiment",
+        "accession": "ENCFF003ISO",
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR751ISO",
+        "file_format": "bam",
+        "file_size": 398856,
+        "lab": "/labs/robert-waterston/",
+        "md5sum": "22be74b6e11555393507f4ebfa65d78c",
+        "output_type": "alignments",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "submitted_file_name": "alabama.bam",
+        "uuid": "3d668412-fb5c-4cf1-8d66-5ab02ac06c09"
     }
 ]

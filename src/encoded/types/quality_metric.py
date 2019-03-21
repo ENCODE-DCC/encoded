@@ -223,3 +223,14 @@ class HistoneChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
 class GenericQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'generic_quality_metric'
     schema = load_schema('encoded:schemas/generic_quality_metric.json')
+
+
+@collection(
+    name='long-read-rna-quality-metrics',
+    properties={
+        'title': "long read RNA Quality Metrics",
+        'description': 'A set of long read RNA pipeline QC metrics',
+    })
+class LongReadRnaQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'long_read_rna_quality_metric'
+    schema = load_schema('encoded:schemas/long_read_rna_quality_metric.json')

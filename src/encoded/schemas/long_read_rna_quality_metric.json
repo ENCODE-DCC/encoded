@@ -1,0 +1,124 @@
+
+{
+    "title": "long-read RNA-seq quality metric",
+    "description": "Schema for reporting long-read RNA-seq pipeline quality metric",
+    "id": "/profiles/long_read_rna_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "award", "lab", "replicates_sequencing_depth", "mapping_rate", "replicates_genes_detected"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "replicates_sequencing_depth": {
+            "title": "Number of full-length non-chimeric reads per isogenic replicate",
+            "type":  "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "title": "Full-length non-chimeric read counts per replicate",
+                "type": "object",
+                "required": ["replicate", "full_length_non_chimeric_read_count"],
+                "properties": {
+                    "replicate": {
+                        "title": "Replicate",
+                        "description": "Isogenic replicate",
+                        "type": "string",
+                        "linkTo": "Replicate"
+                    },
+                    "full_length_non_chimeric_read_count": {
+                        "title": "Number of full-length non-chimeric reads",
+                        "description": "Quantity of full-length reads not mapping chimerically of the genome",
+                        "type": "integer",
+                        "minimum": 0
+                    }
+                }
+            }
+        },
+        "mapping_rate": {
+            "title": "Percentage of reads mapping to reference genome",
+            "type":  "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "replicates_correlation": {
+            "title": "Spearman correlation coefficients between pairs of isogenic replicates",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Spearman correlation between replicates pairs",
+                "type": "object",
+                "required": ["replicates", "spearman_correlation"],
+                "properties": {
+                    "replicates": {
+                        "title": "Pair of replicates",
+                        "description": "Pair of isogenic replicates",
+                        "type":  "array",
+                        "uniqueItems": true,
+                        "maxItems" : 2,
+                        "minItems" : 2,
+                        "items": {
+                            "title": "Replicate",
+                            "description": "Isogenic replicate",
+                            "type": "string",
+                            "linkTo": "Replicate"
+                        }
+                    },
+                    "spearman_correlation": {
+                        "title": "Spearman correlation",
+                        "type": "number",
+                        "description": "Spearman correlation coefficient of replicates from quantification",
+                        "minimum": -1,
+                        "maximum": 1
+                    }
+                }
+            }
+        },
+        "replicates_genes_detected": {
+            "title": "Number of GENCODE genes detected per isogenic replicate",
+            "type":  "array",
+            "uniqueItems": true,
+            "minitems": 1,
+            "items": {
+                "title": "Number of GENCODE genes detected per replicate",
+                "type": "object",
+                "required": ["replicate", "genes_detected"],
+                "properties": {
+                    "replicate": {
+                        "title": "Replicate",
+                        "description": "Isogenic replicate",
+                        "type": "string",
+                        "linkTo": "Replicate"
+                    },
+                    "genes_detected": {
+                        "title": "Number of GENCODE genes detected",
+                        "description": "Number of GENCODE genes detected for the replicate",
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                }
+            }
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/long_read_rna_quality_metric.md"
+} 
