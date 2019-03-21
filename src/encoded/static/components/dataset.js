@@ -280,7 +280,9 @@ class PublicationDataComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for publication file set {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
@@ -442,7 +444,9 @@ class ReferenceComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for reference file set {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
@@ -607,7 +611,9 @@ class ProjectComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for project file set {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
@@ -793,7 +799,9 @@ class UcscBrowserCompositeComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>

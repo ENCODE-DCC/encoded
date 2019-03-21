@@ -49,7 +49,9 @@ const Item = (props) => {
             <header className="row">
                 <div className="col-sm-12">
                     <h2>{title}</h2>
-                    <AlternateAccession altAcc={context.alternate_accessions} />
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
+                    </div>
                     <DisplayAsJson />
                 </div>
             </header>
