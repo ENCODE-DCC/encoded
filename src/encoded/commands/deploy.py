@@ -331,23 +331,20 @@ def _get_run_args(main_args, instances_tag_data):
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
             'COMMIT': instances_tag_data['commit'],
             'ROLE': main_args.role,
-            'REGION_INDEX': 'False',
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_REPO': main_args.git_repo,
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
+            'APACHE_CFG': main_args.apache_cfg,
         }
         if main_args.no_es:
             config_file = ':cloud-config-no-es.yml'
         elif main_args.cluster_name:
             config_file = ':cloud-config-cluster.yml'
             data_insert['CLUSTER_NAME'] = main_args.cluster_name
-            data_insert['REGION_INDEX'] = 'True'
         else:
             config_file = ':cloud-config.yml'
-        if main_args.set_region_index_to:
-            data_insert['REGION_INDEX'] = main_args.set_region_index_to
         user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args)
     else:
         if not main_args.cluster_name:
@@ -363,6 +360,7 @@ def _get_run_args(main_args, instances_tag_data):
             'ES_MASTER': 'true',
             'MIN_MASTER_NODES': int(count/2 + 1),
             'GIT_REPO': main_args.git_repo,
+            'APACHE_CFG': main_args.apache_cfg,
         }
         if main_args.single_data_master:
             data_insert['ES_MASTER'] = 'false'
@@ -375,6 +373,7 @@ def _get_run_args(main_args, instances_tag_data):
                 'ES_MASTER': 'true',
                 'MIN_MASTER_NODES': 1,
                 'GIT_REPO': main_args.git_repo,
+                'APACHE_CFG': main_args.apache_cfg,
             }
             master_user_data = get_user_data(
                 instances_tag_data['commit'],
@@ -541,23 +540,6 @@ def main():
 
 def parse_args():
 
-    def check_region_index(value):
-        lower_value = value.lower()
-        allowed_values = [
-            'true', 't',
-            'false', 'f'
-        ]
-        if value.lower() not in allowed_values:
-            raise argparse.ArgumentTypeError(
-                "Noncase sensitive argument '%s' is not in [%s]." % (
-                    str(value),
-                    ', '.join(allowed_values),
-                )
-            )
-        if lower_value[0] == 't':
-            return 'True'
-        return 'False'
-
     def check_volume_size(value):
         allowed_values = ['120', '200', '500']
         if not value.isdigit() or value not in allowed_values:
@@ -606,8 +588,6 @@ def parse_args():
     parser.add_argument('--no-es', action='store_true', help="Use non ES cloud condfig")
     parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
-    parser.add_argument('--set-region-index-to', type=check_region_index,
-                        help="Override region index in yaml to 'True' or 'False'")
     parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
     parser.add_argument('--spot-price', default='0.70', help="Set price or keep default price of 0.70")
     parser.add_argument('--teardown-cluster', default=None,
@@ -624,6 +604,7 @@ def parse_args():
         help="Set EC2 availabilty zone")
     parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
             help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
+    parser.add_argument('--apache-cfg', default=None, help='Choose etc apache config for deployment')
     # Set Role
     # - 'demo' role is default for making single or clustered
     # applications for feature building
@@ -640,6 +621,15 @@ def parse_args():
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
+    # Set apache conf based on role and/or argument
+    available_cfgs = ['no-region', 'encoded']
+    if not args.apache_cfg:
+        args.apache_cfg = 'encoded'
+        if args.role == 'demo':
+            args.apache_cfg = 'no-region'
+    elif args.apache_cfg not in available_cfgs:
+        print('apache-cfg must be %s' % ','.join(available_cfgs))
+        exit(387)
     return args
 
 
