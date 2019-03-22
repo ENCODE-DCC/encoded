@@ -628,7 +628,7 @@ class GeneticModificationComponent extends React.Component {
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"
-                    url={`/search/?type=Biosample&genetic_modifications.uuid=${context.uuid}`}
+                    url={`/search/?type=Biosample&applied_modifications.uuid=${context.uuid}`}
                     Component={BiosampleTable}
                 />
             </div>
