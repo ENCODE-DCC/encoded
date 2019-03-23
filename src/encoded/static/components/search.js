@@ -656,6 +656,22 @@ const Term = (props) => {
         negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
     }
 
+    if (facet.appended === 'true') {
+        const isNegated = facet.isEqual === 'false';
+        const vfield = filters.find(f => f.field === facet.field);
+        const vhref = vfield ? vfield.remove : '';
+        return (
+            <li className={`facet-term${isNegated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
+                {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
+                <a className="facet-term__item" href={vhref} onClick={href ? onFilter : null}>
+                    <div className="facet-term__text">
+                        {em ? <em>{title}</em> : <span>{title}</span>}
+                    </div>
+                </a>
+            </li>
+        );
+    }
+
     return (
         <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
             {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
@@ -834,7 +850,7 @@ class Facet extends React.Component {
         }
 
         // Return Facet component if there are terms with doc_count > 0 or for negated facet
-        if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || facet.appended === 'true') {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
@@ -883,7 +899,7 @@ class Facet extends React.Component {
                         :
                             <div>
                                 {/* If the user has not searched, we will display the full set of facet terms */}
-                                {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
+                                {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || (facet.appended === 'true')) ?
                                     <div className="terms-block">
                                         {/* List of results does not overflow top on initialization */}
                                         <div className="top-shading hide-shading" />
