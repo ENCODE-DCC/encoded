@@ -95,7 +95,7 @@
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "External identifiers",
+                "title": "External identifier",
                 "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
                 "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
                 "type":  "string"
