@@ -1,4 +1,4 @@
-## Changelog for file.json
+## Changelog for image.json
 
 ### Schema version 2
 

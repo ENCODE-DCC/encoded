@@ -60,5 +60,6 @@
         "status": {
             "title": "Status"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/biosample_characterization.md"
 }
