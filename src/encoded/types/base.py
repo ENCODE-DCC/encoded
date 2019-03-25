@@ -106,6 +106,8 @@ STATUS_HIERARCHY = {
     'disabled': 10,
     'deleted': 0,
     'replaced': -10,
+    'content error': -20,
+    'upload failed': -20,
 }
 
 
