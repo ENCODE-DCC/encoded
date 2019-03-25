@@ -28,7 +28,7 @@ export class Param extends React.Component {
 
     componentWillUnmount() {
         const xhr = this.state.fetchedRequest;
-        if (xhr) {
+        if (!this.props.allowMultipleRequest && xhr) {
             console.log('abort param xhr');
             xhr.abort();
         }
@@ -36,7 +36,9 @@ export class Param extends React.Component {
 
     fetch(url) {
         let request = this.state.fetchedRequest;
-        if (request) request.abort();
+        if (!this.props.allowMultipleRequest && request) {
+            request.abort();
+        }
 
         if (!url) {
             this.props.handleFetch();
@@ -94,12 +96,14 @@ Param.propTypes = {
     type: PropTypes.string,
     name: PropTypes.string.isRequired,
     etagName: PropTypes.string,
+    allowMultipleRequest: PropTypes.bool,
 };
 
 Param.defaultProps = {
     type: 'json',
     etagName: undefined,
     handleFetch: undefined, // Actually required, but added in cloneElement
+    allowMultipleRequest: false,
 };
 
 Param.contextTypes = {
