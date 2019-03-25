@@ -501,14 +501,15 @@ $deleted-bg: #ffe0e0;
 .experiment-table {
     @at-root #{&}__header {
         display: flex;
+
+        .cart__add-all-element-control {
+            flex: 0 1 auto;
+            margin: -5px -5px -5px 10px;
+        }
     }
 
     @at-root #{&}__title {
         flex: 1 1 auto;
     }
 
-    @at-root #{&}__control {
-        flex: 0 1 auto;
-        margin: -5px -5px -5px 10px;
-    }
 }

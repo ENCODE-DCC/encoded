@@ -146,10 +146,10 @@ CartAddAllSearchComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
 });
 
-const CartAddAllInternal = connect(CartAddAllSearchComponent.mapStateToProps, CartAddAllSearchComponent.mapDispatchToProps)(CartAddAllSearchComponent);
+const CartAddAllSearchInternal = connect(CartAddAllSearchComponent.mapStateToProps, CartAddAllSearchComponent.mapDispatchToProps)(CartAddAllSearchComponent);
 
 export const CartAddAllSearch = (props, reactContext) => (
-    <CartAddAllInternal searchResults={props.searchResults} session={reactContext.session} fetch={reactContext.fetch} />
+    <CartAddAllSearchInternal searchResults={props.searchResults} session={reactContext.session} fetch={reactContext.fetch} />
 );
 
 CartAddAllSearch.propTypes = {
@@ -181,10 +181,10 @@ class CartAddAllElementsComponent extends React.Component {
     }
 
     render() {
-        const { savedCartObj, inProgress, css } = this.props;
+        const { savedCartObj, inProgress } = this.props;
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         return (
-            <div className={css}>
+            <div className="cart__add-all-element-control">
                 <button
                     disabled={inProgress}
                     className="btn btn-info btn-sm"
@@ -205,22 +205,18 @@ CartAddAllElementsComponent.propTypes = {
     elements: PropTypes.array.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,
-    /** CSS classes to add to the wrapper div around the button */
-    css: PropTypes.string,
     /** Function to call when Add All clicked */
     addAllResults: PropTypes.func.isRequired,
 };
 
 CartAddAllElementsComponent.defaultProps = {
     savedCartObj: null,
-    css: null, // To prevent class attribute generation if no classes desired
 };
 
 CartAddAllElementsComponent.mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     elements: ownProps.elements,
     inProgress: state.inProgress,
-    css: ownProps.css,
 });
 
 CartAddAllElementsComponent.mapDispatchToProps = (dispatch, ownProps) => ({
@@ -231,20 +227,17 @@ const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateT
 
 
 // Public component used to bind to context properties.
-export const CartAddAllElements = ({ elements, css }, reactContext) => (
-    <CartAddAllElementsInternal elements={elements} css={css} session={reactContext.session} fetch={reactContext.fetch} />
+export const CartAddAllElements = ({ elements }, reactContext) => (
+    <CartAddAllElementsInternal elements={elements} session={reactContext.session} fetch={reactContext.fetch} />
 );
 
 CartAddAllElements.propTypes = {
     /** New elements to add to cart as array of dataset objects */
     elements: PropTypes.array,
-    /** CSS classes to add to button */
-    css: PropTypes.string,
 };
 
 CartAddAllElements.defaultProps = {
     elements: [],
-    css: null,
 };
 
 CartAddAllElements.contextTypes = {

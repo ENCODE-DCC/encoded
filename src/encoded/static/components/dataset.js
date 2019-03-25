@@ -1310,7 +1310,7 @@ export class SeriesComponent extends React.Component {
             addAllToCartControl = (
                 <div className="experiment-table__header">
                     <h4 className="experiment-table__title">{`Experiments in ${seriesTitle} ${context.accession}`}</h4>
-                    <CartAddAllElements elements={experimentList} css="experiment-table__control" />
+                    <CartAddAllElements elements={experimentList} />
                 </div>
             );
         }
