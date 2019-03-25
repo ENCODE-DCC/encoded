@@ -69,7 +69,9 @@ class BiosampleComponent extends React.Component {
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_ontology.classification}</span>
                         </h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>

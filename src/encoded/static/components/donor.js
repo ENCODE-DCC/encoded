@@ -570,7 +570,9 @@ class DonorComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
                         {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
                         <DisplayAsJson />
