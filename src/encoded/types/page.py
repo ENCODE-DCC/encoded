@@ -65,7 +65,7 @@ class Page(SharedItem):
         "type": "string",
     })
     def month_released(self, date_created):
-        return dateutil.parser.parse(date_created).strftime('%Y-%m')
+        return dateutil.parser.parse(date_created).strftime('%B, %Y')
 
     @calculated_property(condition='date_created', schema={
         "title": "Year",
