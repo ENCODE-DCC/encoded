@@ -511,7 +511,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.possible_controls.lab',
         'related_datasets.target.organism',
         'related_datasets.references',
-        'files.lab',
         'files.platform',
         'files.lab',
         'files.analysis_step_version.analysis_step',
