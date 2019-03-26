@@ -1,12 +1,12 @@
 import unittest
-from pyramid.tests.test_authentication import DummyRequest
+from pyramid.testing import DummyRequest
 
 
 class TestNamespacedAuthenticationPolicy(unittest.TestCase):
     """ This is a modified version of TestRemoteUserAuthenticationPolicy
     """
     def _getTargetClass(self):
-        from encoded.authentication import NamespacedAuthenticationPolicy
+        from snovault.authentication import NamespacedAuthenticationPolicy
         return NamespacedAuthenticationPolicy
 
     def _makeOne(self, namespace='user',
@@ -26,47 +26,47 @@ class TestNamespacedAuthenticationPolicy(unittest.TestCase):
         verifyObject(IAuthenticationPolicy, self._makeOne())
 
     def test_unauthenticated_userid_returns_None(self):
-        request = DummyRequest({})
+        request = DummyRequest()
         policy = self._makeOne()
         self.assertEqual(policy.unauthenticated_userid(request), None)
 
     def test_unauthenticated_userid(self):
-        request = DummyRequest({'REMOTE_USER':'fred'})
+        request = DummyRequest(environ={'REMOTE_USER':'fred'})
         policy = self._makeOne()
         self.assertEqual(policy.unauthenticated_userid(request), 'user.fred')
 
     def test_authenticated_userid_None(self):
-        request = DummyRequest({})
+        request = DummyRequest()
         policy = self._makeOne()
         self.assertEqual(policy.authenticated_userid(request), None)
 
     def test_authenticated_userid(self):
-        request = DummyRequest({'REMOTE_USER':'fred'})
+        request = DummyRequest(environ={'REMOTE_USER':'fred'})
         policy = self._makeOne()
         self.assertEqual(policy.authenticated_userid(request), 'user.fred')
 
     def test_effective_principals_None(self):
         from pyramid.security import Everyone
-        request = DummyRequest({})
+        request = DummyRequest()
         policy = self._makeOne()
         self.assertEqual(policy.effective_principals(request), [Everyone])
 
     def test_effective_principals(self):
         from pyramid.security import Everyone
         from pyramid.security import Authenticated
-        request = DummyRequest({'REMOTE_USER':'fred'})
+        request = DummyRequest(environ={'REMOTE_USER':'fred'})
         policy = self._makeOne()
         self.assertEqual(policy.effective_principals(request),
                          [Everyone, Authenticated, 'user.fred'])
 
     def test_remember(self):
-        request = DummyRequest({'REMOTE_USER':'fred'})
+        request = DummyRequest(environ={'REMOTE_USER':'fred'})
         policy = self._makeOne()
         result = policy.remember(request, 'fred')
         self.assertEqual(result, [])
 
     def test_forget(self):
-        request = DummyRequest({'REMOTE_USER':'fred'})
+        request = DummyRequest(environ={'REMOTE_USER':'fred'})
         policy = self._makeOne()
         result = policy.forget(request)
         self.assertEqual(result, [])

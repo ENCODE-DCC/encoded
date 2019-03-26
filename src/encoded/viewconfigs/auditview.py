@@ -131,6 +131,10 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
                 ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
             )
         audit_field_list, used_filters = self._set_query_aggs(query)
+        if not query['query']:
+            del query['query']
+        if not query['post_filter']:
+            del query['post_filter']
         return query, audit_field_list, used_filters
 
     def _construct_xygroupings(

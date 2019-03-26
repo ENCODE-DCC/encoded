@@ -70,6 +70,8 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
         if len(doc_types) == 1 and 'facets' in self._types[doc_types[0]].schema:
             facets.extend(self._types[doc_types[0]].schema['facets'].items())
         query['aggs'] = set_facets(facets, used_filters, self._principals, doc_types)
+        if not query['query']:
+            del query['query']
         es_results = self._elastic_search.search(
             body=query,
             index=self._es_index,

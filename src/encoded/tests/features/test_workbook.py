@@ -12,4 +12,5 @@ scenarios(
     'experiments.feature',
     'search.feature',
     'targets.feature',
+    strict_gherkin=False
 )

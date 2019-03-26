@@ -264,5 +264,5 @@ def test_retry(testapp):
     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     url = res.location
     res = testapp.get(url + '/@@testing-retry?datstore=database')
-    assert res.json['attempt'] == 2
+    assert res.json['retry.attempt'] == 1
     assert not res.json['detached']

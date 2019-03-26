@@ -32,6 +32,7 @@ def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
     assert 'upload_credentials' not in updated_file
 
 
+@mock_sts
 @mock_s3
 def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -46,6 +47,7 @@ def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
     assert all([x in res.headers['Location'] for x in ['s3', 'amazonaws', 'test_upload_bucket']])
 
 
+@mock_sts
 @mock_s3
 def test_file_download_view_proxy_range(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -59,6 +61,7 @@ def test_file_download_view_proxy_range(testapp, uploading_file, dummy_request):
     assert 'X-Accel-Redirect' in res.headers
 
 
+@mock_sts
 @mock_s3
 def test_file_download_view_soft_redirect(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
@@ -83,6 +86,7 @@ def test_regen_creds_uploading_file_not_found(testapp, uploading_file, dummy_req
     res = testapp.post_json(posted_file['@id'] + '@@upload', {}, status=404)
 
 
+@mock_sts
 @mock_s3
 def test_download_file_not_found(testapp, uploading_file, dummy_request, root):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'

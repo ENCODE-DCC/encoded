@@ -2,7 +2,6 @@ from pyramid.view import view_config
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
-from pyramid.security import effective_principals
 from snovault.viewconfigs.base_view import BaseView
 from encoded.helpers.helper import (
     format_results,
@@ -274,7 +273,7 @@ def region_search(context, request):
         'notification': '',
         'filters': []
     }
-    principals = effective_principals(request)
+    principals = request.effective_principals
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
