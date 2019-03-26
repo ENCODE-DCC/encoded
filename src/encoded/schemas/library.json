@@ -187,7 +187,6 @@
         "fragmentation_method": {
             "title": "Fragmentation method",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "description": "A list of nucleic acid fragmentation methods and enzymes used in library preparation, if applicable.",
             "items":{

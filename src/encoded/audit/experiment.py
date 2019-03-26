@@ -63,62 +63,38 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
         return
     if 'replicates' not in value:
         return
-    frag_methods = set() #Set object will have unique elements only. If we try to add existing elements second time, those will not be repeated 
-    using_restriction_enzyme = 0
+    
+    
+    fragmentation_methods = set()
+    libraries_fragmentation_methods = {}
+    print ("zopa")
     for rep in value['replicates']:
         rep_lib = rep.get('library')
         rep_status = rep.get('status')
         if rep_lib and rep_status and rep_status not in excluded_types:
-            #excluded types see below (include)
             rep_lib_status = rep_lib.get('status')
             if rep_lib_status and rep_lib_status not in excluded_types:
                 if 'fragmentation_method' in rep_lib:
+                    libraries_fragmentation_methods[rep_lib.get('@id')] = set(rep_lib.get('fragmentation_method'))
                     for method in rep_lib.get('fragmentation_method'):
-                        frag_methods.add(method)
-                        frag_methods = sorted(frag_methods)
-                        #Since we are adding elements to a set object frag_methods, 
-                        # if two different restriction enzymes are added only 
-                        # then frag_methods will have more than 1 elements
-                        if 'restriction' in method:
-                            using_restriction_enzyme += 1
-                            # Since now we are dealing with a list object in fragmentation_method,
-                            # we can add 1 every time fragmentation_method finds "restriction" term
+                        fragmentation_methods.add(method)
                 else:
                     detail = ('Experiment {} contains a library {} '
                               'lacking the specification of the fragmentation '
                               'method used to generate it'.format(
                                     value['@id'],
-                                    rep_lib.get('accession')
-                               )
-                              )
+                                    rep_lib.get('accession')))
                     yield AuditFailure('missing fragmentation method', detail, level='WARNING')
-
-    if len(frag_methods) > 1 and using_restriction_enzyme <= 1:
-        #Cases where one method is non-restriction enzyme based and the other is restriction-enzyme based
-        detail = ('Experiment {} contains libraries generated '
-                  'following fragmentation with '
-                  'inconsistent methods {} '.format(
+    for library_id in libraries_fragmentation_methods.keys():
+        methods = libraries_fragmentation_methods[library_id]
+        if methods - fragmentation_methods != set() or fragmentation_methods - methods != set():
+            detail = ('Experiment {} contains library generated using {} '
+                      'fragmentation methods, which are inconsistent with '
+                      'fragmentation methods {} used for other libraries.').format(
                         value['@id'],
-                        frag_methods
-                    )
-                  )
-        yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')
-    elif len(frag_methods) > 1 and using_restriction_enzyme > 1:
-        #Cases where both methods are restriction-enzyme based and need to have consistency between enzymes used within replicates
-        for rep in value['replicates']:
-        rep_lib = rep.get('library')
-            for method in rep_lib.get('fragmentation_method'):
-                method_set = sorted(set(method))
-                if (method_set.intersection(frag_methods) != method_set.union(frag_methods)):
-                    detail = ('Experiment {} contains libraries generated '
-                        'following fragmentation with more than one restriction enzymes'
-                        'and within the same replicate, these can not be different  '
-                        'inconsistent restriction enzymes {} '.format(
-                            value['@id'],
-                            frag_methods
-                        )
-                      )
-                    yield AuditFailure('inconsistent restriction enzyme fragmentation method', detail, level='ERROR')
+                        sorted(list(methods)),
+                        sorted(list(fragmentation_methods)))
+            yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')         
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):

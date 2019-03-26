@@ -660,6 +660,22 @@ def test_audit_experiment_inconsistent_fragmentation_method(testapp,
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_consistent_fragmentation_method(testapp,
+                                                            base_experiment,
+                                                            replicate_1_1,
+                                                            replicate_2_1,
+                                                            library_1,
+                                                            library_2):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'HiC'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(library_1['@id'], {'fragmentation_method': ['chemical (HindIII restriction)', 'chemical (MboI restriction)']})
+    testapp.patch_json(library_2['@id'], {'fragmentation_method': ['chemical (MboI restriction)', 'chemical (HindIII restriction)']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'inconsistent fragmentation method'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_mixed_libraries(testapp,
                                           base_experiment,
                                           replicate_1_1,
