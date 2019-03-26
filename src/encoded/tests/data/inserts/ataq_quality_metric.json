@@ -1,0 +1,36 @@
+[
+    {
+        "IDR_stats": [
+            {
+                "replicates": [
+                    "1add7e11-a642-42cd-9f4e-fe58fee29d88",
+                    "2a4fd72c-72ab-445f-a50a-12a9f97a6d8f"
+                ],
+                "self_consistency_ratio": 10,
+                "rescue_ratio": 11
+            }
+
+        ],
+        "replicate_atac_qc": [
+            {
+                "replicate": "2a4fd72c-72ab-445f-a50a-12a9f97a6d8f",
+                "PBC1": 0.881151,
+                "PBC2": 9.486023,
+                "NSC": 1.962623,               
+                "TSS_enrichment": 0.4,
+                "nucleosome_free_region": true,
+                "mononucleosome_peak_presence": false,
+                "aligned_filtered_reads": 45,
+                "frip": 8.5,
+                "IDR_peaks": 345,
+                "overlap_peaks": 45,
+                "alignment_rate": 0.567
+            }
+        ],
+        "status": "released",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "ed6373ae-924f-4618-ab5a-f70b2c5a7b7b",   
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/U54HG006996/"       
+    }
+]

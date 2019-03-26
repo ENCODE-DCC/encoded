@@ -65,7 +65,8 @@
                 "type": "object",
                 "required": [
                     "replicates",
-                    "spearman_correlation"
+                    "self_consistency_ratio",
+                    "rescue_ratio"
                 ],
                 "properties": {
                     "replicates": {
