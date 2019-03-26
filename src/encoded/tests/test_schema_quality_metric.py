@@ -17,7 +17,51 @@ def generic_quality_metric(analysis_step_run, file, award, lab):
         }
     }
 
+
+@pytest.fixture
+def atac_quality_metric(analysis_step_run, file, award, lab, replicate_1_1, replicate_1_2):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'quality_metric_of': [file['uuid']],
+        'IDR_stats': [
+            {
+                'replicates': [
+                    replicate_1_1['@id'],
+                    replicate_1_2['@id']
+                ],
+                'self_consistency_ratio': 10,
+                'rescue_ratio': 11
+            }
+
+        ],
+        'replicate_atac_qc': [
+            {
+                'replicate': replicate_1_1['@id'],
+                'PBC1': 0.881151,
+                'PBC2': 9.486023,
+                'NRF': 1.962623,               
+                'TSS_enrichment': 0.4,
+                'nucleosome_free_region': True,
+                'mononucleosome_peak_presence': False,
+                'aligned_filtered_reads': 45,
+                'frip': 8.5,
+                'IDR_peaks': 345,
+                'overlap_peaks': 45,
+                'alignment_rate': 0.567
+            }
+        ]
+    }
+
+
 def test_tarball_attachment(testapp, generic_quality_metric):
     # Make sure *.tar.gz and *.tgz files are accepted by the attachment property
     res = testapp.post_json('/generic_quality_metric', generic_quality_metric, expect_errors=False)
     assert res.status_code == 201
+
+
+def test_atac_quality_metric(testapp, atac_quality_metric):
+    res = testapp.post_json("/atac_quality_metric", atac_quality_metric, expect_errors=False)
+    assert res.status_code == 201 
+     

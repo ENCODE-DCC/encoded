@@ -16,7 +16,7 @@
                 "replicate": "2a4fd72c-72ab-445f-a50a-12a9f97a6d8f",
                 "PBC1": 0.881151,
                 "PBC2": 9.486023,
-                "NSC": 1.962623,               
+                "NRF": 1.962623,               
                 "TSS_enrichment": 0.4,
                 "nucleosome_free_region": true,
                 "mononucleosome_peak_presence": false,
