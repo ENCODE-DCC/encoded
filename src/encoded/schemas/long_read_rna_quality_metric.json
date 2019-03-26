@@ -23,12 +23,14 @@
             "default": "1"
         },
         "replicates_sequencing_depth": {
-            "title": "Number of full-length non-chimeric reads per isogenic replicate",
+            "title": "Replicates sequencing depth",
+            "description": "Number of full-length non-chimeric reads per isogenic replicate",
             "type":  "array",
             "minItems": 1,
             "uniqueItems": true,
             "items": {
-                "title": "Full-length non-chimeric read counts per replicate",
+                "title": "Replicate read count",
+                "description": "Full-length non-chimeric read counts per replicate",
                 "type": "object",
                 "required": ["replicate", "full_length_non_chimeric_read_count"],
                 "properties": {
@@ -39,7 +41,7 @@
                         "linkTo": "Replicate"
                     },
                     "full_length_non_chimeric_read_count": {
-                        "title": "Number of full-length non-chimeric reads",
+                        "title": "Read count",
                         "description": "Quantity of full-length reads not mapping chimerically of the genome",
                         "type": "integer",
                         "minimum": 0
@@ -47,23 +49,46 @@
                 }
             }
         },
-        "mapping_rate": {
-            "title": "Percentage of reads mapping to reference genome",
-            "type":  "number",
-            "minimum": 0,
-            "maximum": 100
+        "replicates_mapping_rate": {
+            "title": "Replicates mapping rate",
+            "description": "Percentage of reads mapping to reference genome per isogenic replicate",
+            "type":  "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "title": "Replicate mapping rate",
+                "description": "Mapping rate per isogenic replicate",
+                "type": "object",
+                "required": ["replicate", "mapping_rate"],
+                "properties": {
+                    "replicate": {
+                        "title": "Replicate",
+                        "description": "Isogenic replicate",
+                        "type": "string",
+                        "linkTo": "Replicate"
+                    },
+                    "mapping_rate": {
+                        "title": "Mapping rate",
+                        "type":  "number",
+                        "minimum": 0,
+                        "maximum": 100
+                    }
+                }
+            }
         },
         "replicates_correlation": {
-            "title": "Spearman correlation coefficients between pairs of isogenic replicates",
+            "title": "Replicates correlation",
+            "description": "Spearman correlation coefficients between pairs of isogenic replicates",
             "type":  "array",
             "uniqueItems": true,
             "items": {
-                "title": "Spearman correlation between replicates pairs",
+                "title": "Replicate pair correlation",
+                "description": "Spearman correlation between replicates pairs",
                 "type": "object",
                 "required": ["replicates", "spearman_correlation"],
                 "properties": {
                     "replicates": {
-                        "title": "Pair of replicates",
+                        "title": "Replicates",
                         "description": "Pair of isogenic replicates",
                         "type":  "array",
                         "uniqueItems": true,
@@ -87,12 +112,14 @@
             }
         },
         "replicates_genes_detected": {
-            "title": "Number of GENCODE genes detected per isogenic replicate",
+            "title": "Replicates genes detected",
+            "description": "Number of GENCODE genes detected per isogenic replicate",
             "type":  "array",
             "uniqueItems": true,
             "minitems": 1,
             "items": {
-                "title": "Number of GENCODE genes detected per replicate",
+                "title": "Replicate genes detected",
+                "description": "Number of GENCODE genes detected per replicate",
                 "type": "object",
                 "required": ["replicate", "genes_detected"],
                 "properties": {
@@ -103,7 +130,7 @@
                         "linkTo": "Replicate"
                     },
                     "genes_detected": {
-                        "title": "Number of GENCODE genes detected",
+                        "title": "Genes detected",
                         "description": "Number of GENCODE genes detected for the replicate",
                         "type": "integer",
                         "minimum": 1
