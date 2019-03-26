@@ -117,3 +117,9 @@ def library_5_6(value, system):
 def library_7_8(value, system):
     # http://redmine.encodedcc.org/issues/5049
     return
+
+
+@upgrade_step('library', '8', '9')
+def library_8_9(value, system):
+    if 'fragmentation_method' in value:
+        value['fragmentation_method'] = [value.get('fragmentation_method')]

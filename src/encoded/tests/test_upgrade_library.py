@@ -41,6 +41,13 @@ def library_3(library):
     })
     return item
 
+@pytest.fixture
+def library_8(library):
+    item = library.copy()
+    item.update({
+        'fragmentation_method': 'sonication (Bioruptor Twin)'
+    })
+    return item
 
 def test_library_upgrade(upgrader, library_1):
     value = upgrader.upgrade('library', library_1, target_version='3')
@@ -72,3 +79,9 @@ def test_library_fragmentation(upgrader, library_3):
     value = upgrader.upgrade('library', library_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['fragmentation_method'] == 'shearing (Covaris generic)'
+
+
+def test_library_fragmentation_list(upgrader, library_8):
+    value = upgrader.upgrade('library', library_8, target_version='9')
+    assert value['schema_version'] == '9'
+    assert isinstance(value['fragmentation_method'], list) #check if fragmentation_method is a list

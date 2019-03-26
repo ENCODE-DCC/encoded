@@ -10,7 +10,7 @@
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "extraction_method": "see document",
-        "fragmentation_method": "sonication (Bioruptor Twin)",
+        "fragmentation_method": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
         "lysis_method": "see document",
@@ -36,7 +36,7 @@
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "extraction_method": "see document",
-        "fragmentation_method": "sonication (Bioruptor Twin)",
+        "fragmentation_method": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
         "lysis_method": "see document",
@@ -59,7 +59,7 @@
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "fragmentation_method": "shearing (Covaris generic)",
+        "fragmentation_method": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
@@ -83,7 +83,7 @@
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "fragmentation_method": "shearing (Covaris generic)",
+        "fragmentation_method": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
@@ -185,7 +185,7 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
         "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
-        "fragmentation_method": "chemical (Illumina TruSeq)",
+        "fragmentation_method": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
         "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
@@ -202,7 +202,7 @@
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication (generic)",
+        "fragmentation_method": ["sonication (generic)"],
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "DNA",
@@ -217,7 +217,7 @@
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication (generic)",
+        "fragmentation_method": ["sonication (generic)"],
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "DNA",
@@ -232,7 +232,7 @@
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication (generic)",
+        "fragmentation_method": ["sonication (generic)"],
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "DNA",
@@ -247,7 +247,7 @@
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication (generic)",
+        "fragmentation_method": ["sonication (generic)"],
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "DNA",
@@ -262,7 +262,7 @@
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication (generic)",
+        "fragmentation_method": ["sonication (generic)"],
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "DNA",
@@ -279,7 +279,7 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
         "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
-        "fragmentation_method": "chemical (Illumina TruSeq)",
+        "fragmentation_method": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
         "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
@@ -337,7 +337,7 @@
         "documents": [],
         "uuid": "0cbd1597-831a-4628-9cd0-c428b208d259",
         "strand_specificity": false,
-        "fragmentation_method": "shearing (Covaris generic)",
+        "fragmentation_method": ["shearing (Covaris generic)"],
         "status": "in progress",
         "nucleic_acid_term_name": "DNA",
         "treatments": [],
@@ -415,7 +415,7 @@
         "award": "U41HG007355",
         "strand_specificity": false,
         "size_range": "350-600",
-        "fragmentation_method": "shearing (Covaris generic)",
+        "fragmentation_method": ["shearing (Covaris generic)"],
         "aliases": ["robert-waterston:library_RB884_80_1_1"],
         "depleted_in_term_name": ["rRNA"],
         "extraction_method": "Trizol"
@@ -432,7 +432,7 @@
         "award": "U41HG007355",
         "strand_specificity": false,
         "size_range": "350-600",
-        "fragmentation_method": "shearing (Covaris generic)",
+        "fragmentation_method": ["shearing (Covaris generic)"],
         "aliases": ["robert-waterston:library_RB884_680_1_1"],
         "depleted_in_term_name": ["rRNA"],
         "extraction_method": "Trizol"
@@ -450,7 +450,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "shearing (Covaris generic)",
+        "fragmentation_method": ["shearing (Covaris generic)"],
         "depleted_in_term_name": ["rRNA"],
         "extraction_method": "Trizol"
     },
@@ -463,7 +463,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB001SER",
         "biosample": "ENCBS001SER",
@@ -478,7 +478,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB002SER",
         "biosample": "ENCBS002SER",
@@ -493,7 +493,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB003SER",
         "biosample": "ENCBS003SER",
@@ -508,7 +508,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB001CON",
         "biosample": "ENCBS001SER",
@@ -523,7 +523,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB002CON",
         "biosample": "ENCBS002CON",
@@ -538,7 +538,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB003CON",
         "biosample": "ENCBS003CON",
@@ -553,7 +553,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",
-        "fragmentation_method": "sonication (Bioruptor generic)",
+        "fragmentation_method": ["sonication (Bioruptor generic)"],
         "extraction_method": "Trizol",
         "accession": "ENCLB001EPI",
         "biosample": "ENCBS001EPI",
