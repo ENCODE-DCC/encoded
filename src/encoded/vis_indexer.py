@@ -288,7 +288,11 @@ class VisIndexer(Indexer):
 
         if last_exc is None:
             try:
-                result = vis_cache_add(request, doc['embedded'])  # result is empty if not visualizable
+                result = vis_cache_add(
+                    request,
+                    doc['embedded'],
+                    is_vis_indexer=True,
+                )
                 if len(result):
                     # Warning: potentiallly slow uuid-level accounting, but single process so no concurency issue
                     self.state.viscached_uuid(uuid)

@@ -1136,9 +1136,12 @@ class VisDataset(object):
         return self.ucsc_trackDb()
 
 
-def vis_cache_add(request, dataset):
+def vis_cache_add(request, dataset, is_vis_indexer=False):
     '''For a single embedded dataset, builds and adds vis_dataset to es cache for each relevant assembly.'''
-    if not object_is_visualizable(dataset, exclude_quickview=True):
+    if (
+            not is_vis_indexer and
+            not object_is_visualizable(dataset, exclude_quickview=True)
+        ):
         return []
 
     accession = dataset['accession']
