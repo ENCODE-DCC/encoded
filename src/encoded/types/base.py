@@ -91,7 +91,9 @@ STATUS_TRANSITION_TABLE = {
     'replaced': [],
     'disabled': ['disabled', 'current'],
     'current': ['current'],
-    'uploading': ['uploading', 'upload failed', 'content error']
+    'uploading': ['uploading', 'upload failed', 'content error'],
+    'content error': ['uploading'],
+    'upload failed': ['uploading'],
 }
 
 # Used to calculate whether new_status is more or less than current_status.
