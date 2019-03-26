@@ -55,42 +55,35 @@
                 }
             }
         },
-        "aligned_fragments": {
-            "title": "Filtered and deduplicated aligned fragments",
-            "comment": "Mitochondrial alignments are filtered",
-            "type":  "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Filtered and deduplicated aligned fragments per replicate",
-                "type": "object",
-                "required": ["replicate", "aligned_fragments"],
-                "properties": {
-                    "replicate": {
-                        "title": "Replicate",
-                        "description": "Isogenic replicate",
-                        "type": "string",
-                        "linkTo": "Replicate"
-                    },
-                    "aligned_fragments": {
-                        "title": "Aligned fragments",
-                        "description": "Quantity of filtered and deduplicated aligned fragments",
-                        "type": "number",
-                        "minimum":0
-                    }
-                }
-            }
-        },
         "IDR_stats": {
-            "title": "IDR",
+            "title": "IDR statistics",
+            "description": "IDR statistics calculated for every possible pair of replicates",
             "type":  "array",
             "uniqueItems": true,
             "items": {
-                "title": "IDR statistics",
+                "title": "Replicate pair IDR",
                 "type": "object",
-                "required": ["self_consistency_ratio", "rescue_ratio"],
+                "required": [
+                    "replicates",
+                    "spearman_correlation"
+                ],
                 "properties": {
+                    "replicates": {
+                        "title": "Replicates",
+                        "description": "Pair of isogenic replicates",
+                        "type":  "array",
+                        "uniqueItems": true,
+                        "maxItems" : 2,
+                        "minItems" : 2,
+                        "items": {
+                            "title": "Replicate",
+                            "description": "Isogenic replicate",
+                            "type": "string",
+                            "linkTo": "Replicate"
+                        }
+                    },
                     "self_consistency_ratio": {
-                        "title": "Self-consistency ratio",
+                        "title": "Self consistency ratio",
                         "type": "number",
                         "description": "IDR self-consistency ratio for this experiment"
                     },
@@ -102,19 +95,34 @@
                 }
             }
         },
-        "library_stats": {
-            "title": "Library statistics",
+        "replicate_atac_qc": {
+            "title": "Replicate ATAC QC",
+            "description": "Replicates qc",
             "type":  "array",
             "uniqueItems": true,
             "items": {
-                "title": "Library QC statistics",
+                "title": "Replicate QC",
                 "type": "object",
-                "required": ["library", "PBC1", "PBC2", "NRF"],
+                "required": [
+                    "replicate",
+                    "PBC1",
+                    "PBC2",
+                    "NRF",
+                    "TSS_enrichment",
+                    "nucleosome_free_region",
+                    "mononucleosome_peak_presence",
+                    "aligned_filtered_reads",
+                    "frip",
+                    "IDR_peaks",
+                    "overlap_peaks",
+                    "alignment_rate"
+                ],
                 "properties": {
-                    "library": {
-                        "title": "Library",
+                    "replicate": {
+                        "title": "Replicate",
+                        "description": "Isogenic replicate",
                         "type": "string",
-                        "linkTo": "Library"
+                        "linkTo": "Replicate"
                     },
                     "PBC1": {
                         "title": "PCR bottlenecking coefficient 1",
@@ -132,36 +140,52 @@
                         "title": "Non-redundant fraction",
                         "type": "number",
                         "description": "Non redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads"
+                    },
+                    "TSS_enrichment": {
+                        "title": "TSS enrichement",
+                        "type": "number"
+                    },
+                    "nucleosome_free_region": {
+                        "title": "Nucleosome free region",
+                        "default": false,
+                        "type": "boolean"
+                    },
+                    "mononucleosome_peak_presence": {
+                        "title": "Presence of mononucleosome peak in the fragment length distribution",
+                        "default": false,
+                        "type": "boolean"
+                    },
+                    "aligned_filtered_reads": {
+                        "title": "Aligned filtered fragments",
+                        "description": "Read count after deduplication, quality filtering and removal of mitochondrial reads",
+                        "type": "number",
+                        "minimum":0
+                    },
+                    "frip": {
+                        "title": "FRiP",
+                        "description": "Fraction of reads in called peak regions",
+                        "type": "number"
+                    },
+                    "IDR_peaks": {
+                        "title": "IDR peaks",
+                        "description": "Number of peaks within an IDR peak file",
+                        "type": "number",
+                        "minimum":0
+                    },
+                    "overlap_peaks": {
+                        "title": "Overlap peaks",
+                        "description": "Number of peaks within an overlap peak file",
+                        "type": "number",
+                        "minimum":0
+                    },
+                    "alignment_rate": {
+                        "title": "Alignment rate",
+                        "description": "Alignment rate (percentage of mapped reads)",
+                        "type": "number",
+                        "minimum":0
                     }
                 }
             }
-        },
-        "replicated_peaks": {
-            "title": "Replicated peaks number",
-            "type": "number",
-            "minimum":0
-        },
-        "IDR_thresholded_peaks": {
-            "title": "IDR thresholded peaks number",
-            "type": "number",
-            "minimum":0
-        },
-        "nucleosome_free_region": {
-            "title": "Nucleosome free region",
-            "type": "boolean"
-        },
-        "mononucleosome_peak_presence": {
-            "title": "Presence of mononucleosome peak in the fragment length distribution",
-            "type": "boolean"
-        },
-        "Fp": {
-            "title": "FRiP score from pooled pseudoreplicate peaks",
-            "type": "number",
-            "description": "Fraction reads in IDR peaks (FRiP) from pooled pseudoreplicates"
-        },
-        "TSS_enrichment": {
-            "title": "TSS enrichement",
-            "type": "number"
         }
     },
     "facets": {
