@@ -7,7 +7,12 @@
         "uuid": "851ae37b-4444-4f51-babe-b2fd378d080c",
         "assay_term_name": "ISO-seq",
         "quality_metric_of": ["3d668412-fb5c-4cf1-8d66-5ab02ac06c09"],
-        "mapping_rate": 46,
+        "replicates_mapping_rate": [
+            {
+                "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+                "mapping_rate": 46
+            }
+        ],
         "replicates_sequencing_depth": [
             {
                 "replicate": "3b427e79-556e-4125-8102-f6723471807e",
