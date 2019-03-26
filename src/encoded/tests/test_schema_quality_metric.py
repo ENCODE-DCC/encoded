@@ -33,7 +33,10 @@ def long_read_rna_quality_metric(analysis_step_run, file, award, lab, replicate_
             "replicate": replicate_1_1["uuid"],
             "genes_detected": 1000
         }],
-        "mapping_rate": 89.3
+        "replicates_mapping_rate": [{
+            "replicate": replicate_1_1["uuid"],
+            "mapping_rate": 46
+        }]
     }
 
 
