@@ -812,6 +812,7 @@ def test_format_facets():
                 'doc_count': 1,
             }
         ],
+        'appended': 'false',
         'total': 3,
         'type': 'terms',
     }]
