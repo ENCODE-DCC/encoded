@@ -2389,7 +2389,7 @@
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
     },
     {
-        "_test": "bam file for ISO-seq experiment",
+        "_test": "bam file for long read RNA-seq experiment",
         "accession": "ENCFF003ISO",
         "assembly": "hg19",
         "award": "U54HG006998",

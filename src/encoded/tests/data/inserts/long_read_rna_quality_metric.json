@@ -5,7 +5,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "uuid": "851ae37b-4444-4f51-babe-b2fd378d080c",
-        "assay_term_name": "ISO-seq",
+        "assay_term_name": "long read RNA-seq",
         "quality_metric_of": ["3d668412-fb5c-4cf1-8d66-5ab02ac06c09"],
         "replicates_mapping_rate": [
             {
