@@ -2,7 +2,8 @@
 
 ### Schema version 9
 
-* *fragmentation_method* was replaced by an array *fragmentation_methods*
+* *fragmentation_method* property was replaced by an array *fragmentation_methods*
+* *fragmentation_date* value is specified would apply to all the listed fragmentation methods
 
 ### Minor changes since schema version 8
 
