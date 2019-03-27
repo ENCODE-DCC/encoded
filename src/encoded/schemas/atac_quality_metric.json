@@ -192,6 +192,9 @@
     "facets": {
         "status": {
             "title": "Status"
+        },
+        "assay_term_name": {
+            "title": "Assay name"
         }
     },
     "changelog": "/profiles/changelogs/atac_quality_metric.md"
