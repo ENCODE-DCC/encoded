@@ -34,7 +34,6 @@ def atac_quality_metric(analysis_step_run, file, award, lab, replicate_1_1, repl
                 'self_consistency_ratio': 10,
                 'rescue_ratio': 11
             }
-
         ],
         'replicate_atac_qc': [
             {

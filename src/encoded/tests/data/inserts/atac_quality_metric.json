@@ -9,7 +9,6 @@
                 "self_consistency_ratio": 10,
                 "rescue_ratio": 11
             }
-
         ],
         "replicate_atac_qc": [
             {
