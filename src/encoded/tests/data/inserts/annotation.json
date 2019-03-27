@@ -90,7 +90,7 @@
         "_test": "encyclopedia",
         "accession": "ENCSR331TIQ",
         "award": "U54HG007004",
-        "annotation_type": "other",
+        "annotation_type": "imputation",
         "description": "ENCODE Annotations v3",
         "encyclopedia_version": "3",
         "targets": ["/targets/H3K4me3-human"],

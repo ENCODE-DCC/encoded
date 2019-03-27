@@ -567,3 +567,10 @@ def test_upgrade_annotation_22_to_23(upgrader, annotation_20):
     assert 'biosample_type' not in value
     assert 'biosample_term_id' not in value
     assert 'biosample_term_name' not in value
+
+
+def test_upgrade_annotation_23_to_24(upgrader, annotation_20):
+    value = upgrader.upgrade(
+        'annotation', annotation_20, current_version='23', target_version='24'
+    )
+    assert 'annotation_type' in value
