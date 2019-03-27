@@ -64,4 +64,3 @@ def test_tarball_attachment(testapp, generic_quality_metric):
 def test_atac_quality_metric(testapp, atac_quality_metric):
     res = testapp.post_json("/atac_quality_metric", atac_quality_metric, expect_errors=False)
     assert res.status_code == 201 
-     

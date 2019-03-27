@@ -190,11 +190,11 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "assay_term_name": {
             "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/atac_quality_metric.md"
