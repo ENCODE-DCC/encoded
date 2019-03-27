@@ -147,6 +147,22 @@ table.matrix th.group-all-groups-cell {
     margin-bottom: 10px;
 }
 
+.matrix-header {
+    .col-sm-11 {
+        h1 {
+            display: flex;
+            align-items: flex-end;
+            .matrix-title {
+                flex: 0 1 30%;
+            }
+            .matrix-tag {
+                flex: 0 1 70%;
+                text-align: right;
+            }
+        }
+    }
+}
+
 .matrix-tag {
     display: inline-block;
     float: right;
@@ -154,5 +170,6 @@ table.matrix th.group-all-groups-cell {
         height: 22px;
         vertical-align: top;
         padding-left: 10px;
+        margin-bottom: 5px;
     }
 }

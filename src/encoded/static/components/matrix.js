@@ -197,7 +197,8 @@ class Matrix extends React.Component {
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>
-                                            <h1>{context.title}
+                                            <h1>
+                                                <div className="matrix-title">{context.title}</div>
                                                 <MatrixInternalTags context={context} />
                                             </h1>
                                         </div>

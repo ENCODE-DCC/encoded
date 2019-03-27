@@ -695,7 +695,9 @@ export const MatrixInternalTags = ({ context }) => {
     const internalTags = [];
     context.filters.forEach((filter) => {
         if (filter.field === 'internal_tags') {
-            internalTags.push(filter.term);
+            if (filter.term !== '*') {
+                internalTags.push(filter.term);
+            }
         }
     });
     const tagBadges = internalTags.map(tag => (<img src={`/static/img/tag-${tag}.png`} onError={addDefaultSrc} key={tag} alt={`${tag} collection logo`} />));
