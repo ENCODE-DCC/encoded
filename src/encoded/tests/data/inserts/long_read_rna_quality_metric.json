@@ -10,7 +10,7 @@
         "replicates_mapping_rate": [
             {
                 "replicate": "3b427e79-556e-4125-8102-f6723471807e",
-                "mapping_rate": 46
+                "mapping_rate": 0.46
             }
         ],
         "replicates_sequencing_depth": [

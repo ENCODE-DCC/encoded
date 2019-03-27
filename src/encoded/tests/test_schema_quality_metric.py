@@ -35,7 +35,28 @@ def long_read_rna_quality_metric(analysis_step_run, file, award, lab, replicate_
         }],
         "replicates_mapping_rate": [{
             "replicate": replicate_1_1["uuid"],
-            "mapping_rate": 46
+            "mapping_rate": 10
+        }]
+    }
+
+@pytest.fixture
+def long_read_rna_quality_metric2(analysis_step_run, file, award, lab, replicate_1_1):
+    return {
+        "award": award["uuid"],
+        "lab": lab["uuid"],
+        "step_run": analysis_step_run["uuid"],
+        "quality_metric_of": [file["uuid"]],
+        "replicates_sequencing_depth": [{
+            "replicate": replicate_1_1["uuid"],
+            "full_length_non_chimeric_read_count": 34000
+        }],
+        "replicates_genes_detected" : [{
+            "replicate": replicate_1_1["uuid"],
+            "genes_detected": 1000
+        }],
+        "replicates_mapping_rate": [{
+            "replicate": replicate_1_1["uuid"],
+            "mapping_rate": 0.46
         }]
     }
 
@@ -46,6 +67,11 @@ def test_tarball_attachment(testapp, generic_quality_metric):
     assert res.status_code == 201
 
 
-def test_long_read_rna_quality_metric(testapp, long_read_rna_quality_metric):
-    res = testapp.post_json("/long_read_rna_quality_metric", long_read_rna_quality_metric, expect_errors=False)
-    assert res.status_code == 201
+def test_long_read_rna_quality_metric(testapp, long_read_rna_quality_metric, replicate_1_1):
+    testapp.post_json("/long_read_rna_quality_metric", long_read_rna_quality_metric, status=422)
+    long_read_rna_quality_metric.update(
+        {"replicates_mapping_rate": 
+            [{"replicate": replicate_1_1['uuid'],
+              "mapping_rate": 0.3}]
+            })
+    testapp.post_json("/long_read_rna_quality_metric", long_read_rna_quality_metric, status=201)

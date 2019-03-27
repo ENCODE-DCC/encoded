@@ -5,7 +5,7 @@
     "id": "/profiles/long_read_rna_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "award", "lab", "replicates_sequencing_depth", "mapping_rate", "replicates_genes_detected"],
+    "required": ["step_run", "award", "lab", "replicates_sequencing_depth", "replicates_mapping_rate", "replicates_genes_detected"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -71,7 +71,7 @@
                         "title": "Mapping rate",
                         "type":  "number",
                         "minimum": 0,
-                        "maximum": 100
+                        "maximum": 1
                     }
                 }
             }
