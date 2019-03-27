@@ -799,6 +799,7 @@ def test_format_facets():
     result = BaseView._format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
+
     assert result == [{
         'field': 'field1',
         'title': 'Field 1',
@@ -812,6 +813,7 @@ def test_format_facets():
                 'doc_count': 1,
             }
         ],
+        'appended': 'false',
         'total': 3,
         'type': 'terms',
     }]
