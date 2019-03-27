@@ -183,15 +183,14 @@
             ],
             "format": "semi-controlled"
         },
-
-        "fragmentation_method": {
-            "title": "Fragmentation method",
+        "fragmentation_methods": {
+            "title": "Fragmentation methods",
             "type": "array",
             "uniqueItems": true,
-            "description": "A list of nucleic acid fragmentation methods and enzymes used in library preparation, if applicable.",
+            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
             "items":{
                 "title": "Fragmentation method",
-                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
+                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation.",
                 "type": "string",
                 "enum": [
                     "chemical (DNaseI)",
@@ -229,7 +228,6 @@
 
             }
         },
-
         "fragmentation_date":{
             "title": "Fragmentation date",
             "description": "The date that the nucleic acid was fragmented.",

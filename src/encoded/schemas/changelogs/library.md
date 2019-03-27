@@ -2,7 +2,7 @@
 
 ### Schema version 9
 
-* *fragmentation_method* instead of being a single value, it is now an array of values. 
+* *fragmentation_method* was replaced by an array *fragmentation_methods*
 
 ### Minor changes since schema version 8
 

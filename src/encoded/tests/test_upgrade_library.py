@@ -42,10 +42,11 @@ def library_3(library):
     return item
 
 @pytest.fixture
-def library_8(library):
-    item = library.copy()
+def library_8(library_3):
+    item = library_3.copy()
     item.update({
-        'fragmentation_method': 'sonication (Bioruptor Twin)'
+        'schema_version': '8',
+        'status': "in progress"
     })
     return item
 
@@ -84,4 +85,5 @@ def test_library_fragmentation(upgrader, library_3):
 def test_library_fragmentation_list(upgrader, library_8):
     value = upgrader.upgrade('library', library_8, target_version='9')
     assert value['schema_version'] == '9'
-    assert isinstance(value['fragmentation_method'], list) #check if fragmentation_method is a list
+    assert isinstance(value['fragmentation_methods'], list)
+    assert 'fragmentation_method' not in value
