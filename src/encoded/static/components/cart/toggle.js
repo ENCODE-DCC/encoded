@@ -26,7 +26,7 @@ class CartToggleComponent extends React.Component {
     }
 
     render() {
-        const { elements, elementAtId, savedCartObj, loggedIn, inProgress } = this.props;
+        const { elements, elementAtId, savedCartObj, css, loggedIn, inProgress } = this.props;
         const inCart = elements.indexOf(elementAtId) > -1;
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         const cartAtLimit = !loggedIn && elements.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
@@ -37,7 +37,7 @@ class CartToggleComponent extends React.Component {
         // "name" attribute needed for BDD test targeting.
         return (
             <button
-                className={`cart__toggle${inCart ? ' cart__toggle--in-cart' : ''}`}
+                className={`cart__toggle${inCart ? ' cart__toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}
                 onClick={this.handleClick}
                 disabled={inProgress || (!loggedIn && !inCart && cartAtLimit)}
                 title={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
@@ -58,6 +58,8 @@ CartToggleComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** @id of element being added to cart */
     elementAtId: PropTypes.string.isRequired,
+    /** CSS to add to toggle */
+    css: PropTypes.string,
     /** Function to call to add `elementAtId` to cart */
     onAddToCartClick: PropTypes.func.isRequired,
     /** Function to call to remove `elementAtId` from cart  */
@@ -71,6 +73,7 @@ CartToggleComponent.propTypes = {
 CartToggleComponent.defaultProps = {
     elements: [],
     savedCartObj: null,
+    css: '',
     loggedIn: false,
     inProgress: false,
 };
@@ -80,6 +83,7 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     elementAtId: ownProps.element['@id'],
+    css: ownProps.css,
     loggedIn: ownProps.loggedIn,
 });
 
@@ -94,8 +98,8 @@ const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartTogg
 const CartToggle = (props, reactContext) => (
     <CartToggleInternal
         element={props.element}
+        css={props.css}
         loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
-        sessionProperties={reactContext.session_properties}
         fetch={reactContext.fetch}
     />
 );
@@ -103,11 +107,16 @@ const CartToggle = (props, reactContext) => (
 CartToggle.propTypes = {
     /** Object being added */
     element: PropTypes.object.isRequired,
+    /** CSS to add to toggle */
+    css: PropTypes.string,
+};
+
+CartToggle.defaultProps = {
+    css: '',
 };
 
 CartToggle.contextTypes = {
     session: PropTypes.object,
-    session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
 

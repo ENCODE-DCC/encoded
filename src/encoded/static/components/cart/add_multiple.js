@@ -13,7 +13,7 @@ import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT, getAllo
 /**
  * Button to add all qualifying elements to the user's cart.
  */
-class CartAddAllComponent extends React.Component {
+class CartAddAllSearchComponent extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -111,7 +111,7 @@ class CartAddAllComponent extends React.Component {
     }
 }
 
-CartAddAllComponent.propTypes = {
+CartAddAllSearchComponent.propTypes = {
     /** Existing cart contents before adding new items */
     elements: PropTypes.array.isRequired,
     /** Current cart saved object */
@@ -128,39 +128,119 @@ CartAddAllComponent.propTypes = {
     session: PropTypes.object,
 };
 
-CartAddAllComponent.defaultProps = {
+CartAddAllSearchComponent.defaultProps = {
     inProgress: false,
     savedCartObj: null,
     session: null,
 };
 
-const mapStateToProps = (state, ownProps) => ({
+CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
     elements: state.elements,
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     searchResults: ownProps.searchResults,
     session: ownProps.session,
 });
-const mapDispatchToProps = (dispatch, ownProps) => ({
+CartAddAllSearchComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
 });
 
-const CartAddAllInternal = connect(mapStateToProps, mapDispatchToProps)(CartAddAllComponent);
+const CartAddAllSearchInternal = connect(CartAddAllSearchComponent.mapStateToProps, CartAddAllSearchComponent.mapDispatchToProps)(CartAddAllSearchComponent);
 
-const CartAddAll = (props, reactContext) => (
-    <CartAddAllInternal searchResults={props.searchResults} session={reactContext.session} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
+export const CartAddAllSearch = (props, reactContext) => (
+    <CartAddAllSearchInternal searchResults={props.searchResults} session={reactContext.session} fetch={reactContext.fetch} />
 );
 
-CartAddAll.propTypes = {
+CartAddAllSearch.propTypes = {
     /** Search result object of elements to add to cart */
     searchResults: PropTypes.object.isRequired,
 };
 
-CartAddAll.contextTypes = {
+CartAddAllSearch.contextTypes = {
     session: PropTypes.object,
-    session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
 
-export default CartAddAll;
+
+/**
+ * Renders a button to add all elements from an array of dataset objects to the current cart.
+ */
+class CartAddAllElementsComponent extends React.Component {
+    constructor() {
+        super();
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    /**
+     * Handle a click in the button to add all datasets from a list to the current cart.
+     */
+    handleClick() {
+        const elementAtIds = this.props.elements.map(element => element['@id']);
+        this.props.addAllResults(elementAtIds);
+    }
+
+    render() {
+        const { savedCartObj, inProgress } = this.props;
+        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+        return (
+            <div className="cart__add-all-element-control">
+                <button
+                    disabled={inProgress}
+                    className="btn btn-info btn-sm"
+                    onClick={this.handleClick}
+                    title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
+                >
+                    Add all items to cart
+                </button>
+            </div>
+        );
+    }
+}
+
+CartAddAllElementsComponent.propTypes = {
+    /** Current cart saved object */
+    savedCartObj: PropTypes.object,
+    /** New elements to add to cart as array of dataset objects */
+    elements: PropTypes.array.isRequired,
+    /** True if cart updating operation is in progress */
+    inProgress: PropTypes.bool.isRequired,
+    /** Function to call when Add All clicked */
+    addAllResults: PropTypes.func.isRequired,
+};
+
+CartAddAllElementsComponent.defaultProps = {
+    savedCartObj: null,
+};
+
+CartAddAllElementsComponent.mapStateToProps = (state, ownProps) => ({
+    savedCartObj: state.savedCartObj,
+    elements: ownProps.elements,
+    inProgress: state.inProgress,
+});
+
+CartAddAllElementsComponent.mapDispatchToProps = (dispatch, ownProps) => ({
+    addAllResults: elements => dispatch(addMultipleToCartAndSave(elements, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+});
+
+const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateToProps, CartAddAllElementsComponent.mapDispatchToProps)(CartAddAllElementsComponent);
+
+
+// Public component used to bind to context properties.
+export const CartAddAllElements = ({ elements }, reactContext) => (
+    <CartAddAllElementsInternal elements={elements} session={reactContext.session} fetch={reactContext.fetch} />
+);
+
+CartAddAllElements.propTypes = {
+    /** New elements to add to cart as array of dataset objects */
+    elements: PropTypes.array,
+};
+
+CartAddAllElements.defaultProps = {
+    elements: [],
+};
+
+CartAddAllElements.contextTypes = {
+    session: PropTypes.object,
+    fetch: PropTypes.func,
+};
