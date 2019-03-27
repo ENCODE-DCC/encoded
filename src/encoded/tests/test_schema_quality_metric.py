@@ -39,27 +39,6 @@ def long_read_rna_quality_metric(analysis_step_run, file, award, lab, replicate_
         }]
     }
 
-@pytest.fixture
-def long_read_rna_quality_metric2(analysis_step_run, file, award, lab, replicate_1_1):
-    return {
-        "award": award["uuid"],
-        "lab": lab["uuid"],
-        "step_run": analysis_step_run["uuid"],
-        "quality_metric_of": [file["uuid"]],
-        "replicates_sequencing_depth": [{
-            "replicate": replicate_1_1["uuid"],
-            "full_length_non_chimeric_read_count": 34000
-        }],
-        "replicates_genes_detected" : [{
-            "replicate": replicate_1_1["uuid"],
-            "genes_detected": 1000
-        }],
-        "replicates_mapping_rate": [{
-            "replicate": replicate_1_1["uuid"],
-            "mapping_rate": 0.46
-        }]
-    }
-
 
 def test_tarball_attachment(testapp, generic_quality_metric):
     # Make sure *.tar.gz and *.tgz files are accepted by the attachment property
