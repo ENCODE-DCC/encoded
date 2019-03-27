@@ -15,6 +15,7 @@ import cartStore, {
     cartMergeElements,
     cartRetrieve,
     cartSave,
+    cartSetOperationInProgress,
     cartGetSettings,
     cartSetSettingsCurrent,
     cartSetCurrent,
@@ -602,6 +603,7 @@ class App extends React.Component {
         // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
         // cart (has a "disabled" status) and add the in-memory cart items to it.
         let autosaveCartPromise;
+        cartSetOperationInProgress(true, cartStore.dispatch);
         if (cartIsUnsaved()) {
             // The user has an in-memory cart that needs to be saved to the auto-save cart,
             // so get the auto-save cart with a search.
@@ -640,6 +642,7 @@ class App extends React.Component {
                 },
             })
         )).then((response) => {
+            cartSetOperationInProgress(false, cartStore.dispatch);
             if (response.ok) {
                 return response.json();
             }

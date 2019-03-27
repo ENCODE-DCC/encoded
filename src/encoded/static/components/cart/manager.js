@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
 import { SortTablePanel, SortTable } from '../sorttable';
 import Status from '../status';
-import { setCartNameIdentifierAndSave } from './actions';
-import { cartCreate, cartPatch } from './database';
+import { setCartNameIdentifierAndSave, cartOperationInProgress } from './actions';
+import { cartCreate, cartUpdate, cartRetrieve } from './database';
 import { cartSetSettingsCurrent } from './settings';
 import CartShare from './share';
 import switchCart from './switch';
@@ -30,18 +30,17 @@ class CurrentCartButtonComponent extends React.Component {
      * current user in session_properties hasn't yet been set.
      */
     handleRadioButtonChange() {
-        const { cart, user, onCurrentCartClick, onSwitchCartStart, onSwitchCartComplete } = this.props;
+        const { cart, user, onCurrentCartClick } = this.props;
         if (user) {
             // Set the browser's localstorage cart settings to remember this button's cart as the
             // current cart, and update the cart store for the current cart.
-            onSwitchCartStart();
             cartSetSettingsCurrent(user, cart['@id']);
-            onCurrentCartClick().then(() => onSwitchCartComplete());
+            onCurrentCartClick();
         }
     }
 
     render() {
-        const { cart, current, operationInProgress } = this.props;
+        const { cart, current, inProgress } = this.props;
         const selected = cart['@id'] === current;
         return (
             <input
@@ -50,7 +49,7 @@ class CurrentCartButtonComponent extends React.Component {
                 onChange={this.handleRadioButtonChange}
                 checked={selected}
                 className="cart-manager-table__current-button"
-                disabled={cart.status === 'deleted' || cart.status === 'disabled' || operationInProgress}
+                disabled={cart.status === 'deleted' || cart.status === 'disabled' || inProgress}
             />
         );
     }
@@ -62,27 +61,27 @@ CurrentCartButtonComponent.propTypes = {
     /** @id of the current cart */
     current: PropTypes.string.isRequired,
     /** True if cart operation in progress */
-    operationInProgress: PropTypes.bool,
+    inProgress: PropTypes.bool.isRequired,
     /** Current user object from session_properties */
     user: PropTypes.object,
     /** Dispatch function for setting the current cart in the cart Redux store */
     onCurrentCartClick: PropTypes.func.isRequired,
-    /** Function to call when switching operation starts */
-    onSwitchCartStart: PropTypes.func.isRequired,
-    /** Function to call when switching operation complete */
-    onSwitchCartComplete: PropTypes.func.isRequired,
 };
 
 CurrentCartButtonComponent.defaultProps = {
-    operationInProgress: false,
     user: null,
 };
+
+CurrentCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    inProgress: state.inProgress,
+    ...ownProps,
+});
 
 CurrentCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     onCurrentCartClick: () => dispatch(switchCart(ownProps.cart['@id'], ownProps.fetch)),
 });
 
-const CurrentCartButton = connect(null, CurrentCartButtonComponent.mapDispatchToProps)(CurrentCartButtonComponent);
+const CurrentCartButton = connect(CurrentCartButtonComponent.mapStateToProps, CurrentCartButtonComponent.mapDispatchToProps)(CurrentCartButtonComponent);
 
 
 /**
@@ -290,14 +289,14 @@ class NameCartButtonComponent extends React.Component {
      * function to execute the operation depends on whether we're creating or renaming a cart.
      */
     handleSubmit() {
-        const { cartManager, create, onCreate, onRename, navigate } = this.props;
+        const { create, onCreate, onRename, updateCartManager } = this.props;
         const { newName, newIdentifier } = this.state;
         const submitFunc = create ? onCreate : onRename;
         submitFunc(newName.trim(), newIdentifier).then(() => {
-            // Successfully changed the cart name/identifier. Navigate to the same page to display
-            // the updated information.
+            // Successfully changed the cart name/identifier. Indicate the cart manager needs
+            // reloading so it displays the new cart information.
             this.handleClose();
-            navigate(cartManager['@id']);
+            updateCartManager();
         }, (err) => {
             if (err === 409) {
                 // The back end detected the identifer already exists in the database. Display the
@@ -323,7 +322,7 @@ class NameCartButtonComponent extends React.Component {
     }
 
     render() {
-        const { create, cart, actuatorCss, disabled, disabledTooltip } = this.props;
+        const { create, cart, inProgress, actuatorCss, disabled, disabledTooltip } = this.props;
         const modalTitle = create ? 'New cart' : <span>Rename cart: {cart.name}</span>;
         const actuatorTitle = create ? 'New cart' : 'Rename';
         return (
@@ -377,12 +376,13 @@ class NameCartButtonComponent extends React.Component {
                             submitBtn={
                                 <button
                                     className="btn btn-info"
-                                    disabled={this.state.nameConflict || this.state.newName.length === 0}
+                                    disabled={this.state.nameConflict || this.state.newName.length === 0 || inProgress}
                                     onClick={this.handleSubmit}
                                 >
                                     {actuatorTitle}
                                 </button>}
-                            closeModal={this.handleClose}
+                            closeModal={<button className="btn btn-info" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
+                            addCss="cart-rename__footer-controls"
                         />
                     </Modal>
                 : null}
@@ -396,6 +396,8 @@ NameCartButtonComponent.propTypes = {
     cartManager: PropTypes.object.isRequired,
     /** Cart object being renamed, unless making new cart */
     cart: PropTypes.object,
+    /** True if cart operation is in progress */
+    inProgress: PropTypes.bool.isRequired,
     /** True to create a new cart; false to rename an existing cart */
     create: PropTypes.bool,
     /** CSS to add to actuator button */
@@ -408,8 +410,8 @@ NameCartButtonComponent.propTypes = {
     onRename: PropTypes.func.isRequired,
     /** Function to create a new cart; used if `create` is true */
     onCreate: PropTypes.func.isRequired,
-    /** System function to navigate to a URI */
-    navigate: PropTypes.func.isRequired,
+    /** Function to update the cart manager */
+    updateCartManager: PropTypes.func.isRequired,
 };
 
 NameCartButtonComponent.defaultProps = {
@@ -420,18 +422,23 @@ NameCartButtonComponent.defaultProps = {
     disabledTooltip: '',
 };
 
+NameCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    inProgress: state.inProgress,
+    ...ownProps,
+});
+
 NameCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     onRename: (name, identifier) => dispatch(setCartNameIdentifierAndSave({ name, identifier }, ownProps.cart, ownProps.user, ownProps.fetch)),
     onCreate: (name, identifier) => cartCreate({ name, identifier }, ownProps.fetch),
 });
 
-const NameCartButton = connect(null, NameCartButtonComponent.mapDispatchToProps)(NameCartButtonComponent);
+const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCartButtonComponent.mapDispatchToProps)(NameCartButtonComponent);
 
 
 /**
  * Component to display a button to delete a cart, with a warning that lets them back out.
  */
-class DeleteCartButton extends React.Component {
+class DeleteCartButtonComponent extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -448,8 +455,11 @@ class DeleteCartButton extends React.Component {
      * delete the cart.
      */
     handleSubmitClick() {
-        cartPatch(this.props.cart['@id'], { status: 'deleted' }, ['identifier'], this.context.fetch, false).then(() => {
-            this.context.navigate(this.props.cartManager['@id']);
+        const { setInProgress, fetch, updateCartManager } = this.props;
+        setInProgress(true);
+        cartUpdate(this.props.cart['@id'], { status: 'deleted' }, ['identifier'], fetch, false).then(() => {
+            setInProgress(false);
+            updateCartManager();
         });
     }
 
@@ -468,19 +478,25 @@ class DeleteCartButton extends React.Component {
     }
 
     render() {
-        const { cart, current, operationInProgress } = this.props;
-        const currentDisabled = cart['@id'] === current || operationInProgress;
-        const deletedDisabled = cart.status === 'deleted';
+        const { cart, current, inProgress } = this.props;
+        let disabledTooltip = '';
+        if (cart['@id'] === current) {
+            disabledTooltip = 'Cannot delete the current cart';
+        } else if (cart.status === 'deleted') {
+            disabledTooltip = 'Cart has already been deleted';
+        } else if (inProgress) {
+            disabledTooltip = 'Cart operation in progress';
+        }
         return (
             <div className="cart-manager-table__action-button">
                 <div className="cart-manager-table__delete-group">
-                    {currentDisabled || deletedDisabled ?
+                    {disabledTooltip ?
                         <div
                             className="cart-manager-table__button-overlay"
-                            title={`${currentDisabled ? 'Cannot delete the current cart' : 'Cannot delete already deleted carts'}`}
+                            title={disabledTooltip}
                         />
                     : null}
-                    <button className="btn btn-danger btn-sm" onClick={this.handleDeleteClick} disabled={currentDisabled || deletedDisabled}><i className="icon icon-trash-o" />&nbsp;Delete</button>
+                    <button className="btn btn-danger btn-sm" onClick={this.handleDeleteClick} disabled={!!disabledTooltip}><i className="icon icon-trash-o" />&nbsp;Delete</button>
                 </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleCloseClick}>
@@ -500,20 +516,34 @@ class DeleteCartButton extends React.Component {
     }
 }
 
-DeleteCartButton.propTypes = {
-    /** Cart manager object */
-    cartManager: PropTypes.object.isRequired,
+DeleteCartButtonComponent.propTypes = {
     /** Cart this delete button is for */
     cart: PropTypes.object.isRequired,
     /** Current cart @id */
     current: PropTypes.string.isRequired,
     /** True if cart operation in progress */
-    operationInProgress: PropTypes.bool,
+    inProgress: PropTypes.bool.isRequired,
+    /** Function to call to set the in-progress state of the cart */
+    setInProgress: PropTypes.func.isRequired,
+    /** Function to call to update the cart manager page */
+    updateCartManager: PropTypes.func.isRequired,
+    /** System function for xhr requests */
+    fetch: PropTypes.func.isRequired,
 };
 
-DeleteCartButton.defaultProps = {
-    operationInProgress: false,
-};
+DeleteCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    inProgress: state.inProgress,
+    ...ownProps,
+});
+DeleteCartButtonComponent.mapDispatchToProps = dispatch => ({
+    setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+});
+
+const DeleteCartButtonInternal = connect(DeleteCartButtonComponent.mapStateToProps, DeleteCartButtonComponent.mapDispatchToProps)(DeleteCartButtonComponent);
+
+const DeleteCartButton = (props, reactContext) => (
+    <DeleteCartButtonInternal {...props} fetch={reactContext.fetch} navigate={reactContext.navigate} />
+);
 
 DeleteCartButton.contextTypes = {
     fetch: PropTypes.func,
@@ -524,7 +554,7 @@ DeleteCartButton.contextTypes = {
 /**
  * Displays a button to bring up the share-cart modal for the cart this button corresponds to.
  */
-class ShareCartButton extends React.Component {
+class ShareCartButtonComponent extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -549,17 +579,22 @@ class ShareCartButton extends React.Component {
     }
 
     render() {
-        const { cart, operationInProgress } = this.props;
-        const buttonDisabled = cart.status === 'deleted' || cart.status === 'disabled' || operationInProgress;
+        const { cart } = this.props;
+        let disabledTooltip;
+        if (cart.status === 'deleted') {
+            disabledTooltip = 'Cannot share a deleted cart';
+        } else if (cart.status === 'disabled') {
+            disabledTooltip = 'Cannot share the auto-save cart';
+        }
         return (
             <div className="cart-manager-table__action-button">
-                {buttonDisabled ?
+                {disabledTooltip ?
                     <div
                         className="cart-manager-table__button-overlay"
-                        title={`${cart.status === 'deleted' ? 'Cannot share a deleted cart' : 'Cannot share the auto-save cart'}`}
+                        title={disabledTooltip}
                     />
                 : null}
-                <button className="btn btn-info btn-sm" onClick={this.handleShareClick} disabled={buttonDisabled}>Share</button>
+                <button className="btn btn-info btn-sm" onClick={this.handleShareClick} disabled={!!disabledTooltip}>Share</button>
                 {this.state.modalOpen ?
                     <CartShare userCart={cart} closeShareCart={this.closeShareCart} />
                 : null}
@@ -568,16 +603,16 @@ class ShareCartButton extends React.Component {
     }
 }
 
-ShareCartButton.propTypes = {
+ShareCartButtonComponent.propTypes = {
     /** Cart being shared */
     cart: PropTypes.object.isRequired,
-    /** True if cart operation in progress */
-    operationInProgress: PropTypes.bool,
 };
 
-ShareCartButton.defaultProps = {
-    operationInProgress: false,
-};
+ShareCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
+});
+
+const ShareCartButton = connect(ShareCartButtonComponent.mapStateToProps)(ShareCartButtonComponent);
 
 
 /**
@@ -604,21 +639,29 @@ const cartTableColumns = {
     },
     actions: {
         title: 'Actions',
-        display: (item, meta) => (
-            <div className="cart-manager-table__action">
-                <NameCartButton
-                    cartManager={meta.cartManager}
-                    cart={item}
-                    user={meta.user}
-                    disabled={item.status === 'disabled' || meta.operationInProgress}
-                    disabledTooltip="Cannot rename the auto-save cart"
-                    fetch={meta.fetch}
-                    navigate={meta.navigate}
-                />
-                <ShareCartButton cart={item} operationInProgress={meta.operationInProgress} />
-                <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} operationInProgress={meta.operationInProgress} />
-            </div>
-        ),
+        display: (item, meta) => {
+            let disabledTooltip;
+            if (item.status === 'disabled') {
+                disabledTooltip = 'Cannot rename the auto-save cart';
+            } else if (meta.operationInProgress) {
+                disabledTooltip = 'Cart operation in progress';
+            }
+            return (
+                <div className="cart-manager-table__action">
+                    <NameCartButton
+                        cartManager={meta.cartManager}
+                        cart={item}
+                        user={meta.user}
+                        disabled={!!disabledTooltip}
+                        disabledTooltip={disabledTooltip}
+                        fetch={meta.fetch}
+                        updateCartManager={meta.updateCartManager}
+                    />
+                    <ShareCartButton cart={item} />
+                    <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} updateCartManager={meta.updateCartManager} />
+                </div>
+            );
+        },
         sorter: false,
     },
     current: {
@@ -676,34 +719,44 @@ class CartManagerComponent extends React.Component {
     constructor() {
         super();
         this.state = {
-            operationInProgress: false,
+            // /cart-manager/ object to render if we detected a possible update
+            updatedContext: null,
         };
-        this.onSwitchCartStart = this.onSwitchCartStart.bind(this);
-        this.onSwitchCartComplete = this.onSwitchCartComplete.bind(this);
+        this.retrieveUpdatedCart = this.retrieveUpdatedCart.bind(this);
     }
 
-    onSwitchCartStart() {
-        this.setState({ operationInProgress: true });
+    componentDidUpdate(prevProps) {
+        if (!this.props.inProgress && prevProps.inProgress) {
+            // Cart operations were in progress but no longer are, so retrieve and redraw the cart
+            // manager page.
+            this.retrieveUpdatedCart();
+        }
     }
 
-    onSwitchCartComplete() {
-        this.setState({ operationInProgress: false });
+    /**
+     * Usually called in reaction to a possible change to the cart manager object, loads the
+     * current cart object into this component's `updatedContext` state.
+     */
+    retrieveUpdatedCart() {
+        cartRetrieve(this.props.context['@id'], this.props.fetch).then((response) => {
+            this.setState({ updatedContext: response });
+        });
     }
 
     render() {
-        const { context, currentCart, sessionProperties } = this.props;
-
-        const extantCartCount = context['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
+        const { context, currentCart, inProgress, sessionProperties, fetch } = this.props;
+        const cartContext = this.state.updatedContext || context;
+        const extantCartCount = cartContext['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
         const user = sessionProperties && sessionProperties.user;
         const cartPanelHeader = (
             <div className="cart-manager-header">
                 <h4 className="cart-manager-header__title">Cart manager</h4>
                 <NameCartButton
-                    cartManager={context}
+                    cartManager={cartContext}
                     user={user}
-                    fetch={this.context.fetch}
-                    navigate={this.context.navigate}
-                    disabled={extantCartCount >= context.cart_user_max}
+                    fetch={fetch}
+                    disabled={extantCartCount >= cartContext.cart_user_max || inProgress}
+                    updateCartManager={this.retrieveUpdatedCart}
                     create
                     actuatorCss="cart-manager-header__control"
                 />
@@ -711,20 +764,18 @@ class CartManagerComponent extends React.Component {
         );
         return (
             <SortTablePanel header={cartPanelHeader}>
-                <CartCounts cartManager={context} />
+                <CartCounts cartManager={cartContext} />
                 <SortTable
-                    list={context['@graph']}
+                    list={cartContext['@graph']}
                     columns={cartTableColumns}
                     meta={{
-                        cartManager: context,
+                        cartManager: cartContext,
                         current: currentCart,
-                        operationInProgress: this.state.operationInProgress,
+                        operationInProgress: inProgress,
                         user: sessionProperties && sessionProperties.user,
                         admin: !!(sessionProperties && sessionProperties.admin),
-                        onSwitchCartStart: this.onSwitchCartStart,
-                        onSwitchCartComplete: this.onSwitchCartComplete,
-                        fetch: this.context.fetch,
-                        navigate: this.context.navigate,
+                        updateCartManager: this.retrieveUpdatedCart,
+                        fetch,
                     }}
                     rowClasses={
                         (item) => {
@@ -754,11 +805,10 @@ CartManagerComponent.propTypes = {
     sessionProperties: PropTypes.object.isRequired,
     /** @id of the current cart */
     currentCart: PropTypes.string.isRequired,
-};
-
-CartManagerComponent.contextTypes = {
-    fetch: PropTypes.func,
-    navigate: PropTypes.func,
+    /** True if global cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
+    /** System fetch function */
+    fetch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => ({
@@ -767,7 +817,6 @@ const mapStateToProps = (state, ownProps) => ({
     context: ownProps.context,
     sessionProperties: ownProps.sessionProperties,
     fetch: ownProps.fetch,
-    navigate: ownProps.fetch,
 });
 
 const CartManagerInternal = connect(mapStateToProps)(CartManagerComponent);
@@ -784,7 +833,6 @@ CartManager.propTypes = {
 CartManager.contextTypes = {
     session_properties: PropTypes.object,
     fetch: PropTypes.func,
-    navigate: PropTypes.func,
 };
 
 export default CartManager;

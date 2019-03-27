@@ -2,7 +2,7 @@
  * Redux and thunk functions to interact with the cart in the Redux store.
  */
 import cartCacheSaved from './cache_saved';
-import cartSave, { cartPatch } from './database';
+import cartSave, { cartUpdate } from './database';
 import cartSetOperationInProgress from './in_progress';
 import { cartGetSettings, cartSetSettingsCurrent } from './settings';
 
@@ -260,7 +260,7 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
 
             // Attempt to update the cart database object.
             cartSetOperationInProgress(true, dispatch);
-            return cartPatch(cart['@id'], nameIdentifierSetList, identifierRemovalList, fetch).then((updatedSavedCartObj) => {
+            return cartUpdate(cart['@id'], nameIdentifierSetList, identifierRemovalList, fetch).then((updatedSavedCartObj) => {
                 // We know the update of the cart object in the database succeeded, so update the
                 // cart Redux store as well.
                 cartSetOperationInProgress(false, dispatch);
@@ -291,6 +291,7 @@ export const setCartNameIdentifierAndSave = ({ name, identifier }, cart, user, f
                 }
                 resolve(updatedSavedCartObj);
             }, (err) => {
+                cartSetOperationInProgress(false, dispatch);
                 reject(err);
             });
         })
