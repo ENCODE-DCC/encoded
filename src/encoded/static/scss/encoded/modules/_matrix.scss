@@ -149,11 +149,13 @@ table.matrix th.group-all-groups-cell {
 
 .matrix-header {
     .col-sm-11 {
-        h1 {
+        .matrix-title {
             display: flex;
             align-items: flex-end;
-            .matrix-title {
+            border-bottom: 1px solid #ccc;
+            h1 {
                 flex: 0 1 30%;
+                border-bottom: 0;
             }
             .matrix-tag {
                 flex: 0 1 70%;

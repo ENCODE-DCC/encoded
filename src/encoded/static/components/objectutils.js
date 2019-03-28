@@ -701,7 +701,7 @@ export const MatrixInternalTags = ({ context }) => {
         }
     });
     const tagBadges = internalTags.map(tag => (<img src={`/static/img/tag-${tag}.png`} onError={addDefaultSrc} key={tag} alt={`${tag} collection logo`} />));
-    return <span className="matrix-tag">{tagBadges}</span>;
+    return <div className="matrix-tag">{tagBadges}</div>;
 };
 
 MatrixInternalTags.propTypes = {
