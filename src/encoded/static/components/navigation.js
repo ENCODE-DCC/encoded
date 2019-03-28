@@ -81,7 +81,7 @@ export default class Navigation extends React.Component {
                         <GlobalSections />
                         <CartStatus />
                         <UserActions />
-                        {this.props.isHomePage ? null : <ContextActions />}
+                        <ContextActions />
                         <Search />
                     </Navbar>
                 </div>
@@ -101,14 +101,6 @@ export default class Navigation extends React.Component {
         );
     }
 }
-
-Navigation.propTypes = {
-    isHomePage: PropTypes.bool, // True if current page is home page
-};
-
-Navigation.defaultProps = {
-    isHomePage: false,
-};
 
 Navigation.contextTypes = {
     location_href: PropTypes.string,

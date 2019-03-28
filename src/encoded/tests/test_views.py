@@ -287,7 +287,30 @@ def test_page_nested_in_progress(workbook, anontestapp):
     return anontestapp.get('/test-section/subpage-in-progress/', status=403)
 
 
-def test_page_homepage(workbook, anontestapp):
+def test_page_homepage(workbook, anontestapp, testapp):
+    item = {
+        "name": "homepage",
+        "title": "The ENCODE Project",
+        "status": "released",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>ENCODE: The Encyclopedia of DNA Elements</h1>"
+                }
+            ]
+        }
+    }
+    testapp.post_json('/pages', item, status=201)
+
     res = anontestapp.get('/pages/homepage/', status=200)
     assert res.json['canonical_uri'] == '/'
 

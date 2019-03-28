@@ -585,6 +585,8 @@ export default class Home extends React.Component {
     }
 }
 
+globals.contentViews.register(Home, 'Portal');
+
 
 // Given retrieved data, draw all home-page charts.
 const ChartGallery = props => (

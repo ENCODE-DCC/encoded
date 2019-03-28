@@ -40,6 +40,7 @@ require('./region_search');
 require('./auditmatrix');
 require('./gene');
 require('./biosample_type');
+require('./home');
 
 
 module.exports = require('./app');

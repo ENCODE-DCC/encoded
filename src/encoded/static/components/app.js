@@ -23,7 +23,6 @@ import cartStore, {
 import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
-import Home from './home';
 import { requestSearch } from './objectutils';
 import newsHead from './page';
 
@@ -1023,20 +1022,13 @@ class App extends React.Component {
         // Switching between collections may leave component in place
         const key = context && context['@id'] && context['@id'].split('?')[0];
         const currentAction = this.currentAction();
-        const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
-        if (isHomePage) {
+        if (!currentAction && context.default_page) {
             context = context.default_page;
-            content = <Home context={context} />;
-            containerClass = 'container-homepage';
-        } else {
-            if (!currentAction && context.default_page) {
-                context = context.default_page;
-            }
-            if (context) {
-                const ContentView = globals.contentViews.lookup(context, currentAction);
-                content = <ContentView context={context} />;
-                containerClass = 'container';
-            }
+        }
+        if (context) {
+            const ContentView = globals.contentViews.lookup(context, currentAction);
+            content = <ContentView context={context} />;
+            containerClass = 'container';
         }
         const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
 
@@ -1098,7 +1090,7 @@ class App extends React.Component {
                             <div id="layout">
                                 <Provider store={cartStore}>
                                     <div>
-                                        <Navigation isHomePage={isHomePage} />
+                                        <Navigation />
                                         <div id="content" className={containerClass} key={key}>
                                             {content}
                                         </div>
