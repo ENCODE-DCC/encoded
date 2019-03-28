@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuSep } from '../../libs/bootstrap/dropdown-men
 import { Nav, NavItem } from '../../libs/bootstrap/navbar';
 import { svgIcon } from '../../libs/svg-icons';
 import { truncateString } from '../globals';
+import { CartClearModal } from './clear';
 import CartShare from './share';
 
 
@@ -44,8 +45,7 @@ CartNavTitle.propTypes = {
 
 
 /**
- * Navigation bar item for the cart menu, including a simple link to the cart page, as well as a
- * button that brings up the Share Cart modal.
+ * Navigation bar item for the cart menu.
  */
 class CartStatusComponent extends React.Component {
     constructor() {
@@ -53,9 +53,12 @@ class CartStatusComponent extends React.Component {
         this.state = {
             /** True if Share Cart modal is visible */
             shareModalOpen: false,
+            clearModalOpen: false,
         };
         this.shareCartClick = this.shareCartClick.bind(this);
         this.closeShareCart = this.closeShareCart.bind(this);
+        this.clearCartClick = this.clearCartClick.bind(this);
+        this.closeClearCart = this.closeClearCart.bind(this);
     }
 
     /**
@@ -72,25 +75,42 @@ class CartStatusComponent extends React.Component {
         this.setState({ shareModalOpen: false });
     }
 
+    /**
+     * Called when the Share Cart menu item is clicked.
+     */
+    clearCartClick() {
+        this.setState({ clearModalOpen: true });
+    }
+
+    /**
+     * Called when the Share Cart modal close buttons are clicked.
+     */
+    closeClearCart() {
+        this.setState({ clearModalOpen: false });
+    }
+
     render() {
         const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
 
         if (loggedIn || elements.length > 0 || inProgress) {
             // Define the menu items for the Cart Status menu.
-            const cartName = truncateString(savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '', 30);
+            const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 50) : '';
             const menuItems = [];
-            const viewCartItem = <a key="view" href="/cart-view/">View cart{cartName ? <span>: {cartName}</span> : null}</a>;
+            const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
+            const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cart</button>;
             if (loggedIn) {
+                menuItems.push(<span key="name" className="disabled-menu-item">{`Current: ${cartName}`}</span>, <DropdownMenuSep key="sep-1" />);
                 if (elements.length > 0) {
                     menuItems.push(
                         viewCartItem,
-                        <button key="share" onClick={this.shareCartClick}>Share cart{cartName ? <span>: {cartName}</span> : null}</button>,
-                        <DropdownMenuSep key="sep" />
+                        <button key="share" onClick={this.shareCartClick}>Share cart</button>,
+                        clearCartItem,
+                        <DropdownMenuSep key="sep-2" />
                     );
                 }
                 menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
             } else {
-                menuItems.push(viewCartItem);
+                menuItems.push(viewCartItem, clearCartItem);
             }
 
             return (
@@ -108,6 +128,7 @@ class CartStatusComponent extends React.Component {
                         </DropdownMenu>
                     </NavItem>
                     {this.state.shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
+                    {this.state.clearModalOpen ? <CartClearModal closeClickHandler={this.closeClearCart} /> : null}
                 </Nav>
             );
         }

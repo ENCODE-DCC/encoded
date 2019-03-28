@@ -149,7 +149,8 @@
         padding: 10px 0;
 
         &>li {
-            &>a, &>button {
+            &>a, &>button, &>span {
+                display: inline-block;
                 width: 100%;
                 margin: 0;
                 padding: 2px 30px 2px 20px;

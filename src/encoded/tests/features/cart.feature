@@ -36,7 +36,7 @@ Feature: Cart
         When I visit "/search/?type=Experiment"
         And I dismiss the alert
         Then the browser's URL should be "/cart-view/"
-        When I press "Clear cart"
+        When I press "clear-cart-actuator"
         Then I should see an element with the css selector ".modal"
         When I press "clear-cart-submit"
         Then I should not see an element with the css selector ".modal"
