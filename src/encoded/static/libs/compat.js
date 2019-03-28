@@ -1,9 +1,7 @@
 /*jshint strict:false */
-require('babel-polyfill');
-
-// Chrome 42 fetch does not have abort.
-window.fetch = undefined;
-require('whatwg-fetch');
+import 'babel-polyfill';
+import 'unfetch/polyfill';
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 
 (function () {
 

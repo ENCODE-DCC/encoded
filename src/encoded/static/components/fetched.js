@@ -8,6 +8,7 @@ export class Param extends React.Component {
     constructor() {
         super();
         this.state = {
+            fetchedRequestController: undefined,
             fetchedRequest: undefined,
         };
         this.receive = this.receive.bind(this);
@@ -27,10 +28,9 @@ export class Param extends React.Component {
     }
 
     componentWillUnmount() {
-        const xhr = this.state.fetchedRequest;
-        if (xhr) {
+        if (this.state.fetchedRequestController) {
             console.log('abort param xhr');
-            xhr.abort();
+            this.state.fetchedRequestController.abort();
         }
     }
 
@@ -38,32 +38,40 @@ export class Param extends React.Component {
         // Some tests don't mock context.
         if (!this.context.fetch) return;
 
-        let request = this.state.fetchedRequest;
-        if (request) request.abort();
+        if (this.state.fetchedRequestController) {
+            this.state.fetchedRequestController.abort();
+        }
 
         if (!url) {
             this.props.handleFetch();
             this.setState({
                 fetchedRequest: undefined,
+                fetchedRequestController: undefined,
             });
         }
+
+        const controller = new AbortController();
+        const signal = controller.signal;
+        let request;
+
         // XXX Errors should really result in a separate component being rendered.
         if (this.props.type === 'json') {
             request = this.context.fetch(url, {
                 headers: { Accept: 'application/json' },
+                signal,
             });
             request.then((response) => {
                 if (!response.ok) throw response;
                 return response.json();
             }).catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest')).then(this.receive);
         } else if (this.props.type === 'text') {
-            request = this.context.fetch(url);
+            request = this.context.fetch(url, { signal });
             request.then((response) => {
                 if (!response.ok) throw response;
                 return response.text();
             }).catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest')).then(this.receive);
         } else if (this.props.type === 'blob') {
-            request = this.context.fetch(url);
+            request = this.context.fetch(url, { signal });
             request.then((response) => {
                 if (!response.ok) throw response;
                 return response.blob();
@@ -74,6 +82,7 @@ export class Param extends React.Component {
 
         this.setState({
             fetchedRequest: request,
+            fetchedRequestController: controller,
         });
     }
 

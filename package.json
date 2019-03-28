@@ -57,9 +57,11 @@
     "string-replace-loader": "^1.0.5",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
+    "abortcontroller-polyfill": "^1.2.9",
     "auth0-lock": "^11.7.0",
     "babel-polyfill": "^6.20.0",
     "brace": "^0.3.0",
@@ -90,6 +92,6 @@
     "source-map-support": "^0.4.11",
     "subprocess-middleware": "^0.1.0",
     "underscore": "^1.8.3",
-    "whatwg-fetch": "git+https://github.com/ENCODE-DCC/fetch.git"
+    "unfetch": "^4.1.0"
   }
 }

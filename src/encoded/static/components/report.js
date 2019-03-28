@@ -580,7 +580,7 @@ class Report extends React.Component {
     }
 
     componentWillUnmount() {
-        if (this.state.request) this.state.request.abort();
+        if (this.state.controller) this.state.controller.abort();
     }
 
     setSort(sort) {
@@ -602,14 +602,17 @@ class Report extends React.Component {
     }
 
     loadMore() {
-        if (this.state.request) {
-            this.state.request.abort();
+        if (this.state.controller) {
+            this.state.controller.abort();
         }
         const parsedUrl = url.parse(this.context.location_href, true);
         parsedUrl.query.from = this.state.to;
         delete parsedUrl.search;
+        const controller = new AbortController();
+        const signal = controller.signal;
         const request = this.context.fetch(url.format(parsedUrl), {
             headers: { Accept: 'application/json' },
+            signal,
         });
         request.then((response) => {
             if (!response.ok) throw response;
@@ -618,11 +621,13 @@ class Report extends React.Component {
             this.setState({
                 more: this.state.more.concat(data['@graph']),
                 loading: false,
+                controller: null,
                 request: null,
             });
         });
 
         this.setState({
+            controller,
             request,
             to: this.state.to + this.state.size,
             loading: true,

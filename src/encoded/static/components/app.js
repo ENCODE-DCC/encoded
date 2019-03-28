@@ -209,6 +209,7 @@ class App extends React.Component {
             session_cookie: '',
             profilesTitles: {},
             contextRequest: null,
+            contextRequestController: null,
             unsavedChanges: [],
             promisePending: false,
         };
@@ -811,14 +812,13 @@ class App extends React.Component {
             window.location.reload();
             return;
         }
-        const request = this.state.contextRequest;
         const href = window.location.href;
         if (event.state) {
             // Abort inflight xhr before setProps
-            if (request && this.requestCurrent) {
+            if (this.state.contextRequestController && this.requestCurrent) {
                 // Abort the current request, then remember we've aborted it so that we don't render
                 // the Network Request Error page.
-                request.abort();
+                this.state.contextRequestController.abort();
                 this.requestAborted = true;
                 this.requestCurrent = false;
             }
@@ -884,12 +884,10 @@ class App extends React.Component {
             return null;
         }
 
-        let request = this.state.contextRequest;
-
-        if (request && this.requestCurrent) {
+        if (this.state.contextRequestController && this.requestCurrent) {
             // Abort the current request, then remember we've aborted the request so that we
             // don't render the Network Request Error page.
-            request.abort();
+            this.state.contextRequestController.abort();
             this.requestAborted = true;
             this.requestCurrent = false;
         }
@@ -904,8 +902,11 @@ class App extends React.Component {
             return null;
         }
 
-        request = this.fetch(mutatableHref, {
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const request = this.fetch(mutatableHref, {
             headers: { Accept: 'application/json' },
+            signal,
         });
         this.requestCurrent = true; // Remember we have an outstanding GET request
 
@@ -951,6 +952,7 @@ class App extends React.Component {
 
         this.setState({
             contextRequest: request,
+            contextRequestController: controller,
         });
         return request;
     }
