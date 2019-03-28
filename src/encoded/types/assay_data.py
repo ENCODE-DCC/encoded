@@ -54,7 +54,7 @@ assay_terms = {
       'single-nuclei ATAC-seq': 'NTR:0000438',
       'icSHAPE': 'NTR:0000433',
       'single-cell ATAC-seq': 'NTR:0000444',
-      'ISO-seq': 'NTR:0000445',
+      'long read RNA-seq': 'NTR:0000445',
       'STARR-seq': 'OBI:0002041',
       'direct RNA-seq': 'NTR:0000444',
       'PRO-seq': 'NTR:0000455',
