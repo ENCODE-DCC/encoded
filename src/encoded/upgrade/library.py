@@ -120,5 +120,5 @@ def library_7_8(value, system):
 @upgrade_step('library', '8', '9')
 def library_8_9(value, system):
     if 'fragmentation_method' in value:
-        value['fragmentation_methods'] = list(value['fragmentation_method'])
+        value['fragmentation_methods'] = [value['fragmentation_method']]
         value.pop('fragmentation_method')

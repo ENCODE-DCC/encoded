@@ -86,4 +86,5 @@ def test_upgrade_library_8_to_9(upgrader, library_8):
     value = upgrader.upgrade('library', library_8, target_version='9')
     assert value['schema_version'] == '9'
     assert isinstance(value['fragmentation_methods'], list)
+    assert value['fragmentation_methods'] == ['shearing (Covaris generic)']
     assert 'fragmentation_method' not in value
