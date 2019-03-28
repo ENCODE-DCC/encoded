@@ -135,7 +135,7 @@ const GlobalSections = (props, context) => {
 
                         // Render any regular linked items in the dropdown
                         return (
-                            <a href={childAction.url || ''} key={childAction.id}>
+                            <a href={childAction.url || ''} key={childAction.id} className={childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'}>
                                 {childAction.title}
                             </a>
                         );

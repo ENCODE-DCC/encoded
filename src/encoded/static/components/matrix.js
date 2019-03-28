@@ -6,7 +6,7 @@ import _ from 'underscore';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { BrowserSelector } from './objectutils';
+import { BrowserSelector, MatrixInternalTags } from './objectutils';
 import { BatchDownload, FacetList, TextFilter } from './search';
 
 
@@ -196,8 +196,9 @@ class Matrix extends React.Component {
                             <div className="matrix-header">
                                 <div className="row">
                                     <div className="col-sm-11">
-                                        <div>
+                                        <div className="matrix-title">
                                             <h1>{context.title}</h1>
+                                            <MatrixInternalTags context={context} />
                                         </div>
                                     </div>
                                 </div>
