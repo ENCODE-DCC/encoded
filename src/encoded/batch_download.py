@@ -137,6 +137,7 @@ _tsv_mapping_annotation = OrderedDict([
 
 _excluded_columns = ('Restricted', 'No File Available')
 
+
 def get_file_uuids(result_dict):
     file_uuids = []
     for item in result_dict['@graph']:
@@ -531,8 +532,10 @@ def restricted_files_present(exp_file):
         return True
     return False
 
+
 def is_no_file_available(exp_file):
     return exp_file.get('no_file_available', False)
+    
 
 def lookup_column_value(value, path):
     nodes = [value]
