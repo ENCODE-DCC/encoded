@@ -196,7 +196,7 @@ def _short_name(long_name):
         if res:
             result = res[0]
             break
-    return result[:10].lower()
+    return result[:9].lower()
 
 
 def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
@@ -393,18 +393,26 @@ def _get_run_args(main_args, instances_tag_data):
     return run_args
 
 
-def _get_instance_output(instances_tag_data, is_cluster_master=False):
-    suffix = '-dm' if is_cluster_master else ''
+def _get_instance_output(
+        instances_tag_data,
+        attach_dm=False,
+        given_name=None,
+        is_production=False,
+):
     hostname = '{}.{}.encodedcc.org'.format(
         instances_tag_data['id'],
         instances_tag_data['domain'],
     )
+    name_to_use = given_name if given_name else instances_tag_data['short_name']
+    suffix = '-dm' if attach_dm else ''
+    domain = 'demo'
+    if instances_tag_data['domain'] == 'production':
+        domain = 'production'
     return [
-        'Host %s%s.*' % (instances_tag_data['short_name'], suffix),
+        'Host %s%s.*' % (name_to_use, suffix),
         '  Hostname %s' % hostname,
-        '  # https://%s.demo.encodedcc.org' % instances_tag_data['name'],
-        '  # ssh %s' % hostname,
-        '  # %s' % instances_tag_data['id'],
+        '  # https://%s.%s.encodedcc.org' % (instances_tag_data['name'], domain),
+        '  # ssh ubuntu@%s' % hostname,
     ]
 
 
@@ -412,9 +420,10 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
     tmp_name = instances_tag_data['name']
     instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
     output_list = ['']
+    is_elasticsearch = main_args.elasticsearch == 'yes'
     is_cluster_master = False
     is_cluster = False
-    if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
+    if is_elasticsearch and run_args['count'] > 1:
         if cluster_master and run_args['master_user_data']:
             is_cluster_master = True
             output_list.append('Creating Elasticsearch Master Node for cluster')
@@ -435,12 +444,18 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
                 created_cluster_master = True
                 output_list.extend(_get_instance_output(
                     instances_tag_data,
-                    is_cluster_master=is_cluster_master,
+                    attach_dm=True,
+                    given_name=main_args.name,
                 ))
-            elif is_cluster:
-                output_list.append('  # %s' % instance.id)
+            if is_cluster:
+                output_list.append('  # Data Node %d: %s' % (i, instance.id))
             elif not is_cluster:
-                output_list.extend(_get_instance_output(instances_tag_data))
+                output_list.extend(
+                    _get_instance_output(
+                        instances_tag_data,
+                        given_name=main_args.name,
+                    )
+                )
             instance.wait_until_exists()
             tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
     for output in output_list:
@@ -585,7 +600,7 @@ def parse_args():
         help="ssh identity file path"
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
-    parser.add_argument('-n', '--name', type=hostname, help="Instance name")
+    parser.add_argument('-n', '--name', default=None, type=hostname, help="Instance name")
     parser.add_argument('--dry-run-aws', action='store_true', help="Abort before ec2 requests.")
     parser.add_argument('--single-data-master', action='store_true',
             help="Create a single data master node.")
