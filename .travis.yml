@@ -5,6 +5,7 @@ branches:
   only:
   - master
   - dev
+  - test
   - /^(?i:encd)-.*$/
 cache:
   directories:
