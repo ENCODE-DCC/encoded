@@ -7,6 +7,7 @@ require('./image');
 require('./biosample');
 require('./cart');
 require('./collection');
+require('./datacolors');
 require('./dataset');
 require('./dbxref');
 require('./errors');
@@ -37,7 +38,6 @@ require('./user');
 require('./schema');
 require('./summary');
 require('./region_search');
-require('./auditmatrix');
 require('./gene');
 require('./biosample_type');
 

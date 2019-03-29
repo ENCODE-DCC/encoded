@@ -32,8 +32,8 @@ describe('DataColor Module', () => {
         });
 
         it('Wraps around the used color if more keys than colors', () => {
-            const testColors = dataColorsInstance.colorList(['primary cell'], { shade: 10 });
-            expect(testColors[0]).toEqual('#ffb41a');
+            const testColors = dataColorsInstance.colorList(['primary cell'], { tint: 0.1 });
+            expect(testColors[0]).toEqual('#ffa419');
         });
     });
 });

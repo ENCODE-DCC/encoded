@@ -4,7 +4,6 @@ import queryString from 'query-string';
 import _ from 'underscore';
 import moment from 'moment';
 import url from 'url';
-import { svgIcon } from '../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
@@ -13,9 +12,16 @@ import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
-import { BrowserSelector, DisplayAsJson, requestSearch, DocTypeTitle, shadeOverflowOnScroll } from './objectutils';
+import {
+    BrowserSelector,
+    DisplayAsJson,
+    requestSearch,
+    DocTypeTitle,
+    shadeOverflowOnScroll,
+} from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
+import { svgIcon } from '../libs/svg-icons';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 
 
@@ -1089,11 +1095,7 @@ export class FacetList extends React.Component {
                     {(context || clearButton) ?
                         <div className="search-header-control">
                             {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                            {clearButton ?
-                                <div className="clear-filters-control">
-                                    <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
-                                </div>
-                            : null}
+                            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
                         </div>
                     : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
@@ -1230,6 +1232,169 @@ BatchDownload.contextTypes = {
 };
 
 
+/**
+ * Display the search-result view controls that lets users go to the different search results pages
+ * (matrix, report, etc).
+ */
+export const ViewControls = ({ views, css, hrefProcessor }) => {
+    if (views && views.length > 0) {
+        return (
+            <div className={`btn-attached${css ? ` ${css}` : ''}`}>
+                {views.map((view) => {
+                    // Checks for the callback every iteration, but with so few buttons I don't
+                    // expect performance issues.
+                    const href = hrefProcessor ? hrefProcessor(view.href) : view.href;
+                    return <a href={href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(globals.viewToSvg[view.icon])}</a>;
+                })}
+            </div>
+        );
+    }
+    return null;
+};
+
+ViewControls.propTypes = {
+    /** Views from a search-result object */
+    views: PropTypes.array,
+    /** CSS to add to the wrapper <div> */
+    css: PropTypes.string,
+    /** Callback to modify hrefs for each button */
+    hrefProcessor: PropTypes.func,
+};
+
+ViewControls.defaultProps = {
+    views: null,
+    css: '',
+    hrefProcessor: null,
+};
+
+
+/**
+ * Display the "Clear filters" link.
+ */
+export const ClearFilters = ({ searchUri, enableDisplay }) => (
+    <div className="clear-filters-control">
+        {enableDisplay ? <div><a href={searchUri}>Clear Filters <i className="icon icon-times-circle" /></a></div> : null}
+    </div>
+);
+
+ClearFilters.propTypes = {
+    /** URI for the Clear Filters link */
+    searchUri: PropTypes.string.isRequired,
+    /** True to display the link */
+    enableDisplay: PropTypes.bool,
+};
+
+ClearFilters.defaultProps = {
+    enableDisplay: true,
+};
+
+
+/**
+ * Display and react to controls at the top of search result output, like the search and matrix
+ * pages.
+ */
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter }, reactContext) => {
+    const results = context['@graph'];
+    const searchBase = url.parse(reactContext.location_href).search || '';
+    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+
+    // Get a sorted list of batch hubs keys with case-insensitive sort.
+    let visualizeKeys = [];
+    if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+        visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
+            const aLower = a.toLowerCase();
+            const bLower = b.toLowerCase();
+            return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
+        });
+    }
+
+    let resultsToggle = null;
+    if (showResultsToggle) {
+        if (context.total > results.length && searchBase.indexOf('limit=all') === -1) {
+            resultsToggle = (
+                <a
+                    rel="nofollow"
+                    className="btn btn-info btn-sm"
+                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                    onClick={onFilter}
+                >
+                    View All
+                </a>
+            );
+        } else {
+            resultsToggle = (
+                <span>
+                    {results.length > 25 ?
+                        <a
+                            className="btn btn-info btn-sm"
+                            href={trimmedSearchBase || '/search/'}
+                            onClick={onFilter}
+                        >
+                            View 25
+                        </a>
+                    : null}
+                </span>
+            );
+        }
+    }
+
+    return (
+        <div className="results-table-control">
+            <ViewControls views={context.views} />
+
+            {resultsToggle}
+
+            {context.batch_download ?
+                <BatchDownload context={context} />
+            : null}
+
+            {visualizeKeys.length > 0 ?
+                <BrowserSelector
+                    visualizeCfg={context.visualize_batch}
+                    disabled={!!visualizeDisabledTitle}
+                    title={visualizeDisabledTitle || 'Visualize'}
+                />
+            : null}
+        </div>
+    );
+};
+
+SearchControls.propTypes = {
+    /** Search results object that generates this page */
+    context: PropTypes.object.isRequired,
+    /** True to disable Visualize button */
+    visualizeDisabledTitle: PropTypes.string,
+    /** True to show View All/View 25 control */
+    showResultsToggle: (props, propName, componentName) => {
+        if (props[propName] && typeof props.onFilter !== 'function') {
+            return new Error(`"onFilter" prop to ${componentName} required if "showResultsToggle" is true`);
+        }
+        return null;
+    },
+    /** Function to handle clicks in links to toggle between viewing all and limited */
+    onFilter: (props, propName, componentName) => {
+        if (props.showResultsToggle && typeof props[propName] !== 'function') {
+            return new Error(`"onFilter" prop to ${componentName} required if "showResultsToggle" is true`);
+        }
+        return null;
+    },
+};
+
+SearchControls.defaultProps = {
+    visualizeDisabledTitle: '',
+    showResultsToggle: false,
+    onFilter: null,
+};
+
+SearchControls.contextTypes = {
+    location_href: PropTypes.string,
+};
+
+
+// Maximum number of selected items that can be visualized.
+const VISUALIZE_LIMIT = 100;
+
+
 export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
@@ -1292,22 +1457,19 @@ export class ResultTable extends React.Component {
     }
 
     render() {
-        const visualizeLimit = 100;
         const { context, searchBase, restrictions } = this.props;
         const { assemblies } = this.state;
         const results = context['@graph'];
         const total = context.total;
-        const visualizeDisabled = total > visualizeLimit;
         const columns = context.columns;
         const filters = context.filters;
         const label = 'results';
-        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
         let browserFiles = []; // Files to pass to ResultsBrowser component
         let assemblyChooser;
-
+        const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
         const facets = context.facets.map((facet) => {
             if (restrictions[facet.field] !== undefined) {
                 const workFacet = _.clone(facet);
@@ -1327,24 +1489,6 @@ export class ResultTable extends React.Component {
                 }
             });
         }
-
-        // Get a sorted list of batch hubs keys with case-insensitive sort
-        // NOTE: Tim thinks this is overkill as opposed to simple sort()
-        let visualizeKeys = [];
-        if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
-            visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-                const aLower = a.toLowerCase();
-                const bLower = b.toLowerCase();
-                return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
-            });
-        }
-
-        // Map view icons to svg icons
-        const view2svg = {
-            table: 'table',
-            th: 'matrix',
-            summary: 'summary',
-        };
 
         // Check whether the search query qualifies for a genome browser display. Start by counting
         // the number of "type" filters exist.
@@ -1430,50 +1574,7 @@ export class ResultTable extends React.Component {
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
                                 <DisplayAsJson />
-                                <div className="results-table-control">
-                                    {context.views ?
-                                        <div className="btn-attached">
-                                            {context.views.map((view, i) =>
-                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
-                                            )}
-                                        </div>
-                                    : null}
-
-                                    {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                        <a
-                                            rel="nofollow"
-                                            className="btn btn-info btn-sm"
-                                            href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                            onClick={this.onFilter}
-                                        >
-                                            View All
-                                        </a>
-                                    :
-                                        <span>
-                                            {results.length > 25 ?
-                                                <a
-                                                    className="btn btn-info btn-sm"
-                                                    href={trimmedSearchBase || '/search/'}
-                                                    onClick={this.onFilter}
-                                                >
-                                                    View 25
-                                                </a>
-                                            : null}
-                                        </span>
-                                    }
-
-                                    {context.batch_download ?
-                                        <BatchDownload context={context} />
-                                    : null}
-
-                                    {visualizeKeys && context.visualize_batch ?
-                                        <BrowserSelector
-                                            visualizeCfg={context.visualize_batch}
-                                            disabled={visualizeDisabled}
-                                            title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                        />
-                                    : null}
-                                </div>
+                                <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
                                 <hr />
                                 <CartSearchControls searchResults={context} />
                                 {browserAvail ?

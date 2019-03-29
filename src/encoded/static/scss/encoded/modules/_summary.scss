@@ -7,7 +7,7 @@
     }
 
     @at-root #{&}__title {
-        padding-bottom: 40px;
+        padding-bottom: 10px;
 
         h1 {
             @include facet-title;
@@ -20,6 +20,7 @@
 
     .summary-header__title_control {
         position: relative;
+        margin-bottom: 40px;
     }
 }
 

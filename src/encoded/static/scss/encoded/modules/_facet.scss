@@ -43,7 +43,8 @@
         }
     }
 
-    &.summary-facets {
+    &.summary-facets,
+    &.matrix-facets {
         padding: 0;
         border: none;
         border-radius: 0;
@@ -59,34 +60,20 @@
     padding-right: 0;
 }
 
-.clear-filters-control {
-    margin-bottom: 5px;
-    text-align: right;
-    font-size: 0.9rem;
-
-    @at-root #{&}--summary {
-        margin-top: -30px;
-        margin-bottom: 30px;
-        position: absolute;
-        bottom: 10px;
-        left: 0px;
-
-        @media print {
-            display: none;
-        }
-    }
-}
-
 .search-header-control {
     position: relative;
-    padding-bottom: 25px;
+    padding-bottom: 10px;
 }
 
-.col-sm-5 {
-    .clear-filters-control {
+.clear-filters-control {
+    position: relative;
+    height: 1.1rem;
+
+    > div {
         position: absolute;
-        bottom: 5px;
-        left: 0px;
+        top: 0;
+        left: 0;
+        font-size: .9rem;
     }
 }
 
