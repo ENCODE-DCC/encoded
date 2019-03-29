@@ -84,6 +84,7 @@ _tsv_mapping = OrderedDict([
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
+    ('No File Available', ['files.no_file_available']),
     ('Restricted', ['files.restricted'])
 ])
 
@@ -130,8 +131,12 @@ _tsv_mapping_annotation = OrderedDict([
     ('Derived from', ['files.derived_from']),
     ('S3 URL', ['files.cloud_metadata']),
     ('Size', ['files.file_size']),
+    ('No File Available', ['file.no_file_available']),
     ('Restricted', ['files.restricted'])
 ])
+
+_excluded_columns = ('Restricted', 'No File Available')
+
 
 def get_file_uuids(result_dict):
     file_uuids = []
@@ -213,7 +218,7 @@ def _get_annotation_metadata(request, search_path, param_list):
         :param search_path: Search url
         :param param_list: Initial param_list
     """
-    header = [header for header in _tsv_mapping_annotation]
+    header = [header for header in _tsv_mapping_annotation if header not in _excluded_columns]
     header.extend([prop for prop in _audit_mapping])
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
@@ -234,6 +239,8 @@ def _get_annotation_metadata(request, search_path, param_list):
         software_set = ', '.join([s['software']['title'] for s in software])
         for result_file in result_files:
             if restricted_files_present(result_file):
+                continue
+            if is_no_file_available(result_file):
                 continue
             if param_list.get('files.file_type') and result_file['file_type'] not in param_list['files.file_type']:
                 continue
@@ -265,7 +272,6 @@ def _get_annotation_metadata(request, search_path, param_list):
                 ', '.join([derived_from[7:-1] for derived_from in result_file.get('derived_from', '')]),
                 result_file.get('cloud_metadata', {}).get('url', ''),
                 result_file.get('file_size', ''),
-                result_file.get('restricted', ''),
             ]
             # make_audit_cell() was designed just for experiment, but works too for annotation
             row.extend(
@@ -345,11 +351,12 @@ def metadata_tsv(context, request):
     header = []
     file_attributes = []
     for prop in _tsv_mapping:
-        header.append(prop)
+        if prop not in _excluded_columns:
+            header.append(prop)
+            if _tsv_mapping[prop][0].startswith('files'):
+                file_attributes = file_attributes + [_tsv_mapping[prop][0]]
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
-        if _tsv_mapping[prop][0].startswith('files'):
-            file_attributes = file_attributes + [_tsv_mapping[prop][0]]
-
+        
     # Handle metadata.tsv lines from cart-generated files.txt.
     cart_uuids = param_list.get('cart', [])
     if cart_uuids:
@@ -393,6 +400,8 @@ def metadata_tsv(context, request):
                     if f['file_type'] not in param_list['files.file_type']:
                         continue
                 if restricted_files_present(f):
+                    continue
+                if is_no_file_available(f):
                     continue
                 f['href'] = request.host_url + f['href']
                 f_row = []
@@ -523,6 +532,10 @@ def restricted_files_present(exp_file):
         return True
     return False
 
+
+def is_no_file_available(exp_file):
+    return exp_file.get('no_file_available', False)
+    
 
 def lookup_column_value(value, path):
     nodes = [value]
