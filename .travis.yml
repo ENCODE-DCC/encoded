@@ -1,6 +1,11 @@
 language: python
 sudo: required
 dist: trusty
+branches:
+  only:
+  - master
+  - dev
+  - /^(?i:encd)-.*$/
 cache:
   directories:
     - eggs
