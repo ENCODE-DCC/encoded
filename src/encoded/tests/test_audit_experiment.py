@@ -618,6 +618,37 @@ def micro_rna_mapping_quality_metric_2_1(
 
 
 @pytest.fixture
+def long_read_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_tsv_1_2['@id']],
+        'genes_detected': 5000,
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+    return testapp.post_json('/long_read_rna_quantification_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def long_read_rna_mapping_quality_metric_2_1(
+    testapp,
+    analysis_step_run_bam,
+    file_bam_2_1,
+    award,
+    lab
+):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_bam_2_1['@id']],
+        'full_length_non_chimeric_read_count': 500000,
+        'mapping_rate': 0.5,
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+    return testapp.post_json('/long_read_rna_mapping_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
 def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
     item = {
         'dataset': base_experiment['uuid'],
@@ -1872,6 +1903,75 @@ def test_audit_experiment_micro_rna_standards(
     errors = collect_audit_errors(res)
     for audit in expected_audits:
         assert not any(
+            error['category'] == audit for error in errors
+        )
+
+
+def test_audit_experiment_long_read_rna_standards(
+    testapp,
+    base_experiment,
+    replicate_1_1,
+    replicate_2_1,
+    library_1,
+    library_2,
+    biosample_1,
+    biosample_2,
+    mouse_donor_1,
+    file_fastq_3,
+    file_fastq_4,
+    file_bam_1_1,
+    file_bam_2_1,
+    file_tsv_1_1,
+    file_tsv_1_2,
+    spearman_correlation_quality_metric,
+    long_read_rna_quantification_quality_metric_1_2,
+    long_read_rna_mapping_quality_metric_2_1,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    pipeline_bam,
+):
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
+    testapp.patch_json(
+        file_bam_1_1['@id'],
+        {'step_run': analysis_step_run_bam['@id'], 'assembly': 'mm10'}
+    )
+    testapp.patch_json(
+        file_bam_2_1['@id'],
+        {'step_run': analysis_step_run_bam['@id'], 'assembly': 'mm10'}
+    )
+    testapp.patch_json(
+        pipeline_bam['@id'],
+        {'title': 'Long read RNA-seq pipeline'})
+    testapp.patch_json(
+        spearman_correlation_quality_metric['@id'],
+        {'quality_metric_of': [file_tsv_1_1['@id'], file_tsv_1_2['@id']]}
+    )
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(
+        base_experiment['@id'],
+        {'status': 'released', 'date_released': '2016-01-01', 'assay_term_name': 'long read RNA-seq'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    expected_audits = [
+        'borderline replicate concordance',
+        'borderline sequencing depth',
+        'insufficient mapping rate',
+        'borderline genes detected',
+    ]
+    errors = collect_audit_errors(res)
+    for audit in expected_audits:
+        assert any(
             error['category'] == audit for error in errors
         )
 
