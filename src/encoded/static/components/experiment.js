@@ -163,7 +163,7 @@ class ExperimentComponent extends React.Component {
             size_range: { values: {}, value: undefined, component: {}, title: 'Size range', test: 'sizerange' },
             lysis_method: { values: {}, value: undefined, component: {}, title: 'Lysis method', test: 'lysismethod' },
             extraction_method: { values: {}, value: undefined, component: {}, title: 'Extraction method', test: 'extractionmethod' },
-            fragmentation_method: { values: {}, value: undefined, component: {}, title: 'Fragmentation method', test: 'fragmentationmethod' },
+            fragmentation_methods: { values: {}, value: undefined, component: {}, title: 'Fragmentation methods', test: 'fragmentationmethod' },
             library_size_selection_method: { values: {}, value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod' },
             strand_specificity: { values: {}, value: undefined, component: {}, title: 'Strand specificity', test: 'strandspecificity' },
             spikeins_used: { values: {}, value: undefined, component: {}, title: 'Spike-ins datasets', test: 'spikeins' },
@@ -288,6 +288,13 @@ class ExperimentComponent extends React.Component {
                     // handled in libraryComponents
                     if (spikeins && spikeins.length) {
                         return spikeins.sort().join();
+                    }
+                    return undefined;
+                },
+                fragmentation_methods: (library) => {
+                    const frag_methods = library.fragmentation_methods;
+                    if (frag_methods && frag_methods.length) {
+                        return frag_methods.sort().join(', ');
                     }
                     return undefined;
                 },
