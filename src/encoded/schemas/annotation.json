@@ -201,9 +201,6 @@
         "annotation_type": {
             "title": "Annotation type"
         },
-        "files.replicate.experiment.assay_term_name": {
-            "title": "Assay name"
-        },
         "files.file_type": {
             "title": "Available file types"
         },

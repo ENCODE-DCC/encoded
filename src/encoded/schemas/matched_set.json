@@ -101,9 +101,6 @@
         "related_datasets.replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
         },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library insert size (nt)"
-        },
         "related_datasets.replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
         },

@@ -181,7 +181,7 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
     @calculated_property(condition='date_released', schema={
-        "title": "Date released",
+        "title": "Month released",
         "type": "string",
     })
     def month_released(self, date_released):

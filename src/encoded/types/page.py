@@ -61,7 +61,7 @@ class Page(SharedItem):
         return '/%s/' % name
 
     @calculated_property(condition='date_created', schema={
-        "title": "Date released",
+        "title": "Month released",
         "type": "string",
     })
     def month_released(self, date_created):

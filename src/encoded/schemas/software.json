@@ -150,7 +150,7 @@
             }
         },
         "used_by": {
-            "title": "Used by project",
+            "title": "Used by",
             "type": "array",
             "uniqueItems": true,
             "items": {

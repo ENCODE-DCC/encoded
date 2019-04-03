@@ -133,10 +133,6 @@
             "title": "Organism",
             "type": "string"
         },
-        "related_datasets.biosample_ontology.term_name": {
-            "title": "Biosample name",
-            "type": "string"
-        },
         "description": {
             "title": "Description",
             "type": "string"

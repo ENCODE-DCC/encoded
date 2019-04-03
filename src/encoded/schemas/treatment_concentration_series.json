@@ -98,9 +98,6 @@
         "related_datasets.replicates.library.nucleic_acid_term_name": {
             "title": "Library material"
         },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library insert size (nt)"
-        },
         "related_datasets.replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
         },
@@ -131,10 +128,6 @@
         },
         "related_datasets.assay_term_name": {
             "title": "Assay name",
-            "type": "string"
-        },
-        "related_datasets.biosample_ontology.term_name": {
-            "title": "Biosample name",
             "type": "string"
         },
         "description": {
