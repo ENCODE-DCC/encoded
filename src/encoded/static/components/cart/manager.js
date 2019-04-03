@@ -764,7 +764,6 @@ class CartManagerComponent extends React.Component {
         );
         return (
             <SortTablePanel header={cartPanelHeader}>
-                <CartCounts cartManager={cartContext} />
                 <SortTable
                     list={cartContext['@graph']}
                     columns={cartTableColumns}
@@ -777,6 +776,7 @@ class CartManagerComponent extends React.Component {
                         updateCartManager: this.retrieveUpdatedCart,
                         fetch,
                     }}
+                    title={<CartCounts cartManager={cartContext} />}
                     rowClasses={
                         (item) => {
                             if (item['@id'] === currentCart) {

@@ -94,7 +94,7 @@ class CartStatusComponent extends React.Component {
 
         if (loggedIn || elements.length > 0 || inProgress) {
             // Define the menu items for the Cart Status menu.
-            const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 50) : '';
+            const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
             const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
             const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cart</button>;
