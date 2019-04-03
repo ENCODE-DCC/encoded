@@ -27,7 +27,7 @@
             "formInput": "textarea"
         },
         "title": {
-            "title": "Title of lab or vendor",
+            "title": "Title",
             "description": "The complete name of the originating lab or vendor.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"

@@ -241,7 +241,7 @@
             "title": "Biosample classification"
         },
         "biosample_ontology.term_name" : {
-            "title": "Biosample name",
+            "title": "Biosample term name",
             "type": "typeahead",
             "length": "long"
         },
@@ -290,7 +290,7 @@
             "title": "Library treatment"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "date_submitted": {
             "title": "Date submitted"
@@ -317,7 +317,7 @@
             "title": "Assay title"
         },
         "target.label": {
-            "title": "Target"
+            "title": "Target of assay"
         },
         "target.genes.symbol": {
             "title": "Target gene symbol"

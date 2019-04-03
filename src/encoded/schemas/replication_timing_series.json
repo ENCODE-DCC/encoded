@@ -132,7 +132,7 @@
             "title": "Library treatment"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -202,7 +202,7 @@
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_id": {
-            "title": "Biosample treatment ontologyID",
+            "title": "Biosample treatment ontology ID",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.concentration": {

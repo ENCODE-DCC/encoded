@@ -22,7 +22,7 @@
             "default": "7"
         },
         "attachment": {
-            "title": "QC metric document metadata",
+            "title": "Attachment",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",

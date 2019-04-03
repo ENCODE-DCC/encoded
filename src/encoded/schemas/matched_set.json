@@ -75,10 +75,7 @@
             "title": "Cell"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample term name"
-        },
-        "related_datasets.replicates.library.biosample.biosample_ontology.organ_slims": {
-            "title": "Organ"
+            "title": "Biosample name"
         },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"
@@ -114,7 +111,7 @@
             "title": "Library treatment"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -180,7 +177,7 @@
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample Treatment",
+            "title": "Biosample treatment",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_id": {

@@ -178,7 +178,7 @@
             }
         },
         "label": {
-            "title": "Target",
+            "title": "Target label",
             "description": "Common name for the target including post-translational modifications, if any.",
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
@@ -223,7 +223,7 @@
     },
     "columns": {
         "label": {
-            "title": "Target"
+            "title": "Target label"
         },
         "investigated_as": {
             "title": "Target category"

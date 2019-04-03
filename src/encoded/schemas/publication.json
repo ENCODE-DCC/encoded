@@ -198,7 +198,7 @@
             "title": "Status"
         },
         "categories": {
-            "title": "Category"
+            "title": "Categories"
         },
         "supplementary_data.supplementary_data_type": {
             "title": "Available supplemental data"
@@ -228,7 +228,7 @@
             "title": "Authors"
         },
         "status": {
-            "title": "Publication status"
+            "title": "Status"
         },
         "journal": {
             "title": "Journal"
@@ -249,7 +249,7 @@
             "title": "Abstract"
         },
         "supplementary_data.supplementary_data_type": {
-            "title": "Available data"
+            "title": "Available supplemental data"
         },
         "supplementary_data.file_format": {
             "title": "File format"

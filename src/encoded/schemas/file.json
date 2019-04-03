@@ -774,7 +774,7 @@
             ]
         },
         "file_format_type": {
-            "title": "Specific file format type",
+            "title": "File format type",
             "description": "Files of type bed and gff require further specification",
             "type": "string",
             "oneOf": [
@@ -1398,7 +1398,7 @@
             "title": "Library"
         },
         "paired_end": {
-            "title": "Paired end"
+            "title": "Paired end identifier"
         },
         "paired_with": {
             "title": "Paired with"
@@ -1407,7 +1407,7 @@
             "title": "Run type"
         },
         "read_length": {
-            "title": "Read length (nt)"
+            "title": "Read length"
         },
         "mapped_read_length": {
             "title": "Mapped read length (nt)"
@@ -1446,7 +1446,7 @@
             "title": "Submitter comment"
         },
         "status": {
-            "title": "File status"
+            "title": "Status"
         }
     },
     "output_type_output_category": {

@@ -357,7 +357,7 @@ class Experiment(Dataset,
         return []
 
     @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay name",
+        "title": "Assay type slims",
         "type": "array",
         "items": {
             "type": "string",

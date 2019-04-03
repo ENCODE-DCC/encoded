@@ -225,7 +225,7 @@
     },
     "facets": {
         "status": {
-            "title": "Status"
+            "title": "Approval status"
         },
         "target.organism.scientific_name": {
             "title": "Target organism"

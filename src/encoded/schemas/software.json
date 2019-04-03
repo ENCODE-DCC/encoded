@@ -189,7 +189,7 @@
             "title": "Name"
         },
         "status": {
-            "title": "Publication status"
+            "title": "Status"
         },
         "url": {
             "title": "URL"
@@ -204,7 +204,7 @@
             "title": "References"
         },
         "used_by": {
-            "title": "Use by project"
+            "title": "Use by"
         },
         "software_type": {
             "title": "Software type"

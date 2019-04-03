@@ -196,7 +196,7 @@
     },
     "facets": {
         "assay_term_names": {
-            "title": "Assay name"
+            "title": "Assay names"
         },
         "status": {
             "title": "Status"
@@ -219,7 +219,7 @@
             "title": "Title"
         },
         "assay_term_names": {
-            "title": "Assay name"
+            "title": "Assay names"
         },
         "version": {
             "title": "Version"

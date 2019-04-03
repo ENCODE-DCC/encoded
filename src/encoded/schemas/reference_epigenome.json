@@ -120,7 +120,7 @@
             "title": "Library treatment"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -176,10 +176,6 @@
         "related_datasets.replicates.antibody.accession": {
             "title": "Linked antibody",
             "type": "string"
-        },
-        "related_datasets.replicates.library.biosample.organism.scientific_name": {
-            "title": "Organism",
-            "type": "array"
         },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage",

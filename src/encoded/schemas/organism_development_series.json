@@ -105,7 +105,7 @@
             "title": "Library treatment"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -155,10 +155,6 @@
             "title": "Linked antibody",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.organism.scientific_name": {
-            "title": "Organism",
-            "type": "array"
-        },
         "related_datasets.replicates.library.biosample.age_display": {
             "title": "Biosample age",
             "type": "string"
@@ -180,7 +176,7 @@
             "type": "number"
         },
         "related_datasets.replicates.library.biosample.treatments.concentration_units": {
-            "title": "Biosample treatement concentration units",
+            "title": "Biosample treatment concentration units",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.duration": {

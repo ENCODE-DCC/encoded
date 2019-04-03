@@ -244,7 +244,7 @@
             "title": "Life stage"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "software_used.software.name": {
             "title": "Software used"

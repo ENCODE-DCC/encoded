@@ -94,7 +94,7 @@
             "description": "Page is a news post"
         },
         "news_excerpt": {
-            "title": "Excerpt of news post to display on lists of news posts",
+            "title": "News excerpt",
             "type": "string",
             "description": "News post excerpt"
         },
@@ -194,7 +194,7 @@
     },
     "facets": {
         "news_keywords": {
-            "title": "Topics"
+            "title": "News keywords"
         },
         "month_released": {
             "title": "Month released"

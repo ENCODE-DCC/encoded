@@ -48,7 +48,7 @@
             "default": "15"
         },
         "project_type": {
-            "title": "Type",
+            "title": "Project type",
             "description": "The category that best describes the project.",
             "type": "string",
             "enum": [
@@ -98,7 +98,7 @@
             "title": "Mapped read length (nt)"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"

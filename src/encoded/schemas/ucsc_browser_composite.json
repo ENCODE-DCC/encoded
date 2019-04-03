@@ -77,7 +77,7 @@
             "title": "Mapped read length (nt)"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
