@@ -292,9 +292,9 @@ class ExperimentComponent extends React.Component {
                     return undefined;
                 },
                 fragmentation_methods: (library) => {
-                    const frag_methods = library.fragmentation_methods;
-                    if (frag_methods && frag_methods.length) {
-                        return frag_methods.sort().join(', ');
+                    const fragMethods = library.fragmentation_methods;
+                    if (fragMethods && fragMethods.length > 0) {
+                        return fragMethods.sort().join(', ');
                     }
                     return undefined;
                 },
