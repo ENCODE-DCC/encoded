@@ -659,7 +659,7 @@ class VisDataset(object):
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
             #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
-            for a_file in self.dataset["files"]:
+            for a_file in self.dataset.get("files", []):
                 if a_file['status'] not in self.vis_defines.visible_file_statuses():
                     continue
                 if file_format != a_file['file_format']:
@@ -1142,6 +1142,9 @@ def vis_cache_add(request, dataset, is_vis_indexer=False):
             not is_vis_indexer and
             not object_is_visualizable(dataset, exclude_quickview=True)
         ):
+        return []
+
+    if 'accession' not in dataset or 'assembly' not in dataset:
         return []
 
     accession = dataset['accession']
