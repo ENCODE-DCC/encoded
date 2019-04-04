@@ -1139,11 +1139,12 @@ class VisDataset(object):
 def vis_cache_add(request, dataset, is_vis_indexer=False):
     '''For a single embedded dataset, builds and adds vis_dataset to es cache for each relevant assembly.'''
     if (
-            not is_vis_indexer or
-            'accession' not in dataset or
-            'assembly' not in dataset or
+            not is_vis_indexer and
             not object_is_visualizable(dataset, exclude_quickview=True)
         ):
+        return []
+
+    if 'accession' not in dataset or 'assembly' not in dataset:
         return []
 
     accession = dataset['accession']
