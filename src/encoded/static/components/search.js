@@ -722,6 +722,7 @@ class Facet extends React.Component {
         // Set initial React commponent state.
         this.state = {
             initialState: true,
+            unsanitizedSearchTerm: '',
             searchTerm: '',
         };
 
@@ -734,6 +735,8 @@ class Facet extends React.Component {
     }
 
     handleSearch(event) {
+        // Unsanitized search term entered by user for display
+        this.setState({ unsanitizedSearchTerm: event.target.value });
         // Search term entered by the user
         const filterVal = String(sanitizedString(event.target.value));
         this.setState({ searchTerm: filterVal });
@@ -854,7 +857,7 @@ class Facet extends React.Component {
                             <div className="typeahead-entry" role="search">
                                 <i className="icon icon-search" />
                                 <div className="searchform">
-                                    <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.value} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
+                                    <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.unsanitizedSearchTerm} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
                                 </div>
                             </div>
                         : null}
