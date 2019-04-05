@@ -683,15 +683,57 @@ InternalTags.defaultProps = {
 };
 
 /**
+ * Display image with fallback for non-existent image links
+ */
+export class ImageWithFallback extends React.Component {
+    constructor() {
+        super();
+
+        // Initialize image src and alt tags to be empty to ensure component mounts
+        this.state = {
+            imageUrl: '',
+            imageAlt: '',
+        };
+        this.onError = this.onError.bind(this);
+    }
+
+    // Once the component has mounted, update image src and alt tag
+    componentDidMount() {
+        this.setState({
+            imageUrl: this.props.imageUrl,
+            imageAlt: this.props.imageAlt,
+        });
+    }
+
+    // Display default "not found" image for non-existent image src
+    onError() {
+        this.setState({
+            imageUrl: '/static/img/brokenImage.png',
+            imageAlt: 'Not found',
+        });
+    }
+
+    render() {
+        return (
+            <img
+                onError={this.onError}
+                src={this.state.imageUrl}
+                alt={this.state.imageAlt}
+            />
+        );
+    }
+}
+
+ImageWithFallback.propTypes = {
+    imageUrl: PropTypes.string.isRequired,
+    imageAlt: PropTypes.string.isRequired,
+};
+
+/**
  * Display internal tag badges for collection pages
  */
 export const MatrixInternalTags = ({ context }) => {
-    // if user manually enters an internal tag that does not exist into the url, display default "not found" image
-    function addDefaultSrc(ev) {
-        ev.target.src = '/static/img/brokenImage.png';
-        ev.target.alt = 'Collection not found';
-    }
-    // collect internal tags that are filters
+    // Collect internal tags that are filters
     const internalTags = [];
     context.filters.forEach((filter) => {
         if (filter.field === 'internal_tags') {
@@ -700,7 +742,7 @@ export const MatrixInternalTags = ({ context }) => {
             }
         }
     });
-    const tagBadges = internalTags.map(tag => (<img src={`/static/img/tag-${tag}.png`} onError={addDefaultSrc} key={tag} alt={`${tag} collection logo`} />));
+    const tagBadges = internalTags.map(tag => (<ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />));
     return <div className="matrix-tag">{tagBadges}</div>;
 };
 
