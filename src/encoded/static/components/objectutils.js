@@ -689,7 +689,8 @@ export class ImageWithFallback extends React.Component {
     constructor() {
         super();
 
-        // Initialize image src and alt tags to be empty to ensure component mounts
+        // Initialize image src and alt tags to be empty
+        // These should not be set to props values prior to the component mounting or the onError function may not execute for broken image urls on certain browsers (Chrome in particular)
         this.state = {
             imageUrl: '',
             imageAlt: '',
@@ -697,7 +698,8 @@ export class ImageWithFallback extends React.Component {
         this.onError = this.onError.bind(this);
     }
 
-    // Once the component has mounted, update image src and alt tag
+    // Only once the component has mounted, update image src and alt tag
+    // This ensures that the component mounts and that the onError function will execute for broken image urls
     componentDidMount() {
         this.setState({
             imageUrl: this.props.imageUrl,
@@ -737,7 +739,7 @@ export const MatrixInternalTags = ({ context }) => {
     const internalTags = [];
     context.filters.forEach((filter) => {
         if (filter.field === 'internal_tags') {
-            if (filter.term !== '*') {
+            if ((filter.term !== '*') && !internalTags.includes(filter.term)) {
                 internalTags.push(filter.term);
             }
         }
