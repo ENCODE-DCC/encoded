@@ -169,5 +169,5 @@ class HumanDonor(Donor):
         },
         "notSubmittable": True,
     })
-    def children(self, request, parents):
-        return paths_filtered_by_status(request, parents)
+    def children(self, request, children):
+        return paths_filtered_by_status(request, children)

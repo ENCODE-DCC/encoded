@@ -682,6 +682,32 @@ InternalTags.defaultProps = {
     css: '',
 };
 
+/**
+ * Display internal tag badges for collection pages
+ */
+export const MatrixInternalTags = ({ context }) => {
+    // if user manually enters an internal tag that does not exist into the url, display default "not found" image
+    function addDefaultSrc(ev) {
+        ev.target.src = '/static/img/brokenImage.png';
+        ev.target.alt = 'Collection not found';
+    }
+    // collect internal tags that are filters
+    const internalTags = [];
+    context.filters.forEach((filter) => {
+        if (filter.field === 'internal_tags') {
+            if (filter.term !== '*') {
+                internalTags.push(filter.term);
+            }
+        }
+    });
+    const tagBadges = internalTags.map(tag => (<img src={`/static/img/tag-${tag}.png`} onError={addDefaultSrc} key={tag} alt={`${tag} collection logo`} />));
+    return <div className="matrix-tag">{tagBadges}</div>;
+};
+
+MatrixInternalTags.propTypes = {
+    /** encode object being displayed */
+    context: PropTypes.object.isRequired,
+};
 
 /**
  * Given a search results object, extract the type of object that was requested in the query

@@ -31,7 +31,7 @@ import {
     NO_ACTION,
 } from './actions';
 import cartAddElements from './add_elements';
-import CartAddAll from './add_multiple';
+import { CartAddAllSearch, CartAddAllElements } from './add_multiple';
 import cartCacheSaved from './cache_saved';
 import CartBatchDownload from './batch_download';
 import Cart from './cart';
@@ -179,7 +179,8 @@ export const cartIsUnsaved = () => {
 
 // Include any symbols needed outside the "cart" directory.
 export {
-    CartAddAll,
+    CartAddAllSearch,
+    CartAddAllElements,
     CartBatchDownload,
     cartCacheSaved,
     CartClear,

@@ -250,6 +250,17 @@ def experiment_22(root, experiment):
 
 
 @pytest.fixture
+def experiment_25(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '25',
+        'assay_term_name': 'ISO-seq'
+    })
+    return properties
+
+
+@pytest.fixture
 def annotation_20(award, lab):
     return {
         'award': award['@id'],
@@ -567,3 +578,17 @@ def test_upgrade_annotation_22_to_23(upgrader, annotation_20):
     assert 'biosample_type' not in value
     assert 'biosample_term_id' not in value
     assert 'biosample_term_name' not in value
+
+
+def test_upgrade_annotation_23_to_24(upgrader, annotation_20):
+    value = upgrader.upgrade(
+        'annotation', annotation_20, current_version='23', target_version='24'
+    )
+    assert 'annotation_type' in value
+
+
+def test_upgrade_experiment_25_to_26(upgrader, experiment_25):
+    assert experiment_25['schema_version'] == '25'
+    value = upgrader.upgrade('experiment', experiment_25, current_version='25', target_version='26')
+    assert value['schema_version'] == '26'
+    assert value['assay_term_name'] == 'long read RNA-seq'

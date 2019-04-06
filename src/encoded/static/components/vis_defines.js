@@ -115,7 +115,7 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
     }
     case 'Ensembl': {
         if (ASSEMBLY_DETAILS[assembly].ensembl_host) {
-            href = `http://${ASSEMBLY_DETAILS[assembly].ensembl_host}/Trackhub?url=${datasetUrl};species=${ASSEMBLY_DETAILS[assembly].species.replace(/ /g, '_')}`;
+            href = `http://${ASSEMBLY_DETAILS[assembly].ensembl_host}/Trackhub?url=${datasetUrl}@@hub/hub.txt;species=${ASSEMBLY_DETAILS[assembly].species.replace(/ /g, '_')}`;
         }
         break;
     }

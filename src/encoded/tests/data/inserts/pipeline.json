@@ -145,14 +145,14 @@
     },
     {
         "accession": "ENCPL001ISO",
-        "assay_term_names": ["ISO-seq"],
+        "assay_term_names": ["long read RNA-seq"],
         "analysis_steps": [
             "fastqc-step-v-1"
         ],
         "status": "released",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
-        "title": "Test ISO-seq pipeline",
+        "title": "Test long read RNA-seq pipeline",
         "uuid": "fd603a65-7641-4e4d-b7df-fadbc4f38da6"
     },
     {

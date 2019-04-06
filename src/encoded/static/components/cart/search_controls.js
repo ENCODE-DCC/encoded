@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import CartAddAll from './add_multiple';
+import { CartAddAllSearch } from './add_multiple';
 import { isAllowedElementsPossible } from './util';
 
 
@@ -15,7 +15,7 @@ const CartSearchControls = ({ searchResults }) => {
     if (isAllowedElementsPossible(searchResults.filters)) {
         return (
             <div className="cart__search-controls">
-                <CartAddAll searchResults={searchResults} />
+                <CartAddAllSearch searchResults={searchResults} />
             </div>
         );
     }

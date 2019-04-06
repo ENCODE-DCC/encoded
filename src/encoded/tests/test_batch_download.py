@@ -22,10 +22,10 @@ exp_file_3 = {'file_type': 'gz'}
 @pytest.fixture
 def lookup_column_value_item():
     item = {
-        'assay_term_name': 'ISO-seq',
+        'assay_term_name': 'long read RNA-seq',
         'lab': {'title': 'John Stamatoyannopoulos, UW'},
         'accession': 'ENCSR751ISO',
-        'assay_title': 'ISO-seq',
+        'assay_title': 'long read RNA-seq',
         'award': {'project': 'Roadmap'},
         'status': 'released',
         '@id': '/experiments/ENCSR751ISO/',
@@ -38,7 +38,7 @@ def lookup_column_value_item():
 @pytest.fixture
 def lookup_column_value_validate():
     valid = {
-        'assay_term_name': 'ISO-seq',
+        'assay_term_name': 'long read RNA-seq',
         'lab.title': 'John Stamatoyannopoulos, UW',
         'audit': '',
         'award.project': 'Roadmap',

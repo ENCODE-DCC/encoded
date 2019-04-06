@@ -435,7 +435,7 @@
                 "HiC",
                 "iCLIP",
                 "icSHAPE",
-                "ISO-seq",
+                "long read RNA-seq",
                 "MeDIP-seq",
                 "microRNA counts",
                 "microRNA-seq",
@@ -485,6 +485,7 @@
                 "injection",
                 "irradiation",
                 "protein",
+                "stimulation",
                 "transplantation"
             ]
         },

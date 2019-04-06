@@ -8,13 +8,13 @@ import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
-import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, AlternateAccession, DisplayAsJson } from './objectutils';
+import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, DisplayAsJson } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { Supersede } from './typeutils';
+import { ReplacementAccessions } from './typeutils';
 
 
 // Columns to display in Deriving/Derived From file tables
@@ -374,9 +374,12 @@ class FileComponent extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                        {context.restricted ? <h4 className="superseded-acc">Restricted file</h4> : null}
-                        <Supersede context={context} />
+                        {context.restricted ?
+                            <div className="replacement-accessions">
+                                <h4>Restricted file</h4>
+                            </div>
+                        : null}
+                        <ReplacementAccessions context={context} />
                         {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
                         <DisplayAsJson />

@@ -12,6 +12,7 @@ import { requestObjects, DisplayAsJson } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartClear from './clear';
+import { cartRetrieve } from './database';
 import CartMergeShared from './merge_shared';
 
 
@@ -618,6 +619,8 @@ const createInitialCartState = () => {
         viewableElements: null,
         /** Currently displayed page of dataset search results */
         currentDatasetResultsPage: 0,
+        /** Cart context after update */
+        updatedContext: null,
     };
     displayedFacetFields.forEach((field) => {
         newState.selectedTerms[field] = [];
@@ -647,7 +650,7 @@ class CartComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { totalDatasetPages } = this.computePageInfo();
+        const { cartType, totalDatasetPages } = this.computePageInfo();
 
         // If enough datasets got removed that we lost a page of search results, go back to the
         // first page.
@@ -665,6 +668,13 @@ class CartComponent extends React.Component {
                 currentDatasetResultsPage: newState.currentDatasetResultsPage,
             });
         }
+
+        // Redraw an OBJECT page if the underlying data changed.
+        if (cartType === 'OBJECT' && !this.props.inProgress && prevProps.inProgress) {
+            cartRetrieve(this.props.context['@id'], this.props.fetch).then((response) => {
+                this.setState({ updatedContext: response });
+            });
+        }
     }
 
     /**
@@ -679,10 +689,11 @@ class CartComponent extends React.Component {
      */
     computePageInfo() {
         const { context, savedCartObj, elements } = this.props;
+        const cartContext = this.state.updatedContext || context;
         let cartType = '';
         let cartElements = [];
         let cartName = '';
-        if (context['@type'][0] === 'cart-view') {
+        if (cartContext['@type'][0] === 'cart-view') {
             // Viewing a current active or memory cart on the /cart-view/ page.
             if (savedCartObj && Object.keys(savedCartObj).length > 0) {
                 cartType = 'ACTIVE';
@@ -696,8 +707,8 @@ class CartComponent extends React.Component {
         } else {
             // Viewing a saved cart at its unique path.
             cartType = 'OBJECT';
-            cartName = context.name;
-            cartElements = context.elements;
+            cartName = cartContext.name;
+            cartElements = cartContext.elements;
         }
         return {
             cartType,
@@ -774,6 +785,7 @@ class CartComponent extends React.Component {
     render() {
         const { context, savedCartObj, loggedIn } = this.props;
         const { cartType, cartElements, cartName, totalDatasetPages } = this.computePageInfo();
+        const cartContext = this.state.updatedContext || context;
 
         // Calculate number of files facet has selected, or all if none selected.
         let fileCount = 0;
@@ -785,7 +797,7 @@ class CartComponent extends React.Component {
         }
 
         return (
-            <div className={itemClass(context, 'view-item')}>
+            <div className={itemClass(cartContext, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>{cartName}</h2>
@@ -802,7 +814,7 @@ class CartComponent extends React.Component {
                                 selectedTerms={this.state.selectedTerms}
                                 viewableElements={this.state.viewableElements}
                                 cartType={cartType}
-                                sharedCart={context}
+                                sharedCart={cartContext}
                                 fileCount={fileCount}
                             />
                         </PanelHeading>
@@ -848,8 +860,12 @@ CartComponent.propTypes = {
     elements: PropTypes.array.isRequired,
     /** Cart as it exists in the database */
     savedCartObj: PropTypes.object,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
     /** True if user has logged in */
     loggedIn: PropTypes.bool,
+    /** System fetch function */
+    fetch: PropTypes.func.isRequired,
 };
 
 CartComponent.defaultProps = {
@@ -860,8 +876,10 @@ CartComponent.defaultProps = {
 const mapStateToProps = (state, ownProps) => ({
     elements: state.elements,
     savedCartObj: state.savedCartObj,
+    inProgress: state.inProgress,
     context: ownProps.context,
     loggedIn: ownProps.loggedIn,
+    fetch: ownProps.fetch,
 });
 
 const CartInternal = connect(mapStateToProps)(CartComponent);

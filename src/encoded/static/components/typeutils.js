@@ -295,44 +295,39 @@ export function fileStatusList(session, sessionProperties) {
 }
 
 
-// Display supersedes/superseded_by lists.
-export const Supersede = ({ context }) => {
+/**
+ *  Display supersedes/superseded_by/alternate_accessions lists.
+ */
+export const ReplacementAccessions = ({ context }) => {
     const alternateAccessions = context.alternate_accessions || [];
+    const supersededByAtIds = context.superseded_by || [];
+    const supersedes = (context.supersedes && context.supersedes.map(supersedesAtId => globals.atIdToAccession(supersedesAtId))) || [];
 
-    // Make array of supersedes accessions
-    let supersedes = [];
-    if (context.supersedes && context.supersedes.length) {
-        supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
-    }
-
-    let supersededByOutput = null;
-    if (context.superseded_by && context.superseded_by.length > 0) {
-        supersededByOutput = (
-            <h4 className="replacement-accessions__superseded-by">
-                <span>Superseded by </span>
-                {context.superseded_by.map((supersededBy, index) => (
-                    <span key={supersededBy}>
-                        {index > 0 ? <span>, </span> : null}
-                        <a href={supersededBy}>{globals.atIdToAccession(supersededBy)}</a>
-                    </span>
-                ))}
-            </h4>
-        );
-    }
-
-    if (supersededByOutput || supersedes.length > 0 || alternateAccessions.length > 0) {
+    if (alternateAccessions.length > 0 || supersededByAtIds.length > 0 || supersedes.length > 0) {
         return (
             <div className="replacement-accessions">
                 <AlternateAccession altAcc={alternateAccessions} />
-                {supersededByOutput}
-                {supersedes.length ? <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4> : null}
+                {supersededByAtIds.length > 0 ?
+                    <h4 className="replacement-accessions__superseded-by">
+                        <span>Superseded by </span>
+                        {supersededByAtIds.map((supersededByAtId, index) => (
+                            <span key={supersededByAtId}>
+                                {index > 0 ? <span>, </span> : null}
+                                <a href={supersededByAtId}>{globals.atIdToAccession(supersededByAtId)}</a>
+                            </span>
+                        ))}
+                    </h4>
+                : null}
+                {supersedes.length > 0 ?
+                    <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4>
+                : null}
             </div>
         );
     }
     return null;
 };
 
-Supersede.propTypes = {
+ReplacementAccessions.propTypes = {
     context: PropTypes.object.isRequired, // Object containing supersedes/superseded_by to display
 };
 

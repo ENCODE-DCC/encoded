@@ -15,6 +15,7 @@ import cartStore, {
     cartMergeElements,
     cartRetrieve,
     cartSave,
+    cartSetOperationInProgress,
     cartGetSettings,
     cartSetSettingsCurrent,
     cartSetCurrent,
@@ -38,8 +39,13 @@ const portal = {
                 { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released' },
                 { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment&status=released' },
                 { id: 'sep-mm-1' },
+                { id: 'collections', title: 'Collections' },
+                { id: 'encore', title: 'ENCORE', url: '/matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
+                { id: 'entex', title: 'ENTEx', url: '/matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
+                { id: 'sescc', title: 'SE Stem Cell Consortium', url: '/matrix/?type=Experiment&status=released&internal_tags=SESCC', tag: 'collection' },
+                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome&status=released', tag: 'collection' },
+                { id: 'sep-mm-2' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
-                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome&status=released' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
             ],
         },
@@ -602,6 +608,7 @@ class App extends React.Component {
         // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
         // cart (has a "disabled" status) and add the in-memory cart items to it.
         let autosaveCartPromise;
+        cartSetOperationInProgress(true, cartStore.dispatch);
         if (cartIsUnsaved()) {
             // The user has an in-memory cart that needs to be saved to the auto-save cart,
             // so get the auto-save cart with a search.
@@ -640,6 +647,7 @@ class App extends React.Component {
                 },
             })
         )).then((response) => {
+            cartSetOperationInProgress(false, cartStore.dispatch);
             if (response.ok) {
                 return response.json();
             }

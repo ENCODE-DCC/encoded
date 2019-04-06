@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 26
+
+* Replace ISO-seq with long read RNA-seq assay_term_name.
+
 ### Schema version 25
 
 * Remove biosample_type, biosample_term_id and biosample_term_name.

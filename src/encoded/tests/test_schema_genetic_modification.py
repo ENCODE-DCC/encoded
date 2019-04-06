@@ -112,6 +112,26 @@ def tale_replacement(lab, award):
         'zygosity': 'heterozygous'
     }
 
+@pytest.fixture
+def mpra(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'characterization',
+        'method': 'transduction'
+    }
+
+
+@pytest.fixture
+def starr_seq(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'episome',
+        'purpose': 'characterization',
+        'method': 'transient transfection'
+    }
 
 def test_crispr_deletion_missing_site(testapp, crispr_deletion):
     # modified_site_(by_target_id|by_coordinates|by_sequence) must be specified for deletions
@@ -327,4 +347,25 @@ def test_tale_replacement_properties(testapp, tale_replacement, source):
     assert res.status_code == 422
     tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})
     res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_mpra_properties(testapp, mpra):
+    # introduced_elements combined with modified_site_nonspecific can satisfy insertion dependency
+    res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
+    assert res.status_code == 422
+    mpra.update({'introduced_elements': 'synthesized DNA'})
+    res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
+    assert res.status_code == 422
+    mpra.update({'modified_site_nonspecific': 'random'})
+    res = testapp.post_json('/genetic_modification', mpra, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_starr_seq_properties(testapp, starr_seq):
+    # Episome modifications need to include introduced_elements and satisfy characterization dependency
+    res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
+    assert res.status_code == 422
+    starr_seq.update({'introduced_elements': 'sheared genomic DNA'})
+    res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 201

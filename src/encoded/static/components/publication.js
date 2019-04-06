@@ -7,7 +7,50 @@ import { DbxrefList } from './dbxref';
 import { PickerActions } from './search';
 import Status from './status';
 import { DisplayAsJson } from './objectutils';
+import { SortTablePanel, SortTable } from './sorttable';
+import { FetchedData, Param } from './fetched';
 
+
+const datasetsColumns = {
+    accession: {
+        display: dataset => <a href={dataset['@id']}>{dataset.accession}</a>,
+        title: 'Accession',
+    },
+    type: {
+        getValue: datasets => (datasets['@type'] || [''])[0], // only the first matters
+        title: 'Type',
+    },
+    target: {
+        getValue: dataset => (dataset.target ? dataset.target.label : ''),
+        title: 'Target',
+    },
+    assay_term_name: {
+        getValue: (dataset) => {
+            // assay_term_name can be a string or an array
+            if (typeof (dataset.assay_term_name) === 'string') {
+                return dataset.assay_term_name;
+            }
+            return (dataset.assay_term_name || []).join(', ');
+        },
+        title: 'Assay',
+    },
+    description: {
+        title: 'Description',
+    },
+    lab: {
+        getValue: dataset => (dataset.lab ? dataset.lab.title : ''),
+        title: 'Lab',
+    },
+    biosample_summary: {
+        title: 'Biosample Summary',
+    },
+    status: {
+        display: datasets => <Status item={datasets.status} badgeSize="small" css="result-table__status" />,
+        title: 'Status',
+    },
+};
+
+const fields = ['accession', 'target', '@type', 'target', 'biosample_summary', 'lab', 'assay_term_name', 'assay', 'description', 'status'].reduce((field1, field2) => `${field1}&field=${field2}`, '');
 
 // Display a publication object.
 const PublicationComponent = (props, reactContext) => {
@@ -26,7 +69,10 @@ const PublicationComponent = (props, reactContext) => {
     ];
 
     const crumbsReleased = (context.status === 'released');
-
+    const accessions = context.datasets ? context.datasets.reduce((dataset1, dataset2) => `${dataset1}&accession=${dataset2.accession}`, '') : '';
+    const datasetsUrl = context.datasets && context.datasets.length > 0 ?
+        `/search/?${accessions}${fields}` :
+        null;
     return (
         <div className={itemClass}>
             <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
@@ -39,11 +85,20 @@ const PublicationComponent = (props, reactContext) => {
                 <Citation {...props} />
             </div>
 
-            {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.identifiers && context.identifiers.length) ?
+            {context.abstract || context.data_used || (context.identifiers && context.identifiers.length > 0) ?
                 <div className="view-detail panel">
                     <Abstract {...props} />
                 </div>
             : null}
+
+            {context.datasets && context.datasets.length ?
+                    <SortTablePanel title="Datasets">
+                        <FetchedData>
+                            <Param name="datasets" url={datasetsUrl} allowMultipleRequest />
+                            <DatasetsComponent columns={datasetsColumns} />
+                        </FetchedData>
+                    </SortTablePanel>
+            : null }
 
             {context.supplementary_data && context.supplementary_data.length ?
                 <div>
@@ -78,8 +133,8 @@ const Citation = (props) => {
     const context = props.context;
     return (
         <span>
-            {context.journal ? <i>{context.journal}. </i> : ''}{context.date_published ? `${context.date_published};` : ''}
-            {context.volume ? context.volume : ''}{context.issue ? `(${context.issue})` : '' }{context.page ? `:${context.page}.` : ''}
+            {context.journal ? <i>{context.journal}. </i> : ''}{context.date_published ? `${context.date_published};` : <span>&nbsp;</span>}
+            {context.volume ? context.volume : ''}{context.issue ? `(${context.issue})` : '' }{context.page ? `:${context.page}.` : <span>&nbsp;</span>}
         </span>
     );
 };
@@ -107,20 +162,6 @@ const Abstract = (props) => {
                 </div>
             : null}
 
-            {context.datasets && context.datasets.length ?
-                <div data-test="datasets">
-                    <dt>Datasets</dt>
-                    <dd>
-                        {context.datasets.map((dataset, i) => (
-                            <span key={i}>
-                                {i > 0 ? ', ' : ''}
-                                <a href={dataset['@id']}>{dataset.accession}</a>
-                            </span>
-                        ))}
-                    </dd>
-                </div>
-            : null}
-
             {context.identifiers && context.identifiers.length ?
                 <div data-test="references">
                     <dt>References</dt>
@@ -135,6 +176,23 @@ Abstract.propTypes = {
     context: PropTypes.object.isRequired, // Abstract being displayed
 };
 
+const DatasetsComponent = (props) => {
+    const { datasets, columns } = props;
+
+    return (
+        <SortTable list={datasets['@graph']} columns={columns} />
+    );
+};
+
+DatasetsComponent.propTypes = {
+    datasets: PropTypes.object,
+    columns: PropTypes.object,
+};
+
+DatasetsComponent.defaultProps = {
+    datasets: {},
+    columns: {},
+};
 
 const SupplementaryData = (props) => {
     const data = props.data;

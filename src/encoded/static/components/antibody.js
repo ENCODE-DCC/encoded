@@ -114,7 +114,9 @@ const LotComponent = (props, reactContext) => {
                 <div className="col-sm-12">
                     <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>{context.accession}</h2>
-                    <AlternateAccession altAcc={context.alternate_accessions} />
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
+                    </div>
                     <h3>
                         {targetKeys.length ?
                             <span>

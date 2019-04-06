@@ -659,7 +659,7 @@ class VisDataset(object):
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
             #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
-            for a_file in self.dataset["files"]:
+            for a_file in self.dataset.get("files", []):
                 if a_file['status'] not in self.vis_defines.visible_file_statuses():
                     continue
                 if file_format != a_file['file_format']:
@@ -756,7 +756,9 @@ class VisDataset(object):
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
                 track["type"] = view["type"]
-                track["bigDataUrl"] = "%s?proxy=true" % a_file["href"]
+                track["bigDataUrl"] = a_file.get("cloud_metadata", {}).get(
+                    "url", "%s?proxy=true" % a_file["href"]
+                )
                 longLabel = self.vis_def.get('file_defs', {}).get('longLabel')
                 if longLabel is None:
                     longLabel = ("{assay_title} of {biosample_term_name} {output_type} "
@@ -1134,9 +1136,15 @@ class VisDataset(object):
         return self.ucsc_trackDb()
 
 
-def vis_cache_add(request, dataset):
+def vis_cache_add(request, dataset, is_vis_indexer=False):
     '''For a single embedded dataset, builds and adds vis_dataset to es cache for each relevant assembly.'''
-    if not object_is_visualizable(dataset, exclude_quickview=True):
+    if (
+            not is_vis_indexer and
+            not object_is_visualizable(dataset, exclude_quickview=True)
+        ):
+        return []
+
+    if 'accession' not in dataset or 'assembly' not in dataset:
         return []
 
     accession = dataset['accession']

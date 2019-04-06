@@ -50,5 +50,6 @@
         "status": {
             "title": "Status"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/software_version.md"
 }

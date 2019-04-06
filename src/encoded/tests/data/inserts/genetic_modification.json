@@ -194,5 +194,38 @@
         "introduced_gene": "/genes/a9288b44-6ef4-460e-a3d6-464fd625b103",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "method": "CRISPR"
+    },
+    {
+        "accession": "ENCGM246STR",
+        "status": "released",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/kevin-white/",
+        "uuid": "537e5e98-9392-4263-bac1-6f80e65ca0c9",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "aliases": [
+            "kevin-white:STARR-seq_1"
+        ],
+        "category": "episome",
+        "purpose": "characterization",
+        "introduced_elements": "sheared genomic DNA",
+        "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
+        "method": "transient transfection"
+    },
+    {
+        "accession": "ENCGM359MPR",
+        "status": "released",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/kevin-white/",
+        "uuid": "78b475d5-efd5-43d5-9322-c5e95737cc2d",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "aliases": [
+            "kevin-white:MPRA_1"
+        ],
+        "category": "insertion",
+        "purpose": "characterization",
+        "introduced_elements": "synthesized DNA",
+        "modified_site_nonspecific": "random",
+        "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
+        "method": "transduction"
     }
 ]
