@@ -1,6 +1,36 @@
 Changes
 =======
 
+83.0 (released) / snovault 1.0.27
+-----------------
+1. ENCD-4569 Update snovault to 1.0.27 (#2704)
+2. ENCD-4562 Setup s3tos3 copy on test (#2698)
+3. ENCD-4555 Fix key errors in vis indexing (#2696)
+4. ENCD-4543 fix-status-hierarchy (#2677)
+5. ENCD-4550 Fix deploy console output (#2691)
+6. ENCD-4170 exclude-restricted-files (#2670)
+7. ENCD-4510 Fix human donor children calc prop (#2684)
+8. ENCD-4513 add collections links to menu (#2681)
+9. ENCD-3919 index-vis-blobs-on-deploy (#2685)
+10. ENCD-4517 Add new property introduced_elements to user interface (#2671)
+11. SNO-83 rotate jpg and tiff attachment based on EXIF (#2667)
+12. ENCD-3952 add new assay category, mpra, update ontology.json
+13. ENCD-4347 add efo derives from capability, remove unnecessary slimming
+14. ENCD-4384 Update assay name ISO-seq to long read RNA-seq
+15. ENCD-4489 add imputation annotation_type (#2654)
+16. ENCD-4414 Allow users to add exp to carts from series (#2665)
+17. ENCD-4507 Handle long cart operations (#2661)
+18. ENCD-4494 remove-duplicate-embedding (#2659)
+19. ENCD-4521 add-insert-user-meenakshi (#2653)
+20. ENCD-4469 Add stimulation to treatment type (#2646)
+21. ENCD-3422 datasets-table-publication (#2660)
+22. ENCD-4524 update audit matrix (#2662)
+23. ENCD-4526 Change date format for Pages (#2663)
+24. ENCD-4477 added-changelogs (#2668)
+25. ENCD-4530 Fix duplicate alternate accessions (#2669)
+26. ENCD-4464 add GM category enums (#2634)
+27. ENCD-4523 Fix ENSEMBL visualization (#2645)
+
 82.0 (released) / snovault 1.0.26
 -----------------
 1. ENCD-4509 Add test back (#2640)
@@ -33,7 +63,6 @@ Changes
 28. ENCD-4456 Override update objs in vis reg indexers
 29. ENCD-4450 add two sources to alias namespace (#2618)
 30. ENCD-4475 Fix pub priv bucket variables (#2613)
-
 
 81.0 (released) / snovault 1.0.25
 -----------------
