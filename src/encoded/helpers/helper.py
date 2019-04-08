@@ -104,7 +104,7 @@ def search_result_actions(request, doc_types, es_results, position=None):
 class View_Item:
     def __init__(self, request, search_base):
         # strip out x.limit=<number> and y.limit=<number>; as they are not used
-        search_base_without_limit = re.sub(r'&[x|y]\.limit\=\d*', '', search_base)
+        search_base_without_limit = re.sub(r'&[x|y]\.limit\=\d*', '', search_base, flags=re.IGNORECASE)
         self.result_list = {
             'href': request.route_path('search', slash='/') + search_base_without_limit,
             'title': 'View results as list',
