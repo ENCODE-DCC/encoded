@@ -211,7 +211,7 @@ def genetic_modification_7_8(value, system):
         'trc': r'^TRCN\d{10}$',
         'brenton-graveley': r'^BGC#\d{7}$'
     }
-    reagents = value.get('reagents')
+    reagents = value.pop('reagents', [])
     if reagents:
         new_reagents = []
         unmatched_reagents = ''
@@ -223,18 +223,17 @@ def genetic_modification_7_8(value, system):
             new_reagent = copy.deepcopy(reagent)
             matching = []
             source_from_reagent = None
-            for source in sources:
+            for source, src_regex in sources.items():
                 if source in source_name:
                     source_from_reagent = source_name
-                    break
-            # Preferentially add prefix to reagent that matches the reagent source
-            if source_from_reagent is not None:
-                regex = sources[source_from_reagent]
-                if re.match(regex, identifier) is not None:
-                    matching.append((source_name, source_from_reagent, identifier))
-            else:
-                for source, regex in sources.items():
-                    if re.match(regex, identifier) is not None:
+                    # Preferentially add prefix to reagent that matches the reagent source
+                    src_regex_from_reagent = sources[source_from_reagent]
+                    if re.match(src_regex_from_reagent, identifier):
+                        # Override the matching list
+                        matching = [(source_name, source_from_reagent, identifier)]
+                        break
+                else:
+                    if re.match(src_regex, identifier):
                         matching.append((source_name, source, identifier))
             if not matching:
                 unmatched_reagents += '{} '.format(json.dumps(reagent))
@@ -242,11 +241,12 @@ def genetic_modification_7_8(value, system):
                 if len(matching) >= 2:
                     # Bring the identifier with matching source to the reagent to the top
                     matching.sort(key=lambda match: int(match[1] in match[0]), reverse=True)
-                    # matching = [i for i in matching if i[1] in i[0]]
                 _, source, identifier = matching[0]
                 new_identifier = ('{}:{}'.format(source, identifier))
                 new_reagent['identifier'] = new_identifier
                 new_reagents.append(new_reagent)
+        if new_reagents:
+            value['reagents'] = new_reagents
         # Dump the unmatched identifier reagents to the notes
         if unmatched_reagents:
             date = time.strftime('%m/%d/%Y')
@@ -257,6 +257,3 @@ def genetic_modification_7_8(value, system):
                 new_notes = message + unmatched_reagents
             new_notes = new_notes.strip()
             value['notes'] = new_notes
-        del value['reagents']
-        if new_reagents:
-            value['reagents'] = new_reagents
