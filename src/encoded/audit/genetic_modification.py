@@ -2,6 +2,7 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from snovault.util import simple_path_ids
 
 
 @audit_checker('GeneticModification', frame=['modified_site_by_target_id'])
@@ -79,9 +80,11 @@ def audit_genetic_modification_reagents(value, system):
 def audit_genetic_modification_reagent_source(value, system):
     reagents = value.get('reagents', [])
     for reagent in reagents:
-        source = reagent['source']
+        request = system.get('request')
+        source_from_reagent = reagent['source']
+        linked_source = request.embed(source_from_reagent + '@@object')
         identifier = reagent['identifier']
-        source_name = source.split('/')[2]
+        source_name = linked_source.get('name')
         source_name_from_identifier = identifier.split(':')[0]
         if source_name != source_name_from_identifier:
             detail = (
@@ -90,7 +93,7 @@ def audit_genetic_modification_reagent_source(value, system):
                 'different source.'
             ).format(
                 value['@id'],
-                source,
+                linked_source['@id'],
                 identifier,
             )
             yield AuditFailure(
