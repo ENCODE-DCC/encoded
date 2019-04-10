@@ -24,6 +24,13 @@
                 "replicate": "3b427e79-556e-4125-8102-f6723471807e",
                 "genes_detected": 7654
             }
-        ]
+        ],
+        "replicates_correlation": [{
+            "replicates": [
+                "3b427e79-556e-4125-8102-f6723471807e",
+                "???"
+            ],
+            "spearman_correlation": 0.99
+        }]
     }
 ]
