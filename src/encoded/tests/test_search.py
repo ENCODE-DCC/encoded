@@ -877,11 +877,11 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
         'title': 'Title',
         'terms': [
             {
+                'isEqual': 'true',
                 'key': 'titlevalue',
             },
         ],
         'appended': 'true',
-        'isEqual': 'true',
         'total': 42,
     }]
 
