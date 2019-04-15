@@ -365,13 +365,15 @@ class App extends React.Component {
         }
         window.onbeforeunload = this.handleBeforeUnload;
         (function walkmeinit() {
-            const walkme = document.createElement('script');
-            walkme.type = 'text/javascript';
-            walkme.async = true;
-            walkme.src = 'https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js';
             const s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(walkme, s);
-            window._walkmeConfig = { smartLoad: true };
+            if (s) {
+                const walkme = document.createElement('script');
+                walkme.type = 'text/javascript';
+                walkme.async = true;
+                walkme.src = 'https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js';
+                s.parentNode.insertBefore(walkme, s);
+                window._walkmeConfig = { smartLoad: true };
+            }
         }());
     }
 
