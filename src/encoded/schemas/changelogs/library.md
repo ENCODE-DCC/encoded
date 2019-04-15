@@ -1,5 +1,10 @@
 ## Changelog for library.json
 
+### Schema version 9
+
+* *fragmentation_method* property was replaced by an array *fragmentation_methods*
+* *fragmentation_date* value, if specified, would apply to all the listed fragmentation methods
+
 ### Minor changes since schema version 8
 
 * *rna_integrity_number* property is added to capture RIN number.

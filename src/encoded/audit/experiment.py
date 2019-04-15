@@ -5,6 +5,7 @@ from snovault import (
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
 
+
 targetBasedAssayList = [
     'ChIP-seq',
     'RNA Bind-n-Seq',
@@ -53,7 +54,7 @@ seq_assays = [
 
 def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
     '''
-    Libraries for HiC experiments should use the same restriction enzyme
+    Libraries for HiC experiments should use the same restriction enzymes
     '''
     if value['assay_term_name'] != 'HiC':
         return
@@ -61,37 +62,51 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
         return
     if 'replicates' not in value:
         return
-    frag_methods = set()
-    using_restriction_enzyme = 0
-    for rep in value['replicates']:
-        rep_lib = rep.get('library')
-        rep_status = rep.get('status')
-        if rep_lib and rep_status and rep_status not in excluded_types:
-            rep_lib_status = rep_lib.get('status')
-            if rep_lib_status and rep_lib_status not in excluded_types:
-                if 'fragmentation_method' in rep_lib:
-                    frag_methods.add(rep_lib['fragmentation_method'])
-                    if 'restriction' in rep_lib['fragmentation_method']:
-                        using_restriction_enzyme = 1
-                else:
-                    detail = ('Experiment {} contains a library {} '
-                              'lacking the specification of the fragmentation '
-                              'method used to generate it'.format(
-                                    value['@id'],
-                                    rep_lib.get('accession')
-                               )
-                              )
-                    yield AuditFailure('missing fragmentation method', detail, level='WARNING')
+    
+    
+    fragmentation_methods_for_experiment = set()
+    fragmentation_methods_by_library = {}
 
-    if len(frag_methods) > 1 and using_restriction_enzyme > 0:
-        detail = ('Experiment {} contains libraries generated '
-                  'following fragmentation with '
-                  'inconsistent restriction enzymes {} '.format(
+    for replicate in value['replicates']:
+        library = replicate.get('library', {})
+        replicate_status = replicate.get('status')
+        library_status = library.get('status')
+        missing_fragmentation_audit_conditions = [
+            library,
+            replicate_status,
+            library_status,
+            replicate_status not in excluded_types,
+            library_status not in excluded_types,
+        ]
+        if all(missing_fragmentation_audit_conditions):
+            library_fragmentation_methods = library.get('fragmentation_methods')
+            library_id = library.get('@id')
+            if library_fragmentation_methods and library_id:
+                fragmentation_methods_by_library[library_id] = set(library_fragmentation_methods)
+                fragmentation_methods_for_experiment.update(library_fragmentation_methods)
+            else:
+                detail = (
+                    'Experiment {} contains a library {} '
+                    'lacking the specification of the fragmentation '
+                    'method used to generate it'.format(
                         value['@id'],
-                        frag_methods
+                        library_id,
                     )
-                  )
-        yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')
+                )
+                yield AuditFailure('missing fragmentation method', detail, level='WARNING')
+
+    for library_id, library_fragmentation_methods in fragmentation_methods_by_library.items():
+        if len(fragmentation_methods_for_experiment) - len(library_fragmentation_methods) != 0:
+            detail = (
+                'Experiment {} contains library {} generated using {} '
+                'fragmentation methods, which are inconsistent with '
+                'fragmentation methods {} used for other libraries.'.format(
+                    value['@id'],
+                    library_id,
+                    sorted(list(library_fragmentation_methods)),
+                    sorted(list(fragmentation_methods_for_experiment))
+                ))
+            yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')       
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
