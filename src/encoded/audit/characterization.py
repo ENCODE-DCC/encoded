@@ -9,7 +9,7 @@ def audit_characterization_review_lane(value, system):
     """
     Biosample and genetic modification characterizations need their reviews to have lane
     specified if the review also has its status specified and the characterization's
-    characterization_method is one that should have necessitates lane information.
+    characterization_method is one that necessitates lane information.
     """
     characterization_type_audited_methods = {
         'GeneticModificationCharacterization': [
