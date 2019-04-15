@@ -186,6 +186,11 @@
         "targets.investigated_as": {
             "title": "Target of antibody"
         },
+        "targets.label": {
+            "title": "Target of antibody",
+            "type": "typeahead",
+            "length": "long"
+        },
         "characterizations.characterization_method": {
             "title": "Characterization method"
         },
