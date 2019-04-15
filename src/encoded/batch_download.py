@@ -265,7 +265,7 @@ def _get_annotation_metadata(request, search_path, param_list):
                 result_file.get('lab', {}).get('title', ''),
                 result_file.get('md5sum', ''),
                 ', '.join(result_file.get('dbxrefs', '')),
-                result_file.get('href', '')[7:-1],
+                ''.join([request.host_url, result_file.get('href', '')]),
                 result_file.get('assembly', ''),
                 result_file.get('controlled_by', ''),
                 result_file.get('status', ''),
