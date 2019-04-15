@@ -128,10 +128,14 @@
     overflow: hidden;
 
     &>li {
-        &>a {
-            padding: 5px 20px;
+        &>a, &>button, &>span {
+            display: block;
+            padding: 5px 15px 5px 25px;
             color: white !important;
             font-weight: 300;
+            line-height: 20px;
+            background-color: transparent;
+            border: none;
         }
     }
     .sub-menu {
@@ -149,7 +153,8 @@
         padding: 10px 0;
 
         &>li {
-            &>a, &>button {
+            &>a, &>button, &>span {
+                display: inline-block;
                 width: 100%;
                 margin: 0;
                 padding: 2px 30px 2px 20px;
