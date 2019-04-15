@@ -50,10 +50,10 @@
     },
     "facets": {
         "assay_term_name": {
-            "title": "Assay"
+            "title": "Assay name"
         },
         "status": {
-            "title": "Publication data status"
+            "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
@@ -62,7 +62,7 @@
             "title": "Organism"
         },
         "biosample_ontology.classification": {
-            "title": "Biosample type"
+            "title": "Biosample classification"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -71,19 +71,19 @@
             "title": "Cell"
         },
         "files.file_type": {
-            "title": "Available data"
+            "title": "Available file types"
         },
         "files.run_type": {
             "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length"
+            "title": "Read length (nt)"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length"
+            "title": "Mapped read length (nt)"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -101,11 +101,11 @@
             "type": "string"
         },
         "assay_term_name": {
-            "title": "Assay Type",
+            "title": "Assay name",
             "type": "string"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample",
+            "title": "Biosample term name",
             "type": "string"
         },
         "description": {
@@ -125,7 +125,7 @@
             "type": "string"
         },
         "organism.scientific_name": {
-            "title": "Species",
+            "title": "Organism",
             "type": "array"
         }
     },

@@ -37,7 +37,7 @@
             "linkTo": "User"
         },
         "awards": {
-            "title": "Grants",
+            "title": "Award",
             "description": "Grants associated with the lab.",
             "type": "array",
             "default": [],
@@ -101,7 +101,7 @@
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "fax": {
-            "title": "Fax number",
+            "title": "Fax",
             "description":"A fax number for the lab (with country code).",
             "type": "string",
             "default": "",

@@ -164,7 +164,7 @@ class Dataset(Item):
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Assembly",
+        "title": "Genome assembly",
         "type": "array",
         "items": {
             "type": "string",
@@ -257,7 +257,7 @@ class FileSet(Dataset):
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Assembly",
+        "title": "Genome assembly",
         "type": "array",
         "items": {
             "type": "string",
@@ -542,7 +542,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Assembly",
+        "title": "Genome assembly",
         "type": "array",
         "items": {
             "type": "string",

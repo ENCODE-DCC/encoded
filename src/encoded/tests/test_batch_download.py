@@ -56,12 +56,12 @@ def test_batch_download_report_download(testapp, workbook):
     assert disposition.startswith('attachment;filename="experiment_report') and disposition.endswith('.tsv"')
     lines = res.body.splitlines()
     assert lines[1].split(b'\t') == [
-        b'ID', b'Accession', b'Assay Type', b'Assay Nickname', b'Target label',
-        b'Target gene', b'Biosample summary', b'Biosample', b'Description', b'Lab',
+        b'ID', b'Accession', b'Assay name', b'Assay title', b'Target of assay',
+        b'Target gene symbol', b'Biosample summary', b'Biosample term name', b'Description', b'Lab',
         b'Project', b'Status', b'Files', b'Biosample accession', b'Biological replicate',
-        b'Technical replicate', b'Linked Antibody', b'Species', b'Life stage', b'Age',
-        b'Age Units', b'Treatment', b'Term ID', b'Concentration', b'Concentration units',
-        b'Duration', b'Duration units', b'Synchronization',
+        b'Technical replicate', b'Linked antibody', b'Organism', b'Life stage', b'Age',
+        b'Age units', b'Biosample treatment', b'Biosample treatment ontology ID', b'Biosample treatment concentration', b'Biosample treatment concentration units',
+        b'Biosample treatment duration', b'Biosample treatment duration units', b'Synchronization',
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',
     ]

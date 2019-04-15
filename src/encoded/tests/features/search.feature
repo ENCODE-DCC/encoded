@@ -79,8 +79,8 @@ Feature: Search
         When I press "Data"
         And I click the link to "/search/?type=Experiment&status=released"
         And I wait for the content to load
-        When I fill in "searchAssay" with "dna"
-        Then I should see at least 2 elements with the css selector "div.term-list.searchAssay > li"
+        When I fill in "searchAssaytitle" with "dna"
+        Then I should see at least 2 elements with the css selector "div.term-list.searchAssaytitle > li"
 
     Scenario: Search for Target of Assay term
         When I press "Data"

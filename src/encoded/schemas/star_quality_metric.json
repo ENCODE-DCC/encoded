@@ -77,7 +77,7 @@
             "type": "string"
         },
         "Mapping speed, Million of reads per hour": {
-            "title": "Mapping speed",
+            "title": "Mapping speed (millions of reads per hr)",
             "description": "STAR Mapping speed, Million of reads per hour",
             "type": "number"
         },
