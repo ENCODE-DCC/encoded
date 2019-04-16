@@ -22,6 +22,18 @@ export default class RichTextBlockView extends React.Component {
         if (this.context.editable) {
             $script('ckeditor/ckeditor', this.setupEditor);
         }
+        // Polyfill for 'closest' for IE
+        const elementPrototype = window.Element.prototype;
+        if (!elementPrototype.closest) {
+            elementPrototype.closest = (s) => {
+                let el = this;
+                do {
+                    if (el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
         this.handleClickableFAQ();
     }
 
@@ -83,18 +95,6 @@ export default class RichTextBlockView extends React.Component {
                 });
                 // One event listener on the 'faq' container handles all click events
                 faqContainer.addEventListener('click', (e) => {
-                    // Polyfill for 'closest' for IE
-                    const elementPrototype = window.Element.prototype;
-                    if (!elementPrototype.closest) {
-                        elementPrototype.closest = function(s) {
-                            let el = this;
-                            do {
-                                if (el.matches(s)) return el;
-                                el = el.parentElement || el.parentNode;
-                            } while (el !== null && el.nodeType === 1);
-                            return null;
-                        };
-                    }
                     // Determine which question the user clicked on
                     const target = e.target.closest('.faq-question');
                     if (target) {
