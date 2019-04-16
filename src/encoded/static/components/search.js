@@ -733,8 +733,7 @@ TypeTerm.propTypes = {
 const sanitizedString = inputString => inputString.toLowerCase()
     .replace(/ /g, '') // remove spaces (to allow multiple word searches)
     .replace(/[*]/g, '') // remove stars (these cause console errors)
-    .replace(/\\/g, '') // remove backslashes (these cause console errors)
-    .replace(/\//g, ''); // remove forward slashes (for consistency handling slashes)
+    .replace(/\\|\//g, ''); // remove slashes (back slashes cause console errors)
 
 class Facet extends React.Component {
     constructor() {
