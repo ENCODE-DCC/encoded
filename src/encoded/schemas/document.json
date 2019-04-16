@@ -102,6 +102,7 @@
             "title": "Description"
         },
         "attachment.href": {
+            "title": "Attachment path",
             "comment": "Internal webapp URL for document file"
         },
         "attachment.type": {
