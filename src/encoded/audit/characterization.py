@@ -30,6 +30,7 @@ def audit_characterization_review_lane(value, system):
             if all(
                 (
                     characterization_method in audited_methods,
+                    review,
                     'lane' not in review,
                 )
             ):
