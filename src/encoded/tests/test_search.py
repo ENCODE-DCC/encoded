@@ -796,7 +796,7 @@ def test_format_facets():
     schemas = []
     total = 42
     principals = []
-    result = BaseView.format_facets(
+    result = BaseView._format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == [{
@@ -813,12 +813,13 @@ def test_format_facets():
             }
         ],
         'total': 3,
+        'appended': 'false',
         'type': 'terms',
     }]
 
 
 def test_format_facets_no_aggregations():
-    result = BaseView.format_facets({}, [], [], [], 0, [])
+    result = BaseView._format_facets({}, [], [], [], 0, [])
     assert result == []
 
 
@@ -845,7 +846,7 @@ def test_format_facets_skips_zero_bucket_facets():
     schemas = []
     total = 42
     principals = []
-    result = BaseView.format_facets(
+    result = BaseView._format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == []
@@ -868,7 +869,7 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
     }]
     total = 42
     principals = []
-    result = BaseView.format_facets(
+    result = BaseView._format_facets(
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == [{
@@ -877,9 +878,11 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
         'terms': [
             {
                 'key': 'titlevalue',
+                'isEqual': 'true',
             },
         ],
         'total': 42,
+        'appended': 'true',
     }]
 
 
