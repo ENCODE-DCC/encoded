@@ -86,6 +86,98 @@ def genetic_modification_6(lab, award, crispr, source):
     }
 
 
+@pytest.fixture
+def genetic_modification_7_invalid_reagent(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "placeholder_id",
+                "source": "/sources/sigma/"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_valid_reagent(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "ABC123",
+                "source": "/sources/sigma/"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_addgene_source(testapp):
+    item = {
+        'name': 'addgene',
+        'title': 'Addgene',
+        'status': 'released'
+    }
+    return testapp.post_json('/source', item).json['@graph'][0]
+
+
+@pytest.fixture
+def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "12345",
+                "source": "/sources/addgene/"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_multiple_reagents(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "12345",
+                "source": "/sources/addgene/",
+                "url": "http://www.addgene.org"
+            },
+            {
+                "identifier": "67890",
+                "source": "/sources/addgene/",
+                "url": "http://www.addgene.org"
+            }
+        ]
+    }
+
+
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
                              current_version='1', target_version='2')
@@ -133,3 +225,39 @@ def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
                              current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert value.get('purpose') == 'characterization'
+
+"""
+Like test_upgrade_5_6, this test is commented out because get_by_uuid method
+is used in the upgrade, which doesn't work for the test app.
+
+def test_genetic_modification_upgrade_7_8(upgrader, genetic_modification_7_invalid_reagent,
+                                          genetic_modification_7_valid_reagent,
+                                          genetic_modification_7_multiple_matched_identifiers,
+                                          genetic_modification_7_multiple_reagents):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_invalid_reagent,
+                             current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert not value.get('reagents')
+    assert value.get('notes')
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_valid_reagent,
+                             current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert value.get('reagents')
+    assert not value.get('notes')
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_multiple_matched_identifiers,
+                             current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    reagents = value.get('reagents', [])
+    assert len(reagents) == 1
+    assert reagents[0]['identifier'].startswith('addgene')
+    assert 'addgene' in reagents[0]['source']
+    value = upgrader.upgrade('genetic_modification', genetic_modification_7_multiple_reagents,
+                             current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    reagents = value.get('reagents', [])
+    assert len(reagents) == 2
+    for reagent in reagents:
+        assert reagent['identifier'].startswith('addgene')
+        assert 'addgene' in reagent['source']
+        assert 'url' in reagent
+"""

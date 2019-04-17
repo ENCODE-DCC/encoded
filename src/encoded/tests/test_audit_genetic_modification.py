@@ -49,6 +49,25 @@ def tagged_target(testapp, gene):
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def genetic_modification_source(testapp, lab, award, source, gene):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'introduced_gene': gene['@id'],
+        'purpose': 'expression',
+        'method': 'CRISPR',
+        'reagents': [
+            {
+                'source': source['@id'],
+                'identifier': 'sigma:ABC123'
+            }
+        ]
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
 def test_genetic_modification_reagents(testapp, genetic_modification, source):
     res = testapp.get(genetic_modification['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -61,7 +80,7 @@ def test_genetic_modification_reagents(testapp, genetic_modification, source):
     testapp.patch_json(genetic_modification['@id'], {'reagents': [
         {
             'source': source['@id'],
-            'identifier': 'TRCN0000246247'
+            'identifier': 'trc:TRCN0000246247'
         }]})
     res = testapp.get(genetic_modification['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -70,6 +89,26 @@ def test_genetic_modification_reagents(testapp, genetic_modification, source):
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing genetic modification reagents' for
         error in errors_list)
+
+
+def test_audit_reagent_source(testapp, source, genetic_modification_source):
+    testapp.patch_json(
+        genetic_modification_source['@id'],
+        {
+            'reagents': [
+                {
+                    'source': source['@id'],
+                    'identifier': 'trc:TRCN1234567890'
+                }
+            ]
+        }
+    )
+    res = testapp.get(genetic_modification_source['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent genetic modification reagent source and identifier' for error in errors_list)
 
 
 def test_genetic_modification_reagents_fly(testapp, genetic_modification_RNAi, fly_donor):
