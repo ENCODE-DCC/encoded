@@ -730,7 +730,9 @@ TypeTerm.propTypes = {
 };
 
 // Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
-const sanitizedString = inputString => inputString.toLowerCase().replace(/ /g, '').replace(/[*]/g, '');
+const sanitizedString = inputString => inputString.toLowerCase()
+    .replace(/ /g, '') // remove spaces (to allow multiple word searches)
+    .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 
 class Facet extends React.Component {
     constructor() {
