@@ -110,7 +110,7 @@ class View_Item:
             'icon': 'list-alt',
         }
         self.tabular_report = {
-            'href': request.route_path('report', slash='/') + search_base,
+            'href': request.route_path('report', slash='/') + search_base_without_limit,
             'title': 'View tabular report',
             'icon': 'table',
         }
