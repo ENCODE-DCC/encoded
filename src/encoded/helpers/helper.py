@@ -1,5 +1,5 @@
 from encoded.vis_defines import vis_format_url
-
+import re
 
 BATCH_DOWNLOAD_DOC_TYPES = [
     ['Experiment'],
@@ -103,18 +103,19 @@ def search_result_actions(request, doc_types, es_results, position=None):
 
 class View_Item:
     def __init__(self, request, search_base):
+        search_base_without_limit = re.sub(r'&[x|y]\.limit\=\d*', '', search_base, flags=re.IGNORECASE)
         self.result_list = {
-            'href': request.route_path('search', slash='/') + search_base,
+            'href': request.route_path('search', slash='/') + search_base_without_limit,
             'title': 'View results as list',
             'icon': 'list-alt',
         }
         self.tabular_report = {
-            'href': request.route_path('report', slash='/') + search_base,
+            'href': request.route_path('report', slash='/') + search_base_without_limit,
             'title': 'View tabular report',
             'icon': 'table',
         }
         self.summary_report = {
-            'href': request.route_path('summary', slash='/') + search_base,
+            'href': request.route_path('summary', slash='/') + search_base_without_limit,
             'title': 'View summary report',
             'icon': 'summary',
         }
