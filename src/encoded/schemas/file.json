@@ -1358,6 +1358,9 @@
         }
     },
     "columns": {
+        "title": {
+            "title": "Title"
+        },
         "accession": {
             "title": "Accession"
         },
