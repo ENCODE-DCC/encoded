@@ -190,6 +190,7 @@
 
     @at-root #{&}__count {
         flex: 0 1 auto;
+        word-break: normal;
     }
 
     // Bar graph representing the relative count.
