@@ -553,7 +553,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         skip_rows_with_all_falsey_value('test') if test_only else noop,
         skip_rows_with_all_falsey_value('_test') if test_only else noop,
         remove_keys_with_empty_value,
-        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name'),
+        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name', 'email'),
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
