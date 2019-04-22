@@ -558,6 +558,32 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0000519": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "pooled clone sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "pooled clone sequencing",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000520": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "CRISPR screen",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CRISPR screen",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 
