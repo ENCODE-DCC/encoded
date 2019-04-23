@@ -1814,9 +1814,9 @@ class FileGalleryRendererComponent extends React.Component {
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
         this.setInfoNodeVisible = this.setInfoNodeVisible.bind(this);
-        this.setFilter = this.setFilter.bind(this);
         this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
         this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
+        this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
         this.updateFiles = this.updateFiles.bind(this);
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
         this.handleInclusionChange = this.handleInclusionChange.bind(this);
@@ -1831,7 +1831,7 @@ class FileGalleryRendererComponent extends React.Component {
     // Set the default filter after the graph has been analyzed once.
     componentDidMount() {
         if (!this.props.altFilterDefault) {
-            this.setFilter('0');
+            this.setState({ selectedFilterValue: '0' });
         }
     }
 
@@ -1848,17 +1848,15 @@ class FileGalleryRendererComponent extends React.Component {
         this.setState({ infoNodeVisible: visible });
     }
 
-    // Set the graph filter based on the given <option> value
-    setFilter(value) {
-        this.setState({ selectedFilterValue: value });
-    }
-
     /**
      * Get the currently selected assembly and annotation.
+     * @param {string} filterValue Optional <select> value for current assembly/annotation.
+     *                             Retrieved from state.selectedFilterValue if not given.
      */
-    getSelectedAssemblyAnnotation() {
-        if (this.state.selectedFilterValue && this.state.availableAssembliesAnnotations[this.state.selectedFilterValue]) {
-            const selectedAssemblyAnnotation = this.state.availableAssembliesAnnotations[this.state.selectedFilterValue];
+    getSelectedAssemblyAnnotation(filterValue) {
+        const currentFilterValue = filterValue || this.state.selectedFilterValue;
+        if (currentFilterValue && this.state.availableAssembliesAnnotations[currentFilterValue]) {
+            const selectedAssemblyAnnotation = this.state.availableAssembliesAnnotations[currentFilterValue];
             return {
                 selectedAssembly: selectedAssemblyAnnotation.assembly,
                 selectedAnnotation: selectedAssemblyAnnotation.annotation,
@@ -1869,13 +1867,33 @@ class FileGalleryRendererComponent extends React.Component {
 
     /**
      * Given the currently selected assembly/annotation, get a list of the available browsers.
+     * @param {string} filterValue Optional <select> value for current assembly/annotation.
+     *                             state.selectedFilterValue used if not given.
      */
-    getAvailableBrowsers() {
-        const { selectedAssembly } = this.getSelectedAssemblyAnnotation();
+    getAvailableBrowsers(filterValue) {
+        const { selectedAssembly } = this.getSelectedAssemblyAnnotation(filterValue);
         if (selectedAssembly && this.props.context.visualize && this.props.context.visualize[selectedAssembly]) {
             return visSortBrowsers(this.props.context.visualize[selectedAssembly]);
         }
         return [];
+    }
+
+    /**
+     * Called when the set of relevant files might have changed based on a user action. This makes
+     * sure the current browser still makes sense, and resets it if not.
+     * @param {string} filterValue Optional <select> value for current assembly/annotation.
+     *                             state.selectedFilterValue used if not given.
+     */
+    resetCurrentBrowser(filterValue) {
+        const browsers = this.getAvailableBrowsers(filterValue);
+        if (browsers.indexOf(this.state.currentBrowser) === -1) {
+            // Current browser not available for new assembly/annotation. Set the current browser
+            // to the first available.
+            this.setState({
+                currentBrowser: browsers[0],
+                selectedBrowserFiles: visFilterBrowserFiles(this.state.files, browsers[0], true),
+            });
+        }
     }
 
     /**
@@ -1913,15 +1931,7 @@ class FileGalleryRendererComponent extends React.Component {
                 // the graph and tables.
                 this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
             }
-
-            // Generate the array of browsers for the currently selected assembly.
-            const browsers = this.getAvailableBrowsers();
-            if (browsers.length > 0 && !this.state.currentBrowser) {
-                this.setState({
-                    currentBrowser: browsers[0],
-                    selectedBrowserFiles: visFilterBrowserFiles(allFiles, browsers[0], true),
-                });
-            }
+            this.resetCurrentBrowser();
         });
     }
 
@@ -1929,7 +1939,8 @@ class FileGalleryRendererComponent extends React.Component {
      * Called when the user selects an assembly/annotation to view.
      */
     handleAssemblyAnnotationChange(value) {
-        this.setFilter(value);
+        this.setState({ selectedFilterValue: value });
+        this.resetCurrentBrowser(value);
     }
 
     /**
