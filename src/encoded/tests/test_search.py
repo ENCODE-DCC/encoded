@@ -61,16 +61,19 @@ def get_pagination_item():
 
 @pytest.fixture
 def prepare_search_term_item():
-    requests = {FakeRequest((('type', 'Page'),
+    requests = {
+        FakeRequest((('type', 'Page'),
                              ('news', 'true'),
                              ('status', 'released'),
                              ('limit', '5'))): '*',
-                FakeRequest((('searchTerm', 'chip'),)): 'chip',
-                FakeRequest((('searchTerm', '/assay/'),)): '\\/assay\\/',
-                FakeRequest((('searchTerm', '@type:field'),)): 'embedded.@type:field',
-                FakeRequest((('searchTerm', 'type:s'),)): 'type\:s',
-                FakeRequest((('searchTerm', ' '),)): '*',
-                FakeRequest((('searchTerm', '@type'),)): '@type'}
+        FakeRequest((('searchTerm', 'chip'),)): 'chip',
+        FakeRequest((('searchTerm', '/assay/'),)): '\\/assay\\/',
+        FakeRequest((('searchTerm', ' '),)): '*',
+        FakeRequest((('advancedQuery', 'type:s'),)): 'embedded.type:s',
+        FakeRequest((('advancedQuery', '@type:field'),)): 'embedded.@type:field',
+        FakeRequest((('advancedQuery', '@type'),)): '@type'
+
+    }
     return requests
 
 
@@ -903,6 +906,7 @@ def test_get_pagination(get_pagination_item):
 def test_prepare_search_term(prepare_search_term_item):
     for request, validate in prepare_search_term_item.items():
         search_term = prepare_search_term(request)
+        #import pdb; pdb.set_trace();
         assert search_term == validate
 
 
