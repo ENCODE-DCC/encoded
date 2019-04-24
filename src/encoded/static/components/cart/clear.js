@@ -9,7 +9,91 @@ import { removeMultipleFromCartAndSave } from './actions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
 
 
-class CartClearComponent extends React.Component {
+/**
+ * Display the modal dialog to confirm a user wants to clear their current cart.
+ */
+class CartClearModalComponent extends React.Component {
+    constructor() {
+        super();
+        this.handleConfirmClearClick = this.handleConfirmClearClick.bind(this);
+    }
+
+    /**
+     * Called when a user clicks the modal button to confirm clearing the cart.
+     */
+    handleConfirmClearClick() {
+        const { elements, onClearCartClick, closeClickHandler } = this.props;
+        onClearCartClick(elements);
+        closeClickHandler();
+    }
+
+    render() {
+        const { cartName, closeClickHandler, inProgress } = this.props;
+        return (
+            <Modal labelId="clear-cart-label" descriptionId="clear-cart-description" focusId="clear-cart-close">
+                <ModalHeader labelId="clear-cart-label" title={`Clear entire cart contents${cartName ? `: ${cartName}` : ''}`} closeModal={closeClickHandler} />
+                <ModalBody>
+                    <p id="clear-cart-description">Clearing the cart is not reversible.</p>
+                </ModalBody>
+                <ModalFooter
+                    closeModal={<button id="clear-cart-close" onClick={closeClickHandler} className="btn btn-info">Cancel</button>}
+                    submitBtn={<button onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-info" id="clear-cart-submit">Clear</button>}
+                    dontClose
+                />
+            </Modal>
+        );
+    }
+}
+
+CartClearModalComponent.propTypes = {
+    /** Items in the current cart */
+    elements: PropTypes.array.isRequired,
+    /** Name of current cart */
+    cartName: PropTypes.string,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool,
+    /** Function to call to close the Clear Cart modal */
+    closeClickHandler: PropTypes.func.isRequired,
+    /** Function to call to clear the cart from the Redux store */
+    onClearCartClick: PropTypes.func.isRequired,
+};
+
+CartClearModalComponent.defaultProps = {
+    cartName: '',
+    inProgress: false,
+};
+
+CartClearModalComponent.mapStateToProps = state => ({
+    elements: state.elements,
+    cartName: state.savedCartObj && state.savedCartObj.name,
+    inProgress: state.inProgress,
+});
+
+CartClearModalComponent.mapDispatchToProps = (dispatch, ownProps) => ({
+    onClearCartClick: elements => dispatch(removeMultipleFromCartAndSave(elements, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+});
+
+const CartClearModalInternal = connect(CartClearModalComponent.mapStateToProps, CartClearModalComponent.mapDispatchToProps)(CartClearModalComponent);
+
+export const CartClearModal = ({ closeClickHandler }, { session, fetch }) => (
+    <CartClearModalInternal closeClickHandler={closeClickHandler} session={session} fetch={fetch} />
+);
+
+CartClearModal.propTypes = {
+    /** Function to call to close the Cart Clear modal */
+    closeClickHandler: PropTypes.func.isRequired,
+};
+
+CartClearModal.contextTypes = {
+    session: PropTypes.object,
+    fetch: PropTypes.func,
+};
+
+
+/**
+ * Display an actuator button to clear the current cart, and handle the resulting warning modal.
+ */
+class CartClearButtonComponent extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -17,7 +101,6 @@ class CartClearComponent extends React.Component {
             modalOpen: false,
         };
         this.handleClearCartClick = this.handleClearCartClick.bind(this);
-        this.handleConfirmClearClick = this.handleConfirmClearClick.bind(this);
         this.handleCloseClick = this.handleCloseClick.bind(this);
     }
 
@@ -29,21 +112,10 @@ class CartClearComponent extends React.Component {
     }
 
     /**
-     * Handle a click on the button in the modal confirming clearing the cart. Don't have to set
-     * state.modalOpen to false because props.elements becomes empty here, which unmounts the
-     * modal.
-     */
-    handleConfirmClearClick() {
-        this.props.onClearCartClick(this.props.elements);
-    }
-
-    /**
      * Handle a click for closing the modal without doing anything.
      */
     handleCloseClick() {
-        if (!this.state.inProgress) {
-            this.setState({ modalOpen: false });
-        }
+        this.setState({ modalOpen: false });
     }
 
     render() {
@@ -51,19 +123,9 @@ class CartClearComponent extends React.Component {
         if (elements.length > 0) {
             return (
                 <span>
-                    <button disabled={inProgress} onClick={this.handleClearCartClick} className="btn btn-info btn-sm">Clear cart</button>
+                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-info btn-sm">Clear cart</button>
                     {this.state.modalOpen ?
-                        <Modal labelId="clear-cart-label" descriptionId="clear-cart-description" focusId="clear-cart-close">
-                            <ModalHeader labelId="clear-cart-label" title="Clear entire cart contents" closeModal={this.handleCloseClick} />
-                            <ModalBody>
-                                <p id="clear-cart-description">Clearing the cart is not reversible.</p>
-                            </ModalBody>
-                            <ModalFooter
-                                closeModal={<button id="clear-cart-close" onClick={this.handleCloseClick} className="btn btn-info">Cancel</button>}
-                                submitBtn={<button onClick={this.handleConfirmClearClick} className="btn btn-info" id="clear-cart-submit">Clear</button>}
-                                dontClose
-                            />
-                        </Modal>
+                        <CartClearModal closeClickHandler={this.handleCloseClick} />
                     : null}
                 </span>
             );
@@ -72,39 +134,22 @@ class CartClearComponent extends React.Component {
     }
 }
 
-CartClearComponent.propTypes = {
+CartClearButtonComponent.propTypes = {
     /** Current contents of cart */
     elements: PropTypes.array,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool,
-    /** Function called to remove all elements */
-    onClearCartClick: PropTypes.func.isRequired,
 };
 
-CartClearComponent.defaultProps = {
+CartClearButtonComponent.defaultProps = {
     elements: [],
     inProgress: false,
 };
 
-const mapStateToProps = (state, ownProps) => ({
+CartClearButtonComponent.mapStateToProps = state => ({
     elements: state.elements,
     inProgress: state.inProgress,
-    user: ownProps.sessionProperties,
 });
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elementAtIds => dispatch(removeMultipleFromCartAndSave(elementAtIds, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
-});
+const CartClearButton = connect(CartClearButtonComponent.mapStateToProps)(CartClearButtonComponent);
 
-const CartClearInternal = connect(mapStateToProps, mapDispatchToProps)(CartClearComponent);
-
-const CartClear = (props, reactContext) => (
-    <CartClearInternal session={reactContext.session} sessionProperties={reactContext.session_properties} fetch={reactContext.fetch} />
-);
-
-CartClear.contextTypes = {
-    session: PropTypes.object,
-    session_properties: PropTypes.object,
-    fetch: PropTypes.func,
-};
-
-export default CartClear;
+export default CartClearButton;

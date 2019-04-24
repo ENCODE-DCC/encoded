@@ -656,6 +656,23 @@ const Term = (props) => {
         negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
     }
 
+    if (facet.appended === 'true') {
+        const facetTerm = facet.terms.find(x => x.key === term);
+        const isNegated = facetTerm.isEqual === 'false';
+        const vfield = filters.find(f => f.term === term);
+        const vhref = vfield ? vfield.remove : '';
+        return (
+            <li className={`facet-term${isNegated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
+                {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
+                <a className="facet-term__item" href={vhref} onClick={href ? onFilter : null}>
+                    <div className="facet-term__text">
+                        {em ? <em>{title}</em> : <span>{title}</span>}
+                    </div>
+                </a>
+            </li>
+        );
+    }
+
     return (
         <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
             {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
@@ -713,7 +730,9 @@ TypeTerm.propTypes = {
 };
 
 // Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
-const sanitizedString = inputString => inputString.toLowerCase().replace(/ /g, '').replace(/[*]/g, '');
+const sanitizedString = inputString => inputString.toLowerCase()
+    .replace(/ /g, '') // remove spaces (to allow multiple word searches)
+    .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 
 class Facet extends React.Component {
     constructor() {
@@ -721,8 +740,9 @@ class Facet extends React.Component {
 
         // Set initial React commponent state.
         this.state = {
-            filteredTerms: null,
             initialState: true,
+            unsanitizedSearchTerm: '',
+            searchTerm: '',
         };
 
         // Bind `this` to non-React methods.
@@ -734,26 +754,11 @@ class Facet extends React.Component {
     }
 
     handleSearch(event) {
-        // search term entered by the user
+        // Unsanitized search term entered by user for display
+        this.setState({ unsanitizedSearchTerm: event.target.value });
+        // Search term entered by the user
         const filterVal = String(sanitizedString(event.target.value));
-
-        // which facet terms match the search term entered by the user
-        let terms = this.props.facet.terms.filter((term) => {
-            if (term.doc_count > 0) {
-                const termKey = sanitizedString(term.key);
-                if (termKey.match(filterVal)) {
-                    return term;
-                }
-                return false;
-            }
-            return false;
-        });
-        // if the user has entered a value that is all spaces or asterisks, we want to give them an error message
-        if (event.target.value.length > 0 && filterVal === '') {
-            terms = [];
-        }
-        // when there is a search term entered, we want to show only filtered terms not all terms
-        this.setState({ filteredTerms: terms });
+        this.setState({ searchTerm: filterVal });
     }
 
     render() {
@@ -763,6 +768,24 @@ class Facet extends React.Component {
         const total = facet.total;
         const typeahead = facet.type === 'typeahead';
 
+        // Filter facet terms to create list of those matching the search term entered by the user
+        // Note: this applies only to Typeahead facets
+        let filteredList = null;
+        if (typeahead && this.state.searchTerm !== '') {
+            filteredList = facet.terms.filter(
+                (term) => {
+                    if (term.doc_count > 0) {
+                        const termKey = sanitizedString(term.key);
+                        if (termKey.match(this.state.searchTerm)) {
+                            return term;
+                        }
+                        return null;
+                    }
+                    return null;
+                }
+            );
+        }
+
         // Make a list of terms for this facet that should appear, by filtering out terms that
         // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
         // the search result filter list.
@@ -770,7 +793,7 @@ class Facet extends React.Component {
             if (term.key) {
                 // See if the facet term also exists in the search result filters (i.e. the term
                 // exists in the URL query string).
-                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
+                const found = filters.some(filter => filter.field.replace('!', '') === facet.field.replace('!', '') && filter.term === term.key);
 
                 // If the term wasn't in the filters list, allow its display only if it has a non-
                 // zero doc_count. If the term *does* exist in the filters list, display it
@@ -834,7 +857,7 @@ class Facet extends React.Component {
         }
 
         // Return Facet component if there are terms with doc_count > 0 or for negated facet
-        if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || facet.appended === 'true') {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
@@ -849,19 +872,19 @@ class Facet extends React.Component {
                     : null}
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
                         {/* Display searchbar for typeahead facets if there are more than 5 terms */}
-                        {(typeahead && (terms.length >= displayedTermsCount)) ?
+                        {typeahead ?
                             <div className="typeahead-entry" role="search">
                                 <i className="icon icon-search" />
                                 <div className="searchform">
-                                    <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.value} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
+                                    <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.unsanitizedSearchTerm} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
                                 </div>
                             </div>
                         : null}
                         {/* If user has searched using the typeahead, we will not display the full set of facet terms, just those matching the search */}
-                        {(this.state.filteredTerms !== null) ?
+                        {(filteredList !== null) ?
                             <div>
                                 {/* Display error message if there is a search but no results found */}
-                                {(this.state.filteredTerms.length === 0) ?
+                                {(filteredList.length === 0) ?
                                     <div className="searcherror">
                                         Try a different search term for results.
                                     </div>
@@ -871,19 +894,19 @@ class Facet extends React.Component {
                                         <div className="top-shading hide-shading" />
                                         {/* List of filtered terms */}
                                         <div className={`term-list search${titleComponent.replace(/\s+/g, '')}`} onScroll={shadeOverflowOnScroll}>
-                                            {this.state.filteredTerms.map(term =>
+                                            {filteredList.map(term =>
                                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                             )}
                                         </div>
                                         {/* Only show bottom shading when list of results overflows */}
-                                        <div className={`shading ${(this.state.filteredTerms.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
+                                        <div className={`shading ${(filteredList.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
                                     </div>
                                 }
                             </div>
                         :
                             <div>
                                 {/* If the user has not searched, we will display the full set of facet terms */}
-                                {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) ?
+                                {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || (facet.appended === 'true')) ?
                                     <div className="terms-block">
                                         {/* List of results does not overflow top on initialization */}
                                         <div className="top-shading hide-shading" />

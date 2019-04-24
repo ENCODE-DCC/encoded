@@ -814,6 +814,7 @@ def test_format_facets():
         ],
         'total': 3,
         'type': 'terms',
+        'appended': 'false'
     }]
 
 
@@ -876,9 +877,11 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
         'title': 'Title',
         'terms': [
             {
+                'isEqual': 'true',
                 'key': 'titlevalue',
             },
         ],
+        'appended': 'true',
         'total': 42,
     }]
 

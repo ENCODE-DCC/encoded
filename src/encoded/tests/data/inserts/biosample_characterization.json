@@ -16,8 +16,9 @@
         ],
         "submitter_comment": "I submitted this!",
         "review": {
-            "lane": 1,
-            "lab": "cc2272f4-10de-4310-8233-33a3ace62643"
+            "lab": "cc2272f4-10de-4310-8233-33a3ace62643",
+            "status": "compliant",
+            "reviewed_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/"
         }
     }
 ]

@@ -11,7 +11,7 @@ import { itemClass, encodedURIComponent, parseAndLogError } from '../globals';
 import { requestObjects, DisplayAsJson } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
-import CartClear from './clear';
+import CartClearButton from './clear';
 import { cartRetrieve } from './database';
 import CartMergeShared from './merge_shared';
 
@@ -520,7 +520,7 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fi
             />
         : null}
         {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableElements={viewableElements} /> : null}
-        {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClear /> : null}
+        {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClearButton /> : null}
     </div>
 );
 

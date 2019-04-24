@@ -107,6 +107,7 @@
     overflow: hidden;
     position: relative;
     padding-bottom: 0;
+    word-break: break-word;
     .term-list {
         max-height: 85px;
         overflow-y: scroll;
@@ -189,6 +190,7 @@
 
     @at-root #{&}__count {
         flex: 0 1 auto;
+        word-break: normal;
     }
 
     // Bar graph representing the relative count.

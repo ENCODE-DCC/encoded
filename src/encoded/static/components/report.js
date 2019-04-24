@@ -40,11 +40,16 @@ function columnChoices(schema, selected) {
     });
 
     // add all properties (with a few exceptions)
-    _.each(schema.properties, (property, name) => {
-        if (name === '@id' || name === '@type' || name === 'uuid' || name === 'replicates') return;
-        if (!Object.prototype.hasOwnProperty.call(columns, name) && property.title) {
-            columns[name] = {
-                title: property.title,
+    const schemaColumnTitles = Object.keys(schemaColumns).map(schemaColumnsProperty => schemaColumns[schemaColumnsProperty].title);
+    const filteredSchemaProperties = Object.keys(schema.properties).filter((schemaProperty) => {
+        const schemaPropertyTitle = schema.properties[schemaProperty].title;
+        return schemaColumnTitles.indexOf(schemaPropertyTitle) === -1 && ['@id', '@type', 'uuid', 'replicates'].indexOf(schemaProperty) === -1;
+    });
+    filteredSchemaProperties.forEach((schemaProperty) => {
+        const title = schema.properties[schemaProperty].title;
+        if (!Object.prototype.hasOwnProperty.call(columns, schemaProperty) && title) {
+            columns[schemaProperty] = {
+                title,
                 visible: false,
             };
         }

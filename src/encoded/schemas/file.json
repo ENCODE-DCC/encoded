@@ -26,19 +26,19 @@
     ],
     "facets": {
         "status": {
-            "title": "File status"
+            "title": "Status"
         },
         "output_category": {
-            "title": "Content category"
+            "title": "Output category"
         },
         "output_type": {
-            "title": "Content type"
+            "title": "Output type"
         },
         "file_format": {
             "title": "File format"
         },
         "file_format_type": {
-            "title": "Specific file format type"
+            "title": "File format type"
         },
         "file_type": {
             "title": "File type"
@@ -50,7 +50,7 @@
             "title": "Project"
         },
         "assembly": {
-            "title": "Mapping assembly"
+            "title": "Genome assembly"
         },
         "lab.title": {
             "title": "Lab"
@@ -774,7 +774,7 @@
             ]
         },
         "file_format_type": {
-            "title": "Specific file format type",
+            "title": "File format type",
             "description": "Files of type bed and gff require further specification",
             "type": "string",
             "oneOf": [
@@ -909,7 +909,7 @@
             "minimum": 0
         },
         "run_type": {
-            "title": "Run type for sequencing files",
+            "title": "Run type",
             "description": "Indicates if file is part of a single or paired end sequencing run",
             "comment": "This field is required for sra and fastq files.",
             "type": "string",
@@ -919,7 +919,7 @@
             ]
         },
         "paired_end": {
-            "title": "Paired End Identifier",
+            "title": "Paired end identifier",
             "description": "Which read of the pair the file represents (in case of paired end sequencing run)",
             "comment": "This field is required if run_type is paired-ended.",
             "type": "string",
@@ -930,14 +930,14 @@
             ]
         },
         "paired_with": {
-            "title": "File pairing",
+            "title": "Paired with",
             "description": "The paired end fastq that corresponds with this file.",
             "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
             "type": "string",
             "linkTo": "File"
         },
         "mapped_read_length": {
-            "title": "Mapped read length",
+            "title": "Mapped read length (nt)",
             "permission": "import_items",
             "description": "The length of the reads actually mapped, if the original read length was clipped.",
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
@@ -994,7 +994,7 @@
             }
         },
         "flowcell_details": {
-            "title": "Flowcells",
+            "title": "Flowcell details",
             "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
             "type": "array",
             "default": [],
@@ -1240,7 +1240,7 @@
             "linkTo": "Replicate"
         },
         "assembly": {
-            "title": "Mapping assembly",
+            "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",
             "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
             "type": "string",
@@ -1304,7 +1304,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "comment": "Do not submit.  This is for admins to make virtual file objects for files at external resources.",
             "type": "array",
@@ -1368,7 +1368,7 @@
             "title": "Dataset"
         },
         "assembly": {
-            "title": "Mapping assembly"
+            "title": "Genome assembly"
         },
         "technical_replicates": {
             "title": "Technical replicates"
@@ -1383,7 +1383,7 @@
             "title": "File type"
         },
         "file_format_type": {
-            "title": "Specific file format type"
+            "title": "File format type"
         },
         "file_size": {
             "title": "File size"
@@ -1401,46 +1401,46 @@
             "title": "Library"
         },
         "paired_end": {
-            "title": "Paired End Identifier"
+            "title": "Paired end identifier"
         },
         "paired_with": {
-            "title": "File pairing"
+            "title": "Paired with"
         },
         "run_type": {
-            "title": "Run type for sequencing files"
+            "title": "Run type"
         },
         "read_length": {
             "title": "Read length"
         },
         "mapped_read_length": {
-            "title": "Mapped read length"
+            "title": "Mapped read length (nt)"
         },
         "read_length_units": {
             "title": "Read length units"
         },
         "output_category": {
-            "title": "Data category"
+            "title": "Output category"
         },
         "output_type": {
-            "title": "Data type"
+            "title": "Output type"
         },
         "quality_metrics": {
             "title": "QC Metric"
         },
-        "lab": {
+        "lab.title": {
             "title": "Lab"
         },
         "award.project": {
-            "title": "BioProject"
+            "title": "Project"
         },
         "step_run": {
             "title": "Analysis step run"
         },
         "date_created": {
-            "title": "Date added"
+            "title": "Date created"
         },
         "analysis_step_version": {
-            "title": "Analysis Step Version"
+            "title": "Analysis step version"
         },
         "restricted": {
             "title": "Restricted file"
@@ -1449,7 +1449,7 @@
             "title": "Submitter comment"
         },
         "status": {
-            "title": "File status"
+            "title": "Status"
         }
     },
     "output_type_output_category": {

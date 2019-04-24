@@ -186,3 +186,74 @@ def genetic_modification_6_7(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4042
     if value['purpose'] == 'validation':
         value['purpose'] = 'characterization'
+
+
+@upgrade_step('genetic_modification', '7', '8')
+def genetic_modification_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4349
+    import re
+    import copy
+    import time
+    import json
+
+    conn = system['registry'][CONNECTION]
+
+    sources = {
+        'addgene': r'^\d{5,6}$',
+        'bacpac': r'^([A-Z]{2,3}\d{2,3}|[A-Z]{3})-\d{1,4}[A-Z]\d{1,2}$',
+        'dharmacon': r'^[DL]-\d{6}-\d{2}(-\d{2,4})?$',
+        'hugo-bellen': r'^MI\d{5}$',
+        'human-orfeome': r'^([A-Z]{2})?\d{1,9}$',
+        'plasmid-repository': r'^HsCD\d{8}$',
+        'sigma': r'^[A-Z]{3}\d{3}$',
+        'source-bioscience': r'^[A-Z]{3}\d{3,4}[a-z][A-Z]\d{2}(_[A-Z]\d{2})?$',
+        'thermo-fisher': r'^[a-zA-Z]{1,3}\d{5,6}$',
+        'trc': r'^TRCN\d{10}$',
+        'brenton-graveley': r'^BGC#\d{7}$'
+    }
+    reagents = value.pop('reagents', [])
+    if reagents:
+        new_reagents = []
+        unmatched_reagents = ''
+        for reagent in reagents:
+            identifier = reagent['identifier']
+            source_id = reagent['source']
+            source_obj = conn.get_by_uuid(source_id)
+            source_name = source_obj.properties['name']
+            new_reagent = copy.deepcopy(reagent)
+            matching = []
+            source_from_reagent = None
+            for source, src_regex in sources.items():
+                if source in source_name:
+                    source_from_reagent = source_name
+                    # Preferentially add prefix to reagent that matches the reagent source
+                    src_regex_from_reagent = sources[source_from_reagent]
+                    if re.match(src_regex_from_reagent, identifier):
+                        # Override the matching list
+                        matching = [(source_name, source_from_reagent, identifier)]
+                        break
+                else:
+                    if re.match(src_regex, identifier):
+                        matching.append((source_name, source, identifier))
+            if not matching:
+                unmatched_reagents += '{} '.format(json.dumps(reagent))
+            else:
+                if len(matching) >= 2:
+                    # Bring the identifier with matching source to the reagent to the top
+                    matching.sort(key=lambda match: int(match[1] in match[0]), reverse=True)
+                _, source, identifier = matching[0]
+                new_identifier = ('{}:{}'.format(source, identifier))
+                new_reagent['identifier'] = new_identifier
+                new_reagents.append(new_reagent)
+        if new_reagents:
+            value['reagents'] = new_reagents
+        # Dump the unmatched identifier reagents to the notes
+        if unmatched_reagents:
+            date = time.strftime('%m/%d/%Y')
+            message = 'On {}, the following reagents were removed due to invalid identifer: '.format(date)
+            if 'notes' in value:
+                new_notes = value['notes'] + ' ' + message + unmatched_reagents
+            else:
+                new_notes = message + unmatched_reagents
+            new_notes = new_notes.strip()
+            value['notes'] = new_notes

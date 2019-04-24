@@ -113,14 +113,14 @@
             ]
         },
         "age": {
-            "title": "Donor age",
+            "title": "Age",
             "description": "The age or age range of the donor when biological material was sampled.",
             "comment": "This is gestational time for fetal and embryonic samples. We allow a generic over 90 for privacy purposes.",
             "type": "string",
             "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
         },
         "age_units": {
-            "title": "Donor age units",
+            "title": "Age units",
             "type": "string",
             "enum": [
                 "day",
@@ -130,7 +130,7 @@
             ]
         },
         "health_status": {
-            "title": "Donor health status",
+            "title": "Health status",
             "type": "string"
         },
         "ethnicity": {
@@ -222,7 +222,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "Database external identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "comment": "Do not submit. DCC personnel is responsible for submission of donor external resource identifiers.",
             "permission": "import_items",
@@ -259,13 +259,13 @@
             "title": "Aliases"
         },
         "age": {
-            "title": "Donor age"
+            "title": "Age"
         },
         "age_units": {
-            "title": "Donor age units"
+            "title": "Age units"
         },
         "health_status": {
-            "title": "Donor health status"
+            "title": "Health status"
         },
         "life_stage": {
             "title": "Life stage"
@@ -274,7 +274,7 @@
             "title": "Sex"
         },
         "organism.scientific_name": {
-            "title": "Binomial name"
+            "title": "Organism"
         },
         "ethnicity": {
             "title": "Ethnicity"
@@ -283,7 +283,7 @@
             "title": "Unique external identifier(s) of strain or donor"
         },
         "lab.title": {
-            "title": "Title"
+            "title": "Lab"
         },
         "status": {
             "title": "Status"

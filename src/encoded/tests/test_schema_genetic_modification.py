@@ -165,7 +165,7 @@ def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_de
                            [{'left_RVD_sequence': 'NH,NI,NG', 'right_RVD_sequence': 'NN,NG,NI'},
                             {'left_RVD_sequence': 'NN,NH,NH', 'right_RVD_sequence': 'NN,NI,NI'}]})
     '''
-    tale_deletion.update({'reagents': [{'source': source['@id'], 'identifier': '12345'}]})
+    tale_deletion.update({'reagents': [{'source': source['@id'], 'identifier': 'addgene:12345'}]})
     tale_deletion.update({'zygosity': 'heterozygous'})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
     assert res.status_code == 201
@@ -181,7 +181,7 @@ def test_tag_targeting_gene(testapp, ctcf, crispr_tag, source):
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 201
     crispr_tag.update({'reagents': [{'source': source['@id'], 
-                                    'identifier': '12345'}]})
+                                    'identifier': 'addgene:12345'}]})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 201
 
@@ -243,7 +243,7 @@ def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, tra
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 201
     transfection_tag.update({'reagents': [{'source': source['@id'], 
-                                                       'identifier': '12345'}]})
+                                                       'identifier': 'addgene:12345'}]})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 201
 
@@ -277,7 +277,7 @@ def test_crispri_properties(testapp, crispri, target, source, document):
     assert res.status_code == 422
     # Adding reagent_availability on top of having guide_rna_sequences and documents should be allowed
     res = testapp.patch_json(crispri['@id'], {'reagents': 
-                                              [{'source': source['@id'], 'identifier': '54321'}]}, 
+                                              [{'source': source['@id'], 'identifier': 'addgene:54321'}]},
                                               expect_errors=True)
     assert res.status_code == 200
 
@@ -313,7 +313,7 @@ def test_rnai_properties(testapp, rnai, target, source, document):
     assert res.status_code == 201
     rnai = res.json['@graph'][0]
     res = testapp.patch_json(rnai['@id'], {'reagents': 
-                                           [{'source': source['@id'], 'identifier': 'abc'}]})
+                                           [{'source': source['@id'], 'identifier': 'addgene:12345'}]})
     assert res.status_code == 200
 
 
@@ -342,7 +342,7 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
 def test_tale_replacement_properties(testapp, tale_replacement, source):
     # Replacement modifications need to include introduced_sequence
     tale_replacement.update({'modified_site_by_sequence': 'ATTTTAGGCAGGTAGGATTACGAGGACCCAGGTACGATCAGGT',
-                             'reagents': [{'source': source['@id'], 'identifier': 'xyz'}]})
+                             'reagents': [{'source': source['@id'], 'identifier': 'addgene:12345'}]})
     res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
     assert res.status_code == 422
     tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})

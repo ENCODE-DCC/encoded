@@ -32,7 +32,7 @@ ALLOW_REVIEWER_EDIT = [
     })
 class Characterization(ItemWithAttachment, Item):
     base_types = ['Characterization'] + Item.base_types
-    embedded = ['lab', 'award', 'submitted_by']
+    embedded = ['lab', 'award', 'submitted_by', 'documents']
     set_status_up = [
         'documents',
     ]
@@ -96,7 +96,7 @@ class AntibodyCharacterization(Characterization, SharedItem):
     ]
 
     @calculated_property(schema={
-        "title": "Characterization method",
+        "title": "Method",
         "type": "string",
     })
     def characterization_method(self, primary_characterization_method=None,
