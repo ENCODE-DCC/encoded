@@ -1,6 +1,35 @@
 Changes
 =======
 
+84.0 (released) snovault 1.0.28
+-------------------------------
+1. ENCD-4591 add-title-column-back (#2723)
+2. ENCD-4590 fix-facet-num-line (#2725)
+3. ENCD-4592 Update to Java 9 in travis (#2724)
+4. ENCD-4585 Update to snovault 1.0.28 (#2721)
+5. SNO-89 Fix backoff error key in indexer (#2720)
+6. ENCD-4559 x-limit-zero-results (#2711)
+7. ENCD-4349 restrict gm reagents (#2672)
+8. ENCD-4578 Fix s3 to s3 allow flag in deployment (#2708)
+9. ENCD-4243 Make dataset biosample boost values consistent (#2712)
+10. ENCD-4527 walkme-production-snippet (#2690)
+11. ENCD-4581 Temp install java 8 through aws (#2718)
+12. ENCD-4577 Add documents on characterization page (#2716)
+13. ENCD-4565 remove back slashes from search terms (#2714)
+14. ENCD-4576 Change header links and add FAQ script (#2715)
+15. ENCD-4556 Remove lane reqs for massspec characs (#2700)
+16. ENCD-4311 href-column-is-blank (#2713)
+17. SNO-85 facet-reappearing (#2676)
+18. ENCD-4506 make fragmentation method a list (#2683)
+19. ENCD-4542 Display biosample table on GM pages (#2699)
+20. ENCD-4407 update the columns and facet titles
+21. ENCD-4548 fix fallback images on collection pages (#2703)
+22. ENCD-4560 update typeaheads after selections (#2702)
+23. ENCD-4497 get rid of duplicate columns using titles
+24. ENCD-4564 add target typeahead to AntibodyLot pages (#2707)
+25. ENCD-4412 Add Clear Cart item to cart menu (#2695)
+26. ENCD-4554 fix-annotation-url (#2697)
+
 83.0 (released) / snovault 1.0.27
 -----------------
 1. ENCD-4569 Update snovault to 1.0.27 (#2704)
