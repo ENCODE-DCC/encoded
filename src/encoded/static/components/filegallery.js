@@ -1886,7 +1886,7 @@ class FileGalleryRendererComponent extends React.Component {
      */
     resetCurrentBrowser(filterValue) {
         const browsers = this.getAvailableBrowsers(filterValue);
-        if (browsers.indexOf(this.state.currentBrowser) === -1) {
+        if (browsers.length > 0 && browsers.indexOf(this.state.currentBrowser) === -1) {
             // Current browser not available for new assembly/annotation. Set the current browser
             // to the first available.
             this.setState({
