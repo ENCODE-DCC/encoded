@@ -1,4 +1,5 @@
 $data-cell-width: 40px;
+$col-category-header-height: 100px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
 
@@ -87,10 +88,12 @@ $row-data-header-width: 200px;
     // Text/link rotation method from:
     // https://stackoverflow.com/questions/15806925/how-to-rotate-text-left-90-degree-and-cell-size-is-adjusted-according-to-text-in#answer-41843950
     @at-root #{&}__col-category-header {
+        height: $col-category-header-height;
+
         > th {
             position: relative;
             vertical-align: bottom;
-            height: auto;
+            height: $col-category-header-height;
             width: $data-cell-width;
 
             // Variant of a method to fill a table cell with a link:
@@ -99,14 +102,15 @@ $row-data-header-width: 200px;
                 display: block;
                 padding-top: 10px;
                 padding-bottom: 10px;
-                height: auto;
-                width: $data-cell-width;
-                line-height: $data-cell-width;
+                height: 100%;
+                width: 100%;
+                line-height: 40px;
                 font-weight: 400;
                 text-decoration: none;
                 text-align: left;
                 white-space: nowrap;
                 writing-mode: vertical-rl;
+                writing-mode: tb-rl;
                 transform: rotate(180deg);
                 color: #000;
 
