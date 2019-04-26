@@ -1881,17 +1881,19 @@ class FileGalleryRendererComponent extends React.Component {
     /**
      * Called when the set of relevant files might have changed based on a user action. This makes
      * sure the current browser still makes sense, and resets it if not.
-     * @param {string} filterValue Optional <select> value for current assembly/annotation.
-     *                             state.selectedFilterValue used if not given.
+     * @param {string} filterValue Optional <select> value for current assembly/annotation or
+     *                             state.selectedFilterValue if not given
+     * @param {array}  currentFiles Optional files array or state.files if not given
      */
-    resetCurrentBrowser(filterValue) {
+    resetCurrentBrowser(filterValue, currentFiles) {
         const browsers = this.getAvailableBrowsers(filterValue);
+        const files = currentFiles || this.state.files;
         if (browsers.length > 0 && browsers.indexOf(this.state.currentBrowser) === -1) {
             // Current browser not available for new assembly/annotation. Set the current browser
             // to the first available.
             this.setState({
                 currentBrowser: browsers[0],
-                selectedBrowserFiles: visFilterBrowserFiles(this.state.files, browsers[0], true),
+                selectedBrowserFiles: visFilterBrowserFiles(files, browsers[0], true),
             });
         }
     }
@@ -1931,7 +1933,7 @@ class FileGalleryRendererComponent extends React.Component {
                 // the graph and tables.
                 this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
             }
-            this.resetCurrentBrowser();
+            this.resetCurrentBrowser(null, allFiles);
         });
     }
 
