@@ -197,7 +197,7 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
     // cell.
     const colCategoryNames = context.matrix.x.buckets.map(colCategoryBucket => colCategoryBucket.key);
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${context.matrix.search_base}&${columnCategoryType}=${colCategoryName}`}>{globals.truncateString(colCategoryName, COL_CATEGORY_NAME_MAX_LEN)}</a>,
+        header: <a href={`${context.matrix.search_base}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the

@@ -109,6 +109,8 @@ $row-data-header-width: 200px;
                 text-decoration: none;
                 text-align: left;
                 white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
                 writing-mode: vertical-rl;
                 writing-mode: tb-rl;
                 transform: rotate(180deg);
