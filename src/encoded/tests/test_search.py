@@ -906,7 +906,6 @@ def test_get_pagination(get_pagination_item):
 def test_prepare_search_term(prepare_search_term_item):
     for request, validate in prepare_search_term_item.items():
         search_term = prepare_search_term(request)
-        #import pdb; pdb.set_trace();
         assert search_term == validate
 
 
