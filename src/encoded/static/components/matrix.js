@@ -32,12 +32,6 @@ const VISUALIZE_LIMIT = 500;
 
 
 /**
- * Maximum number of characters before truncation of column category header names.
- */
-const COL_CATEGORY_NAME_MAX_LEN = 17;
-
-
-/**
  * Render the expander button for a row category, and react to clicks by calling the parent to
  * render the expansion change.
  */
@@ -470,15 +464,21 @@ class MatrixPresentation extends React.Component {
         if (element.scrollLeft === 0 && this.state.leftShadingShowing) {
             // Left edge of matrix scrolled into view.
             this.setState({ leftShadingShowing: false });
-        } else if (element.scrollLeft + element.clientWidth === element.scrollWidth && this.state.rightShadingShowing) {
-            // Right edge of matrix scrolled into view.
-            this.setState({ rightShadingShowing: false });
         } else if (element.scrollLeft > 0 && !this.state.leftShadingShowing) {
             // Left edge of matrix scrolled out of view.
             this.setState({ leftShadingShowing: true });
-        } else if (element.scrollLeft + element.clientWidth < element.scrollWidth && !this.state.rightShadingShowing) {
-            // Right edge of matrix scrolled out of view.
-            this.setState({ rightShadingShowing: true });
+        } else {
+            // For right-side shaded area, have to use a "roughly equal to" test because of an
+            // MS Edge bug mentioned here:
+            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+            if (scrollDiff < 2 && this.state.rightShadingShowing) {
+                // Right edge of matrix scrolled into view.
+                this.setState({ rightShadingShowing: false });
+            } else if (scrollDiff >= 2 && !this.state.rightShadingShowing) {
+                // Right edge of matrix scrolled out of view.
+                this.setState({ rightShadingShowing: true });
+            }
         }
     }
 

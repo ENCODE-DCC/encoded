@@ -146,7 +146,6 @@ $row-data-header-width: 200px;
         }
 
         > td {
-            position: relative;
             width: $data-cell-width;
             padding: 0 !important;
             text-align: center;
@@ -282,13 +281,7 @@ $row-data-header-width: 200px;
             }
 
             .svg-icon-large-arrow {
-                position: relative;
-                display: inline-block;
                 margin-left: 5px;
-                width: auto;
-                height: 0.7rem;
-                fill: #202020;
-                z-index: 2;
             }
         }
 
@@ -304,13 +297,19 @@ $row-data-header-width: 200px;
                 white-space: nowrap;
 
                 .svg-icon-large-arrow {
-                    display: inline-block;
-                    width: auto;
-                    height: 0.7rem;
-                    fill: #202020;
-                    transform: rotate(180deg) translate(5px);
+                    margin-right: 5px;
+                    transform: rotate(180deg);
                 }
             }
+        }
+
+        .svg-icon-large-arrow {
+            position: relative;
+            display: inline-block;
+            width: 29px;
+            height: 10px;
+            fill: #202020;
+            z-index: 2;
         }
     }
 
