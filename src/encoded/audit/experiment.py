@@ -2399,6 +2399,35 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                         level)
 
 
+def audit_experiment_biosample_characterization(value, system, excluded_types):
+    level = 'WARNING'
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and
+                'library' in rep and
+                rep['library']['status'] not in excluded_types and
+                'biosample' in rep['library'] and
+                rep['library']['biosample']['status'] not in excluded_types):
+                biosample = rep['library']['biosample']
+                if (biosample.get('applied_modifications') and
+                    not biosample.get('characterizations')):
+                    mod_ids = str(
+                        [mod['@id'] for mod in biosample['applied_modifications']]
+                    ).replace('\'', ' ')
+                    detail = (
+                        'Biosample {} which has been modified by {} '
+                        'is missing validating characterization.'
+                    ).format(
+                        biosample['@id'],
+                        mod_ids
+                    )
+                    yield AuditFailure(
+                        'missing biosample characterization',
+                        detail,
+                        level
+                    )
+
+
 def audit_experiment_replicates_biosample(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -3758,6 +3787,7 @@ function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
     'audit_tagging_genetic_modification_characterization': audit_experiment_tagging_genetic_modification,
+    'audit_tagging_biosample_characterization': audit_experiment_biosample_characterization,
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
