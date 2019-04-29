@@ -1,5 +1,5 @@
 $data-cell-width: 40px;
-$col-category-header-height: 100px;
+$col-category-header-height: 200px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
 
@@ -102,8 +102,8 @@ $row-data-header-width: 200px;
                 display: block;
                 padding-top: 10px;
                 padding-bottom: 10px;
-                height: 100%;
-                width: 100%;
+                height: $col-category-header-height;
+                width: $data-cell-width;
                 line-height: 40px;
                 font-weight: 400;
                 text-decoration: none;

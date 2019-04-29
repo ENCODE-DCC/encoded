@@ -32,6 +32,12 @@ const VISUALIZE_LIMIT = 500;
 
 
 /**
+ * Maximum number of characters before truncation of column category header names.
+ */
+const COL_CATEGORY_NAME_MAX_LEN = 17;
+
+
+/**
  * Render the expander button for a row category, and react to clicks by calling the parent to
  * render the expansion change.
  */
@@ -191,7 +197,7 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
     // cell.
     const colCategoryNames = context.matrix.x.buckets.map(colCategoryBucket => colCategoryBucket.key);
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${context.matrix.search_base}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${context.matrix.search_base}&${columnCategoryType}=${colCategoryName}`}>{globals.truncateString(colCategoryName, COL_CATEGORY_NAME_MAX_LEN)}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
