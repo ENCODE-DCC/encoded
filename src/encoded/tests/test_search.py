@@ -72,7 +72,6 @@ def prepare_search_term_item():
         FakeRequest((('advancedQuery', 'type:s'),)): 'embedded.type:s',
         FakeRequest((('advancedQuery', '@type:field'),)): 'embedded.@type:field',
         FakeRequest((('advancedQuery', '@type'),)): '@type'
-
     }
     return requests
 
