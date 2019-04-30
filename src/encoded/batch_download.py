@@ -230,7 +230,7 @@ def _get_annotation_metadata(request, search_path, param_list):
         urlencode(param_list, True),
         ''.join(fields)
     )
-    results = request.embed(path, as_user=True)
+    results = request.embed(path, as_user=True, no_unquote=True)
     for result_graph in results['@graph']:
         result_files = result_graph.get('files', {})
         if not result_files:
@@ -292,7 +292,7 @@ def peak_metadata(context, request):
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
     path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
-    results = request.embed(path, as_user=True)
+    results = request.embed(path, as_user=True, no_unquote=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
     json_doc = {}
@@ -365,7 +365,7 @@ def metadata_tsv(context, request):
         cart_uuid = cart_uuids.pop()
         del param_list['cart']
         try:
-            cart = request.embed(cart_uuid, '@@object')
+            cart = request.embed(cart_uuid, '@@object', no_unquote=True)
         except KeyError:
             pass
         else:
@@ -383,7 +383,7 @@ def metadata_tsv(context, request):
 
     param_list['limit'] = ['all']
     path = '{}?{}'.format(search_path, urlencode(param_list, True))
-    results = request.embed(path, as_user=True)
+    results = request.embed(path, as_user=True, no_unquote=True)
     rows = []
     for experiment_json in results['@graph']:
         if experiment_json.get('files', []):
@@ -482,7 +482,7 @@ def batch_download(context, request):
         for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
             param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
             path = '/search/?%s' % urlencode(param_list, True)
-            results = request.embed(path, as_user=True)
+            results = request.embed(path, as_user=True, no_unquote=True)
             experiments.extend(results['@graph'])
     else:
         # Regular batch download has single simple call to request.embed
