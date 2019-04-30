@@ -8,6 +8,7 @@ from snovault.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
+    quote,
 )
 from encoded.viewconfigs.views import search
 from snovault.helpers.helper import list_visible_columns_for_schemas
@@ -227,10 +228,10 @@ def _get_annotation_metadata(request, search_path, param_list):
     fields = [''.join(['&field=', str(value[0])]) for _, value in _tsv_mapping_annotation.items()]
     path = '{}?{}{}'.format(
         search_path,
-        urlencode(param_list, True),
+        quote(urlencode(param_list, True)),
         ''.join(fields)
     )
-    results = request.embed(path, as_user=True, no_unquote=True)
+    results = request.embed(path, as_user=True)
     for result_graph in results['@graph']:
         result_files = result_graph.get('files', {})
         if not result_files:
@@ -291,7 +292,7 @@ def peak_metadata(context, request):
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
-    path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
+    path = '/region-search/?{}&{}'.format(quote(urlencode(param_list, True)),'referrer=peak_metadata')
     results = request.embed(path, as_user=True, no_unquote=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
@@ -382,7 +383,7 @@ def metadata_tsv(context, request):
             param_list['@id'] = elements
 
     param_list['limit'] = ['all']
-    path = '{}?{}'.format(search_path, urlencode(param_list, True))
+    path = '{}?{}'.format(search_path, quote(urlencode(param_list, True)))
     results = request.embed(path, as_user=True, no_unquote=True)
     rows = []
     for experiment_json in results['@graph']:
@@ -468,12 +469,12 @@ def batch_download(context, request):
             # metadata.tsv link includes a cart UUID
             metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
                 host_url=request.host_url,
-                search_params=request.matchdict['search_params'],
+                search_params=quote(request.matchdict['search_params']),
             )
         else:
             metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
                 host_url=request.host_url,
-                search_params=request.matchdict['search_params'],
+                search_params=quote(request.matchdict['search_params']),
                 elements_json=','.join('"{0}"'.format(element) for element in elements)
             )
 
@@ -481,7 +482,7 @@ def batch_download(context, request):
         # into multiple searches of ELEMENT_CHUNK_SIZE datasets each.
         for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
             param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
-            path = '/search/?%s' % urlencode(param_list, True)
+            path = '/search/?%s' % quote(urlencode(param_list, True))
             results = request.embed(path, as_user=True, no_unquote=True)
             experiments.extend(results['@graph'])
     else:
@@ -490,8 +491,8 @@ def batch_download(context, request):
             host_url=request.host_url,
             search_params=request.matchdict['search_params']
         )
-        path = '/search/?%s' % urlencode(param_list, True)
-        results = request.embed(path, as_user=True, no_unquote=True)
+        path = '/search/?%s' % quote(urlencode(param_list, True))
+        results = request.embed(path, as_user=True)
         experiments = results['@graph']
 
     exp_files = (
