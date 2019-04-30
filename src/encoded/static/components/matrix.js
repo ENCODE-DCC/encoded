@@ -163,7 +163,7 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
             maxSubCategoryValue = prospectiveMax;
         }
         const prospectiveMin = Math.min(...rowData[columnCategoryType].filter(value => value));
-        if (minSubCategoryValue === undefined || minSubCategoryValue > prospectiveMin) {
+        if (minSubCategoryValue > prospectiveMin) {
             minSubCategoryValue = prospectiveMin;
         }
     });
