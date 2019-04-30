@@ -51,7 +51,7 @@ class CartBatchDownloadComponent extends React.Component {
 
         // Initiate a batch download as a POST, passing it all dataset @ids in the payload.
         this.props.setInProgress(true);
-        this.props.fetch(`/batch_download/type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}`, {
+        this.props.fetch(`/batch_download/type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${encodeURIComponent(fileFormatSelections.join('&'))}` : ''}`, {
             method: 'POST',
             headers: {
                 Accept: 'text/plain',
