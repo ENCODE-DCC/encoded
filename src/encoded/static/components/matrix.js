@@ -148,8 +148,8 @@ SearchFilter.contextTypes = {
  */
 const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
     const subCategorySums = [];
-    let maxSubCategoryValue;
-    let minSubCategoryValue;
+    let maxSubCategoryValue = 0;
+    let minSubCategoryValue = Number.MAX_VALUE;
 
     subCategoryData.forEach((rowData) => {
         // `rowData` has all the data for one row. Collect sums of all data for each column.
@@ -159,15 +159,15 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
 
         // Update min and max values found within all subcategories of the given category.
         const prospectiveMax = Math.max(...rowData[columnCategoryType]);
-        if (maxSubCategoryValue === undefined || maxSubCategoryValue < prospectiveMax) {
+        if (maxSubCategoryValue < prospectiveMax) {
             maxSubCategoryValue = prospectiveMax;
         }
-        const prospectiveMin = Math.min(...rowData[columnCategoryType]);
+        const prospectiveMin = Math.min(...rowData[columnCategoryType].filter(value => value));
         if (minSubCategoryValue === undefined || minSubCategoryValue > prospectiveMin) {
             minSubCategoryValue = prospectiveMin;
         }
     });
-    return { subCategorySums, maxSubCategoryValue, minSubCategoryValue };
+    return { subCategorySums, maxSubCategoryValue, minSubCategoryValue: minSubCategoryValue - 1 };
 };
 
 

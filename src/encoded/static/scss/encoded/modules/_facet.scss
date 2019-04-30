@@ -68,6 +68,7 @@
 .clear-filters-control {
     position: relative;
     height: 1.1rem;
+    margin-top: 5px;
 
     > div {
         position: absolute;
@@ -75,12 +76,6 @@
         left: 0;
         font-size: .9rem;
     }
-}
-
-.clear-filters-control-matrix {
-    @extend .clear-filters-control;
-    text-align: center;
-    margin-top: 5px;
 }
 
 .facets h5 {
