@@ -166,11 +166,11 @@ def get_peak_metadata_links(request):
 
     peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
         host_url=request.host_url,
-        search_params=search_params
+        search_params=quote(search_params)
     )
     peak_metadata_json_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.json'.format(
         host_url=request.host_url,
-        search_params=search_params
+        search_params=quote(search_params)
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
@@ -489,7 +489,7 @@ def batch_download(context, request):
         # Regular batch download has single simple call to request.embed
         metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
             host_url=request.host_url,
-            search_params=request.matchdict['search_params']
+            search_params=quote(request.matchdict['search_params'])
         )
         path = '/search/?%s' % quote(urlencode(param_list, True))
         results = request.embed(path, as_user=True)
