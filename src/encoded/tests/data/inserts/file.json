@@ -2392,7 +2392,6 @@
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
     },
     {
-<<<<<<< HEAD
         "accession": "ENCFF130XXF",
         "aliases": [
             "ali-mortazavi:test-bigWig1"
@@ -2568,5 +2567,21 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/rep2_efg.tsv",
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f053"
+    },
+        "dataset": "ENCSR000AJK",
+        "no_file_available": false,
+        "status": "released",
+        "award": "U54HG006998",
+        "assembly": "GRCh38",
+        "md5sum": "c540631e31df3993044cb78128d65de4",
+        "submitted_file_name": "files/1200.homer.filtered.bigBed",
+        "output_type": "peaks",
+        "file_format": "bigBed",
+        "lab": "/labs/ross-hardison/",
+        "file_format_type": "bed3+",
+        "accession": "ENCFF880XNW",
+        "uuid": "7aeeef9d-84b3-4977-b158-65b674e3ef46",
+        "file_size": 1363224,
+        "alternate_accessions": []
     }
 ]

@@ -491,7 +491,7 @@ def batch_download(context, request):
             search_params=request.matchdict['search_params']
         )
         path = '/search/?%s' % urlencode(param_list, True)
-        results = request.embed(path, as_user=True)
+        results = request.embed(path, as_user=True, no_unquote=True)
         experiments = results['@graph']
 
     exp_files = (
