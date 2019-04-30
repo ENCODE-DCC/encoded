@@ -337,12 +337,6 @@ $row-data-header-width: 200px;
     }
 }
 
-
-// note the position of the inner span isn't calculated correctly yet
-$rotated-th-height: 130px;
-$rotated-th-width: 20px;
-$rotated-th-angle: 30deg;
-
 .matrix-wrapper {
     display: flex;
     padding-left: 0;
