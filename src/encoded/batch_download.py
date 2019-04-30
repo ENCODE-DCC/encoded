@@ -293,7 +293,7 @@ def peak_metadata(context, request):
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
     path = '/region-search/?{}&{}'.format(quote(urlencode(param_list, True)),'referrer=peak_metadata')
-    results = request.embed(path, as_user=True, no_unquote=True)
+    results = request.embed(path, as_user=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
     json_doc = {}
@@ -366,7 +366,7 @@ def metadata_tsv(context, request):
         cart_uuid = cart_uuids.pop()
         del param_list['cart']
         try:
-            cart = request.embed(cart_uuid, '@@object', no_unquote=True)
+            cart = request.embed(cart_uuid, '@@object')
         except KeyError:
             pass
         else:
@@ -384,7 +384,7 @@ def metadata_tsv(context, request):
 
     param_list['limit'] = ['all']
     path = '{}?{}'.format(search_path, quote(urlencode(param_list, True)))
-    results = request.embed(path, as_user=True, no_unquote=True)
+    results = request.embed(path, as_user=True)
     rows = []
     for experiment_json in results['@graph']:
         if experiment_json.get('files', []):
@@ -483,7 +483,7 @@ def batch_download(context, request):
         for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
             param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
             path = '/search/?%s' % quote(urlencode(param_list, True))
-            results = request.embed(path, as_user=True, no_unquote=True)
+            results = request.embed(path, as_user=True)
             experiments.extend(results['@graph'])
     else:
         # Regular batch download has single simple call to request.embed
