@@ -1,8 +1,17 @@
 ## Changelog for target.json
 
-### Minor changes since schema version 10
+### Schema version 11
 
-* *investigated_as* enum changed to delete "control", "nucleotide modification", "other post-translational modification", and to add "Co-factor", "Cohesin", "DNA replication", "DNA repair", "RNA polymerase complex".
+* *investigated_as* enum list was modified. The following terms were removed:
+  - "nucleotide modification"
+  - "other post-translational modification"
+
+  and the following terms were added:
+  - "Co-factor"
+  - "Cohesin"
+  - "DNA replication"
+  - "DNA repair"
+  - "RNA polymerase complex".
 
 ### Schema version 10
 

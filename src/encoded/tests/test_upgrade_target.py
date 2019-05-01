@@ -132,6 +132,31 @@ def gene8335(testapp, organism):
     return testapp.post_json('/gene', item).json['@graph'][0]
 
 
+@pytest.fixture
+def target_10_nt_mod(organism):
+    item = {
+        'investigated_as': ['nucleotide modification'],
+        'target_organism': organism['uuid'],
+        'label': 'nucleotide-modification-target'
+    }
+    return item
+
+
+@pytest.fixture
+def target_10_other_ptm(gene8335):
+    item = {
+        'investigated_as': [
+            'other post-translational modification',
+            'chromatin remodeller',
+            'RNA binding protein'
+        ],
+        'genes': [gene8335['uuid']],
+        'modifications': [{'modification': 'Phosphorylation'}],
+        'label': 'nucleotide-modification-target'
+    }
+    return item
+
+
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -242,3 +267,22 @@ def test_target_remove_empty_modifications(upgrader,
     )
     assert nonempty['schema_version'] == '10'
     assert 'modifications' in nonempty
+
+
+def test_target_upgrade_categories(upgrader,
+                                   target_10_nt_mod,
+                                   target_10_other_ptm):
+    new_target = upgrader.upgrade(
+        'target', target_10_nt_mod, current_version='10', target_version='11'
+    )
+    assert new_target['schema_version'] == '11'
+    assert new_target['investigated_as'] == ['other context']
+
+    new_target = upgrader.upgrade(
+        'target', target_10_other_ptm, current_version='10', target_version='11'
+    )
+    assert new_target['schema_version'] == '11'
+    assert new_target['investigated_as'] == [
+        'chromatin remodeller',
+        'RNA binding protein'
+    ]
