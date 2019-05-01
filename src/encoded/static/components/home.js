@@ -59,7 +59,7 @@ class EncodeSearch extends React.Component {
         return (
             <div className="site-search__encode">
                 <div className="site-search__reference">
-                    <a href="/about/contributors/" role="button" className="site-search__reference-element">About ENCODE Project</a>
+                    <a href="/help/project-overview/" role="button" className="site-search__reference-element">About ENCODE Project</a>
                     <a href="/help/getting-started/" role="button" className="site-search__reference-element">Getting Started</a>
                     <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__reference-element">Experiments</a>
                 </div>
