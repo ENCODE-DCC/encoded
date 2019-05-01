@@ -446,7 +446,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
+    param_list['field'] = ['files.href', 'files.restricted'] + [k for k, v in param_list.items() if k.startswith('files.')]
     param_list['limit'] = ['all']
 
     experiments = []
@@ -503,7 +503,7 @@ def batch_download(context, request):
 
     files = [metadata_link]
     for exp_file in exp_files:
-        if not file_type_param_list(exp_file, param_list):
+        if not files_prop_param_list(exp_file, param_list):
             continue
         elif restricted_files_present(exp_file):
             continue
@@ -521,10 +521,12 @@ def batch_download(context, request):
     )
 
 
-def file_type_param_list(exp_file, param_list):
-    if 'files.file_type' in param_list:
-        if not exp_file['file_type'] in param_list.get('files.file_type', []):
-            return False
+def files_prop_param_list(exp_file, param_list):
+    for k, v in param_list.items():
+        if k.startswith('files.'):
+            file_prop = k[len('files.'):]
+            if file_prop in exp_file and exp_file[file_prop] not in v:
+                return False
     return True
 
 
