@@ -177,12 +177,14 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
  * needs.
  * @param {object} context Matrix JSON for the page
  * @param {func}   getRowCategories Returns rowCategory info including desired display order
+ * @param {func}   getRowSubCategories Returns subCategory desired display order
+ * @param {func}   mapQueries Map a row/cell query values if needed
  * @param {array}  expandedRowCategories Names of rowCategories the user has expanded
  * @param {func}   expanderClickHandler Called when the user expands/collapses a row category
  *
  * @return {object} Generated object suitable for passing to <DataTable>
  */
-const convertExperimentToDataTable = (context, getRowCategories, expandedRowCategories, expanderClickHandler) => {
+const convertExperimentToDataTable = (context, getRowCategories, getRowSubCategories, mapRowCategoryQueries, mapSubCategoryQueries, expandedRowCategories, expanderClickHandler) => {
     const rowCategory = context.matrix.y.group_by[0];
     const subCategory = context.matrix.y.group_by[1];
     const columnCategoryType = context.matrix.x.group_by;
@@ -203,10 +205,11 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
     const matrixRowKeys = ['column-categories'];
     let matrixRow = 1;
     const matrixDataTable = rowCategoryData.reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
-        const subCategoryData = rowCategoryBucket[subCategory].buckets;
+        const subCategoryData = getRowSubCategories(rowCategoryBucket);
         const rowCategoryColor = rowCategoryColors[rowCategoryIndex];
         const rowCategoryTextColor = isLight(rowCategoryColor) ? '#000' : '#fff';
         const expandableRowCategory = subCategoryData.length > SUB_CATEGORY_SHORT_SIZE;
+        const mappedRowCategoryQuery = mapRowCategoryQueries(rowCategory, rowCategoryBucket);
 
         // For the current row category, collect the sum of every column into an array to display
         // on the rowCategory parent row. Also get the minimum and maximum subCategory values
@@ -220,9 +223,13 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
         const categoryNameQuery = globals.encodedURIComponent(rowCategoryBucket.key);
         const categoryExpanded = expandedRowCategories.indexOf(rowCategoryBucket.key) !== -1;
         const renderedData = categoryExpanded ? subCategoryData : subCategoryData.slice(0, SUB_CATEGORY_SHORT_SIZE);
-        matrixRowKeys[matrixRow] = categoryNameQuery;
+        matrixRowKeys[matrixRow] = rowCategoryBucket.key;
         matrixRow += 1;
         const subCategoryRows = renderedData.map((subCategoryBucket) => {
+            // If needed, map the current subcategory queries to something besides what they are.
+            // Currently just for audit matrix.
+            const mappedSubCategoryQuery = mapSubCategoryQueries(subCategory, subCategoryBucket.key, rowCategoryBucket);
+
             // Generate an array of data cells for a single subCategory row's data.
             const cells = subCategoryBucket[columnCategoryType].map((cellData, columnIndex) => {
                 // Generate one data cell with a color tint that varies based on its value within
@@ -238,7 +245,7 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
                 return {
                     content: (
                         cellData > 0 ?
-                            <a href={`${context.matrix.search_base}&${subCategory}=${globals.encodedURIComponent(subCategoryBucket.key)}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData}</a>
+                            <a href={`${context.matrix.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData}</a>
                         :
                             <div />
                     ),
@@ -247,12 +254,11 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
             });
 
             // Add a single row's data and left header to the matrix.
-            const subCategoryQuery = globals.encodedURIComponent(subCategoryBucket.key);
-            matrixRowKeys[matrixRow] = `${categoryNameQuery}-${subCategoryQuery}`;
+            matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-${subCategoryBucket.key}`;
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.matrix.search_base}&${subCategory}=${subCategoryQuery}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${context.matrix.search_base}&${mappedSubCategoryQuery}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -261,7 +267,7 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
         // Generate a row for a rowCategory alone, concatenated with the subCategory rows under it,
         // concatenated with an spacer row that might be empty or might have a rowCategory expander
         // button.
-        matrixRowKeys[matrixRow] = `${categoryNameQuery}-spacer`;
+        matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-spacer`;
         matrixRow += 1;
         return accumulatingTable.concat(
             [
@@ -271,20 +277,20 @@ const convertExperimentToDataTable = (context, getRowCategories, expandedRowCate
                             <div style={{ backgroundColor: rowCategoryColor }}>
                                 {expandableRowCategory ?
                                     <RowCategoryExpander
-                                        categoryId={categoryNameQuery}
+                                        categoryId={rowCategoryBucket.key}
                                         categoryName={rowCategoryBucket.key}
                                         expanderColor={rowCategoryTextColor}
                                         expanded={categoryExpanded}
                                         expanderClickHandler={expanderClickHandler}
                                     />
                                 : null}
-                                <a href={`${context['@id']}&${rowCategory}=${categoryNameQuery}`} style={{ color: rowCategoryTextColor }} id={categoryNameQuery}>{rowCategoryNames[rowCategoryBucket.key]}</a>
+                                <a href={`${context['@id']}&${mappedRowCategoryQuery}`} style={{ color: rowCategoryTextColor }} id={categoryNameQuery}>{rowCategoryNames[rowCategoryBucket.key]}</a>
                             </div>
                         ),
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.matrix.search_base}&${rowCategory}=${categoryNameQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.matrix.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
@@ -483,12 +489,12 @@ class MatrixPresentation extends React.Component {
     }
 
     render() {
-        const { context, rowCategoryGetter } = this.props;
+        const { context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries } = this.props;
         const { leftShadingShowing, rightShadingShowing } = this.state;
         const visualizeDisabledTitle = context.matrix.doc_count > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
         // Convert encode matrix data to a DataTable object.
-        const { dataTable, rowKeys } = convertExperimentToDataTable(context, rowCategoryGetter, this.state.expandedRowCategories, this.expanderClickHandler);
+        const { dataTable, rowKeys } = convertExperimentToDataTable(context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries, this.state.expandedRowCategories, this.expanderClickHandler);
         const matrixConfig = {
             rows: dataTable,
             rowKeys,
@@ -523,16 +529,22 @@ MatrixPresentation.propTypes = {
     context: PropTypes.object.isRequired,
     /** Callback to retrieve row categories */
     rowCategoryGetter: PropTypes.func.isRequired,
+    /** Callback to retrieve subcategories */
+    rowSubCategoryGetter: PropTypes.func.isRequired,
+    /** Callback to map row category query values */
+    mapRowCategoryQueries: PropTypes.func.isRequired,
+    /** Callback to map subcategory query values */
+    mapSubCategoryQueries: PropTypes.func.isRequired,
 };
 
 
 /**
  * Render the vertical facets and the matrix itself.
  */
-const MatrixContent = ({ context, rowCategoryGetter }) => (
+const MatrixContent = ({ context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries }) => (
     <div className="matrix__content">
         <MatrixVerticalFacets context={context} />
-        <MatrixPresentation context={context} rowCategoryGetter={rowCategoryGetter} />
+        <MatrixPresentation context={context} rowCategoryGetter={rowCategoryGetter} rowSubCategoryGetter={rowSubCategoryGetter} mapRowCategoryQueries={mapRowCategoryQueries} mapSubCategoryQueries={mapSubCategoryQueries} />
     </div>
 );
 
@@ -540,12 +552,41 @@ MatrixContent.propTypes = {
     /** Matrix search result object */
     context: PropTypes.object.isRequired,
     /** Callback to retrieve row categories from matrix data */
-    rowCategoryGetter: PropTypes.func,
+    rowCategoryGetter: PropTypes.func.isRequired,
+    /** Callback to retrieve subcategories from matrix data */
+    rowSubCategoryGetter: PropTypes.func.isRequired,
+    /** Callback to map row category query values */
+    mapRowCategoryQueries: PropTypes.func.isRequired,
+    /** Callback to map subcategory query values */
+    mapSubCategoryQueries: PropTypes.func.isRequired,
 };
 
-MatrixContent.defaultProps = {
-    rowCategoryGetter: null,
-};
+
+/**
+ * Map query values to a query-string component actually used in experiment matrix row category
+ * link queries.
+ * @param {string} rowCategory row category value to map
+ * @param {object} rowCategoryBucket Matrix search result row bucket object
+ *
+ * @return {string} mapped row category query
+ */
+const mapRowCategoryQueriesExperiment = (rowCategory, rowCategoryBucket) => (
+    `${rowCategory}=${globals.encodedURIComponent(rowCategoryBucket.key)}`
+);
+
+
+/**
+ * Map query values to a query-string component actually used in experiment matrix subcategory link
+ * queries.
+ * @param {string} subCategory subcategory value to map
+ * @param {string} subCategoryQuery subcategory query value to map
+ * @param {object} rowCategoryBucket Matrix search result row bucket object
+ *
+ * @return {string} mapped subcategory query
+ */
+const mapSubCategoryQueriesExperiment = (subCategory, subCategoryQuery) => (
+    `${subCategory}=${globals.encodedURIComponent(subCategoryQuery)}`
+);
 
 
 /**
@@ -555,6 +596,7 @@ class Matrix extends React.Component {
     constructor() {
         super();
         this.getRowCategories = this.getRowCategories.bind(this);
+        this.getRowSubCategories = this.getRowSubCategories.bind(this);
     }
 
     /**
@@ -575,6 +617,14 @@ class Matrix extends React.Component {
         };
     }
 
+    /**
+     * Called to retrieve subcategory data for the experiment matrix.
+     */
+    getRowSubCategories(rowCategoryBucket) {
+        const subCategoryName = this.props.context.matrix.y.group_by[1];
+        return rowCategoryBucket[subCategoryName].buckets;
+    }
+
     render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
@@ -584,7 +634,7 @@ class Matrix extends React.Component {
                 <Panel addClasses={itemClass}>
                     <PanelBody>
                         <MatrixHeader context={context} />
-                        <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} />
+                        <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} rowSubCategoryGetter={this.getRowSubCategories} mapRowCategoryQueries={mapRowCategoryQueriesExperiment} mapSubCategoryQueries={mapSubCategoryQueriesExperiment} />
                     </PanelBody>
                 </Panel>
             );
@@ -618,6 +668,16 @@ const auditOrderKey = [
 ];
 
 /**
+ * Determines the sorting order of the "No audits" subcategories.
+ */
+const noAuditOrderKey = [
+    'no errors, compliant, and no warnings',
+    'no errors and compliant',
+    'no errors',
+    'no audits',
+];
+
+/**
  * Audit matrix rowCategory colors.
  */
 const auditColors = ['#009802', '#e0e000', '#ff8000', '#cc0700', '#a0a0a0'];
@@ -635,6 +695,58 @@ const auditNames = {
 
 
 /**
+ * Map query values to a query-string component actually used in audit matrix row category link
+ * queries.
+ * @param {string} rowCategory row category value to map
+ * @param {object} rowCategoryBucket Matrix search result row bucket object
+ *
+ * @return {string} mapped row category query
+ */
+const mapRowCategoryQueriesAudit = (rowCategory, rowCategoryBucket) => {
+    if (rowCategoryBucket.key === 'no_audits') {
+        return 'audit.ERROR.category%21=%2A&audit.NOT_COMPLIANT.category%21=%2A&audit.WARNING.category%21=%2A&audit.INTERNAL_ACTION.category%21=%2A';
+    }
+    return `${rowCategoryBucket.key}=%2A`;
+};
+
+
+/**
+ * Map query values to a query-string component actually used in audit matrix subcategory link
+ * queries.
+ * @param {string} subCategory subcategory value to map
+ * @param {string} subCategoryQuery subcategory query value to map
+ * @param {object} rowCategoryBucket Matrix search result row bucket object
+ *
+ * @return {string} mapped subcategory query
+ */
+const mapSubCategoryQueriesAudit = (subCategory, subCategoryQuery, rowCategoryBucket) => {
+    let query;
+    if (rowCategoryBucket.key === 'no_audits') {
+        switch (subCategoryQuery) {
+        case 'no audits':
+            query = 'audit.WARNING.category%21=%2A&audit.NOT_COMPLIANT.category%21=%2A&audit.ERROR.category%21=%2A&audit.INTERNAL_ACTION.category%21=%2A';
+            break;
+        case 'no errors':
+            query = 'audit.ERROR.category%21=%2A';
+            break;
+        case 'no errors, compliant, and no warnings':
+            query = 'audit.ERROR.category%21=%2A&audit.NOT_COMPLIANT.category%21=%2A&audit.WARNING.category%21=%2A';
+            break;
+        case 'no errors and compliant':
+            query = 'audit.ERROR.category%21=%2A&audit.NOT_COMPLIANT.category%21=%2A';
+            break;
+        default:
+            query = '';
+            break;
+        }
+    } else {
+        query = `${rowCategoryBucket.key}=${globals.encodedURIComponent(subCategoryQuery)}`;
+    }
+    return query;
+};
+
+
+/**
  * View component for the audit matrix page.
  */
 class AuditMatrix extends React.Component {
@@ -643,6 +755,7 @@ class AuditMatrix extends React.Component {
 
         // Bind this to non-React methods.
         this.getRowCategories = this.getRowCategories.bind(this);
+        this.getRowSubCategories = this.getRowSubCategories.bind(this);
     }
 
     // Called to sort the audit row categories by the order in `auditOrderKey`.
@@ -659,6 +772,20 @@ class AuditMatrix extends React.Component {
         };
     }
 
+    /**
+     * Called to retrieve subcategory data for the experiment matrix.
+     */
+    getRowSubCategories(rowCategoryBucket) {
+        const subCategoryName = this.props.context.matrix.y.group_by[1];
+        let subCategoryData = rowCategoryBucket[subCategoryName].buckets;
+        if (rowCategoryBucket.key === 'no_audits') {
+            subCategoryData = _.sortBy(subCategoryData, subCategoryDataBucket =>
+                noAuditOrderKey.indexOf(subCategoryDataBucket.key)
+            );
+        }
+        return subCategoryData;
+    }
+
     render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
@@ -668,7 +795,7 @@ class AuditMatrix extends React.Component {
                 <Panel addClasses={itemClass}>
                     <PanelBody>
                         <MatrixHeader context={context} />
-                        <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} />
+                        <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} rowSubCategoryGetter={this.getRowSubCategories} mapRowCategoryQueries={mapRowCategoryQueriesAudit} mapSubCategoryQueries={mapSubCategoryQueriesAudit} />
                     </PanelBody>
                 </Panel>
             );
