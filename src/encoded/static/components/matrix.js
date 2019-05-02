@@ -178,12 +178,14 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
  * @param {object} context Matrix JSON for the page
  * @param {func}   getRowCategories Returns rowCategory info including desired display order
  * @param {func}   getRowSubCategories Returns subCategory desired display order
- * @param {func}   mapQueries Map a row/cell query values if needed
+ * @param {func}   mapRowCategoryQueries Callback to map row category query values
+ * @param {func}   mapSubCategoryQueries Callback to map subcategory query values
  * @param {array}  expandedRowCategories Names of rowCategories the user has expanded
  * @param {func}   expanderClickHandler Called when the user expands/collapses a row category
  *
  * @return {object} Generated object suitable for passing to <DataTable>
  */
+
 const convertExperimentToDataTable = (context, getRowCategories, getRowSubCategories, mapRowCategoryQueries, mapSubCategoryQueries, expandedRowCategories, expanderClickHandler) => {
     const rowCategory = context.matrix.y.group_by[0];
     const subCategory = context.matrix.y.group_by[1];
@@ -226,8 +228,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         matrixRowKeys[matrixRow] = rowCategoryBucket.key;
         matrixRow += 1;
         const subCategoryRows = renderedData.map((subCategoryBucket) => {
-            // If needed, map the current subcategory queries to something besides what they are.
-            // Currently just for audit matrix.
+            // If needed, map the current subcategory queries to a query-string component.
             const mappedSubCategoryQuery = mapSubCategoryQueries(subCategory, subCategoryBucket.key, rowCategoryBucket);
 
             // Generate an array of data cells for a single subCategory row's data.
@@ -697,7 +698,7 @@ const auditNames = {
 /**
  * Map query values to a query-string component actually used in audit matrix row category link
  * queries.
- * @param {string} rowCategory row category value to map
+ * @param {string} rowCategory Row category value to map
  * @param {object} rowCategoryBucket Matrix search result row bucket object
  *
  * @return {string} mapped row category query
@@ -713,8 +714,8 @@ const mapRowCategoryQueriesAudit = (rowCategory, rowCategoryBucket) => {
 /**
  * Map query values to a query-string component actually used in audit matrix subcategory link
  * queries.
- * @param {string} subCategory subcategory value to map
- * @param {string} subCategoryQuery subcategory query value to map
+ * @param {string} subCategory Subcategory value to map
+ * @param {string} subCategoryQuery Subcategory query value to map
  * @param {object} rowCategoryBucket Matrix search result row bucket object
  *
  * @return {string} mapped subcategory query
@@ -773,7 +774,8 @@ class AuditMatrix extends React.Component {
     }
 
     /**
-     * Called to retrieve subcategory data for the experiment matrix.
+     * Called to retrieve subcategory data for the audit matrix. The subcategories get sorted only
+     * for the "No audits" category.
      */
     getRowSubCategories(rowCategoryBucket) {
         const subCategoryName = this.props.context.matrix.y.group_by[1];
