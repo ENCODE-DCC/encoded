@@ -857,7 +857,7 @@ class DateSelectorFacet extends React.Component {
         const activeFacet = facets.filter(f => f.field === this.state.activeFacet)[0];
 
         // if a date range has already been selected, we want to over-write that date range with a new one
-        const existingFilter = this.props.filters.filter(filter => filter.field === 'searchTerm');
+        const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
         let resetString = '';
         let searchBaseForDateRange = searchBase;
         if (existingFilter.length > 0) {
@@ -870,11 +870,11 @@ class DateSelectorFacet extends React.Component {
         const daysInEndMonth = moment(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
         const daysInCurrentMonth = moment(`${this.state.currentYear}-${this.state.currentMonth}`, 'YYYY-MM').daysInMonth();
 
-        const searchString = `${searchBaseForDateRange}searchTerm=@type:Experiment ${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
+        const searchString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
 
-        const currentMonthSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear}-${this.state.currentMonth}-01 TO ${daysInCurrentMonth}]`;
+        const currentMonthSearch = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${this.state.currentYear}-${this.state.currentMonth}-01 TO ${this.state.currentYear}-${this.state.currentMonth}-${daysInCurrentMonth}]`;
 
-        const currentYearSearch = `${searchBaseForDateRange}searchTerm=@type:Experiment ${field}:[${this.state.currentYear - 1}-${this.state.currentMonth}-01 TO ${this.state.currentYear}-${this.state.currentMonth}-${daysInCurrentMonth}]`;
+        const currentYearSearch = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${this.state.currentYear - 1}-${this.state.currentMonth}-01 TO ${this.state.currentYear}-${this.state.currentMonth}-${daysInCurrentMonth}]`;
 
         if ((activeFacet.terms.length && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
@@ -1230,7 +1230,7 @@ export class TextFilter extends React.Component {
     }
 
     getValue() {
-        const filter = this.props.filters.filter(f => f.field === 'searchTerm');
+        const filter = this.props.filters.filter(f => f.field === 'advancedQuery');
         return filter.length ? filter[0].term : '';
     }
 
@@ -1242,10 +1242,10 @@ export class TextFilter extends React.Component {
     * @private
     */
     performSearch(e) {
-        let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
+        let searchStr = this.props.searchBase.replace(/&?advancedQuery=[^&]*/, '');
         const value = e.target.value;
         if (value) {
-            searchStr += `searchTerm=${e.target.value}`;
+            searchStr += `advancedQuery=${e.target.value}`;
         } else {
             searchStr = searchStr.substring(0, searchStr.length - 1);
         }
@@ -1319,7 +1319,7 @@ export class FacetList extends React.Component {
 
             // See if there are terms in the query string aside from `searchTerm`. We have a Clear
             // Filters button if we do.
-            let nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm');
+            let nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'advancedQuery');
             clearButton = nonPersistentTerms && terms.searchTerm;
 
             // If no Clear Filters button yet, do the same check with `type` in the query string.
