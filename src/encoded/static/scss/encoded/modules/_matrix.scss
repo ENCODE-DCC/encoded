@@ -1,17 +1,346 @@
-// note the position of the inner span isn't calculated correctly yet
-$rotated-th-height: 130px;
-$rotated-th-width: 20px;
-$rotated-th-angle: 30deg;
+$data-cell-width: 40px;
+$col-category-header-height: 200px;
+$row-category-cell-height: 22px;
+$row-data-header-width: 200px;
+
+// Applied to all matrix <table>
+.matrix {
+    margin-left: 10px;
+    margin-bottom: 20px;
+
+    @at-root #{&}__header {
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    // Holds vertical facets and matrix itself.
+    @at-root #{&}__content {
+        display: block;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+        }
+    }
+
+    @at-root #{&}__facets-vertical {
+        position: relative;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 20%;
+        }
+    }
+
+    // Part of matrix page holding the matrix itself
+    @at-root #{&}__presentation {
+        overflow: hidden;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 80%;
+            padding-left: 10px;
+        }
+
+        @at-root #{&}-content {
+            display: flex;
+
+            .matrix-shading {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 30px;
+                height: auto;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.2s ease-in-out;
+    
+                &--left {
+                    right: auto;
+                    left: 0;
+                    background: linear-gradient(270deg, rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
+    
+                    &.showing {
+                        opacity: 1;
+                    }
+                }
+    
+                &--right {
+                    right: 0;
+                    left: auto;
+                    background: linear-gradient(90deg, rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
+    
+                    &.showing {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    @at-root #{&}__data-wrapper {
+        position: relative;
+        flex: 0 1 auto;
+        border : 1px solid #eee;
+        overflow: hidden;
+    }
+
+    @at-root #{&}__data {
+        overflow-x: auto;
+    }
+
+    // Text/link rotation method from:
+    // https://stackoverflow.com/questions/15806925/how-to-rotate-text-left-90-degree-and-cell-size-is-adjusted-according-to-text-in#answer-41843950
+    @at-root #{&}__col-category-header {
+        height: $col-category-header-height;
+
+        > th {
+            position: relative;
+            vertical-align: bottom;
+            height: $col-category-header-height;
+            width: $data-cell-width;
+
+            // Variant of a method to fill a table cell with a link:
+            // https://stackoverflow.com/questions/3966027/make-link-in-table-cell-fill-the-entire-row-height#answer-15801081
+            > a {
+                display: block;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                height: $col-category-header-height;
+                width: $data-cell-width;
+                line-height: 40px;
+                font-weight: 400;
+                text-decoration: none;
+                text-align: left;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                writing-mode: vertical-rl;
+                writing-mode: tb-rl;
+                transform: rotate(180deg);
+                color: #000;
+
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+            }
+        }
+    }
+
+    @at-root #{&}__row-data {
+        border-top: 1px solid #fff;
+
+        > th {
+            width: $row-data-header-width;
+            text-align: right;
+            border-left: 1px solid #f0f0f0;
+
+            > a {
+                display: block;
+                padding: 0 10px;
+                color: #000;
+                text-decoration: none;
+                font-weight: 400;
+                line-height: 1.15;
+
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+            }
+        }
+
+        > td {
+            width: $data-cell-width;
+            padding: 0 !important;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            border-left: 1px solid #f0f0f0;
+
+            > a {
+                display: block;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    // Spacer row between row categories
+    @at-root #{&}__row-spacer {
+        margin: 0;
+        height: $row-category-cell-height;
+        border-top: 1px solid #f0f0f0;
+        vertical-align: top;
+
+        > td {
+            padding: 0 !important;
+
+            > div {
+                height: $row-category-cell-height;
+            }
+        }
+
+        // Actuator to expand/collapse a many-subcategory category
+        button {
+            display: block;
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            padding: 0;
+            height: 12px;
+            width: 32px;
+            background-color: $btn-info-bg;
+            border: none;
+            border-bottom-right-radius: 5px;
+            border-bottom-left-radius: 5px;
+            font-size: 0; // prevent extra padding in button
+
+            svg {
+                width: 16px;
+                height: 10px;
+                fill: white;
+            }
+        }
+    }
+
+    // Rows showing category
+    @at-root #{&}__row-category {
+        > th {
+            vertical-align: bottom;
+            white-space: nowrap;
+
+            > div {
+                padding-left: 10px;
+                padding-right: 10px;
+                border-top-left-radius: 14px;
+                height: $row-category-cell-height;
+
+                & > a {
+                    flex: 0 1 auto;
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .matrix__category-expander {
+            margin-left: -9px;
+            margin-right: 5px;
+            border: none;
+            background-color: transparent;
+
+            svg {
+                width: 16px;
+                height: 10px;
+            }
+        }
+
+        > td {
+            padding: 0 !important;
+            border-left: 1px solid #f0f0f0;
+
+            &:last-child > div, &:last-child > a {
+                border-top-right-radius: 14px;
+            }
+
+            > div, > a {
+                display: table-cell;
+                width: $data-cell-width;
+                height: $row-category-cell-height;
+                text-align: center;
+                vertical-align: middle;
+                font-weight: normal;
+                font-size: 0.9rem;
+                color: #fff;
+                text-decoration: none;
+            }
+        }
+
+        // Spacer for category rows without expander buttons
+        &-spacer {
+            width: 22px;
+        }
+    }
+
+    @at-root #{&}__label {
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #202020;
+
+        &--horz {
+            position: relative;
+            padding-left: 20px;
+            z-index: 0;
+
+            > span {
+                position: relative;
+                z-index: 2;
+            }
+
+            &.horz-scroll .svg-icon-large-arrow {
+                animation-name: arrow-pulse;
+                animation-duration: 2s;
+                animation-iteration-count: infinite;
+            }
+
+            .svg-icon-large-arrow {
+                margin-left: 5px;
+            }
+        }
+
+        &--vert {
+            flex: 0 0 20px;
+            width: 20px;
+            position: relative;
+
+            > div {
+                position: absolute;
+                transform-origin: top left;
+                transform: rotate(-90deg) translate(-100%);
+                white-space: nowrap;
+
+                .svg-icon-large-arrow {
+                    margin-right: 5px;
+                    transform: rotate(180deg);
+                }
+            }
+        }
+
+        .svg-icon-large-arrow {
+            position: relative;
+            display: inline-block;
+            width: 29px;
+            height: 10px;
+            fill: #202020;
+            z-index: 2;
+        }
+    }
+
+    @at-root #{&}__scroll-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 20px;
+        right: 100%;
+        background-color: #f0f0f0;
+        z-index: 1;
+    }
+}
+
+
+@keyframes arrow-pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 
 .matrix-wrapper {
     display: flex;
     padding-left: 0;
-    overflow: scroll;
-}
-
-.matrix-header {
-    margin-bottom: 20px;
-    padding-right: 0;
+    overflow: auto;
 }
 
 .matrix-group-heading {
@@ -25,89 +354,6 @@ $rotated-th-angle: 30deg;
         transform-origin: right bottom;
         right: 2px;
         font-weight: bold;
-    }
-}
-
-.matrix__facet--horizontal {
-    h1 {
-        @include facet-title;
-    }
-}
-
-
-th.rotate30 {
-    height: $rotated-th-height;
-    width: $rotated-th-width;
-    min-width: $rotated-th-width;
-    max-width: $rotated-th-width;
-    position: relative;
-    vertical-align: bottom;
-    padding: 0 !important;
-    border: none !important;
-    > div {
-        position: relative;
-        z-index: 1;
-        top: 0;
-        left: ($rotated-th-height * tan($rotated-th-angle) / 2);
-        height: 100%;
-        -webkit-transform: skew(-$rotated-th-angle, 0deg);
-        transform: skew(-$rotated-th-angle, 0deg);
-        background-color: #ddd;
-        border-left: solid 1px #fff;
-        border-right: solid 1px #fff;
-        > a {
-            -webkit-transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
-            transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
-            position: absolute;
-            bottom: 59px;
-            left: -57px;
-            display: inline-block;
-            width: ($rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle));
-            text-align: left;
-            line-height: 1.2;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-    }
-}
-
-.rotate90 {
-    vertical-align: top;
-    > div {
-        position: relative;
-        > span {
-            position: absolute;
-            -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
-            -webkit-transform-origin: left bottom 0;
-            transform-origin: left bottom 0;
-            top: 80px;
-            left: 16px;        
-        }
-    }
-}
-
-table.matrix {
-    flex: 0 1 auto;
-    width: auto;
-    border-left: 1px solid #ddd;
-
-    th {
-        text-align: right;
-        padding: 0 .5em;
-        a {
-        	color: black;
-        }
-    }
-    td {
-        vertical-align: middle;
-        text-align: center;
-        padding: 0 !important;
-        border: solid 1px #f9f9f9;
-    }
-    tfoot {
-        background: transparent;
     }
 }
 
@@ -144,29 +390,29 @@ table.matrix th.group-all-groups-cell {
 }
 
 .matrix-general-search {
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 
-.matrix-header {
-    .col-sm-11 {
-        .matrix-title {
-            display: flex;
-            align-items: flex-end;
-            border-bottom: 1px solid #ccc;
-            h1 {
-                flex: 0 1 30%;
-                border-bottom: 0;
-            }
-            .matrix-tag {
-                flex: 0 1 70%;
-                text-align: right;
-            }
-        }
+.matrix__header {
+    display: flex;
+    align-items: flex-end;
+    border-bottom: 1px solid #ccc;
+    h1 {
+        margin-top: 0;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        font-size: 1.5rem;
+        flex: 0 1 30%;
+        border-bottom: 0;
+    }
+    .matrix-tag {
+        flex: 0 1 70%;
+        text-align: right;
     }
 }
 
 .matrix-tag {
-    display: inline-block;
     float: right;
     img {
         height: 22px;

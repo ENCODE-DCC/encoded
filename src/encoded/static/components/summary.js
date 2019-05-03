@@ -4,19 +4,10 @@ import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import { svgIcon } from '../libs/svg-icons';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
-import { FacetList } from './search';
+import { FacetList, ViewControls, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
-
-
-// Map view icons to svg icons
-const view2svg = {
-    'list-alt': 'search',
-    table: 'table',
-    th: 'matrix',
-};
 
 
 // Render the title pane.
@@ -37,19 +28,9 @@ const SummaryTitle = (props) => {
         <div className="summary-header__title_control">
             <div className="summary-header__title">
                 <h1>{context.title}</h1>
-                {context.views ?
-                    <div className="btn-attached">
-                        {context.views.map((view, i) =>
-                            <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
-                        )}
-                    </div>
-                : null}
+                <ViewControls views={context.views} />
             </div>
-            {clearButton ?
-                <div className="clear-filters-control--summary">
-                    <a href={context.clear_filters}>Clear filters <i className="icon icon-times-circle" /></a>
-                </div>
-            : null}
+            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
         </div>
     );
 };
