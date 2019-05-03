@@ -3092,6 +3092,36 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
                'missing genetic modification characterization' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_tagging_biosample_characterization(
+        testapp,
+        construct_genetic_modification,
+        biosample_characterization,
+        base_experiment,
+        recombinant_target,
+        replicate_1_1,
+        library_1,
+        biosample_1,
+        donor_1,
+        k562):
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']],
+                        'biosample_ontology': k562['uuid'],
+                        'donor': donor_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(base_experiment['@id'],
+                       {'assay_term_name': 'ChIP-seq',
+                        'target': recombinant_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing biosample characterization'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(biosample_characterization['@id'],
+                       {'characterizes': biosample_1['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing biosample characterization'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_missing_unfiltered_bams(testapp,
                                                   base_experiment,
                                                   replicate_1_1,
