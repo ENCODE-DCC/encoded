@@ -1072,10 +1072,10 @@ export class FacetList extends React.Component {
             // Convert search query string to a query object for easy parsing.
             const terms = queryString.parse(searchQuery);
 
-            // See if there are terms in the query string aside from `searchTerm`. We have a Clear
+            // See if there are terms in the query string aside from `searchTerm` or `advancedQuery`. We have a Clear
             // Filters button if we do.
-            let nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm');
-            clearButton = nonPersistentTerms && terms.searchTerm;
+            let nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm' && term !== 'advancedQuery');
+            clearButton = nonPersistentTerms && (terms.searchTerm || terms.advancedQuery);
 
             // If no Clear Filters button yet, do the same check with `type` in the query string.
             if (!clearButton) {
