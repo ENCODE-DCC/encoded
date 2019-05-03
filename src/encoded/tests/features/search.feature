@@ -80,6 +80,7 @@ Feature: Search
         And I wait for the content to load
         When I fill in "searchOrgan" with "zzz"
         Then I should see 0 elements with the css selector "div.term-list.searchOrgan > li"
+<<<<<<< HEAD
 
     Scenario: Search for different ChIP-seq
         When I click the link to "?type=Experiment"
@@ -102,3 +103,5 @@ Feature: Search
         When I fill in "searchTerm" with "@type:Experiment  date_created:[2015-01-01 TO 2018-12-31]"
         Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
 
+=======
+>>>>>>> added proper bdd test

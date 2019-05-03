@@ -11,5 +11,6 @@ scenarios(
     'biosamples.feature',
     'experiments.feature',
     'search.feature',
+    'advanced_query_search.feature',
     'targets.feature',
 )
