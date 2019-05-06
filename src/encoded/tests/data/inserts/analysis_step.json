@@ -305,5 +305,23 @@
         "step_label": "dbgap-sra-to-fastq-step",
         "title": "dbGaP SRA to fastq step",
         "uuid": "a66d510a-acef-4bb2-b51f-3369f5a537ca"
+    },
+    {
+        "analysis_step_types": [
+            "long-read sequencing error correction"
+        ],
+        "date_created": "2018-10-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "transcriptome reference",
+            "genome reference"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "splice junctions"
+        ],
+        "status": "released",
+        "step_label": "long-read-rna-seq-error-correction-step",
+        "title": "Long read RNA-seq error correction step",
+        "uuid": "1911f233-b415-4ae3-8ea2-763959257ff8"
     }
 ]
