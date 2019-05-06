@@ -9,6 +9,7 @@
 * added "gene alignments" to *output_type* enum.
 * added idx "file_format" to support kallisto indexes.
 * added *txt* to *file_format* enum, added *restriction enzyme site locations* to *output_type* enum, and created *restriction_enzymes* property to specify the restriction enzymes for which a *restriction enzyme site locations* file is applicable
+* added *M21*, *V29*, and *V30* to the list of enums for the *genome_annotation* property.
 
 ### Schema version 13
 
