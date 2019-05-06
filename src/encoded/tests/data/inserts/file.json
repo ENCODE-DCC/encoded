@@ -2387,5 +2387,59 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
+    },
+    {
+        "accession": "ENCFF130XXF",
+        "aliases": [
+            "ali-mortazavi:test-bigWig1"
+        ],
+        "assembly": "mm10",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 13864747,
+        "genome_annotation": "M21",
+        "lab": "ali-mortazavi",
+        "md5sum": "b634532c2ff4c1df48d8865ea1296d0b",
+        "output_type": "plus strand signal of all reads",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "c9713f40-440a-4f68-a2b0-bc80853ac1c5"
+    },
+    {
+        "accession": "ENCFF854KQX",
+        "aliases": [
+            "ali-mortazavi:test-bigWig2"
+        ],
+        "assembly": "GRCh38",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 79562357,
+        "genome_annotation": "V29",
+        "lab": "ali-mortazavi",
+        "md5sum": "61b27322c4bc063c719911ee075c826a",
+        "output_type": "minus strand signal of all reads",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "086890fb-ddb8-4257-bd57-53d2ce38dce6"
+    },
+    {
+        "accession": "ENCFF119LNR",
+        "aliases": [
+            "ali-mortazavi:test-bigWig3"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR002ACT",
+        "file_format": "bigWig",
+        "file_size": 81125075,
+        "genome_annotation": "V30",
+        "lab": "ali-mortazavi",
+        "md5sum": "8cb050056d4ca87ad86123bdae84db8e",
+        "output_type": "plus strand signal of all reads",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "f3f5b773-2a38-4623-b426-485bf3adea4e"
     }
 ]
