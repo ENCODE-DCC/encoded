@@ -258,12 +258,6 @@ class Item(snovault.Item):
 
     def _update_status(self, new_status, current_status, current_properties, schema, request, item_id, update, validate=True):
         new_properties = current_properties.copy()
-        # Don't update if update parameter not true.
-        if not update:
-            return
-        # Don't actually patch if the same.
-        if new_status == current_status:
-            return
         new_properties['status'] = new_status
         # Some release specific functionality.
         if new_status == 'released':
@@ -272,6 +266,12 @@ class Item(snovault.Item):
                 new_properties['date_released'] = str(datetime.now().date())
         if validate:
             self._validate_set_status_patch(request, schema, new_properties, current_properties)
+        # Don't update if update parameter not true.
+        if not update:
+            return
+        # Don't actually patch if the same.
+        if new_status == current_status:
+            return
         request.registry.notify(BeforeModified(self, request))
         self.update(new_properties)
         request.registry.notify(AfterModified(self, request))
