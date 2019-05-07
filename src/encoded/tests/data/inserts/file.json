@@ -2569,19 +2569,17 @@
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f053"
     },
         "dataset": "ENCSR000AJK",
-        "no_file_available": false,
         "status": "released",
         "award": "U54HG006998",
         "assembly": "GRCh38",
         "md5sum": "c540631e31df3993044cb78128d65de4",
-        "submitted_file_name": "files/1200.homer.filtered.bigBed",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
         "output_type": "peaks",
         "file_format": "bigBed",
-        "lab": "/labs/ross-hardison/",
+        "lab": "ali-mortazavi",
         "file_format_type": "bed3+",
         "accession": "ENCFF880XNW",
         "uuid": "7aeeef9d-84b3-4977-b158-65b674e3ef46",
-        "file_size": 1363224,
-        "alternate_accessions": []
+        "file_size": 1363224
     }
 ]
