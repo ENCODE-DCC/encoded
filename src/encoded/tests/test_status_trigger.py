@@ -641,3 +641,23 @@ def test_set_status_skip_acl_on_not_available_file(testapp, content, mocker, fil
     assert File.set_public_s3.call_count == 0
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'released'
+
+
+def test_set_status_validation_error_on_content_error_details(testapp, file):
+    testapp.patch_json(file['@id'], {
+        'status': 'content error',
+        'content_error_detail': 'Fastq file contains bad sequence'
+    })
+    r = testapp.get(file['@id'] + '@@raw')
+    assert 'content_error_detail' in r.json
+    testapp.patch_json(file['@id'] + '@@set_status?update=true', {'status': 'uploading'}, status=422)
+
+
+def test_set_status_no_validation_error_on_content_error_details(testapp, file):
+    testapp.patch_json(file['@id'], {
+        'status': 'content error',
+        'content_error_detail': 'Fastq file contains bad sequence'
+    })
+    r = testapp.get(file['@id'] + '@@raw')
+    assert 'content_error_detail' in r.json
+    testapp.patch_json(file['@id'] + '@@set_status?update=true&validate=false', {'status': 'uploading'}, status=200)
