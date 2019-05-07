@@ -1,5 +1,18 @@
 ## Changelog for target.json
 
+### Schema version 11
+
+* *investigated_as* enum list was modified. The following terms were removed:
+  - "nucleotide modification"
+  - "other post-translational modification"
+
+  and the following terms were added:
+  - "Co-factor"
+  - "Cohesin"
+  - "DNA replication"
+  - "DNA repair"
+  - "RNA polymerase complex".
+
 ### Schema version 10
 
 * Property modifications depends on genes and the default for modifications is removed. In other words, only gene targets can have modifications.
