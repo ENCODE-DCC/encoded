@@ -39,11 +39,11 @@ Feature: Search
 
         When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq"
         And I wait for the content to load
-        Then I should see at least 18 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 7 elements with the css selector "ul.nav.result-table > li"
 
         When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq&assay_title=DNAme+array"
         And I wait for the content to load
-        Then I should see at least 22 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 11 elements with the css selector "ul.nav.result-table > li"
 
 
     Scenario: Search BoxI
@@ -80,3 +80,20 @@ Feature: Search
         And I wait for the content to load
         When I fill in "searchOrgan" with "zzz"
         Then I should see 0 elements with the css selector "div.term-list.searchOrgan > li"
+
+    Scenario: Search for different ChIP-seq
+        When I click the link to "?type=Experiment"
+        And I wait for the content to load
+        When I click the link to "?type=Experiment&assay_title=ChIP-seq"
+        And I wait for the content to load
+        Then I should see "Showing 8 of 8 results"
+
+        When I click the link to "?type=Experiment"
+        And I click the link to "?type=Experiment&assay_title=Histone+ChIP-seq"
+        And I wait for the content to load
+        Then I should see "Showing 8 of 8 results"
+
+        When I click the link to "?type=Experiment"
+        And I click the link to "?type=Experiment&assay_title=Control+ChIP-seq"
+        And I wait for the content to load
+        Then I should see "Showing 3 of 3 results"

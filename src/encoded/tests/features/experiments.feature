@@ -16,4 +16,4 @@ Feature: Experiments
         And I wait for the content to load
         When I click the link to "/search/?type=Experiment&assay_title=ChIP-seq"
         Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 19 of 19 results"
+        And I should see "Showing 8 of 8 results"
