@@ -10,7 +10,6 @@ OBO_OWL = Namespace("http://www.geneontology.org/formats/oboInOwl#")
 EFO = Namespace("http://www.ebi.ac.uk/efo/")
 OBO = Namespace("http://purl.obolibrary.org/obo/")
 
-EFO_Synonym = EFO["alternative_term"]
 OBO_Synonym = OBO["IAO_0000118"]
 Synonym = OBO_OWL["hasExactSynonym"]
 Ontology = OWLNS["Ontology"]
@@ -251,7 +250,7 @@ slim_shims = {
 }
 
 preferred_name = {
-    "OBI:0000626": "WGS",
+    "OBI:0002117": "WGS",
     "OBI:0001247": "genotyping HTS",
     "OBI:0001332": "DNAme array",
     "OBI:0001335": "microRNA counts",
@@ -359,7 +358,7 @@ ntr_assays = {
         "name": "single cell isolation followed by RNA-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "single cell RNA-seq",
+        "preferred_name": "scRNA-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -372,7 +371,7 @@ ntr_assays = {
         "name": "genetic modification followed by DNase-seq",
         "objectives": [],
         "organs": [],
-        "preferred_name": "genetic modification DNase-seq",
+        "preferred_name": "GM DNase-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -559,6 +558,32 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0000519": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "pooled clone sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "pooled clone sequencing",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000520": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "CRISPR screen",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CRISPR screen",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 
@@ -724,7 +749,7 @@ class Inspector(object):
             for o in self.rdfGraph.objects(anEntity, Synonym):
                 temp += [o]
             # EFO synonyms
-            for o in self.rdfGraph.objects(anEntity, EFO_Synonym):
+            for o in self.rdfGraph.objects(anEntity, Synonym):
                 temp += [o]
             # OBI synonyms
             for o in self.rdfGraph.objects(anEntity, OBO_Synonym):

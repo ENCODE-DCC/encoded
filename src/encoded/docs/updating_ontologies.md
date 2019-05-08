@@ -22,7 +22,7 @@ How to update the ontology versions
 
 2. Run generate-ontology, an example is: 
 
-	$ bin/generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=https://github.com/EBISPOT/efo/raw/master/efo_inferred_all.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl
+	$ bin/generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl
 
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 
@@ -38,11 +38,11 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 83
-    ontology.json file: ontology-2019-03-19.json
+    Site release version: 85
+    ontology.json file: ontology-2019-04-23.json
     [UBERON release date]: 2018-10-14
     [OBI release date]: 2018-08-27
-    [EFO release date]: 2019-03-18
+    [EFO release date]: 2019-04-18
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/

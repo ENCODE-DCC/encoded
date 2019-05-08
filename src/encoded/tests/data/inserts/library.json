@@ -760,5 +760,31 @@
         "uuid": "bbadf7f4-41ca-4410-b6c2-3003f98b41fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
+    },
+    {
+        "_test": "CRISPR screen library",
+        "accession": "ENCLB009ACL",
+        "strand_specificity": false,
+        "biosample": "ENCBS888RUL",
+        "lab": "gregory-crawford",
+        "status": "released",
+        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "nucleic_acid_term_name": "DNA",
+        "uuid": "eb4b1710-70f0-11e9-a923-1681be663d3e",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG007010"
+    },
+    {
+        "_test": "pooled clone sequencing library",
+        "accession": "ENCLB001ACL",
+        "strand_specificity": false,
+        "biosample": "ENCBS888RUL",
+        "lab": "gregory-crawford",
+        "status": "released",
+        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "nucleic_acid_term_name": "DNA",
+        "uuid": "eb4b19ea-70f0-11e9-a923-1681be663d3e",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG007010"
     }
 ]
