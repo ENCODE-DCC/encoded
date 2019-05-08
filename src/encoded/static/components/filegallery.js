@@ -1138,6 +1138,8 @@ function qcAbbr(qc) {
         TrimmingQualityMetric: 'TG',
         MicroRnaMappingQualityMetric: 'MM',
         MicroRnaQuantificationQualityMetric: 'MQ',
+        LongReadRnaMappingQualityMetric: 'LM',
+        LongReadRnaQuantificationQualityMetric: 'LQ',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];
