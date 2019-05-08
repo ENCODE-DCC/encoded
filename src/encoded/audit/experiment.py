@@ -49,7 +49,8 @@ seq_assays = [
     'RIP-seq',
     'PLAC-seq',
     'MPRA',
-    'microRNA-seq'
+    'microRNA-seq',
+    'long read RNA-seq',
 ]
 
 
@@ -500,7 +501,8 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                             'single cell isolation followed by RNA-seq',
                                             'whole-genome shotgun bisulfite sequencing',
                                             'genetic modification followed by DNase-seq',
-                                            'microRNA-seq']:
+                                            'microRNA-seq',
+                                            'long read RNA-seq', 'icSHAPE']:
         return
     if not value.get('original_files'):
         return
@@ -544,7 +546,8 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq',
-                                    'microRNA-seq']:
+                                    'microRNA-seq',
+                                    'icSHAPE', 'long read RNA-seq']:
         yield from check_experiment_rna_seq_standards(
             value,
             files_structure,
@@ -768,7 +771,8 @@ def check_experiment_rna_seq_standards(value,
          'RNA-seq of long RNAs (single-end, unstranded)',
          'Small RNA-seq single-end pipeline',
          'RAMPAGE (paired-end, stranded)',
-         'microRNA-seq pipeline'])
+         'microRNA-seq pipeline',
+         'Long read RNA-seq pipeline'])
     if pipeline_title is False:
         return
 
@@ -777,7 +781,8 @@ def check_experiment_rna_seq_standards(value,
         'RNA-seq of long RNAs (single-end, unstranded)': ' /data-standards/rna-seq/long-rnas/ ',
         'Small RNA-seq single-end pipeline': ' /data-standards/rna-seq/small-rnas/ ',
         'RAMPAGE (paired-end, stranded)': ' /data-standards/rampage/  ',
-        'microRNA-seq pipeline': ' /microrna/microrna-seq/ '
+        'microRNA-seq pipeline': ' /microrna/microrna-seq/ ',
+        'Long read RNA-seq pipeline': ' /data-standards/long-read-rna-pipeline/ '
     }
 
     for f in fastq_files:
@@ -868,6 +873,22 @@ def check_experiment_rna_seq_standards(value,
             lower_limit_spearman=0.8,
             upper_limit_expressed_mirnas=300,
             lower_limit_expressed_mirnas=200,
+        )
+    elif pipeline_title == 'Long read RNA-seq pipeline':
+        yield from check_experiment_long_read_rna_standards(
+            value,
+            alignment_files,
+            gene_quantifications,
+            desired_assembly,
+            desired_annotation,
+            upper_limit_flnc=600000,
+            lower_limit_flnc=400000,
+            upper_limit_mapping_rate=0.9,
+            lower_limit_mapping_rate=0.6,
+            upper_limit_spearman=0.8,
+            lower_limit_spearman=0.6,
+            upper_limit_genes_detected=8000,
+            lower_limit_genes_detected=4000,
         )
     return
 
@@ -1223,6 +1244,78 @@ def check_experiment_micro_rna_standards(
         audit_name='microRNAs expressed',
         upper_limit=upper_limit_expressed_mirnas,
         lower_limit=lower_limit_expressed_mirnas,
+    )
+    return
+
+
+def check_experiment_long_read_rna_standards(
+    experiment,
+    alignment_files,
+    gene_quantifications,
+    desired_assembly,
+    desired_annotation,
+    upper_limit_flnc,
+    lower_limit_flnc,
+    upper_limit_mapping_rate,
+    lower_limit_mapping_rate,
+    upper_limit_spearman,
+    lower_limit_spearman,
+    upper_limit_genes_detected,
+    lower_limit_genes_detected,
+):
+    # Gather metrics
+    quantification_metrics = get_metrics(
+        gene_quantifications,
+        'LongReadRnaQuantificationQualityMetric',
+        desired_assembly,
+        desired_annotation,
+    )
+    # Desired annotation does not pertain to alignment files
+    alignment_metrics = get_metrics(
+        alignment_files,
+        'LongReadRnaMappingQualityMetric',
+        desired_assembly,
+    )
+    correlation_metrics = get_metrics(
+        gene_quantifications,
+        'CorrelationQualityMetric',
+        desired_assembly,
+        desired_annotation,
+    )
+    # Audit Spearman correlations
+    yield from check_replicate_metric_dual_threshold(
+        correlation_metrics,
+        metric_name='Spearman correlation',
+        audit_name='replicate concordance',
+        upper_limit=upper_limit_spearman,
+        lower_limit=lower_limit_spearman,
+    )
+    # Audit flnc read counts
+    yield from check_replicate_metric_dual_threshold(
+        alignment_metrics,
+        metric_name='full_length_non_chimeric_read_count',
+        audit_name='sequencing depth',
+        upper_limit=upper_limit_flnc,
+        lower_limit=lower_limit_flnc,
+        metric_description='full-length non-chimeric (FLNC) read count',
+    )
+    # Audit mapping rate
+    yield from check_replicate_metric_dual_threshold(
+        alignment_metrics,
+        metric_name='mapping_rate',
+        audit_name='mapping rate',
+        upper_limit=upper_limit_mapping_rate,
+        lower_limit=lower_limit_mapping_rate,
+        metric_description='mapping rate',
+    )
+    # Audit gene quantifications
+    yield from check_replicate_metric_dual_threshold(
+        quantification_metrics,
+        metric_name='genes_detected',
+        audit_name='genes detected',
+        upper_limit=upper_limit_genes_detected,
+        lower_limit=lower_limit_genes_detected,
+        metric_description='GENCODE genes detected',
     )
     return
 
