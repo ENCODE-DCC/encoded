@@ -61,6 +61,7 @@
                      "genome segmentation",
                      "IDR",
                      "interaction calling",
+                     "long-read sequencing error correction",
                      "open chromatin region identification",
                      "partition concordance",
                      "peak calling",
