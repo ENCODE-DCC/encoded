@@ -1136,6 +1136,8 @@ function qcAbbr(qc) {
         SamtoolsStatsQualityMetric: 'SS',
         StarQualityMetric: 'SR',
         TrimmingQualityMetric: 'TG',
+        MicroRnaMappingQualityMetric: 'MM',
+        MicroRnaQuantificationQualityMetric: 'MQ',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];

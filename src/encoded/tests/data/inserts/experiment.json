@@ -813,5 +813,19 @@
         "accession": "ENCSR751STU",
         "uuid": "e828ec77-8f74-438f-8bf7-8535ee34819e",
         "experiment_classification": ["functional characterization assay"]
+    },
+    {
+        "_test": "microRNA test",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "award": "U54HG007010",
+        "assay_term_name": "microRNA-seq",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "date_released": "2015-08-31",
+        "accession": "ENCSR123MRN",
+        "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e",
+        "experiment_classification": ["functional characterization assay"]
     }
 ]

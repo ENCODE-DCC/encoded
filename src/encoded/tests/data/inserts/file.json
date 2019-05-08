@@ -63,6 +63,9 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "9558830f-154f-449f-814b-fd3435417edf"
+        ],
         "file_format": "bigWig",
         "lab":"j-michael-cherry",
         "md5sum": "94be74b6e11515393507f4ebfa66d78d",
@@ -2389,6 +2392,7 @@
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
     },
     {
+<<<<<<< HEAD
         "accession": "ENCFF130XXF",
         "aliases": [
             "ali-mortazavi:test-bigWig1"
@@ -2441,5 +2445,128 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "f3f5b773-2a38-4623-b426-485bf3adea4e"
+    },
+    {
+        "accession": "ENCFF001MRN",
+        "file_size": 20,
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "file_format": "fastq",
+        "lab":"j-michael-cherry",
+        "md5sum": "12ce74b6e11515393507f4ebfa66d78d",
+        "output_type": "reads",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "replicate": "1d217e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/Rep1.fastq",
+        "uuid": "1234830f-154f-449f-814b-fd3435417edf",
+        "run_type": "single-ended",
+        "read_length": 76
+    },
+    {
+        "accession": "ENCFF002MRN",
+        "file_size": 20,
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "file_format": "fastq",
+        "lab":"j-michael-cherry",
+        "md5sum": "93be74b6e11123493507f4ebfa66d78d",
+        "output_type": "reads",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "replicate": "1d217e79-556e-4125-8102-f1234471807e",
+        "status": "released",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/Rep2.fastq",
+        "uuid": "5678830f-154f-449f-814b-fd3435417edf",
+        "run_type": "single-ended",
+        "read_length": 76
+    },
+    {
+        "accession": "ENCFF003MRN",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "1234830f-154f-449f-814b-fd3435417edf"
+        ],
+        "file_format": "bam",
+        "genome_annotation": "V24",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "94be74b6e11515390000f4ebfa66d78d",
+        "output_type": "alignments",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "released",
+        "step_run": "56c6a019-a247-495c-8179-1639f4836ef8",
+        "file_size": 20,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/rep1_mc_bammer.bam",
+        "uuid": "12abfcc1-9f85-415a-8eb5-e0f12346f053"
+    },
+    {
+        "accession": "ENCFF004MRN",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "5678830f-154f-449f-814b-fd3435417edf"
+        ],
+        "file_format": "bam",
+        "genome_annotation": "V24",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "94be74b6e11515391212f4ebfa66d78d",
+        "output_type": "alignments",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "released",
+        "file_size": 20,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/rep2_mc_bammer.bam",
+        "uuid": "95befcc1-9f85-415a-8eb5-e0f12346f053"
+    },
+    {
+        "accession": "ENCFF005MRN",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "12abfcc1-9f85-415a-8eb5-e0f12346f053"
+        ],
+        "file_format": "tsv",
+        "genome_annotation": "V24",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "94be74b6e11515392222f4ebfa66d78d",
+        "output_type": "transcript quantifications",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "released",
+        "file_size": 20,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/rep1_abc.tsv",
+        "uuid": "34cdfcc1-9f85-415a-8eb5-e0f12346f053"
+    },
+    {
+        "accession": "ENCFF006MRN",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "95befcc1-9f85-415a-8eb5-e0f12346f053"
+        ],
+        "file_format": "tsv",
+        "genome_annotation": "V24",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "94be74b6e11515391111f4ebfa66d78d",
+        "output_type": "transcript quantifications",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "released",
+        "file_size": 20,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/rep2_efg.tsv",
+        "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f053"
     }
 ]
