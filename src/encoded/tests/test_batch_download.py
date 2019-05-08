@@ -95,7 +95,7 @@ def test_batch_download_files_txt(testapp, workbook):
 
     metadata = (lines[0].decode('UTF-8')).split('/')
     assert metadata[-1] == 'metadata.tsv'
-    assert metadata[-2] == 'type=Experiment'
+    assert metadata[-2] == 'type%3DExperiment'
     assert metadata[-3] == 'metadata'
 
     assert len(lines[1:]) > 0
@@ -106,6 +106,12 @@ def test_batch_download_files_txt(testapp, workbook):
         assert url_frag[5] == '@@download'
         assert url_frag[4] == (url_frag[6].split('.'))[0]
 
+def test_batch_download_parse_file_plus_correctly(testapp, workbook):
+    r = testapp.get(
+        '/batch_download/type%3DExperiment%26files.file_type%3DbigBed%2Bbed3%252B%26format%3Djson'
+    )
+    assert r.body.decode('utf-8') == 'http://localhost/metadata/type%3DExperiment%26files.file_type%3DbigBed%2Bbed3%252B%26format%3Djson/metadata.tsv\nhttp://localhost/files/ENCFF880XNW/@@download/ENCFF880XNW.bigBed'
+    
 
 def test_batch_download_restricted_files_present(testapp, workbook):
     results = testapp.get('/search/?limit=all&field=files.href&field=files.file_type&field=files&type=Experiment')
