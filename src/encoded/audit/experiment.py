@@ -3214,14 +3214,29 @@ def audit_RNA_library_RIN(value, system, excluded_types):
     An RNA library should have a RIN specified.
     '''
     RNAs = ['RNA', 'polyadenylated mRNA', 'miRNA']
-    for rep in value['replicates']:
-        if (rep['status'] not in excluded_types and
-           'library' in rep and rep['library']['status'] not in excluded_types and
-           rep['library']['nucleic_acid_term_name'] in RNAs and
-           'rna_integrity_number' not in rep['library']):
-            detail = ('Metadata of RNA library {} lacks specification of '
-                      'the rna integrity number.').format(rep['library']['@id'])
-            yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
+    assay_IDs = ['OBI:0002093', # 5' RLM RACE
+                 'OBI:0001674', # CAGE
+                 'NTR:0003814', # CRISPR RNA-seq
+                 'NTR:0004619', # CRISPRi RNA-seq
+                 'NTR:0000445', # long read RNA-seq
+                 'OBI:0002045', # PAS-seq
+                 'OBI:0001864', # RAMPAGE
+                 'OBI:0001463', # RNA microarray
+                 'OBI:0001850', # RNA-PET
+                 'OBI:0001271', # RNA-seq (poly(A)-, poly(A)+, small, and total)
+                 'NTR:0003082', # scRNA-seq
+                 'NTR:0000762', # shRNA RNA-seq
+                 'NTR:0000763'  # siRNA RNA-seq
+                ]
+    if value['assay_term_id'] in assay_IDs:
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and
+               'library' in rep and rep['library']['status'] not in excluded_types and
+               rep['library']['nucleic_acid_term_name'] in RNAs and
+               'rna_integrity_number' not in rep['library']):
+                detail = ('Metadata of RNA library {} lacks specification of '
+                          'the rna integrity number.').format(rep['library']['@id'])
+                yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
 
 
 # if experiment target is recombinant protein, the biosamples should have at
