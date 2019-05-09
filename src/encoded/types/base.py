@@ -21,6 +21,7 @@ from pyramid.view import (
 from pyramid.settings import asbool
 import snovault
 from snovault.validation import ValidationFailure
+from snovault.schema_utils import validate_request
 from snovault.auditor import traversed_path_ids
 from snovault import (
     AfterModified,
@@ -249,21 +250,30 @@ class Item(snovault.Item):
                 return False
         return True
 
-    def _update_status(self, new_status, current_status, properties, schema, request, item_id, update):
+    @staticmethod
+    def _validate_set_status_patch(request, schema, new_properties, current_properties):
+        validate_request(schema, request, new_properties, current_properties)
+        if any(request.errors):
+            raise ValidationFailure(request.errors)
+
+    def _update_status(self, new_status, current_status, current_properties, schema, request, item_id, update, validate=True):
+        new_properties = current_properties.copy()
+        new_properties['status'] = new_status
+        # Some release specific functionality.
+        if new_status == 'released':
+            # This won't be reassigned if you rerelease something.
+            if 'date_released' in schema['properties'] and 'date_released' not in new_properties:
+                new_properties['date_released'] = str(datetime.now().date())
+        if validate:
+            self._validate_set_status_patch(request, schema, new_properties, current_properties)
         # Don't update if update parameter not true.
         if not update:
             return
         # Don't actually patch if the same.
         if new_status == current_status:
             return
-        properties['status'] = new_status
-        # Some release specific functionality.
-        if new_status == 'released':
-            # This won't be reassigned if you rerelease something.
-            if 'date_released' in schema['properties'] and 'date_released' not in properties:
-                properties['date_released'] = str(datetime.now().date())
         request.registry.notify(BeforeModified(self, request))
-        self.update(properties)
+        self.update(new_properties)
         request.registry.notify(AfterModified(self, request))
         request._set_status_changed_paths.add((item_id, current_status, new_status))
 
@@ -356,7 +366,8 @@ class Item(snovault.Item):
         force_audit = asbool(request.params.get('force_audit'))
         self._block_on_audits(item_id, force_audit, request, parent, new_status)
         update = asbool(request.params.get('update'))
-        self._update_status(new_status, current_status, properties, schema, request, item_id, update)
+        validate = asbool(request.params.get('validate', True))
+        self._update_status(new_status, current_status, properties, schema, request, item_id, update, validate=validate)
         request._set_status_considered_paths.add((item_id, current_status, new_status))
         logging.warn(
             'Considering {} from status {} to status {}'.format(item_id, current_status, new_status)
