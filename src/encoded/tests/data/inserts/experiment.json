@@ -826,6 +826,7 @@
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e",
+        "experiment_classification": ["functional genomics assay"]
     },
     {
         "_test": "CRISPR screen test",
