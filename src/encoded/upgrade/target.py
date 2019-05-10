@@ -198,3 +198,6 @@ def target_10_11(value, system):
         value['investigated_as'].remove('other post-translational modification')
         if not value['investigated_as']:
             value['investigated_as'].append('transcription factor')
+    if 'chromatin remodeller' in value['investigated_as']:
+        value['investigated_as'].remove('chromatin remodeller')
+        value['investigated_as'].append('chromatin remodeler')

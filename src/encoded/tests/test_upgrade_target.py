@@ -283,6 +283,6 @@ def test_target_upgrade_categories(upgrader,
     )
     assert new_target['schema_version'] == '11'
     assert new_target['investigated_as'] == [
-        'chromatin remodeller',
-        'RNA binding protein'
+        'RNA binding protein',
+        'chromatin remodeler',
     ]
