@@ -498,6 +498,64 @@ class ScreenSearch extends React.Component {
 }
 
 
+/**
+ * Render a banner on the home page if a page with the name "/home-banner/" exists and isn't status
+ * deleted. Otherwise render nothing.
+ */
+class HomeBanner extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            /** ENCODE page object containing banner */
+            page: null,
+        };
+    }
+
+    componentDidMount() {
+        return this.context.fetch('/home-banner/', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.resolve(null);
+        }).then((responseJson) => {
+            if (responseJson && responseJson.status !== 'deleted') {
+                this.setState({ page: responseJson });
+                return responseJson;
+            }
+            return null;
+        });
+    }
+
+    render() {
+        if (this.state.page) {
+            const mobileExists = this.state.page.layout.blocks.length > 1;
+            return (
+                <div className="home-banner">
+                    <div className={`home-banner${mobileExists ? '--desktop' : ''}`}>
+                        <div dangerouslySetInnerHTML={{ __html: this.state.page.layout.blocks[0].body }} />
+                    </div>
+                    {mobileExists ?
+                        <div className="home-banner--mobile">
+                            <div dangerouslySetInnerHTML={{ __html: this.state.page.layout.blocks[1].body }} />
+                        </div>
+                    : null}
+                </div>
+            );
+        }
+        return null;
+    }
+}
+
+HomeBanner.contextTypes = {
+    fetch: PropTypes.func,
+};
+
+
 // Main page component to render the home page
 export default class Home extends React.Component {
     constructor(props) {
@@ -558,6 +616,7 @@ export default class Home extends React.Component {
                     <div className="col-xs-12">
                         <Panel>
                             <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
+                            <HomeBanner />
                             <div className="organism-tabs">
                                 <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
                             </div>
