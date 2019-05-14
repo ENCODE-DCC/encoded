@@ -785,8 +785,9 @@ def download(context, request):
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
     proxy = asbool(request.params.get('proxy'))
-    if proxy:
-        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+    accel_redirect_header = request.registry.settings.get('accel_redirect_header')
+    if proxy and accel_redirect_header:
+        return Response(headers={accel_redirect_header: '/_proxy/' + str(location)})
     raise HTTPTemporaryRedirect(location=location)
 
 
