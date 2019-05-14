@@ -142,7 +142,7 @@ def test_indexing_simple(testapp, indexer_testapp):
         res = testapp.get('/search/?type=TestingPostPutPatch')
         uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
         count += 1
-    assert res.json['total'] == 3
+    assert res.json['total'] == 2
 
 
 def test_indexer_vis_state(dummy_request):
