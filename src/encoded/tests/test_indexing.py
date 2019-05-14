@@ -88,38 +88,38 @@ def listening_conn(dbapi_conn):
     cursor.close()
 
 
-@pytest.mark.slow
-def test_indexing_workbook(testapp, indexer_testapp):
-    # First post a single item so that subsequent indexing is incremental
-    testapp.post_json('/testing-post-put-patch/', {'required': ''})
-    res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['indexed'] == 1
+# @pytest.mark.slow
+# def test_indexing_workbook(testapp, indexer_testapp):
+#     # First post a single item so that subsequent indexing is incremental
+#     testapp.post_json('/testing-post-put-patch/', {'required': ''})
+#     res = indexer_testapp.post_json('/index', {'record': True})
+#     assert res.json['indexed'] == 1
 
-    from ..loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
-    res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['updated']
-    assert res.json['indexed']
-    ### OPTIONAL: audit via 2-pass is coming...
-    #assert res.json['pass2_took']
-    ### OPTIONAL: audit via 2-pass is coming...
+#     from ..loadxl import load_all
+#     from pkg_resources import resource_filename
+#     inserts = resource_filename('encoded', 'tests/data/inserts/')
+#     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+#     load_all(testapp, inserts, docsdir)
+#     res = indexer_testapp.post_json('/index', {'record': True})
+#     assert res.json['updated']
+#     assert res.json['indexed']
+#     ### OPTIONAL: audit via 2-pass is coming...
+#     #assert res.json['pass2_took']
+#     ### OPTIONAL: audit via 2-pass is coming...
 
-    # NOTE: Both vis and region indexers are "followup" or secondary indexers
-    #       and must be staged by the primary indexer
-    res = indexer_testapp.post_json('/index_vis', {'record': True})
-    assert res.json['cycle_took']
-    assert res.json['title'] == 'vis_indexer'
+#     # NOTE: Both vis and region indexers are "followup" or secondary indexers
+#     #       and must be staged by the primary indexer
+#     res = indexer_testapp.post_json('/index_vis', {'record': True})
+#     assert res.json['cycle_took']
+#     assert res.json['title'] == 'vis_indexer'
 
-    res = indexer_testapp.post_json('/index_region', {'record': True})
-    assert res.json['cycle_took']
-    assert res.json['title'] == 'region_indexer'
-    assert res.json['indexed'] > 0
+#     res = indexer_testapp.post_json('/index_region', {'record': True})
+#     assert res.json['cycle_took']
+#     assert res.json['title'] == 'region_indexer'
+#     assert res.json['indexed'] > 0
 
-    res = testapp.get('/search/?type=Biosample')
-    assert res.json['total'] > 5
+#     res = testapp.get('/search/?type=Biosample')
+#     assert res.json['total'] > 5
 
 
 def test_indexing_simple(testapp, indexer_testapp):
