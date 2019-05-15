@@ -223,7 +223,12 @@
             "type": "string",
             "permission": "import_items",
             "enum": [
-                "functional characterization"
+                "functional characterization",
+                "computational analysis",
+                "mapping",
+                "data coordination",
+                "data analysis",
+                "affiliate"
             ]
         }
     },
