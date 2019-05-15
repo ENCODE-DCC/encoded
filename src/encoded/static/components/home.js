@@ -59,7 +59,7 @@ class EncodeSearch extends React.Component {
         return (
             <div className="site-search__encode">
                 <div className="site-search__reference">
-                    <a href="/about/contributors/" role="button" className="site-search__reference-element">About ENCODE Project</a>
+                    <a href="/help/project-overview/" role="button" className="site-search__reference-element">About ENCODE Project</a>
                     <a href="/help/getting-started/" role="button" className="site-search__reference-element">Getting Started</a>
                     <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__reference-element">Experiments</a>
                 </div>
@@ -877,7 +877,7 @@ class HomepageChart extends React.Component {
             const Chart = require('chart.js');
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color.
-            const colors = globals.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
+            const colors = globals.projectColors.colorList(facetData.map(term => term.key));
             const data = [];
             const labels = [];
 
@@ -961,7 +961,7 @@ class HomepageChart extends React.Component {
     /* eslint-disable class-methods-use-this */
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        const colors = globals.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = globals.projectColors.colorList(facetData.map(term => term.key));
         const data = [];
         const labels = [];
 
@@ -1075,7 +1075,7 @@ class HomepageChart2 extends React.Component {
         // require.
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
-            const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
+            const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key));
             const data = [];
             const labels = [];
 
@@ -1162,7 +1162,7 @@ class HomepageChart2 extends React.Component {
     /* eslint-disable class-methods-use-this */
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key));
         const data = [];
         const labels = [];
 

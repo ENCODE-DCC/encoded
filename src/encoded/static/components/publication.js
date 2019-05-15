@@ -71,7 +71,7 @@ const PublicationComponent = (props, reactContext) => {
     const crumbsReleased = (context.status === 'released');
     const accessions = context.datasets ? context.datasets.reduce((dataset1, dataset2) => `${dataset1}&accession=${dataset2.accession}`, '') : '';
     const datasetsUrl = context.datasets && context.datasets.length > 0 ?
-        `/search/?${accessions}${fields}` :
+        `/search/?${accessions}${fields}&limit=all` :
         null;
     return (
         <div className={itemClass}>

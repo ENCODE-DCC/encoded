@@ -62,4 +62,6 @@ assay_terms = {
       'Clone-seq': 'NTR:0000458',
       'PLAC-seq' : 'NTR:0000513',
       'MPRA' : 'NTR:0000515',
+      'CRISPR screen': 'NTR:0000520',
+      'pooled clone sequencing': 'NTR:0000519'
 }

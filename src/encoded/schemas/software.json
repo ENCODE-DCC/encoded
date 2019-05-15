@@ -97,6 +97,7 @@
                     "community resource",
                     "comparative genomic hybridization by array",
                     "CRISPR genome editing followed by RNA-seq",
+                    "CRISPR screen",
                     "CRISPRi followed by RNA-seq",
                     "data QC",
                     "direct RNA-seq",
@@ -122,6 +123,7 @@
                     "MRE-seq",
                     "PAS-seq",
                     "PLAC-seq",
+                    "pooled clone sequencing",
                     "PRO-seq",
                     "protein sequencing by tandem mass spectrometry assay",
                     "RAMPAGE",
@@ -204,7 +206,7 @@
             "title": "References"
         },
         "used_by": {
-            "title": "Use by"
+            "title": "Used by"
         },
         "software_type": {
             "title": "Software type"

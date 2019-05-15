@@ -306,3 +306,12 @@ export const replicateTypeList = [
 export const projectColors = new DataColors(projectList);
 export const biosampleTypeColors = new DataColors(biosampleTypeList);
 export const replicateTypeColors = new DataColors(replicateTypeList);
+
+
+// Map view icons to svg icons.
+export const viewToSvg = {
+    'list-alt': 'search',
+    table: 'table',
+    summary: 'summary',
+    th: 'matrix',
+};
