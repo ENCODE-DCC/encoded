@@ -804,7 +804,7 @@ def check_experiment_rna_seq_standards(value,
             detail = 'ENCODE experiment {} '.format(value['@id']) + \
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
-                     ' has no read depth containig quality metric associated with it.'
+                     ' has no read depth containing quality metric associated with it.'
             yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
 
     alignment_files = get_non_tophat_alignment_files(alignment_files)
