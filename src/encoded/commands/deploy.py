@@ -335,6 +335,7 @@ def _get_run_args(main_args, instances_tag_data):
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_REPO': main_args.git_repo,
+            'GIT_BRANCH': main_args.branch,
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
         }
