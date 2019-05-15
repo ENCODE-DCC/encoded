@@ -216,6 +216,15 @@
                 "REMC",
                 "ENCORE"
             ]
+        },
+        "component": {
+            "title": "ENCODE component",
+            "description": "The ENCODE component the award is associated with.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "functional characterization"
+            ]
         }
     },
     "facets": {
