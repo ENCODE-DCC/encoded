@@ -735,6 +735,8 @@ TypeTerm.propTypes = {
     total: PropTypes.number.isRequired,
 };
 
+const allMonths = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
 class DateSelectorFacet extends React.Component {
     constructor() {
         super();
@@ -742,7 +744,6 @@ class DateSelectorFacet extends React.Component {
         // Set initial React component state.
         this.state = {
             possibleYears: [], // all years with results
-            possibleMonths: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'], // all months are allowed
             startYears: [], // possible years for the start year drop-down
             endYears: [], // possible years for the end year drop-down
             startMonths: [], // possible months for the start month drop-down
@@ -751,9 +752,6 @@ class DateSelectorFacet extends React.Component {
             startMonth: undefined, // chosen start month
             endYear: undefined, // chosen end year
             endMonth: undefined, // chosen end month
-            currentYear: moment().format('YYYY'), // current year
-            currentMonth: moment().format('MM'), // current month
-            currentDay: moment().format('DD'), // current day
             activeFacet: 'date_released', // for toggle, either 'date_released' or 'date_submitted'
         };
 
@@ -778,19 +776,19 @@ class DateSelectorFacet extends React.Component {
 
         // All possible years with results
         const possibleYears = activeFacetTerms.map(term => term.key.split('-')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
-        this.setState({ possibleYears });
 
-        // Set dropdown lists to be full lists of possiblities
-        this.setState({ startYears: possibleYears });
-        this.setState({ endYears: possibleYears });
-        this.setState({ startMonths: this.state.possibleMonths });
-        this.setState({ endMonths: this.state.possibleMonths });
-
-        // Set dropdowns to be initialized to boundaries of full range
-        this.setState({ startYear: possibleYears[0] });
-        this.setState({ endYear: possibleYears[possibleYears.length - 1] });
-        this.setState({ startMonth: '01' });
-        this.setState({ endMonth: '12' });
+        // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
+        this.setState({
+            possibleYears,
+            startYears: possibleYears,
+            endYears: possibleYears,
+            startMonths: allMonths,
+            endMonths: allMonths,
+            startYear: possibleYears[0],
+            endYear: possibleYears[possibleYears.length - 1],
+            startMonth: '01',
+            endMonth: '12',
+        });
     }
 
     selectYear(event) {
@@ -818,10 +816,12 @@ class DateSelectorFacet extends React.Component {
     }
 
     resetMonthDropDowns() {
-        this.setState({ startMonths: this.state.possibleMonths });
-        this.setState({ startMonth: '01' });
-        this.setState({ endMonths: this.state.possibleMonths });
-        this.setState({ endMonth: '12' });
+        this.setState({
+            startMonths: allMonths,
+            startMonth: '01',
+            endMonths: allMonths,
+            endMonth: '12',
+        });
     }
 
     // If the start year and the end year match, we have to be careful to not allow the user to pick an end month that is earlier than the start month
@@ -833,19 +833,21 @@ class DateSelectorFacet extends React.Component {
             // If start and end months are allowed, we still need to filter dropdown possible lists so they can't select an unallowed combination
             } else {
                 // endMonths can only display months that are after the chosen startMonth
-                const endMonths = this.state.possibleMonths.filter(month => +month >= +this.state.startMonth);
-                this.setState({ endMonths });
+                const endMonths = allMonths.filter(month => +month >= +this.state.startMonth);
                 // startMonths can only display months that are before the chosen endMonth
-                const startMonths = this.state.possibleMonths.filter(month => +month <= +this.state.endMonth);
-                this.setState({ startMonths });
+                const startMonths = allMonths.filter(month => +month <= +this.state.endMonth);
+                this.setState({
+                    endMonths,
+                    startMonths,
+                });
             }
         // If the start and end years previously matched (but now they don't), an incomplete list of months may be set and we need to update
         } else {
-            if (this.state.possibleMonths !== this.state.startMonths) {
-                this.setState({ startMonths: this.state.possibleMonths });
+            if (allMonths.length !== this.state.startMonths.lenth) {
+                this.setState({ startMonths: allMonths });
             }
-            if (this.state.possibleMonths !== this.state.endMonths) {
-                this.setState({ endMonths: this.state.possibleMonths });
+            if (allMonths.length !== this.state.endMonths.length) {
+                this.setState({ endMonths: allMonths });
             }
         }
     }
@@ -877,12 +879,16 @@ class DateSelectorFacet extends React.Component {
     }
 
     // Set dropdowns to match quick link query and nagivate to quick link
-    handleQuickLink(quickLinkString) {
+    handleQuickLink(searchBaseForDateRange, field) {
+        const currentYear = moment().format('YYYY');
+        const currentMonth = moment().format('MM');
+        const currentDay = moment().format('DD');
+        const quickLinkString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
         this.setState({
-            startMonth: this.state.currentMonth,
-            endMonth: this.state.currentMonth,
-            startYear: this.state.currentYear - 1,
-            endYear: this.state.currentYear,
+            startMonth: currentMonth,
+            endMonth: currentMonth,
+            startYear: currentYear - 1,
+            endYear: currentYear,
         }, () => {
             this.context.navigate(quickLinkString);
         });
@@ -908,8 +914,6 @@ class DateSelectorFacet extends React.Component {
 
         const searchString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
 
-        const currentYearSearch = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${this.state.currentYear - 1}-${this.state.currentMonth}-${this.state.currentDay} TO ${this.state.currentYear}-${this.state.currentMonth}-${this.state.currentDay}]`;
-
         // Print selected date range next to date selector facet
         let dateRangeString = '';
         if (existingFilter.length > 0) {
@@ -920,7 +924,7 @@ class DateSelectorFacet extends React.Component {
             }
         }
 
-        if ((activeFacet.terms.length && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if (((activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
                     <h5>Date range selection</h5>
@@ -951,7 +955,7 @@ class DateSelectorFacet extends React.Component {
                         />Submitted
                         </div>
                     </div>
-                    <button className="date-selector-btn" onClick={() => this.handleQuickLink(currentYearSearch)}>
+                    <button className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>
                         <i className="icon icon-caret-right" />
                         See results for the past year
                     </button>
