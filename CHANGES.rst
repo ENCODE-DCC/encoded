@@ -1,6 +1,38 @@
 Changes
 =======
 
+v85.0 (released) snovault 1.0.29
+--------------------------------
+1. ENCD-4625 Fix target upgrade for chromatin remodeler (#2755)
+2. ENCD-4624 update-snovault-1.0.29 (#2754)
+3. ENCD-4392 update-to-java-11 (#2726)
+4. SNO-91 update-java-ref (#2753)
+5. SNO-87 fix-profile-trailing-slash (#2710)
+6. ENCD-4619 Add experiment classification to data insert (#2752)
+7. ENCD-4361 validate-schema-set-status (#2748)
+8. ENCD-4558 add 2 new FCC assays
+9. ENCD-4563 shorten 3 assay titles
+10. ENCD-4579 update to EFO3 and update ontology.json and docs
+11. ENCD-4536 long read RNA audit (#2735)
+12. ENCD-4535 long rna qc (#2673)
+13. SNO-86 escape-search-text (#2709)
+14. ENCD-3642 fix-file-format-download (#2746)
+15. ENCD-4602 Update link on home page button (#2744)
+16. ENCD-4606 Add error correction step type (#2747)
+17. ENCD-4493 Limit RIN audit to certain assays (#2743)
+18. ENCD-4593 add histone and control chip-seq titles (#2741)
+19. ENCD-4504 miRNA audits (#2736)
+20. ENCD-4503 micro RNA qc (#2679)
+21. ENCD-4570 Add M21 V29 V30 genome annotations (#2745)
+22. ENCD-4544 deleted the file atacseq qm json file (#2738)
+23. ENCD-3108 Add new target categories (#2742)
+24. SNO-88 fix-user-search-count (#2722)
+25. ENCD-4589 Add an experimental audit for biosample characterization. (#2739)
+26. ENCD-4316 Make generic matrix-rendering component. (#2728)
+27. ENCD-4575 software-column-used-by (#2737)
+28. ENCD-4545 Update visualization browser list (#2730)
+29. ENCD-4597 show-all-datasets (#2733)
+
 84.0 (released) snovault 1.0.28
 -------------------------------
 1. ENCD-4591 add-title-column-back (#2723)
