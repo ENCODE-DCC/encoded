@@ -741,6 +741,7 @@
                         "CEL",
                         "chain",
                         "csv",
+                        "database",
                         "fasta",
                         "fastq",
                         "gff",

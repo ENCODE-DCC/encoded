@@ -2709,5 +2709,23 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/rep2_efg.tsv",
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f246"
+    },
+    {
+        "accession": "ENCFF183XKO",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR751ISO",
+        "date_created": "2019-04-18T16:46:18.670068+00:00",
+        "file_format": "database",
+        "genome_annotation": "V29",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "94be74b6e11515394444f4ebfa66d783",
+        "output_type": "transcriptome index",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "released",
+        "file_size": 203434,
+        "submitted_by": "zackm23@stanford.edu",
+        "submitted_file_name": "BIRDCLAWS.db",
+        "uuid": "16abfcc1-9f85-415a-8eb5-e0f12d46f244"
     }
 ]
