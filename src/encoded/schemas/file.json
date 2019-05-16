@@ -548,7 +548,8 @@
                                         "vcf",
                                         "wig",
                                         "2bit",
-                                        "btr"
+                                        "btr",
+                                        "database"
                                     ]
                                 },
                                 "output_type": {
@@ -1605,6 +1606,7 @@
         "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
+        "database": ".db",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
