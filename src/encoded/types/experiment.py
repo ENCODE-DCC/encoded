@@ -501,6 +501,39 @@ class Experiment(Dataset,
 
         return 'anisogenic'
 
+    target_matrix = {
+        'y': {
+            'facets': [
+                'status',
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'biosample_ontology.classification',
+                'biosample_ontology.term_name',
+                'biosample_ontology.organ_slims',
+                'biosample_ontology.cell_slims',
+                'award.project',
+                'assembly',
+                'month_released',
+                'internal_status',
+                'audit_category', # Added for auditmatrix
+                'lab.title'
+            ],
+            'group_by': ['target.investigated_as', 'biosample_ontology.term_name'],
+            'label': 'Classification',
+        },
+        'x': {
+            'facets': [
+                'assay_slims',
+                'assay_title',
+                'target.investigated_as',
+                'target.label',
+                'files.file_type',
+                'biosample_ontology.classification',
+            ],
+            'group_by': 'biosample_ontology.classification',
+            'label': 'Biosample',
+        },
+    }
+
     matrix = {
         'y': {
             'facets': [

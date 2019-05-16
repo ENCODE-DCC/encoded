@@ -13,6 +13,7 @@ from encoded.helpers.helper import (
 )
 from encoded.viewconfigs.auditview import AuditView
 from encoded.viewconfigs.matrix import MatrixView
+from encoded.viewconfigs.target_matrix import TargetMatrixView
 from encoded.viewconfigs.news import NewsView
 from encoded.viewconfigs.summary import SummaryView
 
@@ -44,6 +45,7 @@ def includeme(config):
     config.add_route('search_elements', '/search_elements/{search_params}')
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('targetmatrix', '/targetmatrix{slash:/?}')
     config.add_route('news', '/news/')
     config.add_route('audit', '/audit/')
     config.add_route('summary', '/summary{slash:/?}')
@@ -107,6 +109,16 @@ def matrix(context, request):
     '''
     matrix_view = MatrixView(context, request)
     return matrix_view.preprocess_view()
+
+
+@view_config(route_name='targetmatrix', request_method='GET', permission='search')
+def targetmatrix(context, request):
+    """
+    TargetMatrix Page Endpoint
+    /targetmatrix/?type=Experiment
+    """
+    target_matrix_view = TargetMatrixView(context, request)
+    return target_matrix_view.preprocess_view()
 
 
 @view_config(route_name='news', request_method='GET', permission='search')

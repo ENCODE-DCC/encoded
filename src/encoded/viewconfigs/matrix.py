@@ -32,16 +32,24 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         'format', 'frame', 'datastore', 'field', 'region', 'genome',
         'sort', 'from', 'referrer',
     ]
-    def __init__(self, context, request):
+    def __init__(
+            self,
+            context,
+            request,
+            page_name="matrix",
+            filters=None
+            ):
         super(MatrixView, self).__init__(context, request)
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
         self._schema = None
+        self._page_name = page_name
+        self._filters = filters
 
     @staticmethod
-    def _set_result_title(type_info):
-        '''Helper function for class and child classes'''
-        title = type_info.name + ' matrix'
+    def _set_result_title(type_info, page_name='matrix'):
+        """Helper function for class and child classes."""
+        title = ''.join((type_info.name, ' ', page_name))
         return title
 
     def _construct_query(self, result_filters, matrix_x_y):
@@ -187,17 +195,18 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         Main function to construct query and build view results json
         * Only publicly accessible function
         '''
-        matrix_route = self._request.route_path('matrix', slash='/')
+        matrix_route = self._request.route_path(self._view_name, slash='/')
         result_filters = {'filters': []}
+        if self._filters:
+            result_filters['filters'].extend(self._filters)
         # TODO: Validate doc types in base class in one location
         # Now we do it here and in _validate_items
         type_info = None
-        if len(self._doc_types) == 1:
-            if self._doc_types[0] in self._types:
-                type_info = self._types[self._doc_types[0]]
-                self._schema = type_info.schema
+        if len(self._doc_types) == 1 and self._doc_types[0] in self._types:
+            type_info = self._types[self._doc_types[0]]
+            self._schema = type_info.schema
         self._validate_items(type_info)
-        matrix = type_info.factory.matrix.copy()
+        matrix = getattr(type_info.factory, self._factory_name).copy()
         matrix['x']['limit'] = self._request.params.get('x.limit', 20)
         matrix['y']['limit'] = self._request.params.get('y.limit', 5)
         search_route = self._request.route_path('search', slash='/')
@@ -247,7 +256,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             'filters': result_filters['filters'],
             '@id': matrix_route + self._search_base,
             '@type': ['Matrix'],
-            'title': self._set_result_title(type_info),
+            'title': self._set_result_title(type_info, self._page_name),
             'matrix': matrix,
             'views': self._construct_result_views(type_info),
             'facets': facets,
