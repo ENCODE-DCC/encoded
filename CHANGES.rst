@@ -1,6 +1,10 @@
 Changes
 =======
 
+v85.1 (released)
+--------------------------------
+1. ENCD-4628 Add a mechanism for a home page banner (#2768)
+
 v85.0 (released) snovault 1.0.29
 --------------------------------
 1. ENCD-4625 Fix target upgrade for chromatin remodeler (#2755)
