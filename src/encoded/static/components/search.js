@@ -769,13 +769,18 @@ class DateSelectorFacet extends React.Component {
     }
 
     setActiveFacetParameters() {
-        // Filter 'facets' to get selected 'facet' object (either 'date_released' or 'date_submitted' object)
-        const activeFacet = this.props.facets.filter(f => f.field === this.state.activeFacet)[0];
-        // Sorted terms for the selected facet object
-        const activeFacetTerms = _.sortBy(activeFacet.terms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString());
+        // Set possible years to be 2009 -> current year for 'date_released'
+        // Set possible years to be 2008 -> current year for 'date_submitted'
+        const currentYear = moment().format('YYYY');
 
-        // All possible years with results
-        const possibleYears = activeFacetTerms.map(term => term.key.split('-')[0]).filter((item, i, ar) => (ar.indexOf(item) === i));
+        let possibleYears = [];
+        if (this.state.activeFacet === 'date_released') {
+            const numberOfYears = +currentYear - 2008;
+            possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + 2009));
+        } else {
+            const numberOfYears = +currentYear - 2007;
+            possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + 2008));
+        }
 
         // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
         this.setState({
@@ -887,8 +892,12 @@ class DateSelectorFacet extends React.Component {
         this.setState({
             startMonth: currentMonth,
             endMonth: currentMonth,
-            startYear: currentYear - 1,
+            startYear: (currentYear - 1),
             endYear: currentYear,
+            startMonths: allMonths,
+            endMonths: allMonths,
+            startYears: this.state.possibleYears.filter(year => +year <= currentYear),
+            endYears: this.state.possibleYears.filter(year => +year >= (currentYear - 1)),
         }, () => {
             this.context.navigate(quickLinkString);
         });
