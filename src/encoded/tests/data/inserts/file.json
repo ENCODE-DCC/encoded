@@ -2724,7 +2724,7 @@
         "genome_annotation": "V24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515394444f4ebfa66d78e",
-        "output_type": "gene quantifications",
+        "output_type": "transcriptome index",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
         "file_size": 20,

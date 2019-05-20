@@ -484,9 +484,18 @@
                                             "bigWig",
                                             "csfasta",
                                             "csqual",
-                                            "idx"
+                                            "idx",
+                                            "database"
                                         ]
                                     }
+                                }
+                            }
+                        },
+                        {
+                            "required": ["assembly", "genome_annotation"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["database"]
                                 }
                             }
                         }

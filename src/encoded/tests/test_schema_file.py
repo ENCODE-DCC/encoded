@@ -238,6 +238,23 @@ def file_restriction_map(testapp, experiment, award, lab):
     return item
 
 
+@pytest.fixture
+def file_no_genome_annotation(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'database',
+        'file_size': 342,
+        'md5sum': '82847a2a5beb8095282c68c00f48e347',
+        'output_type': 'transcriptome index',
+        'status': 'in progress'
+    }
+    return item
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -432,3 +449,9 @@ def test_restriction_map(testapp, file_restriction_map):
     file_restriction_map.update({'output_type': 'restriction enzyme site locations'})
     res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_database_file_format(testapp, file_no_genome_annotation):
+    testapp.post_json('/file', file_no_genome_annotation, status=422)
+    file_no_genome_annotation.update({'genome_annotation': 'V24'})
+    testapp.post_json('/file', file_no_genome_annotation, status=201)
