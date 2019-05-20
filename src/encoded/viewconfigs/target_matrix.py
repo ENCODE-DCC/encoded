@@ -39,14 +39,22 @@ class TargetMatrixView(MatrixView):  #pylint: disable=too-few-public-methods
             request,
             page_name='target matrix',
             filters=[{
-                'remove': '/targetmatrix/?type=Experiment&target.investigated_as%21=control',
+                'remove': '/targetmatrix/?type=Experiment',
                 'term': 'ChIP-seq',
                 'field': 'assay_title'
             }, {
-                'remove': '/targetmatrix/?type=Experiment&assay_title=ChIP-seq',
+                'remove': '/targetmatrix/?type=Experiment',
                 'term': 'control',
                 'field': 'target.investigated_as!'
             }],
+            excluded_filters=[
+                'assay_title',
+                'target.investigated_as!',
+            ],
+            excluded_facets={
+                'assay_title': ['ChIP-seq'],
+                'target.investigated_as': ['control'],
+            },
         )
         self._view_item = View_Item(request, self._search_base)
         self._facets = []

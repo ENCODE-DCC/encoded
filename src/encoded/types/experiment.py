@@ -517,8 +517,8 @@ class Experiment(Dataset,
                 'audit_category', # Added for auditmatrix
                 'lab.title'
             ],
-            'group_by': ['target.investigated_as', 'biosample_ontology.term_name'],
-            'label': 'Classification',
+            'group_by': ['target.investigated_as', 'target.label'],
+            'label': 'Target',
         },
         'x': {
             'facets': [
@@ -529,7 +529,7 @@ class Experiment(Dataset,
                 'files.file_type',
                 'biosample_ontology.classification',
             ],
-            'group_by': 'biosample_ontology.classification',
+            'group_by': 'biosample_ontology.term_name',
             'label': 'Biosample',
         },
     }

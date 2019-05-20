@@ -293,6 +293,9 @@ export const biosampleTypeList = [
     'single cell',
     'cell-free sample',
     'organoid',
+    'transcription factor',
+    'histone',
+    'control',
 ];
 
 export const replicateTypeList = [
