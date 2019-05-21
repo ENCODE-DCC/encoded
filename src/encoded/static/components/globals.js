@@ -296,6 +296,18 @@ export const biosampleTypeList = [
     'transcription factor',
     'histone',
     'control',
+    'broad histone mark',
+    'recombinant protein',
+    'narrow histone mark',
+    'RNA binding protein',
+    'chromatin remodeler',
+    'RNA polymerase complex',
+    'cofactor',
+    'other context',
+    'cohesin',
+    'DNA repair',
+    'DNA replication',
+    'tag',
 ];
 
 export const replicateTypeList = [
