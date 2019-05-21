@@ -37,19 +37,18 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             context,
             request,
             page_name="matrix",
-            filters=None,
-            hidden_filters=None,
             hidden_facets=None,
+            implicit_facets=None,
+            hidden_filters=None,
             ):
         super(MatrixView, self).__init__(context, request)
         self._view_item = View_Item(request, self._search_base)
         self._facets = []
         self._schema = None
         self._page_name = page_name
-        self._filters = filters
-        self._hidden_filters = hidden_filters
         self._hidden_facets = hidden_facets
-
+        self._implicit_facets = implicit_facets
+        self._hidden_filters = hidden_filters
 
     @staticmethod
     def _set_result_title(type_info, page_name='matrix'):
@@ -146,7 +145,8 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             self._request,
             filter_collector,
             result_filters,
-            filter_exclusion=self._filter_exclusion
+            filter_exclusion=self._filter_exclusion,
+            implicit_facets=self._implicit_facets
         )
         filters = filter_collector['post_filter']['bool']['must']
         negative_filters = filter_collector['post_filter']['bool']['must_not']
@@ -195,6 +195,44 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             for bucket in outer_bucket[group_by]['buckets']:
                 self._summarize_buckets(x_buckets, bucket, grouping_fields, matrix)
 
+    def _remove_hidden_facets(self, facets):
+        """Hide facets set to be hidden.
+
+        Arguments:
+            facets {Collection} -- Collection of facets
+        Returns:
+            Collection -- filter facets
+
+        """
+        if not self._hidden_facets:
+            return facets
+        for field, terms in self._hidden_facets.items():
+            for result in facets:
+                if result['field'] == field:
+                    index_ = [index_ for index_, term in enumerate(result['terms']) if term['key'] in terms]
+                    if index_:
+                        del result['terms'][index_[0]]
+        return facets
+
+    def _remove_hidden_filters(self, filters):
+        """Remove hidden filters.
+        
+        Arguments:
+            filters {Collection} -- Collectiion of filters
+
+        """
+        if not self._hidden_filters:
+            return filters
+
+        hidden_filter_indices = []
+        for index_, filter_ in enumerate(filters):
+            for field_, term in self._hidden_filters.items():
+                if filter_['field'] == field_ and filter_['term'] == term:
+                    hidden_filter_indices.append(index_)
+        for index_ in hidden_filter_indices[::-1]:
+            del filters[index_]
+        return filters
+
     def preprocess_view(self):
         '''
         Main function to construct query and build view results json
@@ -202,8 +240,6 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         '''
         matrix_route = self._request.route_path(self._view_name, slash='/')
         result_filters = {'filters': []}
-        if self._filters:
-            result_filters['filters'].extend(self._filters)
         # TODO: Validate doc types in base class in one location
         # Now we do it here and in _validate_items
         type_info = None
@@ -258,13 +294,13 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             notification = 'No results found'
         search_result = {
             '@context': self._request.route_path('jsonld_context'),
-            'filters': result_filters['filters'],
+            'filters': self._remove_hidden_filters(result_filters['filters']),
             '@id': matrix_route + self._search_base,
             '@type': ['Matrix'],
             'title': self._set_result_title(type_info, self._page_name),
             'matrix': matrix,
             'views': self._construct_result_views(type_info),
-            'facets': facets,
+            'facets': self._remove_hidden_facets(facets),
             'total': es_total,
             'notification': notification,
         }
@@ -275,19 +311,4 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 es_results
             )
         )
-        if self._hidden_facets:
-            for facet_title, facet_items in self._hidden_facets.items():
-                for result in search_result['facets']:
-                    if result['field'] == facet_title:
-                        index_ = [index_ for index_, term in enumerate(result['terms']) if term['key'] in facet_items]
-                        if index_:
-                            del result['terms'][index_[0]]
-                        break  # field found, go to next facet
-        if self._hidden_filters:
-            excluded_filter_indices = []
-            for index_, filter_ in enumerate(search_result['filters']):
-                if filter_['field'] in self._hidden_filters:
-                    excluded_filter_indices.append(index_)
-            for index_ in excluded_filter_indices[::-1]:
-                del search_result['filters'][index_]
         return search_result
