@@ -148,9 +148,6 @@ def audit_paired_with(value, system):
 
     if 'paired_with' not in value:
         return
-    
-    if value['file_format'] != 'fastq':
-        return
 
     if value['file_format'] == 'fastq' and value['paired_with'].get('file_format') != 'fastq':
         detail = ('Both the files in a paired-end run must be fastq files.' 
