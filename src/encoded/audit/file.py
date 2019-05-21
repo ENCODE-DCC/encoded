@@ -151,9 +151,8 @@ def audit_paired_with(value, system):
 
     if value['file_format'] == 'fastq' and value['paired_with'].get('file_format') != 'fastq':
         detail = ('Both the files in a paired-end run must be fastq files.' 
-                'The file {} is paired with the file {} which is a non-fastq file. The file format of paired with file {} is {}').format(
+                'The fastq file {} is paired with the file {} which is {} format').format(
                 value['@id'],
-                value['paired_with']['@id'],
                 value['paired_with']['@id'],
                 value['paired_with'].get('file_format'))
         yield AuditFailure('paired with non-fastq', detail, level='ERROR')
