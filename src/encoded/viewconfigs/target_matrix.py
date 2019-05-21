@@ -47,11 +47,11 @@ class TargetMatrixView(MatrixView):  #pylint: disable=too-few-public-methods
                 'term': 'control',
                 'field': 'target.investigated_as!'
             }],
-            excluded_filters=[
+            hidden_filters=[
                 'assay_title',
                 'target.investigated_as!',
             ],
-            excluded_facets={
+            hidden_facets={
                 'assay_title': ['ChIP-seq'],
                 'target.investigated_as': ['control'],
             },

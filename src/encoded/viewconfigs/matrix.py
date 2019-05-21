@@ -38,8 +38,8 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             request,
             page_name="matrix",
             filters=None,
-            excluded_filters=None,
-            excluded_facets=None,
+            hidden_filters=None,
+            hidden_facets=None,
             ):
         super(MatrixView, self).__init__(context, request)
         self._view_item = View_Item(request, self._search_base)
@@ -47,8 +47,8 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._schema = None
         self._page_name = page_name
         self._filters = filters
-        self._excluded_filters = excluded_filters
-        self._excluded_facets = excluded_facets
+        self._hidden_filters = hidden_filters
+        self._hidden_facets = hidden_facets
 
 
     @staticmethod
@@ -275,18 +275,18 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 es_results
             )
         )
-        if self._excluded_facets:
-            for facet_title, facet_items in self._excluded_facets.items():
+        if self._hidden_facets:
+            for facet_title, facet_items in self._hidden_facets.items():
                 for result in search_result['facets']:
                     if result['field'] == facet_title:
                         index_ = [index_ for index_, term in enumerate(result['terms']) if term['key'] in facet_items]
                         if index_:
                             del result['terms'][index_[0]]
                         break  # field found, go to next facet
-        if self._excluded_filters:
+        if self._hidden_filters:
             excluded_filter_indices = []
             for index_, filter_ in enumerate(search_result['filters']):
-                if filter_['field'] in self._excluded_filters:
+                if filter_['field'] in self._hidden_filters:
                     excluded_filter_indices.append(index_)
             for index_ in excluded_filter_indices[::-1]:
                 del search_result['filters'][index_]
