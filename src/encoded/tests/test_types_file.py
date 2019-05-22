@@ -176,10 +176,10 @@ def test_public_restricted_file_does_not_have_cloud_metadata(testapp, file_with_
     for status in File.private_s3_statuses
     if status != 'replaced'
 ])
-def test_private_file_does_not_have_cloud_metadata(testapp, file_with_external_sheet, file_status):
+def test_private_file_does_have_cloud_metadata(testapp, file_with_external_sheet, file_status):
     testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
-    assert 'cloud_metadata' not in res.json
+    assert 'cloud_metadata' in res.json
 
 
 def test_public_file_with_no_external_sheet_no_cloud_metadata(testapp, file):
@@ -204,10 +204,10 @@ def test_public_file_has_s3_uri(testapp, file_with_external_sheet, file_status):
     for status in File.private_s3_statuses
     if status != 'replaced'
 ])
-def test_private_file_does_not_have_s3_uri(testapp, file_with_external_sheet, file_status):
+def test_private_file_does_have_s3_uri(testapp, file_with_external_sheet, file_status):
     testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
-    assert 's3_uri' not in res.json
+    assert 's3_uri' in res.json
 
 
 def test_public_file_no_external_sheet_no_s3_uri(testapp, file):
