@@ -782,18 +782,42 @@ class DateSelectorFacet extends React.Component {
             possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + 2008));
         }
 
-        // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
-        this.setState({
-            possibleYears,
-            startYears: possibleYears,
-            endYears: possibleYears,
-            startMonths: allMonths,
-            endMonths: allMonths,
-            startYear: possibleYears[0],
-            endYear: possibleYears[possibleYears.length - 1],
-            startMonth: '01',
-            endMonth: '12',
-        });
+        // if a date range has already been selected, we will use that date range to populate drop-downs
+        const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
+        if (existingFilter[0]) {
+            const filterString = existingFilter[0].term;
+            const indexOfStart = filterString.indexOf('[') + 1;
+            const indexOfEnd = filterString.indexOf('TO ') + 3;
+            const startYear = filterString.substr(indexOfStart, 4);
+            const startMonth = filterString.substr(indexOfStart + 5, 2);
+            const endYear = filterString.substr(indexOfEnd, 4);
+            const endMonth = filterString.substr(indexOfEnd + 5, 2);
+            // Set dropdown lists to match existing query
+            this.setState({
+                possibleYears,
+                startYears: possibleYears,
+                endYears: possibleYears,
+                startMonths: allMonths,
+                endMonths: allMonths,
+                startYear,
+                endYear,
+                startMonth,
+                endMonth,
+            });
+        } else {
+            // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
+            this.setState({
+                possibleYears,
+                startYears: possibleYears,
+                endYears: possibleYears,
+                startMonths: allMonths,
+                endMonths: allMonths,
+                startYear: possibleYears[0],
+                endYear: possibleYears[possibleYears.length - 1],
+                startMonth: '01',
+                endMonth: '12',
+            });
+        }
     }
 
     selectYear(event) {
