@@ -272,6 +272,15 @@ def annotation_20(award, lab):
         'internal_tags': ['cre_inputv10', 'cre_inputv11', 'ENCYCLOPEDIAv3']
     }
 
+@pytest.fixture
+def annotation_21(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '24',
+        'annotation_type': 'candidate regulatory elements'
+    }
+
 
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
@@ -592,3 +601,11 @@ def test_upgrade_experiment_25_to_26(upgrader, experiment_25):
     value = upgrader.upgrade('experiment', experiment_25, current_version='25', target_version='26')
     assert value['schema_version'] == '26'
     assert value['assay_term_name'] == 'long read RNA-seq'
+
+
+def test_upgrade_annotation_24_to_25(upgrader, annotation_21):
+    value = upgrader.upgrade(
+        'annotation', annotation_21, current_version='24', target_version='25'
+    )
+    assert value['schema_version'] == '25'
+    assert value['annotation_type'] == 'candidate Cis-Regulatory Elements'

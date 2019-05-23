@@ -53,6 +53,17 @@ def analysis_step_5(base_analysis_step):
     return item
 
 
+@pytest.fixture
+def analysis_step_6(base_analysis_step):
+    item = base_analysis_step.copy()
+    item.update({
+        'schema_version': '6',
+        'input_file_types': ['alignments', 'candidate regulatory elements'],
+        'output_file_types': ['raw signal', 'candidate regulatory elements']
+    })
+    return item
+
+
 def test_analysis_step_2_3(registry, upgrader, analysis_step_1, threadlocals):
     value = upgrader.upgrade('analysis_step', analysis_step_1, current_version='2', target_version='3', registry=registry)
     assert 'signal of all reads' in value['output_file_types']
@@ -74,3 +85,12 @@ def test_analysis_step_5_6(upgrader, analysis_step_5):
     assert value['step_label'] == 'deleted-lrna-se-star-alignment-step'
     assert 'encode:deleted-lrna-se-star-alignment-step-v-2' in value['aliases']
     assert value['major_version'] == 2
+
+
+def test_analysis_step_6_7(upgrader, analysis_step_6):
+    value = upgrader.upgrade('analysis_step', analysis_step_6, current_version='6', target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'candidate regulatory elements' not in value['input_file_types']
+    assert 'candidate regulatory elements' not in value['output_file_types']
+    assert 'candidate Cis-Regulatory Elements' in value['input_file_types']
+    assert 'candidate Cis-Regulatory Elements' in value['output_file_types']

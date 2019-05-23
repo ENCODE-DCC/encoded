@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 25
+
+* Changed enum value *candidate regulatory elements* in *annotation_type* to *candidate Cis-Regulatory Elements*
+
 ### Schema version 24
 
 * Adds *annotation_type* imputation and makes *annotation_type* required.

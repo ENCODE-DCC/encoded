@@ -577,3 +577,12 @@ def file_12_13(value, system):
             value.pop('read_length', None)
             value.pop('run_type', None)
     return
+
+
+@upgrade_step('file', '13', '14')
+def file_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4613
+    output_type = value.get('output_type', None)
+
+    if output_type and output_type == 'candidate regulatory elements':
+        value['output_type'] = 'candidate Cis-Regulatory Elements'

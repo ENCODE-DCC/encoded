@@ -67,7 +67,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "24"
+            "default": "25"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -76,7 +76,7 @@
             "enum": [
                 "binding sites",
                 "blacklist",
-                "candidate regulatory elements",
+                "candidate Cis-Regulatory Elements",
                 "chromatin state",
                 "enhancer predictions",
                 "gene expression",
