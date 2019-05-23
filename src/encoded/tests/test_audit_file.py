@@ -249,7 +249,6 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
                'inconsistent paired_with' for error in errors_list)
 
 
-# Testing a fastq file1 paired with a non-fastq file6 (bam file)
 def test_audit_paired_with_non_fastq(testapp, file1, file6):
     testapp.patch_json(file1['@id'], {
                         'run_type': 'paired-ended',
@@ -266,7 +265,6 @@ def test_audit_paired_with_non_fastq(testapp, file1, file6):
     assert any(error['category'] ==
                'paired with non-fastq' for error in errors_list)
 
-# Testing a fastq file1 paired with an actual fastq file4
 def test_audit_paired_with_fastq(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                         'run_type': 'paired-ended', # @pytest.fixture defined file1 as a single-end. Changing it to paired-end
