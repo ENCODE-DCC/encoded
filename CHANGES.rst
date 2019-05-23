@@ -1,6 +1,11 @@
 Changes
 =======
 
+v85.2 (unreleased) snovault 1.0.30
+--------------------------------
+1. ENCD-4650 update-snovault-1.0.30 (#2778)
+2. ENCD-4620 indexing-failures (#2775)
+
 v85.1 (released)
 --------------------------------
 1. ENCD-4628 Add a mechanism for a home page banner (#2768)
