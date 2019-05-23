@@ -872,7 +872,7 @@ class DateSelectorFacet extends React.Component {
             }
         // If the start and end years previously matched (but now they don't), an incomplete list of months may be set and we need to update
         } else {
-            if (allMonths.length !== this.state.startMonths.lenth) {
+            if (allMonths.length !== this.state.startMonths.length) {
                 this.setState({ startMonths: allMonths });
             }
             if (allMonths.length !== this.state.endMonths.length) {
