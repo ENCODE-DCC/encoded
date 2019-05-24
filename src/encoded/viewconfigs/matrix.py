@@ -38,7 +38,8 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             request,
             page_name="matrix",
             hidden_facets=None,
-            implicit_facets=None,
+            hidden_facet_terms=None,
+            implicit_facet_terms=None,
             hidden_filters=None,
             ):
         super(MatrixView, self).__init__(context, request)
@@ -47,7 +48,8 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         self._schema = None
         self._page_name = page_name
         self._hidden_facets = hidden_facets
-        self._implicit_facets = implicit_facets
+        self._hidden_facet_terms = hidden_facet_terms
+        self._implicit_facet_terms = implicit_facet_terms
         self._hidden_filters = hidden_filters
 
     @staticmethod
@@ -146,7 +148,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             filter_collector,
             result_filters,
             filter_exclusion=self._filter_exclusion,
-            implicit_facets=self._implicit_facets
+            implicit_facet_terms=self._implicit_facet_terms
         )
         filters = filter_collector['post_filter']['bool']['must']
         negative_filters = filter_collector['post_filter']['bool']['must_not']
@@ -195,7 +197,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             for bucket in outer_bucket[group_by]['buckets']:
                 self._summarize_buckets(x_buckets, bucket, grouping_fields, matrix)
 
-    def _remove_hidden_facets(self, facets):
+    def _remove_hidden_facet_terms(self, facets):
         """Hide facets set to be hidden.
 
         Arguments:
@@ -204,9 +206,9 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             Collection -- filter facets
 
         """
-        if not self._hidden_facets:
+        if not self._hidden_facet_terms:
             return facets
-        for field, terms in self._hidden_facets.items():
+        for field, terms in self._hidden_facet_terms.items():
             for result in facets:
                 if result['field'] == field:
                     index_ = [index_ for index_, term in enumerate(result['terms']) if term['key'] in terms]
@@ -232,6 +234,21 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         for index_ in hidden_filter_indices[::-1]:
             del filters[index_]
         return filters
+
+    def _remove_hidden_facets(self, facets):
+        """
+        Remove hidden facets from facet-list.
+
+        Arguments:
+            facets {list} -- List of facets
+
+        Returns:
+            List -- facets without hidden facets
+
+        """
+        if not self._remove_hidden_facets:
+            return facets
+        return [facet for facet in facets if facet['field'] not in self._hidden_facets]
 
     def preprocess_view(self):
         '''
@@ -300,7 +317,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             'title': self._set_result_title(type_info, self._page_name),
             'matrix': matrix,
             'views': self._construct_result_views(type_info),
-            'facets': self._remove_hidden_facets(facets),
+            'facets': self._remove_hidden_facets(self._remove_hidden_facet_terms(facets)),
             'total': es_total,
             'notification': notification,
         }

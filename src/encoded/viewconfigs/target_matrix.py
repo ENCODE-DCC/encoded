@@ -38,11 +38,21 @@ class TargetMatrixView(MatrixView):  #pylint: disable=too-few-public-methods
             context,
             request,
             page_name='target matrix',
-            hidden_facets={
+            hidden_facets=[
+                'award.project',
+                'assembly',
+                'files.file_type',
+                'month_released',
+                'tab.title',
+                'audit.ERROR.category',
+                'audit.NOT_COMPLIANT.category',
+                'audit.WARNING.category',
+            ],
+            hidden_facet_terms={
                 'target.investigated_as': ['control'],
                 'assay_title': ['ChIP-seq'],
             },
-            implicit_facets=[
+            implicit_facet_terms=[
                 ('target.investigated_as!', 'control'),
                 ('assay_title', 'ChIP-seq'),
             ],
