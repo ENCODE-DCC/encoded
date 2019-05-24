@@ -11,6 +11,7 @@ Feature: Edit forms
         Then I should see an element with the css selector "form.rf-Form"
         When I fill in "antigen_description" with "It's not a very nice antigen"
         And I press "save"
+        And I wait for 3 seconds
         And I wait for the content to load
         Then I should see "It's not a very nice antigen"
 
