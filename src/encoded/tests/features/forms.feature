@@ -7,7 +7,7 @@ Feature: Edit forms
         And I click the element with the css selector ".icon-gear"
         And I click the link to "/antibodies/ENCAB728YTO/#!edit"
         And I wait for the content to load
-        And I wait for 5 seconds
+        And I wait for 8 seconds
         Then I should see an element with the css selector "form.rf-Form"
         When I fill in "antigen_description" with "It's not a very nice antigen"
         And I press "save"
@@ -16,7 +16,7 @@ Feature: Edit forms
 
     Scenario: Leaving a dirty form without saving asks for confirmation
         When I visit "/antibodies/ENCAB728YTO/#!edit"
-        And I wait for 5 seconds
+        And I wait for 8 seconds
         And I fill in "antigen_description" with "It's not a very nice antigen"
         And I click the link with text "ENCODE"
         And I dismiss the alert
@@ -24,7 +24,7 @@ Feature: Edit forms
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
         When I click the link with text "ENCODE"
         And I accept the alert
-        And I wait for 5 seconds
+        And I wait for 8 seconds
 
     Scenario: Validation errors are shown in context
         When I visit "/antibodies/ENCAB728YTO/#!edit"
