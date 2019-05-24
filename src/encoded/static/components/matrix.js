@@ -315,8 +315,11 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                                     expanderColor={rowCategoryTextColor}
                                     expanderBgColor={rowCategoryColor}
                                 />
-                            : <div />
+                            : null
                         ),
+                    },
+                    {
+                        content: null,
                         colSpan: 0,
                     },
                 ],
@@ -411,26 +414,25 @@ class MatrixPresentation extends React.Component {
         super(props);
 
         this.state = {
+            /** Categories the user has expanded */
             expandedRowCategories: [],
-            leftShadingShowing: false,
-            rightShadingShowing: false,
+            /** True if matrix scrolled all the way to the right; used for flashing arrow */
+            scrolledRight: false,
         };
         this.expanderClickHandler = this.expanderClickHandler.bind(this);
         this.handleOnScroll = this.handleOnScroll.bind(this);
-        this.handleScrollShading = this.handleScrollShading.bind(this);
+        this.handleScrollIndicator = this.handleScrollIndicator.bind(this);
     }
 
     componentDidMount() {
-        // Establish initial matrix scroll shading.
-        this.handleScrollShading(this.scrollElement);
+        this.handleScrollIndicator(this.scrollElement);
     }
 
     componentDidUpdate(prevProps) {
-        // If URI changed, we need to update the scroll shading in case the width of the table
-        // changed. Also close any expanded rowCategories in case the URI change results in a huge
-        // increase in displayed data.
+        // If URI changed, we need close any expanded rowCategories in case the URI change results
+        // in a huge increase in displayed data. Also update the scroll indicator if needed.
         if (prevProps.context['@id'] !== this.props.context['@id']) {
-            this.handleScrollShading(this.scrollElement);
+            this.handleScrollIndicator(this.scrollElement);
             this.setState({ expandedRowCategories: [] });
         }
     }
@@ -452,46 +454,35 @@ class MatrixPresentation extends React.Component {
             return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
         });
     }
-
     /**
-     * Called when the user scrolls the matrix horizontally within its div to handle the shading on
-     * the left and right edges.
+     * Called when the user scrolls the matrix horizontally within its div to handle scroll
+     * indicators.
      * @param {object} e React synthetic scroll event
      */
     handleOnScroll(e) {
-        this.handleScrollShading(e.target);
+        this.handleScrollIndicator(e.target);
     }
 
     /**
-     * Apply shading along the left or right of the scrolling matrix DOM element based on its
-     * current scrolled position.
+     * Show a scroll indicator depending on current scrolled position.
      * @param {object} element DOM element to apply shading to
      */
-    handleScrollShading(element) {
-        if (element.scrollLeft === 0 && this.state.leftShadingShowing) {
-            // Left edge of matrix scrolled into view.
-            this.setState({ leftShadingShowing: false });
-        } else if (element.scrollLeft > 0 && !this.state.leftShadingShowing) {
-            // Left edge of matrix scrolled out of view.
-            this.setState({ leftShadingShowing: true });
-        } else {
-            // For right-side shaded area, have to use a "roughly equal to" test because of an
-            // MS Edge bug mentioned here:
-            // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
-            const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
-            if (scrollDiff < 2 && this.state.rightShadingShowing) {
-                // Right edge of matrix scrolled into view.
-                this.setState({ rightShadingShowing: false });
-            } else if (scrollDiff >= 2 && !this.state.rightShadingShowing) {
-                // Right edge of matrix scrolled out of view.
-                this.setState({ rightShadingShowing: true });
-            }
+    handleScrollIndicator(element) {
+        // Have to use a "roughly equal to" test because of an MS Edge bug mentioned here:
+        // https://stackoverflow.com/questions/30900154/workaround-for-issue-with-ie-scrollwidth
+        const scrollDiff = Math.abs((element.scrollWidth - element.scrollLeft) - element.clientWidth);
+        if (scrollDiff < 2 && !this.state.scrolledRight) {
+            // Right edge of matrix scrolled into view.
+            this.setState({ scrolledRight: true });
+        } else if (scrollDiff >= 2 && this.state.scrolledRight) {
+            // Right edge of matrix scrolled out of view.
+            this.setState({ scrolledRight: false });
         }
     }
 
     render() {
         const { context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries } = this.props;
-        const { leftShadingShowing, rightShadingShowing } = this.state;
+        const { scrolledRight } = this.state;
         const visualizeDisabledTitle = context.matrix.doc_count > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
         // Convert encode matrix data to a DataTable object.
@@ -506,7 +497,7 @@ class MatrixPresentation extends React.Component {
             <div className="matrix__presentation">
                 <h4>Showing {context.matrix.doc_count} results</h4>
                 <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} />
-                <div className={`matrix__label matrix__label--horz${rightShadingShowing ? ' horz-scroll' : ''}`}>
+                <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
                     <span>{context.matrix.x.label}</span>
                     {svgIcon('largeArrow')}
                 </div>
@@ -516,8 +507,6 @@ class MatrixPresentation extends React.Component {
                         <div className="matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
                             <DataTable tableData={matrixConfig} />
                         </div>
-                        <div className={`matrix-shading matrix-shading--left${leftShadingShowing ? ' showing' : ''}`} />
-                        <div className={`matrix-shading matrix-shading--right${rightShadingShowing ? ' showing' : ''}`} />
                     </div>
                 </div>
             </div>
