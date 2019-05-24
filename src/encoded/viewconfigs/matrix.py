@@ -198,12 +198,12 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
                 self._summarize_buckets(x_buckets, bucket, grouping_fields, matrix)
 
     def _remove_hidden_facet_terms(self, facets):
-        """Hide facets set to be hidden.
+        """Hide facet terms set to be hidden.
 
         Arguments:
             facets {Collection} -- Collection of facets
         Returns:
-            Collection -- filter facets
+            Collection -- facets without hidden terms
 
         """
         if not self._hidden_facet_terms:
@@ -218,7 +218,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
 
     def _remove_hidden_filters(self, filters):
         """Remove hidden filters.
-        
+
         Arguments:
             filters {Collection} -- Collectiion of filters
 
@@ -243,7 +243,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             facets {list} -- List of facets
 
         Returns:
-            List -- facets without hidden facets
+            List -- Facets without hidden facets
 
         """
         if not self._remove_hidden_facets:
