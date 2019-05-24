@@ -773,14 +773,21 @@ class DateSelectorFacet extends React.Component {
         // Set possible years to be 2008 -> current year for 'date_submitted'
         const currentYear = moment().format('YYYY');
 
-        let possibleYears = [];
+        let firstYear = 2007;
         if (this.state.activeFacet === 'date_released') {
-            const numberOfYears = +currentYear - 2008;
-            possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + 2009));
-        } else {
-            const numberOfYears = +currentYear - 2007;
-            possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + 2008));
+            firstYear = 2008;
         }
+        const numberOfYears = +currentYear - firstYear;
+        const possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + firstYear + 1));
+        
+        // Set dropdown options to include all possibilities
+        this.setState({
+            possibleYears,
+            startYears: possibleYears,
+            endYears: possibleYears,
+            startMonths: allMonths,
+            endMonths: allMonths,
+        });
 
         // if a date range has already been selected, we will use that date range to populate drop-downs
         const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
@@ -794,11 +801,6 @@ class DateSelectorFacet extends React.Component {
             const endMonth = filterString.substr(indexOfEnd + 5, 2);
             // Set dropdown lists to match existing query
             this.setState({
-                possibleYears,
-                startYears: possibleYears,
-                endYears: possibleYears,
-                startMonths: allMonths,
-                endMonths: allMonths,
                 startYear,
                 endYear,
                 startMonth,
@@ -807,11 +809,6 @@ class DateSelectorFacet extends React.Component {
         } else {
             // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
             this.setState({
-                possibleYears,
-                startYears: possibleYears,
-                endYears: possibleYears,
-                startMonths: allMonths,
-                endMonths: allMonths,
                 startYear: possibleYears[0],
                 endYear: possibleYears[possibleYears.length - 1],
                 startMonth: '01',

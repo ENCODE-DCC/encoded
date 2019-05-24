@@ -269,12 +269,13 @@
     display: flex;
     flex: 0 1 10%;
     font-size: 12px;
+    padding-bottom: 5px;
 }
 
 .date-container {
     display: flex;
     position: relative;
-    align-items: center;
+    align-items: flex-end;
     .date-selector-module {
         flex: 0 0 45%;
     }
