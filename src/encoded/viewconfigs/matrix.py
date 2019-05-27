@@ -246,9 +246,9 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             List -- Facets without hidden facets
 
         """
-        if not self._remove_hidden_facets or not facets or not facet['field'] :
+        if not self._remove_hidden_facets or not facets:
             return facets
-        return [facet for facet in facets if facet['field'] not in self._hidden_facets]
+        return [facet for facet in facets if facet.get('field', {}) and facet['field'] not in self._hidden_facets]
 
     def preprocess_view(self):
         '''
