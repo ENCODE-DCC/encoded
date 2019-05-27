@@ -206,7 +206,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             Collection -- facets without hidden terms
 
         """
-        if not self._hidden_facet_terms:
+        if not self._hidden_facet_terms or not facets:
             return facets
         for field, terms in self._hidden_facet_terms.items():
             for result in facets:
@@ -223,7 +223,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             filters {Collection} -- Collectiion of filters
 
         """
-        if not self._hidden_filters:
+        if not self._hidden_filters or not filters:
             return filters
 
         hidden_filter_indices = []
@@ -246,7 +246,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
             List -- Facets without hidden facets
 
         """
-        if not self._remove_hidden_facets:
+        if not self._remove_hidden_facets or not facets:
             return facets
         return [facet for facet in facets if facet['field'] not in self._hidden_facets]
 
