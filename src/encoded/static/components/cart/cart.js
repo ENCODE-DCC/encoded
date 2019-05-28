@@ -250,7 +250,7 @@ class FacetTerm extends React.Component {
                     onKeyDown={this.handleKeyDown}
                     onClick={this.handleTermClick}
                     aria-pressed={selected}
-                    aria-label={`${termCount} files ${term}`}
+                    aria-label={`${termCount} ${term} files`}
                 >
                     <FacetTermCheck checked={selected} />
                     <div className="cart-facet-term__text">{term}</div>
