@@ -255,6 +255,7 @@ def test_audit_paired_with_non_fastq(testapp, file1, file6):
                         'paired_end': '1'})
     testapp.patch_json(file6['@id'], {
                         'run_type': 'paired-ended',
+                        'platform': platform1['uuid'],
                         'paired_end': '2',
                         'paired_with': file1['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
