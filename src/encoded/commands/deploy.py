@@ -280,10 +280,6 @@ def _get_instances_tag_data(main_args):
         'name': main_args.name,
         'username': None,
     }
-    if instances_tag_data['branch'] is None:
-        instances_tag_data['branch'] = subprocess.check_output(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
-        ).decode('utf-8').strip()
     instances_tag_data['commit'] = subprocess.check_output(
         ['git', 'rev-parse', '--short', instances_tag_data['branch']]
     ).decode('utf-8').strip()
@@ -656,6 +652,11 @@ def parse_args():
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
+    # Add branch arg
+    if not args.branch:
+        args.branch = subprocess.check_output(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+        ).decode('utf-8').strip()
     return args
 
 
