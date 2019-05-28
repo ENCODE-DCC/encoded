@@ -353,6 +353,7 @@
     @at-root #{&}-term {
         margin: 0 4px;
         padding: 4px 0;
+        font-size: 0; // Edge/IE11 fix for too-tall <li>
 
         &:hover {
             background-color: #f0f0f0;
@@ -368,15 +369,18 @@
         // Checkbox for a facet term
         $cart-facet-check-box-size: 18px;
         @at-root #{&}__check {
+            display: flex;
             flex: 0 0 $cart-facet-check-box-size;
             width: $cart-facet-check-box-size;
             height: $cart-facet-check-box-size;
             border: 1px solid #c0c0c0;
             border-radius: 3px;
+            justify-content: center;
+            align-items: center;
 
             $cart-facet-check-size: 16px;
             .icon {
-                line-height: $cart-facet-check-size;
+                flex: 0 0 $cart-facet-check-size;
                 font-size: $cart-facet-check-size;
             }
         }
