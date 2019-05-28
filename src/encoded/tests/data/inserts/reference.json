@@ -71,5 +71,23 @@
         "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b",
         "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
         "date_released": "2016-01-01"
+    },
+    {
+        "_test": "RegulomeDB dbSNP 141 reference",
+        "uuid": "0f90fad8-239b-4f1c-aa4d-2982d4fb3a56",
+        "organism": "human",
+        "aliases": [
+            "j-michael-cherry:regulomeDB-dbSNP141"
+        ],
+        "status": "archived",
+        "description": "dbSNP 141 reference dataset",
+        "reference_type": "index",
+        "award": "U41HG009293",
+        "lab": "j-michael-cherry",
+        "schema_version": "15",
+        "date_created": "2018-09-07T16:18:48.590288+00:00",
+        "accession": "ENCSR916TST",
+        "internal_tags": ["RegulomeDB"],
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078"
     }
 ]

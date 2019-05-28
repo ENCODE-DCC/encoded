@@ -101,5 +101,118 @@
         "uuid": "a625bb6b-47fd-445a-85bd-c3beb0a350a3",
         "related_files": ["ENCFF000LSP", "ENCFF000LSQ", "ENCFF690MGJ", "ENCFF145DKR"],
         "date_released": "2016-09-21"
+    },
+    {
+        "_test": "RegulomeDB test PWM",
+        "uuid": "7fd82bc3-120e-4dda-9a9f-c2cd37c71afc",
+        "description": "M01167.mapc.gz,MA0076.1.mapc.gz",
+        "internal_tags": [
+            "RegulomeDB"
+        ],
+        "status": "archived",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "accession": "ENCSR333TST",
+        "lab": "j-michael-cherry",
+        "organism": "human",
+        "date_created": "2018-09-07T17:31:29.846977+00:00",
+        "annotation_type": "PWMs",
+        "award": "U41HG009293",
+        "schema_version": "19",
+        "targets": [
+            "ELK4-human"
+        ],
+        "aliases": [
+            "j-michael-cherry:regulomeDB-PWMs_M01167",
+            "j-michael-cherry:regulomeDB-PWMs_MA0076.1"
+        ]
+    },
+    {
+        "_test": "RegulomeDB test footprint",
+        "uuid": "bfee7ca5-800e-4106-903d-825b9fe2faf4",
+        "status": "archived",
+        "award": "U41HG009293",
+        "targets": [
+            "ELK4-human"
+        ],
+        "date_created": "2018-09-07T18:04:04.730751+00:00",
+        "accession": "ENCSR228TST",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "organism": "human",
+        "description": "Footprint calls with M01167.pwm on HeLa-S3",
+        "annotation_type": "Footprints",
+        "biosample_ontology": "cell_line_EFO_0002791",
+        "lab": "j-michael-cherry",
+        "schema_version": "19",
+        "aliases": [
+            "j-michael-cherry:regulomedb-Motifs-Footprints-Helas3-M01167.pwm"
+        ],
+        "internal_tags": [
+            "RegulomeDB"
+        ]
+    },
+    {
+        "_test": "RegulomeDB test eQTL",
+        "uuid": "f10dba36-d3dd-455a-ae25-57239b7b9e27",
+        "status": "archived",
+        "award": "U41HG009293",
+        "date_created": "2018-09-07T17:30:41.822406+00:00",
+        "accession": "ENCSR899TST",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "organism": "human",
+        "description": "eQTLs from PMID20220756 - Montgomery10_transcriptQTL.out",
+        "annotation_type": "eQTLs",
+        "biosample_ontology": "cell_line_EFO_0005292",
+        "lab": "j-michael-cherry",
+        "schema_version": "19",
+        "aliases": [
+            "j-michael-cherry:regulomeDB-QTL_Montgomery10_transcriptQTL.out.gz"
+        ],
+        "internal_tags": [
+            "RegulomeDB"
+        ]
+    },
+    {
+        "_test": "RegulomeDB test dsQTL",
+        "uuid": "4109b15f-8bf7-4711-b644-43032f5c27e0",
+        "description": "dsQTLs from PMID22307276 - GSE31388_dsQtlTable.hg19.txt",
+        "biosample_ontology": "cell_line_EFO_0005292",
+        "aliases": [
+            "j-michael-cherry:regulomeDB-QTL_GSE31388_dsQtlTable.hg19.bed.gz"
+        ],
+        "lab": "j-michael-cherry",
+        "award": "U41HG009293",
+        "annotation_type": "dsQTLs",
+        "status": "archived",
+        "organism": "human",
+        "internal_tags": [
+            "RegulomeDB"
+        ],
+        "accession": "ENCSR061TST",
+        "date_created": "2018-09-07T17:30:42.494652+00:00",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "schema_version": "19"
+    },
+    {
+        "_test": "RegulomeDB test chromatin state",
+        "uuid": "51911c72-7c18-454f-803b-35e8416a716f",
+        "award": "U41HG009293",
+        "internal_tags": [
+            "RegulomeDB"
+        ],
+        "date_released": "2013-07-01",
+        "aliases": [
+            "roadmap-epigenomics:E117_chromhmm-15_state"
+        ],
+        "annotation_type": "chromatin state",
+        "organism": "human",
+        "biosample_ontology": "cell_line_EFO_0002791",
+        "schema_version": "19",
+        "date_created": "2016-07-13T14:18:38.451728+00:00",
+        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+        "lab": "j-michael-cherry",
+        "status": "archived",
+        "description": "ChromHMM 15-state model for Cervical Carcinoma Cell Line",
+        "encyclopedia_version": "ROADMAP",
+        "accession": "ENCSR497SKR"
     }
 ]

@@ -86,7 +86,7 @@ Feature: Search
         And I wait for the content to load
         When I click the link to "?type=Experiment&assay_title=ChIP-seq"
         And I wait for the content to load
-        Then I should see "Showing 8 of 8 results"
+        Then I should see "Showing 9 of 9 results"
 
         When I click the link to "?type=Experiment"
         And I click the link to "?type=Experiment&assay_title=Histone+ChIP-seq"

@@ -3400,4 +3400,130 @@
         "go_evidence_code": "IBA",
         "go_aspect": "P"
     }]
+}, {
+    "uuid": "84ff57f8-8215-404a-8677-9dd52cdbd5e0",
+    "symbol": "ELK4",
+    "name": "ELK4, ETS transcription factor",
+    "status": "released",
+    "synonyms": ["SAP1"],
+    "geneid": "2005",
+    "organism": "human",
+    "dbxrefs": [
+        "MIM:600246",
+        "HGNC:3326",
+        "ENSEMBL:ENSG00000158711",
+        "Vega:OTTHUMG00000037221",
+        "UniProtKB:P28324",
+        "UniProtKB:A0A024R9C2",
+        "UniProtKB:Q8IXL1",
+        "UniProtKB:A0A024R997"
+    ],
+    "ncbi_entrez_status": "live",
+    "go_annotations": [
+    {
+    "go_id": "GO:0030154",
+    "go_name": "cell differentiation",
+    "go_evidence_code": "IBA",
+    "go_aspect": "P"
+    }, {
+        "go_id": "GO:0001047",
+        "go_name": "core promoter binding",
+        "go_evidence_code": "TAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "IBA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000122",
+        "go_name": "negative regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0003682",
+        "go_name": "chromatin binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005515",
+        "go_name": "protein binding",
+        "go_evidence_code": "IPI",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0000978",
+        "go_name": "RNA polymerase II proximal promoter sequence-specific DNA binding",
+        "go_evidence_code": "IDA",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003712",
+        "go_name": "transcription coregulator activity",
+        "go_evidence_code": "TAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0006366",
+        "go_name": "transcription by RNA polymerase II",
+        "go_evidence_code": "IEA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0005829",
+        "go_name": "cytosol",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0005654",
+        "go_name": "nucleoplasm",
+        "go_evidence_code": "IDA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0070932",
+        "go_name": "histone H3 deacetylation",
+        "go_evidence_code": "IDA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "NAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0045944",
+        "go_name": "positive regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IMP",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0003677",
+        "go_name": "DNA binding",
+        "go_evidence_code": "TAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0003700",
+        "go_name": "DNA-binding transcription factor activity",
+        "go_evidence_code": "NAS",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0006357",
+        "go_name": "regulation of transcription by RNA polymerase II",
+        "go_evidence_code": "IBA",
+        "go_aspect": "P"
+    }, {
+        "go_id": "GO:0001077",
+        "go_name": "proximal promoter DNA-binding transcription activator activity, RNA polymerase II-specific",
+        "go_evidence_code": "IC",
+        "go_aspect": "F"
+    }, {
+        "go_id": "GO:0005634",
+        "go_name": "nucleus",
+        "go_evidence_code": "IBA",
+        "go_aspect": "C"
+    }, {
+        "go_id": "GO:0000981",
+        "go_name": "DNA-binding transcription factor activity, RNA polymerase II-specific",
+        "go_evidence_code": "ISM",
+        "go_aspect": "F"
+    }]
 }]

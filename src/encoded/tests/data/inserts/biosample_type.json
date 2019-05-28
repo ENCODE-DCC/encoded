@@ -186,4 +186,10 @@
     "term_name": "WTC-11",
     "term_id": "EFO:0009747",
     "status": "released"
+}, {
+    "classification": "cell line",
+    "uuid": "83c0535d-11fb-443f-9326-bbf381a6e2aa",
+    "term_name": "lymphoblastoid cell line",
+    "term_id": "EFO:0005292",
+    "status": "released"
 }]
