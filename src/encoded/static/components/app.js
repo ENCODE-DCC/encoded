@@ -8,6 +8,7 @@ import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
+import { BrowserFeat } from './browserfeat';
 import cartStore, {
     cartCacheSaved,
     cartCreateAutosave,
@@ -283,6 +284,9 @@ class App extends React.Component {
             session,
         });
 
+        // Set browser features in the <html> CSS class.
+        BrowserFeat.setHtmlFeatClass();
+
         // Make a URL for the logo.
         const hrefInfo = url.parse(this.state.href);
         const logoHrefInfo = {
@@ -366,17 +370,6 @@ class App extends React.Component {
             window.onhashchange = this.onHashChange;
         }
         window.onbeforeunload = this.handleBeforeUnload;
-        (function walkmeinit() {
-            const s = document.getElementsByTagName('script')[0];
-            if (s) {
-                const walkme = document.createElement('script');
-                walkme.type = 'text/javascript';
-                walkme.async = true;
-                walkme.src = 'https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js';
-                s.parentNode.insertBefore(walkme, s);
-                window._walkmeConfig = { smartLoad: true };
-            }
-        }());
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -1101,6 +1094,7 @@ class App extends React.Component {
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
                     <script async src="//www.google-analytics.com/analytics.js" />
+                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}

@@ -65,7 +65,7 @@ describe('Experiment Page', () => {
         test('has proper treatment', () => {
             const item = summary.find('[data-test="treatments"]');
             const desc = item.find('dd');
-            expect(desc.text()).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hour [1-1]');
+            expect(desc.text()).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hours');
         });
 
         test('has proper strand specificity', () => {
@@ -77,7 +77,7 @@ describe('Experiment Page', () => {
         test('has proper spikeins', () => {
             const item = summary.find('[data-test="spikeins"]');
             const desc = item.find('dd');
-            expect(desc.text()).toEqual('ENCSR000AJW [1-1]');
+            expect(desc.text()).toEqual('ENCSR000AJW');
         });
     });
 

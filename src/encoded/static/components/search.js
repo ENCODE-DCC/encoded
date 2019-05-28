@@ -2128,8 +2128,8 @@ Search.contextTypes = {
 
 // optionally make a persistent region
 Search.lastRegion = {
-    assembly: React.PropTypes.string,
-    region: React.PropTypes.string,
+    assembly: PropTypes.string,
+    region: PropTypes.string,
 };
 
 globals.contentViews.register(Search, 'Search');

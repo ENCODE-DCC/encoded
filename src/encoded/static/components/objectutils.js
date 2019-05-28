@@ -66,7 +66,11 @@ export function singleTreatment(treatment) {
     }
     treatmentText += `${treatment.treatment_term_name}${treatment.treatment_term_id ? ` (${treatment.treatment_term_id})` : ''} `;
     if (treatment.duration) {
-        treatmentText += `for ${treatment.duration} ${treatment.duration_units ? treatment.duration_units : ''}`;
+        let units = '';
+        if (treatment.duration_units) {
+            units = `${treatment.duration_units}${treatment.duration !== 1 ? 's' : ''}`;
+        }
+        treatmentText += `for ${treatment.duration}${units ? ` ${units}` : ''}`;
     }
     return treatmentText;
 }

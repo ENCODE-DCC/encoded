@@ -18,8 +18,7 @@
     ],
     "testPathIgnorePatterns": [
       ".eslintrc.js"
-    ],
-    "setupTestFrameworkScriptFile": "../../../node_modules/jest-enzyme/lib/index.js"
+    ]
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
@@ -34,7 +33,8 @@
     "babel-preset-react": "^6.16.0",
     "babel-register": "^6.22.0",
     "css-loader": "^0.26.1",
-    "enzyme": "^2.8.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.10.0",
@@ -50,8 +50,6 @@
     "jsdom": "^8.4.0",
     "json-loader": "^0.5.4",
     "node-sass": "^4.11.0",
-    "react-addons-test-utils": "^15.5.1",
-    "react-test-renderer": "^15.5.4",
     "redux-mock-store": "^1.5.1",
     "sass-loader": "^4.1.1",
     "string-replace-loader": "^1.0.5",
@@ -78,10 +76,10 @@
     "marked": "^0.3.3",
     "moment": "^2.17.1",
     "pluralize": "^7.0.0",
-    "prop-types": "^15.5.6",
+    "prop-types": "^15.7.2",
     "query-string": "^4.1.0",
-    "react": "^15.5.3",
-    "react-dom": "^15.5.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-thunk": "^2.3.0",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 
 // Import test component and data.
 import Platform from '../platform';
@@ -35,12 +35,13 @@ describe('Platform', () => {
 
         beforeAll(() => {
             defDescNode = defDescs.at(2);
-            unorderedList = defDescNode.childAt(0);
+            unorderedList = defDescNode.children().childAt(0);
             listItems = unorderedList.children();
             anchors = unorderedList.find('a');
         });
 
         test('has an unordered list with three items', () => {
+            console.log(unorderedList.debug());
             expect(defDescNode.children().exists()).toBeTruthy();
             expect(defDescNode.children()).toHaveLength(1);
             expect(unorderedList.children().exists()).toBeTruthy();

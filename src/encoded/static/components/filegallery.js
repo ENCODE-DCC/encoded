@@ -1839,8 +1839,8 @@ class FileGalleryRendererComponent extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState, prevContext) {
-        this.updateFiles(!!(prevContext.session && prevContext.session['auth.userid']));
+    componentDidUpdate(prevProps) {
+        this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']));
     }
 
     // Called from child components when the selected node changes.
@@ -2152,14 +2152,24 @@ FileGalleryRendererComponent.inclusionStatuses = [
 ];
 
 FileGalleryRendererComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Dataset whose files we're rendering
-    data: PropTypes.object, // File data retrieved from search request
-    schemas: PropTypes.object, // Schemas for the entire system; used for QC property titles
-    hideGraph: PropTypes.bool, // T to hide graph display
-    altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
-    auditIndicators: PropTypes.func.isRequired, // Inherited from auditDecor HOC
-    auditDetail: PropTypes.func.isRequired, // Inherited from auditDecor HOC
-    showReplicateNumber: PropTypes.bool, // True to show replicate number
+    /** Dataset whose files we're rendering */
+    context: PropTypes.object.isRequired,
+    /** File data retrieved from search request */
+    data: PropTypes.object,
+    /** Schemas for the entire system; used for QC property titles */
+    schemas: PropTypes.object,
+    /** True to hide graph display */
+    hideGraph: PropTypes.bool,
+    /** True to default to All Assemblies and Annotations */
+    altFilterDefault: PropTypes.bool,
+    /** Inherited from auditDecor HOC */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Inherited from auditDecor HOC */
+    auditDetail: PropTypes.func.isRequired,
+    /** True to show replicate number */
+    showReplicateNumber: PropTypes.bool,
+    /** ENCODE session object from <App> */
+    session: PropTypes.object.isRequired,
 };
 
 FileGalleryRendererComponent.defaultProps = {
@@ -2171,7 +2181,6 @@ FileGalleryRendererComponent.defaultProps = {
 };
 
 FileGalleryRendererComponent.contextTypes = {
-    session: PropTypes.object,
     session_properties: PropTypes.object,
     location_href: PropTypes.string,
     navigate: PropTypes.func,

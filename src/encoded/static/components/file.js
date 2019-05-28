@@ -212,7 +212,7 @@ class DerivedFiles extends React.Component {
 }
 
 DerivedFiles.propTypes = {
-    file: React.PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
+    file: PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
 };
 
 
@@ -414,7 +414,7 @@ class FileComponent extends React.Component {
                                     {context.restriction_enzymes ?
                                         <div data-test="restrictionEnzymes">
                                             <dt>Restriction enzymes</dt>
-                                            <dd>{context.restriction_enzymes.join(", ")}</dd>
+                                            <dd>{context.restriction_enzymes.join(', ')}</dd>
                                         </div>
                                     : null}
 
