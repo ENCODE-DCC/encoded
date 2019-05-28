@@ -10,6 +10,8 @@
 
 * Added *long-read sequencing error correction* to *analysis_step_types* enums.
 
+* Added *splice junction extraction* to *analysis_step_types* enums.
+
 ### Schema version 6
 
 * *status* property was restricted to one of  
