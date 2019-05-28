@@ -765,48 +765,51 @@ class DateSelectorFacet extends React.Component {
     }
 
     componentDidMount() {
-        this.setActiveFacetParameters();
+        this.setActiveFacetParameters(true);
     }
 
-    setActiveFacetParameters() {
+    setActiveFacetParameters(initializationFlag) {
+        let activeFacet = null;
+        let activeFilter = null;
+        // If there is a date filter applied, we'll use that filter to set state when the component is mounted
+        if (initializationFlag) {
+            // if a date range has already been selected, we will use that date range to populate drop-downs
+            const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
+            if (existingFilter[0]) {
+                activeFilter = true;
+                const filterString = existingFilter[0].term;
+                activeFacet = (filterString.indexOf('date_released') !== -1) ? 'date_released' : 'date_submitted';
+                const indexOfStart = filterString.indexOf('[') + 1;
+                const indexOfEnd = filterString.indexOf('TO ') + 3;
+                const startYear = filterString.substr(indexOfStart, 4);
+                const startMonth = filterString.substr(indexOfStart + 5, 2);
+                const endYear = filterString.substr(indexOfEnd, 4);
+                const endMonth = filterString.substr(indexOfEnd + 5, 2);
+                // Set dropdown lists to match existing query
+                this.setState({
+                    activeFacet,
+                    startYear,
+                    endYear,
+                    startMonth,
+                    endMonth,
+                });
+            }
+        }
+        if (activeFacet === null) {
+            activeFacet = this.state.activeFacet;
+        }
+
         // Set possible years to be 2009 -> current year for 'date_released'
         // Set possible years to be 2008 -> current year for 'date_submitted'
         const currentYear = moment().format('YYYY');
-
         let firstYear = 2007;
-        if (this.state.activeFacet === 'date_released') {
+        if (activeFacet === 'date_released') {
             firstYear = 2008;
         }
         const numberOfYears = +currentYear - firstYear;
         const possibleYears = Array.from({ length: numberOfYears }, (e, i) => (i + firstYear + 1));
-        
-        // Set dropdown options to include all possibilities
-        this.setState({
-            possibleYears,
-            startYears: possibleYears,
-            endYears: possibleYears,
-            startMonths: allMonths,
-            endMonths: allMonths,
-        });
 
-        // if a date range has already been selected, we will use that date range to populate drop-downs
-        const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
-        if (existingFilter[0]) {
-            const filterString = existingFilter[0].term;
-            const indexOfStart = filterString.indexOf('[') + 1;
-            const indexOfEnd = filterString.indexOf('TO ') + 3;
-            const startYear = filterString.substr(indexOfStart, 4);
-            const startMonth = filterString.substr(indexOfStart + 5, 2);
-            const endYear = filterString.substr(indexOfEnd, 4);
-            const endMonth = filterString.substr(indexOfEnd + 5, 2);
-            // Set dropdown lists to match existing query
-            this.setState({
-                startYear,
-                endYear,
-                startMonth,
-                endMonth,
-            });
-        } else {
+        if (!initializationFlag || !activeFilter) {
             // Set dropdown lists to be full lists of possiblities and initialize to boundaries of full range
             this.setState({
                 startYear: possibleYears[0],
@@ -815,6 +818,15 @@ class DateSelectorFacet extends React.Component {
                 endMonth: '12',
             });
         }
+
+        // Set dropdown options to include all possibilities
+        this.setState({
+            possibleYears,
+            startYears: possibleYears,
+            endYears: possibleYears,
+            startMonths: allMonths,
+            endMonths: allMonths,
+        });
     }
 
     selectYear(event) {
@@ -852,9 +864,9 @@ class DateSelectorFacet extends React.Component {
 
     // If the start year and the end year match, we have to be careful to not allow the user to pick an end month that is earlier than the start month
     checkForSameYear() {
-        if (this.state.startYear === this.state.endYear) {
+        if (+this.state.startYear === +this.state.endYear) {
             // If start month is later than the end month and years match, this is not allowed, so we reset
-            if (this.state.endMonth < this.state.startMonth) {
+            if (+this.state.endMonth < +this.state.startMonth) {
                 this.resetMonthDropDowns();
             // If start and end months are allowed, we still need to filter dropdown possible lists so they can't select an unallowed combination
             } else {
