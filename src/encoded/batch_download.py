@@ -431,7 +431,7 @@ def metadata_tsv(context, request):
                 data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t')
+    writer = csv.writer(fout, delimiter='\t', lineterminator='\n')
     header.extend([prop for prop in _audit_mapping])
     writer.writerow(header)
     writer.writerows(rows)
