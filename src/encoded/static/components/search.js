@@ -781,12 +781,10 @@ class DateSelectorFacet extends React.Component {
                 activeFilter = true;
                 const filterString = existingFilter[0].term;
                 activeFacet = (filterString.indexOf('date_released') !== -1) ? 'date_released' : 'date_submitted';
-                const indexOfStart = filterString.indexOf('[') + 1;
-                const indexOfEnd = filterString.indexOf('TO ') + 3;
-                startYear = filterString.substr(indexOfStart, 4);
-                const startMonth = filterString.substr(indexOfStart + 5, 2);
-                endYear = filterString.substr(indexOfEnd, 4);
-                const endMonth = filterString.substr(indexOfEnd + 5, 2);
+                startYear = filterString.split('[')[1].split('-')[0];
+                const startMonth = filterString.split('[')[1].split('-')[1];
+                endYear = filterString.split('TO ')[1].split('-')[0];
+                const endMonth = filterString.split('TO ')[1].split('-')[1];
                 // Set dropdown lists to match existing query
                 this.setState({
                     activeFacet,
