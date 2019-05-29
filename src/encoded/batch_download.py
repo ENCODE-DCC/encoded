@@ -49,7 +49,7 @@ _tsv_mapping = OrderedDict([
     ('Biosample genetic modifications methods', ['replicates.library.biosample.applied_modifications.method']),
     ('Biosample genetic modifications categories', ['replicates.library.biosample.applied_modifications.category']),                                   
     ('Biosample genetic modifications targets', ['replicates.library.biosample.applied_modifications.modified_site_by_target_id']),                                   
-    ('Biosample genetic modifications geexne targets', ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id']),                                   
+    ('Biosample genetic modifications gene targets', ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id']),                                   
     ('Biosample genetic modifications site coordinates', ['replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
                                                           'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
                                                           'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
