@@ -135,8 +135,8 @@
             "title": "bidirectional promoter lncrna",
             "type": "integer"
         },
-        "gene": {
-            "description": "gene",
+        "number_of_genes_detected": {
+            "description": "Number of genes detected at > 1 TPM",
             "minimum": 0,
             "title": "gene",
             "type": "integer"

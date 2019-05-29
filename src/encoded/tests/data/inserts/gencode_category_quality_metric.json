@@ -26,7 +26,7 @@
         "TR_V_pseudogene": 407,
         "antisense": 711,
         "bidirectional_promoter_lncrna": 739,
-        "gene": 331,
+        "number_of_genes_detected": 331,
         "lincRNA": 280,
         "macro_lncRNA": 555,
         "miRNA": 283,
