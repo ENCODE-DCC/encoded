@@ -397,9 +397,9 @@ def metadata_tsv(context, request):
                             'files.output_type']
 
             for f in experiment_json['files']:
-                if 'files.file_type' in param_list:
-                    if f['file_type'] not in param_list['files.file_type']:
-                        continue
+                # If we're looking for a file type but it doesn't match, ignore file
+                if not files_prop_param_list(f, param_list):
+                    continue
                 if restricted_files_present(f):
                     continue
                 if is_no_file_available(f):
