@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
-import { FetchedData, FetchedItems, Param } from './fetched';
+import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import Tooltip from '../libs/bootstrap/tooltip';
@@ -509,9 +509,22 @@ class HomeBanner extends React.Component {
             /** ENCODE page object containing banner */
             page: null,
         };
+        this.bannerLoad = this.bannerLoad.bind(this);
     }
 
     componentDidMount() {
+        this.bannerLoad();
+    }
+
+    componentDidUpdate(prevProps) {
+        // If we transitioned to a logged-in admin user, try loading the banner page again in case
+        // it existed but was in progress.
+        if (!prevProps.adminUser && this.props.adminUser) {
+            this.bannerLoad();
+        }
+    }
+
+    bannerLoad() {
         return this.context.fetch('/home-banner/', {
             method: 'GET',
             headers: {
@@ -523,7 +536,9 @@ class HomeBanner extends React.Component {
             }
             return Promise.resolve(null);
         }).then((responseJson) => {
-            if (responseJson && responseJson.status !== 'deleted') {
+            // Don't show banner if /home-banner/ is deleted, or if it's in progress and the user
+            // isn't an admin.
+            if (responseJson && responseJson.status !== 'deleted' && (this.props.adminUser || responseJson.status === 'released')) {
                 this.setState({ page: responseJson });
                 return responseJson;
             }
@@ -550,6 +565,15 @@ class HomeBanner extends React.Component {
         return null;
     }
 }
+
+HomeBanner.propTypes = {
+    /** True if current user is logged in as an admin */
+    adminUser: PropTypes.bool,
+};
+
+HomeBanner.defaultProps = {
+    adminUser: false,
+};
 
 HomeBanner.contextTypes = {
     fetch: PropTypes.func,
@@ -606,6 +630,8 @@ export default class Home extends React.Component {
     }
 
     render() {
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+
         // Based on the currently selected organisms and assay category, generate a query string
         // for the GET request to retrieve chart data.
         const currentQuery = generateQuery(this.state.organisms, this.state.assayCategory);
@@ -616,7 +642,7 @@ export default class Home extends React.Component {
                     <div className="col-xs-12">
                         <Panel>
                             <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
-                            <HomeBanner />
+                            <HomeBanner adminUser={adminUser} />
                             <div className="organism-tabs">
                                 <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
                             </div>
@@ -643,6 +669,10 @@ export default class Home extends React.Component {
         );
     }
 }
+
+Home.contextTypes = {
+    session_properties: PropTypes.object,
+};
 
 
 // Given retrieved data, draw all home-page charts.
@@ -856,7 +886,7 @@ const HomepageChartLoader = (props) => {
 
     return (
         <FetchedData>
-            <Param name="data" url={`/search/${query}`} />
+            <Param name="data" url={`/search/${query}`} allowMultipleRequest />
             <ChartGallery organisms={organisms} assayCategory={assayCategory} query={query} />
         </FetchedData>
     );
@@ -1531,11 +1561,11 @@ class News extends React.Component {
     }
 
     render() {
-        const { items } = this.props;
-        if (items && items.length) {
+        const { newsSearch } = this.props;
+        if (newsSearch && newsSearch['@graph'].length > 0) {
             return (
                 <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
-                    {items.map(item =>
+                    {newsSearch['@graph'].map(item =>
                         <div key={item['@id']} className="news-listing-item">
                             <h3>{item.title}</h3>
                             <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
@@ -1553,27 +1583,28 @@ class News extends React.Component {
 }
 
 News.propTypes = {
-    items: PropTypes.array,
+    newsSearch: PropTypes.object,
     newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
 };
 
 News.defaultProps = {
-    items: null,
+    newsSearch: null,
 };
 
 
-// Send a GET request for the most recent five news posts. Don't make this a stateless component
-// because we attach `ref` to this, and stateless components don't support that.
-/* eslint-disable react/prefer-stateless-function */
-class NewsLoader extends React.Component {
-    render() {
-        return <FetchedItems {...this.props} url={`${newsUri}&limit=5`} Component={News} newsLoaded={this.props.newsLoaded} />;
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+/**
+ * Send a GET request for the most recent five news posts.
+ */
+const NewsLoader = props => (
+    <FetchedData>
+        <Param name="newsSearch" url={`${newsUri}&limit=5`} allowMultipleRequest />
+        <News newsLoaded={props.newsLoaded} />
+    </FetchedData>
+);
 
 NewsLoader.propTypes = {
-    newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
+    /** Calls parent once the news is loaded */
+    newsLoaded: PropTypes.func.isRequired,
 };
 
 
