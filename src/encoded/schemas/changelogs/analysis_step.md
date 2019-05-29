@@ -1,5 +1,13 @@
 ## Changelog for analysis_step.json
 
+### Schema version 8
+
+* Add *analysis_step_types* *pseudoreplicated IDR*
+* Add *IDR ranked peaks* and *IDR thresholded peaks* for *input_file_types* and *output_file_types*
+* Change *conservative idr thresholded peaks* to *conservative IDR thresholded peaks* for *input_file_types* and *output_file_types*
+* Change *optimal idr thresholded peaks* to *optimal IDR thresholded peaks* for *input_file_types* and *output_file_types*
+* Change *pseudoreplicated idr thresholded peaks* to *pseudoreplicated IDR thresholded peaks* for *input_file_types* and *output_file_types*
+
 ### Minor changes since schema version 7
 
 * *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*

@@ -29,6 +29,14 @@ const qcAttachmentProperties = {
     ChipSeqFilterQualityMetric: [
         { cross_correlation_plot: 'Cross-correlation plot' },
     ],
+    ChipAlignmentEnrichmentQualityMetric: [
+        { cross_correlation_plot: 'Cross-correlation plot' },
+        { fingerprint_plot: 'Fingerprint plot' },
+        { gc_bias_plot: 'GC bias plot' },
+    ],
+    ChipReplicationQualityMetric: [
+        { IDR_dispersion_plot: 'IDR dispersion plot' },
+    ],
 };
 
 

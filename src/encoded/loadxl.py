@@ -62,6 +62,11 @@ ORDER = [
     'star_quality_metric',
     'bismark_quality_metric',
     'cpg_correlation_quality_metric',
+    'chip_alignment_samstat_quality_metric',
+    'chip_alignment_enrichment_quality_metric',
+    'chip_library_quality_metric',
+    'chip_peak_enrichment_quality_metric',
+    'chip_replication_quality_metric',
     'chipseq_filter_quality_metric',
     'micro_rna_quantification_quality_metric',
     'micro_rna_mapping_quality_metric',
@@ -97,7 +102,10 @@ IS_ATTACHMENT = [
     'IDR_parameters_rep1_pr',
     'IDR_parameters_rep2_pr',
     'IDR_parameters_pool_pr',
-    'cross_correlation_plot'
+    'cross_correlation_plot',
+    'fingerprint_plot',
+    'gc_bias_plot',
+    'IDR_dispersion_plot',
 ]
 
 

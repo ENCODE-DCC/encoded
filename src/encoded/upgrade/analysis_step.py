@@ -173,3 +173,36 @@ def analysis_step_6_7(value, system):
             output_file.remove('candidate regulatory elements')
             output_file.append('candidate Cis-Regulatory Elements')
             value['output_file_types'] = output_file
+
+
+@upgrade_step('analysis_step', '7', '8')
+def analysis_step_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4641
+
+    input_file_types = value.get('input_file_types', None)
+    output_file_types = value.get('output_file_types', None)
+    if input_file_types and 'optimal idr thresholded peaks' in input_file_types:
+            input_file_types.remove('optimal idr thresholded peaks')
+            input_file_types.append('optimal IDR thresholded peaks')
+            value['input_file_types'] = input_file_types
+    if input_file_types and 'conservative idr thresholded peaks' in input_file_types:
+            input_file_types.remove('conservative idr thresholded peaks')
+            input_file_types.append('conservative IDR thresholded peaks')
+            value['input_file_types'] = input_file_types
+    if input_file_types and 'pseudoreplicated idr thresholded peaks' in input_file_types:
+            input_file_types.remove('pseudoreplicated idr thresholded peaks')
+            input_file_types.append('pseudoreplicated IDR thresholded peaks')
+            value['input_file_types'] = input_file_types
+
+    if output_file_types and 'optimal idr thresholded peaks' in output_file_types:
+            output_file_types.remove('optimal idr thresholded peaks')
+            output_file_types.append('optimal IDR thresholded peaks')
+            value['output_file_types'] = output_file_types
+    if output_file_types and 'conservative idr thresholded peaks' in output_file_types:
+            output_file_types.remove('conservative idr thresholded peaks')
+            output_file_types.append('conservative IDR thresholded peaks')
+            value['output_file_types'] = output_file_types
+    if output_file_types and 'pseudoreplicated idr thresholded peaks' in output_file_types:
+            output_file_types.remove('pseudoreplicated idr thresholded peaks')
+            output_file_types.append('pseudoreplicated IDR thresholded peaks')
+            value['output_file_types'] = output_file_types

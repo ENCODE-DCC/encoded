@@ -10,9 +10,18 @@
         "sortOrder": [ "Biosample", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                            "Pseudoreplicated IDR thresholded peaks", "Peaks", "Replicated Peaks", "Filtered Peaks",
-                            "Stable Peaks", "Fold change over control", "Signal p-value", "Signal" ],
+            "group_order": [
+                "Optimal IDR thresholded peaks",
+                "IDR thresholded peaks",
+                "Conservative IDR thresholded peaks",
+                "Pseudoreplicated IDR thresholded peaks",
+                "Peaks",
+                "Replicated Peaks",
+                "Filtered Peaks",
+                "Stable Peaks",
+                "Fold change over control",
+                "Signal p-value", "Signal"
+            ],
             "groups": {
                 "Optimal IDR thresholded peaks": {
                     "tag": "aOIDR",
@@ -23,21 +32,10 @@
                     "pValueFilter": "0",
                     "qValueFilter": "0",
                     "spectrum":"on",
-                    "output_type": [ "optimal idr thresholded peaks" ]
+                    "output_type": [ "optimal IDR thresholded peaks" ]
                 },
-                "Conservative IDR thresholded peaks": {
-                    "tag": "bCIDR",
-                    "visibility": "hide",
-                    "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
-                    "signalFilter": "0",
-                    "pValueFilter": "0",
-                    "qValueFilter": "0",
-                    "spectrum":"on",
-                    "output_type": [ "conservative idr thresholded peaks" ]
-                },
-                "Pseudoreplicated IDR thresholded peaks": {
-                    "tag": "cRPKS",
+                "IDR thresholded peaks": {
+                    "tag": "bIDRT",
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -45,10 +43,32 @@
                     "pValueFilter": "0",
                     "qValueFilter": "0",
                     "spectrum":"on",
-                    "output_type": [ "pseudoreplicated idr thresholded peaks" ]
+                    "output_type": [ "IDR thresholded peaks" ]
+                },
+                "Conservative IDR thresholded peaks": {
+                    "tag": "cCIDR",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
+                    "spectrum":"on",
+                    "output_type": [ "conservative IDR thresholded peaks" ]
+                },
+                "Pseudoreplicated IDR thresholded peaks": {
+                    "tag": "dRPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
+                    "spectrum":"on",
+                    "output_type": [ "pseudoreplicated IDR thresholded peaks" ]
                 },
                 "Peaks": {
-                    "tag": "dPKS",
+                    "tag": "ePKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -58,7 +78,7 @@
                     "output_type": [ "peaks" ]
                 },
                 "Replicated Peaks": {
-                    "tag": "eRPKS",
+                    "tag": "fRPKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -68,7 +88,7 @@
                     "output_type": [ "replicated peaks" ]
                 },
                 "Filtered Peaks": {
-                    "tag": "fFPKS",
+                    "tag": "gFPKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -78,7 +98,7 @@
                     "output_type": [ "filtered peaks" ]
                 },
                 "Stable Peaks": {
-                    "tag": "gSPKS",
+                    "tag": "hSPKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -88,7 +108,7 @@
                     "output_type": [ "stable peaks" ]
                 },
                 "Fold change over control": {
-                    "tag": "hFCOC",
+                    "tag": "iFCOC",
                     "visibility": "full",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -98,7 +118,7 @@
                     "output_type": [ "fold change over control" ]
                 },
                 "Signal p-value": {
-                    "tag": "iSPV",
+                    "tag": "jSPV",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -108,7 +128,7 @@
                     "output_type": [ "signal p-value" ]
                 },
                 "Signal": {
-                    "tag": "jSIG",
+                    "tag": "kSIG",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:10",

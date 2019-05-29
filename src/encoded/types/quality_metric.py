@@ -278,3 +278,53 @@ class LongReadRnaQuantificationQualityMetric(QualityMetric, CalculatedAssayTermI
 class GencodeCategoryQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'gencode_category_quality_metric'
     schema = load_schema('encoded:schemas/gencode_category_quality_metric.json')
+
+
+@collection(
+    name='chip-alignment-quality-metrics',
+    properties={
+        'title': "ChIP-seq Alignment Quality Metric",
+    })
+class ChipAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_alignment_samstat_quality_metric'
+    schema = load_schema('encoded:schemas/chip_alignment_samstat_quality_metric.json')
+
+
+@collection(
+    name='chip-alignment-enrichment-quality-metrics',
+    properties={
+        'title': "ChIP-seq Alignment Enrichment Quality Metric",
+    })
+class ChipAlignmentEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_alignment_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/chip_alignment_enrichment_quality_metric.json')
+
+
+@collection(
+    name='chip-library-quality-metrics',
+    properties={
+        'title': "ChIP-seq Library Metrics",
+    })
+class ChipLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_library_quality_metric'
+    schema = load_schema('encoded:schemas/chip_library_quality_metric.json')
+
+
+@collection(
+    name='chip-peak-enrichment-quality-metrics',
+    properties={
+        'title': "ChIP-seq Peak Enrichment Quality Metric",
+    })
+class ChipPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_peak_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/chip_peak_enrichment_quality_metric.json')
+
+
+@collection(
+    name='chip-replication-quality-metrics',
+    properties={
+        'title': "ChIP-seq Replication Quality Metric",
+    })
+class ChipReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'chip_replication_quality_metric'
+    schema = load_schema('encoded:schemas/chip_replication_quality_metric.json')

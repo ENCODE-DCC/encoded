@@ -1,5 +1,13 @@
 ## Changelog for file.json
 
+### Schema version 15
+
+* Add *IDR ranked peaks* and *IDR thresholded peaks* for *output_type*
+* Add a new property *preferred_default*
+* Change *output_type* *conservative idr thresholded peaks* to *conservative IDR thresholded peaks*
+* Change *output_type* *optimal idr thresholded peaks* to *optimal IDR thresholded peaks*
+* Change *output_type* *pseudoreplicated idr thresholded peaks* to *pseudoreplicated IDR thresholded peaks*
+
 ### Minor changes since schema version 14
 
 * *output_type* list was updated to include the following enums: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
