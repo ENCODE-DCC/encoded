@@ -1,7 +1,10 @@
 # Use workbook fixture from BDD tests (including elasticsearch)
 import json
 import pytest
-
+from moto import (
+    mock_s3,
+    mock_sts
+)
 from encoded.tests.features.conftest import app
 from encoded.tests.features.conftest import app_settings
 from encoded.tests.features.conftest import workbook
@@ -17,6 +20,22 @@ exp_file_1 = {'file_type': 'fastq',
 exp_file_2 = {'file_type': 'bam',
               'restricted': False}
 exp_file_3 = {'file_type': 'gz'}
+
+
+@pytest.fixture
+def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
+    item = {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'replicate': replicate['@id'],
+        'file_format': 'tsv',
+        'file_size': 2534535,
+        'md5sum': '00000000000000000000000000000000',
+        'output_type': 'raw data',
+        'status': 'uploading',
+    }
+    return item
 
 
 @pytest.fixture
@@ -106,6 +125,7 @@ def test_batch_download_files_txt(testapp, workbook):
         assert url_frag[5] == '@@download'
         assert url_frag[4] == (url_frag[6].split('.'))[0]
 
+
 def test_batch_download_parse_file_plus_correctly(testapp, workbook):
     r = testapp.get(
         '/batch_download/type%3DExperiment%26files.file_type%3DbigBed%2Bbed3%252B%26format%3Djson'
@@ -148,3 +168,41 @@ def test_file_type_param_list(test_input, expected):
 ])
 def test_restricted_files_present(test_input, expected):
     assert test_input == expected
+
+
+def test_metadata_tsv_fields(testapp, workbook):
+    from encoded.batch_download import (
+        _tsv_mapping,
+        _excluded_columns,
+    )
+    r = testapp.get('/metadata/type%3DExperiment/metadata.tsv')
+    metadata_file = r.body.decode('UTF-8').split('\n')
+    actual_headers = metadata_file[0].split('\t')
+    assert len(actual_headers) == len(set(actual_headers))
+    expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
+    assert len(expected_headers - set(actual_headers)) == 0
+
+
+@mock_sts
+@mock_s3
+def test_metadata_tsv_contains_s3_uri(testapp, indexer_testapp, uploading_file, dummy_request, root):
+    # Create mock bucket.
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    r = testapp.post_json('/files/', uploading_file)
+    file_json = r.json['@graph'][0]
+    file_item = root.get_by_uuid(file_json['uuid'])
+    external = file_item._get_external_sheet()
+    # Put mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    r = testapp.patch_json(
+        file_json['@id'] + '@@set_status?update=true&force_transition=true&force_audit=true',
+        {'status': 'released'}
+    )
+    indexer_testapp.post_json('/index', {'record': True})
+    r = testapp.get('/search/?type=File&accession={}&frame=embedded'.format(file_json['accession']))
+    assert 's3_uri' in r.json['@graph'][0]
+    r = testapp.get('/metadata/type%3DExperiment/metadata.tsv')
+    assert 's3://test_upload_bucket/' in r.body.decode('UTF-8')
