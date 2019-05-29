@@ -536,6 +536,20 @@
                             "properties": {
                                 "file_format": {
                                     "enum": [
+                                        "database"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "transcriptome index"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
                                         "bam",
                                         "bed",
                                         "bedpe",
@@ -557,8 +571,7 @@
                                         "vcf",
                                         "wig",
                                         "2bit",
-                                        "btr",
-                                        "database"
+                                        "btr"
                                     ]
                                 },
                                 "output_type": {
