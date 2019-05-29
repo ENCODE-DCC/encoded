@@ -771,6 +771,8 @@ class DateSelectorFacet extends React.Component {
     setActiveFacetParameters(initializationFlag) {
         let activeFacet = null;
         let activeFilter = null;
+        let startYear = null;
+        let endYear = null;
         // If there is a date filter applied, we'll use that filter to set state when the component is mounted
         if (initializationFlag) {
             // if a date range has already been selected, we will use that date range to populate drop-downs
@@ -781,9 +783,9 @@ class DateSelectorFacet extends React.Component {
                 activeFacet = (filterString.indexOf('date_released') !== -1) ? 'date_released' : 'date_submitted';
                 const indexOfStart = filterString.indexOf('[') + 1;
                 const indexOfEnd = filterString.indexOf('TO ') + 3;
-                const startYear = filterString.substr(indexOfStart, 4);
+                startYear = filterString.substr(indexOfStart, 4);
                 const startMonth = filterString.substr(indexOfStart + 5, 2);
-                const endYear = filterString.substr(indexOfEnd, 4);
+                endYear = filterString.substr(indexOfEnd, 4);
                 const endMonth = filterString.substr(indexOfEnd + 5, 2);
                 // Set dropdown lists to match existing query
                 this.setState({
@@ -816,17 +818,24 @@ class DateSelectorFacet extends React.Component {
                 endYear: possibleYears[possibleYears.length - 1],
                 startMonth: '01',
                 endMonth: '12',
+                startYears: possibleYears,
+                endYears: possibleYears,
+            });
+        } else {
+            const startYears = possibleYears.filter(year => +year <= endYear);
+            const endYears = possibleYears.filter(year => +year >= startYear);
+            this.setState({
+                startYears,
+                endYears,
             });
         }
 
         // Set dropdown options to include all possibilities
         this.setState({
             possibleYears,
-            startYears: possibleYears,
-            endYears: possibleYears,
             startMonths: allMonths,
             endMonths: allMonths,
-        });
+        }, () => this.checkForSameYear());
     }
 
     selectYear(event) {
