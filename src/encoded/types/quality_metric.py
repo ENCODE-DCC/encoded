@@ -267,3 +267,14 @@ class LongReadRnaMappingQualityMetric(QualityMetric, CalculatedAssayTermID):
 class LongReadRnaQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'long_read_rna_quantification_quality_metric'
     schema = load_schema('encoded:schemas/long_read_rna_quantification_quality_metric.json')
+
+
+@collection(
+    name='gencode-category-quality-metrics',
+    properties={
+        'title': "GENCODE Category Quality Metrics",
+        'description': 'A set of GENCODE category QC metrics each indicating counts per annotated biotype',
+    })
+class GencodeCategoryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gencode_category_quality_metric'
+    schema = load_schema('encoded:schemas/gencode_category_quality_metric.json')
