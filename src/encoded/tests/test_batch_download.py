@@ -181,28 +181,3 @@ def test_metadata_tsv_fields(testapp, workbook):
     assert len(actual_headers) == len(set(actual_headers))
     expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
     assert len(expected_headers - set(actual_headers)) == 0
-
-
-@mock_sts
-@mock_s3
-def test_metadata_tsv_contains_s3_uri(testapp, indexer_testapp, uploading_file, dummy_request, root):
-    # Create mock bucket.
-    import boto3
-    client = boto3.client('s3')
-    client.create_bucket(Bucket='test_upload_bucket')
-    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    r = testapp.post_json('/files/', uploading_file)
-    file_json = r.json['@graph'][0]
-    file_item = root.get_by_uuid(file_json['uuid'])
-    external = file_item._get_external_sheet()
-    # Put mock object in bucket.
-    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
-    r = testapp.patch_json(
-        file_json['@id'] + '@@set_status?update=true&force_transition=true&force_audit=true',
-        {'status': 'released'}
-    )
-    indexer_testapp.post_json('/index', {'record': True})
-    r = testapp.get('/search/?type=File&accession={}&frame=embedded'.format(file_json['accession']))
-    assert 's3_uri' in r.json['@graph'][0]
-    r = testapp.get('/metadata/type%3DExperiment/metadata.tsv')
-    assert 's3://test_upload_bucket/' in r.body.decode('UTF-8')
