@@ -286,8 +286,8 @@
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
         },
-        "month_released": {
-            "title": "Month released"
+        "date_released": {
+            "title": "Date released"
         },
         "date_submitted": {
             "title": "Date submitted"
