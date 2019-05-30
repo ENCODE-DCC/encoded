@@ -3419,7 +3419,8 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
     Check if ENCODE4 experiment uses biosample without NIH institutional certification.
     '''
     # Only check ENCODE4 experiments. 
-    if value.get('award', {}).get('rfa') != 'ENCODE4':
+    award = value.get('award', {})
+    if award.get('rfa') != 'ENCODE4' or award.get('component') == 'functional characterization':
         return
     # Build up list of human biosamples missing NIC used in experiment. 
     human_biosamples_missing_hic = {
