@@ -7,16 +7,19 @@ from encoded.tests.features.conftest import app_settings
 from encoded.tests.features.conftest import workbook
 from encoded.batch_download import lookup_column_value
 from encoded.batch_download import restricted_files_present
-from encoded.batch_download import file_type_param_list
+from encoded.batch_download import files_prop_param_list
 
 
 param_list_1 = {'files.file_type': 'fastq'}
 param_list_2 = {'files.title': 'ENCFF222JUK'}
+param_list_3 = {'files.assembly': 'GRCh38'}
 exp_file_1 = {'file_type': 'fastq',
+              'assembly': 'hg19',
               'restricted': True}
 exp_file_2 = {'file_type': 'bam',
               'restricted': False}
-exp_file_3 = {'file_type': 'gz'}
+exp_file_3 = {'file_type': 'gz',
+              'assembly': 'GRCh38'}
 
 
 @pytest.fixture
@@ -133,11 +136,13 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
 
 
 @pytest.mark.parametrize("test_input,expected", [
-    (file_type_param_list(exp_file_1, param_list_2), True),
-    (file_type_param_list(exp_file_1, param_list_1), True),
-    (file_type_param_list(exp_file_2, param_list_1), False),
+    (files_prop_param_list(exp_file_1, param_list_2), True),
+    (files_prop_param_list(exp_file_1, param_list_1), True),
+    (files_prop_param_list(exp_file_2, param_list_1), False),
+    (files_prop_param_list(exp_file_3, param_list_3), True),
+    (files_prop_param_list(exp_file_1, param_list_3), False),
 ])
-def test_file_type_param_list(test_input, expected):
+def test_files_prop_param_list(test_input, expected):
     assert test_input == expected
 
 
