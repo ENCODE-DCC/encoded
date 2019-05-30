@@ -96,9 +96,9 @@ bootcmd:
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 package_upgrade: true
 packages:
-- git
 # general
 - awscli
+- git
 # redis
 - redis-server
 # es
@@ -107,6 +107,8 @@ packages:
 - elasticsearch
 # cloudwatchmon
 - python-virtualenv
+# node
+- nodejs
 # pg
 - postgresql-9.3
 # wal-e
@@ -129,7 +131,6 @@ packages:
 - libwebp-dev
 - libxml2-dev
 - libxslt1-dev
-- nodejs
 - ntp
 - pv
 - python3.4-dev
@@ -154,6 +155,11 @@ runcmd:
 - /home/ubuntu/encoded/cloud-build/cloudwatchmon-install.sh
 - /home/ubuntu/encoded/cloud-build/pg93-install.sh
 - /home/ubuntu/encoded/cloud-build/encd-install.sh %(GIT_REPO)s %(GIT_BRANCH)s %(ROLE)s %(ES_IP)s %(ES_PORT)s
+- /home/ubuntu/encoded/cloud-build/a2en-run.sh
+- if test "%(ROLE)s" = "demo"
+- then
+-   /home/ubuntu/encoded/cloud-build/batchupgrade-run.sh production.ini
+- fi
 - /home/ubuntu/encoded/cloud-build/post-install-install.sh
   
 users:
