@@ -63,6 +63,7 @@
                     "type": "string",
                     "enum": [
                         "application/pdf",
+                        "application/octet-stream",
                         "image/gif",
                         "image/jpeg",
                         "image/png",
