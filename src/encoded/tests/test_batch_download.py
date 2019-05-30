@@ -1,10 +1,6 @@
 # Use workbook fixture from BDD tests (including elasticsearch)
 import json
 import pytest
-from moto import (
-    mock_s3,
-    mock_sts
-)
 from encoded.tests.features.conftest import app
 from encoded.tests.features.conftest import app_settings
 from encoded.tests.features.conftest import workbook
@@ -20,22 +16,6 @@ exp_file_1 = {'file_type': 'fastq',
 exp_file_2 = {'file_type': 'bam',
               'restricted': False}
 exp_file_3 = {'file_type': 'gz'}
-
-
-@pytest.fixture
-def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'uploading',
-    }
-    return item
 
 
 @pytest.fixture
