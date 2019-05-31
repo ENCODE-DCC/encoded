@@ -1,6 +1,7 @@
 # Use workbook fixture from BDD tests (including elasticsearch)
 import json
 import pytest
+
 from encoded.tests.features.conftest import app
 from encoded.tests.features.conftest import app_settings
 from encoded.tests.features.conftest import workbook
@@ -104,7 +105,6 @@ def test_batch_download_files_txt(testapp, workbook):
         assert url_frag[3] == 'files'
         assert url_frag[5] == '@@download'
         assert url_frag[4] == (url_frag[6].split('.'))[0]
-
 
 def test_batch_download_parse_file_plus_correctly(testapp, workbook):
     r = testapp.get(
