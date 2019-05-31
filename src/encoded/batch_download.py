@@ -86,8 +86,7 @@ _tsv_mapping = OrderedDict([
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
     ('No File Available', ['files.no_file_available']),
-    ('Restricted', ['files.restricted']),
-    ('s3_uri', ['files.s3_uri']),
+    ('Restricted', ['files.restricted'])
 ])
 
 _audit_mapping = OrderedDict([
