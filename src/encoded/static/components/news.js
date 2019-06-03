@@ -242,7 +242,7 @@ const DateFacet = (props) => {
                         <li key={term.key} className="news-facet__item">
                             <a href={termHref} className={termFilter ? 'selected' : ''}>
                                 <span className="news-facet__item-title">
-                                    {moment(term.key).format('MMMM YYYY')}&nbsp;
+                                    {moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('MMMM YYYY')}&nbsp;
                                 </span>
                                 <span className="news-facet__item-count">
                                     ({term.doc_count})
