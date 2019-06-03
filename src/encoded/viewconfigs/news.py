@@ -31,7 +31,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
     def __init__(self, context, request):
         super(NewsView, self).__init__(context, request)
         self._from_ = 0
-        self._size = 25
+        self._size = 1000
         self._es_index = 'page'
 
     def preprocess_view(self):
@@ -58,8 +58,13 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             'order': 'desc',
             'unmapped_type': 'keyword',
         }
-        query['sort'] = result_sort
-        self._result['sort'] = result_sort
+        sort['embedded.label'] = result_sort['label'] = {
+            'order': 'asc',
+            'missing': '_last',
+            'unmapped_type': 'keyword',
+        }
+        query['sort'] = sort
+        self._result['sort'] = sort
         used_filters = set_filters(
             self._request,
             query,
@@ -75,7 +80,7 @@ class NewsView(SearchView):  # pylint: disable=too-few-public-methods
             index=self._es_index,
             doc_type=self._es_index,
             from_=0,
-            size=25)
+            size=self._size)
         total = es_results['hits']['total']
         if not total:
             self._request.response.status_code = 404
