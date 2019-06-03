@@ -2,7 +2,7 @@
 -------------------------------------------------------
 
 
-![Build status](https://travis-ci.org/ENCODE-DCC/encoded.svg?branch=master)
+[![CircleCI](https://circleci.com/gh/ENCODE-DCC/encoded/tree/dev.svg?style=svg)](https://circleci.com/gh/ENCODE-DCC/encoded/tree/dev)
 
 ## Setting Up Your Environment
 
