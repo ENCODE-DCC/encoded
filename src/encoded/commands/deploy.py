@@ -6,12 +6,14 @@ Encoded Application AWS Deployment Helper
 import argparse
 import datetime
 import getpass
+import io
 import re
 import subprocess
 import sys
 import time
 
 from base64 import b64encode
+from difflib import Differ
 from os.path import expanduser
 
 import boto3
@@ -63,6 +65,11 @@ def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     return instance
 
 
+def _read_file_as_utf8(config_file):
+    with io.open(config_file, 'r', encoding='utf8') as file_handler:
+        return file_handler.read()
+
+
 def read_ssh_key(identity_file):
     ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
     fingerprint = subprocess.check_output(
@@ -96,9 +103,7 @@ def _get_bdm(main_args):
     ]
 
 
-def get_user_data(commit, config_file, data_insert, main_args):
-    cmd_list = ['git', 'show', commit + config_file]
-    config_template = subprocess.check_output(cmd_list).decode('utf-8')
+def get_user_data(commit, config_yaml, data_insert, main_args):
     ssh_pub_key = read_ssh_key(main_args.identity_file)
     if not ssh_pub_key:
         print(
@@ -117,8 +122,14 @@ def get_user_data(commit, config_file, data_insert, main_args):
     )
     data_insert['S3_AUTH_KEYS'] = auth_keys_dir
     data_insert['REDIS_PORT'] = main_args.redis_port
-    user_data = config_template % data_insert
+    user_data = config_yaml % data_insert
     return user_data
+
+
+def _get_commit_sha_for_branch(branch_name):
+    return subprocess.check_output(
+        ['git', 'rev-parse', '--short', branch_name]
+    ).decode('utf-8').strip()
 
 
 def _get_instances_tag_data(main_args):
@@ -129,9 +140,7 @@ def _get_instances_tag_data(main_args):
         'name': main_args.name,
         'username': None,
     }
-    instances_tag_data['commit'] = subprocess.check_output(
-        ['git', 'rev-parse', '--short', instances_tag_data['branch']]
-    ).decode('utf-8').strip()
+    instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
     if not subprocess.check_output(
             ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
         ).strip():
@@ -166,8 +175,9 @@ def _get_ec2_client(main_args, instances_tag_data):
     return ec2
 
 
-def _get_run_args(main_args, instances_tag_data):
+def _get_run_args(main_args, instances_tag_data, config_yaml):
     master_user_data = None
+    cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
     if not main_args.elasticsearch == 'yes':
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
@@ -184,18 +194,14 @@ def _get_run_args(main_args, instances_tag_data):
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
             'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
+            'CC_DIR': cc_dir,
         }
-        if main_args.no_es:
-            config_file = ':cloud-config-no-es.yml'
-        elif main_args.cluster_name:
-            config_file = ':cloud-config-cluster.yml'
+        if main_args.cluster_name:
             data_insert['CLUSTER_NAME'] = main_args.cluster_name
             data_insert['REGION_INDEX'] = 'True'
-        else:
-            config_file = ':cloud-config.yml'
         if main_args.set_region_index_to:
             data_insert['REGION_INDEX'] = main_args.set_region_index_to
-        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args)
+        user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
     else:
         if not main_args.cluster_name:
             print("Cluster must have a name")
@@ -203,18 +209,19 @@ def _get_run_args(main_args, instances_tag_data):
         count = int(main_args.cluster_size)
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
-        config_file = ':cloud-config-elasticsearch.yml'
         data_insert = {
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_DATA': 'true',
             'ES_MASTER': 'true',
             'MIN_MASTER_NODES': int(count/2 + 1),
             'GIT_REPO': main_args.git_repo,
+            'GIT_BRANCH': main_args.branch,
+            'CC_DIR': cc_dir,
         }
         if main_args.single_data_master:
             data_insert['ES_MASTER'] = 'false'
             data_insert['MIN_MASTER_NODES'] = 1
-        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args)
+        user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
         if main_args.single_data_master:
             master_data_insert = {
                 'CLUSTER_NAME': main_args.cluster_name,
@@ -222,11 +229,13 @@ def _get_run_args(main_args, instances_tag_data):
                 'ES_MASTER': 'true',
                 'MIN_MASTER_NODES': 1,
                 'GIT_REPO': main_args.git_repo,
+                'GIT_BRANCH': main_args.branch,
                 'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
+                'CC_DIR': cc_dir,
             }
             master_user_data = get_user_data(
                 instances_tag_data['commit'],
-                config_file,
+                config_yaml,
                 master_data_insert,
                 main_args,
             )
@@ -309,16 +318,177 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
         print(output)
 
 
+def _get_cloud_config_yaml(
+        branch=None,
+        conf_dir=None,
+        cluster_name=None,
+        elasticsearch=None,
+        no_es=False,
+        build_new_config=False,
+        use_local_config=False,
+        single_data_master=False,
+    ):
+    build_dir = "{}/prebuilt-config-yamls".format(conf_dir)
+    build_files_dir = None
+    if build_new_config:
+        build_dir = "{}/{}".format(
+            conf_dir,
+            'config-build-files',
+        )
+        build_files_dir = "{}/{}".format(
+            build_dir,
+            'cc-parts',
+        )
+    filename = 'demo.yml'
+    if single_data_master:
+        if elasticsearch == 'yes':
+            filename = 'es-wait-head.yml'
+        else:
+            filename = 'es-head.yml'
+    elif no_es:
+        filename = 'frontend.yml'
+    elif elasticsearch == 'yes':
+        filename = 'es-elect-head.yml'
+    filepath = build_dir + '/' + filename
+    if build_new_config:
+        pre_config_template = _read_file_as_utf8(filepath)
+        replace_vars = set(re.findall('\%\((.*)\)s', pre_config_template))
+        var_data_insert = {}
+        for replace_var in replace_vars:
+            var_data_path = "{}/{}.yml".format(
+                build_files_dir,
+                replace_var,
+            )
+            var_data = _read_file_as_utf8(var_data_path).strip()
+            var_data_insert[replace_var] = var_data
+        return pre_config_template % var_data_insert, filepath
+    else:
+        if use_local_config:
+            return _read_file_as_utf8(filepath), filepath
+        else:
+            commit = _get_commit_sha_for_branch(branch)
+            cmd_list = ['git', 'show', commit + ':' + filepath]
+            return subprocess.check_output(cmd_list).decode('utf-8'), filepath
+    return None, filepath
+
+
+def _diff_configs(config_one, config_two):
+    results = list(
+        Differ().compare(
+            config_one.splitlines(keepends=True),
+            config_two.splitlines(keepends=True),
+        )
+    )
+    is_clean = True
+    for index, result in enumerate(results, 1):
+        if not result[0] == ' ':
+            print(index, result)
+            is_clean = False
+            break
+    return is_clean
+
+
+def _test_config(title, kwargs):
+    print('\n')
+    print(title)
+    build_config, build_path = _get_cloud_config_yaml(**kwargs)
+    kwargs['build_new_config'] = False
+    prebuilt_config, prebuilt_path = _get_cloud_config_yaml(**kwargs)
+    print('build cc path: {}'.format(build_path))
+    print('build cc path: {}'.format(prebuilt_path))
+    print('Diff: ')
+    return _diff_configs(build_config, prebuilt_config)
+
+
+def _test_cloud_configs(branch):
+    import copy
+
+    kwargs = {
+        'branch': branch,
+        'build_new_config': True,
+        'cluster_name': 'dryruncc-cluster',
+        'conf_dir': './cloud-config',
+        'elasticsearch': None,
+        'no_es': False,
+        'single_data_master': False,
+        'use_local_config': False,
+    }
+
+    # All systems on one machine, Current development demo
+    # cloud-config.yml -> demo.yml
+    title = 'Testing Demo with on board ES'
+    demo_kwargs = copy.copy(kwargs)
+    if not _test_config(title, demo_kwargs):
+        return False
+
+    title = 'Testing Prod/Test/RC/Clustered-Demo frontend with separate ES'
+    frontend_kwargs = copy.copy(kwargs)
+    frontend_kwargs.update({'no_es': True})
+    frontend_kwargs.update({'cluster_name': 'dryruncc-cluster'})
+    if not _test_config(title, frontend_kwargs):
+        return False
+
+    # ES data node cluster with one node elected as master
+    # cloud-config-elasticsearch.yml -> es-elect-head.yml
+    title = 'Testing ES cluster that self elects a head node'
+    es_elect_head_kwargs = copy.copy(kwargs)
+    es_elect_head_kwargs.update({
+        'cluster_name': 'dryruncc-cluster',
+        'elasticsearch': 'yes',
+    })
+    if not _test_config(title, es_elect_head_kwargs):
+        return False
+
+    # ES data node cluster that needs a es head node
+    # cloud-config-elasticsearch.yml -> es-wait-head.yml
+    title = 'Testing ES cluster that wait for a head node to be built'
+    es_wait_head_kwargs = copy.copy(kwargs)
+    es_wait_head_kwargs.update({
+        'cluster_name': 'dryruncc-cluster',
+        'elasticsearch': 'yes',
+        'single_data_master': True,
+    })
+    if not _test_config(title, es_wait_head_kwargs):
+        return False
+
+    # ES head data node for data node cluster
+    # cloud-config-elasticsearch.yml -> es-head.yml
+    title = 'Testing ES cluster head node, required for wait es cluster'
+    es_head_kwargs = copy.copy(kwargs)
+    es_head_kwargs.update({
+        'cluster_name': 'dryruncc-cluster',
+        'single_data_master': True,
+    })
+    if not _test_config(title, es_head_kwargs):
+        return False
+    return True
+
+
 def main():
     # Gather Info
     main_args = parse_args()
+    # Test prebuilt and new build config yamls
+    if main_args.dry_run_cc:
+        if _test_cloud_configs(main_args.branch):
+            sys.exit(0)
+        sys.exit(5)
+    # Normal Deployment
+    config_yaml, _ = _get_cloud_config_yaml(
+        main_args.branch,
+        main_args.conf_dir,
+        main_args.cluster_name,
+        main_args.elasticsearch,
+        main_args.no_es,
+        build_new_config=main_args.build_new_config,
+        use_local_config=main_args.use_local_config,
+    )
     instances_tag_data = _get_instances_tag_data(main_args)
     if instances_tag_data is None:
         sys.exit(10)
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
-    run_args = _get_run_args(main_args, instances_tag_data)
+    run_args = _get_run_args(main_args, instances_tag_data, config_yaml)
     if main_args.dry_run_aws:
         print('Dry Run AWS')
         print('main_args', main_args)
@@ -411,12 +581,15 @@ def parse_args():
         help="ssh identity file path"
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
+    parser.add_argument('--build-new-config', action='store_true', help="Build cloud config yaml.")
     parser.add_argument('-n', '--name', default=None, type=hostname, help="Instance name")
     parser.add_argument('--dry-run-aws', action='store_true', help="Abort before ec2 requests.")
+    parser.add_argument('--dry-run-cc', action='store_true', help="Abort after building cloud config.")
     parser.add_argument('--single-data-master', action='store_true',
             help="Create a single data master node.")
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
+    parser.add_argument('--conf-dir', default='./cloud-config', help="Location of cloud build config")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
@@ -433,6 +606,7 @@ def parse_args():
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
     parser.add_argument('--set-region-index-to', type=check_region_index,
                         help="Override region index in yaml to 'True' or 'False'")
+    parser.add_argument('--use-local-config', action='store_true', help="Use local config file in current directory")
     parser.add_argument('--volume-size', default=200, type=check_volume_size,
                         help="Size of disk. Allowed values 120, 200, and 500")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')

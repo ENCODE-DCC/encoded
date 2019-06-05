@@ -8,11 +8,12 @@ GIT_BRANCH="$2"
 ROLE="$3"
 ES_IP="$4"
 ES_PORT="$5"
+REGION_INDEX="$6"
 
 mkdir /srv/encoded
 chown encoded:encoded /srv/encoded
 cd /srv/encoded
-sudo -u encoded git clone "$GIT_REPO" . 
+sudo -u encoded git clone "$GIT_REPO" .
 sudo -u encoded git checkout -b "$GIT_BRANCH" origin/"$GIT_BRANCH"
 sudo pip3 install -U zc.buildout setuptools redis
 sudo -u encoded buildout bootstrap

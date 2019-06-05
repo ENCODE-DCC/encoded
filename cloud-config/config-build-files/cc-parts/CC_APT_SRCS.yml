@@ -1,0 +1,2 @@
+apt_sources:
+- source: "ppa:linuxuprising/java"
