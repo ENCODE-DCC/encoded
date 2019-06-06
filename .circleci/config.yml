@@ -107,5 +107,5 @@ workflows:
   version: 2
   encoded-tests:
     jobs:
-       - bdd-tests:
-       - npm-non-bdd-tests:
+       - bdd-tests
+       - npm-non-bdd-tests
