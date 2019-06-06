@@ -31,12 +31,10 @@ NewsPreviewItem.propTypes = {
 // Display a list of news preview items from search results.
 const NewsPreviews = (props) => {
     const { items } = props;
-    const newsItems = items && items.length > 0 ? [...items] : [];
-    if (newsItems.length > 0) {
-        newsItems.sort((item1, item2) => new Date(item2.date_created) - new Date(item1.date_created));
+    if (items && items.length) {
         return (
             <div className="news-listing" data-test="news-listing">
-                {newsItems.map(item => (
+                {items.map(item => (
                     <NewsPreviewItem key={item['@id']} item={item} />
                 ))}
             </div>
