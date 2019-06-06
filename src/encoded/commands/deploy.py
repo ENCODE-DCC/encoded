@@ -208,6 +208,9 @@ def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     ]
     if elasticsearch == 'yes':
         tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+        # This if for integration with nagios server.
+        # Only used on production.
+        tags.append({'Key': 'Role', 'Value': 'data'})
     if cluster_name is not None:
         tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
     instance.create_tags(Tags=tags)
