@@ -666,3 +666,69 @@ class ReferenceEpigenome(Series):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+
+@collection(
+    name='experiment-series',
+    unique_key='accession',
+    properties={
+        'title': "Experiment series",
+        'description': 'A series that groups two or more experiments.',
+    })
+class ExperimentSeries(Series):
+    item_type = 'experiment_series'
+    schema = load_schema('encoded:schemas/experiment_series.json')
+    name_key = 'accession'
+    embedded = [
+        'biosample_ontology',
+        'contributing_awards',
+        'contributors',
+        'organism',
+        'related_datasets.lab',
+        'related_datasets.replicates.library.biosample',
+        'target',
+        'target.genes',
+        'target.organism',
+    ]
+
+    @calculated_property(schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_slims(self, request, related_datasets):
+        return request.select_distinct_values('assay_slims', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Assay title",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_title(self, request, related_datasets):
+        return request.select_distinct_values('assay_title', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Awards",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Award",
+        },
+    })
+    def contributing_awards(self, request, related_datasets):
+        return request.select_distinct_values('award', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Labs",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Lab",
+        },
+    })
+    def contributors(self, request, related_datasets):
+        return request.select_distinct_values('lab', *related_datasets)
