@@ -1,5 +1,8 @@
 ## Changelog for award.json
 
+### Minor changes since schema version 5
+* *component* was added to enable denoting functional characterization awards
+
 ### Schema version 5
 
 * *status* property was restricted to one of  

@@ -208,6 +208,9 @@ def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     ]
     if elasticsearch == 'yes':
         tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+        # This if for integration with nagios server.
+        # Only used on production.
+        tags.append({'Key': 'Role', 'Value': 'data'})
     if cluster_name is not None:
         tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
     instance.create_tags(Tags=tags)
@@ -280,10 +283,6 @@ def _get_instances_tag_data(main_args):
         'name': main_args.name,
         'username': None,
     }
-    if instances_tag_data['branch'] is None:
-        instances_tag_data['branch'] = subprocess.check_output(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
-        ).decode('utf-8').strip()
     instances_tag_data['commit'] = subprocess.check_output(
         ['git', 'rev-parse', '--short', instances_tag_data['branch']]
     ).decode('utf-8').strip()
@@ -335,6 +334,7 @@ def _get_run_args(main_args, instances_tag_data):
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_REPO': main_args.git_repo,
+            'GIT_BRANCH': main_args.branch,
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
         }
@@ -655,6 +655,11 @@ def parse_args():
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
+    # Add branch arg
+    if not args.branch:
+        args.branch = subprocess.check_output(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+        ).decode('utf-8').strip()
     return args
 
 

@@ -2709,5 +2709,27 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/rep2_efg.tsv",
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f246"
+    },
+    {
+        "_test": "rep2 quantifications for long read RNA-seq experiment",
+        "accession": "ENCFF007ISO",
+        "assembly": "GRCh38",
+        "award": "U41HG006992",
+        "dataset": "ENCSR751ISO",
+        "date_created": "2013-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "/files/ENCFF004ISO/"
+        ],
+        "file_format": "database",
+        "genome_annotation": "V24",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "94be74b6e11515394444f4ebfa66d78e",
+        "output_type": "transcriptome index",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "status": "released",
+        "file_size": 20,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "microRNA/rep2_efg.tsv",
+        "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f247"
     }
 ]

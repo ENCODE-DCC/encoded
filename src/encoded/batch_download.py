@@ -86,7 +86,8 @@ _tsv_mapping = OrderedDict([
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
     ('No File Available', ['files.no_file_available']),
-    ('Restricted', ['files.restricted'])
+    ('Restricted', ['files.restricted']),
+    ('s3_uri', ['files.s3_uri']),
 ])
 
 _audit_mapping = OrderedDict([
@@ -397,9 +398,9 @@ def metadata_tsv(context, request):
                             'files.output_type']
 
             for f in experiment_json['files']:
-                if 'files.file_type' in param_list:
-                    if f['file_type'] not in param_list['files.file_type']:
-                        continue
+                # If we're looking for a file type but it doesn't match, ignore file
+                if not files_prop_param_list(f, param_list):
+                    continue
                 if restricted_files_present(f):
                     continue
                 if is_no_file_available(f):
@@ -431,7 +432,7 @@ def metadata_tsv(context, request):
                 data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t')
+    writer = csv.writer(fout, delimiter='\t', lineterminator='\n')
     header.extend([prop for prop in _audit_mapping])
     writer.writerow(header)
     writer.writerows(rows)
@@ -446,7 +447,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
+    param_list['field'] = ['files.href', 'files.restricted'] + [k for k, v in param_list.items() if k.startswith('files.')]
     param_list['limit'] = ['all']
 
     experiments = []
@@ -503,7 +504,7 @@ def batch_download(context, request):
 
     files = [metadata_link]
     for exp_file in exp_files:
-        if not file_type_param_list(exp_file, param_list):
+        if not files_prop_param_list(exp_file, param_list):
             continue
         elif restricted_files_present(exp_file):
             continue
@@ -521,10 +522,12 @@ def batch_download(context, request):
     )
 
 
-def file_type_param_list(exp_file, param_list):
-    if 'files.file_type' in param_list:
-        if not exp_file['file_type'] in param_list.get('files.file_type', []):
-            return False
+def files_prop_param_list(exp_file, param_list):
+    for k, v in param_list.items():
+        if k.startswith('files.'):
+            file_prop = k[len('files.'):]
+            if file_prop in exp_file and exp_file[file_prop] not in v:
+                return False
     return True
 
 

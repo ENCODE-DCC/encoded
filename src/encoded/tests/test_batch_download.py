@@ -1,22 +1,24 @@
 # Use workbook fixture from BDD tests (including elasticsearch)
 import json
 import pytest
-
 from encoded.tests.features.conftest import app
 from encoded.tests.features.conftest import app_settings
 from encoded.tests.features.conftest import workbook
 from encoded.batch_download import lookup_column_value
 from encoded.batch_download import restricted_files_present
-from encoded.batch_download import file_type_param_list
+from encoded.batch_download import files_prop_param_list
 
 
 param_list_1 = {'files.file_type': 'fastq'}
 param_list_2 = {'files.title': 'ENCFF222JUK'}
+param_list_3 = {'files.assembly': 'GRCh38'}
 exp_file_1 = {'file_type': 'fastq',
+              'assembly': 'hg19',
               'restricted': True}
 exp_file_2 = {'file_type': 'bam',
               'restricted': False}
-exp_file_3 = {'file_type': 'gz'}
+exp_file_3 = {'file_type': 'gz',
+              'assembly': 'GRCh38'}
 
 
 @pytest.fixture
@@ -106,6 +108,7 @@ def test_batch_download_files_txt(testapp, workbook):
         assert url_frag[5] == '@@download'
         assert url_frag[4] == (url_frag[6].split('.'))[0]
 
+
 def test_batch_download_parse_file_plus_correctly(testapp, workbook):
     r = testapp.get(
         '/batch_download/type%3DExperiment%26files.file_type%3DbigBed%2Bbed3%252B%26format%3Djson'
@@ -133,11 +136,13 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
 
 
 @pytest.mark.parametrize("test_input,expected", [
-    (file_type_param_list(exp_file_1, param_list_2), True),
-    (file_type_param_list(exp_file_1, param_list_1), True),
-    (file_type_param_list(exp_file_2, param_list_1), False),
+    (files_prop_param_list(exp_file_1, param_list_2), True),
+    (files_prop_param_list(exp_file_1, param_list_1), True),
+    (files_prop_param_list(exp_file_2, param_list_1), False),
+    (files_prop_param_list(exp_file_3, param_list_3), True),
+    (files_prop_param_list(exp_file_1, param_list_3), False),
 ])
-def test_file_type_param_list(test_input, expected):
+def test_files_prop_param_list(test_input, expected):
     assert test_input == expected
 
 
@@ -148,3 +153,16 @@ def test_file_type_param_list(test_input, expected):
 ])
 def test_restricted_files_present(test_input, expected):
     assert test_input == expected
+
+
+def test_metadata_tsv_fields(testapp, workbook):
+    from encoded.batch_download import (
+        _tsv_mapping,
+        _excluded_columns,
+    )
+    r = testapp.get('/metadata/type%3DExperiment/metadata.tsv')
+    metadata_file = r.body.decode('UTF-8').split('\n')
+    actual_headers = metadata_file[0].split('\t')
+    assert len(actual_headers) == len(set(actual_headers))
+    expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
+    assert len(expected_headers - set(actual_headers)) == 0

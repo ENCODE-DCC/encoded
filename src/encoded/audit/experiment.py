@@ -804,7 +804,7 @@ def check_experiment_rna_seq_standards(value,
             detail = 'ENCODE experiment {} '.format(value['@id']) + \
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
-                     ' has no read depth containig quality metric associated with it.'
+                     ' has no read depth containing quality metric associated with it.'
             yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
 
     alignment_files = get_non_tophat_alignment_files(alignment_files)
@@ -3419,7 +3419,8 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
     Check if ENCODE4 experiment uses biosample without NIH institutional certification.
     '''
     # Only check ENCODE4 experiments. 
-    if value.get('award', {}).get('rfa') != 'ENCODE4':
+    award = value.get('award', {})
+    if award.get('rfa') != 'ENCODE4' or award.get('component') == 'functional characterization':
         return
     # Build up list of human biosamples missing NIC used in experiment. 
     human_biosamples_missing_hic = {

@@ -1038,8 +1038,8 @@ class App extends React.Component {
         let containerClass;
         let context = this.state.context;
         const hrefUrl = url.parse(this.state.href);
-        // Switching between collections may leave component in place
-        const key = context && context['@id'] && context['@id'].split('?')[0];
+        // Every component is remounted when a new search is executed because 'key' is the full url
+        const key = context['@id'];
         const currentAction = this.currentAction();
         const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {

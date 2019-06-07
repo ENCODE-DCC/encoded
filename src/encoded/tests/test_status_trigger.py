@@ -301,7 +301,7 @@ def test_set_status_catch_access_denied_error(mocker, testapp, file):
         'PutObjectAcl'
     )
     mocker.patch('encoded.types.file.File._get_external_sheet')
-    File._get_external_sheet.return_value = {}
+    File._get_external_sheet.return_value = {'bucket': 'abc', 'key': 'def'}
     mocker.patch('encoded.types.file.logging.warn')
     testapp.patch_json(file['@id'] + '@@set_status?update=true', {'status': 'released'})
     # Should log AccessDenied error but shouldn't raise error.
@@ -323,7 +323,7 @@ def test_set_status_raise_other_error(mocker, testapp, file):
         'ListBucket'
     )
     mocker.patch('encoded.types.file.File._get_external_sheet')
-    File._get_external_sheet.return_value = {}
+    File._get_external_sheet.return_value = {'bucket': 'abc', 'key': 'def'}
     # Should raise error.
     with pytest.raises(ClientError):
         testapp.patch_json(file['@id'] + '@@set_status?update=true', {'status': 'released'})

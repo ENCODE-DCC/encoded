@@ -484,9 +484,18 @@
                                             "bigWig",
                                             "csfasta",
                                             "csqual",
-                                            "idx"
+                                            "idx",
+                                            "database"
                                         ]
                                     }
+                                }
+                            }
+                        },
+                        {
+                            "required": ["assembly", "genome_annotation"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["database"]
                                 }
                             }
                         }
@@ -519,6 +528,20 @@
                                         "rejected reads",
                                         "raw data",
                                         "reporter code counts"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "database"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "transcriptome index"
                                     ]
                                 }
                             }
@@ -741,6 +764,7 @@
                         "CEL",
                         "chain",
                         "csv",
+                        "database",
                         "fasta",
                         "fastq",
                         "gff",
@@ -1604,6 +1628,7 @@
         "btr": ".btr",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
+        "database": ".db",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",

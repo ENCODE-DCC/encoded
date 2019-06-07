@@ -172,6 +172,17 @@
     // Cart result table pager control area.
     @at-root #{&}__pager {
         flex: 0 1 auto;
+
+        @at-root #{&}-note {
+            display: none;
+            margin-left: 5px;
+            font-size: 0.9rem;
+            color: #606060;
+
+            @media screen and (min-width: $screen-sm-min) {
+                display: inline-block;
+            }
+        }
     }
 
     // Cart add/remove toggle button
@@ -269,7 +280,6 @@
     }
 }
 
-
 // Cart button in navigation bar
 .navbar-inverse .nav > li > button.cart__nav-button {
     padding-top: 8px;
@@ -279,12 +289,19 @@
 
 // Search-result-like file facet and results display.
 .cart__display {
-    display: flex;
+    display: block;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+    }
 
     .box.facets {
-        flex: 1 1 auto;
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 0 300px;
+            margin-right: 20px;
+        }
+
         position: relative;
-        margin-right: 20px;
         padding-bottom: 23px;
         z-index: 0;
 
@@ -308,13 +325,139 @@
 }
 
 
+// Facets for the cart-view page.
+.cart-facet {
+    padding: 0;
+
+    // Button to expand or collapse a facet
+    @at-root #{&}__expander {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        margin: 5px 5px 10px;
+        border-bottom: 1px solid #c0c0c0;
+        cursor: pointer;
+
+        @at-root #{&}-title {
+            flex: 0 1 auto;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .icon {
+            flex: 0 0 auto;
+        }
+    }
+
+    // One term within a facet
+    @at-root #{&}-term {
+        margin: 0 4px;
+        padding: 4px 0;
+        font-size: 0; // Edge/IE11 fix for too-tall <li>
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+
+        // Covers all the components within a facet term.
+        @at-root #{&}__item {
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        // Checkbox for a facet term
+        $cart-facet-check-box-size: 18px;
+        @at-root #{&}__check {
+            display: flex;
+            flex: 0 0 $cart-facet-check-box-size;
+            width: $cart-facet-check-box-size;
+            height: $cart-facet-check-box-size;
+            border: 1px solid #c0c0c0;
+            border-radius: 3px;
+            justify-content: center;
+            align-items: center;
+
+            $cart-facet-check-size: 16px;
+            .icon {
+                flex: 0 0 $cart-facet-check-size;
+                font-size: $cart-facet-check-size;
+            }
+        }
+
+        @at-root #{&}__check--checked {
+            background-color: #008000;
+            color: #fff;
+        }
+
+        // Text of the facet term
+        @at-root #{&}__text {
+            padding: 0 5px;
+            flex: 0 1 60%;
+            font-size: 0.95rem;
+        }
+
+        // Count of items facet term represents
+        @at-root #{&}__count {
+            flex: 0 1 20%;
+            padding-right: 5px;
+            text-align: right;
+            font-size: 0.95rem;
+        }
+
+        // Circle whose tint reflects the count
+        $cart-facet-magnitude-size: 18px;
+        @at-root #{&}__magnitude {
+            flex: 0 0 $cart-facet-magnitude-size;
+            width: $cart-facet-magnitude-size;
+            height: $cart-facet-magnitude-size;
+
+            .icon {
+                font-size: $cart-facet-magnitude-size;
+                line-height: $cart-facet-magnitude-size;
+            }
+        }
+    }
+}
+
+
 // File-count note above facet
 .cart__facet-file-count {
+    position: relative;
     padding: 5px;
     margin: -10px -10px 20px -10px;
     background-color: #d8d8d8;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-weight: bold;
+
+    span {
+        position: relative;
+        z-index: 1;
+    }
+
+    @at-root #{&}-changer {
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #ff0;
+        z-index: 0;
+        animation-duration: .2s;
+        animation-name: change-flash;
+    }
+}
+
+// Allows div showing file count to flash yellow on term click
+@keyframes change-flash {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 

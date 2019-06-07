@@ -136,6 +136,7 @@ def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
+    A fastq file should be paired_with a fastq file.
     A paired_with should be the same replicate
     '''
 
@@ -147,6 +148,19 @@ def audit_paired_with(value, system):
 
     if 'paired_with' not in value:
         return
+
+    paired_with_file_format = value['paired_with'].get('file_format')
+
+    if value.get('file_format') == 'fastq' and paired_with_file_format != 'fastq':
+        detail = (
+            'Both the files in a paired-end run must be fastq files. ' 
+            'Fastq file {} is paired with file {}, which is a {} file.'
+        ).format(
+            value['@id'],
+            value['paired_with']['@id'],
+            paired_with_file_format
+        )
+        yield AuditFailure('paired with non-fastq', detail, level='ERROR')
 
     if 'replicate' not in value['paired_with']:
         return
