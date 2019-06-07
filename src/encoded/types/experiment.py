@@ -22,7 +22,6 @@ from .shared_calculated_properties import (
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims,
-    CalculatedSupersededBy,
     CalculatedReplicationType
 )
 
@@ -47,7 +46,6 @@ class Experiment(Dataset,
                  CalculatedCategorySlims,
                  CalculatedTypeSlims,
                  CalculatedObjectiveSlims,
-                 CalculatedSupersededBy,
                  CalculatedReplicationType):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
@@ -165,7 +163,19 @@ class Experiment(Dataset,
     })
     def related_series(self, request, related_series):
         return paths_filtered_by_status(request, related_series)
-   
+
+    @calculated_property(schema={
+            "title": "Superseded by",
+            "type": "array",
+            "items": {
+                "type": ['string', 'object'],
+                "linkFrom": "Experiment.supersedes",
+            },
+            "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
     matrix = {
         'y': {
             'facets': [

@@ -38,6 +38,7 @@ ORDER = [
     'platform',
     'library',
     'experiment',
+    'functional_characterization_experiment',
     'replicate',
     'annotation',
     'project',
@@ -572,6 +573,9 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('possible_controls', 'related_files', 'supersedes'),
     ],
+    'functional_characterization_experiment': [
+        remove_keys('possible_controls', 'supersedes'),
+    ],
     'mouse_donor': [
         remove_keys('parent_strains'),
     ],
@@ -655,6 +659,9 @@ PHASE2_PIPELINES = {
     ],
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
+    ],
+    'functional_characterization_experiment': [
+        skip_rows_missing_all_keys('possible_controls', 'supersedes'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),

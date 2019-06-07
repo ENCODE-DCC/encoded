@@ -471,20 +471,6 @@ class CalculatedObjectiveSlims:
         return []
 
 
-class CalculatedSupersededBy:
-    @calculated_property(schema={
-        "title": "Superseded by",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Experiment.supersedes",
-        },
-        "notSubmittable": True,
-    })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
-
-
 class CalculatedReplicationType:
     @calculated_property(schema={
         "title": "Replication type",
