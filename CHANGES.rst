@@ -1,6 +1,29 @@
 Changes
 =======
 
+v86.0 (released) snovault 1.0.31
+--------------------------------
+1. ENCD-4676 add-nagios-role-deployment (#2796)
+2. ENCD-4666 update-snovault-1.0.31 (#2790)
+3. ENCD-4657 add-s3-uri-to-metadata (#2786)
+4. ENCD-4639 Organize demo cloud yaml (#2773)
+5. ENCD-4634 Add database to file_format (#2770)
+6. ENCD-4541 Add multiple facets to cart view pages (#2780)
+7. ENCD-4633 Update saucelabs connect version 4.5.3 (#2788)
+8. ENCD-4609 Exclude fccs institutional certification (#2764)
+9. ENCD-4631 add new qc object for gencode categories (#2787)
+10. ENCD-4492 audit-to-chk-fq-non-fq-pair (#2776)
+11. ENCD-4084 date selector facet (#2759)
+12. ENCD-4600 Add MIME type for ab1 attachment (#2774)
+13. SNO-93 user-count-does-not-match (#2758)
+14. ENCD-4647 Display QC metric properties with multitype (#2783)
+15. SNO-90 added-advanced-search (#2729)
+16. ENCD-4648 always-show-cloud-metadata (#2777)
+17. ENCD-4642 Stop home banner truncation (#2781)
+18. ENCD-4599 fix audit detail typo (#2765)
+19. ENCD-4400 added-creative-commons-logo (#2750)
+20. ENCD-4611 update 2 polyA assay_titles (#2761)
+
 v85.2 (unreleased) snovault 1.0.30
 --------------------------------
 1. ENCD-4650 update-snovault-1.0.30 (#2778)
