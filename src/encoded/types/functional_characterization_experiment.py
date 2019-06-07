@@ -51,7 +51,6 @@ class FunctionalCharacterizationExperiment(
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
-        'related_series',
         'replicates.antibody',
         'replicates.library',
         'replicates.library.biosample.biosample_ontology',

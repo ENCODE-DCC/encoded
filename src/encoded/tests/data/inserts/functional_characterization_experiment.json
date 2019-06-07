@@ -1,0 +1,16 @@
+[
+    {
+        "_test": "mpra",
+        "accession": "ENCSR222MPR",
+        "assay_term_name": "MPRA",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "MPRA experiment",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_submitted": "2015-01-20",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "5a6d5a51-e62d-44b9-a1bd-5d1915247348"
+    }
+]
