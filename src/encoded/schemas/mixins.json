@@ -471,7 +471,7 @@
                     ]
                 },
                 {
-                    "comment": "Assay types will migrate into a new functional characterization experiment object, the following assay types are no longer valid for new submissions of functional genomics experiments.",
+                    "comment": "Assay types migrated into new functional characterization experiment object, not valid for new submissions.",
                     "permission": "import_items",
                     "enum": [
                         "STARR-seq",
