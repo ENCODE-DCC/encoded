@@ -1103,6 +1103,7 @@ class App extends React.Component {
                     <script async src="//www.google-analytics.com/analytics.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
+                    <link href="https://fonts.googleapis.com/css?family=Mada:400,500,600,700" rel="stylesheet" />
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
