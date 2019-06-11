@@ -146,10 +146,6 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
 ])
 def test_batch_download_files(testapp, workbook, test_url, expected):
     response = testapp.get(test_url)
-
-    #if test_url == '/batch_download/type=Annotation&organism.scientific_name!=Homo sapiens&organism.scientific_name=Mus musculus':
-        #import pdb; pdb.set_trace();
-
     assert response.body.decode('utf-8') == expected
 
 
