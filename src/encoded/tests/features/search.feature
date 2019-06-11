@@ -37,11 +37,11 @@ Feature: Search
         Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq"
+        When I click the link to "?type=Experiment&status=released&assay_title=TF+ChIP-seq"
         And I wait for the content to load
         Then I should see at least 7 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq&assay_title=DNAme+array"
+        When I click the link to "?type=Experiment&status=released&assay_title=TF+ChIP-seq&assay_title=DNAme+array"
         And I wait for the content to load
         Then I should see at least 11 elements with the css selector "ul.nav.result-table > li"
 
@@ -84,7 +84,7 @@ Feature: Search
     Scenario: Search for different ChIP-seq
         When I click the link to "?type=Experiment"
         And I wait for the content to load
-        When I click the link to "?type=Experiment&assay_title=ChIP-seq"
+        When I click the link to "?type=Experiment&assay_title=TF+ChIP-seq"
         And I wait for the content to load
         Then I should see "Showing 8 of 8 results"
 
