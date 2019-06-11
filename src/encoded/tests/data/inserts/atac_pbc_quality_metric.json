@@ -1,0 +1,36 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
+        "uuid": "53df4858-5c57-41dc-9fd3-3852e7fb85ac",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF032OJW" ],
+
+        "total_read_pairs": 38074482, 
+        "distinct_read_pairs": 32217704, 
+        "one_read_pair": 30277193, 
+        "two_read_pair": 1547993, 
+        "NRF": 0.846176, 
+        "PBC1": 0.939769, 
+        "PBC2": 19.558999
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
+        "uuid": "b40b2528-9ae1-4c27-a56f-0a2dcaecc952",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF459OKE" ],
+
+        "total_read_pairs": 47500660, 
+        "distinct_read_pairs": 40037045, 
+        "one_read_pair": 35874186, 
+        "two_read_pair": 3134862, 
+        "NRF": 0.842873, 
+        "PBC1": 0.896025, 
+        "PBC2": 11.443625
+    }
+]

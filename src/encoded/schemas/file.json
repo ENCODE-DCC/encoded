@@ -1106,6 +1106,8 @@
                         "idat green channel",
                         "idat red channel",
                         "intensity values",
+                        "IDR ranked peaks",
+                        "IDR thresholded peaks",
                         "library fraction",
                         "long range chromatin interactions",
                         "male genome index",
@@ -1382,6 +1384,21 @@
             "comment": "Do not submit. The field would be posted by DCC.",
             "type": "string",
             "permission": "import_items"
+        },
+        "reproducibility_classification": {
+            "title": "Reproducibility classification",
+            "description": "The Reproducibility classification of peaks from IDR or Overlap analysis.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Reproducibility classification",
+                "description": "The Reproducibility classification of peaks from IDR or Overlap analysis.",
+                "type": "string",
+                "enum": [
+                    "optimal peaks"
+                ]
+            }
         }
     },
     "columns": {

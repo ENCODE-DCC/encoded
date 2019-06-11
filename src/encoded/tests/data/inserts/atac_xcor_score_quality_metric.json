@@ -1,0 +1,42 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "bec03472-27ec-409d-92cc-a71b9a5f0b33",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF123ACW" ],
+
+        "num_reads": 25000000, 
+        "est_frag_len": 0, 
+        "corr_est_frag_len": 0.377266901214234, 
+        "phantom_peak": 45, 
+        "corr_phantom_peak": 0.3481357, 
+        "argmin_corr": 1500, 
+        "min_corr": 0.2804898, 
+        "NSC": 1.345029, 
+        "RSC": 1.430643,
+        "cross_correlation_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "e73a55bc-cb81-4781-bb37-c334b54abb38",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF521DVN" ],
+
+        "num_reads": 25000000, 
+        "est_frag_len": 0, 
+        "corr_est_frag_len": 0.380719933195802, 
+        "phantom_peak": 45, 
+        "corr_phantom_peak": 0.350552, 
+        "argmin_corr": 1500, 
+        "min_corr": 0.2865114, 
+        "NSC": 1.328812, 
+        "RSC": 1.471074,
+        "cross_correlation_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+    }
+]

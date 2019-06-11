@@ -1,0 +1,129 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "d0b3aa0f-b0d9-4661-8b6a-d3a7c2fe7608",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF123ACW" ],
+
+        "FRiP": 0.275468961911, 
+        "pr1_FRiP": 0.2780963858, 
+        "pr2_FRiP": 0.273888000193
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "99864972-800b-41a1-b73f-5517f1c2ddc1",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF974URG" ],
+
+        "FRiP": 0.152927559512
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "766a6877-9e55-4ee9-995f-cb1070f73399",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF182CHA" ],
+
+        "FRiP": 0.240030689001
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "05773d2f-5954-46f7-b023-9e38d947d82f",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF521DVN" ],
+
+        "FRiP": 0.279349387412, 
+        "pr1_FRiP": 0.280574979843, 
+        "pr2_FRiP": 0.279871239297
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "7f671756-fd07-4cfe-bc72-39a20f89834f",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF450PNX" ],
+
+        "FRiP": 0.147487023555
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "02af2cdd-7b9c-4113-9fb7-df4d859145f0",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF948BAV" ],
+
+        "FRiP": 0.247021224881
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "939171ff-c079-46ea-b406-03be6d8160b6",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF742JTZ" ],
+
+        "FRiP": 0.285776581603, 
+        "pr1_FRiP": 0.276928429095, 
+        "pr2_FRiP": 0.273568113301
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "b5ea4749-ed2b-4564-976e-47072ae05870",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF714GSL" ],
+
+        "FRiP": 0.180044734176
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "e632fc56-c47c-470d-88a0-97c3f0fcbc0a",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF520STK" ],
+
+        "FRiP": 0.263751633968
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "895d30a5-918f-4c08-b36b-182c7c8ea070",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF060KEI" ],
+
+        "FRiP": 0.169180239225
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "25409a15-2777-4c41-b562-e4605b0afa05",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF535BSB" ],
+
+        "FRiP": 0.259934108468
+    }
+]

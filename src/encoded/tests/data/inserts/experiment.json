@@ -855,5 +855,19 @@
         "accession": "ENCSR051STU",
         "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e",
         "experiment_classification": ["functional characterization assay"]
+    },
+    {
+        "_test": "ATAC-seq test",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "status": "released",
+        "date_submitted": "2019-05-03",
+        "biosample_ontology": "cell_line_EFO_0002784",
+        "award": "UM1HG009442",
+        "assay_term_name": "ATAC-seq",
+        "lab": "/labs/michael-snyder/",
+        "date_released": "2019-05-09",
+        "accession": "ENCSR808QCJ",
+        "uuid": "1b85ee28-66f1-49ad-940d-ba22acf85e08",
+        "experiment_classification": ["functional genomics assay"]
     }
 ]

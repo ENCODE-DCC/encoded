@@ -278,3 +278,69 @@ class LongReadRnaQuantificationQualityMetric(QualityMetric, CalculatedAssayTermI
 class GencodeCategoryQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'gencode_category_quality_metric'
     schema = load_schema('encoded:schemas/gencode_category_quality_metric.json')
+
+
+@collection(
+    name='atac-duplication-quality-metrics',
+    properties={
+        'title': "ATAC Duplication Quality Metric",
+        'description': "ATAC Duplication quality metric",
+    })
+class AtacDuplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_duplication_quality_metric'
+    schema = load_schema('encoded:schemas/atac_duplication_quality_metric.json')
+
+
+@collection(
+    name='atac-frip-quality-metrics',
+    properties={
+        'title': "ATAC FRiP Quality Metric",
+        'description': "ATAC FRiP quality metric",
+    })
+class AtacFRiPQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_frip_quality_metric'
+    schema = load_schema('encoded:schemas/atac_frip_quality_metric.json')
+
+
+@collection(
+    name='atac-pbc-quality-metrics',
+    properties={
+        'title': "ATAC PBC Quality Metric",
+        'description': "ATAC PBC quality metric",
+    })
+class AtacPbcQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_pbc_quality_metric'
+    schema = load_schema('encoded:schemas/atac_pbc_quality_metric.json')
+
+
+@collection(
+    name='atac-reproducibility-quality-metrics',
+    properties={
+        'title': "ATAC Reproducibility Quality Metric",
+        'description': "ATAC Reproducibility quality metric",
+    })
+class AtacReproducibilityQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_reproducibility_quality_metric'
+    schema = load_schema('encoded:schemas/atac_reproducibility_quality_metric.json')
+
+
+@collection(
+    name='ataq-xcor-score-quality-metrics',
+    properties={
+        'title': "ATAC Cross Correlation Quality Metric",
+        'description': "ATAC cross correlation quality metric",
+    })
+class AtacXcorScoreQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_xcor_score_quality_metric'
+    schema = load_schema('encoded:schemas/atac_xcor_score_quality_metric.json')
+
+
+@collection(
+    name='ataqc-quality-metrics',
+    properties={
+        'title': "ATAC Quality Metric",
+        'description': "ATAC quality metric",
+    })
+class AtaqcQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'ataqc_quality_metric'
+    schema = load_schema('encoded:schemas/ataqc_quality_metric.json')

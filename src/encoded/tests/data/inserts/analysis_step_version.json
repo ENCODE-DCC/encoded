@@ -190,5 +190,21 @@
         ],
         "status": "released",
         "uuid": "b75af1ff-b3ab-443f-a134-2b00cd318cd9"
+    },
+    {
+        "uuid": "b5403997-301b-4083-a8f7-060de7cab393",
+        "analysis_step": "idr-test-step-v-2",
+        "software_versions": [
+            "195de123-3300-4485-a862-d301ff35fc4e"
+        ],
+        "minor_version": 1
+    },
+    {
+        "uuid": "bf12331a-0a15-43ef-acf4-0147cdaa0da9",
+        "analysis_step": "overlap-test-step-v-1",
+        "software_versions": [
+            "195de123-3300-4485-a862-d301ff35fc4e"
+        ],
+        "minor_version": 1
     }
 ]

@@ -1,0 +1,70 @@
+{
+    "title": "ATAC-seq duplication quality metric",
+    "description": "Schema for reporting ATAC duplication quality metrics",
+    "id": "/profiles/atac_duplication_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "unpaired_reads": {
+            "title": "Unpaired reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "paired_reads": {
+            "title": "Paired reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "unmapped_reads": {
+            "title": "Unmapped reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "unpaired_dupes": {
+            "title": "Unpaired duplicates",
+            "type": "integer",
+            "minimum": 0
+        },
+        "paired_dupes": {
+            "title": "Paired duplicates",
+            "type": "integer",
+            "minimum": 0
+        },
+        "paired_opt_dupes": {
+            "title": "Paired optical duplicates",
+            "type": "integer",
+            "minimum": 0
+        },
+        "dupes_pct": {
+            "title": "Duplicates percentage",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/atac_duplication_quality_metric.md"
+}

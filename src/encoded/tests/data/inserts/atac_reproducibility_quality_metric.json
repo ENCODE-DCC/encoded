@@ -1,0 +1,97 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "87121b23-5fc7-4eba-b136-49f260d519c2",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF974URG" ],
+
+        "reproducible_peaks": 213469
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "41a8dd65-c86f-46b1-afd5-3fd9cf45d96b",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF450PNX" ],
+
+        "reproducible_peaks": 231341
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "9a3e8384-4548-469b-9189-a011af31fcb2",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF060KEI" ],
+
+        "reproducible_peaks": 248249
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "848ec707-539c-4600-8bed-8d7961f0433f",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF714GSL" ],
+
+        "reproducible_peaks": 254200,
+        "rescue_ratio": 1.02397189918,
+        "self_consistency_ratio": 1.08372175819,
+        "reproducibility_test": "pass",
+        "peak_width_distribution_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "61fa4c9d-14f4-4fca-8913-879c44917af6",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF182CHA" ],
+
+        "reproducible_peaks": 100429
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "276a55dd-a6fa-48f6-98c7-46bd88dc78e3",
+        "uuid": "ce27e2ff-278b-4ab3-b12f-ac1fae4409d9",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF521DVN" ],
+
+        "reproducible_peaks": 101843
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "cce46acb-4ca3-4c7f-9988-b12586df1944",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF535BSB" ],
+
+        "reproducible_peaks": 122878
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/UM1HG009442/",
+        "step_run": "ef16ec37-16ab-49c7-aeaa-f7fc08ad2a80",
+        "uuid": "6da95af4-f265-44ff-8b37-a28992e6ed82",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF520STK" ],
+
+        "reproducible_peaks": 135019,
+        "rescue_ratio": 1.0988053191,
+        "self_consistency_ratio": 1.01407959852,
+        "reproducibility_test": "pass"
+    }
+]

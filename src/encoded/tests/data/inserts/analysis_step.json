@@ -323,5 +323,14 @@
         "step_label": "long-read-rna-seq-error-correction-step",
         "title": "Long read RNA-seq error correction step",
         "uuid": "1911f233-b415-4ae3-8ea2-763959257ff8"
+    },
+    {
+        "uuid": "3ed55ac3-b98c-467a-8cc7-dde1ef955998",
+        "status": "released",
+        "analysis_step_types": ["replicate concordance"],
+        "input_file_types": ["peaks"],
+        "major_version": 1,
+        "step_label": "overlap-test-step",
+        "title": "Overlap test step"
     }
 ]

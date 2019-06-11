@@ -646,5 +646,25 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB001ACL",
         "uuid": "df1f6992-70ef-11e9-a923-1681be663d3e"
+    },
+    {
+        "_test": "ATAC-seq rep1",
+        "experiment": "/experiments/ENCSR808QCJ/",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB209APR",
+        "uuid": "0311d1e6-a141-4be4-a165-6abc6d320f05"
+    },
+    {
+        "_test": "ATAC-seq rep2",
+        "experiment": "/experiments/ENCSR808QCJ/",
+        "biological_replicate_number": 2,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "library": "ENCLB209APS",
+        "uuid": "77358e2e-61f7-4736-9261-5f74b7e73ecb"
     }
 ]

@@ -59,6 +59,12 @@ ORDER = [
     'analysis_step_run',
     'file',
     'star_quality_metric',
+    'atac_duplication_quality_metric',
+    'atac_frip_quality_metric',
+    'atac_pbc_quality_metric',
+    'atac_reproducibility_quality_metric',
+    'atac_xcor_score_quality_metric',
+    'ataqc_quality_metric',
     'bismark_quality_metric',
     'cpg_correlation_quality_metric',
     'chipseq_filter_quality_metric',
@@ -96,7 +102,10 @@ IS_ATTACHMENT = [
     'IDR_parameters_rep1_pr',
     'IDR_parameters_rep2_pr',
     'IDR_parameters_pool_pr',
-    'cross_correlation_plot'
+    'cross_correlation_plot',
+    'fragment_length_distribution_plot',
+    'peak_width_distribution_plot',
+    'TSS_enrichment_plot',
 ]
 
 

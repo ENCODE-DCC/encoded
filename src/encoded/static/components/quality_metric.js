@@ -29,6 +29,16 @@ const qcAttachmentProperties = {
     ChipSeqFilterQualityMetric: [
         { cross_correlation_plot: 'Cross-correlation plot' },
     ],
+    AtaqcQualityMetric: [
+        { fragment_length_distribution_plot: 'Fragment length distribution plot' },
+        { TSS_enrichment_plot: 'TSS enrichement plot' },
+    ],
+    AtacReproducibilityQualityMetric: [
+        { peak_width_distribution_plot: 'Peak width distribution plot' },
+    ],
+    AtacXcorScoreQualityMetric: [
+        { cross_correlation_plot: 'Cross-correlation plot' },
+    ],
 };
 
 
