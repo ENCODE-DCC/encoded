@@ -347,6 +347,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             padding-top: 40px;
             @media screen and (max-width: $screen-md-min) {
                 flex: 0 1 100%;
+                padding-top: 20px;
             }
             .show-hide-facets {
                 right: -2px;
@@ -405,12 +406,18 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-controls {
     display: flex;
-    // justify-content: space-between;
     align-items: center;
     padding: 5px;
     background-color: #c0c0c0;
     border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
+    
+    @media screen and (max-width: $screen-sm-min) {
+        display: block;
+        select {
+            margin-bottom: 3px;
+        }
+    }
 
     @at-root #{&}__assembly-selector {
         flex: 0 1 auto;

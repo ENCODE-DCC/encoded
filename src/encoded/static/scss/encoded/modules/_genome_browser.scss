@@ -36,7 +36,7 @@
 
 .hpgv_ui-block {
     color: #364565;
-    background-color: #f2f2f2;//#d8e0e8;
+    background-color: #f2f2f2;
     font-size: 16px;
     box-shadow: none;
     border: 0;
@@ -53,10 +53,10 @@
 }
 
 .hpgv_track-sequence {
-    --nucleobase-a: #0C7489;//#d06fa9;
-    --nucleobase-t: #F9CE70;//#e89188;
-    --nucleobase-g: #0FA3B1;//#4bd897;
-    --nucleobase-c: #C14953;//#44a4dc;
+    --nucleobase-a: #0C7489;
+    --nucleobase-t: #F9CE70;
+    --nucleobase-g: #0FA3B1;
+    --nucleobase-c: #C14953;
     --gc-banding-low: #0C7489;
     --gc-banding-high: #F9CE70;
     --text-color: rgba(255, 255, 255, 0.7);
@@ -66,34 +66,18 @@
 // styles for bigBed files / annotation files
 .hpgv_track-annotation {
     --transcript-arrow: rgba(0, 0, 0, 1.0);
-    --transcript: #BDC5C0;//rgba(156, 163, 175, 0.13);
-    --coding: #575F5A; //#575F5A;//rgba(0, 44, 95, 0.79); // WE ARE USING THIS
+    --transcript: #BDC5C0;
+    --coding: #575F5A;
     --non-coding: #F9CE70;
     --untranslated: #C14953;
 
-    --coding-max-score: #575F5A;//rgba(87, 95, 90, 0.79);
+    --coding-max-score: #575F5A;
     --non-coding-max-score: red;
 }
 
-// .hpgv_track-sequence {
-//     --cursor: #ffffffcc;
-//     --loading-indicator: white;
-// 
-//     --nucleobase-a: #d06fa9;
-//     --nucleobase-t: #e89188;
-//     --nucleobase-g: #4bd897;
-//     --nucleobase-c: #44a4dc;
-// 
-//     --gc-banding-low: #d45591;
-//     --gc-banding-high: #60ffff;
-// 
-//     color: rgba(255, 255, 255, 0.7);
-//     --text-additive-blending: 1.0; /* set to 0.0 for dark text colors */
-// }
-
 // styles for signal track
 .hpgv_track-signal {
-    --signal-color: #2A6496;//#A54747;
+    --signal-color: #2A6496;
 }
 
 .hpgv_track {
@@ -126,6 +110,21 @@
     width: 80%;
     margin: auto;
     align-items: center;
+    @media screen and (max-width: $screen-sm-min) {
+        display: block;
+        width: 100%;
+        padding: 20px 10px 20px 0;
+        .icon-search, .searchform {
+            margin-left: 10px;
+        }
+        .icon-search, .search-instructions {
+            display: inline-block;
+        }
+        .submit-gene-search {
+            margin-top: 5px;
+            margin-left: 0;
+        }
+    }
     .icon-search {
         margin-right: 5px;
     }
@@ -183,6 +182,23 @@
                     color: #000;
                 }
             }
+        }
+    }
+    .facet {
+        button {
+            border: none;
+            padding: 0;
+            text-align: unset;
+            width: calc(100% - 8px);
+            margin: 4px;
+            .facet-term {
+                padding: 2px 2px 2px 5px;
+            }
+        }
+    }
+    .assembly-facet {
+        button {
+            background: none;
         }
     }
 }

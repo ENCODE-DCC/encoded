@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from './fetched';
 import AutocompleteBox from './region_search';
+import { arraysUnequal } from './objectutils';
 
 const domainName = 'https://www.encodeproject.org';
 
@@ -76,8 +77,8 @@ function mapGenome(inputAssembly) {
 }
 
 class GenomeBrowser extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor() {
+        super();
 
         this.state = {
             width: 592,
@@ -110,6 +111,9 @@ class GenomeBrowser extends React.Component {
         // Extract only bigWig and bigBed files from the list:
         let tempFiles = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
         tempFiles = tempFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+        // Set default ordering of tracks to be first by replicate then by output_type
+        // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
+        // Multiplication by 1000 orders the replicates with a single replicate at the end (there is probably a better way to do this?)
         let files = _.chain(tempFiles)
             .sortBy(obj => obj.output_type)
             .sortBy((obj) => {
@@ -247,7 +251,7 @@ class GenomeBrowser extends React.Component {
             setTimeout(this.drawTracksResized, 1000);
         }
 
-        if (this.props.files !== prevProps.files) {
+        if (arraysUnequal(this.props.files, prevProps.files)) {
             let newFiles = [];
 >>>>>>> ENCD-4426 integrate Valis browser
             let domain = `${window.location.protocol}//${window.location.hostname}`;
@@ -358,7 +362,6 @@ class GenomeBrowser extends React.Component {
                     compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
                 },
-
             ];
             contig = 'chr2L';
             x0 = 826001;
@@ -402,27 +405,15 @@ class GenomeBrowser extends React.Component {
 
     filesToTracks(files, domain) {
         const tracks = files.map((file) => {
-            if (file.name) {
-                const trackObj = {};
-                trackObj.name = file.name;
-                trackObj.type = 'signal';
-                trackObj.path = file.href;
-                trackObj.heightPx = 80;
-                return trackObj;
-            } else if (file.file_format === 'bigWig') {
-                const trackObj = {};
-                trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
-                trackObj.type = 'signal';
-                trackObj.path = domain + file.href;
-                trackObj.heightPx = 80;
-                return trackObj;
-            } else if (file.file_format === 'vdna-dir') {
+            // Genome files (FASTA files converted into vdna-dir files - special Valis formatted files in a directory)
+            if (file.file_format === 'vdna-dir') {
                 const trackObj = {};
                 trackObj.name = 'Genome';
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
                 trackObj.heightPx = 40;
                 return trackObj;
+            // Gene structure files (GENCODE files converted into vgenes-dir files - special Valis formatted files in a directory)
             } else if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
                 trackObj.name = `${this.props.annotation ? `${this.props.assembly} ${this.props.annotation}` : `${this.props.assembly}`}`;
@@ -430,11 +421,21 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = file.href;
                 trackObj.heightPx = 120;
                 return trackObj;
+            // bigWig signal
+            } else if (file.file_format === 'bigWig') {
+                const trackObj = {};
+                trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
+                trackObj.type = 'signal';
+                trackObj.path = domain + file.href;
+                trackObj.heightPx = 80;
+                return trackObj;
             }
+            // bigBed annotations
             const trackObj = {};
             trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
+            // bigBed bedRNAElements have two tracks and need extra height)
             if (file.file_format === 'bigBed bedRNAElements') {
                 trackObj.heightPx = 120;
             } else {
@@ -486,19 +487,14 @@ class GenomeBrowser extends React.Component {
         inputNode.value = term;
         newTerms[name] = id;
         this.setState({
-            // terms: newTerms,
             showAutoSuggest: false,
             searchTerm: term,
         });
         inputNode.focus();
-        // Now let the timer update the terms state when it gets around to it.
     }
 
     handleOnFocus() {
         this.setState({ showAutoSuggest: false });
-        console.log(this.props.assembly);
-        console.log(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`);
-
         getCoordinateData(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`, this.context.fetch).then((response) => {
             const responseJson = JSON.parse(response);
             let contig = '';
@@ -506,11 +502,8 @@ class GenomeBrowser extends React.Component {
             let xEnd = '';
             responseJson['@graph'].forEach((responseLine) => {
                 if (responseLine.text === this.state.searchTerm) {
-                    console.log('Found search term');
                     responseLine._source.annotations.forEach((annotation) => {
                         if (annotation.assembly_name === this.state.genome) {
-                            console.log('Found assembly matching genome');
-                            console.log(annotation);
                             const annotationLength = annotation.end - annotation.start;
                             contig = `chr${annotation.chromosome}`;
                             xStart = annotation.start - (annotationLength / 2);

@@ -10,7 +10,7 @@ import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
-import { requestFiles, DownloadableAccession } from './objectutils';
+import { requestFiles, DownloadableAccession, arraysUnequal } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -128,25 +128,19 @@ export class FileTable extends React.Component {
             context,
             items,
             graphedFiles,
-            filterOptions,
             filePanelHeader,
             encodevers,
             showFileCount,
             browserOptions,
             session,
             adminUser,
-            selectedFilterValue,
             showReplicateNumber,
         } = this.props;
         const loggedIn = !!(session && session['auth.userid']);
 
-        // Establish the selected assembly and annotation.
+        // Establish the selected assembly and annotation for the tabs
         const selectedAssembly = null;
         const selectedAnnotation = null;
-        // if (selectedFilterValue && filterOptions[selectedFilterValue]) {
-        //     selectedAssembly = filterOptions[selectedFilterValue].assembly;
-        //     selectedAnnotation = filterOptions[selectedFilterValue].annotation;
-        // }
 
         let datasetFiles = _((items && items.length > 0) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length > 0) {
@@ -289,10 +283,6 @@ FileTable.propTypes = {
         /** Files selected for browsing */
         selectedBrowserFiles: PropTypes.array,
     }),
-    /** Selected filter from popup menu */
-    selectedFilterValue: PropTypes.string,
-    /** Array of assambly/annotation from file array */
-    filterOptions: PropTypes.array,
     /** True to show count of files in table */
     showFileCount: PropTypes.bool,
     /** Function to call to set the currently selected node ID */
@@ -315,8 +305,6 @@ FileTable.defaultProps = {
     graphedFiles: null,
     filePanelHeader: null,
     encodevers: '',
-    selectedFilterValue: 'default',
-    filterOptions: [],
     showFileCount: false,
     browserOptions: {
         currentBrowser: '',
@@ -1790,55 +1778,8 @@ InclusionSelector.propTypes = {
 };
 
 // Display facets for files
-const AssemblyFacet = (props) => {
-    const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
-    // Determine how many total files there are
-    let objSum = 0;
-    // Create object to keep track of selected filters
-    const selectedObj = {};
-    Object.keys(facetObject).forEach((key) => {
-        objSum += facetObject[key];
-        if (Object.keys(selectedFilters).length > 0) {
-            Object.keys(selectedFilters).forEach((filter) => {
-                if (selectedFilters[filter].indexOf(key) > -1) {
-                    selectedObj[key] = 'selected';
-                }
-            });
-        }
-    });
-    // Sort results
-    const sortedKeys = Object.keys(facetObject).sort((a, b) => (facetObject[b] - facetObject[a]));
-
-    return (
-        <div className="facet assembly-facet">
-            {sortedKeys.map(item =>
-                <div className={`facet-term-${item.replace(/ /g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
-                    <i className={`${selectedObj[item] ? 'icon icon-circle' : 'icon icon-circle-o'}`} />
-                    <div className="facet-term__item">
-                        <div className="facet-term__text">
-                            <span>{item}</span>
-                        </div>
-                        { (facetObject[item] > 0) ?
-                            <div className="facet-term__count">{facetObject[item]}</div>
-                        : null}
-                        <div className="facet-term__bar" style={{ width: `${Math.ceil((facetObject[item] / objSum) * 100)}%` }} />
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-AssemblyFacet.propTypes = {
-    facetObject: PropTypes.object.isRequired,
-    facetTitle: PropTypes.string.isRequired,
-    filterFiles: PropTypes.func.isRequired,
-    facetKey: PropTypes.string.isRequired,
-    selectedFilters: PropTypes.object.isRequired,
-    currentTab: PropTypes.string.isRequired,
-};
-
-// Display facets for files
+// Only one assembly can be chosen so controls for 'Assembly' facet look like radiobuttons
+// Multiple terms may be chosen for facets that are not Assembly so those look like regular buttons
 const FileFacet = (props) => {
     const { facetObject, facetTitle, filterFiles, facetKey, selectedFilters, currentTab } = props;
     // Determine how many total files there are
@@ -1859,10 +1800,15 @@ const FileFacet = (props) => {
     const sortedKeys = Object.keys(facetObject).sort((a, b) => (facetObject[b] - facetObject[a]));
 
     return (
-        <div className="facet">
-            <h5>{facetTitle}</h5>
+        <div className={`facet ${facetTitle === 'Assembly' ? 'assembly-facet' : ''}`}>
+            {facetTitle !== 'Assembly' ?
+                <h5>{facetTitle}</h5>
+            : null}
             {sortedKeys.map(item =>
-                <div className={`facet-term-${item.replace(/ /g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
+                <button className={`facet-term-${item.replace(/\s/g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} onKeyDown={() => filterFiles(item, facetKey)} key={item}>
+                    {facetTitle === 'Assembly' ?
+                        <i className={`${selectedObj[item] ? 'icon icon-circle' : 'icon icon-circle-o'}`} />
+                    : null}
                     <div className="facet-term__item">
                         <div className="facet-term__text">
                             <span>{item}</span>
@@ -1872,7 +1818,7 @@ const FileFacet = (props) => {
                         : null}
                         <div className="facet-term__bar" style={{ width: `${Math.ceil((facetObject[item] / objSum) * 100)}%` }} />
                     </div>
-                </div>
+                </button>
             )}
         </div>
     );
@@ -1887,9 +1833,23 @@ FileFacet.propTypes = {
     currentTab: PropTypes.string.isRequired,
 };
 
+function addFilter(filterList, value, facet) {
+    const currentFilters = filterList;
+    // Check to see if there is already a filter for a facet or if it is the assembly facet which can only have one value
+    if ((currentFilters[facet]) && facet !== 'assembly') {
+        // If so, append the new falue
+        currentFilters[facet] = [...currentFilters[facet], value];
+    } else {
+        // If not, create a new filter with the new value
+        currentFilters[facet] = [value];
+    }
+    return currentFilters;
+}
+
+// Filter an array of objects by checking if the value of a property ('key') matches a given value ('keyValue')
 function filterItems(array, key, keyValue) {
     return array.filter((el) => {
-        // check to see if there are multiple values selected for a facet
+        // Check to see if there are multiple values selected for a facet
         if (keyValue.length > 1) {
             // if replicate facet, need to construct replicate value and check if value is present in selected values
             if (key === 'biological_replicates') {
@@ -1900,7 +1860,6 @@ function filterItems(array, key, keyValue) {
             return keyValue.indexOf(el[key]) > -1;
         }
         // if there is only one value selected for a facet, can just compare value to selected value
-        // possibly this can all be wrapped into one check and the lines below here are not necessary
         if (key === 'biological_replicates') {
             const replicate = (el.biological_replicates ? el.biological_replicates.sort((a, b) => a - b).join(', ') : '');
             return replicate === keyValue[0];
@@ -1909,106 +1868,122 @@ function filterItems(array, key, keyValue) {
             if (keyValue[0] === 'All assemblies') {
                 return true;
             }
-            return (keyValue.indexOf(el[key]) !== -1);
+            return (el[key] === keyValue[0]);
         }
         return el[key] === keyValue[0];
     });
 }
 
+// Create objects for non-Assembly facets
+function createFacetObject(emptyObject, propertyKey, fileList, filters) {
+    // 'singleFilter' checks to see if there is only one filter selected (Assembly)
+    const singleFilter = Object.keys(filters).length === 1;
+    // Create list of files that satisfy all filters ('fileListFiltered')
+    // Create list of files that is filtered by assembly only ('newFileList')
+    let fileListFiltered = [...fileList];
+    let newFileList = [...fileList];
+    Object.keys(filters).forEach((filter) => {
+        if (filter === 'assembly') {
+            newFileList = filterItems(newFileList, filter, filters[filter]);
+        }
+        fileListFiltered = filterItems(fileListFiltered, filter, filters[filter]);
+    });
+    // If only 'Assembly' filter is selected, we want to collect all possible terms from 'newFile List' and then we are done
+    if (singleFilter) {
+        newFileList.forEach((file) => {
+            let property = file[propertyKey];
+            if (propertyKey === 'biological_replicates') {
+                property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+            }
+            if (emptyObject[property]) {
+                emptyObject[property] += 1;
+            } else {
+                emptyObject[property] = 1;
+            }
+        });
+    // If multiple filters are selected, it gets more complicated
+    } else {
+        // Start by adding properties from filtered list of files
+        fileListFiltered.forEach((file) => {
+            let property = file[propertyKey];
+            if (propertyKey === 'biological_replicates') {
+                property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+            }
+            if (emptyObject[property]) {
+                emptyObject[property] += 1;
+            } else {
+                emptyObject[property] = 1;
+            }
+        });
+        // We also want to display terms that could be added if the user wants to increase the displayed results
+        // These terms need to satisfy all of the filters that are already selected
+        newFileList.forEach((file) => {
+            let property = file[propertyKey];
+            if (propertyKey === 'biological_replicates') {
+                property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+            }
+            // We only want to look at files that are not in 'filteredListFiltered'
+            if (!(fileListFiltered.includes(file))) {
+                // If this file's property was a filter, how many results would there be?
+                let fakeFilters = Object.assign({}, filters);
+                fakeFilters = addFilter(fakeFilters, property, propertyKey);
+                let fakeFileList = newFileList;
+                Object.keys(fakeFilters).forEach((f) => {
+                    fakeFileList = filterItems(fakeFileList, f, fakeFilters[f]);
+                });
+                // If there would be results, add them
+                if (fakeFileList.includes(file)) {
+                    if (emptyObject[property]) {
+                        emptyObject[property] += 1;
+                    } else {
+                        emptyObject[property] = 1;
+                    }
+                // If there would be no results but this term is a filter, add it
+                } else if (!(emptyObject[property]) && filters[propertyKey] && filters[propertyKey].includes(property)) {
+                    emptyObject[property] = 0;
+                }
+            }
+        });
+    }
+    return emptyObject;
+}
+
 const TabPanelFacets = (props) => {
     const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters } = props;
 
+    // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
     fileList = fileList.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
     if (currentTab === 'browser') {
         fileList = fileList.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
     }
+    if (currentTab === 'graph') {
+        fileList = fileList.filter(file => file.file_format !== 'fastq');
+    }
+
+    // Initialize objects for facets
     const assembly = { 'All assemblies': 0 };
-    const fileType = {};
-    const outputType = {};
-    const replicate = {};
+    let fileType = {};
+    let outputType = {};
+    let replicate = {};
+
+    // Create object for Assembly facet from list of all files
+    // We do not count how many results there are for a given assembly because we will not display the bars
     fileList.forEach((file) => {
-        // collect 'Assembly'
         if (!assembly[file.assembly] && file.assembly) {
             assembly[file.assembly] = 0;
         }
     });
-    let fileListFiltered = allFiles;
-    Object.keys(filters).forEach((filter) => {
-        fileListFiltered = filterItems(fileListFiltered, filter, filters[filter]);
-    });
-    fileListFiltered = fileListFiltered.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
-    if (currentTab === 'browser') {
-        fileListFiltered = fileListFiltered.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-    }
 
-    const singleFilter = Object.keys(filters).length === 1;
-    if (filters.file_type || singleFilter) {
-        fileList.forEach((file) => {
-            if (!((file.file_type === 'fastq') && (currentTab === 'graph'))) {
-                // collect 'File type'
-                if (fileType[file.file_type]) {
-                    fileType[file.file_type] += 1;
-                } else {
-                    fileType[file.file_type] = 1;
-                }
-            }
-        });
-    } else {
-        fileListFiltered.forEach((file) => {
-            // collect 'File type'
-            if (fileType[file.file_type]) {
-                fileType[file.file_type] += 1;
-            } else {
-                fileType[file.file_type] = 1;
-            }
-        });
-    }
-    if (filters.output_type || singleFilter) {
-        fileList.forEach((file) => {
-            // collect 'Output type'
-            if (outputType[file.output_type]) {
-                outputType[file.output_type] += 1;
-            } else {
-                outputType[file.output_type] = 1;
-            }
-        });
-    } else {
-        fileListFiltered.forEach((file) => {
-            // collect 'Output type'
-            if (outputType[file.output_type]) {
-                outputType[file.output_type] += 1;
-            } else {
-                outputType[file.output_type] = 1;
-            }
-        });
-    }
-    if (filters.biological_replicates || singleFilter) {
-        fileList.forEach((file) => {
-            // collect 'replicate'
-            const fileReplicate = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
-            if (replicate[fileReplicate]) {
-                replicate[fileReplicate] += 1;
-            } else {
-                replicate[fileReplicate] = 1;
-            }
-        });
-    } else {
-        fileListFiltered.forEach((file) => {
-            // collect 'replicate'
-            const fileReplicate = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
-            if (replicate[fileReplicate]) {
-                replicate[fileReplicate] += 1;
-            } else {
-                replicate[fileReplicate] = 1;
-            }
-        });
-    }
+    // Create objects for non-Assembly facets
+    fileType = createFacetObject(fileType, 'file_type', fileList, filters);
+    outputType = createFacetObject(outputType, 'output_type', fileList, filters);
+    replicate = createFacetObject(replicate, 'biological_replicates', fileList, filters);
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
             <h4>Choose an assembly </h4>
-            <AssemblyFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
@@ -2035,10 +2010,6 @@ TabPanelFacets.propTypes = {
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
 };
-
-function arraysUnequal(array1, array2) {
-    return !(_.isEqual(array1, array2));
-}
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
@@ -2263,7 +2234,7 @@ class FileGalleryRendererComponent extends React.Component {
             this.prevRelatedFiles = relatedFiles;
             const allFiles = datasetFiles.concat(relatedFiles);
 
-            // check for filters
+            // If there are filters, filter the new files
             let filteredFiles = allFiles;
             let graphFiles = allFiles;
             let filesFilteredByAssembly = allFiles;
@@ -2295,11 +2266,7 @@ class FileGalleryRendererComponent extends React.Component {
 
             if (arraysUnequal(filteredFiles, this.state.files)) {
                 this.setState({ files: filteredFiles });
-                // From the new set of files, calculate the currently selected assembly and annotation to display in
-                // the graph and tables.
-                // this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
             }
-            // this.resetCurrentBrowser(null, allFiles);
         });
     }
 
@@ -2307,13 +2274,8 @@ class FileGalleryRendererComponent extends React.Component {
      * Clear selected filters
      */
     clearFileFilters() {
-        // we want to keep the assembly filter which will exist unless it is 'all assemblies and annotations'
-        if (this.state.fileFilters.assembly) {
-            this.setState({ fileFilters: { assembly: [this.state.fileFilters.assembly[0]] } });
-        // if there is no assembly filter, then 'all assemblies and annotations' is selected and there should be no filters at all
-        } else {
-            this.setState({ fileFilters: {} });
-        }
+        // Never delete the assembly filter
+        this.setState({ fileFilters: { assembly: [this.state.fileFilters.assembly[0]] } });
     }
 
     /**
@@ -2408,34 +2370,34 @@ class FileGalleryRendererComponent extends React.Component {
         if (facet === 'assembly') {
             this.setState({ selectedAssembly: value });
         }
-        // check to see if there are already filters
+        // Check to see if there are already filters
         if (Object.keys(this.state.fileFilters).length > 0) {
             const currentFilters = this.state.fileFilters;
-            // check to see if a filter for this facet exists, or an assembly filter which is an "OR" type filter not an "AND" type filter like the others
+            // Check to see if a filter for this facet exists, or an assembly filter which is an "OR" type filter not an "AND" type filter like the others
             if ((currentFilters[facet]) && facet !== 'assembly') {
-                // there is a filter for this facet and this value
+                // There is a filter for this facet and this value
                 if (currentFilters[facet].indexOf(value) > -1) {
-                    // the value already exists in the filter so we want to reverse it
+                    // The value already exists in the filter so we want to reverse it
                     if (currentFilters[facet].length > 1) {
-                        // this value is not the only value in the filter so we delete just that value
+                        // This value is not the only value in the filter so we delete just that value
                         const allValues = currentFilters[facet];
                         allValues.splice(allValues.indexOf(value), 1);
                         currentFilters[facet] = allValues;
                     } else {
-                        // there was only one value in the filter so we just delete the whole filter
+                        // There was only one value in the filter so we just delete the whole filter
                         delete currentFilters[facet];
                     }
-                // there is a filter for this facet but not this value so we add it
+                // There is a filter for this facet but not this value so we add it
                 } else {
-                    // add a value to an existing filter
+                    // Add a value to an existing filter
                     currentFilters[facet] = [...currentFilters[facet], value];
                 }
             } else {
-                // create a new filter with the new value
+                // Create a new filter with the new value
                 currentFilters[facet] = [value];
             }
             this.setState({ fileFilters: currentFilters });
-        // if there are no filters yet, set this to be the first filter
+        // If there are no filters yet, set this to be the first filter
         } else {
             this.setState({ fileFilters: { [facet]: [value] } });
         }
