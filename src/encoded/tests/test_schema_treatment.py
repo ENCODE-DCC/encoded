@@ -5,7 +5,7 @@ def test_treatment_with_bad_prod (testapp,treatment, source):
     item = {
         "treatment_term_name": treatment['treatment_term_name'],
         "treatment_type": treatment['treatment_type'],
-        "product_id": " Illumina",
+        "product_id": " Abcam",
         "source": source['@id']
     }
     return item
