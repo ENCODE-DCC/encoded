@@ -337,6 +337,7 @@ def _get_run_args(main_args, instances_tag_data):
             'GIT_BRANCH': main_args.branch,
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
+            'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
         }
         if main_args.no_es:
             config_file = ':cloud-config-no-es.yml'
@@ -375,6 +376,7 @@ def _get_run_args(main_args, instances_tag_data):
                 'ES_MASTER': 'true',
                 'MIN_MASTER_NODES': 1,
                 'GIT_REPO': main_args.git_repo,
+                'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
             }
             master_user_data = get_user_data(
                 instances_tag_data['commit'],
@@ -639,6 +641,13 @@ def parse_args():
         help="Set EC2 availabilty zone")
     parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
             help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
+    parser.add_argument('--batchupgrade-vars', nargs=4, default=['1000', '1', '8', '1'],
+        help=(
+            "Set batchupgrade vars for demo only "
+            "Ex) --batchupgrade-vars 1000 1 8 1 "
+            "Where the args are batchsize, chunksize, processes, and maxtasksperchild"
+        )
+    )
     # Set Role
     # - 'demo' role is default for making single or clustered
     # applications for feature building

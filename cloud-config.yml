@@ -158,7 +158,7 @@ runcmd:
 - /home/ubuntu/encoded/cloud-build/a2en-run.sh
 - if test "%(ROLE)s" = "demo"
 - then
--   /home/ubuntu/encoded/cloud-build/batchupgrade-run.sh production.ini 1000 8
+-   /home/ubuntu/encoded/cloud-build/batchupgrade-run.sh production.ini %(BATCHUPGRADE_VARS)s
 - fi
 - /home/ubuntu/encoded/cloud-build/post-install-install.sh
   
