@@ -32,9 +32,7 @@
          "treatment_term_name": "goat-anti-GFP-UC",
          "treatment_type": "antibody",
          "uuid": "10c05ac0-52a2-11e6-bdf4-0800200c9a66",
-         "antibodies_used": ["ENCAB728YTO"],
-         "source": "Kevin White",
-         "product_id": "goat-anti-GFP-UC-1"
+         "antibodies_used": ["ENCAB728YTO"]
     },
     {
         "amount": 600,
@@ -51,7 +49,10 @@
         "treatment_term_id": "CHEBI:44616",
         "treatment_term_name": "afimoxifene",
         "treatment_type": "chemical",
-        "uuid": "2e33a097-412c-4646-87f9-858dfaaa7c06"
+        "uuid": "2e33a097-412c-4646-87f9-858dfaaa7c06",
+        "source": "Sigma",
+        "product_id": "H7904"
+
     },
     {
         "aliases": [
