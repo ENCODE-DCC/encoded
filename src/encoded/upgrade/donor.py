@@ -226,7 +226,7 @@ def fly_donor_9_10(value, system):
         for alias in value['aliases']:
             if alias[0:6] == 'kyoto:':
                 new_alias = alias.replace(
-                    'kyoto:', 'dggr:')
+                    'kyoto:', 'dggr:', 1)
                 value['aliases'].append(new_alias)
                 value['aliases'].remove(alias)
             else:
@@ -234,9 +234,12 @@ def fly_donor_9_10(value, system):
     if 'dbxrefs' in value:
         for dbxref in value['dbxrefs']:
             if dbxref[0:6] == 'Kyoto:':
-                new_dbxref = dbxref.replace(
-                    'Kyoto:', 'DGGR:')
-                value['dbxrefs'].append(new_dbxref)
+                new_external_id = dbxref.replace(
+                    'Kyoto:', 'DGGR:', 1)
+                if 'external_ids' in value:
+                    value['external_ids'].append(new_external_id)
+                else:
+                    value['external_ids'] = [new_external_id]
                 value['dbxrefs'].remove(dbxref)
             else:
                 continue
