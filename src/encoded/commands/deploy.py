@@ -1,3 +1,8 @@
+"""
+Encoded Application AWS Deployment Helper
+
+- SpotClient was removed in EPIC-ENCD-4716/ENCD-4688-remove-unused-code-from-deploy.
+"""
 import argparse
 import datetime
 import getpass
@@ -10,165 +15,6 @@ from base64 import b64encode
 from os.path import expanduser
 
 import boto3
-
-
-class SpotClient(object):
-    error_list = [
-        'capacity-not-available',
-        'capacity-oversubscribed',
-        'not-scheduled-yet',
-        'launch-group-constraint',
-        'az-group-constraint',
-        'placement-group-constraint',
-        'constraint-not-fulfillable'
-    ]
-    instance_filters = [
-        {
-            'Name': 'availability-zone',
-            'Values': [
-                'us-west-2a',
-                'us-west-2b',
-                'us-west-2c'
-            ],
-        },
-    ]
-
-    def __init__(self, client, image_id, instance_type, security_groups):
-        self.client = client
-        self.image_id = image_id
-        self.instance_type = instance_type
-        self.security_groups = list(security_groups)
-        self.spot_id = None
-
-
-    def override_for_waiting(self, code_status):
-        waiting = self.client.describe_spot_instance_requests(
-            SpotInstanceRequestIds=[self.spot_id]
-        )
-        waiting_items_gen = (
-            value
-            for key, value in waiting.items()
-            if key == 'SpotPriceHistory'
-        )
-        status_items_gen = (
-            status_item
-            for wait_item in waiting_items_gen
-            for status_item in wait_item
-            if status_item == 'Status'
-        )
-        for status_item in status_items_gen:
-            for item in status_item:
-                if item == 'Code':
-                    code_status = item
-        return code_status
-
-    def request_spot_instance(self, iam_role, spot_price, user_data, bdm):
-        instance = self.client.request_spot_instances(
-            DryRun=False,
-            SpotPrice=spot_price,
-            InstanceCount=1,
-            Type='one-time',
-            LaunchSpecification={
-                'ImageId': self.image_id,
-                'SecurityGroups': self.security_groups,
-                'UserData': user_data,
-                'InstanceType': self.instance_type,
-                'Placement': {
-                    'AvailabilityZone': 'us-west-2c'
-                },
-                'BlockDeviceMappings': bdm,
-                'IamInstanceProfile': {
-                    "Name": iam_role,
-                }
-            }
-        )
-        self.spot_id = instance['SpotInstanceRequests'][0]['SpotInstanceRequestId']
-        print("waiting for spot request to be fulfilled")
-        code_status = self.wait_for_code_change()
-        if not code_status == 'fufilled':
-            code_status = self.wait_for_code_change()
-        return instance
-
-    def get_instance_id(self):
-        request = self.client.describe_spot_instance_requests(
-            SpotInstanceRequestIds=[self.spot_id])
-        instance_id = request['SpotInstanceRequests'][0]['InstanceId']
-        # print("\n Instace ID: %s" % instance_id)
-        return instance_id
-
-    def get_spot_code(self):
-        request = self.client.describe_spot_instance_requests(
-            SpotInstanceRequestIds=[self.spot_id]
-        )
-        code_status_start = request['SpotInstanceRequests'][0]['Status']
-        return code_status_start['Code']
-
-    def wait_for_code_change(self):
-        code_status = None
-        while code_status != 'fulfilled':
-            code_status = self.get_spot_code()
-            if code_status == self.error_cleanup(code_status):
-                exit()
-            code_status = self.override_for_waiting(code_status)
-            if code_status == 'price-too-low':
-                print("Spot Instance ERROR: Bid placed is too low.")
-                self.cancel_spot()
-                exit()
-            time.sleep(0.1)
-            return code_status
-
-    def tag_spot_instance(self, tag_data, elasticsearch, cluster_name):
-        tags = [
-            {'Key': 'Name', 'Value': tag_data['name']},
-            {'Key': 'branch', 'Value': tag_data['branch']},
-            {'Key': 'commit', 'Value': tag_data['commit']},
-            {'Key': 'started_by', 'Value': tag_data['username']},
-        ]
-        if elasticsearch == 'yes':
-            tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
-        if cluster_name is not None:
-            tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
-        instance_id = self.client.create_tags(
-            Resources=[self.get_instance_id()],
-            Tags=tags
-        )
-        return instance_id
-
-    def error_cleanup(self, code_status):
-        if code_status in self.error_list:
-            print('Spot Instance ERROR: %s' % code_status)
-            self.cancel_spot()
-            exit()
-
-    def cancel_spot(self):
-        self.client.cancel_spot_instance_requests(SpotInstanceRequestIds=[self.spot_id])
-
-    def spot_instance_price_check(self):
-        todays_date = datetime.datetime.now()
-        response = self.client.describe_spot_price_history(
-            DryRun=False,
-            StartTime=todays_date,
-            EndTime=todays_date,
-            InstanceTypes=[
-                self.instance_type
-            ],
-            Filters=self.instance_filters
-        )
-        response_items_gen = (
-            value
-            for key, value in response.items()
-            if key == 'SpotPriceHistory'
-        )
-        highest = 0
-        for value in response_items_gen:
-            for item in value:
-                for i in item:
-                    if i == 'SpotPrice':
-                        print("SpotPrice: %s" % item[i])
-                        if float(item[i]) > highest:
-                            highest = float(item[i])
-        print("Highest price: %f" % highest)
-        return highest
 
 
 def nameify(in_str):
@@ -441,25 +287,24 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
             instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
         elif is_cluster:
             instances_tag_data['name'] = "{}{}".format(tmp_name, i)
-        if not main_args.spot_instance:
-            if is_cluster_master or (is_cluster and not created_cluster_master):
-                created_cluster_master = True
-                output_list.extend(_get_instance_output(
+        if is_cluster_master or (is_cluster and not created_cluster_master):
+            created_cluster_master = True
+            output_list.extend(_get_instance_output(
+                instances_tag_data,
+                attach_dm=True,
+                given_name=main_args.name,
+            ))
+        if is_cluster:
+            output_list.append('  # Data Node %d: %s' % (i, instance.id))
+        elif not is_cluster:
+            output_list.extend(
+                _get_instance_output(
                     instances_tag_data,
-                    attach_dm=True,
                     given_name=main_args.name,
-                ))
-            if is_cluster:
-                output_list.append('  # Data Node %d: %s' % (i, instance.id))
-            elif not is_cluster:
-                output_list.extend(
-                    _get_instance_output(
-                        instances_tag_data,
-                        given_name=main_args.name,
-                    )
                 )
-            instance.wait_until_exists()
-            tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
+            )
+        instance.wait_until_exists()
+        tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
     for output in output_list:
         print(output)
 
@@ -480,80 +325,44 @@ def main():
         print('run_args', run_args.keys())
         print('Dry Run AWS')
         sys.exit(30)
-    # Run Cases
-    if main_args.check_price:
-        print("check_price")
-        boto_client = boto3.client('ec2')
-        spot_client = SpotClient(
-            boto_client,
-            main_args.image_id,
-            main_args.instance_type,
-            run_args['security_groups']
-        )
-        spot_client.spot_instance_price_check()
-    elif main_args.spot_instance:
-        print("spot_instance")
-        boto_client = boto3.client('ec2')
-        # issue with base64 encoding so no decoding in utc-8 and recoding in base64 then decoding in base 64.
-        user_config = subprocess.check_output(['git', 'show', instances_tag_data['commit'] + ':cloud-config.yml'])
-        user_data_b64 = b64encode(user_config)
-        run_args['user_data'] = user_data_b64.decode()
-        spot_client = SpotClient(
-            boto_client,
-            main_args.image_id,
-            main_args.instance_type,
-            run_args['security_groups']
-        )
-        print("security_groups: %s" % run_args['security_groups'])
-        bdm = _get_bdm(main_args)
-        instances = spot_client.request_spot_instance(
-            run_args['iam_role'],
-            main_args.spot_price,
-            run_args['user_data'],
-            bdm,
-        )
-        _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
-        spot_client.tag_spot_instance(instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
-        print("Spot instance request had been completed, please check to be sure it was fufilled")
-    else:
-        bdm = _get_bdm(main_args)
-        instances = ec2_client.create_instances(
-            ImageId=main_args.image_id,
-            MinCount=run_args['count'],
-            MaxCount=run_args['count'],
-            InstanceType=main_args.instance_type,
-            SecurityGroups=run_args['security_groups'],
-            UserData=run_args['user_data'],
-            BlockDeviceMappings=bdm,
-            InstanceInitiatedShutdownBehavior='terminate',
-            IamInstanceProfile={
-                "Name": run_args['iam_role'],
-            },
-            Placement={
-                'AvailabilityZone': main_args.availability_zone,
-            },
-        )
-        _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
-        if 'master_user_data' in run_args and main_args.single_data_master:
-            # ES MASTER instance when deploying elasticsearch data clusters
-            if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch == 'yes':
-                instances = ec2_client.create_instances(
-                    ImageId='ami-2133bc59',
-                    MinCount=1,
-                    MaxCount=1,
-                    InstanceType='c5.9xlarge',
-                    SecurityGroups=['ssh-http-https'],
-                    UserData=run_args['master_user_data'],
-                    BlockDeviceMappings=bdm,
-                    InstanceInitiatedShutdownBehavior='terminate',
-                    IamInstanceProfile={
-                        "Name": 'encoded-instance',
-                    },
-                    Placement={
-                        'AvailabilityZone': main_args.availability_zone,
-                    },
-                )
-                _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
+    bdm = _get_bdm(main_args)
+    instances = ec2_client.create_instances(
+        ImageId=main_args.image_id,
+        MinCount=run_args['count'],
+        MaxCount=run_args['count'],
+        InstanceType=main_args.instance_type,
+        SecurityGroups=run_args['security_groups'],
+        UserData=run_args['user_data'],
+        BlockDeviceMappings=bdm,
+        InstanceInitiatedShutdownBehavior='terminate',
+        IamInstanceProfile={
+            "Name": run_args['iam_role'],
+        },
+        Placement={
+            'AvailabilityZone': main_args.availability_zone,
+        },
+    )
+    _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
+    if 'master_user_data' in run_args and main_args.single_data_master:
+        # ES MASTER instance when deploying elasticsearch data clusters
+        if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch == 'yes':
+            instances = ec2_client.create_instances(
+                ImageId='ami-2133bc59',
+                MinCount=1,
+                MaxCount=1,
+                InstanceType='c5.9xlarge',
+                SecurityGroups=['ssh-http-https'],
+                UserData=run_args['master_user_data'],
+                BlockDeviceMappings=bdm,
+                InstanceInitiatedShutdownBehavior='terminate',
+                IamInstanceProfile={
+                    "Name": 'encoded-instance',
+                },
+                Placement={
+                    'AvailabilityZone': main_args.availability_zone,
+                },
+            )
+            _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
 
 
 def parse_args():
@@ -606,7 +415,6 @@ def parse_args():
     parser.add_argument('--dry-run-aws', action='store_true', help="Abort before ec2 requests.")
     parser.add_argument('--single-data-master', action='store_true',
             help="Create a single data master node.")
-    parser.add_argument('--check-price', action='store_true', help="Check price on spot instances")
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
@@ -625,10 +433,6 @@ def parse_args():
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
     parser.add_argument('--set-region-index-to', type=check_region_index,
                         help="Override region index in yaml to 'True' or 'False'")
-    parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
-    parser.add_argument('--spot-price', default='0.70', help="Set price or keep default price of 0.70")
-    parser.add_argument('--teardown-cluster', default=None,
-                        help="Takes down all the cluster launched from the branch")
     parser.add_argument('--volume-size', default=200, type=check_volume_size,
                         help="Size of disk. Allowed values 120, 200, and 500")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
