@@ -8,6 +8,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.attachment import InternalRedirect
 from snovault.schema_utils import schema_validator
 from snovault.validation import ValidationFailure
 from .base import (
@@ -19,7 +20,6 @@ from pyramid.httpexceptions import (
     HTTPTemporaryRedirect,
     HTTPNotFound,
 )
-from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import traverse
 from pyramid.view import view_config
@@ -787,7 +787,7 @@ def download(context, request):
     proxy = asbool(request.params.get('proxy'))
     accel_redirect_header = request.registry.settings.get('accel_redirect_header')
     if proxy and accel_redirect_header:
-        return Response(headers={accel_redirect_header: '/_proxy/' + str(location)})
+        return InternalRedirect(headers={accel_redirect_header: '/_proxy/' + str(location)})
     raise HTTPTemporaryRedirect(location=location)
 
 
