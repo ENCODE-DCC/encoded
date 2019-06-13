@@ -317,7 +317,7 @@ def check_control_read_depth_standards(peaks_file_id,
         'The minimum ENCODE standard for a control of ChIP-seq assays '
         'targeting {} {} is {} million usable fragments, '
         'the recommended number of usable fragments is > {} million. '
-        '(See /data-standards/chip-seq/ )')
+        '(See /chip-seq/ )')
     if 'broad histone mark' in target_investigated_as:
         detail = detail.format(
             'broad histone mark',
@@ -537,7 +537,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             files_structure,
             desired_assembly,
             desired_annotation,
-            ' /data-standards/dnase-seq/ ')
+            ' /dnase-seq/ ')
         return
 
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
@@ -777,12 +777,12 @@ def check_experiment_rna_seq_standards(value,
         return
 
     standards_links = {
-        'RNA-seq of long RNAs (paired-end, stranded)': ' /data-standards/rna-seq/long-rnas/ ',
-        'RNA-seq of long RNAs (single-end, unstranded)': ' /data-standards/rna-seq/long-rnas/ ',
-        'Small RNA-seq single-end pipeline': ' /data-standards/rna-seq/small-rnas/ ',
-        'RAMPAGE (paired-end, stranded)': ' /data-standards/rampage/  ',
+        'RNA-seq of long RNAs (paired-end, stranded)': ' /rna-seq/long-rnas/ ',
+        'RNA-seq of long RNAs (single-end, unstranded)': ' /rna-seq/long-rnas/ ',
+        'Small RNA-seq single-end pipeline': ' /rna-seq/small-rnas/ ',
+        'RAMPAGE (paired-end, stranded)': ' /rampage/  ',
         'microRNA-seq pipeline': ' /microrna/microrna-seq/ ',
-        'Long read RNA-seq pipeline': ' /data-standards/long-read-rna-pipeline/ '
+        'Long read RNA-seq pipeline': ' /rna-seq/long-rnas/ '
     }
 
     for f in fastq_files:
@@ -1629,7 +1629,7 @@ def check_wgbs_coverage(samtools_metrics,
                       'has a coverage of {}X. '
                       'The minimum ENCODE standard coverage for each replicate in '
                       'a WGBS assay is 25X and the recommended value '
-                      'is > 30X (See /data-standards/wgbs/ )').format(
+                      'is > 30X (See /wgbs/ )').format(
                           pipeline_title,
                           pipeline_objects[0]['@id'],
                           int(coverage))
@@ -1738,7 +1738,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
                         'histone marks ' +
                         'is 20 million usable fragments, the recommended number of usable ' +
-                        'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
+                        'fragments is > 45 million. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             file_to_check['assembly'],
@@ -1749,7 +1749,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
                         'histone marks ' +
                         'is 20 million usable fragments, the recommended number of usable ' +
-                        'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
+                        'fragments is > 45 million. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             read_depth)
@@ -1765,7 +1765,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'The minimum for a control of ChIP-seq assays targeting narrow ' +
                         'histone marks or transcription factors ' +
                         'is 10 million usable fragments, the recommended number of usable ' +
-                        'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                        'fragments is > 20 million. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             file_to_check['assembly'],
@@ -1780,7 +1780,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'The minimum for a control of ChIP-seq assays targeting narrow ' +
                         'histone marks or transcription factors ' +
                         'is 10 million usable fragments, the recommended number of usable ' +
-                        'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                        'fragments is > 20 million. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             read_depth)
@@ -1807,7 +1807,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                             'experiment targeting {} and investigated as ' +
                             'a broad histone mark is 35 million mapped reads. ' +
                             'The recommended value is > 45 million, but > 35 million is ' +
-                            'acceptable. (See /data-standards/chip-seq/ )').format(
+                            'acceptable. (See /chip-seq/ )').format(
                                 file_to_check['output_type'],
                                 file_to_check['@id'],
                                 pipeline_object['title'],
@@ -1822,7 +1822,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                             'experiment targeting {} and investigated as ' +
                             'a broad histone mark is 35 million mapped reads. ' +
                             'The recommended value is > 45 million, but > 35 million is ' +
-                            'acceptable. (See /data-standards/chip-seq/ )').format(
+                            'acceptable. (See /chip-seq/ )').format(
                                 file_to_check['output_type'],
                                 file_to_check['@id'],
                                 pipeline_object['title'],
@@ -1847,7 +1847,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'experiment targeting {} and investigated as ' +
                         'a broad histone mark is 20 million usable fragments. ' +
                         'The recommended value is > 45 million, but > 35 million is ' +
-                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                        'acceptable. (See /chip-seq/ )').format(
                                 file_to_check['output_type'],
                                 file_to_check['@id'],
                                 pipeline_object['title'],
@@ -1862,7 +1862,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'experiment targeting {} and investigated as ' +
                         'a broad histone mark is 20 million usable fragments. ' +
                         'The recommended value is > 45 million, but > 35 million is ' +
-                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                        'acceptable. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             pipeline_object['title'],
@@ -1892,7 +1892,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'experiment targeting {} and investigated as ' +
                     'a narrow histone mark is 10 million usable fragments. ' +
                     'The recommended value is > 20 million, but > 10 million is ' +
-                    'acceptable. (See /data-standards/chip-seq/ )').format(
+                    'acceptable. (See /chip-seq/ )').format(
                                 file_to_check['output_type'],
                                 file_to_check['@id'],
                                 pipeline_object['title'],
@@ -1907,7 +1907,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'experiment targeting {} and investigated as ' +
                     'a narrow histone mark is 10 million usable fragments. ' +
                     'The recommended value is > 20 million, but > 10 million is ' +
-                    'acceptable. (See /data-standards/chip-seq/ )').format(
+                    'acceptable. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             pipeline_object['title'],
@@ -1946,7 +1946,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'experiment targeting {} and investigated as ' +
                         'a transcription factor is 10 million usable fragments. ' +
                         'The recommended value is > 20 million, but > 10 million is ' +
-                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                        'acceptable. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             pipeline_object['title'],
@@ -1961,7 +1961,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'experiment targeting {} and investigated as ' +
                         'a transcription factor is 10 million usable fragments. ' +
                         'The recommended value is > 20 million, but > 10 million is ' +
-                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                        'acceptable. (See /chip-seq/ )').format(
                             file_to_check['output_type'],
                             file_to_check['@id'],
                             pipeline_object['title'],
@@ -2058,7 +2058,7 @@ def check_file_read_length_chip(file_to_check,
     detail = 'Fastq file {} '.format(file_to_check['@id']) + \
              'has read length of {}bp. '.format(read_length) + \
              'For mapping accuracy ENCODE standards recommend that sequencing reads should ' + \
-             'be at least {}bp long. (See /data-standards/chip-seq/ )'.format(
+             'be at least {}bp long. (See /chip-seq/ )'.format(
                  upper_threshold_length)
     if read_length < lower_threshold_length:
         yield AuditFailure('extremely low read length', detail, level='ERROR')
