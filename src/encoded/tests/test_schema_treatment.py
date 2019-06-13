@@ -14,4 +14,3 @@ def test_treatment_prod_source_id (testapp, test_treatment_with_bad_prod):
     testapp.post_json('/treatment', test_treatment_with_bad_prod, status=422)
     test_treatment_with_bad_prod["product_id"] = "Illumina"
     testapp.post_json('/treatment', test_treatment_with_bad_prod, status=201)
-
