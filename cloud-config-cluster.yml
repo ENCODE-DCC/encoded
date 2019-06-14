@@ -224,7 +224,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
+-   sudo -i -u encoded bin/batchupgrade production.ini --app-name app --batchsize 1000 --processes 8
 - fi
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 - PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
