@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 26
+* Added MouseDevSeries to *internal_tags*
+
 ### Schema version 26
 
 * Replace ISO-seq with long read RNA-seq assay_term_name.
