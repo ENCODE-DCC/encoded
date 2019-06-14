@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 26
 
+* Added MouseDevSeries to *internal_tags*
 * *assay_term_name* enums "STARR-seq", "MPRA", "CRISPR screen" and "pooled clone sequencing" is restricted for submission by admins only.
 * *experiment_classification* "functional characterization assay" is restricted for specification and submission by admins only.
 

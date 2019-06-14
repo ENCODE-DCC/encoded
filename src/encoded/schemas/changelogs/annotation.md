@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 25
+* Added MouseDevSeries to *internal_tags*
+
 ### Schema version 25
 
 * Changed enum value *candidate regulatory elements* in *annotation_type* to *candidate Cis-Regulatory Elements*
