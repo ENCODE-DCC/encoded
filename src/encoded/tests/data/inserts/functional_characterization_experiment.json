@@ -58,5 +58,21 @@
         "date_released": "2019-04-10",
         "accession": "ENCSR051STU",
         "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e"
+    },
+    {
+        "_test": "starr",
+        "accession": "ENCSR722STR",
+        "assay_term_name": "STARR-seq",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "STARR-seq example experiment",
+        "lab": "barbara-wold",
+        "status": "revoked",
+        "date_submitted": "2011-01-20",
+        "date_released": "2019-01-01",
+        "elements_mapping": "ENCSR212POL",
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "5a1d5a51-e62d-48b9-a1bd-1d1915247341"
     }
 ]
