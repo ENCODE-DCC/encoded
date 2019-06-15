@@ -646,5 +646,15 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB001ACL",
         "uuid": "df1f6992-70ef-11e9-a923-1681be663d3e"
+    },
+    {
+        "_test": "replicate for MRPA",
+        "experiment": "/experiments/ENCSR222MPR/",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001ACL",
+        "uuid": "df1f6993-10ef-12e9-a913-1684be663d3e"
     }
 ]

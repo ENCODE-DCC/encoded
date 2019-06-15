@@ -574,7 +574,7 @@ PHASE1_PIPELINES = {
         remove_keys('possible_controls', 'related_files', 'supersedes'),
     ],
     'functional_characterization_experiment': [
-        remove_keys('possible_controls', 'supersedes'),
+        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'mouse_donor': [
         remove_keys('parent_strains'),
@@ -661,7 +661,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
     ],
     'functional_characterization_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'supersedes'),
+        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),

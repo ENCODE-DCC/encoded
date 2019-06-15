@@ -10,7 +10,23 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
+        "elements_mapping": "ENCSR212POL",
+        "elements_references": ["ENCSR001REF"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a51-e62d-44b9-a1bd-5d1915247348"
+    },
+    {
+        "_test": "pooled_cloned_sequencing",
+        "accession": "ENCSR212POL",
+        "assay_term_name": "pooled clone sequencing",
+        "award": "U54HG007004",
+        "biosample_ontology": "23f48440-6770-4011-8eb0-9a7eb16f2ef0",
+        "description": "pooled clone sequencing experiment",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_submitted": "2015-01-20",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "8494161d-fd7d-4805-beba-d0dc14371504"
     }
 ]
