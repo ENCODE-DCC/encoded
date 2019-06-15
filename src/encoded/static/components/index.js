@@ -39,6 +39,7 @@ require('./summary');
 require('./region_search');
 require('./gene');
 require('./biosample_type');
+require('./functional_characterization_experiment');
 require('./experiment_series');
 
 

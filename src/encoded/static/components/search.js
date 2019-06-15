@@ -51,6 +51,7 @@ const types = {
     treatment_concentration_series: { title: 'Treatment concentration series' },
     treatment_time_series: { title: 'Treatment time series' },
     ucsc_browser_composite: { title: 'UCSC browser composite file set' },
+    functional_characterization_experiment: { title: 'Functional characterization experiments' },
 };
 
 const datasetTypes = {
@@ -67,6 +68,7 @@ const datasetTypes = {
     TreatmentTimeSeries: types.treatment_time_series.title,
     AggregateSeries: types.aggregate_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
+    FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
 };
 
 

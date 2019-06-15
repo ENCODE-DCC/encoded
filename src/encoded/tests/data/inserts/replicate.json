@@ -629,7 +629,7 @@
     },
     {
         "_test": "replicate for CRISPR screen",
-        "experiment": "/experiments/ENCSR759STU/",
+        "experiment": "ENCSR759STU",
         "biological_replicate_number": 1,
         "technical_replicate_number": 1,
         "status": "released",
@@ -639,7 +639,7 @@
     },
     {
         "_test": "replicate for pooled clone sequencing",
-        "experiment": "/experiments/ENCSR051STU/",
+        "experiment": "ENCSR051STU",
         "biological_replicate_number": 1,
         "technical_replicate_number": 1,
         "status": "released",
@@ -649,7 +649,7 @@
     },
     {
         "_test": "replicate for MRPA",
-        "experiment": "/experiments/ENCSR222MPR/",
+        "experiment": "ENCSR222MPR",
         "biological_replicate_number": 1,
         "technical_replicate_number": 1,
         "status": "released",
