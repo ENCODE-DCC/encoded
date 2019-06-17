@@ -226,7 +226,7 @@ def fly_donor_9_10(value, system):
         for alias in value['aliases']:
             if alias[0:6] == 'kyoto:':
                 new_alias = alias.replace(
-                    'kyoto:', 'dggr:', 1)
+                    'kyoto:', 'encode:', 1)
                 value['aliases'].append(new_alias)
                 value['aliases'].remove(alias)
             else:

@@ -243,7 +243,7 @@ def test_upgrade_fly_donor_9_10(root, upgrader, fly_donor_9):
     for dbxref in value['dbxrefs']:
         assert 'Kyoto' not in dbxref
     assert 'kyoto' not in value['aliases'][0]
-    assert 'dggr' in value['aliases'][0]
+    assert 'encode' in value['aliases'][0]
     assert 'DGGR' in value['external_ids'][0]
     assert value['schema_version'] == '10'
 
