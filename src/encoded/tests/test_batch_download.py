@@ -19,7 +19,6 @@ from encoded.batch_download import _audit_mapping
 from encoded.batch_download import _tsv_mapping_annotation
 from encoded.batch_download import _excluded_columns
 from encoded.batch_download import get_biosample_accessions
-    
 
 
 param_list_1 = {'files.file_type': 'fastq'}
@@ -446,7 +445,7 @@ def test_batch_download_meta_files(testapp, workbook, test_url, expected_row_1, 
     # compare only ids, as it is the only essential field
     response = testapp.get(test_url)
     target = response.body.decode('utf-8').strip().split('\n')
-    # testing only ids (values- 0 - 10)
+    # testing only ids (values- 1 - 11)
     assert expected_row_1[:11] == target[1][:11]
     assert expected_row_n[:11] == target[-1][:11]
     
