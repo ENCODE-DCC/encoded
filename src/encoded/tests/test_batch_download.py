@@ -2,6 +2,7 @@
 import json
 import pytest
 import mock
+from collections import OrderedDict
 from encoded.tests.features.conftest import app
 from encoded.tests.features.conftest import app_settings
 from encoded.tests.features.conftest import workbook
@@ -12,7 +13,13 @@ from encoded.batch_download import make_cell
 from encoded.batch_download import make_audit_cell
 from encoded.batch_download import format_row
 from encoded.batch_download import _convert_camel_to_snake
-
+from encoded.batch_download import ELEMENT_CHUNK_SIZE
+from encoded.batch_download import _tsv_mapping
+from encoded.batch_download import _audit_mapping
+from encoded.batch_download import _tsv_mapping_annotation
+from encoded.batch_download import _excluded_columns
+from encoded.batch_download import get_biosample_accessions
+    
 
 
 param_list_1 = {'files.file_type': 'fastq'}
@@ -55,6 +62,135 @@ def lookup_column_value_validate():
         '@type': 'Experiment,Dataset,Item'
     }
     return valid
+
+
+def test_ELEMENT_CHUNK_SIZE_value():
+    target = 1000
+    expected = ELEMENT_CHUNK_SIZE
+    assert expected == target
+
+def test__tsv_mapping():
+    expected = _tsv_mapping
+    target =  OrderedDict([
+        ('File accession', ['files.title']),
+        ('File format', ['files.file_type']),
+        ('Output type', ['files.output_type']),
+        ('Experiment accession', ['accession']),
+        ('Assay', ['assay_term_name']),
+        ('Biosample term id', ['biosample_ontology.term_id']),
+        ('Biosample term name', ['biosample_ontology.term_name']),
+        ('Biosample type', ['biosample_ontology.classification']),
+        ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
+        ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
+        ('Biosample treatments amount', ['replicates.library.biosample.treatments.amount',
+                                     'replicates.library.biosample.treatments.amount_units']),
+        ('Biosample treatments duration', ['replicates.library.biosample.treatments.duration',
+                                       'replicates.library.biosample.treatments.duration_units']),
+        ('Biosample genetic modifications methods', ['replicates.library.biosample.applied_modifications.method']),
+        ('Biosample genetic modifications categories', ['replicates.library.biosample.applied_modifications.category']),                                   
+        ('Biosample genetic modifications targets', ['replicates.library.biosample.applied_modifications.modified_site_by_target_id']),                                   
+        ('Biosample genetic modifications gene targets', ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id']),                                   
+        ('Biosample genetic modifications site coordinates', ['replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
+                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
+                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
+                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end']),                                   
+        ('Biosample genetic modifications zygosity', ['replicates.library.biosample.applied_modifications.zygosity']), 
+        ('Experiment target', ['target.name']),
+        ('Library made from', ['replicates.library.nucleic_acid_term_name']),
+        ('Library depleted in', ['replicates.library.depleted_in_term_name']),
+        ('Library extraction method', ['replicates.library.extraction_method']),
+        ('Library lysis method', ['replicates.library.lysis_method']),
+        ('Library crosslinking method', ['replicates.library.crosslinking_method']),
+        ('Library strand specific', ['replicates.library.strand_specificity']),
+        ('Experiment date released', ['date_released']),
+        ('Project', ['award.project']),
+        ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
+        ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
+        ('Library size range', ['files.replicate.library.size_range']),
+        ('Biological replicate(s)', ['files.biological_replicates']),
+        ('Technical replicate', ['files.replicate.technical_replicate_number']),
+        ('Read length', ['files.read_length']),
+        ('Mapped read length', ['files.mapped_read_length']),
+        ('Run type', ['files.run_type']),
+        ('Paired end', ['files.paired_end']),
+        ('Paired with', ['files.paired_with']),
+        ('Derived from', ['files.derived_from']),
+        ('Size', ['files.file_size']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Assembly', ['files.assembly']),
+        ('Genome annotation', ['files.genome_annotation']),
+        ('Platform', ['files.platform.title']),
+        ('Controlled by', ['files.controlled_by']),
+        ('File Status', ['files.status']),
+        ('No File Available', ['files.no_file_available']),
+        ('Restricted', ['files.restricted']),
+        ('s3_uri', ['files.s3_uri']),
+    ])
+    assert expected == target
+
+
+def test__audit_mapping():
+    expected = _audit_mapping
+    target = OrderedDict([
+        ('Audit WARNING', ['audit.WARNING.path',
+                       'audit.WARNING.category',
+                       'audit.WARNING.detail']),
+        ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
+                               'audit.INTERNAL_ACTION.category',
+                               'audit.INTERNAL_ACTION.detail']),
+        ('Audit NOT_COMPLIANT', ['audit.NOT_COMPLIANT.path',
+                             'audit.NOT_COMPLIANT.category',
+                             'audit.NOT_COMPLIANT.detail']),
+        ('Audit ERROR', ['audit.ERROR.path',
+                     'audit.ERROR.category',
+                     'audit.ERROR.detail'])
+    ])
+    assert expected == target
+
+def test__tsv_mapping_annotation():
+    expected = _tsv_mapping_annotation
+    target = OrderedDict([
+        ('File accession', ['files.title']),
+        ('File format', ['files.file_type']),
+        ('Output type', ['files.output_type']),
+        ('Dataset accession', ['accession']),
+        ('Annotation type', ['annotation_type']),
+        ('Software used', ['software_used.software.title']),
+        ('Encyclopedia Version', ['encyclopedia_version']),
+        ('Biosample term id', ['biosample_ontology.term_id']),
+        ('Biosample term name', ['biosample_ontology.term_name']),
+        ('Biosample type', ['biosample_ontology.classification']),
+        ('Life stage', ['relevant_life_stage']),
+        ('Age', ['relevant_timepoint']),
+        ('Age units', ['relevant_timepoint_units']),
+        ('Organism', ['organism.scientific_name']),
+        ('Targets', ['targets.name']),
+        ('Dataset date released', ['date_released']),
+        ('Project', ['award.project']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Assembly', ['files.assembly']),
+        ('Controlled by', ['files.controlled_by']),
+        ('File Status', ['files.status']),
+        ('Derived from', ['files.derived_from']),
+        ('S3 URL', ['files.cloud_metadata']),
+        ('Size', ['files.file_size']),
+        ('No File Available', ['file.no_file_available']),
+        ('Restricted', ['files.restricted'])
+    ])
+    assert expected == target
+
+
+def test__excluded_columns():
+    expected = _excluded_columns
+    target = ('Restricted', 'No File Available')
+    assert expected == target
+
 
 @mock.patch('encoded.batch_download._tsv_mapping')
 @mock.patch('encoded.batch_download.simple_path_ids')
@@ -104,12 +240,83 @@ def test_make_audit_cell_for_vanilla(simple_path_ids, audit_mapping):
             is_target_valid = False
             break
     assert is_target_valid
-    
+
 
 def test_format_row_removes_special_characters():
     columns = ['col1', 'col2\t', 'col4\n\t', 'col4\t\n\r', 'col5']
     expected = b'col1\tcol2\tcol4\tcol4\tcol5\r\n'
     target = format_row(columns)
+    assert expected == target
+
+
+def test_get_biosample_accessions_finds_accession():
+    expected = {'test_accession'}
+    experiment_json = {
+        'files': [{
+            'uuid': '123',
+            'replicate': {
+                'library': {
+                    'biosample': {
+                        'accession': {
+                            'test_accession'
+                        }
+                    }
+                }
+            }
+        }]
+    }
+    file_json = {
+        'uuid': '123',
+        'replicate': {
+            'library': {
+                'biosample': {
+                    'accession': {
+                        'test_accession'
+                    }
+                }
+            }
+        }
+    }
+    target = get_biosample_accessions(file_json, experiment_json)
+    assert expected == target
+
+def test_get_biosample_accessions_finds_replicate_loop():
+    expected = 'test_replicates'
+    experiment_json = {
+        'replicates': [{
+            'library': {
+                'biosample': {
+                    'accession':
+                        'test_replicates'
+                }
+            }
+        }],
+        'files': [{
+            'uuid': '123',
+            'replicate': {
+                'library': {
+                    'biosample': {
+                        'accession': {
+                            'test_accession'
+                        }
+                    }
+                }
+            },
+        }]
+    }
+    file_json = {
+        'uuid': '1235',
+        'replicate': {
+            'library': {
+                'biosample': {
+                    'accession': {
+                        'test_accession'
+                    }
+                }
+            }
+        }
+    }
+    target = get_biosample_accessions(file_json, experiment_json)
     assert expected == target
 
 
