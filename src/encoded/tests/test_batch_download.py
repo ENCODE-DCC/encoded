@@ -69,9 +69,9 @@ def test_ELEMENT_CHUNK_SIZE_value():
     expected = ELEMENT_CHUNK_SIZE
     assert expected == target
 
-def test__tsv_mapping():
+def test__tsv_mapping_value():
     expected = _tsv_mapping
-    target =  OrderedDict([
+    target = OrderedDict([
         ('File accession', ['files.title']),
         ('File format', ['files.file_type']),
         ('Output type', ['files.output_type']),
@@ -131,8 +131,7 @@ def test__tsv_mapping():
     ])
     assert expected == target
 
-
-def test__audit_mapping():
+def test__audit_mapping_value():
     expected = _audit_mapping
     target = OrderedDict([
         ('Audit WARNING', ['audit.WARNING.path',
@@ -150,7 +149,7 @@ def test__audit_mapping():
     ])
     assert expected == target
 
-def test__tsv_mapping_annotation():
+def test__tsv_mapping_annotation_value():
     expected = _tsv_mapping_annotation
     target = OrderedDict([
         ('File accession', ['files.title']),
@@ -186,7 +185,7 @@ def test__tsv_mapping_annotation():
     assert expected == target
 
 
-def test__excluded_columns():
+def test__excluded_columns_value():
     expected = _excluded_columns
     target = ('Restricted', 'No File Available')
     assert expected == target
@@ -447,6 +446,7 @@ def test_batch_download_meta_files(testapp, workbook, test_url, expected_row_1, 
     # compare only ids, as it is the only essential field
     response = testapp.get(test_url)
     target = response.body.decode('utf-8').strip().split('\n')
+    # testing only ids (values- 0 - 10)
     assert expected_row_1[:11] == target[1][:11]
     assert expected_row_n[:11] == target[-1][:11]
     
@@ -471,7 +471,7 @@ def test_report_files_download(testapp, workbook, test_url, expected):
     body = response.body.decode('utf-8')
 
     if test_url == '/report.tsv?type=User':
-        # excluding year that appears in index- 0:26
+        # excluding date that appears in index- 0:26
         assert body[27:] == expected[27:]
     else:
         body = json.loads(body)
