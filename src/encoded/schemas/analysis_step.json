@@ -73,6 +73,7 @@
                      "replicate concordance",
                      "signal generation",
                      "signal normalization",
+                     "splice junction extraction",
                      "subsampling",
                      "topologically associated domain identification",
                      "transcript identification",
