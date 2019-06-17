@@ -1,5 +1,9 @@
 ## Changelog for analysis_step.json
 
+### Schema version 7
+
+* Changed enum value *candidate regulatory elements* in *input_file_types* and *output_file_types* to *candidate Cis-Regulatory Elements*
+
 ### Minor changes since schema version 6
 
 * *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: "differential expression quantifications", "differential splicing quantifications", "peaks and background as input for IDR", and "gene alignments".

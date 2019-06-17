@@ -475,3 +475,11 @@ def dataset_26_27(value, system):
     if value.get('assay_term_name') == 'ISO-seq':
         value['assay_term_name'] = 'long read RNA-seq'
     return
+
+
+@upgrade_step('annotation', '24', '25')
+def annotation_24_25(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4613
+    if value.get('annotation_type') == 'candidate regulatory elements':
+        value['annotation_type'] = 'candidate Cis-Regulatory Elements'
+    return

@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Schema version 14
+
+* Changed *candidate regulatory elements* in *output_type* to *candidate Cis-Regulatory Elements*
+
 ### Minor changes since schema version 13
 
 * *output_type* list was updated to include *mapping quality thresholded chromatin interactions*
