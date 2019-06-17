@@ -109,7 +109,7 @@ class GenomeBrowser extends React.Component {
             resolve('success!');
         });
         // Extract only bigWig and bigBed files from the list:
-        let tempFiles = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        let tempFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
         tempFiles = tempFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         // Set default ordering of tracks to be first by replicate then by output_type
         // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
@@ -211,7 +211,7 @@ class GenomeBrowser extends React.Component {
                     newFiles = [...this.state.pinnedFiles, ...dummyFiles];
                 } else {
                     let propsFiles = this.props.files;
-                    propsFiles = propsFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+                    propsFiles = propsFiles.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
                     propsFiles = propsFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
                     const files = _.chain(propsFiles)
                         .sortBy(obj => obj.output_type)
@@ -260,7 +260,7 @@ class GenomeBrowser extends React.Component {
                 newFiles = [...this.state.pinnedFiles, ...dummyFiles];
             } else {
                 let propsFiles = this.props.files;
-                propsFiles = propsFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+                propsFiles = propsFiles.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
                 propsFiles = propsFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
                 const files = _.chain(propsFiles)
                     .sortBy(obj => obj.output_type)
@@ -298,9 +298,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/Homo_sapiens.GRCh38.96.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
                 },
             ];
             contig = 'chr1';
@@ -310,9 +312,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/Homo_sapiens.GRCh38.96.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vdna-dir',
                 },
             ];
             contig = 'chr21';
@@ -322,9 +326,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/Mus_musculus.GRCm38.96.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vdna-dir',
                 },
             ];
             contig = 'chr12';
@@ -334,8 +340,6 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/Mus_musculus.GRCm38.96.vgenes-dir',
                 },
             ];
@@ -346,9 +350,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/dm6.vdna-dir',
                 },
             ];
             contig = 'chr2L';
@@ -358,9 +364,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
                 },
             ];
             contig = 'chr2L';
@@ -370,9 +378,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/ce11.vdna-dir',
                 },
             ];
             contig = 'chrII';
@@ -382,9 +392,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir.vgenes-dir',
+                },
+                {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
                 },
             ];
             contig = 'chrII';
@@ -435,7 +447,7 @@ class GenomeBrowser extends React.Component {
             trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            // bigBed bedRNAElements have two tracks and need extra height)
+            // bigBed bedRNAElements have two tracks and need extra height
             if (file.file_format === 'bigBed bedRNAElements') {
                 trackObj.heightPx = 120;
             } else {
@@ -508,6 +520,8 @@ class GenomeBrowser extends React.Component {
                             contig = `chr${annotation.chromosome}`;
                             xStart = annotation.start - (annotationLength / 2);
                             xEnd = annotation.end + (annotationLength / 2);
+                            const printStatement = `Success: found gene location for ${this.state.searchTerm}`;
+                            console.log(printStatement);
                         }
                     });
                 }

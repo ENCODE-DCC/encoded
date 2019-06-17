@@ -1955,7 +1955,7 @@ const TabPanelFacets = (props) => {
     let fileList = allFiles;
     fileList = fileList.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
     if (currentTab === 'browser') {
-        fileList = fileList.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
     }
     if (currentTab === 'graph') {
         fileList = fileList.filter(file => file.file_format !== 'fastq');
@@ -2097,7 +2097,7 @@ class FileGalleryRendererComponent extends React.Component {
         }
         // Determing how many visualizable files there are
         let tempFiles = this.state.files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
-        tempFiles = tempFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        tempFiles = tempFiles.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
         // Determine available assemblies in visualizable files
         const assemblyList = this.setAssemblyList(this.state.files);
         // Set default tab
@@ -2130,7 +2130,7 @@ class FileGalleryRendererComponent extends React.Component {
         const assembly = { 'All assemblies': 0 };
         let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         if (this.state.currentTab === 'browser') {
-            fileList = fileList.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+            fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
         }
         if (this.state.currentTab === 'graph') {
             fileList = fileList.filter(file => file.file_format !== 'fastq');
@@ -2419,9 +2419,6 @@ class FileGalleryRendererComponent extends React.Component {
         const { context, schemas, hideGraph, showReplicateNumber } = this.props;
         let allGraphedFiles;
         let meta;
-        if (this.state.files.length === 0) {
-            return null;
-        }
         // Get a list of files for the graph (filters out excluded files if requested by the user).
         const includedFiles = this.filterForInclusion(this.state.graphFiles);
         const tableIncludedFiles = this.filterForInclusion(this.state.files);
