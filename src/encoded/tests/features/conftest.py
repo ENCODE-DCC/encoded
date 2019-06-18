@@ -1,4 +1,5 @@
 import pytest
+from selenium.webdriver.chrome.options import Options
 
 pytest_plugins = [
     'encoded.tests.features.browsersteps',
@@ -81,7 +82,11 @@ def base_url(wsgi_server):
 
 @pytest.fixture(scope='session')
 def splinter_driver_kwargs(request):
-    return dict(request.config.option.browser_args or ())
+    kwargs = dict(request.config.option.browser_args or ())
+    arguments = get_chrome_webdriver_options(request)
+    if arguments:
+        kwargs['options'] = set_chrome_webdriver_options(arguments)
+    return kwargs
 
 
 @pytest.fixture(scope='session')
@@ -153,3 +158,16 @@ def pytest_bdd_step_error(request, feature, scenario, step, step_func, step_func
 @pytest.mark.trylast
 def pytest_bdd_after_step(request, feature, scenario, step, step_func, step_func_args):
     write_line(request, 'call', u'Step: {step.name} PASSED'.format(step=step))
+
+
+def get_chrome_webdriver_options(request):
+    arguments = request.config.option.chrome_options or ''
+    arguments = arguments.split()
+    return arguments
+
+
+def set_chrome_webdriver_options(arguments):
+    options = Options()
+    for argument in arguments:
+        options.add_argument(argument)
+    return options

@@ -89,11 +89,13 @@ Feature: Search
         Then I should see "Showing 8 of 8 results"
 
         When I click the link to "?type=Experiment"
+        And I wait for the content to load
         And I click the link to "?type=Experiment&assay_title=Histone+ChIP-seq"
         And I wait for the content to load
         Then I should see "Showing 8 of 8 results"
 
         When I click the link to "?type=Experiment"
+        And I wait for the content to load
         And I click the link to "?type=Experiment&assay_title=Control+ChIP-seq"
         And I wait for the content to load
         Then I should see "Showing 3 of 3 results"

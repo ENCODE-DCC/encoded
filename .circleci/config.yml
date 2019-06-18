@@ -1,0 +1,94 @@
+version: 2.1
+
+orbs:
+    browser-tools: circleci/browser-tools@0.1.0
+
+executors:
+  encoded-executor:
+    docker:
+      - image: circleci/buildpack-deps:trusty
+    working_directory: ~/encoded
+    environment:
+      - BASH_ENV: /home/circleci/.bashrc
+      - ES_JAVA_OPTS: -Xms2g -Xmx2g
+      - JAVA_HOME: /usr/lib/jvm/java-11-oracle
+
+commands:
+  buildout:
+    description: A buildout process based on encoded-executor
+    steps:
+      - checkout
+      # Do not use caching for now to avoid potential conflicts/bugs
+      - run:
+          name: Add apt repositories
+          command: |
+            sudo apt-get install apt-transport-https software-properties-common
+            wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+            echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
+            curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+            curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+            sudo add-apt-repository -y ppa:linuxuprising/java
+            sudo apt-get update
+      - run:
+          name: Install dependencies
+          command: |
+            echo "oracle-java11-installer shared/accepted-oracle-license-v1-2 select true" | sudo debconf-set-selections
+            sudo apt-get install -y \
+              bsdtar \
+              elasticsearch \
+              graphviz \
+              nodejs \
+              oracle-java11-installer \
+              oracle-java11-set-default \
+              postgresql-9.3
+            sudo chown -R circleci /etc/elasticsearch
+            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH\n;' $BASH_ENV
+            sudo apt-get install -y python3.4-dev python3-pip
+            sed -i '1s;^;alias python=python3\n;' $BASH_ENV
+      - run:
+          name: Run buildout
+          command: |
+            sudo pip3 install -U zc.buildout setuptools
+            buildout bootstrap
+            bin/buildout
+jobs:
+  npm-non-bdd-tests:
+    executor: encoded-executor
+    # indexing tests fail using default medium resource_class
+    resource_class: large
+    parallelism: 2
+    steps:
+      - buildout
+      - run:
+          name: NPM and non BDD tests
+          command: |
+            npm test
+            bin/test -m "not bdd" --collect-only -qq |
+              while read test; do
+                [ -z "$test" ] && break
+                echo ${test%:*}
+              done | sort | circleci tests split | xargs -n 1 -t bin/test -v -v --timeout=400 -k
+  bdd-tests:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      # Use install tasks from the orb
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      - run:
+          name: Run bdd tests
+          command: |
+            bin/test -v -v --timeout=400 -m "bdd" --tb=short \
+              --splinter-implicit-wait 10 \
+              --splinter-webdriver chrome \
+              --splinter-socket-timeout 300 \
+              --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips"
+          no_output_timeout: 30m
+
+workflows:
+  version: 2
+  encoded-tests:
+    jobs:
+      - bdd-tests
+      - npm-non-bdd-tests
