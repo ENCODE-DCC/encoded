@@ -40,6 +40,7 @@ require('./summary');
 require('./region_search');
 require('./gene');
 require('./biosample_type');
+require('./experiment_series');
 
 
 module.exports = require('./app');

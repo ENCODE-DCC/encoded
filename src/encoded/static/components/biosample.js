@@ -344,7 +344,7 @@ class BiosampleComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>

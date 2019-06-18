@@ -65,10 +65,10 @@ import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 export const SortTablePanel = (props) => {
-    const { title, header, noDefaultClasses } = props;
+    const { title, header, css, noDefaultClasses } = props;
 
     return (
-        <Panel addClasses={`table-file + ${noDefaultClasses ? '' : ' table-panel'}`} noDefaultClasses={noDefaultClasses}>
+        <Panel addClasses={`table-sort${noDefaultClasses ? '' : ' table-panel'}${css ? ` ${css}` : ''}`} noDefaultClasses={noDefaultClasses}>
             {title ?
                 <PanelHeading key="heading">
                     <h4>{title ? <span>{props.title}</span> : null}</h4>
@@ -85,53 +85,26 @@ export const SortTablePanel = (props) => {
 };
 
 SortTablePanel.propTypes = {
-    // Note: `title` overrides `header`
-    title: PropTypes.oneOfType([ // Title to display in table panel header
+    /** Title to display in tabel panel header. `title` overrides `header` */
+    title: PropTypes.oneOfType([
         PropTypes.string, // When title is a simple string
         PropTypes.object, // When title is JSX
     ]),
-    header: PropTypes.object, // React component to render inside header
-    noDefaultClasses: PropTypes.bool, // T to skip default <Panel> classes
-    children: PropTypes.node, // Table components within a SortTablePanel
+    /** CSS class string to add to <Panel> classes */
+    css: PropTypes.string,
+    /** React component to render inside header */
+    header: PropTypes.object,
+    /** T to skip default <Panel> classes */
+    noDefaultClasses: PropTypes.bool,
+    /** Table components within a SortTablePanel */
+    children: PropTypes.node,
 };
 
 SortTablePanel.defaultProps = {
     title: '',
+    css: '',
     header: null,
     noDefaultClasses: false,
-    children: null,
-};
-
-
-const SortTableComponent = props => (
-    <div className="tableFiles">
-        {props.title ?
-            <PanelHeading key="heading">
-                <h4>{props.title ? <span>{props.title}</span> : null}</h4>
-            </PanelHeading>
-        : (props.header ?
-            <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
-        : null)}
-
-        <div className="table-responsive" key="table">
-            {props.children}
-        </div>
-    </div>
-);
-
-SortTableComponent.propTypes = {
-    // Note: `title` overrides `header`
-    title: PropTypes.oneOfType([ // Title to display in table panel header
-        PropTypes.string, // When title is a simple string
-        PropTypes.object, // When title is JSX
-    ]),
-    header: PropTypes.object, // React component to render inside header
-    children: PropTypes.node,
-};
-
-SortTableComponent.defaultProps = {
-    title: null,
-    header: null,
     children: null,
 };
 
@@ -264,7 +237,7 @@ export class SortTable extends React.Component {
     }
 
     render() {
-        const { list, columns, rowClasses, meta } = this.props;
+        const { list, columns, css, rowClasses, meta } = this.props;
         const columnIds = Object.keys(columns);
         const hiddenColumns = {};
         let hiddenCount = 0;
@@ -281,13 +254,13 @@ export class SortTable extends React.Component {
         const colCount = columnIds.length - hiddenCount;
 
         // Now display the table, but only if we were passed a non-empty list
-        if (list && list.length) {
+        if (list && list.length > 0) {
             // Sort the list according to the requested sorting column. Only do this *after* this
             // component has mounted (ENCD-3459).
             const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;
 
             return (
-                <table className="table table-sortable">
+                <table className={`table table-sortable${css ? ` ${css}` : ''}`}>
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
 
@@ -360,23 +333,37 @@ export class SortTable extends React.Component {
 }
 
 SortTable.propTypes = {
-    title: PropTypes.oneOfType([ // Title to display in table header
+    /** Title to display in table header */
+    title: PropTypes.oneOfType([
         PropTypes.string, // When title is a simple string
         PropTypes.object, // When title is JSX
     ]),
-    meta: PropTypes.object, // Extra information to display items.
-    list: PropTypes.array, // Array of objects to display in the table
-    columns: PropTypes.object.isRequired, // Defines the columns of the table
-    rowClasses: PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
-    sortColumn: PropTypes.string, // ID of column to sort by default; first column if not given
-    footer: PropTypes.object, // Optional component to display in the footer
-    collapsed: PropTypes.bool, // T if only title bar should be displayed
+    /** Extra information to display items. */
+    meta: PropTypes.object,
+    /** Array of objects to display in the table */
+    list: PropTypes.array,
+    /** Defines the columns of the table */
+    columns: PropTypes.object.isRequired,
+    /** CSS classes to add to SortTable <table> tag */
+    css: PropTypes.string,
+    /** If provided, gets called for each row of table to generate per-row CSS classes */
+    rowClasses: PropTypes.func,
+    /** ID of column to sort by default; first column if not given */
+    sortColumn: PropTypes.string,
+    /** Optional component/string to display in the footer */
+    footer: PropTypes.oneOfType([
+        PropTypes.string, // When title is a simple string
+        PropTypes.object, // When title is JSX
+    ]),
+    /** True if only title bar should be displayed */
+    collapsed: PropTypes.bool,
 };
 
 SortTable.defaultProps = {
     title: null,
     meta: null,
     list: null,
+    css: '',
     rowClasses: null,
     sortColumn: '',
     footer: null,
