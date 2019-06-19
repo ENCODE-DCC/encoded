@@ -1,5 +1,8 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 8
+* Added calculated property *perturbed* to indicate genetic modifications which cause genetic perturbations.
+
 ### Schema version 8
 
 * A combination of *introduced_elements* and *modified_site_nonspecific* can satisfy the *category* dependency for *insertion*.
