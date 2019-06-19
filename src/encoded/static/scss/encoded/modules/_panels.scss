@@ -401,7 +401,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-instructions {
     font-weight: bold;
-    padding-right: 10px;
+    padding: 0 5px;
 }
 
 .file-gallery-controls {
@@ -409,8 +409,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     align-items: center;
     padding: 5px;
     background-color: #c0c0c0;
-    border-top: 1px solid #a0a0a0;
-    border-bottom: 1px solid #a0a0a0;
     
     @media screen and (max-width: $screen-sm-min) {
         display: block;
