@@ -351,7 +351,7 @@ class Experiment(Dataset,
                     else:
                         preferred_name = 'TF ChIP-seq'
                 else:
-                    preferred_name = 'TF ChIP-seq'
+                    preferred_name = 'Control ChIP-seq'
             return preferred_name or assay_term_name
         return assay_term_name
 
