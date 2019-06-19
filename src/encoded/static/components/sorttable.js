@@ -281,7 +281,7 @@ export class SortTable extends React.Component {
         const colCount = columnIds.length - hiddenCount;
 
         // Now display the table, but only if we were passed a non-empty list
-        if (list && list.length) {
+        if (list && list.length > 0) {
             // Sort the list according to the requested sorting column. Only do this *after* this
             // component has mounted (ENCD-3459).
             const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;

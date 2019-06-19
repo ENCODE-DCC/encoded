@@ -205,7 +205,7 @@ export const isLight = (color) => {
 
 class DataColors {
     constructor(keys) {
-        if (keys && keys.length) {
+        if (keys && keys.length > 0) {
             this.keys = [...keys]; // Clone given array
         } else {
             this.keys = [];
@@ -221,7 +221,7 @@ class DataColors {
     //         integer -- do not pass a string with a "%" sign at the end.
     colorList(keys, options) {
         let colors = [];
-        if (keys && keys.length) {
+        if (keys && keys.length > 0) {
             // Map the given keys to colors consistently
             colors = keys.map((key) => {
                 let outColor;

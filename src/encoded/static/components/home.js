@@ -22,7 +22,7 @@ function generateQuery(selectedOrganisms, selectedAssayCategory) {
     }
 
     // Add all the selected organisms, if any
-    if (selectedOrganisms.length) {
+    if (selectedOrganisms.length > 0) {
         const organismSpec = selectedAssayCategory === 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
         const queryStrings = {
             HUMAN: `${organismSpec}Homo+sapiens`, // human
@@ -279,7 +279,7 @@ class InputSuggest extends React.Component {
     render() {
         const { items, inputId, placeholder } = this.props;
         const controlId = `${inputId}-list`;
-        const activeDescendant = (this.props.items.length && this.state.selectedItemIndex > -1) ? this.props.items[this.state.selectedItemIndex] : '';
+        const activeDescendant = (this.props.items.length > 0 && this.state.selectedItemIndex > -1) ? this.props.items[this.state.selectedItemIndex] : '';
         return (
             <div className="site-search__input-field" role="combobox" aria-haspopup="listbox" aria-expanded={items.length > 0} aria-controls={controlId} aria-owns={controlId}>
                 <input
@@ -953,7 +953,7 @@ class HomepageChart extends React.Component {
         if (this.myPieChart) {
             // Existing data updated
             this.updateChart(this.myPieChart, this.facetData);
-        } else if (this.facetData.length) {
+        } else if (this.facetData.length > 0) {
             // Chart existed but was destroyed for lack of data. Rebuild the chart.
             this.createChart(this.facetData);
         }
@@ -1079,8 +1079,8 @@ class HomepageChart extends React.Component {
         if (facets) {
             const projectFacet = facets.find(facet => facet.field === 'award.project');
             this.facetData = projectFacet ? projectFacet.terms : [];
-            const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
-            total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
+            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to? Destroy the existing chart so we can
             // display a no-data message instead.
@@ -1102,7 +1102,7 @@ class HomepageChart extends React.Component {
                     Project
                     <center><hr width="80%" color="blue" /></center>
                 </div>
-                {this.facetData.length && total ?
+                {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-1" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart" />
@@ -1151,7 +1151,7 @@ class HomepageChart2 extends React.Component {
         if (this.myPieChart) {
             // Existing data updated
             this.updateChart(this.myPieChart, this.facetData);
-        } else if (this.facetData.length) {
+        } else if (this.facetData.length > 0) {
             // Chart existed but was destroyed for lack of data. Rebuild the chart.
             this.createChart(this.facetData);
         }
@@ -1281,8 +1281,8 @@ class HomepageChart2 extends React.Component {
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
             const assayFacet = facets.find(facet => facet.field === 'biosample_ontology.classification');
             this.facetData = assayFacet ? assayFacet.terms : [];
-            const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
-            total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
+            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to destroy the existing chart so we can
             // display a no-data message instead.
@@ -1304,7 +1304,7 @@ class HomepageChart2 extends React.Component {
                     Biosample Type
                     <center><hr width="80%" color="blue" /></center>
                 </div>
-                {this.facetData.length && total ?
+                {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-2" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart2" />
@@ -1381,7 +1381,7 @@ class HomepageChart3 extends React.Component {
         if (this.myPieChart) {
             // Existing data updated
             this.updateChart(this.myPieChart, this.facetData);
-        } else if (this.facetData.length) {
+        } else if (this.facetData.length > 0) {
             // Chart existed but was destroyed for lack of data. Rebuild the chart.
             this.createChart(this.facetData);
         }
@@ -1501,8 +1501,8 @@ class HomepageChart3 extends React.Component {
         if (facets) {
             const projectFacet = facets.find(facet => facet.field === 'assay_slims');
             this.facetData = projectFacet ? projectFacet.terms : [];
-            const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
-            total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
+            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to? Destroy the existing chart so we can
             // display a no-data message instead.
@@ -1524,7 +1524,7 @@ class HomepageChart3 extends React.Component {
                     Assay Categories
                     <center><hr width="80%" color="blue" /></center>
                 </div>
-                {this.facetData.length && total ?
+                {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-3" className="chart-wrapper">
                         <div className="chart-container-assaycat">
                             <canvas id="myChart3" />

@@ -289,7 +289,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     }
 
     // Collect all documents from the experiment itself.
-    const documents = (context.documents && context.documents.length) ? context.documents : [];
+    const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Make array of all replicate biosamples, not including biosample-less replicates. Also
     // collect up library documents.
@@ -298,7 +298,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     if (replicates.length > 0) {
         biosamples = _.compact(replicates.map((replicate) => {
             if (replicate.library) {
-                if (replicate.library.documents && replicate.library.documents.length) {
+                if (replicate.library.documents && replicate.library.documents.length > 0) {
                     Array.prototype.push.apply(libraryDocs, replicate.library.documents);
                 }
 
@@ -330,21 +330,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Collect pipeline-related documents.
     let analysisStepDocs = [];
     let pipelineDocs = [];
-    if (context.files && context.files.length) {
+    if (context.files && context.files.length > 0) {
         context.files.forEach((file) => {
             const fileAnalysisStepVersion = file.analysis_step_version;
             if (fileAnalysisStepVersion) {
                 const fileAnalysisStep = fileAnalysisStepVersion.analysis_step;
                 if (fileAnalysisStep) {
                     // Collect analysis step docs
-                    if (fileAnalysisStep.documents && fileAnalysisStep.documents.length) {
+                    if (fileAnalysisStep.documents && fileAnalysisStep.documents.length > 0) {
                         analysisStepDocs = analysisStepDocs.concat(fileAnalysisStep.documents);
                     }
 
                     // Collect pipeline docs
-                    if (fileAnalysisStep.pipelines && fileAnalysisStep.pipelines.length) {
+                    if (fileAnalysisStep.pipelines && fileAnalysisStep.pipelines.length > 0) {
                         fileAnalysisStep.pipelines.forEach((pipeline) => {
-                            if (pipeline.documents && pipeline.documents.length) {
+                            if (pipeline.documents && pipeline.documents.length > 0) {
                                 pipelineDocs = pipelineDocs.concat(pipeline.documents);
                             }
                         });
@@ -353,8 +353,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             }
         });
     }
-    analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
-    pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
+    analysisStepDocs = analysisStepDocs.length > 0 ? _.uniq(analysisStepDocs) : [];
+    pipelineDocs = pipelineDocs.length > 0 ? _.uniq(pipelineDocs) : [];
 
     // Determine this experiment's ENCODE version.
     const encodevers = globals.encodeVersion(context);
@@ -371,7 +371,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
     // Get a list of related datasets, possibly filtering on their status.
     let seriesList = [];
-    if (context.related_series && context.related_series.length) {
+    if (context.related_series && context.related_series.length > 0) {
         seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
     }
 
@@ -383,8 +383,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     let nameQuery = '';
     let nameTip = '';
     const names = organismNames.map((organismName, i) => {
-        nameTip += (nameTip.length ? ' + ' : '') + organismName;
-        nameQuery += `${nameQuery.length ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
+        nameTip += (nameTip.length > 0 ? ' + ' : '') + organismName;
+        nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
     });
     const biosampleTermName = context.biosample_ontology.term_name;
@@ -392,7 +392,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const crumbs = [
         { id: 'Experiments' },
         { id: assayName, query: assayQuery, tip: assayName },
-        { id: names.length ? names : null, query: nameQuery, tip: nameTip },
+        { id: names.length > 0 ? names : null, query: nameQuery, tip: nameTip },
         { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
     ];
     const crumbsReleased = (context.status === 'released');
@@ -466,7 +466,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <div data-test="biosample-summary">
                                         <dt>Biosample summary</dt>
                                         <dd>
-                                            {organismNames.length ?
+                                            {organismNames.length > 0 ?
                                                 <span>
                                                     {organismNames.map((organismName, i) =>
                                                         <span key={organismName}>
@@ -505,7 +505,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
                                 <LibraryProperties replicates={replicates} />
 
-                                {Object.keys(platforms).length ?
+                                {Object.keys(platforms).length > 0 ?
                                     <div data-test="platform">
                                         <dt>Platform</dt>
                                         <dd>
@@ -519,7 +519,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     </div>
                                 : null}
 
-                                {context.possible_controls && context.possible_controls.length ?
+                                {context.possible_controls && context.possible_controls.length > 0 ?
                                     <div data-test="possible-controls">
                                         <dt>Controls</dt>
                                         <dd>
@@ -556,7 +556,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dd>{context.award.project}</dd>
                                 </div>
 
-                                {context.dbxrefs.length ?
+                                {context.dbxrefs.length > 0 ?
                                     <div data-test="external-resources">
                                         <dt>External resources</dt>
                                         <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -570,7 +570,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     </div>
                                 : null}
 
-                                {context.aliases.length ?
+                                {context.aliases.length > 0 ?
                                     <div data-test="aliases">
                                         <dt>Aliases</dt>
                                         <dd>{context.aliases.join(', ')}</dd>
@@ -591,7 +591,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     </div>
                                 : null}
 
-                                {seriesList.length ?
+                                {seriesList.length > 0 ?
                                     <div data-test="relatedseries">
                                         <dt>Related datasets</dt>
                                         <dd><RelatedSeriesList seriesList={seriesList} /></dd>
@@ -628,7 +628,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
-            {combinedDocuments.length ?
+            {combinedDocuments.length > 0 ?
                 <DocumentsPanelReq documents={combinedDocuments} />
             : null}
         </div>
@@ -717,7 +717,7 @@ const replicateTableColumns = {
         display: (condensedReplicate) => {
             const replicate = condensedReplicate[0];
             const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
-            if (gms && gms.length) {
+            if (gms && gms.length > 0) {
                 return (
                     <span>
                         {gms.map((gm, i) => (
@@ -733,7 +733,7 @@ const replicateTableColumns = {
         },
         hide: list => _(list).all((condensedReplicate) => {
             const replicate = condensedReplicate[0];
-            return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length);
+            return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length > 0);
         }),
     },
 

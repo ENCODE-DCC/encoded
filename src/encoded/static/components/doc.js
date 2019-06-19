@@ -36,8 +36,8 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 export const DocumentsPanel = (props) => {
     // Filter documentSpecs to just those that have actual documents in them.
-    const documentSpecsMapped = props.documentSpecs.length && _.compact(props.documentSpecs.map(documentSpecs => (
-        documentSpecs.documents.length ? documentSpecs : null
+    const documentSpecsMapped = props.documentSpecs.length > 0 && _.compact(props.documentSpecs.map(documentSpecs => (
+        documentSpecs.documents.length > 0 ? documentSpecs : null
     )));
 
     // Concatenate all documents, and map their UUIDs to corresponding labels
@@ -53,7 +53,7 @@ export const DocumentsPanel = (props) => {
     // Sort documents by attachment download name.
     const sortedDocs = globals.sortDocs(allDocs);
 
-    if (documentSpecsMapped.length) {
+    if (documentSpecsMapped.length > 0) {
         return (
             <div>
                 <Panel addClasses="clearfix">
@@ -89,7 +89,7 @@ DocumentsPanel.defaultProps = {
 // array of matching documents.
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
-    if (documents && documents.length) {
+    if (documents && documents.length > 0) {
         return <DocumentsPanel documentSpecs={[{ documents }]} />;
     }
     return null;
@@ -109,7 +109,7 @@ DocumentsPanelRenderer.defaultProps = {
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
 
-    if (documents && documents.length) {
+    if (documents && documents.length > 0) {
         return (
             <FetchedData>
                 <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
@@ -457,7 +457,7 @@ export const CharacterizationDocuments = (props) => {
             {docs.map((doc) => {
                 if (doc && doc.attachment) {
                     const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
-                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                    const docName = (doc.aliases && doc.aliases.length > 0) ? doc.aliases[0] :
                         ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
                         <div className="multi-dd dl-link" key={doc['@id']}>

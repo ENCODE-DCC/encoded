@@ -83,13 +83,13 @@ export class JsonGraph {
             if (nodes[i].id === id) {
                 return nodes[i];
             }
-            if (nodes[i].nodes.length) {
+            if (nodes[i].nodes.length > 0) {
                 const matching = this.getNode(id, nodes[i]);
                 if (matching) {
                     return matching;
                 }
             }
-            if (nodes[i].subnodes && nodes[i].subnodes.length) {
+            if (nodes[i].subnodes && nodes[i].subnodes.length > 0) {
                 const matching = nodes[i].subnodes.find(subnode => id === subnode.id);
                 if (matching) {
                     return matching;
@@ -104,13 +104,13 @@ export class JsonGraph {
 
         for (let i = 0; i < nodes.length; i += 1) {
             const node = nodes[i];
-            if (node.subnodes && node.subnodes.length) {
+            if (node.subnodes && node.subnodes.length > 0) {
                 for (let j = 0; j < node.subnodes.length; j += 1) {
                     if (node.subnodes[j].id === id) {
                         return node.subnodes[j];
                     }
                 }
-            } else if (nodes[i].nodes.length) {
+            } else if (nodes[i].nodes.length > 0) {
                 const matching = this.getSubnode(id, nodes[i]);
                 if (matching) {
                     return matching;
@@ -121,7 +121,7 @@ export class JsonGraph {
     }
 
     getEdge(source, target) {
-        if (this.edges && this.edges.length) {
+        if (this.edges && this.edges.length > 0) {
             const matching = _(this.edges).find(edge =>
                 (source === edge.source) && (target === edge.target)
             );
@@ -143,7 +143,7 @@ export class JsonGraph {
             returnArray.push(fn.call(context, node));
 
             // If the node has its own nodes, recurse
-            if (node.nodes && node.nodes.length) {
+            if (node.nodes && node.nodes.length > 0) {
                 returnArray = returnArray.concat(this.map(fn, context, node.nodes));
             }
         }
@@ -216,7 +216,7 @@ export class Graph extends React.Component {
                 if (!parent.root) {
                     subgraph.setParent(node.id, parent.id);
                 }
-                if (node.nodes.length) {
+                if (node.nodes.length > 0) {
                     convertGraphInner(subgraph, node);
                 }
             });
@@ -542,7 +542,7 @@ export class Graph extends React.Component {
                             if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
                                 // If any elements use this style, add the style's CSS text to our style text accumulator.
                                 const elems = el.querySelectorAll(rule.selectorText);
-                                if (elems.length) {
+                                if (elems.length > 0) {
                                     stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
                                 }
                             }

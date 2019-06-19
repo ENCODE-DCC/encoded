@@ -317,7 +317,7 @@ class App extends React.Component {
         // Add privacy link to auth0 login modal.
         this.lock.on('signin ready', () => {
             const lockElements = document.getElementsByClassName('auth0-lock-form');
-            if (lockElements && lockElements.length) {
+            if (lockElements && lockElements.length > 0) {
                 const privacyDiv = document.createElement('div');
                 const privacyLink = document.createElement('a');
                 const privacyLinkText = document.createTextNode('Privacy policy');
@@ -826,7 +826,7 @@ class App extends React.Component {
     /* eslint no-alert: 0 */
     confirmNavigation() {
         // check for beforeunload confirmation
-        if (this.state.unsavedChanges.length) {
+        if (this.state.unsavedChanges.length > 0) {
             const res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
             if (res) {
                 this.setState({ unsavedChanges: [] });
@@ -837,7 +837,7 @@ class App extends React.Component {
     }
 
     handleBeforeUnload() {
-        if (this.state.unsavedChanges.length || cartIsUnsaved()) {
+        if (this.state.unsavedChanges.length > 0 || cartIsUnsaved()) {
             return 'You have unsaved changes.';
         }
         return undefined;

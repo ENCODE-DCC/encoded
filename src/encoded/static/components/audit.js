@@ -243,7 +243,7 @@ AuditGroup.defaultProps = {
 export function auditsDisplayed(audits, session) {
     const loggedIn = !!(session && session['auth.userid']);
 
-    return (audits && Object.keys(audits).length) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
+    return (audits && Object.keys(audits).length > 0) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
 }
 
 

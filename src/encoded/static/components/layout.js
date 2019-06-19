@@ -693,7 +693,7 @@ export default class Layout extends React.Component {
         }
         // eslint-disable-next-line react/no-find-dom-node
         const targetNode = (target || this).domNode;
-        if (!targetNode.childNodes.length) return;
+        if (targetNode.childNodes.length === 0) return;
         const targetOffset = offset(targetNode);
         const x = e.pageX - targetOffset.left;
         const y = e.pageY - targetOffset.top;

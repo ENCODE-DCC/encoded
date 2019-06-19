@@ -139,7 +139,7 @@ export function requestObjects(atIds, uri, filteringObjects) {
     let filteredObjectIds = {}; // @ids of files we need to retrieve
 
     // Make a searchable object of file IDs for files to filter out of our list.
-    if (filteringObjects && filteringObjects.length) {
+    if (filteringObjects && filteringObjects.length > 0) {
         filteringObjects.forEach((filteringObject) => {
             filteringFileIds[filteringObject['@id']] = filteringObject;
         });
@@ -181,8 +181,8 @@ export function requestObjects(atIds, uri, filteringObjects) {
         // All search chunks have resolved or errored. We get an array of search results in
         // `chunks` -- one per chunk. Now collect their files from their @graphs into one array of
         // files and return them as the promise result.
-        if (chunks && chunks.length) {
-            return chunks.reduce((objects, chunk) => (chunk && chunk['@graph'].length ? objects.concat(chunk['@graph']) : objects), []);
+        if (chunks && chunks.length > 0) {
+            return chunks.reduce((objects, chunk) => (chunk && chunk['@graph'].length > 0 ? objects.concat(chunk['@graph']) : objects), []);
         }
 
         // Didn't get any good chucks back, so just return no results.
@@ -213,17 +213,17 @@ export function requestFiles(fileIds, filteringFiles) {
 export function donorDiversity(dataset) {
     let diversity = 'none';
 
-    if (dataset.related_datasets && dataset.related_datasets.length) {
+    if (dataset.related_datasets && dataset.related_datasets.length > 0) {
         // Get all non-deleted related experiments; empty array if none.
         const experiments = dataset.related_datasets.filter(experiment => experiment.status !== 'deleted');
 
         // From list list of non-deleted experiments, get all non-deleted replicates into one
         // array.
-        if (experiments.length) {
+        if (experiments.length > 0) {
             // Make an array of replicate arrays, one replicate array per experiment. Only include
             // non-deleted replicates.
             const replicatesByExperiment = experiments.map(experiment => (
-                (experiment.replicates && experiment.replicates.length) ?
+                (experiment.replicates && experiment.replicates.length > 0) ?
                     experiment.replicates.filter(replicate => replicate.status !== 'deleted')
                 : [])
             );
@@ -234,7 +234,7 @@ export function donorDiversity(dataset) {
             // Look at the donors in each replicate's biosample. If we see at least two different
             // donors, we know we have a composite. If only one unique donor after examining all
             // donors, we have a single. "None" if no donors found in all replicates.
-            if (replicates.length) {
+            if (replicates.length > 0) {
                 const donorAtIdCollection = [];
                 replicates.every((replicate) => {
                     if (replicate.library && replicate.library.status !== 'deleted' &&
@@ -637,7 +637,7 @@ export function PanelLookup(properties) {
 export const AlternateAccession = (props) => {
     const { altAcc } = props;
 
-    if (altAcc && altAcc.length) {
+    if (altAcc && altAcc.length > 0) {
         return (
             <h4 className="replacement-accessions__alternate">
                 {altAcc.length === 1 ?

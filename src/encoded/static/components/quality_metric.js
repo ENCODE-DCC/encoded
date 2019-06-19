@@ -41,7 +41,7 @@ export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
     // quality_metric_of is an array of @ids because they're not embedded, and we're trying
     // to avoid embedding where not absolutely needed. So use a regex to extract the files'
     // accessions from the @ids. After generating the array, filter out empty entries.
-    if (qc.quality_metric_of && qc.quality_metric_of.length) {
+    if (qc.quality_metric_of && qc.quality_metric_of.length > 0) {
         filesOfMetric = qc.quality_metric_of.map((metricId) => {
             // Extract the file's accession from the @id
             const match = globals.atIdToAccession(metricId);
@@ -90,7 +90,7 @@ export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
     const header = (
         <div className="details-view-info">
             <h4>{qcName} of {file.title}</h4>
-            {filesOfMetric.length ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
+            {filesOfMetric.length > 0 ? <h5>Shared with {filesOfMetric.join(', ')}</h5> : null}
         </div>
     );
     const body = (
@@ -100,7 +100,7 @@ export function qcModalContent(qc, file, qcSchema, genericQCSchema) {
                     <QCDataDisplay qcMetric={qc} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
                 </div>
 
-                {(qcPanels && qcPanels.length) || qc.attachment ?
+                {(qcPanels && qcPanels.length > 0) || qc.attachment ?
                     <div className="col-md-8 col-sm-12 quality-metrics-attachments">
                         <div className="row">
                             <h5>Quality metric attachments</h5>
@@ -400,7 +400,7 @@ const QCDetailView = function QCDetailView(node) {
     const selectedQc = node.ref;
     let modalContent = {};
 
-    if (selectedQc && Object.keys(selectedQc).length) {
+    if (selectedQc && Object.keys(selectedQc).length > 0) {
         const schemas = node.schemas;
         const genericQCSchema = schemas.GenericQualityMetric;
         const qcSchema = schemas[selectedQc['@type'][0]];

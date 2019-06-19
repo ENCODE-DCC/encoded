@@ -4,7 +4,7 @@ import _ from 'underscore';
 
 export default function pubReferenceList(values) {
     // Render each of the links, with null for each value without an identifier property
-    if (values && values.length) {
+    if (values && values.length > 0) {
         const links = _.compact(values.map((value) => {
             if (value.identifiers) {
                 return value.identifiers.map((identifier, index) =>
@@ -17,7 +17,7 @@ export default function pubReferenceList(values) {
         }));
 
         // Render any links into a ul. Just return null if no links to render.
-        if (links.length) {
+        if (links.length > 0) {
             return (
                 <ul>{links}</ul>
             );

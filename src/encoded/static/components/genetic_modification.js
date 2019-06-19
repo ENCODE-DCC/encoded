@@ -22,7 +22,7 @@ import { BiosampleTable, DonorTable } from './typeutils';
 const IntroducedTags = (props) => {
     const { geneticModification } = props;
 
-    if (geneticModification.introduced_tags && geneticModification.introduced_tags.length) {
+    if (geneticModification.introduced_tags && geneticModification.introduced_tags.length > 0) {
         // Generate an array of React components, each containing one epitope_tags display from
         // the array of epitope_tags in the given genetic modification object. At least one
         // property of each epitope tag element must be present, or else an empty <li></li> will
@@ -173,7 +173,7 @@ const ModificationMethod = (props) => {
     // Make an array of treatment text summaries within <li> elements that can get inserted
     // directly into a <ul> element.
     let treatments = [];
-    if (geneticModification.treatments && geneticModification.treatments.length) {
+    if (geneticModification.treatments && geneticModification.treatments.length > 0) {
         treatments = geneticModification.treatments.map(treatment => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
     }
 
@@ -187,7 +187,7 @@ const ModificationMethod = (props) => {
                     <dd>{geneticModification.method}</dd>
                 </div>
 
-                {treatments.length ?
+                {treatments.length > 0 ?
                     <div data-test="treatments">
                         <dt>Treatments</dt>
                         <dd>
@@ -198,7 +198,7 @@ const ModificationMethod = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.rnai_sequences && geneticModification.rnai_sequences.length ?
+                {geneticModification.rnai_sequences && geneticModification.rnai_sequences.length > 0 ?
                     <div data-test="rnai">
                         <dt>RNAi sequences</dt>
                         <dd>
@@ -209,7 +209,7 @@ const ModificationMethod = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.guide_rna_sequences && geneticModification.guide_rna_sequences.length ?
+                {geneticModification.guide_rna_sequences && geneticModification.guide_rna_sequences.length > 0 ?
                     <div data-test="guiderna">
                         <dt>Guide RNAs</dt>
                         <dd>
@@ -218,7 +218,7 @@ const ModificationMethod = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.RVD_sequence_pairs && geneticModification.RVD_sequence_pairs.length ?
+                {geneticModification.RVD_sequence_pairs && geneticModification.RVD_sequence_pairs.length > 0 ?
                     <div data-test="rvdseq">
                         <dt>RVD sequence pairs</dt>
                         <dd>
@@ -231,7 +231,7 @@ const ModificationMethod = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.reagents && geneticModification.reagents.length ?
+                {geneticModification.reagents && geneticModification.reagents.length > 0 ?
                     <div data-test="reagent">
                         <dt>Reagents</dt>
                         <dd>
@@ -289,7 +289,7 @@ const AttributionRenderer = (props) => {
                     <dd>{award.project}</dd>
                 </div>
 
-                {geneticModification.aliases && geneticModification.aliases.length ?
+                {geneticModification.aliases && geneticModification.aliases.length > 0 ?
                     <div data-test="aliases">
                         <dt>Aliases</dt>
                         <dd>{geneticModification.aliases.join(', ')}</dd>
@@ -342,7 +342,7 @@ Attribution.propTypes = {
 const DocumentsRenderer = ({ characterizations, modificationDocuments, characterizationDocuments }) => {
     // Don't need to check for characterizationDocuments.length because these only get displayed
     // within characterization panels.
-    if (characterizations.length || modificationDocuments.length) {
+    if (characterizations.length > 0 || modificationDocuments.length > 0) {
         // Make a mapping of characterization document @ids to characterization documents
         // to make searching in the next step easier.
         const characterizationDocumentMap = {};
@@ -386,9 +386,9 @@ DocumentsRenderer.propTypes = {
  */
 const collectCharacterizationAtIds = (characterizations) => {
     const characterizationDocumentAtIds = [];
-    if (characterizations && characterizations.length) {
+    if (characterizations && characterizations.length > 0) {
         characterizations.forEach((characterization) => {
-            if (characterization.documents && characterization.documents.length) {
+            if (characterization.documents && characterization.documents.length > 0) {
                 characterizationDocumentAtIds.push(...characterization.documents);
             }
         });
@@ -466,14 +466,14 @@ class GeneticModificationComponent extends React.Component {
 
         // Collect GM document @ids and combine with characterization document @ids so we can do
         // one GET request for both.
-        const modificationCharacterizationDocumentsAtIds = _.uniq((context.documents && context.documents.length ? context.documents : []).concat(characterizationDocumentAtIds));
+        const modificationCharacterizationDocumentsAtIds = _.uniq((context.documents && context.documents.length > 0 ? context.documents : []).concat(characterizationDocumentAtIds));
 
         // Convert the array of document @ids into a query string and do the GET request for their
         // objects.
         const modificationDocuments = [];
         const characterizationDocuments = [];
         let searchPromise = null;
-        const modificationCharacterizationDocumentsQuery = modificationCharacterizationDocumentsAtIds.length ? modificationCharacterizationDocumentsAtIds.reduce((acc, document) => `${acc}&${globals.encodedURIComponent(`@id=${document}`)}`, '') : null;
+        const modificationCharacterizationDocumentsQuery = modificationCharacterizationDocumentsAtIds.length > 0 ? modificationCharacterizationDocumentsAtIds.reduce((acc, document) => `${acc}&${globals.encodedURIComponent(`@id=${document}`)}`, '') : null;
         if (modificationCharacterizationDocumentsQuery) {
             searchPromise = requestSearch(`type=Document${modificationCharacterizationDocumentsQuery}`);
         } else {
@@ -484,7 +484,7 @@ class GeneticModificationComponent extends React.Component {
         searchPromise.then(
             (results) => {
                 // `results` is the search results object, or {} if it 404ed.
-                if (results['@graph'] && results['@graph'].length) {
+                if (results['@graph'] && results['@graph'].length > 0) {
                     // Split the results into arrays of modification and characterization
                     // document objects.
                     results['@graph'].forEach((document) => {
@@ -784,7 +784,7 @@ const CharacterizationDocuments = (props) => {
             {docs.map((doc, i) => {
                 if (doc && doc.attachment) {
                     const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
-                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                    const docName = (doc.aliases && doc.aliases.length > 0) ? doc.aliases[0] :
                         ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
                         <div className="multi-dd dl-link" key={doc['@id']}>
@@ -847,7 +847,7 @@ const CharacterizationDetail = (props) => {
                     </div>
                 : null}
 
-                {doc.documents && doc.documents.length ?
+                {doc.documents && doc.documents.length > 0 ?
                     <div data-test="documents">
                         <dt>Documents</dt>
                         <CharacterizationDocuments docs={doc.documents} />
