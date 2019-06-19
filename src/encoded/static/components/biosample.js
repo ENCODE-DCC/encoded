@@ -350,18 +350,15 @@ class BiosampleComponent extends React.Component {
                                 </dl>
                             </div>
                         </div>
-
                         {context.pooled_from && context.pooled_from.length ?
                             <section data-test="pooledfrom">
                                 <hr />
                                 <h4>Pooled from biosamples</h4>
-                                <ul className="non-dl-list">
-                                    {context.pooled_from.map(biosample => (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <RelatedItems
+                                    title="Experiments using this biosample"
+                                    url={`/search/?type=Biosample${context.pooled_from.map(biosample => (`&uuid=${biosample.uuid}`))}`}
+                                    Component={ExperimentTable}
+                                />
                             </section>
                         : null}
 
