@@ -350,18 +350,6 @@ class BiosampleComponent extends React.Component {
                                 </dl>
                             </div>
                         </div>
-                        {context.pooled_from && context.pooled_from.length ?
-                            <section data-test="pooledfrom">
-                                <hr />
-                                <h4>Pooled from biosamples</h4>
-                                <RelatedItems
-                                    title="Experiments using this biosample"
-                                    url={`/search/?type=Biosample${context.pooled_from.map(biosample => (`&uuid=${biosample.uuid}`))}`}
-                                    Component={ExperimentTable}
-                                />
-                            </section>
-                        : null}
-
                         {context.treatments.length ?
                             <section>
                                 <hr />
@@ -371,6 +359,13 @@ class BiosampleComponent extends React.Component {
                         : null}
                     </PanelBody>
                 </Panel>
+                {context.pooled_from && context.pooled_from.length ?
+                    <RelatedItems
+                        title="Pooled from biosamples"
+                        url={`/search/?type=Biosample${context.pooled_from.map(biosample => (`&uuid=${biosample.uuid}`).join(''))}`}
+                        Component={ExperimentTable}
+                    />
+                : null}
 
                 {context.applied_modifications && context.applied_modifications.length ?
                     <GeneticModificationSummary geneticModifications={context.applied_modifications} />
