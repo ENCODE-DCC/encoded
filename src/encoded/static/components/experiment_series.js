@@ -44,7 +44,6 @@ const experimentTableColumns = {
     lab: {
         title: 'Lab',
         getValue: experiment => (experiment.lab ? experiment.lab.title : null),
-
     },
 
     date_released: {
@@ -258,42 +257,41 @@ globals.contentViews.register(ExperimentSeries, 'ExperimentSeries');
 
 const ListingComponent = (props, reactContext) => {
     const result = props.context;
-    let organism;
-    let targets;
+    let targets = [];
     let lifeStages = [];
     let ages = [];
 
-    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
-    const biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-    const organisms = (result.organism && result.organism.length) ? [...new Set(result.organism.map(resultOrganism => resultOrganism.scientific_name))] : [];
-    if (organisms.length === 1) {
-        organism = organisms[0];
-    }
+    // Get the biosample info and organism for Series types. Only use if we have precisely one of each.
+    const biosampleTerm = (result.biosample_ontology && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) || '';
+    const organism = (result.organism && result.organism.length === 1 && result.organism[0].scientific_name) || '';
 
-    // related_datasets is required and have minItems = 1
-    result.related_datasets.forEach((dataset) => {
-        if (dataset.replicates && dataset.replicates.length > 0) {
-            dataset.replicates.forEach((replicate) => {
-                if (replicate.library && replicate.library.biosample) {
-                    const biosample = replicate.library.biosample;
-                    const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
-
-                    if (lifeStage) { lifeStages.push(lifeStage); }
-                    if (biosample.age_display) { ages.push(biosample.age_display); }
-                }
-            });
+    // Collect replicates and generate life stage and age display for the search result link. Do
+    // not include any where zero or more than one exist.
+    const replicates = result.related_datasets.reduce((collectedReplicates, dataset) => (
+        dataset.replicates && dataset.replicates.length > 0 ? collectedReplicates.concat(dataset.replicates) : collectedReplicates
+    ), []);
+    replicates.forEach((replicate) => {
+        if (replicate.library && replicate.library.biosample) {
+            const biosample = replicate.library.biosample;
+            const lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+            if (lifeStage) {
+                lifeStages.push(lifeStage);
+            }
+            if (biosample.age_display) {
+                ages.push(biosample.age_display);
+            }
         }
     });
-    lifeStages = [...new Set(lifeStages)];
-    ages = [...new Set(ages)];
+    lifeStages = _.uniq(lifeStages);
+    ages = _.uniq(ages);
     const lifeSpec = [lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null].filter(Boolean);
 
-    // Get list of target labels
+    // Get list of target labels.
     if (result.target) {
-        targets = [...new Set(result.target.map(target => target.label))];
+        targets = _.uniq(result.target.map(target => target.label));
     }
 
-    const contributors = result.contributors.map(lab => lab.title);
+    const contributors = _.uniq(result.contributors.map(lab => lab.title));
     const contributingAwards = _.uniq(result.contributing_awards.map(award => award.project));
 
     return (
@@ -312,10 +310,11 @@ const ListingComponent = (props, reactContext) => {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
+                            {result.assay_title && result.assay_title.length > 0 ? <span>{result.assay_title.join(', ')} </span> : null}
                             Experiment Series
                             <span>
                                 {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                                {organism || lifeSpec.length > 0 ?
+                                {lifeSpec.length > 0 ?
                                     <span>
                                         {' ('}
                                         {organism ? <i>{organism}</i> : null}
@@ -328,7 +327,7 @@ const ListingComponent = (props, reactContext) => {
                     </div>
                     <div className="data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{contributors.join(', ')}</div>
                         <div><strong>Project: </strong>{contributingAwards.join(', ')}</div>
                     </div>
@@ -340,13 +339,16 @@ const ListingComponent = (props, reactContext) => {
 };
 
 ListingComponent.propTypes = {
-    context: PropTypes.object.isRequired, // ExperimentSeries search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+    /** ExperimentSeries search results */
+    context: PropTypes.object.isRequired,
+    /** Audit decorator function */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Audit decorator function */
+    auditDetail: PropTypes.func.isRequired,
 };
 
 ListingComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
+    session: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);
