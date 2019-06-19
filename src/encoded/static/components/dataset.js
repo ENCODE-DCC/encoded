@@ -990,7 +990,7 @@ function displayPossibleControls(item, adminUser) {
 }
 
 
-export const basicTableColumns = {
+const basicTableColumns = {
     accession: {
         title: 'Accession',
         display: (experiment, meta) =>
