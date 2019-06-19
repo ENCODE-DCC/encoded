@@ -14,7 +14,9 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/treatment_classification"},
-        { "$ref": "mixins.json#/documents"}
+        { "$ref": "mixins.json#/documents"},
+        { "$ref": "mixins.json#/product_id"},
+        { "$ref": "mixins.json#/source"}
     ],
     "dependencies": {
         "temperature": ["temperature_units"],
