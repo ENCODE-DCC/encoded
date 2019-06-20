@@ -450,7 +450,7 @@ class GenomeBrowser extends React.Component {
             let xEnd = '';
             console.log('trying a weird thing here');
             console.log(response);
-            console.log(response['@graph'].find(response.text === this.state.searchTerm));
+            console.log(response['@graph'].findIndex(resp => resp.text === this.state.searchTerm));
             console.log('end');
             response['@graph'].forEach((responseLine) => {
                 if (responseLine.text === this.state.searchTerm) {
