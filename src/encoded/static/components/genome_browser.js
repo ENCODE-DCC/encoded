@@ -55,7 +55,7 @@ export function getCoordinateData(geneLink, fetch) {
         },
     }).then((response) => {
         if (response.ok) {
-            return response.text();
+            return response.json();
         }
         throw new Error('not ok');
     }).catch((e) => {
@@ -193,7 +193,7 @@ class GenomeBrowser extends React.Component {
             setTimeout(this.drawTracksResized, 1000);
         }
 
-        if (this.props.files !== prevProps.files) {
+        if (!(_.isEqual(this.props.files, prevProps.files))) {
             let newFiles = [];
             let domain = `${window.location.protocol}//${window.location.hostname}`;
             if (domain.includes('localhost')) {
@@ -445,6 +445,7 @@ class GenomeBrowser extends React.Component {
         console.log(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`);
 
         getCoordinateData(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`, this.context.fetch).then((response) => {
+            console.log(response);
             const responseJson = JSON.parse(response);
             let contig = '';
             let xStart = '';

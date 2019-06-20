@@ -34,10 +34,6 @@ DisplayAsJson.contextTypes = {
     location_href: PropTypes.string,
 };
 
-export function arraysUnequal(array1, array2) {
-    return !(_.isEqual(array1, array2));
-}
-
 export function shadeOverflowOnScroll(e) {
     // shading element that indicates there is further to scroll down
     const bottomShading = e.target.parentNode.getElementsByClassName('shading')[0];
