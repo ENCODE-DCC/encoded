@@ -10,7 +10,7 @@ import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
-import { requestFiles, DownloadableAccession, arraysUnequal } from './objectutils';
+import { requestFiles, DownloadableAccession } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -2249,21 +2249,21 @@ class FileGalleryRendererComponent extends React.Component {
                 });
             }
 
-            if (arraysUnequal(allFiles, this.state.allFiles)) {
+            if (!(_.isEqual(allFiles, this.state.allFiles))) {
                 this.setState({ allFiles });
                 this.setAssemblyList(this.state.allFiles);
             }
 
-            if (arraysUnequal(filesFilteredByAssembly, this.state.filesFilteredByAssembly)) {
+            if (!(_.isEqual(filesFilteredByAssembly, this.state.filesFilteredByAssembly))) {
                 this.setState({ filesFilteredByAssembly });
                 this.setAssemblyList(this.state.allFiles);
             }
 
-            if (arraysUnequal(graphFiles, this.state.graphFiles)) {
+            if (!(_.isEqual(graphFiles, this.state.graphFiles))) {
                 this.setState({ graphFiles });
             }
 
-            if (arraysUnequal(filteredFiles, this.state.files)) {
+            if (!(_.isEqual(filteredFiles, this.state.files))) {
                 this.setState({ files: filteredFiles });
             }
         });

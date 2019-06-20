@@ -445,12 +445,10 @@ class GenomeBrowser extends React.Component {
         console.log(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`);
 
         getCoordinateData(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`, this.context.fetch).then((response) => {
-            console.log(response);
-            const responseJson = JSON.parse(response);
             let contig = '';
             let xStart = '';
             let xEnd = '';
-            responseJson['@graph'].forEach((responseLine) => {
+            response['@graph'].forEach((responseLine) => {
                 if (responseLine.text === this.state.searchTerm) {
                     console.log('Found search term');
                     responseLine._source.annotations.forEach((annotation) => {
