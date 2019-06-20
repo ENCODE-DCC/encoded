@@ -67,13 +67,6 @@ class Page(SharedItem):
     def month_released(self, date_created):
         return dateutil.parser.parse(date_created).strftime('%B, %Y')
 
-    @calculated_property(condition='date_created', schema={
-        "title": "Year released",
-        "type": "string",
-    })
-    def year_released(self, date_created):
-        return dateutil.parser.parse(date_created).strftime('%Y')
-
     @property
     def __parent__(self):
         parent_uuid = self.properties.get('parent')
