@@ -12,7 +12,7 @@ import { Breadcrumbs } from './navigation';
 import { DisplayAsJson, InternalTags, publicDataset } from './objectutils';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import Status from './status';
+import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
 
 const experimentTableColumns = {
@@ -64,11 +64,36 @@ const experimentTableColumns = {
 
 
 /**
+ * Experiment statuses we can display at the different access levels. Defined separately from how
+ * they're defined in status.js because they're slightly differently from datasetStatuses.
+ */
+const viewableDatasetStatuses = {
+    Dataset: {
+        external: [
+            'released',
+            'archived',
+        ],
+        consortium: [
+            'in progress',
+            'submitted',
+            'revoked',
+        ],
+        administrator: [
+            'deleted',
+            'replaced',
+        ],
+    },
+};
+
+
+/**
  * Component to display experiment series pages.
  */
 const ExperimentSeriesComponent = (props, reactContext) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-item');
+    const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
+    const viewableStatuses = getObjectStatuses('Dataset', accessLevel, viewableDatasetStatuses);
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
 
     // Set up the breadcrumbs.
@@ -99,7 +124,7 @@ const ExperimentSeriesComponent = (props, reactContext) => {
     const terms = biosampleOntologies.length > 0 ? _.uniq(biosampleOntologies.map(biosampleOntology => biosampleOntology.term_name)) : [];
 
     // Filter out any files we shouldn't see.
-    const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
+    const experimentList = context.related_datasets.filter(dataset => viewableStatuses.includes(dataset.status));
 
     // Add the "Add all to cart" button and internal tags from all related datasets.
     let addAllToCartControl;
@@ -303,7 +328,7 @@ const ListingComponent = (props, reactContext) => {
                         <p className="type meta-title">Experiment Series</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <div className="result-experiment-series-search">
-                            <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}`}>View {result.related_datasets.length} datasets</a>
+                            <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}`}>View related datasets</a>
                         </div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
@@ -327,7 +352,7 @@ const ListingComponent = (props, reactContext) => {
                     </div>
                     <div className="data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {targets.length > 0 ? <div><strong>Target: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{contributors.join(', ')}</div>
                         <div><strong>Project: </strong>{contributingAwards.join(', ')}</div>
                     </div>
