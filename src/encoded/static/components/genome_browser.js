@@ -81,7 +81,6 @@ class GenomeBrowser extends React.Component {
         super();
 
         this.state = {
-            width: 592,
             trackList: [],
             visualizer: null,
             showAutoSuggest: true,
@@ -172,13 +171,7 @@ class GenomeBrowser extends React.Component {
             files = [...this.state.pinnedFiles, ...files];
             const tracks = this.filesToTracks(files, domain);
             this.setState({ trackList: tracks }, () => {
-                if (this.chartdisplay) {
-                    this.setState({
-                        width: this.chartdisplay.clientWidth,
-                    }, () => {
-                        this.drawTracks(this.chartdisplay);
-                    });
-                }
+                this.drawTracks(this.chartdisplay);
             });
         });
     }
@@ -224,11 +217,7 @@ class GenomeBrowser extends React.Component {
                 const tracks = this.filesToTracks(newFiles, domain);
                 this.setState({ trackList: tracks }, () => {
                     if (this.chartdisplay) {
-                        this.setState({
-                            width: this.chartdisplay.clientWidth,
-                        }, () => {
-                            this.drawTracks(this.chartdisplay);
-                        });
+                        this.drawTracks(this.chartdisplay);
                     } else {
                         console.log('there is no this.chartdisplay');
                     }
@@ -272,15 +261,7 @@ class GenomeBrowser extends React.Component {
             }
             const tracks = this.filesToTracks(newFiles, domain);
             this.setState({ trackList: tracks }, () => {
-                if (this.chartdisplay) {
-                    this.setState({
-                        width: this.chartdisplay.clientWidth,
-                    }, () => {
-                        this.drawTracks(this.chartdisplay);
-                    });
-                } else {
-                    console.log('there is no this.chartdisplay');
-                }
+                this.drawTracks(this.chartdisplay);
             });
         }
     }
@@ -458,7 +439,6 @@ class GenomeBrowser extends React.Component {
 
     drawTracksResized() {
         if (this.chartdisplay) {
-            this.setState({ width: this.chartdisplay.clientWidth });
             this.state.visualizer.render({
                 width: this.chartdisplay.clientWidth,
                 height: this.state.visualizer.getContentHeight(),
@@ -477,7 +457,7 @@ class GenomeBrowser extends React.Component {
         });
         this.setState({ visualizer });
         visualizer.render({
-            width: this.state.width,
+            width: this.chartdisplay.clientWidth,
             height: visualizer.getContentHeight(),
         }, container);
         visualizer.addEventListener('track-resize', this.drawTracksResized);
