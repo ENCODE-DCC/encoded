@@ -424,7 +424,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 
     @at-root #{&}__visualization-selector {
-        flex: 0 1 auto;
+        flex: 0 1 25%;
 
         select {
             display: inline-block;

@@ -1067,17 +1067,15 @@ class FilterControls extends React.Component {
         if (filterOptions.length > 0 || browsers.length > 0) {
             return (
                 <div className="file-gallery-controls">
-                    <span className="file-gallery-instructions">Select files and choose an assembly</span>
+                    <span className="file-gallery-instructions">Select files, choose an assembly, and pick an external browser to visualize</span>
                     {filterOptions.length > 0 ?
                         <div className="file-gallery-controls__assembly-selector">
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                         </div>
                     : null}
-                    <span className="file-gallery-instructions">to view in external browser</span>
                     {browsers.length > 0 ?
                         <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} />
                     : null}
-
                 </div>
             );
         }
