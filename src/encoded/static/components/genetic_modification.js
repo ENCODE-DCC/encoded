@@ -238,7 +238,7 @@ const ModificationMethod = (props) => {
                             <ul className="multi-value-line">
                                 {geneticModification.reagents.map((reagent, i) => {
                                     // Although reagents specify source, we want to use the source prefix from the identifier for best consistency
-                                    const parsedIdentifier = reagent.identifier.split(":")
+                                    const parsedIdentifier = reagent.identifier.split(':');
                                     const reagentId = <span>{parsedIdentifier[0]} &mdash; {parsedIdentifier[1]}</span>;
                                     if (reagent.url) {
                                         return <li key={i}><a href={reagent.url}>{reagentId}</a></li>;
@@ -415,16 +415,16 @@ class GeneticModificationComponent extends React.Component {
         this.requestDocuments();
     }
 
-    componentDidUpdate(previousProperties, previousState, previousContext) {
-        if (this.conditionsChanged(previousProperties, previousState, previousContext)) {
+    componentDidUpdate(previousProperties) {
+        if (this.conditionsChanged(previousProperties)) {
             this.requestDocuments();
         }
     }
 
-    conditionsChanged(previousProperties, previousState, previousContext) {
+    conditionsChanged(previousProperties) {
         // Logged-in state has changed.
-        const previousLoggedIn = !!(previousContext.session && previousContext.session['auth.userid']);
-        const currentLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const previousLoggedIn = !!(previousProperties.session && previousProperties.session['auth.userid']);
+        const currentLoggedIn = !!(this.props.session && this.props.session['auth.userid']);
         if (previousLoggedIn !== currentLoggedIn) {
             return true;
         }
@@ -642,13 +642,28 @@ GeneticModificationComponent.propTypes = {
     context: PropTypes.object.isRequired, // GM object being displayed
     auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
     auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
-};
-
-GeneticModificationComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
 };
 
-const GeneticModification = auditDecor(GeneticModificationComponent);
+GeneticModificationComponent.defaultProps = {
+    session: null,
+};
+
+const GeneticModificationInternal = (props, reactContext) => (
+    <GeneticModificationComponent {...props} session={reactContext.session} />
+);
+
+GeneticModificationInternal.propTypes = {
+    context: PropTypes.object.isRequired, // GM object being displayed
+    auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+    auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
+};
+
+GeneticModificationInternal.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const GeneticModification = auditDecor(GeneticModificationInternal);
 
 globals.contentViews.register(GeneticModification, 'GeneticModification');
 
