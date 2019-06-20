@@ -271,6 +271,13 @@ const ExperimentSeries = auditDecor(ExperimentSeriesComponent);
 globals.contentViews.register(ExperimentSeries, 'ExperimentSeries');
 
 
+/**
+ * Related dataset statuses that get counted in totals, and specified in searches.
+ */
+const searchableDatasetStatuses = ['released', 'archived'];
+const searchableDatasetStatusQuery = searchableDatasetStatuses.reduce((query, status) => `${query}&status=${status}`, '');
+
+
 const ListingComponent = (props, reactContext) => {
     const result = props.context;
     let targets = [];
@@ -310,6 +317,9 @@ const ListingComponent = (props, reactContext) => {
     const contributors = _.uniq(result.contributors.map(lab => lab.title));
     const contributingAwards = _.uniq(result.contributing_awards.map(award => award.project));
 
+    // Work out the count of related datasets
+    const totalDatasetCount = result.related_datasets.reduce((datasetCount, dataset) => (searchableDatasetStatuses.includes(dataset.status) ? datasetCount + 1 : datasetCount), 0);
+
     return (
         <li>
             <div className="result-item">
@@ -319,7 +329,7 @@ const ListingComponent = (props, reactContext) => {
                         <p className="type meta-title">Experiment Series</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <div className="result-experiment-series-search">
-                            <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}`}>View related datasets</a>
+                            <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}${searchableDatasetStatusQuery}`}>View {totalDatasetCount} datasets</a>
                         </div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}

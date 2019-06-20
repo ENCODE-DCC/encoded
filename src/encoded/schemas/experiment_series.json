@@ -115,6 +115,10 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
+        "related_datasets.status": {
+            "title": "Related dataset status",
+            "type": "string"
+        },
         "related_datasets.replicates.library.biosample.age_display": {
             "title": "Biosample age",
             "type": "string"
