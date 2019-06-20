@@ -663,17 +663,19 @@ AlternateAccession.defaultProps = {
  * object in `context` must have at least one `internal_tags` value or the results are
  * unpredictable.
  */
-export const InternalTags = ({ context, css }) => {
-    const tagBadges = context.internal_tags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${context['@type'][0]}&internal_tags=${globals.encodedURIComponent(tag)}&status=released`;
-        return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${context['@type'][0]} with internal tag ${tag}`} /></a>;
+export const InternalTags = ({ internalTags, objectType, css }) => {
+    const tagBadges = internalTags.map((tag) => {
+        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${globals.encodedURIComponent(tag)}&status=released`;
+        return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
     });
     return <span className={css}>{tagBadges}</span>;
 };
 
 InternalTags.propTypes = {
-    /** encode object being displayed */
-    context: PropTypes.object.isRequired,
+    /** Array of internal tags to display */
+    internalTags: PropTypes.array.isRequired,
+    /** Object @type internal_tags belongs to */
+    objectType: PropTypes.string.isRequired,
     /** Optional CSS class to assign to <span> surrounding all the badges */
     css: PropTypes.string,
 };

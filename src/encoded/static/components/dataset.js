@@ -212,7 +212,7 @@ class AnnotationComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -376,7 +376,7 @@ class PublicationDataComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -540,7 +540,7 @@ class ReferenceComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -728,7 +728,7 @@ class ProjectComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -902,7 +902,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -1427,7 +1427,7 @@ export class SeriesComponent extends React.Component {
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
-                                            <dd><InternalTags context={context} /></dd>
+                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null}
                                 </dl>
