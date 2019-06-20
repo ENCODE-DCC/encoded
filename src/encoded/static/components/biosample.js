@@ -363,7 +363,7 @@ class BiosampleComponent extends React.Component {
                     <RelatedItems
                         title="Pooled from biosamples"
                         url={`/search/?type=Biosample${context.pooled_from.map(biosample => (`&uuid=${biosample.uuid}`)).join('')}`}
-                        Component={ExperimentTable}
+                        Component={BiosampleTable}
                     />
                 : null}
 
