@@ -146,6 +146,15 @@ def mouse_donor_10(root, mouse_donor):
     })
     return properties
 
+@pytest.fixture
+def fly_donor_9(root, fly, target_promoter):
+    item = fly.copy()
+    item.update({
+        'schema_version': '9',
+        'aliases': ['kyoto:test-alias-1'],
+        'dbxrefs': ['Kyoto:123456']
+    })
+    return item
 
 def test_human_donor_upgrade(upgrader, human_donor_1):
     value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
@@ -227,3 +236,14 @@ def test_upgrade_mouse_donor_10_11(root, upgrader, mouse_donor_10):
     value = upgrader.upgrade(
         'mouse_donor', mouse_donor_10, current_version='10', target_version='11')
     assert 'parent_strains' not in value
+
+
+def test_upgrade_fly_donor_9_10(root, upgrader, fly_donor_9):
+    value = upgrader.upgrade('fly_donor', fly_donor_9, current_version='9', target_version='10')
+    for dbxref in value['dbxrefs']:
+        assert 'Kyoto' not in dbxref
+    assert 'kyoto:' not in value['aliases'][0]
+    assert 'encode:kyoto_' in value['aliases'][0]
+    assert 'DGGR' in value['external_ids'][0]
+    assert value['schema_version'] == '10'
+
