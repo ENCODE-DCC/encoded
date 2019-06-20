@@ -2106,11 +2106,15 @@ class FileGalleryRendererComponent extends React.Component {
             // graph is hidden and there are no files
             this.setState({ currentTab: 'tables' });
             this.filterFiles('All assemblies', 'assembly');
-        } else if (tempFiles.length < 1) {
-            this.setState({ currentTab: 'graph' });
-            this.filterFiles(Object.keys(assemblyList)[1], 'assembly');
         } else {
-            this.filterFiles(Object.keys(assemblyList)[1], 'assembly');
+            // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+            const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+            if (tempFiles.length < 1) {
+                this.setState({ currentTab: 'graph' });
+                this.filterFiles(newAssembly, 'assembly');
+            } else {
+                this.filterFiles(newAssembly, 'assembly');
+            }
         }
     }
 
