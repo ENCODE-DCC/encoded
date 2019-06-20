@@ -2096,8 +2096,7 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ selectedFilterValue: '0' });
         }
         // Determing how many visualizable files there are
-        let tempFiles = this.state.files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
-        tempFiles = tempFiles.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
+        const tempFiles = this.state.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
         // Determine available assemblies in visualizable files
         const assemblyList = this.setAssemblyList(this.state.files);
         // Set default tab

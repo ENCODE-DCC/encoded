@@ -105,12 +105,10 @@ class GenomeBrowser extends React.Component {
         const genome = mapGenome(this.props.assembly);
         this.setState({ genome });
         const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome);
-            resolve('success!');
+            this.setBrowserDefaults(genome, resolve);
         });
-        // Extract only bigWig and bigBed files from the list:
-        let tempFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
-        tempFiles = tempFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+        // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
+        const tempFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
         // Set default ordering of tracks to be first by replicate then by output_type
         // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
         // Multiplication by 1000 orders the replicates with a single replicate at the end (there is probably a better way to do this?)
@@ -200,8 +198,7 @@ class GenomeBrowser extends React.Component {
             const genome = mapGenome(this.props.assembly);
             this.setState({ genome });
             const genomePromise = new Promise((resolve) => {
-                this.setBrowserDefaults(genome);
-                resolve('success!');
+                this.setBrowserDefaults(genome, resolve);
             });
             genomePromise.then(() => {
                 let newFiles = [];
@@ -288,7 +285,7 @@ class GenomeBrowser extends React.Component {
         }
     }
 
-    setBrowserDefaults(assembly) {
+    setBrowserDefaults(assembly, resolve) {
         // Files to be displayed on all genome browser results
         let pinnedFiles = [];
         let contig = null;
@@ -412,6 +409,7 @@ class GenomeBrowser extends React.Component {
             if (this.state.visualizer) {
                 this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
             }
+            resolve('success!');
         });
     }
 
