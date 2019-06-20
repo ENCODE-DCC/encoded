@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from './fetched';
 import AutocompleteBox from './region_search';
-import { arraysUnequal } from './objectutils';
 
 const domainName = 'https://www.encodeproject.org';
 
@@ -77,10 +76,11 @@ function mapGenome(inputAssembly) {
 }
 
 class GenomeBrowser extends React.Component {
-    constructor() {
-        super();
+    constructor(props, context) {
+        super(props, context);
 
         this.state = {
+            width: 592,
             trackList: [],
             visualizer: null,
             showAutoSuggest: true,
@@ -104,13 +104,12 @@ class GenomeBrowser extends React.Component {
         const genome = mapGenome(this.props.assembly);
         this.setState({ genome });
         const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome, resolve);
+            this.setBrowserDefaults(genome);
+            resolve('success!');
         });
-        // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
-        const tempFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
-        // Set default ordering of tracks to be first by replicate then by output_type
-        // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
-        // Multiplication by 1000 orders the replicates with a single replicate at the end (there is probably a better way to do this?)
+        // Extract only bigWig and bigBed files from the list:
+        let tempFiles = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        tempFiles = tempFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         let files = _.chain(tempFiles)
             .sortBy(obj => obj.output_type)
             .sortBy((obj) => {
@@ -124,46 +123,7 @@ class GenomeBrowser extends React.Component {
         let domain = `${window.location.protocol}//${window.location.hostname}`;
         if (domain.includes('localhost')) {
             domain = domainName;
-<<<<<<< HEAD
-        }
-        files.forEach((file) => {
-            const trackLabels = this.makeTrackLabel(file);
-            if (file.file_format === 'bigWig') {
-                this.browserFiles.push({
-                    name: trackLabels.shortLabel,
-                    desc: trackLabels.longLabel,
-                    bwgURI: `${domain}${file.href}`,
-                    style: [
-                        {
-                            type: 'default',
-                            style: {
-                                glyph: 'HISTOGRAM',
-                                HEIGHT: 30,
-                                BGCOLOR: 'rgb(166,71,71)',
-                            },
-                        },
-                    ],
-                });
-            } else if (file.file_format === 'bigBed') {
-                this.browserFiles.push({
-                    name: trackLabels.shortLabel,
-                    desc: trackLabels.longLabel,
-                    bwgURI: `${domain}${file.href}`,
-                    style: [
-                        {
-                            style: {
-                                HEIGHT: 10,
-                            },
-                        },
-                    ],
-                });
-            }
-        });
-        if (this.browserFiles.length > 0) {
-            browserCfg.sources = browserCfg.sources.concat(this.browserFiles);
-=======
             files = dummyFiles;
->>>>>>> ENCD-4426 integrate Valis browser
         }
 
         // we need to make sure that we have the 'pinnedFiles' before we try to convert the files to tracks and chart them
@@ -171,27 +131,24 @@ class GenomeBrowser extends React.Component {
             files = [...this.state.pinnedFiles, ...files];
             const tracks = this.filesToTracks(files, domain);
             this.setState({ trackList: tracks }, () => {
-                this.drawTracks(this.chartdisplay);
+                if (this.chartdisplay) {
+                    this.setState({
+                        width: this.chartdisplay.clientWidth,
+                    }, () => {
+                        this.drawTracks(this.chartdisplay);
+                    });
+                }
             });
         });
     }
 
-<<<<<<< HEAD
-    componentDidUpdate() {
-        // Remove old tiers
-        if (this.browser && this.browserFiles && this.browserFiles.length > 0) {
-            this.browserFiles.forEach((fileSource) => {
-                this.browser.removeTier({
-                    name: fileSource.name,
-                    desc: fileSource.desc,
-                    bwgURI: fileSource.bwgURI,
-=======
     componentDidUpdate(prevProps) {
         if (this.props.assembly !== prevProps.assembly) {
             const genome = mapGenome(this.props.assembly);
             this.setState({ genome });
             const genomePromise = new Promise((resolve) => {
-                this.setBrowserDefaults(genome, resolve);
+                this.setBrowserDefaults(genome);
+                resolve('success!');
             });
             genomePromise.then(() => {
                 let newFiles = [];
@@ -201,7 +158,7 @@ class GenomeBrowser extends React.Component {
                     newFiles = [...this.state.pinnedFiles, ...dummyFiles];
                 } else {
                     let propsFiles = this.props.files;
-                    propsFiles = propsFiles.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
+                    propsFiles = propsFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
                     propsFiles = propsFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
                     const files = _.chain(propsFiles)
                         .sortBy(obj => obj.output_type)
@@ -217,36 +174,34 @@ class GenomeBrowser extends React.Component {
                 const tracks = this.filesToTracks(newFiles, domain);
                 this.setState({ trackList: tracks }, () => {
                     if (this.chartdisplay) {
-                        this.drawTracks(this.chartdisplay);
+                        this.setState({
+                            width: this.chartdisplay.clientWidth,
+                        }, () => {
+                            this.drawTracks(this.chartdisplay);
+                        });
                     } else {
                         console.log('there is no this.chartdisplay');
                     }
->>>>>>> ENCD-4426 integrate Valis browser
                 });
             });
             // now we need to clear the gene search
             this.setState({ searchTerm: '' });
         }
 
-<<<<<<< HEAD
-        const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
-        if (this.browser && files && files.length > 0) {
-=======
         // If the parent container changed size, we need to update the browser width
         if (this.props.expanded !== prevProps.expanded) {
             setTimeout(this.drawTracksResized, 1000);
         }
 
-        if (arraysUnequal(this.props.files, prevProps.files)) {
+        if (this.props.files !== prevProps.files) {
             let newFiles = [];
->>>>>>> ENCD-4426 integrate Valis browser
             let domain = `${window.location.protocol}//${window.location.hostname}`;
             if (domain.includes('localhost')) {
                 domain = domainName;
                 newFiles = [...this.state.pinnedFiles, ...dummyFiles];
             } else {
                 let propsFiles = this.props.files;
-                propsFiles = propsFiles.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
+                propsFiles = propsFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
                 propsFiles = propsFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
                 const files = _.chain(propsFiles)
                     .sortBy(obj => obj.output_type)
@@ -261,12 +216,20 @@ class GenomeBrowser extends React.Component {
             }
             const tracks = this.filesToTracks(newFiles, domain);
             this.setState({ trackList: tracks }, () => {
-                this.drawTracks(this.chartdisplay);
+                if (this.chartdisplay) {
+                    this.setState({
+                        width: this.chartdisplay.clientWidth,
+                    }, () => {
+                        this.drawTracks(this.chartdisplay);
+                    });
+                } else {
+                    console.log('there is no this.chartdisplay');
+                }
             });
         }
     }
 
-    setBrowserDefaults(assembly, resolve) {
+    setBrowserDefaults(assembly) {
         // Files to be displayed on all genome browser results
         let pinnedFiles = [];
         let contig = null;
@@ -276,11 +239,9 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/Homo_sapiens.GRCh38.96.vgenes-dir',
-                },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
                 },
             ];
             contig = 'chr1';
@@ -290,11 +251,9 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/Homo_sapiens.GRCh38.96.vgenes-dir',
-                },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vdna-dir',
                 },
             ];
             contig = 'chr21';
@@ -304,11 +263,9 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/Mus_musculus.GRCm38.96.vgenes-dir',
-                },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vdna-dir',
                 },
             ];
             contig = 'chr12';
@@ -318,6 +275,8 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/Mus_musculus.GRCm38.96.vgenes-dir',
                 },
             ];
@@ -328,11 +287,9 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
-                },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/dm6.vdna-dir',
                 },
             ];
             contig = 'chr2L';
@@ -342,12 +299,11 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
                 },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
-                },
+
             ];
             contig = 'chr2L';
             x0 = 826001;
@@ -356,11 +312,9 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir.vgenes-dir',
-                },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/ce11.vdna-dir',
                 },
             ];
             contig = 'chrII';
@@ -370,11 +324,9 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
+                    output_type: 'annotation',
+                    compact: true,
                     href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir.vgenes-dir',
-                },
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
                 },
             ];
             contig = 'chrII';
@@ -390,29 +342,18 @@ class GenomeBrowser extends React.Component {
             if (this.state.visualizer) {
                 this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
             }
-            resolve('success!');
         });
     }
 
     filesToTracks(files, domain) {
         const tracks = files.map((file) => {
-            // Genome files (FASTA files converted into vdna-dir files - special Valis formatted files in a directory)
-            if (file.file_format === 'vdna-dir') {
+            if (file.name) {
                 const trackObj = {};
-                trackObj.name = 'Genome';
-                trackObj.type = 'sequence';
+                trackObj.name = file.name;
+                trackObj.type = 'signal';
                 trackObj.path = file.href;
-                trackObj.heightPx = 40;
+                trackObj.heightPx = 80;
                 return trackObj;
-            // Gene structure files (GENCODE files converted into vgenes-dir files - special Valis formatted files in a directory)
-            } else if (file.file_format === 'vgenes-dir') {
-                const trackObj = {};
-                trackObj.name = `${this.props.annotation ? `${this.props.assembly} ${this.props.annotation}` : `${this.props.assembly}`}`;
-                trackObj.type = 'annotation';
-                trackObj.path = file.href;
-                trackObj.heightPx = 120;
-                return trackObj;
-            // bigWig signal
             } else if (file.file_format === 'bigWig') {
                 const trackObj = {};
                 trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
@@ -420,13 +361,25 @@ class GenomeBrowser extends React.Component {
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = 80;
                 return trackObj;
+            } else if (file.file_format === 'vdna-dir') {
+                const trackObj = {};
+                trackObj.name = 'Genome';
+                trackObj.type = 'sequence';
+                trackObj.path = file.href;
+                trackObj.heightPx = 40;
+                return trackObj;
+            } else if (file.file_format === 'vgenes-dir') {
+                const trackObj = {};
+                trackObj.name = `${this.props.annotation ? `${this.props.assembly} ${this.props.annotation}` : `${this.props.assembly}`}`;
+                trackObj.type = 'annotation';
+                trackObj.path = file.href;
+                trackObj.heightPx = 120;
+                return trackObj;
             }
-            // bigBed annotations
             const trackObj = {};
             trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            // bigBed bedRNAElements have two tracks and need extra height
             if (file.file_format === 'bigBed bedRNAElements') {
                 trackObj.heightPx = 120;
             } else {
@@ -439,6 +392,7 @@ class GenomeBrowser extends React.Component {
 
     drawTracksResized() {
         if (this.chartdisplay) {
+            this.setState({ width: this.chartdisplay.clientWidth });
             this.state.visualizer.render({
                 width: this.chartdisplay.clientWidth,
                 height: this.state.visualizer.getContentHeight(),
@@ -457,7 +411,7 @@ class GenomeBrowser extends React.Component {
         });
         this.setState({ visualizer });
         visualizer.render({
-            width: this.chartdisplay.clientWidth,
+            width: this.state.width,
             height: visualizer.getContentHeight(),
         }, container);
         visualizer.addEventListener('track-resize', this.drawTracksResized);
@@ -477,14 +431,19 @@ class GenomeBrowser extends React.Component {
         inputNode.value = term;
         newTerms[name] = id;
         this.setState({
+            // terms: newTerms,
             showAutoSuggest: false,
             searchTerm: term,
         });
         inputNode.focus();
+        // Now let the timer update the terms state when it gets around to it.
     }
 
     handleOnFocus() {
         this.setState({ showAutoSuggest: false });
+        console.log(this.props.assembly);
+        console.log(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`);
+
         getCoordinateData(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`, this.context.fetch).then((response) => {
             const responseJson = JSON.parse(response);
             let contig = '';
@@ -492,14 +451,15 @@ class GenomeBrowser extends React.Component {
             let xEnd = '';
             responseJson['@graph'].forEach((responseLine) => {
                 if (responseLine.text === this.state.searchTerm) {
+                    console.log('Found search term');
                     responseLine._source.annotations.forEach((annotation) => {
                         if (annotation.assembly_name === this.state.genome) {
+                            console.log('Found assembly matching genome');
+                            console.log(annotation);
                             const annotationLength = annotation.end - annotation.start;
                             contig = `chr${annotation.chromosome}`;
                             xStart = annotation.start - (annotationLength / 2);
                             xEnd = annotation.end + (annotationLength / 2);
-                            const printStatement = `Success: found gene location for ${this.state.searchTerm}`;
-                            console.log(printStatement);
                         }
                     });
                 }
