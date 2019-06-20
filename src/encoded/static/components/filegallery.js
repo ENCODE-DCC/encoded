@@ -1813,10 +1813,12 @@ const FileFacet = (props) => {
                         <div className="facet-term__text">
                             <span>{item}</span>
                         </div>
-                        { (facetObject[item] > 0) ?
-                            <div className="facet-term__count">{facetObject[item]}</div>
+                        { (facetTitle !== 'Assembly') ?
+                            <div>
+                                <div className="facet-term__count">{facetObject[item]}</div>
+                                <div className="facet-term__bar" style={{ width: `${Math.ceil((facetObject[item] / objSum) * 100)}%` }} />
+                            </div>
                         : null}
-                        <div className="facet-term__bar" style={{ width: `${Math.ceil((facetObject[item] / objSum) * 100)}%` }} />
                     </div>
                 </button>
             )}
@@ -1962,7 +1964,7 @@ const TabPanelFacets = (props) => {
     }
 
     // Initialize objects for facets
-    const assembly = { 'All assemblies': 0 };
+    const assembly = { 'All assemblies': 100 };
     let fileType = {};
     let outputType = {};
     let replicate = {};
@@ -1971,7 +1973,7 @@ const TabPanelFacets = (props) => {
     // We do not count how many results there are for a given assembly because we will not display the bars
     fileList.forEach((file) => {
         if (!assembly[file.assembly] && file.assembly) {
-            assembly[file.assembly] = 0;
+            assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
         }
     });
 
@@ -2126,7 +2128,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     setAssemblyList(allFiles) {
-        const assembly = { 'All assemblies': 0 };
+        const assembly = { 'All assemblies': 100 };
         let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         if (this.state.currentTab === 'browser') {
             fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
@@ -2136,13 +2138,18 @@ class FileGalleryRendererComponent extends React.Component {
         }
         fileList.forEach((file) => {
             if (!assembly[file.assembly] && file.assembly) {
-                assembly[file.assembly] = 0;
+                assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
             }
         });
+        // this.setState({ assemblyList: assembly }, () => {
+        //     return assembly;
+        // });
         if (this.state.assemblyList !== assembly) {
             this.setState({ assemblyList: assembly });
+            console.log(assembly);
             return assembly;
         }
+        console.log(this.state.assemblyList);
         return this.state.assemblyList;
     }
 
@@ -2250,20 +2257,24 @@ class FileGalleryRendererComponent extends React.Component {
             }
 
             if (!(_.isEqual(allFiles, this.state.allFiles))) {
+                console.log('all files do not match');
                 this.setState({ allFiles });
                 this.setAssemblyList(this.state.allFiles);
             }
 
             if (!(_.isEqual(filesFilteredByAssembly, this.state.filesFilteredByAssembly))) {
+                console.log('files filtered by assembly do not match');
                 this.setState({ filesFilteredByAssembly });
                 this.setAssemblyList(this.state.allFiles);
             }
 
             if (!(_.isEqual(graphFiles, this.state.graphFiles))) {
+                console.log('graph files do not match');
                 this.setState({ graphFiles });
             }
 
             if (!(_.isEqual(filteredFiles, this.state.files))) {
+                console.log('filtered files do not match');
                 this.setState({ files: filteredFiles });
             }
         });
@@ -2409,7 +2420,9 @@ class FileGalleryRendererComponent extends React.Component {
             if (tab === 'tables') {
                 this.filterFiles('All assemblies', 'assembly');
             } else if (tab === 'browser' || tab === 'graph') {
-                this.filterFiles(Object.keys(this.state.assemblyList)[1], 'assembly');
+                // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                const newAssembly = Object.keys(this.state.assemblyList).reduce((a, b) => (((this.state.assemblyList[a] > this.state.assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                this.filterFiles(newAssembly, 'assembly');
             }
         }
     }
