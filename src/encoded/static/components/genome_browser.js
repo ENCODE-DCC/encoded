@@ -529,7 +529,6 @@ class GenomeBrowser extends React.Component {
     }
 
     makeTrackLabel(file) {
-        console.log('FILE %o', file);
         const datasetAccession = file.dataset.split('/')[2];
         // Unreleased files are not in visBlob so get default labels
         const trackLabels = {
