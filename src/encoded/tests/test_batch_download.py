@@ -193,20 +193,21 @@ def test__excluded_columns_value():
 @mock.patch('encoded.batch_download._tsv_mapping')
 @mock.patch('encoded.batch_download.simple_path_ids')
 def test_make_cell_for_vanilla_assignment(simple_path_ids, tsv_mapping):
-    expected = ['a1, a2']
+    expected = ['a1', 'a2']
     simple_path_ids.return_value = ['a1', 'a2']
     tsv_mapping_data = {'file1': ['f1']}
     tsv_mapping.__getitem__.side_effect = tsv_mapping_data.__getitem__
     tsv_mapping.__iter__.side_effect = tsv_mapping_data.__iter__
     target = []
     make_cell('file1', [], target)
+    target = sorted([t.strip() for t in target[0].split(',')])
     assert expected == target
 
 
 @mock.patch('encoded.batch_download._tsv_mapping')
 @mock.patch('encoded.batch_download.simple_path_ids')
 def test_make_cell_for_post_sychronization(simple_path_ids, tsv_mapping):
-    expected = ['a1 + a1, a2']
+    expected = ['a1 + a1', 'a2']
     simple_path_ids.return_value = ['a1', 'a2']
     tsv_mapping_data = {'file1': [
         'f1',
@@ -216,6 +217,7 @@ def test_make_cell_for_post_sychronization(simple_path_ids, tsv_mapping):
     tsv_mapping.__iter__.side_effect = tsv_mapping_data.__iter__
     target = []
     make_cell('file1', [], target)
+    target = sorted([t.strip() for t in target[0].split(',')])
     assert expected == target
 
 
@@ -432,21 +434,22 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
 ])
 def test_batch_download_files(testapp, workbook, test_url, expected):
     response = testapp.get(test_url)
-    assert response.body.decode('utf-8') == expected
+    target = response.body.decode('utf-8')
+    assert sorted(target) == sorted(expected)
 
 
-@pytest.mark.parametrize('test_url, expected_row_1, expected_row_n', [
-    ('/metadata/type=Experiment&format=json/metadata.tsv', 'ENCFF002MWZ\tbam\talignments\tENCSR001ADI\tChIP-seq\tEFO:0005233\tCH12.LX cell\tcell line\tMus musculus\t\t\t\t\t\t\t\t\t\tH3K4me3-mouse\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t1\t1\t\t\t\t\t\t\t20\tJ. Michael Cherry, Stanford\t91ae74b6e11515393507f4ebfa66d78d\t\thttp://localhost/files/ENCFF002MWZ/@@download/ENCFF002MWZ.bam\tmm9\t\tIllumina Genome Analyzer II\t\treleased\t\tinconsistent platforms\tmismatched file status, mismatched status, missing derived_from\tinconsistent sex\tinconsistent donor, missing antibody', 'ENCFF000LAZ\tcsfasta\treads\tENCSR751YPU\tDNase-seq\tUBERON:0001891\tmidbrain\ttissue\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2015-08-31\tRoadmap\t\t\t\t1\t1\t25\t\tpaired-ended\t2\tENCFF000LBA\t\t2314662239\tMichael Snyder, Stanford\t20125f316dafa4daed390afae59e7bb2\t\thttp://localhost/files/ENCFF000LAZ/@@download/ENCFF000LAZ.csfasta.gz\t\t\tApplied Biosystems SOLiD System 3 Plus\t\treleased\t\t\tmismatched status, experiment not submitted to GEO\tmissing documents, unreplicated experiment',),
-    ('/metadata/type=Experiment&biosample_ontology.term_name!=basal cell of epithelium of terminal bronchiole&format=json/metadata.tsv', 'ENCFF002MWZ\tbam\talignments\tENCSR001ADI\tChIP-seq\tEFO:0005233\tCH12.LX cell\tcell line\tMus musculus\t\t\t\t\t\t\t\t\t\tH3K4me3-mouse\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t1\t1\t\t\t\t\t\t\t20\tJ. Michael Cherry, Stanford\t91ae74b6e11515393507f4ebfa66d78d\t\thttp://localhost/files/ENCFF002MWZ/@@download/ENCFF002MWZ.bam\tmm9\t\tIllumina Genome Analyzer II\t\treleased\t\tinconsistent platforms\tmismatched status, missing derived_from, mismatched file status\tinconsistent sex\tinconsistent donor, missing antibody', 'ENCFF000LAZ\tcsfasta\treads\tENCSR751YPU\tDNase-seq\tUBERON:0001891\tmidbrain\ttissue\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2015-08-31\tRoadmap\t\t\t\t1\t1\t25\t\tpaired-ended\t2\tENCFF000LBA\t\t2314662239\tMichael Snyder, Stanford\t20125f316dafa4daed390afae59e7bb2\t\thttp://localhost/files/ENCFF000LAZ/@@download/ENCFF000LAZ.csfasta.gz\t\t\tApplied Biosystems SOLiD System 3 Plus\t\treleased\t\t\tmismatched status, experiment not submitted to GEO\tmissing documents, unreplicated experiment',),
-    ('/metadata/type=Experiment&assembly=hg19&assembly=GRCh38&format=json/metadata.tsv', 'ENCFF946MFS\ttsv\tgene quantifications\tENCSR000AEM\tRNA-seq\tEFO:0002067\tK562\tcell line\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tpolyadenylated mRNA\t\tmiRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)\tmiRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)\t\tTrue\t2016-01-01\tENCODE\t\t\t\t2\t1\t\t\t\t\t\t\t9528125\tJ. Michael Cherry, Stanford\tb6bda8755cea56d4741fc027442d370a\t\thttp://localhost/files/ENCFF946MFS/@@download/ENCFF946MFS.tsv\thg19\tV19\t\t\treleased\t\tmissing analysis_step_run\texperiment not submitted to GEO, missing derived_from, mismatched status, missing RIN, mismatched file status\tmissing spikeins\t', 'ENCFF008EPI\tbam\talignments\tENCSR006EPI\tChIP-seq\tEFO:0002067\tK562\tcell line\tHomo sapiens\tdexamethasone\t60 nM\t8 hour\t\t\t\t\t\t\tH3K36me3-human\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t\t\t\t\t\t\t\t\t473944988\tRobert Waterston, UW\t91be44b6e11514393507f4ebfa66d54a\t\thttp://localhost/files/ENCFF008EPI/@@download/ENCFF008EPI.bam\thg19\t\t\t\treleased\t\t\tmissing raw data in replicate, mismatched status, missing derived_from, experiment not submitted to GEO, characterization(s) pending review\tmissing possible_controls\tinconsistent target',),
-    ('/metadata/type=Annotation&organism.scientific_name%21=Homo+sapiens&organism.scientific_name=Mus+musculus&format=json/metadata.tsv', 'ENCFF015OKV\tbed enhancer predictions\tpredicted heart enhancers\tENCSR356VQT\tlong-range chromatin interactions\tSamtools, Picard\t2\tUBERON:0000948\theart\ttissue\tembryonic\t11.5\tday\tMus musculus\t\t2015-02-27\tENCODE\tJ. Michael Cherry, Stanford\ta5f849c78025c80dca58771492c97318\t\thttp://localhost/files/ENCFF015OKV/@@download/ENCFF015OKV.bed.gz\tmm10\t\treleased\t\t\t1544154147\tmissing analysis_step_run\tmismatched status, missing derived_from', 'ENCFF015OKV\tbed enhancer predictions\tpredicted heart enhancers\tENCSR356VQT\tlong-range chromatin interactions\tSamtools, Picard\t2\tUBERON:0000948\theart\ttissue\tembryonic\t11.5\tday\tMus musculus\t\t2015-02-27\tENCODE\tJ. Michael Cherry, Stanford\ta5f849c78025c80dca58771492c97318\t\thttp://localhost/files/ENCFF015OKV/@@download/ENCFF015OKV.bed.gz\tmm10\t\treleased\t\t\t1544154147\tmissing analysis_step_run\tmismatched status, missing derived_from',),
+@pytest.mark.parametrize('test_url, expected_row_0, expected_row_n', [
+    ('/metadata/type=Experiment&format=json/metadata.tsv', 'ENCFF000DAT\tidat\treporter code counts\tENCSR000AAL\tRNA-seq\tEFO:0002067\tK562\tcell line\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t2\t1\t\t\t\t\t\t\t37300\tMichael Snyder, Stanford\t4b7283c78f5c553a72174f850468b688\t\thttp://localhost/files/ENCFF000DAT/@@download/ENCFF000DAT.idat\t\t\tApplied Biosystems SOLiD System 3 Plus\t\treleased\t\t\tmismatched status, experiment not submitted to GEO, biological replicates with identical biosample\tmissing documents\tinconsistent library biosample', 'SRR1270627\tsra\treads\tENCSR765JPC\twhole-genome shotgun bisulfite sequencing\tEFO:0002067\tK562\tcell line\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t1\t1\t36\t\tsingle-ended\t\t\t\t1247813024\tRichard Myers, HAIB\tb52abba2d1e08ea93c527e38aff96e11\tSRA:SRR1270627\thttp://localhost/files/SRR1270627/@@download/SRR1270627.sra\t\t\tIllumina Genome Analyzer IIx\t\treleased\t\t\tmismatched status, mismatched file status, experiment not submitted to GEO\tunreplicated experiment, missing documents, insufficient read length\t',),
+    ('/metadata/type=Experiment&biosample_ontology.term_name!=basal cell of epithelium of terminal bronchiole&format=json/metadata.tsv', 'ENCFF000DAT\tidat\treporter code counts\tENCSR000AAL\tRNA-seq\tEFO:0002067\tK562\tcell line\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t2\t1\t\t\t\t\t\t\t37300\tMichael Snyder, Stanford\t4b7283c78f5c553a72174f850468b688\t\thttp://localhost/files/ENCFF000DAT/@@download/ENCFF000DAT.idat\t\t\tApplied Biosystems SOLiD System 3 Plus\t\treleased\t\t\tmismatched status, experiment not submitted to GEO, biological replicates with identical biosample\tmissing documents\tinconsistent library biosample', 'SRR1270627\tsra\treads\tENCSR765JPC\twhole-genome shotgun bisulfite sequencing\tEFO:0002067\tK562\tcell line\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t1\t1\t36\t\tsingle-ended\t\t\t\t1247813024\tRichard Myers, HAIB\tb52abba2d1e08ea93c527e38aff96e11\tSRA:SRR1270627\thttp://localhost/files/SRR1270627/@@download/SRR1270627.sra\t\t\tIllumina Genome Analyzer IIx\t\treleased\t\t\tmismatched status, mismatched file status, experiment not submitted to GEO\tunreplicated experiment, missing documents, insufficient read length\t',),
+    ('/metadata/type=Experiment&assembly=hg19&assembly=GRCh38&format=json/metadata.tsv', 'ENCFF000VUS\tbam\talignments\tENCSR000ACY\tDNA methylation profiling by array assay\tCL:1000350\tbasal cell of epithelium of terminal bronchiole\tprimary cell\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\tQIAGEN DNeasy Blood & Tissue Kit\tQIAGEN DNeasy Blood & Tissue Kit\t\tFalse\t2016-01-01\tENCODE\t\t\t\t2\t1\t\t\t\t\t\t\t473944988\tMichael Snyder, Stanford\t91d0dd9e0df439dd6599914b5275e7b2\t\thttp://localhost/files/ENCFF000VUS/@@download/ENCFF000VUS.bam\thg19\t\t\t\treleased\t\t\tmismatched status, missing derived_from\t\tinconsistent replicate', 'SRR1270627\tsra\treads\tENCSR765JPC\twhole-genome shotgun bisulfite sequencing\tEFO:0002067\tK562\tcell line\tHomo sapiens\t\t\t\t\t\t\t\t\t\t\tDNA\t\t\t\t\tFalse\t2016-01-01\tENCODE\t\t\t\t1\t1\t36\t\tsingle-ended\t\t\t\t1247813024\tRichard Myers, HAIB\tb52abba2d1e08ea93c527e38aff96e11\tSRA:SRR1270627\thttp://localhost/files/SRR1270627/@@download/SRR1270627.sra\t\t\tIllumina Genome Analyzer IIx\t\treleased\t\t\tmismatched status, mismatched file status, experiment not submitted to GEO\tunreplicated experiment, missing documents, insufficient read length\t',),
+    ('/metadata/type=Annotation&organism.scientific_name%21=Homo+sapiens&organism.scientific_name=Mus+musculus&format=json/metadata.tsv','ENCFF015OKV\tbed enhancer predictions\tpredicted heart enhancers\tENCSR356VQT\tlong-range chromatin interactions\tSamtools, Picard\t2\tUBERON:0000948\theart\ttissue\tembryonic\t11.5\tday\tMus musculus\t\t2015-02-27\tENCODE\tJ. Michael Cherry, Stanford\ta5f849c78025c80dca58771492c97318\t\thttp://localhost/files/ENCFF015OKV/@@download/ENCFF015OKV.bed.gz\tmm10\t\treleased\t\t\t1544154147\tmissing analysis_step_run\tmismatched status, missing derived_from','File accession\tFile format\tOutput type\tDataset accession\tAnnotation type\tSoftware used\tEncyclopedia Version\tBiosample term id\tBiosample term name\tBiosample type\tLife stage\tAge\tAge units\tOrganism\tTargets\tDataset date released\tProject\tLab\tmd5sum\tdbxrefs\tFile download URL\tAssembly\tControlled by\tFile Status\tDerived from\tS3 URL\tSize\tAudit WARNING\tAudit INTERNAL_ACTION\tAudit NOT_COMPLIANT\tAudit ERROR\r',),
 ])
-def test_batch_download_meta_files(testapp, workbook, test_url, expected_row_1, expected_row_n):
+def test_batch_download_meta_files(testapp, workbook, test_url, expected_row_0, expected_row_n):
     # compare only ids, as it is the only essential field
     response = testapp.get(test_url)
-    target = response.body.decode('utf-8').strip().split('\n')
-    # testing only ids (values- 1 - 11)
-    assert expected_row_1[:11] == target[1][:11]
+    target = sorted(response.body.decode('utf-8').strip().split('\n'))
+    # testing only uuids (values- 1 - 11)
+    assert expected_row_0[:11] == target[0][:11]
     assert expected_row_n[:11] == target[-1][:11]
     
 
@@ -469,9 +472,10 @@ def test_report_files_download(testapp, workbook, test_url, expected):
     response = testapp.get(test_url)
     body = response.body.decode('utf-8')
 
+
     if test_url == '/report.tsv?type=User':
         # excluding date that appears in index- 0:26
-        assert body[27:] == expected[27:]
+        assert  sorted([t.strip() for t in body[27:].split('\t')]) == sorted([t.strip() for t in expected[27:].split('\t')])
     else:
         body = json.loads(body)
         assert body == expected
