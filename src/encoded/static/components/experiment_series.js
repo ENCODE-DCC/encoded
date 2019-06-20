@@ -9,7 +9,7 @@ import { FetchedItems } from './fetched';
 import { DatasetFiles } from './filegallery';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { DisplayAsJson, InternalTags, publicDataset } from './objectutils';
+import { DisplayAsJson, InternalTags } from './objectutils';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
@@ -18,14 +18,7 @@ import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 const experimentTableColumns = {
     accession: {
         title: 'Accession',
-        display: (experiment, meta) =>
-            <span>
-                {meta.adminUser || publicDataset(experiment) ?
-                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
-                :
-                    <span>{experiment.accession}</span>
-                }
-            </span>,
+        display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
     },
 
     assay_term_name: {
@@ -94,7 +87,6 @@ const ExperimentSeriesComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
     const viewableStatuses = getObjectStatuses('Dataset', accessLevel, viewableDatasetStatuses);
-    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
 
     // Set up the breadcrumbs.
     const datasetType = context['@type'][1];
@@ -242,7 +234,6 @@ const ExperimentSeriesComponent = (props, reactContext) => {
                             list={experimentList}
                             columns={experimentTableColumns}
                             css="table-experiment-series"
-                            meta={{ adminUser }}
                             footer="Use cart to download files"
                         />
                     </SortTablePanel>
