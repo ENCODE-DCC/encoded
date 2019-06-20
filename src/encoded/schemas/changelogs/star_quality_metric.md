@@ -1,5 +1,9 @@
 ## Changelog for star_quality_metric.json
 
+### Minor changes since schema version 7
+
+* Added *% of chimeric reads* and *Number of chimeric reads*
+
 ### Schema version 7
 
 * *status* property was restricted to one of  
