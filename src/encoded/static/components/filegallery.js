@@ -2145,7 +2145,8 @@ class FileGalleryRendererComponent extends React.Component {
                 assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
             }
         });
-        this.setState({ assemblyList: assembly }, () => assembly);
+        this.setState({ assemblyList: assembly });
+        return assembly;
     }
 
     /**
