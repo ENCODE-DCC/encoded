@@ -2145,7 +2145,6 @@ class FileGalleryRendererComponent extends React.Component {
                 assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
             }
         });
-        console.log('updated assembly and assembly list');
         this.setState({ assemblyList: assembly }, () => assembly);
     }
 
@@ -2253,24 +2252,20 @@ class FileGalleryRendererComponent extends React.Component {
             }
 
             if (!(_.isEqual(allFiles, this.state.allFiles))) {
-                console.log('all files do not match');
                 this.setState({ allFiles });
                 this.setAssemblyList(this.state.allFiles);
             }
 
             if (!(_.isEqual(filesFilteredByAssembly, this.state.filesFilteredByAssembly))) {
-                console.log('files filtered by assembly do not match');
                 this.setState({ filesFilteredByAssembly });
                 this.setAssemblyList(this.state.allFiles);
             }
 
             if (!(_.isEqual(graphFiles, this.state.graphFiles))) {
-                console.log('graph files do not match');
                 this.setState({ graphFiles });
             }
 
             if (!(_.isEqual(filteredFiles, this.state.files))) {
-                console.log('filtered files do not match');
                 this.setState({ files: filteredFiles });
             }
         });
