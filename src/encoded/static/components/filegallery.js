@@ -1849,6 +1849,7 @@ function addFilter(filterList, value, facet) {
 }
 
 // Filter an array of objects by checking if the value of a property ('key') matches a given value ('keyValue')
+// Note the 'array' parameter can be mutated
 function filterItems(array, key, keyValue) {
     return array.filter((el) => {
         // Check to see if there are multiple values selected for a facet
@@ -1877,7 +1878,9 @@ function filterItems(array, key, keyValue) {
 }
 
 // Create objects for non-Assembly facets
-function createFacetObject(emptyObject, propertyKey, fileList, filters) {
+function createFacetObject(propertyKey, fileList, filters) {
+    // Initialize facet object
+    const facetObject = {};
     // 'singleFilter' checks to see if there is only one filter selected (Assembly)
     const singleFilter = Object.keys(filters).length === 1;
     // Create list of files that satisfy all filters ('fileListFiltered')
@@ -1897,10 +1900,10 @@ function createFacetObject(emptyObject, propertyKey, fileList, filters) {
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
             }
-            if (emptyObject[property]) {
-                emptyObject[property] += 1;
+            if (facetObject[property]) {
+                facetObject[property] += 1;
             } else {
-                emptyObject[property] = 1;
+                facetObject[property] = 1;
             }
         });
     // If multiple filters are selected, it gets more complicated
@@ -1911,10 +1914,10 @@ function createFacetObject(emptyObject, propertyKey, fileList, filters) {
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
             }
-            if (emptyObject[property]) {
-                emptyObject[property] += 1;
+            if (facetObject[property]) {
+                facetObject[property] += 1;
             } else {
-                emptyObject[property] = 1;
+                facetObject[property] = 1;
             }
         });
         // We also want to display terms that could be added if the user wants to increase the displayed results
@@ -1935,19 +1938,19 @@ function createFacetObject(emptyObject, propertyKey, fileList, filters) {
                 });
                 // If there would be results, add them
                 if (fakeFileList.includes(file)) {
-                    if (emptyObject[property]) {
-                        emptyObject[property] += 1;
+                    if (facetObject[property]) {
+                        facetObject[property] += 1;
                     } else {
-                        emptyObject[property] = 1;
+                        facetObject[property] = 1;
                     }
                 // If there would be no results but this term is a filter, add it
-                } else if (!(emptyObject[property]) && filters[propertyKey] && filters[propertyKey].includes(property)) {
-                    emptyObject[property] = 0;
+                } else if (!(facetObject[property]) && filters[propertyKey] && filters[propertyKey].includes(property)) {
+                    facetObject[property] = 0;
                 }
             }
         });
     }
-    return emptyObject;
+    return facetObject;
 }
 
 const TabPanelFacets = (props) => {
@@ -1963,11 +1966,8 @@ const TabPanelFacets = (props) => {
         fileList = fileList.filter(file => file.file_format !== 'fastq');
     }
 
-    // Initialize objects for facets
+    // Initialize assembly object
     const assembly = { 'All assemblies': 100 };
-    let fileType = {};
-    let outputType = {};
-    let replicate = {};
 
     // Create object for Assembly facet from list of all files
     // We do not count how many results there are for a given assembly because we will not display the bars
@@ -1978,9 +1978,9 @@ const TabPanelFacets = (props) => {
     });
 
     // Create objects for non-Assembly facets
-    fileType = createFacetObject(fileType, 'file_type', fileList, filters);
-    outputType = createFacetObject(outputType, 'output_type', fileList, filters);
-    replicate = createFacetObject(replicate, 'biological_replicates', fileList, filters);
+    const fileType = createFacetObject('file_type', fileList, filters);
+    const outputType = createFacetObject('output_type', fileList, filters);
+    const replicate = createFacetObject('biological_replicates', fileList, filters);
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
