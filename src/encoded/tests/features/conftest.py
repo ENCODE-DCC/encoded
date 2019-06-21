@@ -117,7 +117,7 @@ def submitter_user(browser, base_url, admin_user):
     browser.find_by_css('.btn-primary').first.click()
     browser.find_by_text('Select').first.click()
     browser.find_by_text('Submit').first.click()
-    browser.is_text_present('J. Michael Cherry', wait_time=5)
+    browser.is_text_present('J. Michael Cherry', wait_time=8)
     yield
     browser.visit(base_url + '/logout')
 
