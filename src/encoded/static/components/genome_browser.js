@@ -98,93 +98,20 @@ class GenomeBrowser extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleOnFocus = this.handleOnFocus.bind(this);
+        this.compileFiles = this.compileFiles.bind(this);
+        this.setGenomeAndTracks = this.setGenomeAndTracks.bind(this);
     }
 
     componentDidMount() {
-        const genome = mapGenome(this.props.assembly);
-        this.setState({ genome });
-        const genomePromise = new Promise((resolve) => {
-            this.setBrowserDefaults(genome);
-            resolve('success!');
-        });
-        // Extract only bigWig and bigBed files from the list:
-        let tempFiles = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-        tempFiles = tempFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
-        let files = _.chain(tempFiles)
-            .sortBy(obj => obj.output_type)
-            .sortBy((obj) => {
-                if (obj.biological_replicates.length > 1) {
-                    return +obj.biological_replicates.join('');
-                }
-                return +obj.biological_replicates * 1000;
-            })
-            .value();
-
-        let domain = `${window.location.protocol}//${window.location.hostname}`;
-        if (domain.includes('localhost')) {
-            domain = domainName;
-            files = dummyFiles;
-        }
-
-        // we need to make sure that we have the 'pinnedFiles' before we try to convert the files to tracks and chart them
-        genomePromise.then(() => {
-            files = [...this.state.pinnedFiles, ...files];
-            const tracks = this.filesToTracks(files, domain);
-            this.setState({ trackList: tracks }, () => {
-                if (this.chartdisplay) {
-                    this.setState({
-                        width: this.chartdisplay.clientWidth,
-                    }, () => {
-                        this.drawTracks(this.chartdisplay);
-                    });
-                }
-            });
-        });
+        // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+        this.setGenomeAndTracks();
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.assembly !== prevProps.assembly) {
-            const genome = mapGenome(this.props.assembly);
-            this.setState({ genome });
-            const genomePromise = new Promise((resolve) => {
-                this.setBrowserDefaults(genome);
-                resolve('success!');
-            });
-            genomePromise.then(() => {
-                let newFiles = [];
-                let domain = `${window.location.protocol}//${window.location.hostname}`;
-                if (domain.includes('localhost')) {
-                    domain = domainName;
-                    newFiles = [...this.state.pinnedFiles, ...dummyFiles];
-                } else {
-                    let propsFiles = this.props.files;
-                    propsFiles = propsFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-                    propsFiles = propsFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
-                    const files = _.chain(propsFiles)
-                        .sortBy(obj => obj.output_type)
-                        .sortBy((obj) => {
-                            if (obj.biological_replicates.length > 1) {
-                                return +obj.biological_replicates.join('');
-                            }
-                            return +obj.biological_replicates * 1000;
-                        })
-                        .value();
-                    newFiles = [...this.state.pinnedFiles, ...files];
-                }
-                const tracks = this.filesToTracks(newFiles, domain);
-                this.setState({ trackList: tracks }, () => {
-                    if (this.chartdisplay) {
-                        this.setState({
-                            width: this.chartdisplay.clientWidth,
-                        }, () => {
-                            this.drawTracks(this.chartdisplay);
-                        });
-                    } else {
-                        console.log('there is no this.chartdisplay');
-                    }
-                });
-            });
-            // now we need to clear the gene search
+            // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+            this.setGenomeAndTracks();
+            // Clear the gene search
             this.setState({ searchTerm: '' });
         }
 
@@ -200,9 +127,7 @@ class GenomeBrowser extends React.Component {
                 domain = domainName;
                 newFiles = [...this.state.pinnedFiles, ...dummyFiles];
             } else {
-                let propsFiles = this.props.files;
-                propsFiles = propsFiles.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-                propsFiles = propsFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+                const propsFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
                 const files = _.chain(propsFiles)
                     .sortBy(obj => obj.output_type)
                     .sortBy((obj) => {
@@ -345,6 +270,49 @@ class GenomeBrowser extends React.Component {
         });
     }
 
+    setGenomeAndTracks() {
+        const genome = mapGenome(this.props.assembly);
+        this.setState({ genome });
+        // Determine genome and Gencode pinned files for selected assembly
+        const genomePromise = new Promise((resolve) => {
+            this.setBrowserDefaults(genome, resolve);
+        });
+        // Make sure that we have these pinned files before we convert the files to tracks and chart them
+        genomePromise.then(() => {
+            const domain = `${window.location.protocol}//${window.location.hostname}`;
+            const files = this.compileFiles(domain);
+            const tracks = this.filesToTracks(files, domain);
+            this.setState({ trackList: tracks }, () => {
+                this.drawTracks(this.chartdisplay);
+            });
+        });
+    }
+
+    compileFiles(domain) {
+        let newFiles = [];
+        if (domain.includes('localhost')) {
+            // Locally we will display some default tracks
+            newFiles = [...this.state.pinnedFiles, ...dummyFiles];
+        } else {
+            // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
+            const propsFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
+            // Set default ordering of tracks to be first by replicate then by output_type
+            // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
+            // Multiplication by 1000 orders the replicates with a single replicate at the end
+            const files = _.chain(propsFiles)
+                .sortBy(obj => obj.output_type)
+                .sortBy((obj) => {
+                    if (obj.biological_replicates.length > 1) {
+                        return +obj.biological_replicates.join('');
+                    }
+                    return +obj.biological_replicates * 1000;
+                })
+                .value();
+            newFiles = [...this.state.pinnedFiles, ...files];
+        }
+        return newFiles;
+    }
+
     filesToTracks(files, domain) {
         const tracks = files.map((file) => {
             if (file.name) {
@@ -458,6 +426,7 @@ class GenomeBrowser extends React.Component {
             const contig = `chr${annotation.chromosome}`;
             const xStart = annotation.start - (annotationLength / 2);
             const xEnd = annotation.end + (annotationLength / 2);
+            console.log(annotation);
             const printStatement = `Success: found gene location for ${this.state.searchTerm}`;
             console.log(printStatement);
 
