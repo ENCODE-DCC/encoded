@@ -445,28 +445,22 @@ class GenomeBrowser extends React.Component {
         console.log(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`);
 
         getCoordinateData(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`, this.context.fetch).then((response) => {
-            let contig = '';
-            let xStart = '';
-            let xEnd = '';
-            console.log('trying a weird thing here');
-            console.log(response);
-            console.log(response['@graph'].findIndex(resp => resp.text === this.state.searchTerm));
-            console.log('end');
-            response['@graph'].forEach((responseLine) => {
-                if (responseLine.text === this.state.searchTerm) {
-                    console.log('Found search term');
-                    responseLine._source.annotations.forEach((annotation) => {
-                        if (annotation.assembly_name === this.state.genome) {
-                            console.log('Found assembly matching genome');
-                            console.log(annotation);
-                            const annotationLength = annotation.end - annotation.start;
-                            contig = `chr${annotation.chromosome}`;
-                            xStart = annotation.start - (annotationLength / 2);
-                            xEnd = annotation.end + (annotationLength / 2);
-                        }
-                    });
-                }
-            });
+            // Find the response line that matches the search
+            const responseIndex = response['@graph'].findIndex(responseLine => responseLine.text === this.state.searchTerm);
+
+            // Find the annotation line that matches the genome selected in the fake facets
+            const annotations = response['@graph'][responseIndex]._source.annotations;
+            const annotationIndex = annotations.findIndex(annotation => annotation.assembly_name === this.state.genome);
+            const annotation = annotations[annotationIndex];
+
+            // Compute gene location information from the annotation
+            const annotationLength = annotation.end - annotation.start;
+            const contig = `chr${annotation.chromosome}`;
+            const xStart = annotation.start - (annotationLength / 2);
+            const xEnd = annotation.end + (annotationLength / 2);
+            const printStatement = `Success: found gene location for ${this.state.searchTerm}`;
+            console.log(printStatement);
+
             if (contig !== '') {
                 this.state.visualizer.setLocation({
                     contig,
