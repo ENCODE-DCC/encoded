@@ -110,7 +110,6 @@ class GenomeBrowser extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.contig !== prevState.contig) {
             if (this.state.visualizer) {
-                console.log('WE GOT HERE MAYBE THIS WORKS');
                 this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
             }
         }
@@ -271,9 +270,7 @@ class GenomeBrowser extends React.Component {
             x1,
             pinnedFiles,
         }, () => {
-            if (this.state.visualizer) {
-                this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
-            }
+            resolve('success!');
         });
     }
 
