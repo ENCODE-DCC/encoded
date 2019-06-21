@@ -107,7 +107,14 @@ class GenomeBrowser extends React.Component {
         this.setGenomeAndTracks();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.contig !== prevState.contig) {
+            if (this.state.visualizer) {
+                console.log('WE GOT HERE MAYBE THIS WORKS');
+                this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
+            }
+        }
+
         if (this.props.assembly !== prevProps.assembly) {
             // Determine pinned files based on genome, filter and sort files, compute and draw tracks
             this.setGenomeAndTracks();
