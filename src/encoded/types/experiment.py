@@ -340,12 +340,17 @@ class Experiment(Dataset,
                         else:
                             continue
                         break
-            elif preferred_name == 'ChIP-seq' and target is not None:
-                target_object = request.embed(target,'@@object')
-                target_categories = target_object['investigated_as']
-                if 'histone' in target_categories:
-                    preferred_name = 'Histone ChIP-seq'
-                elif 'control' in target_categories:
+            elif preferred_name == 'ChIP-seq':
+                if target is not None:
+                    target_object = request.embed(target,'@@object')
+                    target_categories = target_object['investigated_as']
+                    if 'histone' in target_categories:
+                        preferred_name = 'Histone ChIP-seq'
+                    elif 'control' in target_categories:
+                        preferred_name = 'Control ChIP-seq'
+                    else:
+                        preferred_name = 'TF ChIP-seq'
+                else:
                     preferred_name = 'Control ChIP-seq'
             return preferred_name or assay_term_name
         return assay_term_name
