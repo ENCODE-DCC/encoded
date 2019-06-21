@@ -2052,18 +2052,7 @@ class FileGalleryRendererComponent extends React.Component {
             currentTab: 'browser',
             /** Possible assemblies */
             assemblyList: [],
-            /** For drop down to external browsers */
-            selectedBrowserAssembly: null,
-            selectedBrowserAnnotation: null,
-            browsers: [],
         };
-
-        const { selectedBrowserAssembly, selectedBrowserAnnotation } = this.getSelectedAssemblyAnnotation();
-        this.state.selectedBrowserAssembly = selectedBrowserAssembly;
-        this.state.selectedBrowserAnnotation = selectedBrowserAnnotation;
-
-        const browsers = this.getAvailableBrowsers();
-        this.state.browsers = browsers;
 
         /** Used to see if related_files has been updated */
         this.prevRelatedFiles = [];
@@ -2177,9 +2166,6 @@ class FileGalleryRendererComponent extends React.Component {
      */
     getAvailableBrowsers(filterValue) {
         const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation(filterValue);
-        if (this.state.selectedBrowserAssembly !== selectedBrowserAssembly) {
-            this.setState({ selectedBrowserAssembly });
-        }
         if (selectedBrowserAssembly && this.props.context.visualize && this.props.context.visualize[selectedBrowserAssembly]) {
             return visSortBrowsers(this.props.context.visualize[selectedBrowserAssembly]);
         }
@@ -2200,7 +2186,6 @@ class FileGalleryRendererComponent extends React.Component {
             // Current browser not available for new assembly/annotation. Set the current browser
             // to the first available.
             this.setState({
-                browsers,
                 currentBrowser: browsers[0],
                 selectedBrowserFiles: visFilterBrowserFiles(files, browsers[0], true),
             });
@@ -2339,9 +2324,6 @@ class FileGalleryRendererComponent extends React.Component {
      */
     handleVisualize() {
         const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation();
-        if (selectedBrowserAssembly !== this.state.selectedBrowserAssembly) {
-            this.setState({ selectedBrowserAssembly });
-        }
         visOpenBrowser(this.props.context, this.state.currentBrowser, selectedBrowserAssembly, this.state.selectedBrowserFiles, this.context.location_href);
     }
 
