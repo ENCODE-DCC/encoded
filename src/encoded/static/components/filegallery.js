@@ -2392,11 +2392,16 @@ class FileGalleryRendererComponent extends React.Component {
         if (tab !== this.state.currentTab) {
             this.setState({ currentTab: tab });
             if (tab === 'tables') {
+                // Always set the table assembly to be 'All assemblies'
                 this.filterFiles('All assemblies', 'assembly');
             } else if (tab === 'browser' || tab === 'graph') {
-                // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                const newAssembly = Object.keys(this.state.assemblyList).reduce((a, b) => (((this.state.assemblyList[a] > this.state.assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                this.filterFiles(newAssembly, 'assembly');
+                // Reset assembly filter if it is 'All assemblies' because assembly is required for browser / graph
+                // Do not reset if a particular assembly has already been chosen
+                if (this.state.fileFilters.assembly[0] === 'All assemblies') {
+                    // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                    const newAssembly = Object.keys(this.state.assemblyList).reduce((a, b) => (((this.state.assemblyList[a] > this.state.assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                    this.filterFiles(newAssembly, 'assembly');
+                }
             }
         }
     }
