@@ -1805,7 +1805,7 @@ const FileFacet = (props) => {
                 <h5>{facetTitle}</h5>
             : null}
             {sortedKeys.map(item =>
-                <button className={`facet-term-${item.replace(/\s/g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} onKeyDown={() => filterFiles(item, facetKey)} key={item}>
+                <button className={`facet-term-${item.replace(/\s/g, '')}-${currentTab} facet-term${selectedObj[item] ? ' selected' : ''}`} onClick={() => filterFiles(item, facetKey)} key={item}>
                     {facetTitle === 'Assembly' ?
                         <i className={`${selectedObj[item] ? 'icon icon-circle' : 'icon icon-circle-o'}`} />
                     : null}
