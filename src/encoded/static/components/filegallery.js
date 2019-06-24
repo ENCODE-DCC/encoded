@@ -179,6 +179,7 @@ export class FileTable extends React.Component {
             // TODO: (1)Move .hide to FileTable.procTableColumns declaration
             // (2) move showReplicateNumber to meta
             FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
+            FileTable.procTableColumns.visualize.hide = () => browserOptions.browserFileSelectHandler === null;
 
             return (
                 <div>
@@ -281,7 +282,7 @@ FileTable.propTypes = {
         /** Currently selected genome browser */
         currentBrowser: PropTypes.string,
         /** Called when user selects a browser */
-        browserFileSelectHandler: PropTypes.func.isRequired,
+        browserFileSelectHandler: PropTypes.func,
         /** Files selected for browsing */
         selectedBrowserFiles: PropTypes.array,
     }),
@@ -316,6 +317,7 @@ FileTable.defaultProps = {
     showFileCount: false,
     browserOptions: {
         currentBrowser: '',
+        browserFileSelectHandler: null,
         selectedBrowserFiles: [],
     },
     setInfoNodeId: null,
