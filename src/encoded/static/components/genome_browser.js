@@ -170,9 +170,7 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/Homo_sapiens.GRCh38.96.vgenes-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
                 },
             ];
             contig = 'chr1';
@@ -182,9 +180,7 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/Homo_sapiens.GRCh38.96.vgenes-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vgenes-dir',
                 },
             ];
             contig = 'chr21';
@@ -194,33 +190,22 @@ class GenomeBrowser extends React.Component {
             pinnedFiles = [
                 {
                     file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/Mus_musculus.GRCm38.96.vgenes-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
                 },
             ];
             contig = 'chr12';
             x0 = 56694976;
             x1 = 56714605;
         } else if (assembly === 'mm9' || assembly === 'GRCm37') {
-            pinnedFiles = [
-                {
-                    file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/Mus_musculus.GRCm38.96.vgenes-dir',
-                },
-            ];
+            pinnedFiles = [];
             contig = 'chr12';
             x0 = 57795963;
             x1 = 57815592;
         } else if (assembly === 'dm6') {
             pinnedFiles = [
                 {
-                    file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/dm6.vdna-dir',
                 },
             ];
             contig = 'chr2L';
@@ -229,12 +214,9 @@ class GenomeBrowser extends React.Component {
         } else if (assembly === 'dm3') {
             pinnedFiles = [
                 {
-                    file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/Drosophila_melanogaster.BDGP6.22.96.vgenes-dir',
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
                 },
-
             ];
             contig = 'chr2L';
             x0 = 826001;
@@ -242,10 +224,8 @@ class GenomeBrowser extends React.Component {
         } else if (assembly === 'ce11') {
             pinnedFiles = [
                 {
-                    file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir.vgenes-dir',
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/ce11.vdna-dir',
                 },
             ];
             contig = 'chrII';
@@ -254,10 +234,8 @@ class GenomeBrowser extends React.Component {
         } else if (assembly === 'ce10') {
             pinnedFiles = [
                 {
-                    file_format: 'vgenes-dir',
-                    output_type: 'annotation',
-                    compact: true,
-                    href: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/Caenorhabditis_elegans.WBcel235.96.vgenes-dir.vgenes-dir',
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
                 },
             ];
             contig = 'chrII';
