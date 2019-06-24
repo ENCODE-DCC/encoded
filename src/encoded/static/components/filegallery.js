@@ -1849,7 +1849,6 @@ function addFilter(filterList, value, facet) {
 }
 
 // Filter an array of objects by checking if the value of a property ('key') matches a given value ('keyValue')
-// Note the 'array' parameter can be mutated
 function filterItems(array, key, keyValue) {
     return array.filter((el) => {
         // Check to see if there are multiple values selected for a facet
@@ -1927,7 +1926,7 @@ function createFacetObject(propertyKey, fileList, filters) {
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
             }
-            // We only want to look at files that are not in 'filteredListFiltered'
+            // We only want to look at files that are not in 'fileListFiltered'
             if (!(fileListFiltered.includes(file))) {
                 // If this file's property was a filter, how many results would there be?
                 let fakeFilters = Object.assign({}, filters);
