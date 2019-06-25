@@ -20,33 +20,33 @@ $pipeline-node-types:
     // Audit icons
     g.pipeline-node-#{$node-type} {
         fill: $color;
-
-        &.active {
-            fill: desaturate(darken($color, 20%), 30%);
-
-            > rect, > ellipse {
-                stroke: #606060;
-                stroke-width: 3px;
-            }
-
-            line {
-                stroke: #606060;
-                stroke-width: 1px;
-            }
-        }
         
         &.highlight {
-            fill: desaturate(darken($color, 20%), 30%);
-
+            // fill: desaturate(darken($color, 20%), 30%);
+            
             > rect, > ellipse {
                 stroke: #F4442E;//#606060;
                 stroke-width: 3px;
             }
 
             line {
-                stroke: #2A6496;//#606060;
+                stroke: #F4442E;//#606060;
                 stroke-width: 1px;
             }
+        }
+
+        &.active {
+            fill: desaturate(darken($color, 20%), 30%);
+
+            // > rect, > ellipse {
+            //     stroke: #606060;
+            //     stroke-width: 3px;
+            // }
+            // 
+            // line {
+            //     stroke: #606060;
+            //     stroke-width: 1px;
+            // }
         }
 
         &.error, &.restricted {
@@ -197,7 +197,7 @@ g.pipeline-node-qc-metric {
 
     &.active {
         > circle {
-            stroke: #404040;
+            // stroke: #404040;
             fill: darken(#80ffc0, 50%);
         }
 
@@ -209,7 +209,6 @@ g.pipeline-node-qc-metric {
     &.highlight {
         > circle {
             stroke: #F4442E;//#404040;
-            fill: darken(#80ffc0, 50%);
         }
 
         > text {
