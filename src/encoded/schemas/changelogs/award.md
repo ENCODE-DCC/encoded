@@ -1,5 +1,8 @@
 ## Changelog for award.json
 
+### Schema version 6
+* *title* is now a required property
+
 ### Minor changes since schema version 5
 * *component* was added to enable denoting functional characterization awards
 
