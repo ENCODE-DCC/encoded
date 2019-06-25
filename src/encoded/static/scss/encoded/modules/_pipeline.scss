@@ -34,6 +34,20 @@ $pipeline-node-types:
                 stroke-width: 1px;
             }
         }
+        
+        &.highlight {
+            fill: desaturate(darken($color, 20%), 30%);
+
+            > rect, > ellipse {
+                stroke: #F4442E;//#606060;
+                stroke-width: 3px;
+            }
+
+            line {
+                stroke: #2A6496;//#606060;
+                stroke-width: 1px;
+            }
+        }
 
         &.error, &.restricted {
             fill: #ffc0c0;
@@ -184,6 +198,17 @@ g.pipeline-node-qc-metric {
     &.active {
         > circle {
             stroke: #404040;
+            fill: darken(#80ffc0, 50%);
+        }
+
+        > text {
+            fill: #fff;
+        }
+    }
+    
+    &.highlight {
+        > circle {
+            stroke: #F4442E;//#404040;
             fill: darken(#80ffc0, 50%);
         }
 
