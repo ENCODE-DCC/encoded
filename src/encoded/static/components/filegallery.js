@@ -1971,9 +1971,6 @@ const TabPanelFacets = (props) => {
     if (currentTab === 'browser') {
         fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
     }
-    if (currentTab === 'graph') {
-        fileList = fileList.filter(file => file.file_format !== 'fastq');
-    }
 
     // Initialize assembly object
     const assembly = { 'All assemblies': 100 };
@@ -2134,9 +2131,6 @@ class FileGalleryRendererComponent extends React.Component {
         let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         if (this.state.currentTab === 'browser') {
             fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
-        }
-        if (this.state.currentTab === 'graph') {
-            fileList = fileList.filter(file => file.file_format !== 'fastq');
         }
         fileList.forEach((file) => {
             if (!assembly[file.assembly] && file.assembly) {
