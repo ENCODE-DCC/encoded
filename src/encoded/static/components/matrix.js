@@ -44,17 +44,24 @@ class RowCategoryExpander extends React.Component {
     /**
      * Called when the user clicks the expander button to expand or collapse the section.
      */
-    handleClick() {
+    handleClick(e) {
         this.props.expanderClickHandler(this.props.categoryName);
+        const scrollElementId = e.currentTarget.dataset.scrollElementId;
+
+        if (scrollElementId) {
+            location.href=`#${scrollElementId}`;
+            window.scrollBy(0, -300);
+        }
     }
 
     render() {
-        const { categoryId, expanderColor, expanderBgColor, expanded } = this.props;
+        const { categoryId, expanderColor, expanderBgColor, expanded, elementId } = this.props;
         return (
             <button
                 className="matrix__category-expander"
                 aria-expanded={expanded}
                 aria-controls={categoryId}
+                data-scroll-element-id={elementId}
                 onClick={this.handleClick}
                 style={{ backgroundColor: expanderBgColor }}
             >
@@ -77,12 +84,15 @@ RowCategoryExpander.propTypes = {
     expanded: PropTypes.bool,
     /** Function to call to handle clicks in the expander button */
     expanderClickHandler: PropTypes.func.isRequired,
+    /** Element Id */
+    elementId: PropTypes.string,
 };
 
 RowCategoryExpander.defaultProps = {
     expanderColor: '#000',
     expanderBgColor: 'transparent',
     expanded: false,
+    elementId: null,
 };
 
 
@@ -275,7 +285,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 {
                     rowContent: [{
                         header: (
-                            <div style={{ backgroundColor: rowCategoryColor }}>
+                            <div id={rowCategoryBucket.key} style={{ backgroundColor: rowCategoryColor }}>
                                 {expandableRowCategory ?
                                     <RowCategoryExpander
                                         categoryId={rowCategoryBucket.key}
@@ -310,6 +320,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                                 <RowCategoryExpander
                                     categoryId={categoryNameQuery}
                                     categoryName={rowCategoryBucket.key}
+                                    elementId={rowCategoryBucket.key}
                                     expanded={categoryExpanded}
                                     expanderClickHandler={expanderClickHandler}
                                     expanderColor={rowCategoryTextColor}
