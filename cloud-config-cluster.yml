@@ -2,7 +2,7 @@
 ssh_authorized_keys:
   - %(LOCAL_SSH_KEY)s
 apt_sources:
-- source: "ppa:linuxuprising/java"
+- source: "ppa:openjdk-r/ppa"
 - source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -90,7 +90,6 @@ apt_sources:
     -----END PGP PUBLIC KEY BLOCK-----
 bootcmd:
 - set -ex
-- cloud-init-per once accepted-oracle-license-v1-2 echo "oracle-java11-installer shared/accepted-oracle-license-v1-2 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
@@ -118,8 +117,7 @@ packages:
 - lzop
 - nodejs
 - ntp
-- oracle-java11-installer
-- oracle-java11-set-default
+- openjdk-11-jdk
 - postgresql-9.3
 - pv
 - python2.7-dev
