@@ -1979,7 +1979,7 @@ ResultTable.contextTypes = {
 
 
 const BrowserTabQuickView = function BrowserTabQuickView() {
-    return <div>Valis browser</div>;
+    return <div>Genome browser</div>;
 };
 
 

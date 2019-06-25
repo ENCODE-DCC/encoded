@@ -2239,6 +2239,8 @@ class FileGalleryRendererComponent extends React.Component {
             if (!(_.isEqual(allFiles, this.state.allFiles))) {
                 this.setState({ allFiles });
                 this.setAssemblyList(this.state.allFiles);
+                // From the new set of files, calculate the currently selected assembly and annotation to display in the graph and tables.
+                this.setState({ availableAssembliesAnnotations: collectAssembliesAnnotations(allFiles) });
             }
 
             if (!(_.isEqual(filesFilteredByAssembly, this.state.filesFilteredByAssembly))) {
@@ -2253,6 +2255,7 @@ class FileGalleryRendererComponent extends React.Component {
             if (!(_.isEqual(filteredFiles, this.state.files))) {
                 this.setState({ files: filteredFiles });
             }
+            this.resetCurrentBrowser(null, allFiles);
         });
     }
 
