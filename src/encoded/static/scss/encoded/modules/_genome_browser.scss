@@ -60,7 +60,7 @@
     --gc-banding-low: #0C7489;
     --gc-banding-high: #F9CE70;
     --text-color: rgba(255, 255, 255, 0.7);
-    --text-additive-blending: 1.0; /* set to 0.0 for dark text colors */
+    --text-additive-blending: 0; /* set to 0.0 for dark text colors */
 }
 
 // styles for bigBed files / annotation files
