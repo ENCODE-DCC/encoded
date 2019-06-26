@@ -107,6 +107,7 @@ def award(testapp):
         'name': 'encode3-award',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
+        'title': 'A Generic ENCODE3 Award',
         'viewing_group': 'ENCODE3',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
@@ -118,6 +119,7 @@ def award_modERN(testapp):
         'name': 'modERN-award',
         'rfa': 'modERN',
         'project': 'modERN',
+        'title': 'A Generic modERN Award',
         'viewing_group': 'ENCODE3',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
@@ -129,6 +131,7 @@ def remc_award(testapp):
         'name': 'remc-award',
         'rfa': 'GGR',
         'project': 'GGR',
+        'title': 'A Generic REMC Award',
         'viewing_group': 'REMC',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
@@ -142,6 +145,7 @@ def encode2_award(testapp):
         'name': 'encode2-award',
         'rfa': 'ENCODE2',
         'project': 'ENCODE',
+        'title': 'A Generic ENCODE2 Award',
         'viewing_group': 'ENCODE3',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
@@ -894,6 +898,7 @@ def encode4_award(testapp):
         'name': 'encode4-award',
         'rfa': 'ENCODE4',
         'project': 'ENCODE',
+        'title': 'A Generic ENCODE4 Award',
         'viewing_group': 'ENCODE4',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
