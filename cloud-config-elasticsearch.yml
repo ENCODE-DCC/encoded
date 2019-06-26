@@ -58,6 +58,8 @@ power_state:
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 runcmd:
+- sudo dpkg --purge --force-depends ca-certificates-java
+- sudo apt-get install ca-certificates-java
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 - MEMGIGS=$(awk '/MemTotal/{printf int($2 / 1024**2)}' /proc/meminfo)
