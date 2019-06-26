@@ -11,7 +11,7 @@ executors:
     environment:
       - BASH_ENV: /home/circleci/.bashrc
       - ES_JAVA_OPTS: -Xms2g -Xmx2g
-      - JAVA_HOME: /usr/lib/jvm/java-11-oracle
+      - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
 
 commands:
   buildout:
@@ -27,19 +27,17 @@ commands:
             echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
             curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
             curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-            sudo add-apt-repository -y ppa:linuxuprising/java
+            sudo add-apt-repository -y ppa:openjdk-r/ppa
             sudo apt-get update
       - run:
           name: Install dependencies
           command: |
-            echo "oracle-java11-installer shared/accepted-oracle-license-v1-2 select true" | sudo debconf-set-selections
             sudo apt-get install -y \
               bsdtar \
               elasticsearch \
               graphviz \
               nodejs \
-              oracle-java11-installer \
-              oracle-java11-set-default \
+              openjdk-11-jdk \
               postgresql-9.3
             sudo chown -R circleci /etc/elasticsearch
             sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH\n;' $BASH_ENV
