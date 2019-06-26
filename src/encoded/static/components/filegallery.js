@@ -2429,7 +2429,7 @@ class FileGalleryRendererComponent extends React.Component {
         let meta;
         // Get a list of files for the graph (filters out excluded files if requested by the user).
         let highlightedFiles = [];
-        if (this.state.files.length !== this.state.filesFilteredByAssembly.length) {
+        if ((this.state.files.length !== this.state.filesFilteredByAssembly.length) || (this.state.fileFilters.length > 1)) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
         const includedFiles = this.filterForInclusion(this.state.graphFiles);
