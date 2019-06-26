@@ -116,6 +116,7 @@ def submitter_user(browser, base_url, admin_user):
     browser.find_by_css('.btn-primary').first.click()  # First click opens on blur, then closes
     browser.find_by_css('.btn-primary').first.click()
     browser.find_by_text('Select').first.click()
+    browser.is_text_present('Submit', wait_time=10)
     browser.find_by_text('Submit').first.click()
     browser.is_text_present('J. Michael Cherry', wait_time=5)
     yield
