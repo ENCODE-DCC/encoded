@@ -2103,9 +2103,6 @@ class FileGalleryRendererComponent extends React.Component {
         // Determine how many visualizable files there are
         const tempFiles = this.state.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
         // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
-        if (this.props.hideGraph) {
-            console.log('hideGraph is true');
-        }
         if (this.props.hideGraph && tempFiles.length < 1) {
             this.setState({ currentTab: 'tables' }, () => {
                 this.filterFiles('All assemblies', 'assembly');
@@ -2117,7 +2114,6 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ currentTab: 'graph' }, () => {
                 // Determine available assemblies
                 assemblyList = this.setAssemblyList(this.state.files);
-                console.log(assemblyList);
                 // We want to get the assembly with the highest assembly number (but not 'All assemblies')
                 const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
                 this.filterFiles(newAssembly, 'assembly');
