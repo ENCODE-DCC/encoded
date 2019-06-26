@@ -2226,13 +2226,12 @@ class FileGalleryRendererComponent extends React.Component {
 
             // If there are filters, filter the new files
             let filteredFiles = allFiles;
-            let graphFiles = allFiles;
+            const graphFiles = allFiles;
             let filesFilteredByAssembly = allFiles;
             if (Object.keys(this.state.fileFilters).length > 0) {
                 Object.keys(this.state.fileFilters).forEach((fileFilter) => {
                     if (fileFilter === 'assembly') {
                         filesFilteredByAssembly = filterItems(filesFilteredByAssembly, fileFilter, this.state.fileFilters[fileFilter]);
-                        graphFiles = filterItems(graphFiles, fileFilter, this.state.fileFilters[fileFilter]);
                     }
                     // if (fileFilter !== 'assembly') {
                     //     graphFiles = filterItems(graphFiles, fileFilter, this.state.fileFilters[fileFilter]);
@@ -2419,7 +2418,7 @@ class FileGalleryRendererComponent extends React.Component {
         let meta;
         // Get a list of files for the graph (filters out excluded files if requested by the user).
         let highlightedFiles = [];
-        if (!(_.isEqual(this.state.files, this.state.graphFiles))) {
+        if (this.state.files.length !== this.state.filesFilteredByAssembly.length) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
         const includedFiles = this.filterForInclusion(this.state.graphFiles);
