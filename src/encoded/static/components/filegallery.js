@@ -2248,9 +2248,6 @@ class FileGalleryRendererComponent extends React.Component {
                     if (fileFilter === 'assembly') {
                         filesFilteredByAssembly = filterItems(filesFilteredByAssembly, fileFilter, this.state.fileFilters[fileFilter]);
                     }
-                    // if (fileFilter !== 'assembly') {
-                    //     graphFiles = filterItems(graphFiles, fileFilter, this.state.fileFilters[fileFilter]);
-                    // }
                     filteredFiles = filterItems(filteredFiles, fileFilter, this.state.fileFilters[fileFilter]);
                 });
             }
@@ -2434,9 +2431,9 @@ class FileGalleryRendererComponent extends React.Component {
         const { context, schemas, hideGraph, showReplicateNumber } = this.props;
         let allGraphedFiles;
         let meta;
-        // Get a list of files for the graph (filters out excluded files if requested by the user).
+        // If filters other than assembly are chosen, we want to highlight the filtered files
         let highlightedFiles = [];
-        if ((this.state.files.length !== this.state.filesFilteredByAssembly.length) || (this.state.fileFilters.length > 1)) {
+        if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
         const includedFiles = this.filterForInclusion(this.state.graphFiles);
