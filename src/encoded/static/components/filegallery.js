@@ -1530,12 +1530,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         const file = matchingFiles[fileId];
 
         // check to see if file should be highlighted (if it is part of a filtered list)
-        let highlightToggle = false;
-        highlightedFiles.forEach((highlight) => {
-            if (highlight['@id'] === fileId) {
-                highlightToggle = true;
-            }
-        });
+        const highlightToggle = highlightedFiles.some(highlight => highlight['@id'] === fileId);
 
         if (!file) {
             if (allMissingFiles.indexOf(fileId) === -1) {

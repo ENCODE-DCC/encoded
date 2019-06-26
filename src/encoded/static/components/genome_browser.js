@@ -209,8 +209,8 @@ class GenomeBrowser extends React.Component {
                 },
             ];
             contig = 'chr2L';
-            x0 = 826001;
-            x1 = 851000;
+            x0 = 2420509;
+            x1 = 2467686;
         } else if (assembly === 'dm3') {
             pinnedFiles = [
                 {
@@ -219,8 +219,8 @@ class GenomeBrowser extends React.Component {
                 },
             ];
             contig = 'chr2L';
-            x0 = 826001;
-            x1 = 851000;
+            x0 = 2428372;
+            x1 = 2459823;
         } else if (assembly === 'ce11') {
             pinnedFiles = [
                 {
@@ -229,8 +229,8 @@ class GenomeBrowser extends React.Component {
                 },
             ];
             contig = 'chrII';
-            x0 = 14646376;
-            x1 = 14667875;
+            x0 = 232292;
+            x1 = 238909;
         } else if (assembly === 'ce10') {
             pinnedFiles = [
                 {
@@ -239,8 +239,8 @@ class GenomeBrowser extends React.Component {
                 },
             ];
             contig = 'chrII';
-            x0 = 14646301;
-            x1 = 14667800;
+            x0 = 232475;
+            x1 = 237997;
         }
         this.setState({
             contig,
