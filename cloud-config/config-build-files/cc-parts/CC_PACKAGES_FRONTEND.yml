@@ -21,8 +21,6 @@ packages:
 - lzop
 - nodejs
 - ntp
-- oracle-java11-installer
-- oracle-java11-set-default
 - postgresql-9.3
 - pv
 - python2.7-dev

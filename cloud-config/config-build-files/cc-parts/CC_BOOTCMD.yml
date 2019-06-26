@@ -1,6 +1,5 @@
 bootcmd:
 - set -ex
-- cloud-init-per once accepted-oracle-license-v1-2 echo "oracle-java11-installer shared/accepted-oracle-license-v1-2 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile

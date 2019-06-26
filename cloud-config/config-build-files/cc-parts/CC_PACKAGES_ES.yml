@@ -5,8 +5,6 @@ packages:
 - elasticsearch
 - git
 - libssl-dev
-- oracle-java11-installer
-- oracle-java11-set-default
 - python2.7-dev
 - python3.4-dev
 - python-software-properties

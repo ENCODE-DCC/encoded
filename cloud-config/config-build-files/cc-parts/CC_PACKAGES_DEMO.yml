@@ -6,8 +6,6 @@ packages:
 # redis
 - redis-server
 # es
-- oracle-java11-installer
-- oracle-java11-set-default
 - elasticsearch
 # cloudwatchmon
 - python-virtualenv
