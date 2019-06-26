@@ -460,7 +460,7 @@
                         "shRNA knockdown followed by RNA-seq",
                         "single cell isolation followed by RNA-seq",
                         "single-cell ATAC-seq",
-                        "single-nuclei ATAC-seq",
+                        "single-nucleus ATAC-seq",
                         "siRNA knockdown followed by RNA-seq",
                         "small RNA-seq",
                         "Switchgear",
