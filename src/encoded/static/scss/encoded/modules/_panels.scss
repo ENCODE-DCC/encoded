@@ -279,6 +279,9 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .file-gallery-container {
     display: flex;
     flex-wrap: wrap;
+    .disabled-checkbox {
+        color: #6D6D6D;
+    }
     .clear-file-facets {
         background: white;
         border: 0;

@@ -1771,11 +1771,17 @@ FileGraph.defaultProps = {
  * Display the checkbox for the user to choose whether to include depcrecated files in the graph
  * and table displays.
  */
-const InclusionSelector = ({ inclusionOn, handleInclusionChange }) => (
+const InclusionSelector = ({ inclusionOn, handleInclusionChange, tab }) => (
     <div className="checkbox--right">
-        <label htmlFor="filterIncArchive">
+        <label htmlFor="filterIncArchive" className={`${tab === 'browser' ? 'disabled-checkbox' : ''}`}>
             Include deprecated files
-            <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={handleInclusionChange} />
+            <input
+                name="filterIncArchive"
+                type="checkbox"
+                checked={inclusionOn}
+                onChange={handleInclusionChange}
+                disabled={(tab === 'browser')}
+            />
         </label>
     </div>
 );
@@ -1785,6 +1791,8 @@ InclusionSelector.propTypes = {
     inclusionOn: PropTypes.bool.isRequired,
     /** Function to call when checkbox is clicked */
     handleInclusionChange: PropTypes.func.isRequired,
+    /** Which tab is selected (inclusion selector is only enabled for graph and table views) */
+    tab: PropTypes.string.isRequired,
 };
 
 // Display facets for files
@@ -2409,6 +2417,9 @@ class FileGalleryRendererComponent extends React.Component {
                     this.filterFiles(newAssembly, 'assembly');
                 }
             }
+            if (tab === 'browser') {
+                this.setState({ inclusionOn: false });
+            }
         }
     }
 
@@ -2482,7 +2493,7 @@ class FileGalleryRendererComponent extends React.Component {
                     <TabPanel
                         tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
                         tabs={{ browser: 'Genome browser', graph: 'Association graph', tables: 'File details' }}
-                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} tab={this.state.currentTab} />}
                         decorationClasses="file-gallery__inclusion-selector"
                         selectedTab={this.state.currentTab}
                         handleTabClick={this.handleTabClick}
