@@ -19,6 +19,7 @@ $row-data-header-width: 200px;
 // Applied to all matrix <table>
 .matrix {
     border-collapse: separate;
+    max-width: none;
 	
     @at-root #{&}__header {
         border-bottom: 1px solid #eeeeee;
@@ -106,6 +107,7 @@ $row-data-header-width: 200px;
         }
 
         > td {
+            position: -webkit-sticky;
             position: sticky;
             left: 0;
             background-color: #fff;
@@ -127,6 +129,7 @@ $row-data-header-width: 200px;
             border-left: 1px solid #f0f0f0;
             background-color: #fff;
             z-index: 1;
+            position: -webkit-sticky;
             position: sticky;
             left: 0;
             border-bottom: 1px solid #fff;
@@ -185,6 +188,7 @@ $row-data-header-width: 200px;
             }
 
             &:first-child {
+                position: -webkit-sticky;
                 position: sticky;
                 left: 0;
 
@@ -219,6 +223,7 @@ $row-data-header-width: 200px;
         > th {
             vertical-align: bottom;
             white-space: nowrap;
+            position: -webkit-sticky;
             position: sticky;
             left: 0;
             border-bottom: 1px solid #fff;
@@ -258,6 +263,7 @@ $row-data-header-width: 200px;
         > td {
             padding: 0 !important;
             border-left: 1px solid #f0f0f0;
+            border-bottom: 1px solid #fff;
 
             &:last-child > div, &:last-child > a {
                 border-top-right-radius: 14px;
