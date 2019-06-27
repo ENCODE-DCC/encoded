@@ -1427,46 +1427,37 @@ export class FacetList extends React.Component {
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-                <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {(context || clearButton) ?
-                        <div className="search-header-control">
-                            {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
-                        </div>
-                    : null}
-                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map((facet) => {
-                        if (hideTypes && facet.field === 'type') {
-                            return <span key={facet.field} />;
-                        }
-                        if (facet.field === 'date_released') {
-                            return (
-                                <DateSelectorFacet
-                                    {...this.props}
-                                    key={facet.field}
-                                    facet={facet}
-                                    filters={filters}
-                                    width={width}
-                                    negationFilters={negationFilters}
-                                    facets={facets}
-                                />
-                            );
-                        }
-                        if (facet.field === 'date_submitted') {
-                            return null;
-                        }
+                {facets.map((facet) => {
+                    if (hideTypes && facet.field === 'type') {
+                        return <span key={facet.field} />;
+                    }
+                    if (facet.field === 'date_released') {
                         return (
-                            <Facet
+                            <DateSelectorFacet
                                 {...this.props}
                                 key={facet.field}
                                 facet={facet}
                                 filters={filters}
                                 width={width}
                                 negationFilters={negationFilters}
+                                facets={facets}
                             />
                         );
-                    })}
-                </div>
+                    }
+                    if (facet.field === 'date_submitted') {
+                        return null;
+                    }
+                    return (
+                        <Facet
+                            {...this.props}
+                            key={facet.field}
+                            facet={facet}
+                            filters={filters}
+                            width={width}
+                            negationFilters={negationFilters}
+                        />
+                    );
+                })}
             </div>
         );
     }
@@ -1909,19 +1900,8 @@ export class ResultTable extends React.Component {
         return (
             <div>
                 <div className="row">
-                    {facets.length ?
-                        <div className="col-sm-5 col-md-4 col-lg-3">
-                            <FacetList
-                                {...this.props}
-                                facets={facets}
-                                filters={filters}
-                                searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                onFilter={this.onFilter}
-                            />
-                        </div>
-                    : ''}
                     <div className="col-sm-7 col-md-8 col-lg-9">
-
+                        <h2>Experiment search</h2>
                         {context.notification === 'Success' ?
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
@@ -1929,6 +1909,17 @@ export class ResultTable extends React.Component {
                                 <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
                                 <hr />
                                 <CartSearchControls searchResults={context} />
+                                {facets.length ?
+                                    <div className="col-sm-5 col-md-4 col-lg-3">
+                                        <FacetList
+                                            {...this.props}
+                                            facets={facets}
+                                            filters={filters}
+                                            searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                            onFilter={this.onFilter}
+                                        />
+                                    </div>
+                                : ''}
                                 {browserAvail ?
                                     <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} navCss="browser-tab-bg" tabFlange>
                                         <TabPanelPane key="listpane">
