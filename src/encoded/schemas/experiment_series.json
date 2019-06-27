@@ -106,6 +106,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
+        "biosample_summary": {
+            "title": "Biosample summary"
+        },
         "contributors.title": {
             "title": "Contributing Labs"
         },

@@ -733,3 +733,13 @@ class ExperimentSeries(Series):
     })
     def contributors(self, request, related_datasets):
         return request.select_distinct_values('lab', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def biosample_summary(self, request, related_datasets):
+        return request.select_distinct_values('biosample_summary', *related_datasets)
