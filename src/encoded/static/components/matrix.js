@@ -275,7 +275,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 {
                     rowContent: [{
                         header: (
-                            <div style={{ backgroundColor: rowCategoryColor }}>
+                            <div id={rowCategoryBucket.key.replace(/\s/g, '_')} style={{ backgroundColor: rowCategoryColor }}>
                                 {expandableRowCategory ?
                                     <RowCategoryExpander
                                         categoryId={rowCategoryBucket.key}
@@ -449,7 +449,12 @@ class MatrixPresentation extends React.Component {
                 return { expandedRowCategories: prevState.expandedRowCategories.concat(category) };
             }
 
-            // Category does exist in array, so remove it.
+            // Category does exist in array
+            // Move close to header
+            location.href= `#${category.replace(/\s/g, '_')}`;
+            window.scrollBy(0, -60);
+
+            // Remove category.
             const expandedCategories = prevState.expandedRowCategories;
             return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
         });
