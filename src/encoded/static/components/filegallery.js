@@ -1883,6 +1883,9 @@ function filterItems(array, key, keyValue) {
             if (keyValue[0] === 'All assemblies') {
                 return true;
             }
+            if (el.genome_annotation) {
+                return (`${el[key]} ${el.genome_annotation}` === keyValue[0]);
+            }
             return (el[key] === keyValue[0]);
         }
         return el[key] === keyValue[0];
@@ -1981,7 +1984,9 @@ const TabPanelFacets = (props) => {
     // Create object for Assembly facet from list of all files
     // We do not count how many results there are for a given assembly because we will not display the bars
     fileList.forEach((file) => {
-        if (!assembly[file.assembly] && file.assembly) {
+        if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
+            assembly[`${file.assembly} ${file.genome_annotation}`] = +file.assembly.match(/[0-9]+/g);
+        } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
             assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
         }
     });
@@ -2143,7 +2148,9 @@ class FileGalleryRendererComponent extends React.Component {
             fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
         }
         fileList.forEach((file) => {
-            if (!assembly[file.assembly] && file.assembly) {
+            if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
+                assembly[`${file.assembly} ${file.genome_annotation}`] = +file.assembly.match(/[0-9]+/g);
+            } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
                 assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
             }
         });
@@ -2498,7 +2505,7 @@ class FileGalleryRendererComponent extends React.Component {
                         handleTabClick={this.handleTabClick}
                     >
                         <TabPanelPane key="browser">
-                            <GenomeBrowser files={this.state.files} expanded={this.state.facetsOpen} assembly={this.state.selectedAssembly} annotation={this.state.selectedAnnotation} />
+                            <GenomeBrowser files={this.state.files} expanded={this.state.facetsOpen} assembly={this.state.selectedAssembly} />
                         </TabPanelPane>
                         { (!hideGraph) ?
                             <TabPanelPane key="graph">
@@ -2507,8 +2514,8 @@ class FileGalleryRendererComponent extends React.Component {
                                     files={includedFiles}
                                     highlightedFiles={highlightedFiles}
                                     infoNode={this.state.infoNode}
-                                    selectedAssembly={this.state.selectedAssembly}
-                                    selectedAnnotation={this.state.selectedAnnotation}
+                                    selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
+                                    selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
                                     schemas={schemas}
                                     colorize={this.state.inclusionOn}
                                     handleNodeClick={this.handleNodeClick}

@@ -160,7 +160,8 @@ class GenomeBrowser extends React.Component {
         }
     }
 
-    setBrowserDefaults(assembly) {
+    setBrowserDefaults(assemblyAnnotation, resolve) {
+        const assembly = assemblyAnnotation.split(' ')[0];
         // Files to be displayed on all genome browser results
         let pinnedFiles = [];
         let contig = null;
@@ -330,7 +331,9 @@ class GenomeBrowser extends React.Component {
             trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            if (file.file_format === 'bigBed bedRNAElements') {
+            // bigBed bedRNAElements have two tracks and need extra height
+            // There is inconsistency in the capitalization of the file format in the data
+            if ((file.file_type.toLowerCase() === 'bigbed bedrnaelements') || (file.file_format.toLowerCase() === 'bigbed bedrnaelements')) {
                 trackObj.heightPx = 120;
             } else {
                 trackObj.heightPx = 80;
@@ -466,12 +469,10 @@ GenomeBrowser.propTypes = {
     files: PropTypes.array.isRequired,
     expanded: PropTypes.bool.isRequired,
     assembly: PropTypes.string,
-    annotation: PropTypes.string,
 };
 
 GenomeBrowser.defaultProps = {
     assembly: '',
-    annotation: '',
 };
 
 GenomeBrowser.contextTypes = {
