@@ -686,6 +686,7 @@ class ExperimentSeries(Series):
         'organism',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',
+        'related_datasets.target',
         'target',
         'target.genes',
         'target.organism',
