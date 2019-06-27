@@ -2438,13 +2438,14 @@ class FileGalleryRendererComponent extends React.Component {
         if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
-        const includedFiles = this.filterForInclusion(this.state.graphFiles);
-        const tableIncludedFiles = this.filterForInclusion(this.state.files);
+        const graphIncludedFiles = this.filterForInclusion(this.state.graphFiles);
+        const includedFiles = this.filterForInclusion(this.state.files);
+        const facetFiles = this.filterForInclusion(this.state.allFiles);
 
         const fileTable = (
             <FileTable
                 {...this.props}
-                items={tableIncludedFiles}
+                items={includedFiles}
                 selectedFilterValue={this.state.selectedFilterValue}
                 filterOptions={this.state.availableAssembliesAnnotations}
                 graphedFiles={allGraphedFiles}
@@ -2491,7 +2492,7 @@ class FileGalleryRendererComponent extends React.Component {
                         open={this.state.facetsOpen}
                         currentTab={this.state.currentTab}
                         filters={this.state.fileFilters}
-                        allFiles={this.state.allFiles}
+                        allFiles={facetFiles}
                         filterFiles={this.filterFiles}
                         toggleFacets={this.toggleFacets}
                         clearFileFilters={this.clearFileFilters}
@@ -2505,13 +2506,17 @@ class FileGalleryRendererComponent extends React.Component {
                         handleTabClick={this.handleTabClick}
                     >
                         <TabPanelPane key="browser">
-                            <GenomeBrowser files={this.state.files} expanded={this.state.facetsOpen} assembly={this.state.selectedAssembly} />
+                            <GenomeBrowser
+                                files={includedFiles}
+                                expanded={this.state.facetsOpen}
+                                assembly={this.state.selectedAssembly}
+                            />
                         </TabPanelPane>
                         { (!hideGraph) ?
                             <TabPanelPane key="graph">
                                 <FileGraph
                                     dataset={context}
-                                    files={includedFiles}
+                                    files={graphIncludedFiles}
                                     highlightedFiles={highlightedFiles}
                                     infoNode={this.state.infoNode}
                                     selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
