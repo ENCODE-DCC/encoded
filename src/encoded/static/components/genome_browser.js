@@ -64,7 +64,6 @@ export function getCoordinateData(geneLink, fetch) {
 }
 
 function mapGenome(inputAssembly) {
-    console.log(inputAssembly);
     let genome = inputAssembly.split(' ')[0];
     if (inputAssembly === 'hg19') {
         genome = 'GRCh37';
