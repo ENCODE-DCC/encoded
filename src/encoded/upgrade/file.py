@@ -586,3 +586,11 @@ def file_13_14(value, system):
 
     if output_type and output_type == 'candidate regulatory elements':
         value['output_type'] = 'candidate Cis-Regulatory Elements'
+
+
+@upgrade_step('file', '14', '15')
+def file_14_15(value, system):
+    output_type = value.get('output_type', None)
+
+    if output_type and output_type == 'reads':
+        value['output_type'] = 'not existent output type'

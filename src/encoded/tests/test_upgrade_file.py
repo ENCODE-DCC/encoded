@@ -124,6 +124,21 @@ def file_12(file_base):
 
 
 @pytest.fixture
+def file_14(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+        'schema_version': '12',
+        'file_format': 'fastq',
+        'read_length': 55,
+        'file_size': 243434,
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
+        'output_type': 'reads'
+    })
+    return item
+
+
+@pytest.fixture
 def old_file(experiment):
     return {
         'accession': 'ENCFF000OLD',
@@ -238,3 +253,9 @@ def test_file_upgrade_13_to_14(upgrader, file_13):
     value = upgrader.upgrade('file', file_13, current_version='13', target_version='14')
     assert value['schema_version'] == '14'
     assert value['output_type'] == 'candidate Cis-Regulatory Elements'
+
+
+def test_file_upgrade_14_to_15(upgrader, file_14):
+    value = upgrader.upgrade('file', file_14, current_version='14', target_version='15')
+    assert value['schema_version'] == '15'
+    assert value['output_type'] == 'not existent output type'
