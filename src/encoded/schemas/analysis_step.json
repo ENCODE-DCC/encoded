@@ -79,7 +79,9 @@
                      "transcript identification",
                      "transcriptome assembly",
                      "unreplicated IDR",
-                     "variant annotation"
+                     "variant annotation",
+                     "transcriptome annotation",
+                     "barcodes mapping generation"
                  ]
              }
         },

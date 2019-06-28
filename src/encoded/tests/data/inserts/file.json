@@ -2731,5 +2731,43 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/rep2_efg.tsv",
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f247"
+    },
+    {
+        "_test": "test barcodes map",
+        "accession": "ENCFF002BAR",
+        "award": "U41HG006992",
+        "dataset": "ENCSR751ISO",
+        "date_created": "2015-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "/files/ENCFF001MYM/"
+        ],
+        "file_format": "tsv",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "14be74b6e11515394414f4ebfa66d58e",
+        "output_type": "barcodes",
+        "status": "released",
+        "file_size": 201,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "barcodes_example.tsv",
+        "uuid": "92271a1b-56de-421c-9000-186acb0612c5"
+    },
+    {
+        "_test": "transcriptome annotations",
+        "accession": "ENCFF807TRA",
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2015-04-18T16:46:18.670068+00:00",
+        "derived_from": [
+            "/files/ENCFF001MXE/"
+        ],
+        "file_format": "gtf",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "14be72b6e11515391414f4ebfa62d58e",
+        "output_type": "transcriptome alignments",
+        "status": "released",
+        "file_size": 20122,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "talon_tanscript_annotations.gtf.gz",
+        "uuid": "12271a1b-53de-421c-9001-181acb0622c2"
     }
 ]

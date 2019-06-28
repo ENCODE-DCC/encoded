@@ -341,5 +341,40 @@
         "step_label": "splice-junction-extraction-step",
         "title": "Long read RNA-seq splice junction extraction step",
         "uuid": "1911f244-b415-4ae3-8ea2-763959257ff8"
+    },
+    {
+        "analysis_step_types": [
+            "transcriptome annotation"
+        ],
+        "date_created": "2019-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "transcriptome reference",
+            "alignments"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "transcriptome annotations"
+        ],
+        "status": "released",
+        "step_label": "talon-transcriptome-annotation-step",
+        "title": "Long read RNA-seq TALON transcriptome annotation step",
+        "uuid": "d5b03aa5-c910-4ec7-b3be-86e11f66fdeb"
+    },
+    {
+        "analysis_step_types": [
+            "barcodes mapping generation"
+        ],
+        "date_created": "2019-02-11T15:56:52.458705+00:00",
+        "input_file_types": [
+            "reads"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "barcodes"
+        ],
+        "status": "released",
+        "step_label": "starr-barcodes-mapping-generation-step",
+        "title": "STARR-seq barcodes mapping creation step",
+        "uuid": "c6a3fe50-ad2b-43c2-9bbe-591f27917cfa"
     }
 ]
