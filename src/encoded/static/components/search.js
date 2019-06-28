@@ -1202,7 +1202,7 @@ class Facet extends React.Component {
         if (((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || facet.appended === 'true') {
             return (
                 <div className="facet">
-                    <h5>{titleComponent}</h5>
+                    <h5>{titleComponent} <i className="icon icon-caret-down" /></h5>
                     {/* Display selected filters at the top */}
                     {(selectedTerms.length > 0) ?
                         <div className="filter-container">
@@ -1907,8 +1907,6 @@ export class ResultTable extends React.Component {
                                 <h4>Showing {results.length} of {total} {label}</h4>
                                 <DisplayAsJson />
                                 <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
-                                <hr />
-                                <CartSearchControls searchResults={context} />
                                 {facets.length ?
                                     <div className="col-sm-5 col-md-4 col-lg-3">
                                         <FacetList
@@ -1920,6 +1918,7 @@ export class ResultTable extends React.Component {
                                         />
                                     </div>
                                 : ''}
+                                <CartSearchControls searchResults={context} />
                                 {browserAvail ?
                                     <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} navCss="browser-tab-bg" tabFlange>
                                         <TabPanelPane key="listpane">
