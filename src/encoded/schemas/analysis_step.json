@@ -191,7 +191,9 @@
                     "tRNA reference",
                     "TSS reference",
                     "unfiltered alignments",
-                    "variant calls"
+                    "variant calls",
+                    "barcodes",
+                    "transcriptome annotations"
                 ]
             }
         },
@@ -302,7 +304,9 @@
                     "tRNA reference",
                     "TSS reference",
                     "unfiltered alignments",
-                    "variant calls"
+                    "variant calls",
+                    "barcodes",
+                    "transcriptome annotations"
                 ]
             }
         },

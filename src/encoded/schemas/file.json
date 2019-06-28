@@ -1164,7 +1164,9 @@
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
-                        "variant calls"
+                        "variant calls",
+                        "barcodes",
+                        "transcriptome annotations"
                     ]
                 },
                 {
@@ -1587,6 +1589,7 @@
         "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
+        "transcriptome annotations": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -1608,6 +1611,7 @@
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
+        "barcodes": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
