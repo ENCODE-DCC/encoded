@@ -65,11 +65,11 @@ export function getCoordinateData(geneLink, fetch) {
 
 function mapGenome(inputAssembly) {
     let genome = inputAssembly.split(' ')[0];
-    if (inputAssembly === 'hg19') {
+    if (genome === 'hg19') {
         genome = 'GRCh37';
-    } else if (inputAssembly === 'mm9') {
+    } else if (genome === 'mm9') {
         genome = 'GRCm37';
-    } else if (inputAssembly === 'mm10') {
+    } else if (genome === 'mm10') {
         genome = 'GRCm38';
     }
     return genome;
@@ -321,7 +321,7 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             } else if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
-                trackObj.name = `${this.props.annotation ? `${this.props.assembly} ${this.props.annotation}` : `${this.props.assembly}`}`;
+                trackObj.name = this.props.assembly;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
                 trackObj.heightPx = 120;
@@ -333,7 +333,7 @@ class GenomeBrowser extends React.Component {
             trackObj.path = domain + file.href;
             // bigBed bedRNAElements have two tracks and need extra height
             // There is inconsistency in the capitalization of the file format in the data
-            if ((file.file_type.toLowerCase() === 'bigbed bedrnaelements') || (file.file_format.toLowerCase() === 'bigbed bedrnaelements')) {
+            if ((file.file_type && file.file_type.toLowerCase() === 'bigbed bedrnaelements') || (file.file_format && file.file_format.toLowerCase() === 'bigbed bedrnaelements')) {
                 trackObj.heightPx = 120;
             } else {
                 trackObj.heightPx = 80;
