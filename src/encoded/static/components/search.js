@@ -1427,7 +1427,7 @@ export class FacetList extends React.Component {
 
         return (
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-                {facets.map((facet) => {
+                {normalFacets.map((facet) => {
                     if (hideTypes && facet.field === 'type') {
                         return <span key={facet.field} />;
                     }

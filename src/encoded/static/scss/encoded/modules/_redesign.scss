@@ -69,13 +69,16 @@ dd {
         width: 100%;
         padding: 0;
         .facets {
+            border: 0;
+            padding: 0;
             .facet {
                 display: inline-block;
                 text-align: center;
-                padding: 2px 10px;
+                padding: 6px 10px 2px 10px;
                 margin: 0;
                 margin-right: 10px;
                 border-bottom: 0;
+                background: #ececec;
                 ul, .date-selector-toggle-wrapper, .date-container, button, .filter-container {
                     display: none;
                 }
@@ -93,7 +96,7 @@ dd {
 
 .dropdown-menu {
     li {
-        span {
+        a {
             letter-spacing: 0 !important;
         }
     }
@@ -133,7 +136,9 @@ hr {
         padding-bottom: 2px;
     }
     li {
-        flex: 0 1 48%;
+        flex: 0 1 49%;
         border-bottom: none;
+        border: 1px solid #d2d2d2;
+        padding: 10px;
     }
 }
