@@ -2733,7 +2733,7 @@
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f247"
     },
     {
-        "_test": "test barcodes map",
+        "_test": "barcodes mapping",
         "accession": "ENCFF002BAR",
         "award": "U41HG006992",
         "dataset": "ENCSR751ISO",
