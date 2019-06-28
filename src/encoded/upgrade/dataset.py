@@ -486,7 +486,7 @@ def annotation_24_25(value, system):
 
 
 @upgrade_step('experiment', '26', '27')
-def dataset_26_27(value, system):
+def dataset_27_28(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4384
     if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
         value['assay_term_name'] = 'single-nucleus ATAC-seq'
