@@ -20,9 +20,6 @@
             margin-top: 0 !important;
         }
     }
-    &.browser-error {
-        margin: 10px;
-    }
 }
 
 .valis-genome-visualizer {
@@ -169,6 +166,20 @@
     pointer-events: none;
     .facet-term__item, .icon {
         color: #A0A0A0;
+    }
+}
+
+.valis-browser {
+    &.browser-error {
+        margin: 30px 20px;
+        text-align: left;
+    }
+}
+
+.file-gallery-tab-bar {
+    .browser-error {
+        margin: 30px 20px;
+        text-align: left;
     }
 }
 

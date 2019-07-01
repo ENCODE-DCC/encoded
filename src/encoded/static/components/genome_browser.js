@@ -80,7 +80,6 @@ class GenomeBrowser extends React.Component {
         super(props, context);
 
         this.state = {
-            width: 592,
             trackList: [],
             visualizer: null,
             showAutoSuggest: true,
@@ -128,13 +127,23 @@ class GenomeBrowser extends React.Component {
 
         if (!(_.isEqual(this.props.files, prevProps.files))) {
             let newFiles = [];
+            let files = [];
             let domain = `${window.location.protocol}//${window.location.hostname}`;
             if (domain.includes('localhost')) {
                 domain = domainName;
                 newFiles = [...this.state.pinnedFiles, ...dummyFiles];
             } else {
-                const propsFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
-                const files = _.chain(propsFiles)
+                const propsFiles = this.props.files.filter(file => (
+                    (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+                    && (file.file_format_type !== 'bedMethyl')
+                    && (file.file_format_type !== 'bedLogR')
+                    && (file.file_format_type !== 'idr_peak')
+                    && (file.file_format_type !== 'tss_peak')
+                    && (file.file_format_type !== 'pepMap')
+                    && (file.file_format_type !== 'modPepMap')
+                    && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+                ));
+                files = _.chain(propsFiles)
                     .sortBy(obj => obj.output_type)
                     .sortBy((obj) => {
                         if (obj.biological_replicates.length > 1) {
@@ -145,16 +154,13 @@ class GenomeBrowser extends React.Component {
                     .value();
                 newFiles = [...this.state.pinnedFiles, ...files];
             }
-            const tracks = this.filesToTracks(newFiles, domain);
+            let tracks = [];
+            if (files.length > 0) {
+                tracks = this.filesToTracks(newFiles, domain);
+            }
             this.setState({ trackList: tracks }, () => {
-                if (this.chartdisplay) {
-                    this.setState({
-                        width: this.chartdisplay.clientWidth,
-                    }, () => {
-                        this.drawTracks(this.chartdisplay);
-                    });
-                } else {
-                    console.log('there is no this.chartdisplay');
+                if (this.chartdisplay && tracks !== []) {
+                    this.drawTracks(this.chartdisplay);
                 }
             });
         }
@@ -264,10 +270,14 @@ class GenomeBrowser extends React.Component {
         genomePromise.then(() => {
             const domain = `${window.location.protocol}//${window.location.hostname}`;
             const files = this.compileFiles(domain);
-            const tracks = this.filesToTracks(files, domain);
-            this.setState({ trackList: tracks }, () => {
-                this.drawTracks(this.chartdisplay);
-            });
+            if (files.length > 1) {
+                const tracks = this.filesToTracks(files, domain);
+                this.setState({ trackList: tracks }, () => {
+                    this.drawTracks(this.chartdisplay);
+                });
+            } else {
+                this.setState({ trackList: [] });
+            }
         });
     }
 
@@ -278,7 +288,16 @@ class GenomeBrowser extends React.Component {
             newFiles = [...this.state.pinnedFiles, ...dummyFiles];
         } else {
             // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
-            const propsFiles = this.props.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
+            const propsFiles = this.props.files.filter(file => (
+                (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+                && (file.file_format_type !== 'bedMethyl')
+                && (file.file_format_type !== 'bedLogR')
+                && (file.file_format_type !== 'idr_peak')
+                && (file.file_format_type !== 'tss_peak')
+                && (file.file_format_type !== 'pepMap')
+                && (file.file_format_type !== 'modPepMap')
+                && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+            ));
             // Set default ordering of tracks to be first by replicate then by output_type
             // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
             // Multiplication by 1000 orders the replicates with a single replicate at the end
@@ -331,9 +350,10 @@ class GenomeBrowser extends React.Component {
             trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            // bigBed bedRNAElements have two tracks and need extra height
-            // There is inconsistency in the capitalization of the file format in the data
-            if ((file.file_type && file.file_type.toLowerCase() === 'bigbed bedrnaelements') || (file.file_format && file.file_format.toLowerCase() === 'bigbed bedrnaelements')) {
+            // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
+            // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
+            if (file.file_format_type &&
+                ((file.file_format_type.toLowerCase() === 'bedrnaelements') || (file.file_format_type.toLowerCase() === 'peptidemapping') || (file.file_format_type.toLowerCase() === 'bedexonscore') || (file.file_format_type.toLowerCase() === 'bed12') || (file.file_format_type.toLowerCase() === 'bed9'))) {
                 trackObj.heightPx = 120;
             } else {
                 trackObj.heightPx = 80;
@@ -345,7 +365,6 @@ class GenomeBrowser extends React.Component {
 
     drawTracksResized() {
         if (this.chartdisplay) {
-            this.setState({ width: this.chartdisplay.clientWidth });
             this.state.visualizer.render({
                 width: this.chartdisplay.clientWidth,
                 height: this.state.visualizer.getContentHeight(),
@@ -364,7 +383,7 @@ class GenomeBrowser extends React.Component {
         });
         this.setState({ visualizer });
         visualizer.render({
-            width: this.state.width,
+            width: this.chartdisplay.clientWidth,
             height: visualizer.getContentHeight(),
         }, container);
         visualizer.addEventListener('track-resize', this.drawTracksResized);

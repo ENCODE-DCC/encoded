@@ -1811,6 +1811,7 @@ const FileFacet = (props) => {
     });
     // Sort results
     const sortedKeys = Object.keys(facetObject).sort((a, b) => (facetObject[b] - facetObject[a]));
+    // Gray out facets with no terms for filtering
     const facetClass = Object.keys(facetObject).length === 0 ? ' empty-facet' : '';
 
     return (
@@ -1976,7 +1977,15 @@ const TabPanelFacets = (props) => {
     let fileList = allFiles;
     fileList = fileList.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
     if (currentTab === 'browser') {
-        fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
+        fileList = fileList.filter(file => (
+            (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+            && (file.file_format_type !== 'bedMethyl')
+            && (file.file_format_type !== 'bedLogR')
+            && (file.file_format_type !== 'idr_peak')
+            && (file.file_format_type !== 'tss_peak')
+            && (file.file_format_type !== 'pepMap')
+            && (file.file_format_type !== 'modPepMap')
+        ));
     }
 
     // Initialize assembly object
@@ -2063,7 +2072,7 @@ class FileGalleryRendererComponent extends React.Component {
             facetsOpen: true,
             /** Filters for files */
             fileFilters: {},
-            /** Current tab: 'browser', 'graph', or 'files' */
+            /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'browser',
             /** Possible assemblies */
             assemblyList: [],
@@ -2102,7 +2111,16 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ selectedFilterValue: '0' });
         }
         // Determine how many visualizable files there are
-        const tempFiles = this.state.files.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && (file.file_format !== 'bigBed bedMethyl') && ['released', 'in progress', 'archived'].indexOf(file.status) > -1));
+        const tempFiles = this.state.files.filter(file => (
+            (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+            && (file.file_format_type !== 'bedMethyl')
+            && (file.file_format_type !== 'bedLogR')
+            && (file.file_format_type !== 'idr_peak')
+            && (file.file_format_type !== 'tss_peak')
+            && (file.file_format_type !== 'pepMap')
+            && (file.file_format_type !== 'modPepMap')
+            && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+        ));
         // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
         if (this.props.hideGraph && tempFiles.length < 1) {
             this.setState({ currentTab: 'tables' }, () => {
@@ -2146,7 +2164,15 @@ class FileGalleryRendererComponent extends React.Component {
         const assembly = { 'All assemblies': 100 };
         let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         if (this.state.currentTab === 'browser') {
-            fileList = fileList.filter(file => ((file.file_format === 'bigWig' || file.file_format === 'bigBed') && file.file_format !== 'bigBed bedMethyl'));
+            fileList = fileList.filter(file => (
+                (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+                && (file.file_format_type !== 'bedMethyl')
+                && (file.file_format_type !== 'bedLogR')
+                && (file.file_format_type !== 'idr_peak')
+                && (file.file_format_type !== 'tss_peak')
+                && (file.file_format_type !== 'pepMap')
+                && (file.file_format_type !== 'modPepMap')
+            ));
         }
         fileList.forEach((file) => {
             if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
@@ -2466,6 +2492,7 @@ class FileGalleryRendererComponent extends React.Component {
                 noDefaultClasses
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
                 showReplicateNumber={showReplicateNumber}
+                tab={this.state.currentTab}
             />
         );
 
