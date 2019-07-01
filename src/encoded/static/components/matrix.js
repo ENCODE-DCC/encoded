@@ -452,7 +452,12 @@ class MatrixPresentation extends React.Component {
             // Category does exist in array
             // Move close to header
             location.href= `#${category.replace(/\s/g, '_')}`;
-            window.scrollBy(0, -60);
+            const scrollOptions = {
+                left: 0,
+                top: -60,
+                behavior: 'smooth',
+            };
+            window.scrollBy(scrollOptions);
 
             // Remove category.
             const expandedCategories = prevState.expandedRowCategories;
