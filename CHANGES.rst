@@ -1,6 +1,39 @@
 Changes
 =======
 
+v87.0 (released) snovault 1.0.32/1.0.33
+---------------------------------------
+1. ENCD-4723 update-snovault-1.0.33 (#2840)
+2. ENCD-4716 Update cloud init deployment (#2830)
+3. ENCD-4713 manually-install-oracle-java-11 (#2830)
+4. ENCD-4719 Use 16 processes demo batchupgrade (#2830)
+5. ENCD-4665 organize-cluster-cloud-yamls (#2830)
+6. ENCD-4688 remove-unused-code-from-deploy (#2830)
+7. ENCD-4704 Fix frozen column for Safari (#2825)
+8. ENCD-4708 Fix the target column on experiment series page (#2828)
+9. SNO-102 use-openjdk-java-for-circleci (#2832)
+10. ENCD-4703 test-submitter-user-circleci-fix (#2824)
+11. ENCD-4654 change ChIP-seq to TF ChIP-seq (#2806)
+12. ENCD-4698 update-snovault-1.0.32 (#2822)
+13. ENCD-4662 Experiment series (#2812)
+14. ENCD-4659 batch-download-unit-test (#2815)
+15. ENCD-4514 add MouseDevSeries internal tag (#2821)
+16. ENCD-4106 Remove kyoto from aliases and dbxrefs (#2803)
+17. ENCD-4672 Remove news page and instead link to generic search (#2811)
+18. ENCD-4653 add AWS link (#2798)
+19. ENCD-4415 Add GM perturbation property (#2816)
+20. ENCD-4694 restrict use of FCC in experiments (#2817)
+21. ENCD-4471 add-prod-id-source-treatment (#2808)
+22. ENCD-4671 port tests circleci (#2810)
+23. ENCD-4062 Fix read name details dependency (#2797)
+24. ENCD-4613 Changed cRE to cCRE with batch upgrades and tests (#2763)
+25. ENCD-4656 Fix BDD Travis CI test failures (#2793)
+26. ENCD-4651 add new analysis step type (#2785)
+27. ENCD-4586 Freeze left column of matrix (#2799)
+28. SNO-100 Parallelize batchupgrade script
+29. SNO-92 fix-batch-upgrade-logging
+30. SNO-101 Refactor batchupgrade
+
 v86.0 (released) snovault 1.0.31
 --------------------------------
 1. ENCD-4676 add-nagios-role-deployment (#2796)
