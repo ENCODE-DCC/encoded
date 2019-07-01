@@ -451,11 +451,11 @@ class MatrixPresentation extends React.Component {
 
             // Category does exist in array
             // Move close to header
-            location.href= `#${category.replace(/\s/g, '_')}`;
-            window.scrollBy({
-                left: 0,
-                top: -60,
+            const header = document.querySelector(`#${category.replace(/\s/g, '_')}`);
+            header.scrollIntoView({
                 behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest',
             });
 
             // Remove category.
