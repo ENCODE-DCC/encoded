@@ -455,7 +455,6 @@ class MatrixPresentation extends React.Component {
             header.scrollIntoView({
                 behavior: 'smooth',
                 block: 'end',
-                inline: 'nearest',
             });
 
             // Remove category.
