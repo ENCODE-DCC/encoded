@@ -127,6 +127,7 @@ const objectStatuses = {
     Library: accessionedStatuses,
     Organism: standardStatuses,
     Page: standardStatuses,
+    Patient: accessionedStatuses,
     Pipeline: {
         external: [
             'released',

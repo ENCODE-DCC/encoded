@@ -1,0 +1,114 @@
+{
+    "title": "Patient",
+    "description": "Description of the metadata that this object aims to capture.",
+    "id": "/profiles/patient.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "required": ["gender", "race", "ethnicity"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/uuid" }
+    ],
+    "type": "object",
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "PT"
+        },
+        "gender": {
+            "title": "Gender",
+            "type": "string",
+            "enum": [
+                "Female",
+                "Male",
+                "Unknown"
+            ]
+        },
+        "age": {
+            "title": "Diagnosis age",
+            "description": "The age of diagnosis.",
+            "type": "string",
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+        },
+        "age_units": {
+            "title": "Diagnosis age units",
+            "type": "string",
+            "default": "year",
+            "enum": [
+                "year"
+            ]
+        },
+        "race": {
+            "title": "Race",
+            "type": "string",
+            "enum": [
+                "American Indian",
+                "Asian",
+                "Black",
+                "Hawaiian Pacific Islander",
+                "White",
+                "Declined",
+                "Other",
+                "Unknown"
+            ]
+        },
+        "ethnicity": {
+            "title": "Ethnicity",
+            "type": "string",
+            "enum": [
+                "Hispanic",
+                "Non-hispanic",
+                "Declined",
+                "Unknown"
+            ]
+        }
+    },
+    "facets": {
+        "gender": {
+            "title": "Gender"
+        },
+        "ethnicity": {
+            "title": "Ethnicity"
+        },
+        "race": {
+            "title": "Race"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "age": {
+            "title": "Diagnosis age"
+        },
+        "age_units": {
+            "title": "Diagnosis age units"
+        },
+        "gender": {
+            "title": "Gender"
+        },
+        "ethnicity": {
+            "title": "Ethnicity"
+        },
+        "race": {
+            "title": "Race"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "gender": 1.0,
+        "ethnicity": 1.0,
+        "race": 1.0
+    },
+    "changelog": "/profiles/changelogs/demographic.md"
+}

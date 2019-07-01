@@ -78,7 +78,8 @@ ORDER = [
     'generic_quality_metric',
     'image',
     'page',
-    'cart'
+    'cart',
+    'patient'
 ]
 
 IS_ATTACHMENT = [
