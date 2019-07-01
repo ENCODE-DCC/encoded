@@ -1811,9 +1811,10 @@ const FileFacet = (props) => {
     });
     // Sort results
     const sortedKeys = Object.keys(facetObject).sort((a, b) => (facetObject[b] - facetObject[a]));
+    const facetClass = Object.keys(facetObject).length === 0 ? ' empty-facet' : '';
 
     return (
-        <div className={`facet ${facetTitle === 'Assembly' ? 'assembly-facet' : ''}`}>
+        <div className={`facet ${facetTitle === 'Assembly' ? 'assembly-facet' : ''}${facetClass}`}>
             {facetTitle !== 'Assembly' ?
                 <h5>{facetTitle}</h5>
             : null}
