@@ -527,7 +527,8 @@
                                         "reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts"
+                                        "reporter code counts",
+                                        "transcriptome annotations"
                                     ]
                                 }
                             }
