@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest --silent",
     "build": "gulp build",
-    "dev": "gulp dev"
+    "dev": "gulp dev",
+    "circleci-test": "jest --ci --runInBand --reporters=default --reporters=jest-junit"
   },
   "author": "",
   "license": "MIT",
@@ -19,7 +20,11 @@
     "testPathIgnorePatterns": [
       ".eslintrc.js"
     ],
-    "setupTestFrameworkScriptFile": "../../../node_modules/jest-enzyme/lib/index.js"
+    "setupTestFrameworkScriptFile": "../../../node_modules/jest-enzyme/lib/index.js",
+    "reporters": [
+        "default",
+        "jest-junit"
+    ]
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
@@ -47,6 +52,7 @@
     "gulp-util": "^3.0.7",
     "jest": "^19.0.2",
     "jest-enzyme": "^2.1.2",
+    "jest-junit": "^6.4.0",
     "jsdom": "^8.4.0",
     "json-loader": "^0.5.4",
     "node-sass": "^4.11.0",

@@ -60,12 +60,17 @@ jobs:
       - run:
           name: NPM and non BDD tests
           command: |
-            npm test
+            mkdir test-results
+            npm run circleci-test
             bin/test -m "not bdd" --collect-only -qq |
               while read test; do
                 [ -z "$test" ] && break
                 echo ${test%:*}
-              done | sort | circleci tests split | xargs -n 1 -t bin/test -v -v --timeout=400 -k
+              done | sort | circleci tests split | xargs -n 1 -t bin/test -v -v --timeout=400 --junitxml=test-results/junit.xml -k
+          environment:
+            JEST_JUNIT_OUTPUT: "test-results/js-test-results.xml"
+      - store_test_results:
+          path: test-results
   bdd-tests:
     executor: encoded-executor
     resource_class: large
@@ -77,12 +82,15 @@ jobs:
       - run:
           name: Run bdd tests
           command: |
-            bin/test -v -v --timeout=400 -m "bdd" --tb=short \
+            mkdir test-results
+            bin/test -v -v --timeout=400 --junitxml=test-results/junit.xml -m "bdd" --tb=short \
               --splinter-implicit-wait 10 \
               --splinter-webdriver chrome \
               --splinter-socket-timeout 300 \
               --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips"
           no_output_timeout: 30m
+      - store_test_results:
+          path: test-results
 
 workflows:
   version: 2
