@@ -3331,16 +3331,25 @@ def test_audit_experiment_tagging_biosample_characterization(
         base_experiment,
         recombinant_target,
         replicate_1_1,
+        replicate_2_1,
         library_1,
+        library_2,
         biosample_1,
+        biosample_2,
         donor_1,
         k562):
     testapp.patch_json(biosample_1['@id'],
                        {'genetic_modifications': [construct_genetic_modification['@id']],
                         'biosample_ontology': k562['uuid'],
                         'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']],
+                        'biosample_ontology': k562['uuid'],
+                        'donor': donor_1['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'],
                        {'assay_term_name': 'ChIP-seq',
                         'target': recombinant_target['@id']})
