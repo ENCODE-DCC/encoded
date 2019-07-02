@@ -458,7 +458,6 @@
                                     "enum": [
                                         "bam",
                                         "sam",
-                                        "gtf",
                                         "bigWig",
                                         "idx"
                                     ]
@@ -527,8 +526,7 @@
                                         "reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts",
-                                        "transcriptome annotations"
+                                        "reporter code counts"                                        
                                     ]
                                 }
                             }
