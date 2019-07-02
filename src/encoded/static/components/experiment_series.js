@@ -173,8 +173,7 @@ const ExperimentSeriesComponent = (props, reactContext) => {
                                     <div data-test="biosamplesummary">
                                         <dt>Biosample summary</dt>
                                         <dd>
-                                            {speciesRender ? <span>{speciesRender}</span> : null}
-                                            &nbsp;
+                                            {speciesRender ? <span>{speciesRender}&nbsp;</span> : null}
                                             {context.biosample_summary && context.biosample_summary.length > 0 ? <span>{context.biosample_summary.join(' and ')} </span> : null}
                                         </dd>
                                     </div>
