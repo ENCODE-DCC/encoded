@@ -249,7 +249,7 @@ class Biosample(Item):
             return request.embed(donor, '@@object').get('synchronization')
 
     @calculated_property(schema={
-        "title": "Genetic modifications",
+        "title": "Model organism genetic modifications",
         "description":
             "Genetic modifications made in the donor organism of the biosample.",
         "type": "array",
