@@ -195,6 +195,7 @@
                     "unfiltered alignments",
                     "variant calls",
                     "sequence barcodes",
+                    "sequence adapters",
                     "transcriptome annotations"
                 ]
             }
@@ -308,6 +309,7 @@
                     "unfiltered alignments",
                     "variant calls",
                     "sequence barcodes",
+                    "sequence adapters",
                     "transcriptome annotations"
                 ]
             }

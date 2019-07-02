@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 14
 
-* *output_type* list was updated to include *transcriptome annotations* and *sequence barcodes*
+* *output_type* list was updated to include the following enums: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
 
 ### Schema version 14
 

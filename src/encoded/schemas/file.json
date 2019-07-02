@@ -599,7 +599,8 @@
                                 },
                                 "output_type": {
                                     "enum": [
-                                        "restriction enzyme site locations"
+                                        "restriction enzyme site locations",
+                                        "sequence adapters"
                                     ]
                                 }
                             }
@@ -1166,6 +1167,7 @@
                         "unfiltered alignments",
                         "variant calls",
                         "sequence barcodes",
+                        "sequence adapters",
                         "transcriptome annotations"
                     ]
                 },
@@ -1612,6 +1614,7 @@
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
         "sequence barcodes": "reference",
+        "sequence adapters": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

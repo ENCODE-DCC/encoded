@@ -2769,5 +2769,21 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "talon_tanscript_annotations.gtf.gz",
         "uuid": "12271a1b-53de-421c-9001-181acb0622c2"
+    },
+    {
+        "_test": "adapter sequences",
+        "accession": "ENCFF107ADP",
+        "award": "U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2018-04-18T16:46:18.670068+00:00",
+        "file_format": "txt",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "14be22b6e11515392414f4ebfa62d28e",
+        "output_type": "sequence adapters",
+        "status": "released",
+        "file_size": 2012222,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "adapter_set.txt",
+        "uuid": "12171a1b-23de-431c-9001-181acb0642c2"
     }
 ]
