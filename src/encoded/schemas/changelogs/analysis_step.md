@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 7
 
-* *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: *transcriptome annotations* and *barcodes*
+* *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: *transcriptome annotations* and *sequence barcodes*
 * *analysis_step_type* were updated to have the following enum terms *transcriptome annotation* and *barcodes mapping generation*
 
 ### Schema version 7

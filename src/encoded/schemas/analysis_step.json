@@ -194,7 +194,7 @@
                     "TSS reference",
                     "unfiltered alignments",
                     "variant calls",
-                    "barcodes",
+                    "sequence barcodes",
                     "transcriptome annotations"
                 ]
             }
@@ -307,7 +307,7 @@
                     "TSS reference",
                     "unfiltered alignments",
                     "variant calls",
-                    "barcodes",
+                    "sequence barcodes",
                     "transcriptome annotations"
                 ]
             }

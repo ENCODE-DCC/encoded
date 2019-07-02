@@ -1165,7 +1165,7 @@
                         "TSS reference",
                         "unfiltered alignments",
                         "variant calls",
-                        "barcodes",
+                        "sequence barcodes",
                         "transcriptome annotations"
                     ]
                 },
@@ -1611,7 +1611,7 @@
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
-        "barcodes": "reference",
+        "sequence barcodes": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

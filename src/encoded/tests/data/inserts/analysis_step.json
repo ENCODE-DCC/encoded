@@ -370,7 +370,7 @@
         ],
         "major_version": 1,
         "output_file_types": [
-            "barcodes"
+            "sequence barcodes"
         ],
         "status": "released",
         "step_label": "starr-barcodes-mapping-generation-step",
