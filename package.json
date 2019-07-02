@@ -22,8 +22,8 @@
     ],
     "setupTestFrameworkScriptFile": "../../../node_modules/jest-enzyme/lib/index.js",
     "reporters": [
-        "default",
-        "jest-junit"
+      "default",
+      "jest-junit"
     ]
   },
   "devDependencies": {
