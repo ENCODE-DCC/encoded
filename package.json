@@ -20,11 +20,7 @@
     "testPathIgnorePatterns": [
       ".eslintrc.js"
     ],
-    "setupTestFrameworkScriptFile": "../../../node_modules/jest-enzyme/lib/index.js",
-    "reporters": [
-      "default",
-      "jest-junit"
-    ]
+    "setupTestFrameworkScriptFile": "../../../node_modules/jest-enzyme/lib/index.js"
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
@@ -50,7 +46,7 @@
     "file-loader": "^0.9.0",
     "gulp": "^3.9.1",
     "gulp-util": "^3.0.7",
-    "jest": "^19.0.2",
+    "jest": "^20.0.0",
     "jest-enzyme": "^2.1.2",
     "jest-junit": "^6.4.0",
     "jsdom": "^8.4.0",
@@ -66,7 +62,7 @@
     "webpack": "^1.14.0"
   },
   "dependencies": {
-    "auth0-lock": "^11.7.0",
+    "auth0-lock": "^11.8.0",
     "babel-polyfill": "^6.20.0",
     "brace": "^0.3.0",
     "chart.js": "^2.5.0",

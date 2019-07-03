@@ -68,7 +68,7 @@ jobs:
                 echo ${test%:*}
               done | sort | circleci tests split | xargs -n 1 -I {} -t bin/test -v -v --timeout=400 --junitxml=test-results/{}_junit.xml -k {}
           environment:
-            JEST_JUNIT_OUTPUT: "test-results/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: "~/encoded/test-results/js-test-results.xml"
       - store_test_results:
           path: test-results
   bdd-tests:
