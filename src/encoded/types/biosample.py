@@ -255,7 +255,7 @@ class Biosample(Item):
         "type": "array",
         "items": {
             "title": "Model organism genetic modification",
-            "description": "Genetic modification made in the model organism biosample.",
+            "description": "Genetic modification made in the model organism of the biosample.",
             "comment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
