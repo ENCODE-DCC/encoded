@@ -53,7 +53,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCDO\\d{3}[A-Z]{3})$|^(TSTDO\\d{6})$"
+                "pattern": "^(KCEDO\\d{3}[A-Z]{3})$|^(TSTDO\\d{6})$"
             }
         },
         "organism": {

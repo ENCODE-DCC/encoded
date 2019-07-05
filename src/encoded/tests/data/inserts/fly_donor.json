@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCDO242AAA",
+        "accession": "KCEDO242AAA",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
@@ -9,7 +9,7 @@
 
     },
     {
-        "accession": "ENCDO180XXX",
+        "accession": "KCEDO180XXX",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
@@ -17,7 +17,7 @@
         "external_ids": ["TRiP:HMC03503", "BDSC:53287"]
     },
     {
-        "accession": "ENCDO101XXX",
+        "accession": "KCEDO101XXX",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
@@ -26,12 +26,12 @@
             "DGGR:109027"
         ],
         "strain_background": "VK00033",
-        "genetic_modifications": ["ENCGM162RDA"],
+        "genetic_modifications": ["KCEGM162RDA"],
         "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
         "documents": [
             "encode:sample_strain_generation_protocol"
         ],
-        "parent_strains": ["ENCDO180XXX", "ENCDO242AAA"],
+        "parent_strains": ["KCEDO180XXX", "KCEDO242AAA"],
         "uuid": "094a484e-817c-4cb3-a8dd-9ea2c3c1067b",
         "dbxrefs": ["FlyBase:FBst0038626", "BDSC:38626"]
     }

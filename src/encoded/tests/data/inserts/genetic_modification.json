@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCGM529DAG",
+        "accession": "KCEGM529DAG",
         "aliases": [
             "encode:modification-test-1"
         ],
@@ -25,7 +25,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant"
     },
     {
-        "accession": "ENCGM442SCX",
+        "accession": "KCEGM442SCX",
         "aliases": [
             "encode:modification-test-2"
         ],
@@ -44,7 +44,7 @@
         "category": "deletion",
         "method": "CRISPR",
         "reagents": [
-            { 
+            {
                 "source": "atcc",
                 "identifier": "CRL-2522"
             }
@@ -57,7 +57,7 @@
         "submitted_by": "amet.fusce@est.fermentum"
     },
     {
-        "accession": "ENCGM793CRR",
+        "accession": "KCEGM793CRR",
         "description": "shRNA targeting FTO",
         "method": "RNAi",
         "reagents": [
@@ -76,7 +76,7 @@
         "submitted_by": "amet.fusce@est.fermentum"
     },
     {
-        "accession": "ENCGM089YBC",
+        "accession": "KCEGM089YBC",
         "submitted_by": "amet.fusce@est.fermentum",
         "status": "released",
         "introduced_tags": [
@@ -106,8 +106,8 @@
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
     },
     {
-        "accession": "ENCGM198AQA",
-        "status": "released", 
+        "accession": "KCEGM198AQA",
+        "status": "released",
         "modified_site_by_coordinates": {
             "chromosome": "X",
             "assembly": "hg19",
@@ -135,7 +135,7 @@
         "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
     },
     {
-        "accession": "ENCGM345ZQX",
+        "accession": "KCEGM345ZQX",
         "status": "in progress",
         "modified_site_nonspecific": "random",
         "award": "/awards/U41HG007355/",
@@ -150,7 +150,7 @@
     },
     {
         "uuid": "1d6eae38-f1dc-458c-9a08-984c953eaff4",
-        "accession": "ENCGM162RDA",
+        "accession": "KCEGM162RDA",
         "aliases": [
             "kevin-white:AV001_eGFP-ab"
         ],
@@ -183,7 +183,7 @@
         ]
     },
     {
-        "accession": "ENCGM123ABC",
+        "accession": "KCEGM123ABC",
         "status": "released",
         "award": "/awards/U41HG007355/",
         "lab": "/labs/kevin-white/",
@@ -196,7 +196,7 @@
         "method": "CRISPR"
     },
     {
-        "accession": "ENCGM246STR",
+        "accession": "KCEGM246STR",
         "status": "released",
         "award": "/awards/U41HG007355/",
         "lab": "/labs/kevin-white/",
@@ -212,7 +212,7 @@
         "method": "transient transfection"
     },
     {
-        "accession": "ENCGM359MPR",
+        "accession": "KCEGM359MPR",
         "status": "released",
         "award": "/awards/U41HG007355/",
         "lab": "/labs/kevin-white/",

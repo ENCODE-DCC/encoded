@@ -1,11 +1,11 @@
 [
     {
-        "accession": "ENCLB309ZZZ",
+        "accession": "KCELB309ZZZ",
         "aliases": [
             "richard-myers:SL14572"
         ],
         "award": "ENCODE2",
-        "biosample": "ENCBS057AAA",
+        "biosample": "KCEBS057AAA",
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
@@ -26,12 +26,12 @@
         ]
     },
     {
-        "accession": "ENCLB310ZZZ",
+        "accession": "KCELB310ZZZ",
         "aliases": [
             "richard-myers:SL16339"
         ],
         "award": "ENCODE2",
-        "biosample": "ENCBS001AAA",
+        "biosample": "KCEBS001AAA",
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
@@ -47,12 +47,12 @@
         "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
     },
     {
-        "accession": "ENCLB055ZZZ",
+        "accession": "KCELB055ZZZ",
         "aliases": [
             "thomas-gingeras:SID38806"
         ],
         "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
+        "biosample": "KCEBS087RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
@@ -71,12 +71,12 @@
         "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"
     },
     {
-        "accession": "ENCLB056ZZZ",
+        "accession": "KCELB056ZZZ",
         "aliases": [
             "thomas-gingeras:SID38807"
         ],
         "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
+        "biosample": "KCEBS088RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
@@ -95,12 +95,12 @@
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
     },
     {
-        "accession": "ENCLB065ZZZ",
+        "accession": "KCELB065ZZZ",
         "aliases": [
             "thomas-gingeras:SID38815"
         ],
         "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
+        "biosample": "KCEBS087RNA",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
@@ -111,12 +111,12 @@
         "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
     },
     {
-        "accession": "ENCLB066ZZZ",
+        "accession": "KCELB066ZZZ",
         "aliases": [
             "thomas-gingeras:SID38816"
         ],
         "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
+        "biosample": "KCEBS088RNA",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
@@ -127,12 +127,12 @@
         "uuid": "e4824882-0ad8-4009-a169-44d5955800af"
     },
     {
-        "accession": "ENCLB067ZZZ",
+        "accession": "KCELB067ZZZ",
         "aliases": [
             "thomas-gingeras:SID38822"
         ],
         "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
+        "biosample": "KCEBS087RNA",
         "depleted_in_term_name": [
             "polyadenylated mRNA"
         ],
@@ -152,12 +152,12 @@
         "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017"
     },
     {
-        "accession": "ENCLB068ZZZ",
+        "accession": "KCELB068ZZZ",
         "aliases": [
             "thomas-gingeras:SID38823"
         ],
         "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
+        "biosample": "KCEBS088RNA",
         "depleted_in_term_name": [
             "polyadenylated mRNA"
         ],
@@ -177,9 +177,9 @@
         "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565"
     },
     {
-        "accession": "ENCLB057ZZZ",
+        "accession": "KCELB057ZZZ",
         "award": "U54HG007005",
-        "biosample": "ENCBS087RNA",
+        "biosample": "KCEBS087RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
@@ -196,9 +196,9 @@
         "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
     },
     {
-        "accession": "ENCLB072ZZZ",
+        "accession": "KCELB072ZZZ",
         "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
+        "biosample": "KCEBS044ENC",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -211,9 +211,9 @@
         "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
     },
     {
-        "accession": "ENCLB304ZZZ",
+        "accession": "KCELB304ZZZ",
         "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
+        "biosample": "KCEBS044ENC",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -226,9 +226,9 @@
         "uuid": "835e166d-0253-41ce-add2-de67429a3612"
     },
     {
-        "accession": "ENCLB071ZZZ",
+        "accession": "KCELB071ZZZ",
         "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
+        "biosample": "KCEBS044ENC",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -241,9 +241,9 @@
         "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
     },
     {
-        "accession": "ENCLB000ANI",
+        "accession": "KCELB000ANI",
         "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ANI",
+        "biosample": "KCEBS044ANI",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -256,9 +256,9 @@
         "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f"
     },
     {
-        "accession": "ENCLB001ANI",
+        "accession": "KCELB001ANI",
         "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS045ANI",
+        "biosample": "KCEBS045ANI",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -271,9 +271,9 @@
         "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
     },
     {
-        "accession": "ENCLB058ZZZ",
+        "accession": "KCELB058ZZZ",
         "award": "U54HG007005",
-        "biosample": "ENCBS088RNA",
+        "biosample": "KCEBS088RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
@@ -290,9 +290,9 @@
         "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
     },
     {
-        "accession": "ENCLB163ZZZ",
+        "accession": "KCELB163ZZZ",
         "award": "ENCODE2",
-        "biosample": "ENCBS417ENC",
+        "biosample": "KCEBS417ENC",
         "documents": [
             "encode:Myers_Methyl450_protocol"
         ],
@@ -305,9 +305,9 @@
     },
     {
         "_test": "test -new",
-        "accession": "ENCLB158ZZZ",
+        "accession": "KCELB158ZZZ",
         "award": "ENCODE2",
-        "biosample": "ENCBS417ENC",
+        "biosample": "KCEBS417ENC",
         "documents": [
             "encode:Myers_Methyl450_protocol"
         ],
@@ -320,9 +320,9 @@
     },
     {
         "_test": "test -new",
-        "accession": "ENCLB159ZZZ",
+        "accession": "KCELB159ZZZ",
         "award": "ENCODE2",
-        "biosample": "ENCBS000GEN",
+        "biosample": "KCEBS000GEN",
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
         "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
@@ -332,7 +332,7 @@
     },
     {
         "_test": "DNA-me pipeline",
-        "accession": "ENCLB742NWU",
+        "accession": "KCELB742NWU",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "documents": [],
         "uuid": "0cbd1597-831a-4628-9cd0-c428b208d259",
@@ -344,12 +344,12 @@
         "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
         "size_range": "100-300",
-        "biosample": "ENCBS039ENC"
+        "biosample": "KCEBS039ENC"
     },
     {
-        "accession": "ENCLB723GTS",
+        "accession": "KCELB723GTS",
         "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
+        "biosample": "KCEBS630AAA",
         "lab": "michael-snyder/",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
@@ -358,9 +358,9 @@
         "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
     },
     {
-        "accession": "ENCLB209APR",
+        "accession": "KCELB209APR",
         "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
+        "biosample": "KCEBS630AAA",
         "lab": "michael-snyder",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
@@ -369,9 +369,9 @@
         "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
     },
     {
-        "accession": "ENCLB209APS",
+        "accession": "KCELB209APS",
         "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
+        "biosample": "KCEBS630AAA",
         "lab": "michael-snyder",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
@@ -382,8 +382,8 @@
     {
         "_test": "Paired set 1 library",
         "lab": "john-stamatoyannopoulos",
-        "accession": "ENCLB376WDO",
-        "biosample": "ENCBS278TPS",
+        "accession": "KCELB376WDO",
+        "biosample": "KCEBS278TPS",
         "status": "released",
         "strand_specificity": false,
         "award": "U54HG007010",
@@ -393,9 +393,9 @@
     },
     {
         "_test": "Paired set 2 library",
-        "accession": "ENCLB033CJI",
+        "accession": "KCELB033CJI",
         "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
+        "biosample": "KCEBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -405,8 +405,8 @@
     },
     {
         "_test": "Organism development series 1 library",
-        "accession": "ENCLB857STI",
-        "biosample": "ENCBS757XTA",
+        "accession": "KCELB857STI",
+        "biosample": "KCEBS757XTA",
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "RNA",
@@ -422,8 +422,8 @@
     },
     {
         "_test": "Organism development series 2 library",
-        "accession": "ENCLB332ELH",
-        "biosample": "ENCBS201ZPO",
+        "accession": "KCELB332ELH",
+        "biosample": "KCEBS201ZPO",
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "RNA",
@@ -439,9 +439,9 @@
     },
     {
         "_test": "Organism development series 3 library",
-        "accession": "ENCLB595GWE",
+        "accession": "KCELB595GWE",
         "strand_specificity": false,
-        "biosample": "ENCBS598ADI",
+        "biosample": "KCEBS598ADI",
         "lab": "robert-waterston",
         "status": "revoked",
         "nucleic_acid_term_name": "RNA",
@@ -465,8 +465,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB001SER",
-        "biosample": "ENCBS001SER",
+        "accession": "KCELB001SER",
+        "biosample": "KCEBS001SER",
         "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a"
     },
     {
@@ -480,8 +480,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB002SER",
-        "biosample": "ENCBS002SER",
+        "accession": "KCELB002SER",
+        "biosample": "KCEBS002SER",
         "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef"
     },
     {
@@ -495,8 +495,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB003SER",
-        "biosample": "ENCBS003SER",
+        "accession": "KCELB003SER",
+        "biosample": "KCEBS003SER",
         "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e"
     },
     {
@@ -510,8 +510,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB001CON",
-        "biosample": "ENCBS001SER",
+        "accession": "KCELB001CON",
+        "biosample": "KCEBS001SER",
         "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89"
     },
     {
@@ -525,8 +525,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB002CON",
-        "biosample": "ENCBS002CON",
+        "accession": "KCELB002CON",
+        "biosample": "KCEBS002CON",
         "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d"
     },
     {
@@ -540,8 +540,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB003CON",
-        "biosample": "ENCBS003CON",
+        "accession": "KCELB003CON",
+        "biosample": "KCEBS003CON",
         "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d"
     },
     {
@@ -555,8 +555,8 @@
         "size_range": "350-600",
         "fragmentation_method": "sonication (Bioruptor generic)",
         "extraction_method": "Trizol",
-        "accession": "ENCLB001EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB001EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc"
     },
     {
@@ -568,8 +568,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB002EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB002EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91"
     },
     {
@@ -581,8 +581,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB003EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB003EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89"
     },
     {
@@ -594,8 +594,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB004EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB004EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62"
     },
     {
@@ -607,8 +607,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB005EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB005EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba"
     },
     {
@@ -620,8 +620,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB006EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB006EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa"
     },
     {
@@ -633,8 +633,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB007EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB007EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137"
     },
     {
@@ -646,8 +646,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB008EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB008EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c"
     },
     {
@@ -659,8 +659,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB009EPI",
-        "biosample": "ENCBS001EPI",
+        "accession": "KCELB009EPI",
+        "biosample": "KCEBS001EPI",
         "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136"
     },
     {
@@ -672,8 +672,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-200",
-        "accession": "ENCLB001REP",
-        "biosample": "ENCBS001REP",
+        "accession": "KCELB001REP",
+        "biosample": "KCEBS001REP",
         "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6"
     },
     {
@@ -685,8 +685,8 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "150-250",
-        "accession": "ENCLB002REP",
-        "biosample": "ENCBS002REP",
+        "accession": "KCELB002REP",
+        "biosample": "KCEBS002REP",
         "uuid": "1ed1c288-0541-46b8-a827-b771cef26970"
     },
     {
@@ -698,15 +698,15 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "170-200",
-        "accession": "ENCLB003REP",
-        "biosample": "ENCBS003REP",
+        "accession": "KCELB003REP",
+        "biosample": "KCEBS003REP",
         "uuid": "cc6238c1-5650-4139-8927-7150154d18e0"
     },
     {
         "_test": "RCC files",
-        "accession": "ENCLB000RCC",
+        "accession": "KCELB000RCC",
         "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
+        "biosample": "KCEBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -716,9 +716,9 @@
     },
     {
         "_test": "RCC files",
-        "accession": "ENCLB001RCC",
+        "accession": "KCELB001RCC",
         "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
+        "biosample": "KCEBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -728,9 +728,9 @@
     },
     {
         "_test": "idat files",
-        "accession": "ENCLB000DAT",
+        "accession": "KCELB000DAT",
         "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
+        "biosample": "KCEBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -740,9 +740,9 @@
     },
     {
         "_test": "single cell barcodes",
-        "accession": "ENCLB001SCL",
+        "accession": "KCELB001SCL",
         "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
+        "biosample": "KCEBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",

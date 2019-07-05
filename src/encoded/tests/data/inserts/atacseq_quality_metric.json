@@ -4,7 +4,7 @@
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "uuid": "f082707c-50c6-4dbb-af33-965ef3186e17",
         "assay_term_name": "ATAC-seq",
-        "quality_metric_of": [ "ENCFF003COS", "ENCFF002COS"],
+        "quality_metric_of": [ "KCEFF003COS", "KCEFF002COS"],
         "alignment_rate": 0.92931,
         "mitochondrial_read_fraction": 0.23366,
         "post_filtering_read_depth": 38842570,

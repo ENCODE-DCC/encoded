@@ -1,7 +1,7 @@
 [
 	{
         "_test": "aggregate series",
-        "accession": "ENCSR300AGG",
+        "accession": "KCESR300AGG",
         "award": "U24HG009397",
         "description": "Aggregate series for HiC experiment mega-maps.",
         "lab": "john-stamatoyannopoulos",

@@ -1,7 +1,7 @@
 
 [
      {
-        "accession": "ENCPL001MQC",
+        "accession": "KCEPL001MQC",
         "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
@@ -14,7 +14,7 @@
         "status": "released"
     },
     {
-        "accession": "ENCPL000MEG",
+        "accession": "KCEPL000MEG",
         "pipeline_version": 1,
         "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
@@ -32,7 +32,7 @@
         "status": "released"
     },
     {
-        "accession": "ENCPL002BIS",
+        "accession": "KCEPL002BIS",
         "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
@@ -46,7 +46,7 @@
         "status": "released"
     },
     {
-        "accession": "ENCPL003RNA",
+        "accession": "KCEPL003RNA",
         "assay_term_names": ["RNA-seq"],
         "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
         "title": "long-rna-seq-pipeline-pe",
@@ -66,7 +66,7 @@
         "status": "released"
     },
     {
-        "accession": "ENCPL001GRV",
+        "accession": "KCEPL001GRV",
         "assay_term_names": ["RNA-seq"],
         "analysis_steps": [
             "alignment-test-step-v-1",
@@ -82,7 +82,7 @@
         "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
     },
     {
-        "accession": "ENCPL001CRG",
+        "accession": "KCEPL001CRG",
         "assay_term_names": ["RNA-seq"],
         "analysis_steps": [
             "alignment-test-step-v-2",
@@ -99,7 +99,7 @@
         "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66"
     },
     {
-        "accession": "ENCPL001ENC",
+        "accession": "KCEPL001ENC",
         "assay_term_names": ["ChIP-seq"],
         "analysis_steps": [
             "encode-2-step-v-1",
@@ -116,7 +116,7 @@
         "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8"
     },
     {
-        "accession": "ENCPL001CLP",
+        "accession": "KCEPL001CLP",
         "assay_term_names": ["eCLIP"],
         "analysis_steps": [
             "alignment-test-step-v-3",
@@ -132,7 +132,7 @@
         "uuid": "21934150-5e2f-11e4-9803-0800200c9a66"
     },
     {
-        "accession": "ENCPL001FVD",
+        "accession": "KCEPL001FVD",
         "assay_term_names": ["RNA-seq", "eCLIP"],
         "analysis_steps": [
             "fastqc-step-v-1"
@@ -144,7 +144,7 @@
         "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66"
     },
     {
-        "accession": "ENCPL001ISO",
+        "accession": "KCEPL001ISO",
         "assay_term_names": ["long read RNA-seq"],
         "analysis_steps": [
             "fastqc-step-v-1"
@@ -156,7 +156,7 @@
         "uuid": "fd603a65-7641-4e4d-b7df-fadbc4f38da6"
     },
     {
-        "accession": "ENCPL001STR",
+        "accession": "KCEPL001STR",
         "assay_term_names": ["STARR-seq"],
         "analysis_steps": [
             "fastqc-step-v-1"

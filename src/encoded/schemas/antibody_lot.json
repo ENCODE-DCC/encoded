@@ -41,7 +41,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCAB\\d{3}[A-Z]{3})$|^(TSTAB\\d{6})$"
+                "pattern": "^(KCEAB\\d{3}[A-Z]{3})$|^(TSTAB\\d{6})$"
             }
         },
         "lot_id": {

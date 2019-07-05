@@ -1,7 +1,7 @@
-[    
+[
     {
         "_test": "enhancer annotation dataset",
-        "accession": "ENCSR356VQT",
+        "accession": "KCESR356VQT",
         "award": "U54HG007004",
         "annotation_type": "long-range chromatin interactions",
         "description": "Enhancer prediction dataset for Mouse E11.5 heart (whole genome) based on histone, DNase HS, k-mer and GC content (Method 4)",
@@ -20,7 +20,7 @@
     },
     {
         "_test": "domain annotation dataset",
-        "accession": "ENCSR575ZXX",
+        "accession": "KCESR575ZXX",
         "award": "U54HG007004",
         "annotation_type": "chromatin state",
         "description": "Domain annotation of IMR90 created by Segway with graph-based regularization",
@@ -36,7 +36,7 @@
     },
     {
         "_test": "overlap/synthesis dataset",
-        "accession": "ENCSR122HHF",
+        "accession": "KCESR122HHF",
         "award": "U54HG007004",
         "annotation_type": "overlap",
         "description": "DNaseI/FAIRE/ChIP synthesis for K562",
@@ -51,11 +51,11 @@
             "UCSC-ENCODE-hg19:wgEncodeEH001328"
         ],
         "date_released": "2011-06-10",
-        "related_files": ["ENCFF001MXB", "ENCFF002COS"]
+        "related_files": ["KCEFF001MXB", "KCEFF002COS"]
     },
     {
         "_test": "encyclopedia",
-        "accession": "ENCSR385DCD",
+        "accession": "KCESR385DCD",
         "award": "U54HG007004",
         "annotation_type": "other",
         "description": "ENCODE Annotations v1",
@@ -66,12 +66,12 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
         "uuid": "5047a772-d977-4ac8-8ada-9ddc3065d68f",
-        "related_files": ["ENCFF000LSP", "ENCFF000LSQ", "ENCFF690MGJ", "ENCFF145DKR"],
+        "related_files": ["KCEFF000LSP", "KCEFF000LSQ", "KCEFF690MGJ", "KCEFF145DKR"],
         "date_released": "2016-01-01"
     },
     {
         "_test": "superseded annotation",
-        "accession": "ENCSR937GWB",
+        "accession": "KCESR937GWB",
         "award": "U54HG007004",
         "annotation_type": "other",
         "description": "ENCODE Annotations v2",
@@ -82,13 +82,13 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
         "uuid": "30549432-5196-43f9-a856-d19394e2e1b3",
-        "related_files": ["ENCFF000LSP", "ENCFF000LSQ"],
+        "related_files": ["KCEFF000LSP", "KCEFF000LSQ"],
         "date_released": "2016-06-01",
-        "supersedes": ["ENCSR385DCD"]
+        "supersedes": ["KCESR385DCD"]
     },
     {
         "_test": "encyclopedia",
-        "accession": "ENCSR331TIQ",
+        "accession": "KCESR331TIQ",
         "award": "U54HG007004",
         "annotation_type": "imputation",
         "description": "ENCODE Annotations v3",
@@ -99,7 +99,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
         "uuid": "a625bb6b-47fd-445a-85bd-c3beb0a350a3",
-        "related_files": ["ENCFF000LSP", "ENCFF000LSQ", "ENCFF690MGJ", "ENCFF145DKR"],
+        "related_files": ["KCEFF000LSP", "KCEFF000LSQ", "KCEFF690MGJ", "KCEFF145DKR"],
         "date_released": "2016-09-21"
     }
 ]

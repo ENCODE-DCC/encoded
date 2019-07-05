@@ -394,7 +394,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCGM\\d{3}[A-Z]{3})$|^(TSTGM\\d{6})$"
+                "pattern": "^(KCEGM\\d{3}[A-Z]{3})$|^(TSTGM\\d{6})$"
             }
         },
         "description": {

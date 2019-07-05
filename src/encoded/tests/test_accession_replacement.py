@@ -6,7 +6,7 @@ def human_donor(lab, award, organism):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'organism': organism['uuid']        
+        'organism': organism['uuid']
     }
 
 
@@ -37,8 +37,8 @@ def test_schema_formats(human_donor, testapp):
     donor1 = testapp.post_json(url, human_donor, status=201).json['@graph'][0]
 
     # initial test
-    testapp.patch_json(donor1['@id'], {'accession': 'ENCDO111BBB'}, status=200)
-    res = testapp.get('/human-donors/ENCDO111BBB').maybe_follow()
+    testapp.patch_json(donor1['@id'], {'accession': 'KCEDO111BBB'}, status=200)
+    res = testapp.get('/human-donors/KCEDO111BBB').maybe_follow()
     assert res.json['uuid'] == donor1['uuid']
 
     # test accession schema_format

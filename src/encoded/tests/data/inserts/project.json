@@ -1,7 +1,7 @@
 [
     {
         "_test": "ec3 dataset",
-        "accession": "ENCSR000AJW",
+        "accession": "KCESR000AJW",
         "award": "ENCODE2",
         "project_type": "evaluation",
         "description": "RNA Working Group Evaluation Dataset",
@@ -18,7 +18,7 @@
 		"description": "Uniformly processed ENCODE3 eCLIP October 2015",
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
 		"lab": "j-michael-cherry",
-		"accession": "ENCSR636JNF",
+		"accession": "KCESR636JNF",
 		"status": "in progress",
 		"uuid": "e84c5e16-87c5-4e7f-96de-3cef706df67a"
 	},
@@ -31,13 +31,13 @@
 		"lab": "j-michael-cherry",
 		"description": "Enhancer Validations for ENCODE3",
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
-		"accession": "ENCSR554OJS",
+		"accession": "KCESR554OJS",
 		"date_released": "1994-04-05"
 	},
 	{
 		"_test": "evaluation dataset",
 		"project_type": "evaluation",
-		"accession": "ENCSR860CMY",
+		"accession": "KCESR860CMY",
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
 		"status": "released",
 		"description": "The ENCODE3 TF ChIP-seq peak calling evaluation dataset. This dataset was used by members of the Binding Working Group to evaluate candiate TF peak callers for the defined processing pipeline.",

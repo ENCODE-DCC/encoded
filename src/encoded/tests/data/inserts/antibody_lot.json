@@ -1,7 +1,7 @@
 [
     {
         "_test": "untagged target and unknown lot",
-        "accession": "ENCAB000AFU",
+        "accession": "KCEAB000AFU",
         "antigen_description": "E2F1(KH20 and KH95) Epitope for KH20 has been mapped to amino acids 1-89; KH95 to amino acids 342-386.",
         "award": "ENCODE2",
         "clonality": "monoclonal",
@@ -21,7 +21,7 @@
     },
     {
         "_test": "several variations of different lots, aliases, alternate accessions",
-        "accession": "ENCAB000ASG",
+        "accession": "KCEAB000ASG",
         "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
         "award": "ROADMAP",
         "clonality": "polyclonal",
@@ -41,9 +41,9 @@
     },
     {
         "_test": "has alternate_accesion",
-        "accession": "ENCAB000AUU",
+        "accession": "KCEAB000AUU",
         "alternate_accessions": [
-            "ENCAB000ATG"
+            "KCEAB000ATG"
         ],
         "award": "ENCODE2",
         "clonality": "polyclonal",
@@ -63,11 +63,11 @@
     },
     {
         "_test": "multiple lot aliases and accessions",
-        "accession": "ENCAB000ANU",
+        "accession": "KCEAB000ANU",
         "alternate_accessions": [
-            "ENCAB000ASE",
-            "ENCAB000ASF",
-            "ENCAB000AUQ"
+            "KCEAB000ASE",
+            "KCEAB000ASF",
+            "KCEAB000AUQ"
         ],
         "award": "U54HG006991",
         "clonality": "polyclonal",
@@ -93,10 +93,10 @@
     },
     {
         "_test": "multiple alternate accesions and lot alias",
-        "accession": "ENCAB000ANK",
+        "accession": "KCEAB000ANK",
         "alternate_accessions": [
-            "ENCAB000AOW",
-            "ENCAB000AOV"
+            "KCEAB000AOW",
+            "KCEAB000AOV"
         ],
         "antigen_description": "Synthetic peptide: ARTKQTARAcKSTG-C conjugated to KLH, corresponding to amino acids 1-12 of Human Histone H3.",
         "award": "ENCODE2",
@@ -124,7 +124,7 @@
     },
     {
         "_test": "refer to same target",
-        "accession": "ENCAB000AUZ",
+        "accession": "KCEAB000AUZ",
         "antigen_sequence": "MSKSESPKEPEQLRKLFIGGLSFETTDESLRSHFEQWGTLTDCVVMRDPN",
         "award": "U54HG007005",
         "clonality": "polyclonal",
@@ -142,7 +142,7 @@
     },
     {
         "_test": "refer to same target and lab self-fail",
-        "accession": "ENCAB000AVA",
+        "accession": "KCEAB000AVA",
         "antigen_sequence": "NQSSNFGPMKGGNFGGRSSGPYGGGGQYFAKPRNQGGYGGSSSSSSYGSG",
         "award": "U54HG007005",
         "clonality": "polyclonal",
@@ -161,7 +161,7 @@
     },
     {
         "_test": "control",
-        "accession": "ENCAB000AOF",
+        "accession": "KCEAB000AOF",
         "aliases": [
             "j-michael-cherry:Control"
         ],
@@ -182,7 +182,7 @@
     },
     {
         "_test": "tagged target",
-        "accession": "ENCAB000ASV",
+        "accession": "KCEAB000ASV",
         "antigen_description": "Clone 16B12 was raised against the twelve amino acid peptide CYPYDVPDYASL. This second-generation HA antibody is an excellent substitute for the 12CA5 monoclonal antibody. The HA.11 antibody recognizes the influenza hemagglutinin epitope (YPYDVPDYA) which has been used extensively as a general epitope tag in expression vectors. The extreme specificity of the antibody allows unambiguous identification and quantitative analysis of the tagged protein. The HA.11 antibody recognizes HA epitopes located in the middle of protein sequences as well as at the N- or C-terminus.",
         "antigen_sequence": "CYPYDVPDYASL",
         "award": "ENCODE2",
@@ -203,7 +203,7 @@
     },
     {
         "_test": "frowny gel",
-        "accession": "ENCAB000ADQ",
+        "accession": "KCEAB000ADQ",
         "antigen_description": "Peptide region of the protein sequence according to NP_055408",
         "award": "U54HG006998",
         "clonality": "polyclonal",
@@ -220,7 +220,7 @@
     },
     {
         "_test": "refer to same target",
-        "accession": "ENCAB000AXP",
+        "accession": "KCEAB000AXP",
         "award": "U54HG007005",
         "clonality": "monoclonal",
         "host_organism": "mouse",
@@ -237,7 +237,7 @@
     },
     {
         "_test": "ENCODE2 dbxref with special characters",
-        "accession": "ENCAB000AFR",
+        "accession": "KCEAB000AFR",
         "antigen_description": "Epitope mapping at the N-terminus of CTCF of human origin.",
         "award": "ENCODE2",
         "clonality": "polyclonal",
@@ -258,7 +258,7 @@
     },
     {
         "_test": "has lot aliases",
-        "accession": "ENCAB000ALM",
+        "accession": "KCEAB000ALM",
         "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
@@ -281,7 +281,7 @@
     },
     {
         "_test": "has tsv validation",
-        "accession": "ENCAB000ACQ",
+        "accession": "KCEAB000ACQ",
         "antigen_description": "TCF4 (NP_005019, a.a. 1-366) full length recombinant protein with GST tag.",
         "award": "U54HG006998",
         "clonality": "monoclonal",
@@ -299,7 +299,7 @@
     },
     {
         "_test": "anti-GFP antibody to test tags",
-        "accession": "ENCAB728YTO",
+        "accession": "KCEAB728YTO",
         "antigen_description": "Antisera raised against a peptide from the GFP protein. Produced commercially for the modENCODE Project by K. White's group and Millipore.",
         "antigen_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTLTYGVQCFSRYPDHMKRHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
         "award": "U54HG006996",
@@ -322,7 +322,7 @@
         "status": "in progress"
     },
     {
-        "accession": "ENCAB000AFX",
+        "accession": "KCEAB000AFX",
         "antigen_description": "Raised against a.a. 1-300 mapping at the N-terminus of EBF of human origin.",
         "award": "ENCODE2",
         "clonality": "monoclonal",
@@ -361,7 +361,7 @@
         "lot_id": "065K6236",
         "source": "sigma",
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
-        "accession": "ENCAB694YJM",
+        "accession": "KCEAB694YJM",
         "uuid": "272e1aa6-a5a4-4e07-bcbe-38e529fe3a87"
     },
     {
@@ -371,7 +371,7 @@
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f1804?lang=en&region=US",
         "dbxrefs": ["AR:AB_262044"],
         "lot_id": "SLBK1346V",
-        "accession": "ENCAB697XQW",
+        "accession": "KCEAB697XQW",
         "award": "U54HG006998",
         "host_organism": "/organisms/mouse/",
         "isotype": "IgG1",

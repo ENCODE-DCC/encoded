@@ -32,7 +32,7 @@
          "treatment_term_name": "goat-anti-GFP-UC",
          "treatment_type": "antibody",
          "uuid": "10c05ac0-52a2-11e6-bdf4-0800200c9a66",
-         "antibodies_used": ["ENCAB728YTO"]
+         "antibodies_used": ["KCEAB728YTO"]
     },
     {
         "amount": 600,

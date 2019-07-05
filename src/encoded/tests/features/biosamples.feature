@@ -2,7 +2,7 @@
 Feature: Biosamples
 
     Scenario: Detail page
-        When I visit "/biosamples/ENCBS000AAA/"
+        When I visit "/biosamples/KCEBS000AAA/"
         Then I should see "Richard Myers, HAIB"
         And I should see "ENCODE"
 

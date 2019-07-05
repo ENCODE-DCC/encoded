@@ -67,7 +67,7 @@ ENC_ACCESSION_FORMAT = (digits, digits, digits, ascii_uppercase, ascii_uppercase
 
 def enc_accession(accession_type):
     random_part = ''.join(random.choice(s) for s in ENC_ACCESSION_FORMAT)
-    return 'ENC' + accession_type + random_part
+    return 'KCE' + accession_type + random_part
 
 
 TEST_ACCESSION_FORMAT = (digits, ) * 6

@@ -1,7 +1,7 @@
 [
     {
         "_test": "spikes",
-        "accession": "ENCSR156CIL",
+        "accession": "KCESR156CIL",
         "award": "ENCODE2",
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset",
@@ -13,7 +13,7 @@
     },
     {
         "_test": "spikes2",
-        "accession": "ENCSR013YHQ",
+        "accession": "KCESR013YHQ",
         "award": "ENCODE2",
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset 2",
@@ -25,7 +25,7 @@
     },
     {
         "_test": "RAMPAGE spike-ins",
-        "accession": "ENCSR704RSS",
+        "accession": "KCESR704RSS",
         "award": "U54HG007005",
         "reference_type": "spike-in",
         "description": "Spike-ins used in RAMPAGE experiments from CSHL",
@@ -37,7 +37,7 @@
     },
     {
         "_test": "mappability",
-        "accession": "ENCSR165FBU",
+        "accession": "KCESR165FBU",
         "award": "ENCODE2",
         "reference_type": "mappability",
         "description": "Human Mappability Uniqueness 35mer",
@@ -49,7 +49,7 @@
     },
     {
         "_test": "index",
-        "accession": "ENCSR497EUF",
+        "accession": "KCESR497EUF",
         "award": "/awards/U41HG006992",
         "reference_type": "index",
         "description": "Bismarck indexed reference files for use with methylation input",
@@ -61,7 +61,7 @@
     },
     {
         "_test": "reference file dataset ",
-        "accession": "ENCSR001REF",
+        "accession": "KCESR001REF",
         "award": "ENCODE2",
         "reference_type": "index",
         "description": "Dataset for Reference Files (including Genomes)",

@@ -1,7 +1,7 @@
 [
     {
         "_test": "fake dataset",
-        "accession": "ENCSR999BLA",
+        "accession": "KCESR999BLA",
         "award": "ENCODE2",
         "description": "Testing dataset",
         "lab": "richard-myers",
@@ -12,7 +12,7 @@
     },
     {
         "_test": "ec2 dataset",
-        "accession": "ENCSR847FDT",
+        "accession": "KCESR847FDT",
         "aliases": [
             "encode:FakeyName"
         ],
@@ -32,10 +32,10 @@
             "eedcf3b0-bddc-11e4-bb52-0800200c9a66"
         ],
         "related_files": [
-            "ENCFF001MYM",
-            "ENCFF002MYM",
-            "ENCFF001MWZ",
-            "ENCFF001MXA"
+            "KCEFF001MYM",
+            "KCEFF002MYM",
+            "KCEFF001MWZ",
+            "KCEFF001MXA"
         ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -44,7 +44,7 @@
     },
     {
         "_test": "patch file",
-        "accession": "ENCSR825ZJX",
+        "accession": "KCESR825ZJX",
         "award": "ENCODE2",
         "dbxrefs": [
             "UCSC-ENCODE-hg19:wgEncodeEH002546",
@@ -68,7 +68,7 @@
     },
     {
         "_test": "UCSC composite",
-        "accession": "ENCSR709LDB",
+        "accession": "KCESR709LDB",
         "award": "ENCODE2",
         "dbxrefs": [
             "GEO:GSE32218",
@@ -86,10 +86,10 @@
             "eedcf3b0-bddc-11e4-bb52-0800200c9a66"
         ],
         "related_files": [
-            "ENCFF001MYM",
-            "ENCFF002MYM",
-            "ENCFF001MWZ",
-            "ENCFF001MXA"
+            "KCEFF001MYM",
+            "KCEFF002MYM",
+            "KCEFF001MWZ",
+            "KCEFF001MXA"
         ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
