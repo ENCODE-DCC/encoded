@@ -1,7 +1,7 @@
 [
     {
         "name": "homepage",
-        "title": "The ENCODE Project",
+        "title": "The Kidney Cancer Program",
         "status": "released",
         "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
         "layout": {
@@ -23,7 +23,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                    "body": "<div class=\"project-info site-title\">\n    <h1>KCP: The Kidney Cancer Program</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
                 },
                 {
                     "@id": "#block2",

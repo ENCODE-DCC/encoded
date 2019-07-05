@@ -29,7 +29,7 @@ import { requestSearch } from './objectutils';
 import newsHead from './page';
 
 const portal = {
-    portal_title: 'ENCODE',
+    portal_title: 'KCE',
     global_sections: [
         {
             id: 'data',
