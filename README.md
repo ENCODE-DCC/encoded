@@ -2,7 +2,7 @@
 -------------------------------------------------------
 
 
-[![CircleCI](https://circleci.com/gh/ENCODE-DCC/encoded/tree/dev.svg?style=svg)](https://circleci.com/gh/ENCODE-DCC/encoded/tree/dev)
+[![CircleCI](https://circleci.com/gh/utsw-bicf/pandiseased.svg?style=svg)](https://circleci.com/gh/utsw-bicf/pandiseased)
 
 ## Setting Up Your Environment
 
@@ -16,7 +16,7 @@ These are the primary software versions used in production, and you should be ab
 ### **0. Xcode for Mac OS build tools**  
 - Install [Xcode](https://developer.apple.com/xcode/) from the website or Mac App store because the local build will use some of Xcode's compilation tools.
 - Install the Xcode commandline tools (the commandline tools may need to be reinstalled after OS and Xcode updates)
-  - `xcode-select --install` 
+  - `xcode-select --install`
 
 >:star: _Note_: You will need to open Xcode to accept the end-user agreement from the application, or from the commandline run:_  
 >- `sudo xcodebuild -license accept`
@@ -91,18 +91,18 @@ Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but wo
 - _Note_: Production is currently using the versions above thus your primary development should always work on that version, and you should test that your code works on versions that will be used in production.
 
 - Linux: apt-get install python3.4-dev or equivalent
-    
+
 **Mac OSX Python install instructions**  
 
-The Python version management tool `pyenv` is very useful. 
+The Python version management tool `pyenv` is very useful.
 
 >:warning: _Note: If you have previously installed python3 from homebrew, you may possibly wish to uninstall it (not required):_  
 > - `brew uninstall --force python3`
 
 
-    
+
 **Install `pyenv` and set the default versions:**
-```bash 
+```bash
 brew install pyenv
 pyenv install 3.4.3
 pyenv install 2.7.13
@@ -179,11 +179,11 @@ Indexing will then proceed in a background thread similar to the production setu
 ## Running tests
 
 - To run specific tests locally:
-    
+
   `bin/test -k test_name`
-    
+
 - To run with a debugger:
-    
+
   `bin/test --pdb`
 
 - Specific tests to run locally for schema changes:
@@ -208,7 +208,7 @@ Indexing will then proceed in a background thread similar to the production setu
   `./node_modules/.bin/jest`
 
 - **Test ALL the things!**
-  
+
   `bin/test -v -v --splinter-webdriver chrome && npm test`
 
 
@@ -235,15 +235,15 @@ The development bundles are not minified, to speed up building. The above comman
 - After buildout you (if you have the correct permissions) can run for a single-node "cluster":
 
   `bin/deploy`
-  
-  
+
+
 - The script above will spin up a server in the AWS cloud with the current branch, and with a computed nameserver alias based on the branch and your username.  Note that this retrieves a Postgres database from the current backup, so "as is" applies specifically to the ENCODE Project (_if you have forked the repo you will not have permission to retrieve the db_).   There are options to use a different branch and/or different instance name and also if you want to use AWS spot instances...and you can specify which AWS profile you want to use.   
 
-  
+
 - Deploy script help (how to specify name, instance size, etc):
 
   `bin/deploy --help`
-      
+
 For all options, including setting up ES clusters (needed for full production).  After indexing (currently 8+hrs) the machine can be downsized at AWS to an m4.2xlarge, unless you are planning to submit significant data to it.
 
 
@@ -280,7 +280,7 @@ To get Sublime to lint Python code using `pyenv` you must add the python version
 {
     "user": {
         "@python": 3.4,
-        
+
         "paths": {
             "linux": [],
             "osx": [
@@ -320,13 +320,12 @@ Go to the Visual Studio Code marketplace and install these extensions:
 - `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x)_
 - `node --version`  _returns `v10.15.0`  (or variant like  v6.x.y)_
 - `elasticsearch -v` _returns `Version: 1.7.6` (or variant like  Version: 1.7.x)_
-- `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)_ 
+- `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)_
 
 
 **Linting check**
 
 - **Python**: Open Sublime, make a change to a Python file, make an intentional syntax error (no `:` at the end an `if` evaluation). Warnings and errors should show on the left side of the line.    
-  
-  
-- **JavaScript**: Make a syntax error, or style error, in a JS file. Warnings and errors should show on the left side of the line.  
 
+
+- **JavaScript**: Make a syntax error, or style error, in a JS file. Warnings and errors should show on the left side of the line.  
