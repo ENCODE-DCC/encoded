@@ -15,7 +15,7 @@ executors:
 
 commands:
   buildout:
-    description: A buildout process based on encoded-executor
+    description: A buildout process based on pandiseased-executor
     steps:
       - checkout
       # Do not use caching for now to avoid potential conflicts/bugs
@@ -51,7 +51,7 @@ commands:
             bin/buildout
 jobs:
   npm-non-bdd-tests:
-    executor: encoded-executor
+    executor: pandiseased-executor
     # indexing tests fail using default medium resource_class
     resource_class: large
     parallelism: 2
@@ -67,7 +67,7 @@ jobs:
                 echo ${test%:*}
               done | sort | circleci tests split | xargs -n 1 -t bin/test -v -v --timeout=400 -k
   bdd-tests:
-    executor: encoded-executor
+    executor: pandiseased-executor
     resource_class: large
     steps:
       - buildout
