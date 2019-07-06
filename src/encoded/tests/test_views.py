@@ -139,6 +139,7 @@ def test_load_sample_data(
         submitter,
         target,
         ucsc_browser_composite,
+        patient
         ):
     assert True, 'Fixtures have loaded sample data'
 
