@@ -1,4 +1,4 @@
-# ENCODE Metadata Database
+# Pan-Cancer Metadata Database
 -------------------------------------------------------
 
 
