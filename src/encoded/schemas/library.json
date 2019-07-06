@@ -24,7 +24,7 @@
     ],
     "facets": {
         "status": {
-            "title": "Library status"
+            "title": "Status"
         }
     },
     "dependencies": {
@@ -35,7 +35,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "LB"
@@ -123,7 +123,7 @@
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
         "nucleic_acid_term_name": {
-            "title": "Molecule term",
+            "title": "Library material",
             "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
             "enum": [
@@ -137,7 +137,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects..",
             "type": "array",
             "default": [],
@@ -183,44 +183,54 @@
             ],
             "format": "semi-controlled"
         },
-        "fragmentation_method": {
-            "title": "Fragmentation method",
-            "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
-            "type": "string",
-            "enum": [
-                "chemical (DNaseI)",
-                "chemical (DpnII restriction)",
-                "chemical (generic)",
-                "chemical (HindIII restriction)",
-                "chemical (HindIII/DpnII restriction)",
-                "chemical (Illumina TruSeq)",
-                "chemical (MboI restriction)",
-                "chemical (micrococcal nuclease)",
-                "chemical (NcoI restriction)",
-                "chemical (Nextera tagmentation)",
-                "chemical (RNase III)",
-                "chemical (Tn5 transposase)",
-                "n/a",
-                "none",
-                "see document",
-                "shearing (Covaris generic)",
-                "shearing (Covaris LE Series)",
-                "shearing (Covaris S2)",
-                "shearing (generic)",
-                "sonication (Bioruptor generic)",
-                "sonication (Bioruptor Pico)",
-                "sonication (Bioruptor Plus)",
-                "sonication (Bioruptor Twin)",
-                "sonication (Branson Sonifier 250)",
-                "sonication (Branson Sonifier 450)",
-                "sonication (generic microtip)",
-                "sonication (generic)",
-                "sonication (Sonics VCX130)"
-            ]
+        "fragmentation_methods": {
+            "title": "Fragmentation methods",
+            "type": "array",
+            "uniqueItems": true,
+            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
+            "items":{
+                "title": "Fragmentation method",
+                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation.",
+                "type": "string",
+                "enum": [
+                    "chemical (DNaseI)",
+                    "chemical (DpnII restriction)",
+                    "chemical (generic)",
+                    "chemical (HindIII restriction)",
+                    "chemical (HindIII/DpnII restriction)",
+                    "chemical (Illumina TruSeq)",
+                    "chemical (MboI restriction)",
+                    "chemical (micrococcal nuclease)",
+                    "chemical (NcoI restriction)",
+                    "chemical (Nextera tagmentation)",
+                    "chemical (RNase III)",
+                    "chemical (Tn5 transposase)",
+                    "chemical (MseI restriction)",
+                    "chemical (CviAII restriction)",
+                    "chemical (Csp6I restriction)",
+                    "n/a",
+                    "none",
+                    "see document",
+                    "shearing (Covaris generic)",
+                    "shearing (Covaris LE Series)",
+                    "shearing (Covaris S2)",
+                    "shearing (generic)",
+                    "sonication (Bioruptor generic)",
+                    "sonication (Bioruptor Pico)",
+                    "sonication (Bioruptor Plus)",
+                    "sonication (Bioruptor Twin)",
+                    "sonication (Branson Sonifier 250)",
+                    "sonication (Branson Sonifier 450)",
+                    "sonication (generic microtip)",
+                    "sonication (generic)",
+                    "sonication (Sonics VCX130)"
+               ]
+
+            }
         },
         "fragmentation_date":{
             "title": "Fragmentation date",
-            "description": "The date that the nucleic acid was fragmented.",
+            "description": "The date that the nucleic acid was fragmented. The date applies to all fragmentation methods specified.",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
             "anyOf": [
@@ -323,13 +333,13 @@
             "title": "Lab"
         },
         "biosample.biosample_ontology.term_name": {
-            "title": "Biosample"
+            "title": "Biosample term name"
         },
-        "biosample.organism.name": {
-            "title": "Species"
+        "biosample.donor.organism.scientific_name": {
+            "title": "Organism"
         },
         "nucleic_acid_term_name": {
-            "title": "Nucleic Acid Term Name"
+            "title": "Library material"
         }
     },
     "boost_values": {

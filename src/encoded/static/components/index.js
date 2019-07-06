@@ -7,6 +7,7 @@ require('./image');
 require('./biosample');
 require('./cart');
 require('./collection');
+require('./datacolors');
 require('./dataset');
 require('./dbxref');
 require('./errors');
@@ -28,7 +29,6 @@ require('./target');
 require('./publication');
 require('./pipeline');
 require('./software');
-require('./news');
 require('./testing');
 require('./edit');
 require('./inputs');
@@ -37,10 +37,10 @@ require('./user');
 require('./schema');
 require('./summary');
 require('./region_search');
-require('./auditmatrix');
 require('./gene');
 require('./biosample_type');
 require('./patient');
+require('./experiment_series');
 
 
 module.exports = require('./app');

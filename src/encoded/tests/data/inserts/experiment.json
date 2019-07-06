@@ -813,5 +813,47 @@
         "accession": "KCESR751STU",
         "uuid": "e828ec77-8f74-438f-8bf7-8535ee34819e",
         "experiment_classification": ["functional characterization assay"]
+    },
+    {
+        "_test": "microRNA test",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "award": "U54HG007010",
+        "assay_term_name": "microRNA-seq",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "date_released": "2015-08-31",
+        "accession": "ENCSR123MRN",
+        "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e",
+        "experiment_classification": ["functional genomics assay"]
+    },
+    {
+        "_test": "CRISPR screen test",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "award": "U54HG007010",
+        "assay_term_name": "CRISPR screen",
+        "lab": "/labs/gregory-crawford/",
+        "date_released": "2017-12-31",
+        "accession": "ENCSR759STU",
+        "uuid": "b9e3fdf6-70ee-11e9-a923-1681be663d3e",
+        "experiment_classification": ["functional characterization assay"]
+    },
+    {
+        "_test": "pooled clone sequencing test",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "award": "U54HG007010",
+        "assay_term_name": "pooled clone sequencing",
+        "lab": "/labs/gregory-crawford/",
+        "date_released": "2019-04-10",
+        "accession": "ENCSR051STU",
+        "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e",
+        "experiment_classification": ["functional characterization assay"]
     }
 ]

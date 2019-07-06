@@ -34,7 +34,7 @@
             "default": "8"
         },
         "document_type": {
-            "title": "Type",
+            "title": "Document type",
             "description": "The category that best describes the document.",
             "type": "string",
             "enum": [
@@ -81,7 +81,7 @@
         },
         "urls": {
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "URLs",
+            "title": "URL",
             "description": "External resources with additional information to the document.",
             "type": "array",
             "default": [],
@@ -96,12 +96,13 @@
     },
     "columns": {
         "document_type": {
-            "title": "Type"
+            "title": "Document type"
         },
         "description": {
             "title": "Description"
         },
         "attachment.href": {
+            "title": "Attachment path",
             "comment": "Internal webapp URL for document file"
         },
         "attachment.type": {
@@ -116,11 +117,8 @@
         "attachment.download": {
             "title": "File Name"
         },
-        "award.@id": {
-            "title": "Grant href"
-        },
         "award.name": {
-            "title": "Grant"
+            "title": "Award"
         },
         "lab.title": {
             "title": "Lab"

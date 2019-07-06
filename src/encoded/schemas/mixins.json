@@ -2,7 +2,7 @@
     "title": "Mixin properties",
     "schema_version": {
         "schema_version": {
-            "title": "Schema Version",
+            "title": "Schema version",
             "description": "The version of the JSON schema that the server uses to validate the object.",
             "comment":  "Do not submit. The version used to validate the object is set by the server. The default should be set to the current version.",
             "type": "string",
@@ -52,7 +52,7 @@
     },
     "aliases": {
         "aliases": {
-            "title": "Lab aliases",
+            "title": "Aliases",
             "description": "Lab specific identifiers to reference an object.",
             "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
             "type": "array",
@@ -64,7 +64,7 @@
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
-                "pattern": "^(?:alexander-hoffmann|alexander-rudensky|alexander-urban|ali-mortazavi|alkes-price|andrew-fire|anshul-kundaje|anton-valouev|axel-visel|barbara-wold|bill-noble|bin-yu|bing-ren|bradley-bernstein|brenton-graveley|charles-gersbach|chris-burge|christina-leslie|colin-dewey|david-gifford|david-gilbert|douglas-black|elliott-margulies|emery-bresnick|encode-awg|encode-consortium|encode-processing-pipeline|erez-lieberman|eric-lecuyer|eric-mendehall|ewan-birney|feng-yue|gene-yeo|george-stamatoyannopoulos|greg-cooper|gregory-crawford|guo-cheng-yuan|haiyan-huang|haiyuan-yu|howard-chang|j-michael-cherry|jason-ernst|jason-lieb|jay-shendure|jennifer-harrow|jeremy-luban|job-dekker|joe-ecker|john-lis|john-rinn|john-stamatoyannopoulos|jonathan-pritchard|joseph-costello|kenneth-offit|kevin-struhl|kevin-white|ladeana-hillier|laura-elnitski|len-pennacchio|leonard-lipovich|manolis-kellis|manuel-garber|maria-ciofani|mark-gerstein|mats-ljungman|matteo-pellegrini|michael-bassik|michael-beer|michael-hoffman|michael-snyder|morgan-giddings|nadav-ahituv|pardis-sabeti|paul-khavari|peggy-farnham|peter-bickel|peter-park|piero-carninci|rafael-irizarry|richard-myers|roadmap-epigenomics|rob-spitale|robert-klein|robert-waterston|roderic-guigo|ross-hardison|ryan-tewhey|scott-tenenbaum|sherman-weissman|souma-raychaudhuri|stephen-smale|sunduz-keles|susan-celniker|thomas-gingeras|thomas-tullius|tim-reddy|timothy-hubbard|ting-wang|tommi-jaakkola|unknown|valerie-reinke|vishwanath-iyer|w-james-kent|wei-wang|will-greenleaf|xiang-dong-fu|xiaole-shirley|xinshu-xiao|yi-xing|yijun-ruan|yin-shen|yoav-gilad|zhiping-weng|brian-oliver|david-macalpine|hugo-bellen|peter-cherbas|terry-orr-weaver|abby-dernburg|anthony-hyman|arshad-desai|david-miller|eric-lai|fabio-piano|frank-slack|gary-karpen|gregory-hannon|james-posakony|john-kim|julie-ahringer|kamran-ahmad|kris-gunsalus|lincoln-stein|michael-brent|michael-maccoss|mitzi-kuroda|nikolaus-rajewsky|norbert-perrimon|philip-green|sarah-elgin|steven-henikoff|steven-russell|susan-strome|vincenzo-pirrotta|MitaniLab|UofC-HGAC|wesley-hung|encode|modern|dnanexus|modencode|gencode|ggr|cgc|bloomington|dssc|kyoto|gtex|pgp|biochain|promocell|nichd|lonza|allcells):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
+                "pattern": "^(?:alexander-hoffmann|alexander-rudensky|alexander-urban|ali-mortazavi|alkes-price|andrew-fire|anshul-kundaje|anton-valouev|axel-visel|barbara-wold|bill-noble|bin-yu|bing-ren|bradley-bernstein|brenton-graveley|charles-gersbach|chris-burge|christina-leslie|colin-dewey|david-gifford|david-gilbert|douglas-black|elliott-margulies|emery-bresnick|encode-awg|encode-consortium|encode-processing-pipeline|erez-lieberman|eric-lecuyer|eric-mendehall|ewan-birney|feng-yue|gene-yeo|george-stamatoyannopoulos|greg-cooper|gregory-crawford|guo-cheng-yuan|haiyan-huang|haiyuan-yu|howard-chang|j-michael-cherry|jason-ernst|jason-lieb|jay-shendure|jennifer-harrow|jeremy-luban|job-dekker|joe-ecker|john-lis|john-rinn|john-stamatoyannopoulos|jonathan-pritchard|joseph-costello|kenneth-offit|kevin-struhl|kevin-white|ladeana-hillier|laura-elnitski|len-pennacchio|leonard-lipovich|manolis-kellis|manuel-garber|maria-ciofani|mark-gerstein|mats-ljungman|matteo-pellegrini|michael-bassik|michael-beer|michael-hoffman|michael-snyder|morgan-giddings|nadav-ahituv|pardis-sabeti|paul-khavari|peggy-farnham|peter-bickel|peter-park|piero-carninci|rafael-irizarry|richard-myers|roadmap-epigenomics|rob-spitale|robert-klein|robert-waterston|roderic-guigo|ross-hardison|ryan-tewhey|scott-tenenbaum|sherman-weissman|souma-raychaudhuri|stephen-smale|sunduz-keles|susan-celniker|thomas-gingeras|thomas-tullius|tim-reddy|timothy-hubbard|ting-wang|tommi-jaakkola|unknown|valerie-reinke|vishwanath-iyer|w-james-kent|wei-wang|will-greenleaf|xiang-dong-fu|xiaole-shirley|xinshu-xiao|yi-xing|yijun-ruan|yin-shen|yoav-gilad|zhiping-weng|brian-oliver|david-macalpine|hugo-bellen|peter-cherbas|terry-orr-weaver|abby-dernburg|anthony-hyman|arshad-desai|david-miller|eric-lai|fabio-piano|frank-slack|gary-karpen|gregory-hannon|james-posakony|john-kim|julie-ahringer|kamran-ahmad|kris-gunsalus|lincoln-stein|michael-brent|michael-maccoss|mitzi-kuroda|nikolaus-rajewsky|norbert-perrimon|philip-green|sarah-elgin|steven-henikoff|steven-russell|susan-strome|vincenzo-pirrotta|MitaniLab|UofC-HGAC|wesley-hung|encode|modern|dnanexus|modencode|gencode|ggr|cgc|bloomington|dssc|gtex|pgp|biochain|promocell|nichd|lonza|allcells):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
             }
         }
     },
@@ -143,7 +143,7 @@
                 "status": {
                     "oneOf": [
                          {
-                            "required": ["lab", "reviewed_by", "lane"],
+                            "required": ["lab", "reviewed_by"],
                             "properties": {
                                 "status": {
                                     "enum": [
@@ -237,7 +237,7 @@
             "linkSubmitsFor": true
         },
         "award": {
-            "title": "Grant",
+            "title": "Award",
             "description": "Grant associated with the submission.",
             "comment": "Required. See award.json for list of available identifiers.",
             "type": "string",
@@ -246,7 +246,7 @@
     },
     "attachment": {
         "attachment": {
-            "title": "Document file metadata",
+            "title": "Attachment",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -301,7 +301,7 @@
     },
     "biosample_ontology": {
         "biosample_ontology": {
-            "title": "Biosample type",
+            "title": "Biosample ontology",
             "description": "An embeded property for linking to biosample type which describes the ontology of the biosample.",
             "comment": "See biosample_type.json for available identifiers.",
             "type": "string",
@@ -405,75 +405,87 @@
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
-            "enum": [
-                "3' RACE",
-                "4C",
-                "5' RACE",
-                "5' RLM RACE",
-                "5C",
-                "ATAC-seq",
-                "Bru-seq",
-                "BruChase-seq",
-                "BruUV-seq",
-                "CAGE",
-                "ChIA-PET",
-                "ChIP-seq",
-                "Circulome-seq",
-                "Clone-seq",
-                "comparative genomic hybridization by array",
-                "CRISPR genome editing followed by RNA-seq",
-                "CRISPRi followed by RNA-seq",
-                "direct RNA-seq",
-                "DNA methylation profiling by array assay",
-                "DNA-PET",
-                "DNase-seq",
-                "eCLIP",
-                "FAIRE-seq",
-                "genetic modification followed by DNase-seq",
-                "genotype phasing by HiC",
-                "genotyping by high throughput sequencing assay",
-                "HiC",
-                "iCLIP",
-                "icSHAPE",
-                "long read RNA-seq",
-                "MeDIP-seq",
-                "microRNA counts",
-                "microRNA-seq",
-                "Mint-ChIP-seq",
-                "MNase-seq",
-                "MPRA",
-                "MRE-seq",
-                "PAS-seq",
-                "PLAC-seq",
-                "PRO-seq",
-                "protein sequencing by tandem mass spectrometry assay",
-                "RAMPAGE",
-                "Repli-chip",
-                "Repli-seq",
-                "RIP-chip",
-                "RIP-seq",
-                "RNA Bind-n-Seq",
-                "RNA-PET",
-                "RNA-seq",
-                "RRBS",
-                "shRNA knockdown followed by RNA-seq",
-                "single cell isolation followed by RNA-seq",
-                "single-cell ATAC-seq",
-                "single-nuclei ATAC-seq",
-                "siRNA knockdown followed by RNA-seq",
-                "small RNA-seq",
-                "STARR-seq",
-                "Switchgear",
-                "TAB-seq",
-                "transcription profiling by array assay",
-                "whole genome sequencing assay",
-                "whole-genome shotgun bisulfite sequencing"
+            "oneOf": [
+                {
+                    "enum": [
+                        "3' RACE",
+                        "4C",
+                        "5' RACE",
+                        "5' RLM RACE",
+                        "5C",
+                        "ATAC-seq",
+                        "Bru-seq",
+                        "BruChase-seq",
+                        "BruUV-seq",
+                        "CAGE",
+                        "ChIA-PET",
+                        "ChIP-seq",
+                        "Circulome-seq",
+                        "Clone-seq",
+                        "comparative genomic hybridization by array",
+                        "CRISPR genome editing followed by RNA-seq",
+                        "CRISPRi followed by RNA-seq",
+                        "direct RNA-seq",
+                        "DNA methylation profiling by array assay",
+                        "DNA-PET",
+                        "DNase-seq",
+                        "eCLIP",
+                        "FAIRE-seq",
+                        "genetic modification followed by DNase-seq",
+                        "genotype phasing by HiC",
+                        "genotyping by high throughput sequencing assay",
+                        "HiC",
+                        "iCLIP",
+                        "icSHAPE",
+                        "long read RNA-seq",
+                        "MeDIP-seq",
+                        "microRNA counts",
+                        "microRNA-seq",
+                        "Mint-ChIP-seq",
+                        "MNase-seq",
+                        "MRE-seq",
+                        "PAS-seq",
+                        "PLAC-seq",
+                        "PRO-seq",
+                        "protein sequencing by tandem mass spectrometry assay",
+                        "RAMPAGE",
+                        "Repli-chip",
+                        "Repli-seq",
+                        "RIP-chip",
+                        "RIP-seq",
+                        "RNA Bind-n-Seq",
+                        "RNA-PET",
+                        "RNA-seq",
+                        "RRBS",
+                        "shRNA knockdown followed by RNA-seq",
+                        "single cell isolation followed by RNA-seq",
+                        "single-cell ATAC-seq",
+                        "single-nuclei ATAC-seq",
+                        "siRNA knockdown followed by RNA-seq",
+                        "small RNA-seq",
+                        "Switchgear",
+                        "TAB-seq",
+                        "transcription profiling by array assay",
+                        "whole genome sequencing assay",
+                        "whole-genome shotgun bisulfite sequencing"
+                    ]
+                },
+                {
+                    "comment": "Assay types will migrate into a new functional characterization experiment object, the following assay types are no longer valid for new submissions of functional genomics experiments.",
+                    "permission": "import_items",
+                    "enum": [
+                        "STARR-seq",
+                        "MPRA",
+                        "CRISPR screen",
+                        "pooled clone sequencing"
+                    ]
+                }
             ]
         }
     },
     "treatment_classification": {
         "treatment_type": {
-            "title": "Type",
+            "title": "Treatment type",
             "description": "The classification of the treatment.",
             "type": "string",
             "default": "chemical",
@@ -491,13 +503,13 @@
         },
         "treatment_term_id": {
             "@type": "@id",
-            "title": "Term ID",
+            "title": "Biosample treatment term ID",
             "description": "Ontology identifier describing a component in the treatment.",
             "type": "string",
             "pattern": "^((CHEBI:[0-9]{1,7})|(UniProtKB:[A-Z0-9]{6})|(Taxon:[0-9]{2,7})|(NTR:[0-9]{2,8})|(CL:[0-9]{2,8})|(XCO:[0-9]{7}))$"
         },
         "treatment_term_name": {
-            "title": "Term name",
+            "title": "Biosample treatment",
             "description": "Ontology term describing a component in the treatment.",
             "type":  "string"
         }

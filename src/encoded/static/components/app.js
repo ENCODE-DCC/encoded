@@ -39,12 +39,15 @@ const portal = {
                 { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released' },
                 { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment&status=released' },
                 { id: 'sep-mm-1' },
+                { id: 'cloud', title: 'Cloud Resources' },
+                { id: 'aws-link', title: 'AWS Open Data', url: 'https://registry.opendata.aws/encode-project/', tag: 'cloud' },
+                { id: 'sep-mm-2' },
                 { id: 'collections', title: 'Collections' },
                 { id: 'encore', title: 'ENCORE', url: '/matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
                 { id: 'entex', title: 'ENTEx', url: '/matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
                 { id: 'sescc', title: 'SE Stem Cell Consortium', url: '/matrix/?type=Experiment&status=released&internal_tags=SESCC', tag: 'collection' },
                 { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome&status=released', tag: 'collection' },
-                { id: 'sep-mm-2' },
+                { id: 'sep-mm-3' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
             ],
@@ -66,17 +69,15 @@ const portal = {
             title: 'Materials & Methods',
             children: [
                 { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released' },
-                { id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample&status=released' },
                 { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
                 { id: 'sep-mm-1' },
-                { id: 'datastandards', title: 'Standards and guidelines', url: '/data-standards/' },
-                { id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies' },
+                { id: 'datastandards', title: 'Assays and standards', url: '/data-standards/' },
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
                 { id: 'softwaretools', title: 'Software tools', url: '/software/' },
                 { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
-                { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
-                { id: 'dataaccess', title: 'Data access', url: '/about/data-access/' },
                 { id: 'sep-mm-2' },
+                { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
+                { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
                 { id: 'profiles', title: 'Schemas', url: '/profiles/' },
             ],
         },
@@ -84,16 +85,17 @@ const portal = {
             id: 'help',
             title: 'Help',
             children: [
-                { id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/' },
-                { id: 'tutorials', title: 'Tutorials', url: '/tutorials/' },
-                { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
+                { id: 'gettingstarted', title: 'Using the portal', url: '/help/getting-started/' },
                 { id: 'cart', title: 'Cart', url: '/help/cart/' },
-                { id: 'sep-mm-1' },
-                { id: 'projectoverview', title: 'Project overview', url: '/about/contributors/' },
-                { id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/' },
-                { id: 'contact', title: 'Contact', url: '/help/contacts/' },
-                { id: 'news', title: 'News', url: '/search/?type=Page&news=true&status=released' },
+                { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
                 { id: 'citingencode', title: 'Citing ENCODE', url: '/help/citing-encode' },
+                { id: 'faq', title: 'FAQ', url: '/help/faq/' },
+                { id: 'sep-mm-1' },
+                { id: 'projectoverview', title: 'Project Overview', url: '/help/project-overview/' },
+                { id: 'collaborations', title: 'Collaborations', url: '/help/collaborations/' },
+                { id: 'sep-mm-2' },
+                { id: 'events', title: 'ENCODE workshops', url: '/help/events/' },
+                { id: 'contact', title: 'About the DCC', url: '/help/contacts/' },
             ],
         },
     ],
@@ -364,6 +366,17 @@ class App extends React.Component {
             window.onhashchange = this.onHashChange;
         }
         window.onbeforeunload = this.handleBeforeUnload;
+        (function walkmeinit() {
+            const s = document.getElementsByTagName('script')[0];
+            if (s) {
+                const walkme = document.createElement('script');
+                walkme.type = 'text/javascript';
+                walkme.async = true;
+                walkme.src = 'https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js';
+                s.parentNode.insertBefore(walkme, s);
+                window._walkmeConfig = { smartLoad: true };
+            }
+        }());
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -1028,8 +1041,8 @@ class App extends React.Component {
         let containerClass;
         let context = this.state.context;
         const hrefUrl = url.parse(this.state.href);
-        // Switching between collections may leave component in place
-        const key = context && context['@id'] && context['@id'].split('?')[0];
+        // Every component is remounted when a new search is executed because 'key' is the full url
+        const key = context['@id'];
         const currentAction = this.currentAction();
         const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {

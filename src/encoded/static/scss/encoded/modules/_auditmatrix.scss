@@ -78,29 +78,6 @@ th.rotate30 {
     }
 }
 
-table.matrix {
-    flex: 0 1 auto;
-    width: auto;
-    border-left: 1px solid #ddd;
-
-    th {
-        text-align: right;
-        padding: 0 .5em;
-        a {
-        	color: black;
-        }
-    }
-    td {
-        vertical-align: middle;
-        text-align: center;
-        padding: 0 !important;
-        border: solid 1px #f9f9f9;
-    }
-    tfoot {
-        background: transparent;
-    }
-}
-
 .hubs-controls {
     margin-left: 28px;
     padding: 10px 0 20px;

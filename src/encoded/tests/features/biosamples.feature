@@ -16,7 +16,7 @@ Feature: Biosamples
         And I wait for the content to load
         When I click the link to "/search/?type=Biosample&organism.scientific_name=Homo+sapiens"
         Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 25 of 30 results"
+        And I should see "Showing 25 of 31 results"
 
         When I go back
         And I wait for the content to load

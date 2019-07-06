@@ -46,7 +46,7 @@
     },
     "columns": {
         "schema_version": {
-            "title": "Schema Version"
+            "title": "Schema version"
         },
         "elements": {
             "title": "Cart elements"

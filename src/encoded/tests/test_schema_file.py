@@ -238,6 +238,59 @@ def file_restriction_map(testapp, experiment, award, lab):
     return item
 
 
+@pytest.fixture
+def file_no_genome_annotation(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'database',
+        'file_size': 342,
+        'md5sum': '82847a2a5beb8095282c68c00f48e347',
+        'output_type': 'transcriptome index',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_database_output_type(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'database',
+        'file_size': 342,
+        'genome_annotation': 'V24',
+        'md5sum': '82847a2a5beb8095282c68c00f48e348',
+        'output_type': 'alignments',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_good_bam(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'bam',
+        'output_type': 'alignments',
+        'md5sum': '136e501c4bacf4fab87debab20d76648',
+        'status': 'in progress'
+    }
+    return item
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -385,7 +438,7 @@ def test_revoke_detail(testapp, file_with_bad_revoke_detail):
     assert res.status_code == 201
 
 
-def test_read_name_details(testapp, file_no_error):
+def test_read_name_details(testapp, file_no_error, file_good_bam):
     file = testapp.post_json('/file', file_no_error).json['@graph'][0]
     testapp.patch_json(
         file['@id'], {'read_name_details': {
@@ -393,8 +446,12 @@ def test_read_name_details(testapp, file_no_error):
             'barcode_location': 5}
         },
         status=200)
+    file = testapp.post_json('/file', file_good_bam).json['@graph'][0]
     testapp.patch_json(
-        file['@id'], {'file_format': 'bam'},
+        file['@id'], {'read_name_details': {
+            'flowcell_id_location': 2,
+            'barcode_location': 5}
+        },
         status=422)
 
 
@@ -432,3 +489,15 @@ def test_restriction_map(testapp, file_restriction_map):
     file_restriction_map.update({'output_type': 'restriction enzyme site locations'})
     res = testapp.post_json('/file', file_restriction_map, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_database_annotation_requirement(testapp, file_no_genome_annotation):
+    testapp.post_json('/file', file_no_genome_annotation, status=422)
+    file_no_genome_annotation.update({'genome_annotation': 'V24'})
+    testapp.post_json('/file', file_no_genome_annotation, status=201)
+
+
+def test_database_output_type_requirement(testapp, file_database_output_type):
+    testapp.post_json('/file', file_database_output_type, status=422)
+    file_database_output_type.update({'output_type': 'transcriptome index'})
+    testapp.post_json('/file', file_database_output_type, status=201)

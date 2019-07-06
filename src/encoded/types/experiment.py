@@ -331,15 +331,27 @@ class Experiment(Dataset,
                                 break
                             elif 'depleted_in_term_name' in library_object and \
                                 'polyadenylated mRNA' in library_object['depleted_in_term_name']:
-                                preferred_name = 'polyA depleted RNA-seq'
+                                preferred_name = 'polyA minus RNA-seq'
                                 break
                             elif 'nucleic_acid_term_name' in library_object and \
                                 library_object['nucleic_acid_term_name'] == 'polyadenylated mRNA':
-                                preferred_name = 'polyA RNA-seq'
+                                preferred_name = 'polyA plus RNA-seq'
                                 break
                         else:
                             continue
                         break
+            elif preferred_name == 'ChIP-seq':
+                if target is not None:
+                    target_object = request.embed(target,'@@object')
+                    target_categories = target_object['investigated_as']
+                    if 'histone' in target_categories:
+                        preferred_name = 'Histone ChIP-seq'
+                    elif 'control' in target_categories:
+                        preferred_name = 'Control ChIP-seq'
+                    else:
+                        preferred_name = 'TF ChIP-seq'
+                else:
+                    preferred_name = 'Control ChIP-seq'
             return preferred_name or assay_term_name
         return assay_term_name
 
@@ -357,7 +369,7 @@ class Experiment(Dataset,
         return []
 
     @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay type",
+        "title": "Assay type slims",
         "type": "array",
         "items": {
             "type": "string",

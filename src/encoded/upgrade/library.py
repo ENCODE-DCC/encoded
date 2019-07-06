@@ -103,8 +103,6 @@ def library_4_5(value, system):
 @upgrade_step('library', '5', '6')
 def library_5_6(value, system):
     # http://redmine.encodedcc.org/issues/2491
-    if not value['depleted_in_term_name']:
-        del value['depleted_in_term_name']
     if 'nucleic_acid_term_id' in value:
         del value['nucleic_acid_term_id']
     if 'depleted_in_term_id' in value:
@@ -117,3 +115,10 @@ def library_5_6(value, system):
 def library_7_8(value, system):
     # http://redmine.encodedcc.org/issues/5049
     return
+
+
+@upgrade_step('library', '8', '9')
+def library_8_9(value, system):
+    if 'fragmentation_method' in value:
+        value['fragmentation_methods'] = [value['fragmentation_method']]
+        value.pop('fragmentation_method')

@@ -1,6 +1,132 @@
 Changes
 =======
 
+v87.0 (released) snovault 1.0.32/1.0.33
+---------------------------------------
+1. ENCD-4723 update-snovault-1.0.33 (#2840)
+2. ENCD-4716 Update cloud init deployment (#2830)
+3. ENCD-4713 manually-install-oracle-java-11 (#2830)
+4. ENCD-4719 Use 16 processes demo batchupgrade (#2830)
+5. ENCD-4665 organize-cluster-cloud-yamls (#2830)
+6. ENCD-4688 remove-unused-code-from-deploy (#2830)
+7. ENCD-4704 Fix frozen column for Safari (#2825)
+8. ENCD-4708 Fix the target column on experiment series page (#2828)
+9. SNO-102 use-openjdk-java-for-circleci (#2832)
+10. ENCD-4703 test-submitter-user-circleci-fix (#2824)
+11. ENCD-4654 change ChIP-seq to TF ChIP-seq (#2806)
+12. ENCD-4698 update-snovault-1.0.32 (#2822)
+13. ENCD-4662 Experiment series (#2812)
+14. ENCD-4659 batch-download-unit-test (#2815)
+15. ENCD-4514 add MouseDevSeries internal tag (#2821)
+16. ENCD-4106 Remove kyoto from aliases and dbxrefs (#2803)
+17. ENCD-4672 Remove news page and instead link to generic search (#2811)
+18. ENCD-4653 add AWS link (#2798)
+19. ENCD-4415 Add GM perturbation property (#2816)
+20. ENCD-4694 restrict use of FCC in experiments (#2817)
+21. ENCD-4471 add-prod-id-source-treatment (#2808)
+22. ENCD-4671 port tests circleci (#2810)
+23. ENCD-4062 Fix read name details dependency (#2797)
+24. ENCD-4613 Changed cRE to cCRE with batch upgrades and tests (#2763)
+25. ENCD-4656 Fix BDD Travis CI test failures (#2793)
+26. ENCD-4651 add new analysis step type (#2785)
+27. ENCD-4586 Freeze left column of matrix (#2799)
+28. SNO-100 Parallelize batchupgrade script
+29. SNO-92 fix-batch-upgrade-logging
+30. SNO-101 Refactor batchupgrade
+
+v86.0 (released) snovault 1.0.31
+--------------------------------
+1. ENCD-4676 add-nagios-role-deployment (#2796)
+2. ENCD-4666 update-snovault-1.0.31 (#2790)
+3. ENCD-4657 add-s3-uri-to-metadata (#2786)
+4. ENCD-4639 Organize demo cloud yaml (#2773)
+5. ENCD-4634 Add database to file_format (#2770)
+6. ENCD-4541 Add multiple facets to cart view pages (#2780)
+7. ENCD-4633 Update saucelabs connect version 4.5.3 (#2788)
+8. ENCD-4609 Exclude fccs institutional certification (#2764)
+9. ENCD-4631 add new qc object for gencode categories (#2787)
+10. ENCD-4492 audit-to-chk-fq-non-fq-pair (#2776)
+11. ENCD-4084 date selector facet (#2759)
+12. ENCD-4600 Add MIME type for ab1 attachment (#2774)
+13. SNO-93 user-count-does-not-match (#2758)
+14. ENCD-4647 Display QC metric properties with multitype (#2783)
+15. SNO-90 added-advanced-search (#2729)
+16. ENCD-4648 always-show-cloud-metadata (#2777)
+17. ENCD-4642 Stop home banner truncation (#2781)
+18. ENCD-4599 fix audit detail typo (#2765)
+19. ENCD-4400 added-creative-commons-logo (#2750)
+20. ENCD-4611 update 2 polyA assay_titles (#2761)
+
+v85.2 (unreleased) snovault 1.0.30
+--------------------------------
+1. ENCD-4650 update-snovault-1.0.30 (#2778)
+2. ENCD-4620 indexing-failures (#2775)
+
+v85.1 (released)
+--------------------------------
+1. ENCD-4628 Add a mechanism for a home page banner (#2768)
+
+v85.0 (released) snovault 1.0.29
+--------------------------------
+1. ENCD-4625 Fix target upgrade for chromatin remodeler (#2755)
+2. ENCD-4624 update-snovault-1.0.29 (#2754)
+3. ENCD-4392 update-to-java-11 (#2726)
+4. SNO-91 update-java-ref (#2753)
+5. SNO-87 fix-profile-trailing-slash (#2710)
+6. ENCD-4619 Add experiment classification to data insert (#2752)
+7. ENCD-4361 validate-schema-set-status (#2748)
+8. ENCD-4558 add 2 new FCC assays
+9. ENCD-4563 shorten 3 assay titles
+10. ENCD-4579 update to EFO3 and update ontology.json and docs
+11. ENCD-4536 long read RNA audit (#2735)
+12. ENCD-4535 long rna qc (#2673)
+13. SNO-86 escape-search-text (#2709)
+14. ENCD-3642 fix-file-format-download (#2746)
+15. ENCD-4602 Update link on home page button (#2744)
+16. ENCD-4606 Add error correction step type (#2747)
+17. ENCD-4493 Limit RIN audit to certain assays (#2743)
+18. ENCD-4593 add histone and control chip-seq titles (#2741)
+19. ENCD-4504 miRNA audits (#2736)
+20. ENCD-4503 micro RNA qc (#2679)
+21. ENCD-4570 Add M21 V29 V30 genome annotations (#2745)
+22. ENCD-4544 deleted the file atacseq qm json file (#2738)
+23. ENCD-3108 Add new target categories (#2742)
+24. SNO-88 fix-user-search-count (#2722)
+25. ENCD-4589 Add an experimental audit for biosample characterization. (#2739)
+26. ENCD-4316 Make generic matrix-rendering component. (#2728)
+27. ENCD-4575 software-column-used-by (#2737)
+28. ENCD-4545 Update visualization browser list (#2730)
+29. ENCD-4597 show-all-datasets (#2733)
+
+84.0 (released) snovault 1.0.28
+-------------------------------
+1. ENCD-4591 add-title-column-back (#2723)
+2. ENCD-4590 fix-facet-num-line (#2725)
+3. ENCD-4592 Update to Java 9 in travis (#2724)
+4. ENCD-4585 Update to snovault 1.0.28 (#2721)
+5. SNO-89 Fix backoff error key in indexer (#2720)
+6. ENCD-4559 x-limit-zero-results (#2711)
+7. ENCD-4349 restrict gm reagents (#2672)
+8. ENCD-4578 Fix s3 to s3 allow flag in deployment (#2708)
+9. ENCD-4243 Make dataset biosample boost values consistent (#2712)
+10. ENCD-4527 walkme-production-snippet (#2690)
+11. ENCD-4581 Temp install java 8 through aws (#2718)
+12. ENCD-4577 Add documents on characterization page (#2716)
+13. ENCD-4565 remove back slashes from search terms (#2714)
+14. ENCD-4576 Change header links and add FAQ script (#2715)
+15. ENCD-4556 Remove lane reqs for massspec characs (#2700)
+16. ENCD-4311 href-column-is-blank (#2713)
+17. SNO-85 facet-reappearing (#2676)
+18. ENCD-4506 make fragmentation method a list (#2683)
+19. ENCD-4542 Display biosample table on GM pages (#2699)
+20. ENCD-4407 update the columns and facet titles
+21. ENCD-4548 fix fallback images on collection pages (#2703)
+22. ENCD-4560 update typeaheads after selections (#2702)
+23. ENCD-4497 get rid of duplicate columns using titles
+24. ENCD-4564 add target typeahead to AntibodyLot pages (#2707)
+25. ENCD-4412 Add Clear Cart item to cart menu (#2695)
+26. ENCD-4554 fix-annotation-url (#2697)
+
 83.0 (released) / snovault 1.0.27
 -----------------
 1. ENCD-4569 Update snovault to 1.0.27 (#2704)

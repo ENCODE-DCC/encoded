@@ -49,7 +49,7 @@
             "default": "16"
         },
         "reference_type": {
-            "title": "Type",
+            "title": "Reference type",
             "description": "The category that best describes the reference set.",
             "type": "string",
             "enum": [
@@ -83,7 +83,7 @@
             "title": "Reference type"
         },
         "status": {
-            "title": "Reference file set status"
+            "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
@@ -92,19 +92,19 @@
             "title": "Organism"
         },
         "files.file_type": {
-            "title": "Available data"
+            "title": "Available file types"
         },
         "files.run_type": {
             "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length"
+            "title": "Read length (nt)"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length"
+            "title": "Mapped read length (nt)"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "software_used.software.name": {
             "title": "Software used"

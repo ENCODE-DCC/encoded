@@ -37,16 +37,19 @@
                 "investigated_as": {
                     "items": {
                         "enum": [
-                            "broad histone mark",
-                            "chromatin remodeller",
                             "control",
+                            "broad histone mark",
+                            "chromatin remodeler",
                             "histone",
                             "narrow histone mark",
-                            "nucleotide modification",
                             "other context",
-                            "other post-translational modification",
                             "recombinant protein",
                             "RNA binding protein",
+                            "cofactor",
+                            "cohesin",
+                            "DNA replication",
+                            "DNA repair",
+                            "RNA polymerase complex",
                             "tag",
                             "transcription factor"
                         ]
@@ -63,16 +66,19 @@
                 "investigated_as": {
                     "items": {
                         "enum": [
-                            "broad histone mark",
-                            "chromatin remodeller",
                             "control",
+                            "broad histone mark",
+                            "chromatin remodeler",
                             "histone",
                             "narrow histone mark",
-                            "nucleotide modification",
                             "other context",
-                            "other post-translational modification",
                             "recombinant protein",
                             "RNA binding protein",
+                            "cofactor",
+                            "cohesin",
+                            "DNA replication",
+                            "DNA repair",
+                            "RNA polymerase complex",
                             "tag",
                             "transcription factor"
                         ]
@@ -86,10 +92,10 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "dbxref": {
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
             "type": "array",
             "default": [],
@@ -123,7 +129,7 @@
             }
         },
         "modifications": {
-            "title": "Modification to the corresponding gene product.",
+            "title": "Target modification",
             "description": "List of modifications made to the corresponding gene product of this target.",
             "comment": "This property will be used to calculate the proper label of the target. See computed_label property for details about automatic label calculation.",
             "type": "array",
@@ -178,7 +184,7 @@
             }
         },
         "label": {
-            "title": "Common name with modification",
+            "title": "Target label",
             "description": "Common name for the target including post-translational modifications, if any.",
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
@@ -186,23 +192,26 @@
             "format": "target_label"
         },
         "investigated_as": {
-            "title": "Target project investigation context",
+            "title": "Target category",
             "description": "The context(s) the target was investigated in",
             "type": "array",
             "uniqueItems": true,
             "items": {
                 "type": "string",
                 "enum": [
-                    "broad histone mark",
-                    "chromatin remodeller",
                     "control",
+                    "broad histone mark",
+                    "chromatin remodeler",
                     "histone",
                     "narrow histone mark",
-                    "nucleotide modification",
                     "other context",
-                    "other post-translational modification",
                     "recombinant protein",
                     "RNA binding protein",
+                    "cofactor",
+                    "cohesin",
+                    "DNA replication",
+                    "DNA repair",
+                    "RNA polymerase complex",
                     "synthetic tag",
                     "tag",
                     "transcription factor"
@@ -215,27 +224,27 @@
             "title": "Organism"
         },
         "investigated_as": {
-            "title": "Target of assay"
+            "title": "Target category"
         },
         "modifications.modification": {
-            "title": "Modification in targets"
+            "title": "Target modification"
         }
     },
     "columns": {
         "label": {
-            "title": "Target"
+            "title": "Target label"
         },
         "investigated_as": {
             "title": "Target category"
         },
         "organism.scientific_name": {
-            "title": "Species"
+            "title": "Organism"
         },
         "dbxref": {
             "title": "External resources"
         },	
         "genes.symbol": {	
-            "title": "Gene name"	
+            "title": "Gene symbol"
         }
     },
     "boost_values": {

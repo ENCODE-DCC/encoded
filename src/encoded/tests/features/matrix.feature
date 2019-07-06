@@ -25,8 +25,7 @@ Feature: Matrix
 
 
     Scenario: Matrix Encyclopedia
-        When I press "Encyclopedia"
-        And I click the link to "/matrix/?type=Annotation&encyclopedia_version=4"
+        When I visit "/matrix/?type=Annotation"
         And I wait for the content to load
-        Then I should see at least 1 elements with the css selector "div.matrix-wrapper > div.matrix-group-heading > div.matrix-group-heading__content"
-        And I should see at least 1 elements with the css selector "div.matrix-wrapper > table.matrix"
+        Then I should see at least 1 elements with the css selector "div.matrix__presentation-content > div.matrix__label.matrix__label--vert"
+        And I should see at least 1 elements with the css selector "div.matrix__data > table.matrix"

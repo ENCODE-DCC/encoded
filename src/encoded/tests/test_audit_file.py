@@ -249,6 +249,61 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
                'inconsistent paired_with' for error in errors_list)
 
 
+def test_audit_paired_with_non_fastq(testapp, file1, file6, platform1):
+    testapp.patch_json(
+        file1['@id'], 
+        {
+            'run_type': 'paired-ended',
+            'paired_end': '1'
+        }
+    )
+    testapp.patch_json(
+        file6['@id'], 
+        {
+            'run_type': 'paired-ended',
+            'platform': platform1['uuid'],
+            'paired_end': '2',
+            'paired_with': file1['uuid']
+        }
+    )
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(
+        error['category'] == 'paired with non-fastq'
+        for error in errors_list
+    )
+
+
+def test_audit_paired_with_fastq(testapp, file1, file4):
+    testapp.patch_json(
+        file1['@id'],
+        {
+            'run_type': 'paired-ended',
+            'paired_end': '1'
+        }
+    )
+    testapp.patch_json(
+        file4['@id'], 
+        {
+            'run_type': 'paired-ended',
+            'paired_end': '2',
+            'paired_with': file1['uuid']
+        }
+    )
+    res2 = testapp.get(file1['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(
+        error['category'] != 'paired with non-fastq' 
+        for error in errors_list
+    )
+
+
 def test_audit_file_inconsistent_read_count_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                        'run_type': 'paired-ended',

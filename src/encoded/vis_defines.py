@@ -320,7 +320,7 @@ OUTPUT_TYPE_8CHARS = {
     "predicted forebrain enhancers":        "fb enh",    # plan to fix these
     "predicted heart enhancers":            "hrt enh",       # plan to fix these
     "predicted whole brain enhancers":      "wb enh",  # plan to fix these
-    "candidate regulatory elements":        "can re",
+    "candidate Cis-Regulatory Elements":    "cCRE",
     # "genome reference":"ref",           # references not to be viewed
     # "transcriptome reference":"tr ref", # references not to be viewed
     # "transcriptome index":"tr rix",     # references not to be viewed

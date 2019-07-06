@@ -84,7 +84,7 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 }
 
 .results-table-control {
-    margin-bottom: 10px;
+    margin: 10px 0 20px;
 }
 
 table thead tr th button {
@@ -152,7 +152,7 @@ form.table-filter {
     cursor: pointer;
 }
 
-.table-file {
+.table-sort {
     .table {
         margin-bottom: 0;
     }
@@ -333,4 +333,18 @@ table.table-raw {
 
 .coalesced-table {
     margin: -20px -20px -55px -20px;
+}
+
+
+/**
+ * Styles for specific tables.
+ */
+
+ // Experiment series tables; might need to expand name if needed for similar object tables.
+.table-experiment-series {
+    .file-table-footer {
+        padding-top: 4px;
+        padding-bottom: 4px;
+        text-align: right;
+    }
 }

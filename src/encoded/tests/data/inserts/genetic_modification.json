@@ -46,7 +46,7 @@
         "reagents": [
             {
                 "source": "atcc",
-                "identifier": "CRL-2522"
+                "identifier": "addgene:12345"
             }
         ],
         "guide_rna_sequences": [
@@ -63,7 +63,7 @@
         "reagents": [
             {
                 "source": "sigma",
-                "identifier": "TRCN0000246247"
+                "identifier": "trc:TRCN0000246247"
             }
         ],
         "modified_site_by_target_id": "/targets/FTO-human/",
@@ -98,7 +98,7 @@
         "reagents": [
             {
                 "source": "kevin-white",
-                "identifier": "CH322-135D17"
+                "identifier": "bacpac:CH322-135D17"
             }
         ],
         "documents": ["kevin-white:K562_BAC_transfection_White_protocol"],
@@ -122,8 +122,8 @@
         "purpose": "characterization",
         "zygosity": "heterozygous",
         "reagents": [{
-            "source": "/sources/gregory-crawford/",
-            "identifier": "please-contact-lab"
+            "source": "/sources/sigma/",
+            "identifier": "addgene:123456"
         }],
         "method": "TALEN",
         "RVD_sequence_pairs": [
@@ -172,8 +172,8 @@
         "purpose": "tagging",
         "reagents": [
             {
-                "source": "/sources/atcc/",
-                "identifier": "CH321-73P09"
+                "source": "/sources/sigma/",
+                "identifier": "bacpac:CH321-73P09"
             }
         ],
         "status": "released",

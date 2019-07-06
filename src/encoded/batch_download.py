@@ -8,6 +8,7 @@ from snovault.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
+    quote,
 )
 from encoded.viewconfigs.views import search
 from snovault.helpers.helper import list_visible_columns_for_schemas
@@ -85,7 +86,8 @@ _tsv_mapping = OrderedDict([
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
     ('No File Available', ['files.no_file_available']),
-    ('Restricted', ['files.restricted'])
+    ('Restricted', ['files.restricted']),
+    ('s3_uri', ['files.s3_uri']),
 ])
 
 _audit_mapping = OrderedDict([
@@ -165,11 +167,11 @@ def get_peak_metadata_links(request):
 
     peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
         host_url=request.host_url,
-        search_params=search_params
+        search_params=quote(search_params)
     )
     peak_metadata_json_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.json'.format(
         host_url=request.host_url,
-        search_params=search_params
+        search_params=quote(search_params)
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
@@ -227,7 +229,7 @@ def _get_annotation_metadata(request, search_path, param_list):
     fields = [''.join(['&field=', str(value[0])]) for _, value in _tsv_mapping_annotation.items()]
     path = '{}?{}{}'.format(
         search_path,
-        urlencode(param_list, True),
+        quote(urlencode(param_list, True)),
         ''.join(fields)
     )
     results = request.embed(path, as_user=True)
@@ -265,7 +267,7 @@ def _get_annotation_metadata(request, search_path, param_list):
                 result_file.get('lab', {}).get('title', ''),
                 result_file.get('md5sum', ''),
                 ', '.join(result_file.get('dbxrefs', '')),
-                result_file.get('href', '')[7:-1],
+                ''.join([request.host_url, result_file.get('href', '')]),
                 result_file.get('assembly', ''),
                 result_file.get('controlled_by', ''),
                 result_file.get('status', ''),
@@ -291,7 +293,7 @@ def peak_metadata(context, request):
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
-    path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
+    path = '/region-search/?{}&{}'.format(quote(urlencode(param_list, True)),'referrer=peak_metadata')
     results = request.embed(path, as_user=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
@@ -382,7 +384,7 @@ def metadata_tsv(context, request):
             param_list['@id'] = elements
 
     param_list['limit'] = ['all']
-    path = '{}?{}'.format(search_path, urlencode(param_list, True))
+    path = '{}?{}'.format(search_path, quote(urlencode(param_list, True)))
     results = request.embed(path, as_user=True)
     rows = []
     for experiment_json in results['@graph']:
@@ -396,9 +398,9 @@ def metadata_tsv(context, request):
                             'files.output_type']
 
             for f in experiment_json['files']:
-                if 'files.file_type' in param_list:
-                    if f['file_type'] not in param_list['files.file_type']:
-                        continue
+                # If we're looking for a file type but it doesn't match, ignore file
+                if not files_prop_param_list(f, param_list):
+                    continue
                 if restricted_files_present(f):
                     continue
                 if is_no_file_available(f):
@@ -430,7 +432,7 @@ def metadata_tsv(context, request):
                 data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t')
+    writer = csv.writer(fout, delimiter='\t', lineterminator='\n')
     header.extend([prop for prop in _audit_mapping])
     writer.writerow(header)
     writer.writerows(rows)
@@ -445,7 +447,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type', 'files.restricted']
+    param_list['field'] = ['files.href', 'files.restricted'] + [k for k, v in param_list.items() if k.startswith('files.')]
     param_list['limit'] = ['all']
 
     experiments = []
@@ -468,12 +470,12 @@ def batch_download(context, request):
             # metadata.tsv link includes a cart UUID
             metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
                 host_url=request.host_url,
-                search_params=request.matchdict['search_params'],
+                search_params=quote(request.matchdict['search_params']),
             )
         else:
             metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
                 host_url=request.host_url,
-                search_params=request.matchdict['search_params'],
+                search_params=quote(request.matchdict['search_params']),
                 elements_json=','.join('"{0}"'.format(element) for element in elements)
             )
 
@@ -481,16 +483,16 @@ def batch_download(context, request):
         # into multiple searches of ELEMENT_CHUNK_SIZE datasets each.
         for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
             param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
-            path = '/search/?%s' % urlencode(param_list, True)
+            path = '/search/?%s' % quote(urlencode(param_list, True))
             results = request.embed(path, as_user=True)
             experiments.extend(results['@graph'])
     else:
         # Regular batch download has single simple call to request.embed
         metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
             host_url=request.host_url,
-            search_params=request.matchdict['search_params']
+            search_params=quote(request.matchdict['search_params'])
         )
-        path = '/search/?%s' % urlencode(param_list, True)
+        path = '/search/?%s' % quote(urlencode(param_list, True))
         results = request.embed(path, as_user=True)
         experiments = results['@graph']
 
@@ -502,7 +504,7 @@ def batch_download(context, request):
 
     files = [metadata_link]
     for exp_file in exp_files:
-        if not file_type_param_list(exp_file, param_list):
+        if not files_prop_param_list(exp_file, param_list):
             continue
         elif restricted_files_present(exp_file):
             continue
@@ -520,10 +522,12 @@ def batch_download(context, request):
     )
 
 
-def file_type_param_list(exp_file, param_list):
-    if 'files.file_type' in param_list:
-        if not exp_file['file_type'] in param_list.get('files.file_type', []):
-            return False
+def files_prop_param_list(exp_file, param_list):
+    for k, v in param_list.items():
+        if k.startswith('files.'):
+            file_prop = k[len('files.'):]
+            if file_prop in exp_file and exp_file[file_prop] not in v:
+                return False
     return True
 
 

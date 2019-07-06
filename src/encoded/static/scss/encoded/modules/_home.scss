@@ -488,3 +488,24 @@
     line-height: 1;
     vertical-align: baseline;
 }
+
+
+.home-banner {
+    img {
+        width: 100%;
+    }
+
+    .home-banner--desktop {
+        display: none;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: block;
+        }
+    }
+
+    .home-banner--mobile {
+        @media screen and (min-width: $screen-sm-min) {
+            display: none;
+        }
+    }
+}

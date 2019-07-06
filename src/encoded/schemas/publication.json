@@ -35,7 +35,7 @@
             "type": "string"
         },
         "date_published": {
-            "title": "Date published",
+            "title": "Publication date",
             "type": "string"
         },
         "date_revised": {
@@ -195,10 +195,10 @@
     },
     "facets": {
         "status": {
-            "title": "Publication status"
+            "title": "Status"
         },
         "categories": {
-            "title": "Category"
+            "title": "Categories"
         },
         "supplementary_data.supplementary_data_type": {
             "title": "Available supplemental data"
@@ -214,7 +214,7 @@
         },
         "datasets.accession": {
             "type": "exists",
-            "title": "Has dataset"
+            "title": "Associated dataset"
         }
     },
     "columns": {
@@ -228,7 +228,7 @@
             "title": "Authors"
         },
         "status": {
-            "title": "Publication status"
+            "title": "Status"
         },
         "journal": {
             "title": "Journal"
@@ -249,19 +249,19 @@
             "title": "Abstract"
         },
         "supplementary_data.supplementary_data_type": {
-            "title": "Available data"
+            "title": "Available supplemental data"
         },
         "supplementary_data.file_format": {
             "title": "File format"
         },
         "supplementary_data.url": {
-            "title": "URL"
+            "title": "Supplementary data URL"
         },
         "supplementary_data.data_summary": {
-            "title": "Data summary"
+            "title": "Supplementary data summary"
         },
         "identifiers": {
-            "title": "identifiers"
+            "title": "Identifiers"
         }
     },
     "boost_values": {

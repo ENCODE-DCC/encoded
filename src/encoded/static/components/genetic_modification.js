@@ -237,7 +237,9 @@ const ModificationMethod = (props) => {
                         <dd>
                             <ul className="multi-value-line">
                                 {geneticModification.reagents.map((reagent, i) => {
-                                    const reagentId = <span>{globals.atIdToAccession(reagent.source)} &mdash; {reagent.identifier}</span>;
+                                    // Although reagents specify source, we want to use the source prefix from the identifier for best consistency
+                                    const parsedIdentifier = reagent.identifier.split(":")
+                                    const reagentId = <span>{parsedIdentifier[0]} &mdash; {parsedIdentifier[1]}</span>;
                                     if (reagent.url) {
                                         return <li key={i}><a href={reagent.url}>{reagentId}</a></li>;
                                     }
@@ -628,7 +630,7 @@ class GeneticModificationComponent extends React.Component {
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"
-                    url={`/search/?type=Biosample&genetic_modifications.uuid=${context.uuid}`}
+                    url={`/search/?type=Biosample&applied_modifications.uuid=${context.uuid}`}
                     Component={BiosampleTable}
                 />
             </div>

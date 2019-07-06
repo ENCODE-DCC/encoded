@@ -44,7 +44,7 @@
             "uniqueKey": true
         },
         "secret_access_key_hash": {
-            "title": "Secret access key Hash",
+            "title": "Secret access key hash",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"

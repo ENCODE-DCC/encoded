@@ -29,21 +29,6 @@ Feature: Search
         Then I should see at least 6 elements with the css selector "ul.nav.result-table > li"
 
 
-    Scenario: Search Biosamples
-        When I press "Materials & Methods"
-        And I click the link to "/search/?type=Biosample&status=released"
-        And I wait for the content to load
-        Then I should see at least 10 elements with the css selector "ul.nav.result-table > li"
-        And I should see at least 7 elements with the css selector "div.box.facets > div.orientation > div.facet"
-
-        When I click the link to "?type=Biosample&status=released&sex=unknown"
-        And I wait for the content to load
-        Then I should see at least 7 elements with the css selector "ul.nav.result-table > li"
-
-        When I click the link to "?type=Biosample&status=released&sex=unknown&organism.scientific_name=Homo+sapiens"
-        And I wait for the content to load
-        Then I should see at least 4 elements with the css selector "ul.nav.result-table > li"
-
 
     Scenario: Search Experiments
         When I press "Data"
@@ -52,13 +37,13 @@ Feature: Search
         Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq"
+        When I click the link to "?type=Experiment&status=released&assay_title=TF+ChIP-seq"
         And I wait for the content to load
-        Then I should see at least 18 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 7 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=ChIP-seq&assay_title=DNAme+array"
+        When I click the link to "?type=Experiment&status=released&assay_title=TF+ChIP-seq&assay_title=DNAme+array"
         And I wait for the content to load
-        Then I should see at least 22 elements with the css selector "ul.nav.result-table > li"
+        Then I should see at least 11 elements with the css selector "ul.nav.result-table > li"
 
 
     Scenario: Search BoxI
@@ -79,8 +64,8 @@ Feature: Search
         When I press "Data"
         And I click the link to "/search/?type=Experiment&status=released"
         And I wait for the content to load
-        When I fill in "searchAssay" with "dna"
-        Then I should see at least 2 elements with the css selector "div.term-list.searchAssay > li"
+        When I fill in "searchAssaytitle" with "dna"
+        Then I should see at least 2 elements with the css selector "div.term-list.searchAssaytitle > li"
 
     Scenario: Search for Target of Assay term
         When I press "Data"
@@ -95,3 +80,27 @@ Feature: Search
         And I wait for the content to load
         When I fill in "searchOrgan" with "zzz"
         Then I should see 0 elements with the css selector "div.term-list.searchOrgan > li"
+
+    Scenario: Search for different ChIP-seq
+        When I click the link to "?type=Experiment"
+        And I wait for the content to load
+        When I click the link to "?type=Experiment&assay_title=TF+ChIP-seq"
+        And I wait for the content to load
+        Then I should see "Showing 8 of 8 results"
+
+        When I click the link to "?type=Experiment"
+        And I wait for the content to load
+        And I click the link to "?type=Experiment&assay_title=Histone+ChIP-seq"
+        And I wait for the content to load
+        Then I should see "Showing 8 of 8 results"
+
+        When I click the link to "?type=Experiment"
+        And I wait for the content to load
+        And I click the link to "?type=Experiment&assay_title=Control+ChIP-seq"
+        And I wait for the content to load
+        Then I should see "Showing 3 of 3 results"
+        
+    Scenario: Smoke testing advanced query search
+        When I fill in "searchTerm" with "@type:Experiment  date_created:[2015-01-01 TO 2018-12-31]"
+        Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
+

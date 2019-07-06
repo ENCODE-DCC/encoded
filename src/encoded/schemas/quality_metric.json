@@ -20,7 +20,7 @@
             "hidden comment": "Bump the default in the subclasses."
         },
         "step_run": {
-            "title": "Analysis Step",
+            "title": "Analysis step run",
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
             "linkTo": "AnalysisStepRun"
@@ -40,7 +40,7 @@
             }
         },
         "attachment": {
-            "title": "QC metric document metadata",
+            "title": "Attachment",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -59,7 +59,8 @@
                     "type": "string",
                     "enum": [
                         "image/png",
-                        "text/plain"
+                        "text/plain",
+                        "application/pdf"
                     ]
                 },
                 "size": {

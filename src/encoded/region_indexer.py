@@ -144,7 +144,7 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
     query = '/search/?type=Experiment&field=uuid&status=released&limit=all'
     # Restrict to just these assays
     for assay in restrict_to_assays:
-        query += '&assay_title=' + assay
+        query += '&assay_term_name=' + assay
     results = request.embed(query)['@graph']
     return [ result['uuid'] for result in results ]
 

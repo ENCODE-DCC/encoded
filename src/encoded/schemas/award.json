@@ -18,13 +18,13 @@
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
-            "title": "Name",
+            "title": "Title",
             "description": "The grant name from the NIH database, if applicable.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
-            "title": "Number",
+            "title": "Name",
             "description": "The official grant number from the NIH database, if applicable",
             "type": "string",
             "pattern": "^[A-Za-z0-9\\-]+$",
@@ -69,6 +69,7 @@
                             "Clone-seq",
                             "comparative genomic hybridization by array",
                             "CRISPR genome editing followed by RNA-seq",
+                            "CRISPR screen",
                             "CRISPRi followed by RNA-seq",
                             "direct RNA-seq",
                             "DNA methylation profiling by array assay",
@@ -92,6 +93,7 @@
                             "MRE-seq",
                             "PAS-seq",
                             "PLAC-seq",
+                            "pooled clone sequencing",
                             "PRO-seq",
                             "protein sequencing by tandem mass spectrometry assay",
                             "RAMPAGE",
@@ -171,7 +173,7 @@
             "linkTo": "User"
         },
         "rfa": {
-            "title": "Phase",
+            "title": "RFA",
             "description": "The name of the bioproject phase.",
             "type": "string",
             "enum": [
@@ -189,7 +191,7 @@
             ]
         },
         "project": {
-            "title": "BioProject",
+            "title": "Project",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string",
             "enum": [
@@ -214,6 +216,20 @@
                 "REMC",
                 "ENCORE"
             ]
+        },
+        "component": {
+            "title": "ENCODE component",
+            "description": "The ENCODE component the award is associated with.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "functional characterization",
+                "computational analysis",
+                "mapping",
+                "data coordination",
+                "data analysis",
+                "affiliate"
+            ]
         }
     },
     "facets": {
@@ -229,19 +245,19 @@
     },
     "columns": {
         "title": {
-            "title": "Name"
+            "title": "Title"
         },
         "name": {
-            "title": "Number"
+            "title": "Name"
         },
         "project": {
-            "title": "BioProject"
+            "title": "Project"
         },
         "rfa": {
-            "title": "Phase"
+            "title": "RFA"
         },
         "status": {
-            "title": "status"
+            "title": "Status"
         }
     },
     "boost_values": {

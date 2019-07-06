@@ -217,3 +217,29 @@ def fly_worm_donor_8_9(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3616
     if value.get('parent_strains') == []:
         value.pop('parent_strains', None)
+
+
+@upgrade_step('fly_donor', '9', '10')
+def fly_donor_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4106
+    if 'aliases' in value:
+        for alias in value['aliases']:
+            if alias[0:6] == 'kyoto:':
+                new_alias = alias.replace(
+                    'kyoto:', 'encode:kyoto_', 1)
+                value['aliases'].append(new_alias)
+                value['aliases'].remove(alias)
+            else:
+                continue
+    if 'dbxrefs' in value:
+        for dbxref in value['dbxrefs']:
+            if dbxref[0:6] == 'Kyoto:':
+                new_external_id = dbxref.replace(
+                    'Kyoto:', 'DGGR:', 1)
+                if 'external_ids' in value:
+                    value['external_ids'].append(new_external_id)
+                else:
+                    value['external_ids'] = [new_external_id]
+                value['dbxrefs'].remove(dbxref)
+            else:
+                continue

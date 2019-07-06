@@ -249,7 +249,7 @@ class Biosample(Item):
             return request.embed(donor, '@@object').get('synchronization')
 
     @calculated_property(schema={
-        "title": "Model organism genetic modifications",
+        "title": "Genetic modifications",
         "description":
             "Genetic modifications made in the donor organism of the biosample.",
         "type": "array",
@@ -267,7 +267,7 @@ class Biosample(Item):
 
 
     @calculated_property(schema={
-        "title": "applied modifications",
+        "title": "Applied modifications",
         "description": "All genetic modifications made in either the donor and/or biosample.",
         "type": "array",
         "items": {
@@ -308,7 +308,7 @@ class Biosample(Item):
         return paths_filtered_by_status(request, parent_of)
 
     @calculated_property(schema={
-        "title": "Age",
+        "title": "Age display",
         "type": "string",
     })
     def age_display(self, request, donor=None, model_organism_age=None,
@@ -332,7 +332,7 @@ class Biosample(Item):
         return None
 
     @calculated_property(condition='depleted_in_term_name', schema={
-        "title": "depleted_in_term_id",
+        "title": "Depleted in term ID",
         "type": "string",
     })
     def depleted_in_term_id(self, request, depleted_in_term_name):
@@ -362,7 +362,7 @@ class Biosample(Item):
         return term_id
 
     @calculated_property(condition='subcellular_fraction_term_name', schema={
-        "title": "subcellular_fraction_term_id",
+        "title": "Subcellular fraction term ID",
         "type": "string",
     })
     def subcellular_fraction_term_id(self, request, subcellular_fraction_term_name):

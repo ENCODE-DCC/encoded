@@ -156,3 +156,20 @@ def analysis_step_5_6(value, system):
 
     if value.get('status') == 'replaced':
         value['status'] = 'deleted'
+
+
+@upgrade_step('analysis_step', '6', '7')
+def analysis_step_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4613
+
+    input_file = value.get('input_file_types', None)
+    output_file = value.get('output_file_types', None)
+    if input_file and 'candidate regulatory elements' in input_file:
+            input_file.remove('candidate regulatory elements')
+            input_file.append('candidate Cis-Regulatory Elements')
+            value['input_file_types'] = input_file
+
+    if output_file and 'candidate regulatory elements' in output_file:
+            output_file.remove('candidate regulatory elements')
+            output_file.append('candidate Cis-Regulatory Elements')
+            value['output_file_types'] = output_file

@@ -50,10 +50,10 @@
     },
     "facets": {
         "assay_term_name": {
-            "title": "Assay"
+            "title": "Assay name"
         },
         "status": {
-            "title": "Composite status"
+            "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
@@ -62,22 +62,22 @@
             "title": "Organism"
         },
         "files.replicate.experiment.target.investigated_as": {
-            "title": "Target of assay"
+            "title": "Target category"
         },
         "files.file_type": {
-            "title": "Available data"
+            "title": "Available file types"
         },
         "files.run_type": {
             "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length"
+            "title": "Read length (nt)"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length"
+            "title": "Mapped read length (nt)"
         },
         "month_released": {
-            "title": "Date released"
+            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -95,7 +95,7 @@
             "type": "string"
         },
         "assay_term_name": {
-            "title": "Assay Type",
+            "title": "Assay name",
             "type": "string"
         },
         "files.replicate.experiment.target.label":{
@@ -119,7 +119,7 @@
             "type": "string"
         },
         "organism.scientific_name": {
-            "title": "Species",
+            "title": "Organism",
             "type": "array"
         }
     },

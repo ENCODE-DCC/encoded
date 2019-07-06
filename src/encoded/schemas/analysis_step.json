@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "step_label": {
             "title": "Step label",
@@ -41,7 +41,7 @@
             "minimum": 1
         },
         "analysis_step_types": {
-            "title": "Types",
+            "title": "Analysis step types",
              "description": "The classification of the software",
              "type": "array",
              "uniqueItems": true,
@@ -61,6 +61,7 @@
                      "genome segmentation",
                      "IDR",
                      "interaction calling",
+                     "long-read sequencing error correction",
                      "open chromatin region identification",
                      "partition concordance",
                      "peak calling",
@@ -72,6 +73,7 @@
                      "replicate concordance",
                      "signal generation",
                      "signal normalization",
+                     "splice junction extraction",
                      "subsampling",
                      "topologically associated domain identification",
                      "transcript identification",
@@ -94,9 +96,9 @@
                     "alignments",
                     "bed",
                     "blacklisted regions",
+                    "candidate Cis-Regulatory Elements",
                     "candidate enhancers",
                     "candidate promoters",
-                    "candidate regulatory elements",
                     "chromatin interactions",
                     "conservative idr thresholded peaks",
                     "control normalized signal",
@@ -206,9 +208,9 @@
                     "alignments",
                     "bigBed",
                     "blacklisted regions",
+                    "candidate Cis-Regulatory Elements",
                     "candidate enhancers",
                     "candidate promoters",
-                    "candidate regulatory elements",
                     "chromatin interactions",
                     "conservative idr thresholded peaks",
                     "control normalized signal",

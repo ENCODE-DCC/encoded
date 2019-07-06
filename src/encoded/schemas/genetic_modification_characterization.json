@@ -44,7 +44,7 @@
             ]
         },
         "attachment": {
-            "title": "Genetic modification characterization document metadata",
+            "title": "Attachment",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -63,6 +63,7 @@
                     "type": "string",
                     "enum": [
                         "application/pdf",
+                        "application/octet-stream",
                         "image/gif",
                         "image/jpeg",
                         "image/png",

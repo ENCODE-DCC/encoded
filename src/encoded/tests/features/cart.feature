@@ -17,13 +17,13 @@ Feature: Cart
         And I wait for the content to load
         Then I should see 3 elements with the css selector ".result-item"
         And I should see "3 datasets in cart"
-        And I should see "4 files selected for download"
+        And I should see "4 files selected"
 
     Scenario: Cart page interactions
-        When I press "facet-term-bam"
-        Then I should see "2 files selected for download"
-        When I press "facet-term-bam"
-        Then I should see "4 files selected for download"
+        When I press "cart-facet-term-alignments"
+        Then I should see "2 files selected"
+        When I press "cart-facet-term-alignments"
+        Then I should see "4 files selected"
         When I press "Download"
         Then I should see an element with the css selector ".modal"
         When I press "Close"
@@ -32,11 +32,11 @@ Feature: Cart
         And I wait for the content to load
         Then I should see 2 elements with the css selector ".result-item"
         And I should see "2 datasets in cart"
-        And I should see "3 files selected for download"
+        And I should see "3 files selected"
         When I visit "/search/?type=Experiment"
         And I dismiss the alert
         Then the browser's URL should be "/cart-view/"
-        When I press "Clear cart"
+        When I press "clear-cart-actuator"
         Then I should see an element with the css selector ".modal"
         When I press "clear-cart-submit"
         Then I should not see an element with the css selector ".modal"

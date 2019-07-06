@@ -2,6 +2,7 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from snovault.util import simple_path_ids
 
 
 @audit_checker('GeneticModification', frame=['modified_site_by_target_id'])
@@ -73,3 +74,30 @@ def audit_genetic_modification_reagents(value, system):
                 method,
             )
             yield AuditFailure('missing genetic modification reagents', detail, level='WARNING')
+
+
+@audit_checker('GeneticModification', frame='object')
+def audit_genetic_modification_reagent_source(value, system):
+    reagents = value.get('reagents', [])
+    for reagent in reagents:
+        request = system.get('request')
+        source_from_reagent = reagent['source']
+        linked_source = request.embed(source_from_reagent + '@@object')
+        identifier = reagent['identifier']
+        source_name = linked_source.get('name')
+        source_name_from_identifier = identifier.split(':')[0]
+        if source_name != source_name_from_identifier:
+            detail = (
+                'Genetic modification {} has a reagent specifying its source '
+                'as {},  but its identifier, {}, has a prefix indicating a '
+                'different source.'
+            ).format(
+                value['@id'],
+                linked_source['@id'],
+                identifier,
+            )
+            yield AuditFailure(
+                'inconsistent genetic modification reagent source and identifier',
+                detail,
+                level='ERROR'
+            )

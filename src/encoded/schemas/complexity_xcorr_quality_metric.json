@@ -27,12 +27,12 @@
             "description": "Total reads sampled (pairs if applicable)"
         },
         "paired-end": {
-            "title": "Paired-end",
+            "title": "Paired end",
             "type": "boolean",
             "description": "Reads are paired-ended"
         },
         "read length": {
-            "title": "Read length",
+            "title": "Read length (nt)",
             "type": "number",
             "description": "Read length"
         },

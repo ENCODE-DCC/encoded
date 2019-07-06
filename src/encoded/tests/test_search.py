@@ -61,16 +61,33 @@ def get_pagination_item():
 
 @pytest.fixture
 def prepare_search_term_item():
-    requests = {FakeRequest((('type', 'Page'),
+    requests = {
+        FakeRequest((('type', 'Page'),
                              ('news', 'true'),
                              ('status', 'released'),
                              ('limit', '5'))): '*',
-                FakeRequest((('searchTerm', 'chip'),)): 'chip',
-                FakeRequest((('searchTerm', '/assay/'),)): '\\/assay\\/',
-                FakeRequest((('searchTerm', '@type:field'),)): 'embedded.@type:field',
-                FakeRequest((('searchTerm', 'type:s'),)): 'type\:s',
-                FakeRequest((('searchTerm', ' '),)): '*',
-                FakeRequest((('searchTerm', '@type'),)): '@type'}
+        FakeRequest((('searchTerm', 'mjj'),
+                        ('advancedQuery', '@type'))): '@type And mjj',
+        FakeRequest((('advancedQuery', '@type:item'),
+                    ('searchTerm', '2300 Jackson street'))): 'embedded.@type:item And 2300 Jackson street',
+        FakeRequest((('searchTerm', '*'),
+                        ('advancedQuery', '@type:s'))): '*',
+        FakeRequest((('searchTerm', ''),
+                        ('advancedQuery', '@type:s'))): '*',
+        FakeRequest((('searchTerm', 'HisTory Album'),)): 'HisTory Album',
+        FakeRequest((('searchTerm', 'Money'),
+                        ('advancedQuery', ''))): 'Money',
+        FakeRequest((('searchTerm', 'Tabloid Junkie'),
+                        ('advancedQuery', '@type:Experiment date_created:[2014-02-09 TO 2017-10-30]'))): 'embedded.@type:Experiment embedded.date_created:[2014-02-09 TO 2017-10-30] And Tabloid Junkie',
+        FakeRequest((('searchTerm', 'They don\'t really care about us'),
+                        ('advancedQuery', ''))): 'They don\'t really care about us',
+        FakeRequest((('searchTerm', 'chip'),)): 'chip',
+        FakeRequest((('searchTerm', '/assay/'),)): '\\/assay\\/',
+        FakeRequest((('searchTerm', ' '),)): '*',
+        FakeRequest((('advancedQuery', 'type:s'),)): 'embedded.type:s',
+        FakeRequest((('advancedQuery', '@type:field'),)): 'embedded.@type:field',
+        FakeRequest((('advancedQuery', '@type'),)): '@type'
+    }
     return requests
 
 
@@ -814,6 +831,7 @@ def test_format_facets():
         ],
         'total': 3,
         'type': 'terms',
+        'appended': 'false'
     }]
 
 
@@ -876,9 +894,11 @@ def test_format_facets_adds_pseudo_facet_for_extra_filters():
         'title': 'Title',
         'terms': [
             {
+                'isEqual': 'true',
                 'key': 'titlevalue',
             },
         ],
+        'appended': 'true',
         'total': 42,
     }]
 

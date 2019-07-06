@@ -14,7 +14,9 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/treatment_classification"},
-        { "$ref": "mixins.json#/documents"}
+        { "$ref": "mixins.json#/documents"},
+        { "$ref": "mixins.json#/product_id"},
+        { "$ref": "mixins.json#/source"}
     ],
     "dependencies": {
         "temperature": ["temperature_units"],
@@ -34,7 +36,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "uniqueItems": true,
@@ -47,7 +49,7 @@
             }
         },
         "amount": {
-            "title": "Amount of treatment applied",
+            "title": "Amount",
             "type": "number"
         },
         "amount_units": {
@@ -99,7 +101,7 @@
             ]
         },
         "biosamples_used": {
-             "title": "Biosamples used in this treatment.",
+             "title": "Biosamples",
              "description": "Biosamples used in this treatment.",
              "type": "array",
              "default": [],
@@ -113,7 +115,7 @@
              }
          },
         "antibodies_used": {
-             "title": "Treatment antibodies",
+             "title": "Antibodies used",
              "description": "Antibodies used in this treatment.",
              "type": "array",
              "default": [],
@@ -132,7 +134,7 @@
             "title": "Treatment type"
         },
         "status": {
-            "title": "Treatment status"
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/treatment.md"

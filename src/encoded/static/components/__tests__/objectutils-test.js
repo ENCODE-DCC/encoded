@@ -16,7 +16,7 @@ describe('InternalTags', () => {
             internal_tags: testTags,
         };
         wrapper = mount(
-            <InternalTags context={context} />
+            <InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} />
         );
     });
 

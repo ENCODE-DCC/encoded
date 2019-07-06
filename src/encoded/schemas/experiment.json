@@ -113,16 +113,26 @@
             "uniqueItems": true,
             "items": {
                 "type": "string",
-                "enum": [
-                    "functional genomics assay",
-                    "functional characterization assay"
-                ]
+                "oneOf": [
+                    {
+                        "enum": [
+                            "functional genomics assay"
+                        ]
+                    },
+                    {
+                        "comment": "Assay classification will migrate into new functional characterization experiment object, functional characterization assay classification in no longer valid for new submissions.",
+                        "permission": "import_items",
+                        "enum": [
+                            "functional characterization assay"
+                        ]
+                    }
+                ]  
             }    
         },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "default": [],
@@ -205,14 +215,14 @@
     },
     "facets": {
         "assay_slims": {
-            "title": "Assay category"
+            "title": "Assay type"
         },
         "assay_title": {
-            "title": "Assay",
+            "title": "Assay title",
             "type": "typeahead"
         },
         "status": {
-            "title": "Experiment status"
+            "title": "Status"
         },
         "award.project": {
             "title": "Project"
@@ -234,11 +244,14 @@
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
         },
+        "target.investigated_as": {
+            "title": "Target category"
+        },
         "biosample_ontology.classification": {
-            "title": "Biosample type"
+            "title": "Biosample classification"
         },
         "biosample_ontology.term_name" : {
-            "title": "Biosample name",
+            "title": "Biosample term name",
             "type": "typeahead",
             "length": "long"
         },
@@ -257,7 +270,7 @@
             "title": "Biosample treatment"
         },
         "files.file_type": {
-            "title": "Available data"
+            "title": "Available file types"
         },
         "files.platform.term_name": {
             "title": "Platform"
@@ -271,11 +284,11 @@
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
         },
-        "replicates.library.nucleic_acid_term_name": {
-            "title": "Library made from"
-        },
         "replicates.library.size_range": {
-            "title": "Library insert size (nt)"
+            "title": "Library fragment size (nt)"
+        },
+        "replicates.library.nucleic_acid_term_name": {
+            "title": "Library material"
         },
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
@@ -283,11 +296,11 @@
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
         },
-        "month_released": {
+        "date_released": {
             "title": "Date released"
         },
         "date_submitted": {
-            "title": "Date Submitted"
+            "title": "Date submitted"
         },
         "lab.title": {
             "title": "Lab"
@@ -305,22 +318,22 @@
             "title": "Accession"
         },
         "assay_term_name": {
-            "title": "Assay Type"
+            "title": "Assay name"
         },
         "assay_title": {
-            "title": "Assay Nickname"
+            "title": "Assay title"
         },
         "target.label": {
-            "title": "Target label"
+            "title": "Target of assay"
         },
         "target.genes.symbol": {
-            "title": "Target gene"
+            "title": "Target gene symbol"
         },
         "biosample_summary": {
             "title": "Biosample summary"
         },
         "biosample_ontology.term_name": {
-            "title": "Biosample"
+            "title": "Biosample term name"
         },
         "description": {
             "title": "Description"
@@ -347,10 +360,10 @@
             "title": "Technical replicate"
         },
         "replicates.antibody.accession": {
-            "title": "Linked Antibody"
+            "title": "Linked antibody"
         },
         "replicates.library.biosample.organism.scientific_name": {
-            "title": "Species"
+            "title": "Organism"
         },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
@@ -359,25 +372,25 @@
             "title": "Age"
         },
         "replicates.library.biosample.age_units": {
-            "title": "Age Units"
+            "title": "Age units"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Treatment"
+            "title": "Biosample treatment"
         },
         "replicates.library.biosample.treatments.treatment_term_id": {
-            "title": "Term ID"
+            "title": "Biosample treatment ontology ID"
         },
         "replicates.library.biosample.treatments.concentration": {
-            "title": "Concentration"
+            "title": "Biosample treatment concentration"
         },
         "replicates.library.biosample.treatments.concentration_units": {
-            "title": "Concentration units"
+            "title": "Biosample treatment concentration units"
         },
         "replicates.library.biosample.treatments.duration": {
-            "title": "Duration"
+            "title": "Biosample treatment duration"
         },
         "replicates.library.biosample.treatments.duration_units": {
-            "title": "Duration units"
+            "title": "Biosample treatment duration units"
         },
         "replicates.library.biosample.synchronization": {
             "title": "Synchronization"

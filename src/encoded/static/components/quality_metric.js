@@ -209,6 +209,39 @@ ExpandTrigger.propTypes = {
 };
 
 
+/** Renderable schema property types */
+const renderableSchemaTypes = ['number', 'string', 'integer', 'boolean'];
+/** Javascript types for QC properties we can render */
+const renderableTypes = ['number', 'string', 'boolean'];
+
+/**
+ * Determine whether a QC metric property can be rendered or not. This function isn't intended to
+ * be used outside this module, but it gets exported for Jest testing.
+ * @param {string} propName Name of the QC property we're evaluating for rendering
+ * @param {object} qcMetric QC metric being rendered
+ * @param {object} qcSchema Schema for this QC metric object
+ *
+ * @return {bool} True if QC metric property can be rendered
+ */
+export const isRenderableProp = (propName, qcMetric, qcSchema) => {
+    // The type of the QC property must be renderable before anything else.
+    if (renderableTypes.indexOf(typeof qcMetric[propName]) !== -1) {
+        const schemaProperty = qcSchema.properties[propName];
+        if (typeof schemaProperty.type === 'object' && Array.isArray(schemaProperty.type) && schemaProperty.type.length > 0) {
+            // Schema has more than one possible type for this property. Determine if we can
+            // render any of them.
+            return schemaProperty.type.some(schemaPropType => (
+                renderableSchemaTypes.indexOf(schemaPropType) !== -1
+            ));
+        }
+
+        // Schema specifies only type type for this property. Determine if we can render it.
+        return renderableSchemaTypes.indexOf(schemaProperty.type) !== -1;
+    }
+    return false;
+};
+
+
 // Display the data for a QC object as a <dl>
 const QCDataDisplay = (props) => {
     const { qcMetric, qcSchema, genericQCSchema } = props;
@@ -217,11 +250,9 @@ const QCDataDisplay = (props) => {
     // numbers -- not objects which are usually attachments that we only display in the modals.
     // Also filter out anything in the generic QC schema, as those properties (@id, uuid, etc.)
     // aren't interesting for the QC panel. Also sort the keys case insensitively.
-    const displayKeys = Object.keys(qcMetric).filter((key) => {
-        const schemaProperty = qcSchema.properties[key];
-        return !genericQCSchema.properties[key]
-            && (schemaProperty.type === 'number' || schemaProperty.type === 'string' || schemaProperty.type === 'integer' || schemaProperty.type === 'boolean');
-    }).sort((a, b) => {
+    const displayKeys = Object.keys(qcMetric).filter(key => (
+        !genericQCSchema.properties[key] && isRenderableProp(key, qcMetric, qcSchema)
+    )).sort((a, b) => {
         const aUp = a.toUpperCase();
         const bUp = b.toUpperCase();
         return aUp < bUp ? -1 : (aUp > bUp ? 1 : 0);

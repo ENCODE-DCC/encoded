@@ -87,9 +87,6 @@
         }
     },
     "facets": {
-        "technical_replicate_number": {
-            "title": "Technical replicate"
-        },
         "status": {
             "title": "Status"
         }

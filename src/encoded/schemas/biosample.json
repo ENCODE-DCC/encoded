@@ -341,7 +341,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "External resources",
             "description": "Biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
             "comment": "Do not submit. DCC personnel is responsible for submission of biosample external resource identifiers.",
             "permission": "import_items",
@@ -403,7 +403,7 @@
             }
         },
         "model_organism_mating_status": {
-            "title": "Mating status",
+            "title": "Model organism mating status",
             "description": "The mating status of the animal.",
             "comment": "The value is not available for human biosamples.",
             "type": "string",
@@ -467,7 +467,7 @@
             "linkTo": "Biosample"
         },
         "subcellular_fraction_term_name": {
-            "title": "Subcellular fraction name",
+            "title": "Subcellular fraction",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",
             "enum": [
@@ -484,7 +484,7 @@
             ]
         },
         "phase": {
-            "title": "Cell-cycle phase",
+            "title": "Cell cycle phase",
             "description": "Specification of cell cycle phase of the biosample.",
             "comment": "The phase property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
             "type": "string",
@@ -587,7 +587,7 @@
             ]
         },
         "model_organism_sex": {
-            "title": "Model organism sex",
+            "title": "Sex",
             "type": "string",
             "description": "The sex of the organism the biosample comes from.",
             "comment": "model_organism_sex is not valid for a human biosample.",
@@ -745,14 +745,14 @@
             ]
         },
         "model_organism_age": {
-            "title": "Model organism donor age",
+            "title": "Age",
             "description": " The age or age range of the model donor organism when biological material was sampled.",
             "type": "string",
             "comment": "model_organism_age is not valid for a human biosample.",
             "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "model_organism_age_units": {
-            "title": "Model organism donor age units",
+            "title": "Age units",
             "type": "string",
             "description": "Age units of the model organism.",
             "comment": "model_organism_age_units are not valid for a human biosample.",
@@ -767,7 +767,7 @@
             ]
         },
         "model_organism_health_status": {
-            "title": "Model organism donor health status",
+            "title": "Health status",
             "type": "string",
             "description": "Health status of the model organism.",
             "comment": "model_organism_health_status is not valid for a human biosample."
@@ -785,10 +785,10 @@
             "title": "Organism"
         },
         "status": {
-            "title": "Biosample status"
+            "title": "Status"
         },
         "biosample_ontology.classification": {
-            "title": "Biosample type"
+            "title": "Biosample classification"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -839,13 +839,13 @@
             "title": "Age"
         },
         "age_units": {
-            "title": "Age Units"
+            "title": "Age units"
         },
         "biosample_ontology.term_name": {
-            "title": "Term"
+            "title": "Biosample term name"
         },
         "biosample_ontology.classification": {
-            "title": "Type"
+            "title": "Biosample classification"
         },
         "synchronization": {
             "title": "Synchronization"
@@ -857,25 +857,25 @@
             "title": "Post-synchronization time units"
         },
         "organism.scientific_name": {
-            "title": "Species"
+            "title": "Organism"
         },
         "applied_modifications.modified_site_by_target_id.name": {
-            "title": "Target name"
+            "title": "Modification site"
         },
         "applied_modifications.purpose": {
-            "title": "Purpose"
+            "title": "Modification purpose"
         },
         "applied_modifications.method": {
-            "title": "Method"
+            "title": "Modification method"
         },
         "applied_modifications.category": {
-            "title": "Category"
+            "title": "Modification category"
         },
         "source.title": {
             "title": "Source"
         },
         "lab.title": {
-            "title": "Submitter"
+            "title": "Lab"
         },
         "life_stage": {
             "title": "Life stage"
@@ -884,7 +884,7 @@
             "title": "Status"
         },
         "treatments.treatment_term_name": {
-            "title": "Treatment"
+            "title": "Biosample treatment"
         },
         "culture_harvest_date": {
             "title": "Culture harvest date"
@@ -892,14 +892,8 @@
         "date_obtained": {
             "title": "Date obtained"
         },
-        "treatments.length": {
-            "title": "Treatments length"
-        },
         "summary": {
             "title": "Summary"
-        },
-        "summary_object": {
-            "title": "Summary object"
         }
     },
     "boost_values": {

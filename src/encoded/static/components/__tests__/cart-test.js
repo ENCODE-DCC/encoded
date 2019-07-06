@@ -20,6 +20,7 @@ const initialCart = {
     elements: [],
     name: 'Third cart',
     current: '/carts/9570dbda-191d-42c3-8ac9-f479ca55f6f6/',
+    inProgress: false,
 };
 const mockStore = configureStore();
 
@@ -295,7 +296,9 @@ describe('Cart manager while logged in as submitter', () => {
     });
 
     test('the column count is correct', () => {
-        const tableHeaderCells = cartManager.find('.table.table-sortable thead tr th');
+        const tableHeaderRows = cartManager.find('.table.table-sortable thead tr');
+        expect(tableHeaderRows).toHaveLength(2);
+        const tableHeaderCells = tableHeaderRows.at(1).find('th');
         expect(tableHeaderCells).toHaveLength(5);
     });
 
@@ -413,7 +416,9 @@ describe('Cart manager while logged in as admin', () => {
     });
 
     test('the column count is correct', () => {
-        const tableHeaderCells = cartManager.find('.table.table-sortable thead tr th');
+        const tableHeaderRows = cartManager.find('.table.table-sortable thead tr');
+        expect(tableHeaderRows).toHaveLength(2);
+        const tableHeaderCells = tableHeaderRows.at(1).find('th');
         expect(tableHeaderCells).toHaveLength(6);
     });
 

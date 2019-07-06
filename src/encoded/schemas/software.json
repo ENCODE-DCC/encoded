@@ -23,7 +23,7 @@
             "default": "5"
         },
         "software_type": {
-            "title": "Types",
+            "title": "Software type",
             "description": "The classification of the software",
             "type": "array",
             "uniqueItems": true,
@@ -72,7 +72,7 @@
             "format": "uri"
         },
         "purpose": {
-            "title": "Purpose in project",
+            "title": "Purpose",
             "description": "The purpose that the software was used for in the project.",
             "type": "array",
             "uniqueItems": true,
@@ -97,6 +97,7 @@
                     "community resource",
                     "comparative genomic hybridization by array",
                     "CRISPR genome editing followed by RNA-seq",
+                    "CRISPR screen",
                     "CRISPRi followed by RNA-seq",
                     "data QC",
                     "direct RNA-seq",
@@ -122,6 +123,7 @@
                     "MRE-seq",
                     "PAS-seq",
                     "PLAC-seq",
+                    "pooled clone sequencing",
                     "PRO-seq",
                     "protein sequencing by tandem mass spectrometry assay",
                     "RAMPAGE",
@@ -150,7 +152,7 @@
             }
         },
         "used_by": {
-            "title": "Used by project",
+            "title": "Used by",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -178,10 +180,7 @@
             "title": "Software type"
         },
         "purpose": {
-            "title": "Purpose in project"
-        },
-        "references.published_by": {
-            "title": "Created by"
+            "title": "Purpose"
         }
     },
    "columns": {
@@ -192,7 +191,7 @@
             "title": "Name"
         },
         "status": {
-            "title": "Publication status"
+            "title": "Status"
         },
         "url": {
             "title": "URL"
@@ -204,16 +203,16 @@
             "title": "Source URL"
         },
         "references": {
-            "title": "references"
+            "title": "References"
         },
         "used_by": {
-            "title": "Use by project"
+            "title": "Used by"
         },
         "software_type": {
-            "title": "The classification of the software"
+            "title": "Software type"
         },
         "purpose": {
-            "title": "Purpose in project"
+            "title": "Purpose"
         }
     },
     "boost_values": {

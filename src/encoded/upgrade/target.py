@@ -184,3 +184,20 @@ def target_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4250
     if not value['modifications']:
         value.pop('modifications')
+
+
+@upgrade_step('target', '10', '11')
+def target_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3108
+    # investigated_as is required for target objects
+    if 'nucleotide modification' in value['investigated_as']:
+        value['investigated_as'].remove('nucleotide modification')
+        if not value['investigated_as']:
+            value['investigated_as'].append('other context')
+    if 'other post-translational modification' in value['investigated_as']:
+        value['investigated_as'].remove('other post-translational modification')
+        if not value['investigated_as']:
+            value['investigated_as'].append('transcription factor')
+    if 'chromatin remodeller' in value['investigated_as']:
+        value['investigated_as'].remove('chromatin remodeller')
+        value['investigated_as'].append('chromatin remodeler')

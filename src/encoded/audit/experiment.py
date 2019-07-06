@@ -5,6 +5,7 @@ from snovault import (
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
 
+
 targetBasedAssayList = [
     'ChIP-seq',
     'RNA Bind-n-Seq',
@@ -48,12 +49,14 @@ seq_assays = [
     'RIP-seq',
     'PLAC-seq',
     'MPRA',
+    'microRNA-seq',
+    'long read RNA-seq',
 ]
 
 
 def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
     '''
-    Libraries for HiC experiments should use the same restriction enzyme
+    Libraries for HiC experiments should use the same restriction enzymes
     '''
     if value['assay_term_name'] != 'HiC':
         return
@@ -61,37 +64,51 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
         return
     if 'replicates' not in value:
         return
-    frag_methods = set()
-    using_restriction_enzyme = 0
-    for rep in value['replicates']:
-        rep_lib = rep.get('library')
-        rep_status = rep.get('status')
-        if rep_lib and rep_status and rep_status not in excluded_types:
-            rep_lib_status = rep_lib.get('status')
-            if rep_lib_status and rep_lib_status not in excluded_types:
-                if 'fragmentation_method' in rep_lib:
-                    frag_methods.add(rep_lib['fragmentation_method'])
-                    if 'restriction' in rep_lib['fragmentation_method']:
-                        using_restriction_enzyme = 1
-                else:
-                    detail = ('Experiment {} contains a library {} '
-                              'lacking the specification of the fragmentation '
-                              'method used to generate it'.format(
-                                    value['@id'],
-                                    rep_lib.get('accession')
-                               )
-                              )
-                    yield AuditFailure('missing fragmentation method', detail, level='WARNING')
+    
+    
+    fragmentation_methods_for_experiment = set()
+    fragmentation_methods_by_library = {}
 
-    if len(frag_methods) > 1 and using_restriction_enzyme > 0:
-        detail = ('Experiment {} contains libraries generated '
-                  'following fragmentation with '
-                  'inconsistent restriction enzymes {} '.format(
+    for replicate in value['replicates']:
+        library = replicate.get('library', {})
+        replicate_status = replicate.get('status')
+        library_status = library.get('status')
+        missing_fragmentation_audit_conditions = [
+            library,
+            replicate_status,
+            library_status,
+            replicate_status not in excluded_types,
+            library_status not in excluded_types,
+        ]
+        if all(missing_fragmentation_audit_conditions):
+            library_fragmentation_methods = library.get('fragmentation_methods')
+            library_id = library.get('@id')
+            if library_fragmentation_methods and library_id:
+                fragmentation_methods_by_library[library_id] = set(library_fragmentation_methods)
+                fragmentation_methods_for_experiment.update(library_fragmentation_methods)
+            else:
+                detail = (
+                    'Experiment {} contains a library {} '
+                    'lacking the specification of the fragmentation '
+                    'method used to generate it'.format(
                         value['@id'],
-                        frag_methods
+                        library_id,
                     )
-                  )
-        yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')
+                )
+                yield AuditFailure('missing fragmentation method', detail, level='WARNING')
+
+    for library_id, library_fragmentation_methods in fragmentation_methods_by_library.items():
+        if len(fragmentation_methods_for_experiment) - len(library_fragmentation_methods) != 0:
+            detail = (
+                'Experiment {} contains library {} generated using {} '
+                'fragmentation methods, which are inconsistent with '
+                'fragmentation methods {} used for other libraries.'.format(
+                    value['@id'],
+                    library_id,
+                    sorted(list(library_fragmentation_methods)),
+                    sorted(list(fragmentation_methods_for_experiment))
+                ))
+            yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')       
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
@@ -483,7 +500,9 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                             'CRISPR genome editing followed by RNA-seq',
                                             'single cell isolation followed by RNA-seq',
                                             'whole-genome shotgun bisulfite sequencing',
-                                            'genetic modification followed by DNase-seq']:
+                                            'genetic modification followed by DNase-seq',
+                                            'microRNA-seq',
+                                            'long read RNA-seq', 'icSHAPE']:
         return
     if not value.get('original_files'):
         return
@@ -526,7 +545,9 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                     'siRNA knockdown followed by RNA-seq',
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
-                                    'single cell isolation followed by RNA-seq']:
+                                    'single cell isolation followed by RNA-seq',
+                                    'microRNA-seq',
+                                    'icSHAPE', 'long read RNA-seq']:
         yield from check_experiment_rna_seq_standards(
             value,
             files_structure,
@@ -749,7 +770,9 @@ def check_experiment_rna_seq_standards(value,
         ['RNA-seq of long RNAs (paired-end, stranded)',
          'RNA-seq of long RNAs (single-end, unstranded)',
          'Small RNA-seq single-end pipeline',
-         'RAMPAGE (paired-end, stranded)'])
+         'RAMPAGE (paired-end, stranded)',
+         'microRNA-seq pipeline',
+         'Long read RNA-seq pipeline'])
     if pipeline_title is False:
         return
 
@@ -757,7 +780,9 @@ def check_experiment_rna_seq_standards(value,
         'RNA-seq of long RNAs (paired-end, stranded)': ' /data-standards/rna-seq/long-rnas/ ',
         'RNA-seq of long RNAs (single-end, unstranded)': ' /data-standards/rna-seq/long-rnas/ ',
         'Small RNA-seq single-end pipeline': ' /data-standards/rna-seq/small-rnas/ ',
-        'RAMPAGE (paired-end, stranded)': ' /data-standards/rampage/  '
+        'RAMPAGE (paired-end, stranded)': ' /data-standards/rampage/  ',
+        'microRNA-seq pipeline': ' /microrna/microrna-seq/ ',
+        'Long read RNA-seq pipeline': ' /data-standards/long-read-rna-pipeline/ '
     }
 
     for f in fastq_files:
@@ -779,7 +804,7 @@ def check_experiment_rna_seq_standards(value,
             detail = 'ENCODE experiment {} '.format(value['@id']) + \
                      'of {} assay'.format(value['assay_term_name']) + \
                      ', processed by {} pipeline '.format(pipeline_title) + \
-                     ' has no read depth containig quality metric associated with it.'
+                     ' has no read depth containing quality metric associated with it.'
             yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
 
     alignment_files = get_non_tophat_alignment_files(alignment_files)
@@ -835,6 +860,36 @@ def check_experiment_rna_seq_standards(value,
             medium_limit,
             lower_limit,
             standards_links[pipeline_title])
+    elif pipeline_title == 'microRNA-seq pipeline':
+        yield from check_experiment_micro_rna_standards(
+            value,
+            alignment_files,
+            gene_quantifications,
+            desired_assembly,
+            desired_annotation,
+            upper_limit_reads_mapped=5000000,
+            lower_limit_reads_mapped=3000000,
+            upper_limit_spearman=0.85,
+            lower_limit_spearman=0.8,
+            upper_limit_expressed_mirnas=300,
+            lower_limit_expressed_mirnas=200,
+        )
+    elif pipeline_title == 'Long read RNA-seq pipeline':
+        yield from check_experiment_long_read_rna_standards(
+            value,
+            alignment_files,
+            gene_quantifications,
+            desired_assembly,
+            desired_annotation,
+            upper_limit_flnc=600000,
+            lower_limit_flnc=400000,
+            upper_limit_mapping_rate=0.9,
+            lower_limit_mapping_rate=0.6,
+            upper_limit_spearman=0.8,
+            lower_limit_spearman=0.6,
+            upper_limit_genes_detected=8000,
+            lower_limit_genes_detected=4000,
+        )
     return
 
 
@@ -1131,6 +1186,178 @@ def check_experiment_cage_rampage_standards(experiment,
     yield from check_spearman(
         mad_metrics, experiment['replication_type'],
         0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
+    return
+
+
+def check_experiment_micro_rna_standards(
+    experiment,
+    alignment_files,
+    gene_quantifications,
+    desired_assembly,
+    desired_annotation,
+    upper_limit_reads_mapped,
+    lower_limit_reads_mapped,
+    upper_limit_spearman,
+    lower_limit_spearman,
+    upper_limit_expressed_mirnas,
+    lower_limit_expressed_mirnas,
+):
+    # Gather metrics
+    quantification_metrics = get_metrics(
+        gene_quantifications,
+        'MicroRnaQuantificationQualityMetric',
+        desired_assembly,
+        desired_annotation,
+    )
+    # Desired annotation does not pertain to alignment files
+    alignment_metrics = get_metrics(
+        alignment_files,
+        'MicroRnaMappingQualityMetric',
+        desired_assembly,
+    )
+    correlation_metrics = get_metrics(
+        gene_quantifications,
+        'CorrelationQualityMetric',
+        desired_assembly,
+        desired_annotation,
+    )
+    # Audit Spearman correlations
+    yield from check_replicate_metric_dual_threshold(
+        correlation_metrics,
+        metric_name='Spearman correlation',
+        audit_name='replicate concordance',
+        upper_limit=upper_limit_spearman,
+        lower_limit=lower_limit_spearman,
+    )
+    # Audit flnc read counts
+    yield from check_replicate_metric_dual_threshold(
+        alignment_metrics,
+        metric_name='aligned_reads',
+        audit_name='number of aligned reads',
+        upper_limit=upper_limit_reads_mapped,
+        lower_limit=lower_limit_reads_mapped,
+    )
+    # Audit mapping rate
+    yield from check_replicate_metric_dual_threshold(
+        quantification_metrics,
+        metric_name='expressed_mirnas',
+        audit_name='microRNAs expressed',
+        upper_limit=upper_limit_expressed_mirnas,
+        lower_limit=lower_limit_expressed_mirnas,
+    )
+    return
+
+
+def check_experiment_long_read_rna_standards(
+    experiment,
+    alignment_files,
+    gene_quantifications,
+    desired_assembly,
+    desired_annotation,
+    upper_limit_flnc,
+    lower_limit_flnc,
+    upper_limit_mapping_rate,
+    lower_limit_mapping_rate,
+    upper_limit_spearman,
+    lower_limit_spearman,
+    upper_limit_genes_detected,
+    lower_limit_genes_detected,
+):
+    # Gather metrics
+    quantification_metrics = get_metrics(
+        gene_quantifications,
+        'LongReadRnaQuantificationQualityMetric',
+        desired_assembly,
+        desired_annotation,
+    )
+    # Desired annotation does not pertain to alignment files
+    alignment_metrics = get_metrics(
+        alignment_files,
+        'LongReadRnaMappingQualityMetric',
+        desired_assembly,
+    )
+    correlation_metrics = get_metrics(
+        gene_quantifications,
+        'CorrelationQualityMetric',
+        desired_assembly,
+        desired_annotation,
+    )
+    # Audit Spearman correlations
+    yield from check_replicate_metric_dual_threshold(
+        correlation_metrics,
+        metric_name='Spearman correlation',
+        audit_name='replicate concordance',
+        upper_limit=upper_limit_spearman,
+        lower_limit=lower_limit_spearman,
+    )
+    # Audit flnc read counts
+    yield from check_replicate_metric_dual_threshold(
+        alignment_metrics,
+        metric_name='full_length_non_chimeric_read_count',
+        audit_name='sequencing depth',
+        upper_limit=upper_limit_flnc,
+        lower_limit=lower_limit_flnc,
+        metric_description='full-length non-chimeric (FLNC) read count',
+    )
+    # Audit mapping rate
+    yield from check_replicate_metric_dual_threshold(
+        alignment_metrics,
+        metric_name='mapping_rate',
+        audit_name='mapping rate',
+        upper_limit=upper_limit_mapping_rate,
+        lower_limit=lower_limit_mapping_rate,
+        metric_description='mapping rate',
+    )
+    # Audit gene quantifications
+    yield from check_replicate_metric_dual_threshold(
+        quantification_metrics,
+        metric_name='genes_detected',
+        audit_name='genes detected',
+        upper_limit=upper_limit_genes_detected,
+        lower_limit=lower_limit_genes_detected,
+        metric_description='GENCODE genes detected',
+    )
+    return
+
+
+def check_replicate_metric_dual_threshold(
+    metrics,
+    metric_name,
+    audit_name,
+    upper_limit,
+    lower_limit,
+    metric_description=None,
+):
+    """
+    Generic function to handle audits on files from a single replicate with multiple thresholds
+    """
+    if not metric_description:
+        metric_description = metric_name
+    for metric in metrics:
+        metric_value = metric.get(metric_name)
+        files = metric['quality_metric_of']
+        if metric_value and metric_value < upper_limit:
+            level = 'WARNING'
+            standards_severity = 'recommendations'
+            audit_name_severity = 'borderline'
+            if metric_value < lower_limit:
+                level = 'NOT_COMPLIANT'
+                standards_severity = 'requirements'
+                audit_name_severity = 'insufficient'
+            file_names_fmt = str(files).replace('\'', ' ')
+            detail = (
+                'Files {} have {} of {}, which is below ENCODE {}. According to '
+                'ENCODE standards, a number for this property in a replicate of > {:,} '
+                'is required, and > {:,} is recommended.'
+            ).format(
+                file_names_fmt,
+                metric_description,
+                metric_value,
+                standards_severity,
+                lower_limit,
+                upper_limit,
+            )
+            yield AuditFailure('{} {}'.format(audit_name_severity, audit_name), detail, level=level)
     return
 
 
@@ -2384,6 +2611,38 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                         level)
 
 
+def audit_experiment_biosample_characterization(value, system, excluded_types):
+    if check_award_condition(value, ["ENCODE4"]):
+        level = 'ERROR'
+    else:
+        level = 'WARNING'
+    if 'replicates' in value:
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and
+                'library' in rep and
+                rep['library']['status'] not in excluded_types and
+                'biosample' in rep['library'] and
+                rep['library']['biosample']['status'] not in excluded_types):
+                biosample = rep['library']['biosample']
+                if (biosample.get('applied_modifications') and
+                    not biosample.get('characterizations')):
+                    mod_ids = str(
+                        [mod['@id'] for mod in biosample['applied_modifications']]
+                    ).replace('\'', ' ')
+                    detail = (
+                        'Biosample {} which has been modified by {} '
+                        'is missing validating characterization.'
+                    ).format(
+                        biosample['@id'],
+                        mod_ids
+                    )
+                    yield AuditFailure(
+                        'missing biosample characterization',
+                        detail,
+                        level
+                    )
+
+
 def audit_experiment_replicates_biosample(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -3048,14 +3307,29 @@ def audit_RNA_library_RIN(value, system, excluded_types):
     An RNA library should have a RIN specified.
     '''
     RNAs = ['RNA', 'polyadenylated mRNA', 'miRNA']
-    for rep in value['replicates']:
-        if (rep['status'] not in excluded_types and
-           'library' in rep and rep['library']['status'] not in excluded_types and
-           rep['library']['nucleic_acid_term_name'] in RNAs and
-           'rna_integrity_number' not in rep['library']):
-            detail = ('Metadata of RNA library {} lacks specification of '
-                      'the rna integrity number.').format(rep['library']['@id'])
-            yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
+    assay_IDs = ['OBI:0002093', # 5' RLM RACE
+                 'OBI:0001674', # CAGE
+                 'NTR:0003814', # CRISPR RNA-seq
+                 'NTR:0004619', # CRISPRi RNA-seq
+                 'NTR:0000445', # long read RNA-seq
+                 'OBI:0002045', # PAS-seq
+                 'OBI:0001864', # RAMPAGE
+                 'OBI:0001463', # RNA microarray
+                 'OBI:0001850', # RNA-PET
+                 'OBI:0001271', # RNA-seq (poly(A)-, poly(A)+, small, and total)
+                 'NTR:0003082', # scRNA-seq
+                 'NTR:0000762', # shRNA RNA-seq
+                 'NTR:0000763'  # siRNA RNA-seq
+                ]
+    if value['assay_term_id'] in assay_IDs:
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and
+               'library' in rep and rep['library']['status'] not in excluded_types and
+               rep['library']['nucleic_acid_term_name'] in RNAs and
+               'rna_integrity_number' not in rep['library']):
+                detail = ('Metadata of RNA library {} lacks specification of '
+                          'the rna integrity number.').format(rep['library']['@id'])
+                yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
 
 
 # if experiment target is recombinant protein, the biosamples should have at
@@ -3145,7 +3419,8 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
     Check if ENCODE4 experiment uses biosample without NIH institutional certification.
     '''
     # Only check ENCODE4 experiments. 
-    if value.get('award', {}).get('rfa') != 'ENCODE4':
+    award = value.get('award', {})
+    if award.get('rfa') != 'ENCODE4' or award.get('component') == 'functional characterization':
         return
     # Build up list of human biosamples missing NIC used in experiment. 
     human_biosamples_missing_hic = {
@@ -3743,6 +4018,7 @@ function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
     'audit_tagging_genetic_modification_characterization': audit_experiment_tagging_genetic_modification,
+    'audit_tagging_biosample_characterization': audit_experiment_biosample_characterization,
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,

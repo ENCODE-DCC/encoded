@@ -81,3 +81,15 @@ class GeneticModification(Item):
     })
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
+
+    @calculated_property(schema={
+        "title": "Perturbation",
+        "description": "A flag to indicate whether the genetic modification caused a genetic perturbation. Only genetic modifications that are insertions for the purpose of tagging are considered unperturbed.",
+        "type": "boolean",
+        "notSubmittable": True
+    })
+    def perturbation(self, category, purpose):
+        if category == 'insertion' and purpose == 'tagging':
+            return False
+        else:
+            return True

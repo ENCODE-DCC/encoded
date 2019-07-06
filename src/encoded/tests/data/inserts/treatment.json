@@ -49,7 +49,9 @@
         "treatment_term_id": "CHEBI:44616",
         "treatment_term_name": "afimoxifene",
         "treatment_type": "chemical",
-        "uuid": "2e33a097-412c-4646-87f9-858dfaaa7c06"
+        "uuid": "2e33a097-412c-4646-87f9-858dfaaa7c06",
+        "source": "sigma",
+        "product_id": "H7904"
     },
     {
         "aliases": [

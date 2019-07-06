@@ -41,6 +41,14 @@ def library_3(library):
     })
     return item
 
+@pytest.fixture
+def library_8(library_3):
+    item = library_3.copy()
+    item.update({
+        'schema_version': '8',
+        'status': "in progress"
+    })
+    return item
 
 def test_library_upgrade(upgrader, library_1):
     value = upgrader.upgrade('library', library_1, target_version='3')
@@ -72,3 +80,11 @@ def test_library_fragmentation(upgrader, library_3):
     value = upgrader.upgrade('library', library_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['fragmentation_method'] == 'shearing (Covaris generic)'
+
+
+def test_upgrade_library_8_to_9(upgrader, library_8):
+    value = upgrader.upgrade('library', library_8, target_version='9')
+    assert value['schema_version'] == '9'
+    assert isinstance(value['fragmentation_methods'], list)
+    assert value['fragmentation_methods'] == ['shearing (Covaris generic)']
+    assert 'fragmentation_method' not in value
