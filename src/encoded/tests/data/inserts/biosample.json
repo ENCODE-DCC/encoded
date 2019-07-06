@@ -944,11 +944,11 @@
         "uuid": "66df3a6b-1234-4ea9-954f-06ecf41bb6ad"
     },
     {
-        "accession": "ENCBS888RUL",
+        "accession": "KCEBS888RUL",
         "award": "UM1HG009390",
         "biosample_ontology": "cell_line_EFO_0009747",
         "description": "WTC11 cell line",
-        "donor": "ENCDO000HUM",
+        "donor": "KCEDO000HUM",
         "lab": "gregory-crawford",
         "organism": "human",
         "source": "dana-levasseur",
