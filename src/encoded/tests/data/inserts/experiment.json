@@ -824,7 +824,7 @@
         "assay_term_name": "microRNA-seq",
         "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
-        "accession": "ENCSR123MRN",
+        "accession": "KCESR123MRN",
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e",
         "experiment_classification": ["functional genomics assay"]
     },
@@ -838,7 +838,7 @@
         "assay_term_name": "CRISPR screen",
         "lab": "/labs/gregory-crawford/",
         "date_released": "2017-12-31",
-        "accession": "ENCSR759STU",
+        "accession": "KCESR759STU",
         "uuid": "b9e3fdf6-70ee-11e9-a923-1681be663d3e",
         "experiment_classification": ["functional characterization assay"]
     },
@@ -852,7 +852,7 @@
         "assay_term_name": "pooled clone sequencing",
         "lab": "/labs/gregory-crawford/",
         "date_released": "2019-04-10",
-        "accession": "ENCSR051STU",
+        "accession": "KCESR051STU",
         "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e",
         "experiment_classification": ["functional characterization assay"]
     }

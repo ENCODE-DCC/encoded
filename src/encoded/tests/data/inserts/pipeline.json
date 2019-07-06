@@ -168,7 +168,7 @@
         "uuid": "5fe3fdf6-5b1a-4aca-8116-ded7acf13037"
     },
     {
-        "accession": "ENCPL001MRN",
+        "accession": "KCEPL001MRN",
         "assay_term_names": ["microRNA-seq"],
         "analysis_steps": [
             "align-star-step-v-1"

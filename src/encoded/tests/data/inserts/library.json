@@ -89,7 +89,7 @@
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
-        "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
+        "spikeins_used": ["KCESR704RSS", "KCESR013YHQ"],
         "strand_specificity": true,
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
@@ -763,9 +763,9 @@
     },
     {
         "_test": "CRISPR screen library",
-        "accession": "ENCLB009ACL",
+        "accession": "KCELB009ACL",
         "strand_specificity": false,
-        "biosample": "ENCBS888RUL",
+        "biosample": "KCEBS888RUL",
         "lab": "gregory-crawford",
         "status": "released",
         "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
@@ -776,9 +776,9 @@
     },
     {
         "_test": "pooled clone sequencing library",
-        "accession": "ENCLB001ACL",
+        "accession": "KCELB001ACL",
         "strand_specificity": false,
-        "biosample": "ENCBS888RUL",
+        "biosample": "KCEBS888RUL",
         "lab": "gregory-crawford",
         "status": "released",
         "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",

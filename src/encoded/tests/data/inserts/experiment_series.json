@@ -1,29 +1,29 @@
 [
     {
         "uuid": "94e6a5b4-b415-442c-b0cf-84a1ba3ba3ca",
-        "accession": "ENCSR513DKU",
+        "accession": "KCESR513DKU",
         "award": "U24HG009397",
         "lab": "j-michael-cherry",
         "status": "released",
         "date_released": "2019-06-03",
-        "related_datasets": ["ENCSR001ADI", "ENCSR000ADI"]
+        "related_datasets": ["KCESR001ADI", "KCESR000ADI"]
     },
     {
         "uuid": "2bc8bd11-1602-4825-9e15-4037674c7dd0",
-        "accession": "ENCSR464YKY",
+        "accession": "KCESR464YKY",
         "award": "U24HG009397",
         "lab": "j-michael-cherry",
         "status": "released",
         "date_released": "2019-06-03",
-        "related_datasets": ["ENCSR003CON", "ENCSR001CON", "ENCSR002SER", "ENCSR001SER", "ENCSR003SER"]
+        "related_datasets": ["KCESR003CON", "KCESR001CON", "KCESR002SER", "KCESR001SER", "KCESR003SER"]
     },
     {
         "uuid": "8721f778-f7e9-420c-b9fd-02ce0fc3805b",
-        "accession": "ENCSR119SJB",
+        "accession": "KCESR119SJB",
         "award": "U24HG009397",
         "lab": "j-michael-cherry",
         "status": "released",
         "date_released": "2019-06-03",
-        "related_datasets": ["ENCSR001EPI", "ENCSR999NOF", "ENCSR000AAL"]
+        "related_datasets": ["KCESR001EPI", "KCESR999NOF", "KCESR000AAL"]
     }
 ]

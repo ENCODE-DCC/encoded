@@ -2392,13 +2392,13 @@
         "uuid": "d62004d1-a54c-4853-8105-a0a17cc971a4"
     },
     {
-        "accession": "ENCFF130XXF",
+        "accession": "KCEFF130XXF",
         "aliases": [
             "ali-mortazavi:test-bigWig1"
         ],
         "assembly": "mm10",
         "award": "U54HG006998",
-        "dataset": "ENCSR002ACT",
+        "dataset": "KCESR002ACT",
         "file_format": "bigWig",
         "file_size": 13864747,
         "genome_annotation": "M21",
@@ -2410,13 +2410,13 @@
         "uuid": "c9713f40-440a-4f68-a2b0-bc80853ac1c5"
     },
     {
-        "accession": "ENCFF854KQX",
+        "accession": "KCEFF854KQX",
         "aliases": [
             "ali-mortazavi:test-bigWig2"
         ],
         "assembly": "GRCh38",
         "award": "U54HG006998",
-        "dataset": "ENCSR002ACT",
+        "dataset": "KCESR002ACT",
         "file_format": "bigWig",
         "file_size": 79562357,
         "genome_annotation": "V29",
@@ -2428,13 +2428,13 @@
         "uuid": "086890fb-ddb8-4257-bd57-53d2ce38dce6"
     },
     {
-        "accession": "ENCFF119LNR",
+        "accession": "KCEFF119LNR",
         "aliases": [
             "ali-mortazavi:test-bigWig3"
         ],
         "assembly": "hg19",
         "award": "U54HG006998",
-        "dataset": "ENCSR002ACT",
+        "dataset": "KCESR002ACT",
         "file_format": "bigWig",
         "file_size": 81125075,
         "genome_annotation": "V30",
@@ -2446,10 +2446,10 @@
         "uuid": "f3f5b773-2a38-4623-b426-485bf3adea4e"
     },
     {
-        "accession": "ENCFF001MRN",
+        "accession": "KCEFF001MRN",
         "file_size": 20,
         "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
+        "dataset": "KCESR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
         "lab":"j-michael-cherry",
@@ -2465,10 +2465,10 @@
         "read_length": 76
     },
     {
-        "accession": "ENCFF002MRN",
+        "accession": "KCEFF002MRN",
         "file_size": 20,
         "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
+        "dataset": "KCESR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
         "lab":"j-michael-cherry",
@@ -2484,10 +2484,10 @@
         "read_length": 76
     },
     {
-        "accession": "ENCFF003MRN",
+        "accession": "KCEFF003MRN",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
+        "dataset": "KCESR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
             "1234830f-154f-449f-814b-fd3435417edf"
@@ -2506,10 +2506,10 @@
         "uuid": "12abfcc1-9f85-415a-8eb5-e0f12346f053"
     },
     {
-        "accession": "ENCFF004MRN",
+        "accession": "KCEFF004MRN",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
+        "dataset": "KCESR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
             "5678830f-154f-449f-814b-fd3435417edf"
@@ -2527,10 +2527,10 @@
         "uuid": "95befcc1-9f85-415a-8eb5-e0f12346f053"
     },
     {
-        "accession": "ENCFF005MRN",
+        "accession": "KCEFF005MRN",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
+        "dataset": "KCESR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
             "12abfcc1-9f85-415a-8eb5-e0f12346f053"
@@ -2548,10 +2548,10 @@
         "uuid": "34cdfcc1-9f85-415a-8eb5-e0f12346f053"
     },
     {
-        "accession": "ENCFF006MRN",
+        "accession": "KCEFF006MRN",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
+        "dataset": "KCESR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
             "95befcc1-9f85-415a-8eb5-e0f12346f053"
@@ -2569,7 +2569,7 @@
         "uuid": "16abfcc1-9f85-415a-8eb5-e0f12346f053"
     },
     {
-        "dataset": "ENCSR000AJK",
+        "dataset": "KCESR000AJK",
         "status": "released",
         "award": "U54HG006998",
         "assembly": "GRCh38",
@@ -2579,16 +2579,16 @@
         "file_format": "bigBed",
         "lab": "ali-mortazavi",
         "file_format_type": "bed3+",
-        "accession": "ENCFF880XNW",
+        "accession": "KCEFF880XNW",
         "uuid": "7aeeef9d-84b3-4977-b158-65b674e3ef46",
         "file_size": 1363224
     },
     {
         "_test": "rep1 reads for long read RNA-seq experiment",
-        "accession": "ENCFF001ISO",
+        "accession": "KCEFF001ISO",
         "file_size": 20,
         "award": "U41HG006992",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
         "lab":"j-michael-cherry",
@@ -2604,10 +2604,10 @@
         "read_length": 76
     },
     {
-        "accession": "ENCFF002ISO",
+        "accession": "KCEFF002ISO",
         "file_size": 20,
         "award": "U41HG006992",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
         "lab":"j-michael-cherry",
@@ -2624,12 +2624,12 @@
     },
     {
         "_test": "rep1 bam file for long read RNA-seq experiment",
-        "accession": "ENCFF003ISO",
+        "accession": "KCEFF003ISO",
         "assembly": "GRCh38",
         "award": "U54HG006998",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "derived_from": [
-            "/files/ENCFF001ISO/"
+            "/files/KCEFF001ISO/"
         ],
         "file_format": "bam",
         "file_size": 398856,
@@ -2646,13 +2646,13 @@
     },
     {
         "_test": "rep2 bam file for long read RNA-seq experiment",
-        "accession": "ENCFF004ISO",
+        "accession": "KCEFF004ISO",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-            "/files/ENCFF002ISO/"
+            "/files/KCEFF002ISO/"
         ],
         "file_format": "bam",
         "genome_annotation": "V24",
@@ -2668,13 +2668,13 @@
     },
     {
         "_test": "rep1 quantifications for long read RNA-seq experiment",
-        "accession": "ENCFF005ISO",
+        "accession": "KCEFF005ISO",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-            "/files/ENCFF003ISO/"
+            "/files/KCEFF003ISO/"
         ],
         "file_format": "tsv",
         "genome_annotation": "V24",
@@ -2690,13 +2690,13 @@
     },
     {
         "_test": "rep2 quantifications for long read RNA-seq experiment",
-        "accession": "ENCFF006ISO",
+        "accession": "KCEFF006ISO",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-            "/files/ENCFF004ISO/"
+            "/files/KCEFF004ISO/"
         ],
         "file_format": "tsv",
         "genome_annotation": "V24",
@@ -2712,13 +2712,13 @@
     },
     {
         "_test": "rep2 quantifications for long read RNA-seq experiment",
-        "accession": "ENCFF007ISO",
+        "accession": "KCEFF007ISO",
         "assembly": "GRCh38",
         "award": "U41HG006992",
-        "dataset": "ENCSR751ISO",
+        "dataset": "KCESR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-            "/files/ENCFF004ISO/"
+            "/files/KCEFF004ISO/"
         ],
         "file_format": "database",
         "genome_annotation": "V24",
