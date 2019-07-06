@@ -4,7 +4,7 @@ orbs:
     browser-tools: circleci/browser-tools@0.1.0
 
 executors:
-  encoded-executor:
+  pandiseased-executor:
     docker:
       - image: circleci/buildpack-deps:trusty
     working_directory: ~/encoded
