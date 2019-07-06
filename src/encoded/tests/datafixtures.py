@@ -1082,3 +1082,16 @@ def file_with_no_external_sheet(file, root):
         }
     )
     return file
+
+
+@pytest.fixture
+def patient(testapp):
+    item = {
+            "age": "60",
+            "age_units": "year",
+            "ethnicity": "Hispanic",
+            "gender": "Female",
+            "race": "White",
+            "mrn": "934"
+    }
+    return testapp.post_json('/patient', item).json['@graph'][0]

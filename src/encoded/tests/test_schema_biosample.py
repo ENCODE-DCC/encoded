@@ -118,15 +118,15 @@ def test_biosample_human_whole_organism_fail(testapp, biosample, whole_organism)
     testapp.post_json('/biosample', biosample, status=422)
 
 
-def test_alt_accession_ENCBS_regex(testapp, biosample):
+def test_alt_accession_KCEBS_regex(testapp, biosample):
     bio = testapp.post_json('/biosample', biosample).json['@graph'][0]
     res = testapp.patch_json(
         bio['@id'],
-        {'status': 'replaced', 'alternate_accessions': ['ENCFF123ABC']}, expect_errors=True)
+        {'status': 'replaced', 'alternate_accessions': ['KCEFF123ABC']}, expect_errors=True)
     assert res.status_code == 422
     res = testapp.patch_json(
         bio['@id'],
-        {'status': 'replaced', 'alternate_accessions': ['ENCBS123ABC']})
+        {'status': 'replaced', 'alternate_accessions': ['KCEBS123ABC']})
     assert res.status_code == 200
 
 

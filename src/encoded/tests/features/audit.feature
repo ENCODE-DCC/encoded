@@ -4,7 +4,7 @@ Feature: Title
     Scenario: Title updates
         When I visit "/audit/?type=Experiment"
         And I wait for the content to load
-        Then the title should contain the text "matrix – ENCODE"
+        Then the title should contain the text "matrix – KCE"
 
 @audit @usefixtures(workbook)
 Feature: Audit

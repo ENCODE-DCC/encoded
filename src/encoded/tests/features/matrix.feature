@@ -8,7 +8,7 @@ Feature: Title
         When I press "Data"
         And I click the link to "/matrix/?type=Experiment&status=released"
         And I wait for the content to load
-        Then the title should contain the text "matrix – ENCODE"
+        Then the title should contain the text "matrix – KCE"
 
 @matrix @usefixtures(workbook)
 Feature: Matrix

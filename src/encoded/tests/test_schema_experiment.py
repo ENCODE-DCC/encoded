@@ -67,11 +67,11 @@ def test_bad_alias_namespace(testapp, experiment):
     print(experiment)
     assert res.status_code == 422
 
-def test_alt_accession_ENCSR_regex(testapp, experiment_no_error):
+def test_alt_accession_KCESR_regex(testapp, experiment_no_error):
     expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
-    res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCAB123ABC']}, expect_errors=True)
+    res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['KCEAB123ABC']}, expect_errors=True)
     assert res.status_code == 422
-    res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCSR123ABC']})
+    res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['KCESR123ABC']})
     assert res.status_code == 200
 
 def test_submission_date(testapp, experiment_no_error):
@@ -127,7 +127,7 @@ def test_experiment_submission_date_dependency(testapp, experiment_no_error):
         'status': 'submitted',
         'date_submitted': '2000-10-10'},
         status=200)
-    
+
 def test_experiment_possible_controls(testapp, experiment_no_error, matched_set):
     exp = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
     matched_set_control = testapp.post_json('/matched_set', matched_set).json['@graph'][0]
