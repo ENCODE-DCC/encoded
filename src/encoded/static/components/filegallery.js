@@ -21,12 +21,14 @@ const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing gro
 
 
 // Get the audit icon for the highest audit level in the given file.
-function fileAuditStatus(file) {
+function fileAuditStatus(file, loggedIn) {
     let highestAuditLevel;
 
     if (file.audit) {
         const sortedAuditLevels = _(Object.keys(file.audit)).sortBy(level => -file.audit[level][0].level);
-        highestAuditLevel = sortedAuditLevels[0];
+
+        // only logged in users should see ambulance icon (INTERNAL_ACTION)
+        highestAuditLevel = !loggedIn && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
     } else {
         highestAuditLevel = 'OK';
     }
@@ -393,7 +395,7 @@ FileTable.procTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: item => <div>{fileAuditStatus(item)}</div>,
+        display: (item, meta) => <div>{fileAuditStatus(item, meta.loggedIn)}</div>,
     },
     status: {
         title: 'File status',
@@ -444,7 +446,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: item => <div>{fileAuditStatus(item)}</div>,
+        display: (item, meta) => <div>{fileAuditStatus(item, meta.loggedIn)}</div>,
     },
     status: {
         title: 'File status',
@@ -648,7 +650,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}>{fileAuditStatus(file)}</td>
+                                            <td className={pairClass}>{fileAuditStatus(file, loggedIn)}</td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -684,7 +686,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td>{fileAuditStatus(file)}</td>
+                                        <td>{fileAuditStatus(file, loggedIn)}</td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -828,7 +830,7 @@ class RawFileTable extends React.Component {
                                             <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={groupBottom}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}>{fileAuditStatus(file)}</td>
+                                            <td className={groupBottom}>{fileAuditStatus(file, loggedIn)}</td>
                                             <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -858,7 +860,7 @@ class RawFileTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td>{fileAuditStatus(file)}</td>
+                                        <td>{fileAuditStatus(file, loggedIn)}</td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
