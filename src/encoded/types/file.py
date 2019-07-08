@@ -139,7 +139,8 @@ class File(Item):
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
-            if 'md5sum' in properties:
+            file_output_category = self.schema['output_type_output_category'].get(properties.get('output_type'))
+            if (file_output_category == 'raw data' and 'md5sum' in properties):
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
