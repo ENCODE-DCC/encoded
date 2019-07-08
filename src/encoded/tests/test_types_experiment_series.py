@@ -103,7 +103,6 @@ def test_experiment_series_biosample_summary(
         {'related_datasets': [experiment_1['@id'], experiment_2['@id']]}
     )
     res = testapp.get(base_experiment_series['@id']+'@@index-data')
-    print(res.json['object']['biosample_summary'])
     assert sorted(res.json['object']['biosample_summary']) == [
         'S2R+ nuclear fraction treated with ethanol',
         'liver male child (1 day) treated with ethanol',
