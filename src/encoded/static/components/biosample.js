@@ -363,6 +363,7 @@ class BiosampleComponent extends React.Component {
                     <BiosampleTable
                         title="Pooled from biosamples"
                         items={context.pooled_from}
+                        total={context.pooled_from.length}
                     />
                 : null}
 
