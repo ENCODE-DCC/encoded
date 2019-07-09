@@ -137,7 +137,7 @@ const ListingComponent = (props, reactContext) => {
                     : <em>None submitted</em> }
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

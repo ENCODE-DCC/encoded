@@ -2444,7 +2444,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
                             {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
-                            {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session, except: selectedFile['@id'] }) : null}
+                            {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session }) : null}
                         </div>
                     </div>
                 : null}

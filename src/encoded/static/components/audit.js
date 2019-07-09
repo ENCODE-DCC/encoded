@@ -89,8 +89,6 @@ import { Panel } from '../libs/bootstrap/panel';
 //
 // * options (Optional object):
 //   * options.session (object): session object from app context
-//   * options.except (string): @id to *not* make into a link in the detail text
-//   * options.forcedEditLink (boolean): `true` to make the `except` string a link anyway
 
 
 // Display an audit icon. This normally gets displayed within the audit indicator button, but it
@@ -118,54 +116,65 @@ AuditIcon.defaultProps = {
 };
 
 
-// Display details text with embedded links. This gets displayed in each row of the audit details.
-/* eslint-disable react/prefer-stateless-function */
-class DetailEmbeddedLink extends React.Component {
-    render() {
-        const { detail } = this.props;
+// Regex to find a simplified markdown in the form "{link text|path}"
+const markdownRegex = /{(.+?)\|(.+?)}/g;
+// Regex to find a paths in the form "/xxxx/yyyy/"
+const pathRegex = /(\/.+?\/.+?\/)/g;
 
-        // Get an array of all paths in the detail string, if any.
-        const matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
-        if (matches) {
-            // Build React object of text followed by path for all paths in detail string
-            let lastStart = 0;
-            const result = matches.map((match) => {
-                let preMatchedChar = '';
-                const linkStart = detail.indexOf(match, lastStart);
-                const preText = detail.slice(lastStart, linkStart);
-                lastStart = linkStart + match.length;
-                const linkText = detail.slice(linkStart, lastStart);
-                if (linkText[0] !== '/') {
-                    preMatchedChar = linkText[0];
-                }
-                if (match !== this.props.except || this.props.forcedEditLink) {
-                    return <span key={linkStart}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
-                }
-                return <span key={linkStart}>{preText}{preMatchedChar}{linkText}</span>;
-            });
 
-            // Pick up any trailing text after the last path, if any
-            const postText = detail.slice(lastStart);
-
-            // Render all text and paths, plus the trailing text
-            return <span>{result}{postText}</span>;
+/**
+ * Render audit-detail text, converting an extremely simplified markdown to links. If the text
+ * doesn't contain any simplified markdown, convert anything that looks like a path to links.
+ * Otherwise, just render the text without any link conversion.
+ */
+const AuditRenderDetail = ({ detail }) => {
+    let linkMatches = markdownRegex.exec(detail);
+    if (linkMatches) {
+        // `detail` has at least one "markdown" sequence, so treat the whole thing as marked-down
+        // text. Each loop iteration finds each markdown sequence. That gets broken into the
+        // non-link text before the link and then the link itself.
+        const renderedDetail = [];
+        let segmentIndex = 0;
+        while (linkMatches) {
+            const linkText = linkMatches[1];
+            const linkPath = linkMatches[2];
+            const preText = detail.substring(segmentIndex, linkMatches.index);
+            renderedDetail.push(preText ? <span key={segmentIndex}>{preText}</span> : null, <a href={linkPath} key={linkMatches.index}>{linkText}</a>);
+            segmentIndex = linkMatches.index + linkMatches[0].length;
+            linkMatches = markdownRegex.exec(detail);
         }
 
-        // No links in the detail string; just display it with no links
-        return <span>{detail}</span>;
+        // Lastly, render any non-link text after the last link.
+        const postText = detail.substring(segmentIndex, detail.length);
+        return renderedDetail.concat(postText ? <span key={segmentIndex}>{postText}</span> : null);
     }
-}
-/* eslint-enable react/prefer-stateless-function */
 
-DetailEmbeddedLink.propTypes = {
-    detail: PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
-    except: PropTypes.string, // @id of object being reported on. Specifying it here prevents it from being converted to a link in the `detail` text
-    forcedEditLink: PropTypes.bool, // `true` to display the `except` path as a link anyway
+    // TODO: Remove this segment of code once no audits include bare paths.
+    linkMatches = pathRegex.exec(detail);
+    if (linkMatches) {
+        // `detail` has at least one "markdown" sequence, so treat the whole thing as marked-down
+        // text. Each loop iteration finds each markdown sequence. That gets broken into the
+        // non-link text before the link and then the link itself.
+        const renderedDetail = [];
+        let segmentIndex = 0;
+        while (linkMatches) {
+            const preText = detail.substring(segmentIndex, linkMatches.index);
+            renderedDetail.push(preText ? <span key={segmentIndex}>{preText}</span> : null, <a href={linkMatches[0]} key={linkMatches.index}>{linkMatches[0]}</a>);
+            segmentIndex = linkMatches.index + linkMatches[0].length;
+            linkMatches = pathRegex.exec(detail);
+        }
+
+        // Lastly, render any non-link text after the last link.
+        const postText = detail.substring(segmentIndex, detail.length);
+        return renderedDetail.concat(postText ? <span key={segmentIndex}>{postText}</span> : null);
+    }
+
+    return detail;
 };
 
-DetailEmbeddedLink.defaultProps = {
-    except: '',
-    forcedEditLink: false,
+AuditRenderDetail.propTypes = {
+    /** Audit detail text, possibly containing @ids or marks to turn into links */
+    detail: PropTypes.string.isRequired,
 };
 
 
@@ -182,7 +191,7 @@ class AuditGroup extends React.Component {
     }
 
     render() {
-        const { group, except, auditLevelName, forcedEditLink } = this.props;
+        const { group, auditLevelName } = this.props;
         const level = auditLevelName.toLowerCase();
         const { detailOpen } = this.state;
         const alertClass = `audit-detail-${level}`;
@@ -208,7 +217,7 @@ class AuditGroup extends React.Component {
                     <div className="audit-details-decoration" />
                     {group.map((audit, i) =>
                         <div className={alertItemClass} key={i} role="alert">
-                            <DetailEmbeddedLink detail={audit.detail} except={except} forcedEditLink={forcedEditLink} />
+                            <AuditRenderDetail detail={audit.detail} />
                         </div>
                     )}
                 </div>
@@ -220,13 +229,6 @@ class AuditGroup extends React.Component {
 AuditGroup.propTypes = {
     group: PropTypes.array.isRequired, // Array of audits in one name/category
     auditLevelName: PropTypes.string.isRequired, // Audit level name
-    except: PropTypes.string, // @id of object whose audits are being displayed.
-    forcedEditLink: PropTypes.bool, // `true` to display the `except` path as a link anyway
-};
-
-AuditGroup.defaultProps = {
-    except: '',
-    forcedEditLink: false,
 };
 
 
@@ -304,7 +306,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditDetail(audits, id, options) {
-        const { except, forcedEditLink, session } = options || {};
+        const { session } = options || {};
         if (audits && this.state.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
@@ -327,8 +329,6 @@ export const auditDecor = AuditComponent => class extends React.Component {
                                     group={groupedAudits[groupName]}
                                     groupName={groupName}
                                     auditLevelName={auditLevelName}
-                                    except={except}
-                                    forcedEditLink={forcedEditLink}
                                     key={groupName}
                                 />
                             );

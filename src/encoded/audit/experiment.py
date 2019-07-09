@@ -2,6 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
 
@@ -1344,13 +1348,13 @@ def check_replicate_metric_dual_threshold(
                 level = 'NOT_COMPLIANT'
                 standards_severity = 'requirements'
                 audit_name_severity = 'insufficient'
-            file_names_fmt = str(files).replace('\'', ' ')
+            file_names_links = [audit_link(path_to_text(file), file) for file in files]
             detail = (
                 'Files {} have {} of {}, which is below ENCODE {}. According to '
                 'ENCODE standards, a number for this property in a replicate of > {:,} '
                 'is required, and > {:,} is recommended.'
             ).format(
-                file_names_fmt,
+                ', '.join(file_names_links),
                 metric_description,
                 metric_value,
                 standards_severity,
@@ -2719,7 +2723,7 @@ def audit_experiment_documents(value, system, excluded_types):
 
     # If there are no library documents anywhere, then we say something
     if lib_docs == 0:
-        detail = 'Experiment {} has no attached documents'.format(value['@id'])
+        detail = 'Experiment {} has no attached documents'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
     return
 

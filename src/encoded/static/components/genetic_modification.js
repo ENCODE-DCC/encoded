@@ -544,7 +544,7 @@ class GeneticModificationComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -687,7 +687,7 @@ const ListingComponent = (props, reactContext) => {
                     {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

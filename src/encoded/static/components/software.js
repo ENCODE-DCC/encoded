@@ -57,7 +57,7 @@ class SoftwareComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session })}
 
                 <div className="panel">
                     <dl className="key-value">
@@ -202,7 +202,7 @@ class ListingComponent extends React.Component {
                         : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }

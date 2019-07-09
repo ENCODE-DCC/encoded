@@ -133,7 +133,7 @@ const LotComponent = (props, reactContext) => {
                     <DisplayAsJson />
                 </div>
             </header>
-            {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}
+            {props.auditDetail(context.audit, 'antibody-audit', { session: reactContext.session })}
 
             <div className="antibody-statuses">
                 {antibodyStatuses}
@@ -682,7 +682,7 @@ const ListingComponent = (props, reactContext) => {
                     <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

@@ -93,7 +93,7 @@ class AnnotationComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'annotation-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'annotation-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -288,7 +288,7 @@ class PublicationDataComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'publicationdata-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'publicationdata-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -452,7 +452,7 @@ class ReferenceComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -619,7 +619,7 @@ class ProjectComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -807,7 +807,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -1333,7 +1333,7 @@ export class SeriesComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">

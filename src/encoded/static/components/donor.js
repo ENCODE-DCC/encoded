@@ -574,7 +574,7 @@ class DonorComponent extends React.Component {
                             <AlternateAccession altAcc={context.alternate_accessions} />
                         </div>
                         {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
+                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
                 </header>
@@ -669,7 +669,7 @@ const DonorListingComponent = (props, reactContext) => {
                     : null}
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

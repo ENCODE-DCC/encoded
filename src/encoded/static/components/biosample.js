@@ -76,7 +76,7 @@ class BiosampleComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">

@@ -146,7 +146,7 @@ class ItemComponent extends React.Component {
                         {result.description}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }
@@ -240,7 +240,7 @@ class BiosampleComponent extends React.Component {
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }
@@ -346,7 +346,7 @@ const ExperimentComponent = (props, reactContext) => {
                     </div>
                 : null}
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };
@@ -459,7 +459,7 @@ const DatasetComponent = (props, reactContext) => {
                     </div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };
@@ -503,7 +503,7 @@ class TargetComponent extends React.Component {
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }
