@@ -68,6 +68,13 @@
                 "Declined",
                 "Unknown"
             ]
+        },
+        "mrn": {
+            "title": "Medical Number",
+            "comment": "KCE personnel are allowed to set this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": true
         }
     },
     "facets": {
@@ -79,6 +86,9 @@
         },
         "race": {
             "title": "Race"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

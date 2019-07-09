@@ -28,7 +28,7 @@ class Patient extends React.Component {
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Demographic" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        <Breadcrumbs root="/search/?type=Patient" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
                     </div>
                 </header>
