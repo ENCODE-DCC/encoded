@@ -350,21 +350,6 @@ class BiosampleComponent extends React.Component {
                                 </dl>
                             </div>
                         </div>
-
-                        {context.pooled_from && context.pooled_from.length ?
-                            <section data-test="pooledfrom">
-                                <hr />
-                                <h4>Pooled from biosamples</h4>
-                                <ul className="non-dl-list">
-                                    {context.pooled_from.map(biosample => (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section>
-                        : null}
-
                         {context.treatments.length ?
                             <section>
                                 <hr />
@@ -374,6 +359,13 @@ class BiosampleComponent extends React.Component {
                         : null}
                     </PanelBody>
                 </Panel>
+                {context.pooled_from && context.pooled_from.length > 0 ?
+                    <BiosampleTable
+                        title="Pooled from biosamples"
+                        items={context.pooled_from}
+                        total={context.pooled_from.length}
+                    />
+                : null}
 
                 {context.applied_modifications && context.applied_modifications.length ?
                     <GeneticModificationSummary geneticModifications={context.applied_modifications} />
