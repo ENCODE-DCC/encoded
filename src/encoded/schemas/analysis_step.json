@@ -50,6 +50,7 @@
                  "type": "string",
                  "enum": [
                      "alignment",
+                     "barcodes mapping generation",
                      "chromatin loop identification",
                      "classification",
                      "depth normalization",
@@ -77,11 +78,10 @@
                      "subsampling",
                      "topologically associated domain identification",
                      "transcript identification",
+                     "transcriptome annotation",
                      "transcriptome assembly",
                      "unreplicated IDR",
-                     "variant annotation",
-                     "transcriptome annotation",
-                     "barcodes mapping generation"
+                     "variant annotation"
                  ]
              }
         },
@@ -176,7 +176,9 @@
                     "RNA-binding protein associated mRNAs",
                     "rRNA reference",
                     "semi-automated genome annotation",
+                    "sequence adapters",
                     "sequence alignability",
+                    "sequence barcodes",
                     "signal of all reads",
                     "signal of unique reads",
                     "signal p-value",
@@ -185,6 +187,7 @@
                     "splice junctions",
                     "stable peaks",
                     "topologically associated domains",
+                    "transcriptome annotations",
                     "transcript quantifications",
                     "transcription start sites",
                     "transcriptome alignments",
@@ -193,10 +196,7 @@
                     "tRNA reference",
                     "TSS reference",
                     "unfiltered alignments",
-                    "variant calls",
-                    "sequence barcodes",
-                    "sequence adapters",
-                    "transcriptome annotations"
+                    "variant calls"
                 ]
             }
         },
@@ -290,7 +290,9 @@
                     "RNA-binding protein associated mRNAs",
                     "rRNA reference",
                     "semi-automated genome annotation",
+                    "sequence adapters",
                     "sequence alignability",
+                    "sequence barcodes",
                     "signal of all reads",
                     "signal of unique reads",
                     "signal p-value",
@@ -299,6 +301,7 @@
                     "splice junctions",
                     "stable peaks",
                     "topologically associated domains",
+                    "transcriptome annotations",
                     "transcript quantifications",
                     "transcription start sites",
                     "transcriptome alignments",
@@ -307,10 +310,7 @@
                     "tRNA reference",
                     "TSS reference",
                     "unfiltered alignments",
-                    "variant calls",
-                    "sequence barcodes",
-                    "sequence adapters",
-                    "transcriptome annotations"
+                    "variant calls"
                 ]
             }
         },

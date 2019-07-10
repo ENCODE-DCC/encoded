@@ -1151,6 +1151,8 @@
                         "RNA-binding protein associated mRNAs",           
                         "rRNA reference",
                         "semi-automated genome annotation",
+                        "sequence adapters",
+                        "sequence barcodes",
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
@@ -1161,14 +1163,12 @@
                         "transcript quantifications",
                         "transcription start sites",
                         "transcriptome alignments",
+                        "transcriptome annotations",
                         "transcriptome index",
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
-                        "variant calls",
-                        "sequence barcodes",
-                        "sequence adapters",
-                        "transcriptome annotations"
+                        "variant calls"
                     ]
                 },
                 {
