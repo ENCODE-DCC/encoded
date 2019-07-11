@@ -249,13 +249,13 @@ class Biosample(Item):
             return request.embed(donor, '@@object').get('synchronization')
 
     @calculated_property(schema={
-        "title": "Genetic modifications",
+        "title": "Model organism genetic modifications",
         "description":
-            "Genetic modifications made in the donor organism of the biosample.",
+            "Genetic modifications made in the model organism of the biosample.",
         "type": "array",
         "items": {
             "title": "Model organism genetic modification",
-            "description": "Genetic modification made in the donor organism of the biosample.",
+            "description": "Genetic modification made in the model organism of the biosample.",
             "comment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
@@ -268,12 +268,12 @@ class Biosample(Item):
 
     @calculated_property(schema={
         "title": "Applied modifications",
-        "description": "All genetic modifications made in either the donor and/or biosample.",
+        "description": "All genetic modifications made in either the model organism and/or biosample.",
         "type": "array",
         "items": {
-            "title": "applied modification",
-            "description": "Genetic modification made in either the donor and/or biosample.",
-            "coment": "See genetic_modification.json for available identifiers.",
+            "title": "Applied modification",
+            "description": "Genetic modification made in either the model organism and/or biosample.",
+            "comment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
         }
