@@ -170,6 +170,14 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
     return { subCategorySums, maxSubCategoryValue, minSubCategoryValue: minSubCategoryValue - 1 };
 };
 
+/**
+ * Remove spaces from id so it can be accepted as an id by HTML
+ *
+ * @param {string} id
+ * @returns id without space or dash if id is empty
+ */
+const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
+
 
 /**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
@@ -275,7 +283,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 {
                     rowContent: [{
                         header: (
-                            <div id={rowCategoryBucket.key.replace(/\s/g, '_')} style={{ backgroundColor: rowCategoryColor }}>
+                            <div id={sanitizeId(rowCategoryBucket.key)} style={{ backgroundColor: rowCategoryColor }}>
                                 {expandableRowCategory ?
                                     <RowCategoryExpander
                                         categoryId={rowCategoryBucket.key}
@@ -451,10 +459,16 @@ class MatrixPresentation extends React.Component {
 
             // Category does exist in array
             // Move close to header
-            const header = document.querySelector(`#${category.replace(/\s/g, '_')}`);
-            header.scrollIntoView({
+            const header = document.querySelector(`#${sanitizeId(category)}`);
+            const navbar = document.querySelector('#navbar');
+            const headerToPageTopDistance = header ? header.getBoundingClientRect().top : 0;
+            const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+            const slack = 20; // extra space between navbar and header
+            const top = headerToPageTopDistance - (navbarHeight + slack);
+            window.scrollBy({
+                top,
+                left: 0,
                 behavior: 'smooth',
-                block: 'end',
             });
 
             // Remove category.
