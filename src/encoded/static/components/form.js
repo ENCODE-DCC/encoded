@@ -99,7 +99,7 @@ const defaultValue = function defaultValue(schema) {
                 }
             }
         });
-        return (Object.keys(value).length ? value : undefined);
+        return (Object.keys(value).length > 0 ? value : undefined);
     }
     return schema.default || undefined;
 };
@@ -949,7 +949,7 @@ export class Form extends React.Component {
         let error;
         if (data.errors !== undefined) {
             data.errors.forEach((err) => {
-                let path = `instance${err.name.length ? `.${err.name.join('.')}` : ''}`;
+                let path = `instance${err.name.length > 0 ? `.${err.name.join('.')}` : ''}`;
                 // Missing values for required properties are reported
                 // on the parent property (the one that specifies `required`)
                 // so we have to add the property that is actually missing here.

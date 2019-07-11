@@ -65,7 +65,7 @@ class Target extends React.Component {
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxref.length ?
+                                {context.dbxref.length > 0 ?
                                     <DbxrefList context={context} dbxrefs={context.dbxref} />
                                 : <em>None submitted</em> }
                             </dd>

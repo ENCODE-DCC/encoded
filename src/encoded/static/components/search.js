@@ -100,7 +100,7 @@ export function Listing(reactProps) {
 /* eslint-disable react/prefer-stateless-function */
 export class PickerActions extends React.Component {
     render() {
-        if (this.context.actions && this.context.actions.length) {
+        if (this.context.actions && this.context.actions.length > 0) {
             return (
                 <div className="pull-right">
                     {this.context.actions.map(action => React.cloneElement(action, { key: this.props.context.name, id: this.props.context['@id'] }))}
@@ -176,13 +176,13 @@ class BiosampleComponent extends React.Component {
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
         const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
         const separator = (lifeStage || age) ? ',' : '';
-        const treatment = (result.treatments && result.treatments.length) ? result.treatments[0].treatment_term_name : '';
+        const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
 
         // Calculate genetic modification properties for display.
         const rnais = [];
         const constructs = [];
         const mutatedGenes = [];
-        if (result.applied_modifications && result.applied_modifications.length) {
+        if (result.applied_modifications && result.applied_modifications.length > 0) {
             result.applied_modifications.forEach((am) => {
                 // Collect RNAi GM methods.
                 if (am.method === 'RNAi' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
@@ -230,10 +230,10 @@ class BiosampleComponent extends React.Component {
                     <div className="data-row">
                         <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
                         {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                        {rnais.length ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
-                        {constructs.length ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
+                        {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
+                        {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
                         {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                        {mutatedGenes.length ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
+                        {mutatedGenes.length > 0 ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
                         {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
                         {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
                         {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
@@ -270,16 +270,16 @@ const ExperimentComponent = (props, reactContext) => {
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
-    if (result.replicates && result.replicates.length) {
+    if (result.replicates && result.replicates.length > 0) {
         biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
     }
 
     // Get all biosample organism names
-    const organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
+    const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
 
     // Bek: Forrest should review the change for correctness
     // Collect synchronizations
-    if (result.replicates && result.replicates.length) {
+    if (result.replicates && result.replicates.length > 0) {
         synchronizations = _.uniq(result.replicates.filter(replicate =>
             replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
         ).map((replicate) => {
@@ -314,7 +314,7 @@ const ExperimentComponent = (props, reactContext) => {
                     </div>
                     {result.biosample_summary ?
                         <div className="highlight-row">
-                            {organismNames.length ?
+                            {organismNames.length > 0 ?
                                 <span>
                                     {organismNames.map((organism, i) =>
                                         <span key={organism}>
@@ -332,7 +332,7 @@ const ExperimentComponent = (props, reactContext) => {
                             <div><strong>Target: </strong>{result.target.label}</div>
                         : null}
 
-                        {synchronizations && synchronizations.length ?
+                        {synchronizations && synchronizations.length > 0 ?
                             <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
                         : null}
 
@@ -386,15 +386,15 @@ const DatasetComponent = (props, reactContext) => {
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
         biosampleTerm = (result.biosample_ontology && Array.isArray(result.biosample_ontology) && result.biosample_ontology.length === 1 && result.biosample_ontology[0].term_name) ? result.biosample_ontology[0].term_name : ((result.biosample_ontology && result.biosample_ontology.term_name) ? result.biosample_ontology.term_name : '');
-        const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
+        const organisms = (result.organism && result.organism.length > 0) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
         if (organisms.length === 1) {
             organism = organisms[0];
         }
 
         // Dig through the biosample life stages and ages
-        if (result.related_datasets && result.related_datasets.length) {
+        if (result.related_datasets && result.related_datasets.length > 0) {
             result.related_datasets.forEach((dataset) => {
-                if (dataset.replicates && dataset.replicates.length) {
+                if (dataset.replicates && dataset.replicates.length > 0) {
                     dataset.replicates.forEach((replicate) => {
                         if (replicate.library && replicate.library.biosample) {
                             const biosample = replicate.library.biosample;
@@ -453,7 +453,7 @@ const DatasetComponent = (props, reactContext) => {
                     </div>
                     <div className="data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
+                        {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
@@ -498,7 +498,7 @@ class TargetComponent extends React.Component {
                     </div>
                     <div className="data-row">
                         <strong>External resources: </strong>
-                        {result.dbxref && result.dbxref.length ?
+                        {result.dbxref && result.dbxref.length > 0 ?
                             <DbxrefList context={result} dbxrefs={result.dbxref} />
                         : <em>None submitted</em> }
                     </div>
@@ -1322,7 +1322,7 @@ export class TextFilter extends React.Component {
 
     getValue() {
         const filter = this.props.filters.filter(f => f.field === 'searchTerm');
-        return filter.length ? filter[0].term : '';
+        return filter.length > 0 ? filter[0].term : '';
     }
 
     /**
@@ -1387,7 +1387,7 @@ export class FacetList extends React.Component {
         const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
 
         let width = 'inherit';
-        if (!facets.length && mode !== 'picker') return <div />;
+        if (facets.length === 0 && mode !== 'picker') return <div />;
         let hideTypes;
         if (mode === 'picker') {
             // The edit forms item picker (search results in an edit item) shows the Types facet.
@@ -1652,7 +1652,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
 
     // Get a sorted list of batch hubs keys with case-insensitive sort.
     let visualizeKeys = [];
-    if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+    if (context.visualize_batch && Object.keys(context.visualize_batch).length > 0) {
         visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
             const aLower = a.toLowerCase();
             const bLower = b.toLowerCase();
@@ -1754,8 +1754,8 @@ export class ResultTable extends React.Component {
         // Make an array of all assemblies found in all files in the search results.
         let assemblies = [];
         const results = this.props.context['@graph'];
-        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
-        if (files.length) {
+        const files = results.length > 0 ? results.filter(result => result['@type'][0] === 'File') : [];
+        if (files.length > 0) {
             // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
             assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
         }
@@ -1763,7 +1763,7 @@ export class ResultTable extends React.Component {
         // Set React component state.
         this.state = {
             assemblies,
-            browserAssembly: assemblies.length && assemblies[0], // Currently selected assembly for the browser
+            browserAssembly: assemblies.length > 0 && assemblies[0], // Currently selected assembly for the browser
             selectedTab: '',
         };
 
@@ -1833,7 +1833,7 @@ export class ResultTable extends React.Component {
 
         // See if a specific result type was requested ('type=x')
         // Satisfied iff exactly one type is in the search
-        if (results.length) {
+        if (results.length > 0) {
             let specificFilter;
             filters.forEach((filter) => {
                 if (filter.field === 'type') {
@@ -1909,7 +1909,7 @@ export class ResultTable extends React.Component {
         return (
             <div>
                 <div className="row">
-                    {facets.length ?
+                    {facets.length > 0 ?
                         <div className="col-sm-5 col-md-4 col-lg-3">
                             <FacetList
                                 {...this.props}
@@ -1986,7 +1986,7 @@ const BrowserTabQuickView = function BrowserTabQuickView() {
 // Display the list of search results.
 export const ResultTableList = ({ results, columns, tabbed, cartControls }) => (
     <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
-        {results.length ?
+        {results.length > 0 ?
             results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls }))
         : null}
     </ul>
@@ -2128,8 +2128,8 @@ Search.contextTypes = {
 
 // optionally make a persistent region
 Search.lastRegion = {
-    assembly: React.PropTypes.string,
-    region: React.PropTypes.string,
+    assembly: PropTypes.string,
+    region: PropTypes.string,
 };
 
 globals.contentViews.register(Search, 'Search');

@@ -32,7 +32,7 @@ class FacetChart extends React.Component {
         // Before rendering anything into the chart, check whether we have a the chart.js module
         // loaded yet. If it hasn't loaded yet, we have nothing to do yet. Also see if we have any
         // values to render at all, and skip this if not.
-        if (Chart && this.values.length) {
+        if (Chart && this.values.length > 0) {
             // In case we don't have enough colors defined for all the values, make an array of
             // colors with enough entries to fill out the labels and values.
             const colors = this.labels.map((label, i) => collectionColorList[i % collectionColorList.length]);
@@ -126,7 +126,7 @@ class FacetChart extends React.Component {
 
         // Check whether we have usable values in one array or the other we just collected (we'll
         // just use `this;values` here) to see if we need to render a chart or not.
-        if (this.values.length) {
+        if (this.values.length > 0) {
             return (
                 <div className="collection-charts__chart">
                     <div className="collection-charts__title">{facet.title}</div>
@@ -206,7 +206,7 @@ class Collection extends React.Component {
                         </div>
                     </PanelHeading>
                     <PanelBody>
-                        {chartFacets.length ?
+                        {chartFacets.length > 0 ?
                             <div className="collection-charts">
                                 {chartFacets.map(facet =>
                                     <FacetChart

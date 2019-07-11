@@ -53,12 +53,10 @@ if (!window.TEST_RUNNER) {
     domready(() => {
         console.log('ready');
         // Set <html> class depending on browser features
-        const BrowserFeat = require('./components/browserfeat').BrowserFeat;
-        BrowserFeat.setHtmlFeatClass();
         const props = getRenderedProps(document);
         const serverStats = require('querystring').parse(window.stats_cookie);
         recordServerStats(serverStats, 'html');
 
-        ReactDOM.render(<App {...props} />, document);
+        ReactDOM.hydrate(<App {...props} />, document);
     });
 }

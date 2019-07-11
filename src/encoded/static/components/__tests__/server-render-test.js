@@ -5,6 +5,10 @@ import { getRenderedProps } from '../app';
 import App from '..';
 
 
+// App calls Browserfeat to act on the DOM, so prevent that functionality as we have no DOM.
+jest.mock('../browserfeat');
+
+
 describe('Server rendering', () => {
     let document;
     const homeUrl = 'http://localhost/';
@@ -57,7 +61,7 @@ describe('Server rendering', () => {
     test('mounts the application over the rendered html', () => {
         let domNode;
         const props = getRenderedProps(document);
-        ReactDOM.render(<App {...props} domReader={(node) => { domNode = node; }} />, document);
+        ReactDOM.hydrate(<App {...props} domReader={(node) => { domNode = node; }} />, document);
         expect(domNode).toBe(document.documentElement);
     });
 });

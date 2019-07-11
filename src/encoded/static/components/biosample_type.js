@@ -60,7 +60,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                         </div>
                     : null}
 
-                    {context.dbxrefs && context.dbxrefs.length ?
+                    {context.dbxrefs && context.dbxrefs.length > 0 ?
                         <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -74,7 +74,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                         </div>
                     : null}
 
-                    {context.aliases.length ?
+                    {context.aliases.length > 0 ?
                         <div data-test="aliases">
                             <dt>Aliases</dt>
                             <dd>

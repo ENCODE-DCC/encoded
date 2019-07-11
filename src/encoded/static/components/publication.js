@@ -91,7 +91,7 @@ const PublicationComponent = (props, reactContext) => {
                 </div>
             : null}
 
-            {context.datasets && context.datasets.length ?
+            {context.datasets && context.datasets.length > 0 ?
                     <SortTablePanel title="Datasets">
                         <FetchedData>
                             <Param name="datasets" url={datasetsUrl} allowMultipleRequest />
@@ -100,7 +100,7 @@ const PublicationComponent = (props, reactContext) => {
                     </SortTablePanel>
             : null }
 
-            {context.supplementary_data && context.supplementary_data.length ?
+            {context.supplementary_data && context.supplementary_data.length > 0 ?
                 <div>
                     <h3>Related data</h3>
                     <div className="panel view-detail" data-test="supplementarydata">
@@ -162,7 +162,7 @@ const Abstract = (props) => {
                 </div>
             : null}
 
-            {context.identifiers && context.identifiers.length ?
+            {context.identifiers && context.identifiers.length > 0 ?
                 <div data-test="references">
                     <dt>References</dt>
                     <dd><DbxrefList context={context} dbxrefs={context.identifiers} addClasses="multi-value" /></dd>
@@ -305,7 +305,7 @@ SupplementaryDataListing.defaultProps = {
 
 const ListingComponent = (props, context) => {
     const result = props.context;
-    const authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
+    const authorList = result.authors && result.authors.length > 0 ? result.authors.split(', ', 4) : [];
     const authors = authorList.length === 4 ? `${authorList.splice(0, 3).join(', ')}, et al` : result.authors;
 
     return (
@@ -321,8 +321,8 @@ const ListingComponent = (props, context) => {
                 <div className="data-row">
                     {authors ? <p className="list-author">{authors}.</p> : null}
                     <p className="list-citation"><Citation {...props} /></p>
-                    {result.identifiers && result.identifiers.length ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
-                    {result.supplementary_data && result.supplementary_data.length ?
+                    {result.identifiers && result.identifiers.length > 0 ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
+                    {result.supplementary_data && result.supplementary_data.length > 0 ?
                         <div>
                             {result.supplementary_data.map((data, i) =>
                                 <SupplementaryDataListing data={data} id={result['@id']} index={i} key={i} />

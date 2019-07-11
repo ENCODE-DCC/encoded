@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { mount } from 'enzyme';
@@ -282,9 +283,9 @@ describe('Cart manager while logged in as submitter', () => {
                     fetch: () => { console.log('fetch'); },
                 },
                 childContextTypes: {
-                    session_properties: React.PropTypes.object,
-                    navigate: React.PropTypes.func,
-                    fetch: React.PropTypes.func,
+                    session_properties: PropTypes.object,
+                    navigate: PropTypes.func,
+                    fetch: PropTypes.func,
                 },
             }
         );
@@ -402,9 +403,9 @@ describe('Cart manager while logged in as admin', () => {
                     fetch: () => { console.log('fetch'); },
                 },
                 childContextTypes: {
-                    session_properties: React.PropTypes.object,
-                    navigate: React.PropTypes.func,
-                    fetch: React.PropTypes.func,
+                    session_properties: PropTypes.object,
+                    navigate: PropTypes.func,
+                    fetch: PropTypes.func,
                 },
             }
         );

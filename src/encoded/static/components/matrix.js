@@ -634,7 +634,7 @@ class Matrix extends React.Component {
 }
 
 Matrix.propTypes = {
-    context: React.PropTypes.object.isRequired,
+    context: PropTypes.object.isRequired,
 };
 
 Matrix.contextTypes = {
@@ -796,7 +796,7 @@ class AuditMatrix extends React.Component {
 }
 
 AuditMatrix.propTypes = {
-    context: React.PropTypes.object.isRequired,
+    context: PropTypes.object.isRequired,
 };
 
 AuditMatrix.contextTypes = {
