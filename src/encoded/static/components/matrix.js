@@ -178,6 +178,20 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
  */
 const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
 
+let _navbarHeight = null;
+
+/**
+ * Get height of the navbar
+ *
+ * @returns height of navbar on first call and restores same value until page is garbage collected
+ */
+const getNavbarHeight = () => {
+    if (_navbarHeight === null) {
+        const navbar = document.querySelector('#navbar');
+        _navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+    }
+    return _navbarHeight;
+};
 
 /**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
@@ -460,11 +474,9 @@ class MatrixPresentation extends React.Component {
             // Category does exist in array
             // Move close to header
             const header = document.querySelector(`#${sanitizeId(category)}`);
-            const navbar = document.querySelector('#navbar');
             const headerToPageTopDistance = header ? header.getBoundingClientRect().top : 0;
-            const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
-            const slack = 20; // extra space between navbar and header
-            const top = headerToPageTopDistance - (navbarHeight + slack);
+            const buffer = 20; // extra space between navbar and header
+            const top = headerToPageTopDistance - (getNavbarHeight() + buffer);
             window.scrollBy({
                 top,
                 left: 0,
