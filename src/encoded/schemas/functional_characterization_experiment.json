@@ -93,16 +93,14 @@
         },
         "target_expression_range_minimum": {
             "title": "Target expression range minimum",
-            "description": "",
-            "comment": "",
+            "description": "Target expression read-out range minimum percentage value",
             "type": "integer",
             "minimum": 0,
             "maximum": 100
         },
         "target_expression_range_maximum": {
             "title": "Target expression range maximum",
-            "description": "",
-            "comment": "",
+            "description": "Target expression read-out range maximum percentage value",
             "type": "integer",
             "minimum": 0,
             "maximum": 100
