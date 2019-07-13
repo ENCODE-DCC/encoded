@@ -29,6 +29,5 @@ def award_2_3(value, system):
 @upgrade_step('award', '5', '6')
 def award_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4682
-
     if 'title' not in value:
         value['title'] = value['name']
