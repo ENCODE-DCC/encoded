@@ -229,29 +229,52 @@
         },
         "introduced_elements": {
             "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or inserted randomly.",
-            "oneOf": [
+            "allOf": [
                 {
-                    "properties": {
-                        "category": {
-                            "enum": ["episome"]
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "category": {
+                                    "enum": ["episome"]
+                                },
+                                "purpose": {
+                                    "enum": ["characterization"]
+                                }
+                            }
                         },
-                        "purpose": {
-                            "enum": ["characterization"]
+                        {
+                            "required": ["modified_site_nonspecific"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["characterization"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
-                    "required": ["modified_site_nonspecific"],
+                    "required": ["donor"],
                     "properties": {
-                        "category": {
-                            "enum": ["insertion"]
-                        },
-                        "purpose": {
-                            "enum": ["characterization"]
+                        "introduced_elements": {
+                            "enum": ["sheared genomic DNA"]
                         }
                     }
+
                 }
             ]
+        },
+        "donor": {
+            "properties": {
+                "introduced_elements": {
+                    "enum": ["sheared genomic DNA"]
+                },
+                "purpose": {
+                    "enum": ["characterization"]
+                }             
+            }
         },
         "guide_rna_sequences": {
             "comment": "Guide RNA sequences apply only to modification_technique = CRISPR.",
@@ -403,6 +426,12 @@
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "formInput": "textarea"
+        },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the sheared genomic DNA elements originated from.",
+            "type": "string",
+            "linkTo": "Donor"            
         },
         "category": {
             "title": "Category",

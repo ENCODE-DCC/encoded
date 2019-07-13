@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 8
 * Added calculated property *perturbed* to indicate genetic modifications which cause genetic perturbations.
+* *donor* property was added to allow specification of the origin of the sheared genomic DNA elements
 
 ### Schema version 8
 
