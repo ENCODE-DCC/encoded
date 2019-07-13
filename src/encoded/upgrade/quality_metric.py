@@ -28,7 +28,7 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 @upgrade_step('star_quality_metric', '7', '8')
 @upgrade_step('trimming_quality_metric', '7', '8')
 def quality_metric_0_1(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-4384
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
     if value.get('assay_term_name'):
 	    if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
 	        value['assay_term_name'] = 'single-nucleus ATAC-seq'
