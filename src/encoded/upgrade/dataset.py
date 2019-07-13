@@ -490,4 +490,3 @@ def experiment_26_27(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4384
     if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
         value['assay_term_name'] = 'single-nucleus ATAC-seq'
-    return
