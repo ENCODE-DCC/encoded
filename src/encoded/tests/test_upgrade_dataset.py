@@ -628,7 +628,7 @@ def test_upgrade_experiment_26_to_27(upgrader, experiment_26):
     assert value['schema_version'] == '27'
     assert value['assay_term_name'] == 'single-nucleus ATAC-seq'
     experiment_26['schema_version'] = '26'
-    experiment_26['assay_term_name'] = 'single other value'
+    experiment_26['assay_term_name'] = 'HiC'
     value = upgrader.upgrade('experiment', experiment_26, current_version='26', target_version='27')
     assert value['schema_version'] == '27'
-    assert value['assay_term_name'] == 'single other value'
+    assert value['assay_term_name'] == 'HiC'
