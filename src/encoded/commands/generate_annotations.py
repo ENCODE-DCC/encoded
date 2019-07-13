@@ -85,7 +85,7 @@ def human_single_annotation(r):
 
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None and r['Synonyms'] != '':
-            synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
+            synonyms = [x.strip(' ').strip('\"') + species for x in r['Synonyms'].split(',')]
             doc['suggest']['input'] = doc['suggest']['input'] + synonyms
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
