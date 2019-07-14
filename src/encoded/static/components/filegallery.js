@@ -2185,6 +2185,7 @@ FileGalleryRendererComponent.defaultProps = {
 };
 
 FileGalleryRendererComponent.contextTypes = {
+    session: PropTypes.object,
     session_properties: PropTypes.object,
     location_href: PropTypes.string,
     navigate: PropTypes.func,
