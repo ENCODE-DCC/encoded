@@ -433,6 +433,9 @@
         "replicates.library.biosample.alternate_accessions": 1.0,
         "replicates.library.biosample.aliases": 1.0,
         "replicates.library.biosample.health_status": 1.0,
+        "replicates.library.biosample.age": 1.0,
+        "replicates.library.biosample.sex": 1.0,
+        "replicates.library.biosample.life_stage": 1.0,
         "replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
         "replicates.library.biosample.donor.accession": 1.0,
         "replicates.library.biosample.donor.alternate_accessions": 1.0,
@@ -449,7 +452,6 @@
         "replicates.library.biosample.phase":2.0,
         "replicates.library.biosample.donor.organism.name": 1.0,
         "replicates.library.biosample.donor.organism.scientific_name": 1.0,
-        "replicates.library.biosample.donor.organism.taxon_id": 1.0,
         "replicates.library.notes": 1.0,
         "replicates.library.nucleic_acid_term_name": 1.0,
         "award.title": 1.0,
@@ -472,7 +474,7 @@
         "references.title": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0,
-        "biosample_summary": 2.0,
+        "biosample_summary": 5.0,
         "description": 1.0
     },
     "changelog": "/profiles/changelogs/experiment.md"
