@@ -155,7 +155,7 @@
     },
     "boost_values": {
         "geneid": 1.0,
-        "symbol": 1.0,
+        "symbol": 5.0,
         "synonyms": 1.0,
         "dbxrefs": 1.0,
         "organism.name": 1.0,
