@@ -1659,7 +1659,7 @@
      "boost_values": {
          "accession": 20.0,
          "file_format": 1.0,
-         "output_type": 1.0,
+         "output_type": 1.0
      },
     "changelog": "/profiles/changelogs/file.md"
 }
