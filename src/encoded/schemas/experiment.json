@@ -434,7 +434,7 @@
         "replicates.library.biosample.alternate_accessions": 1.0,
         "replicates.library.biosample.aliases": 1.0,
         "replicates.library.biosample.health_status": 1.0,
-        "replicates.library.biosample.age": 1.0,
+        "replicates.library.biosample.age": 2.0,
         "replicates.library.biosample.sex": 1.0,
         "replicates.library.biosample.life_stage": 1.0,
         "replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
