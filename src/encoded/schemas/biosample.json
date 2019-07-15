@@ -956,7 +956,7 @@
         "nih_institutional_certification": 1.0,
         "summary": 5.0,
         "description": 1.0,
-        "age": 1.0,
+        "age": 2.0,
         "sex": 1.0
     },
     "changelog": "/profiles/changelogs/biosample.md"
