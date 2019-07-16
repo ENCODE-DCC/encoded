@@ -29,7 +29,7 @@ export function annotationBiosampleSummary(annotation) {
     // Build an array of strings we can join, not including empty strings
     const summaryStrings = _.compact([organismName, lifeStageString, timepointString]);
 
-    if (summaryStrings.length) {
+    if (summaryStrings.length > 0) {
         return (
             <span className="biosample-summary">
                 {summaryStrings.map((summaryString, i) =>
@@ -60,7 +60,7 @@ class AnnotationComponent extends React.Component {
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
         // Make a biosample summary string
         const biosampleSummary = annotationBiosampleSummary(context);
@@ -155,7 +155,7 @@ class AnnotationComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.software_used && context.software_used.length ?
+                                    {context.software_used && context.software_used.length > 0 ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
                                             <dd>{softwareVersionList(context.software_used)}</dd>
@@ -186,7 +186,7 @@ class AnnotationComponent extends React.Component {
 
                                     <AwardRef context={context} adminUser={adminUser} />
 
-                                    {context.aliases.length ?
+                                    {context.aliases.length > 0 ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
@@ -196,7 +196,7 @@ class AnnotationComponent extends React.Component {
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
+                                            {context.dbxrefs && context.dbxrefs.length > 0 ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
@@ -259,7 +259,7 @@ class PublicationDataComponent extends React.Component {
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -300,7 +300,7 @@ class PublicationDataComponent extends React.Component {
                                         <dd><Status item={context} inline /></dd>
                                     </div>
 
-                                    {context.assay_term_name && context.assay_term_name.length ?
+                                    {context.assay_term_name && context.assay_term_name.length > 0 ?
                                         <div data-test="assaytermname">
                                             <dt>Assay(s)</dt>
                                             <dd>{context.assay_term_name.join(', ')}</dd>
@@ -360,7 +360,7 @@ class PublicationDataComponent extends React.Component {
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
+                                            {context.dbxrefs && context.dbxrefs.length > 0 ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
@@ -423,7 +423,7 @@ class ReferenceComponent extends React.Component {
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -490,7 +490,7 @@ class ReferenceComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.software_used && context.software_used.length ?
+                                    {context.software_used && context.software_used.length > 0 ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
                                             <dd>{softwareVersionList(context.software_used)}</dd>
@@ -514,7 +514,7 @@ class ReferenceComponent extends React.Component {
 
                                     <AwardRef context={context} adminUser={adminUser} />
 
-                                    {context.aliases.length ?
+                                    {context.aliases.length > 0 ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
@@ -524,7 +524,7 @@ class ReferenceComponent extends React.Component {
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
+                                            {context.dbxrefs && context.dbxrefs.length > 0 ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
@@ -587,10 +587,10 @@ class ProjectComponent extends React.Component {
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
         // Collect organisms
-        const organisms = (context.organism && context.organism.length) ? _.uniq(context.organism.map(organism => organism.name)) : [];
+        const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map(organism => organism.name)) : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -631,7 +631,7 @@ class ProjectComponent extends React.Component {
                                         <dd><Status item={context} inline /></dd>
                                     </div>
 
-                                    {context.assay_term_name && context.assay_term_name.length ?
+                                    {context.assay_term_name && context.assay_term_name.length > 0 ?
                                         <div data-test="assaytermname">
                                             <dt>Assay(s)</dt>
                                             <dd>{context.assay_term_name.join(', ')}</dd>
@@ -671,14 +671,14 @@ class ProjectComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {organisms.length ?
+                                    {organisms.length > 0 ?
                                         <div data-test="organism">
                                             <dt>Organism</dt>
                                             <dd>{organisms.join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {context.software_used && context.software_used.length ?
+                                    {context.software_used && context.software_used.length > 0 ?
                                         <div data-test="softwareused">
                                             <dt>Software used</dt>
                                             <dd>{softwareVersionList(context.software_used)}</dd>
@@ -702,7 +702,7 @@ class ProjectComponent extends React.Component {
 
                                     <AwardRef context={context} adminUser={adminUser} />
 
-                                    {context.aliases.length ?
+                                    {context.aliases.length > 0 ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
@@ -712,7 +712,7 @@ class ProjectComponent extends React.Component {
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
+                                            {context.dbxrefs && context.dbxrefs.length > 0 ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
@@ -775,10 +775,10 @@ class UcscBrowserCompositeComponent extends React.Component {
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
         // Collect organisms
-        const organisms = (context.organism && context.organism.length) ? _.uniq(context.organism.map(organism => organism.name)) : [];
+        const organisms = (context.organism && context.organism.length > 0) ? _.uniq(context.organism.map(organism => organism.name)) : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -819,7 +819,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         <dd><Status item={context} inline /></dd>
                                     </div>
 
-                                    {context.assay_term_name && context.assay_term_name.length ?
+                                    {context.assay_term_name && context.assay_term_name.length > 0 ?
                                         <div data-test="assays">
                                             <dt>Assay(s)</dt>
                                             <dd>{context.assay_term_name.join(', ')}</dd>
@@ -845,14 +845,14 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {organisms.length ?
+                                    {organisms.length > 0 ?
                                         <div data-test="organism">
                                             <dt>Organism</dt>
                                             <dd>{organisms.join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {context.software_used && context.software_used.length ?
+                                    {context.software_used && context.software_used.length > 0 ?
                                         <div data-test="software-used">
                                             <dt>Software used</dt>
                                             <dd>{softwareVersionList(context.software_used)}</dd>
@@ -876,7 +876,7 @@ class UcscBrowserCompositeComponent extends React.Component {
 
                                     <AwardRef context={context} adminUser={adminUser} />
 
-                                    {context.aliases.length ?
+                                    {context.aliases.length > 0 ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
@@ -886,7 +886,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
+                                            {context.dbxrefs && context.dbxrefs.length > 0 ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
@@ -970,7 +970,7 @@ FilePanelHeader.propTypes = {
 
 
 function displayPossibleControls(item, adminUser) {
-    if (item.possible_controls && item.possible_controls.length) {
+    if (item.possible_controls && item.possible_controls.length > 0) {
         return (
             <span>
                 {item.possible_controls.map((control, i) =>
@@ -1109,7 +1109,7 @@ const replicationTimingSeriesTableColumns = {
         display: (experiment) => {
             let phases = [];
 
-            if (experiment.replicates && experiment.replicates.length) {
+            if (experiment.replicates && experiment.replicates.length > 0) {
                 const biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
                 phases = _.chain(biosamples.map(biosample => biosample.phase)).compact().uniq().value();
             }
@@ -1173,10 +1173,10 @@ const organismDevelopmentSeriesTableColumns = {
             let synchronizationBiosample;
             let ages;
 
-            if (experiment.replicates && experiment.replicates.length) {
+            if (experiment.replicates && experiment.replicates.length > 0) {
                 biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
             }
-            if (biosamples && biosamples.length) {
+            if (biosamples && biosamples.length > 0) {
                 synchronizationBiosample = _(biosamples).find(biosample => biosample.synchronization);
                 if (!synchronizationBiosample) {
                     ages = _.chain(biosamples.map(biosample => biosample.age_display)).compact().uniq().value();
@@ -1187,7 +1187,7 @@ const organismDevelopmentSeriesTableColumns = {
                     {synchronizationBiosample ?
                         <span>{`${synchronizationBiosample.synchronization} + ${synchronizationBiosample.age_display}`}</span>
                     :
-                        <span>{ages && ages.length ? <span>{ages.join(', ')}</span> : null}</span>
+                        <span>{ages && ages.length > 0 ? <span>{ages.join(', ')}</span> : null}</span>
                     }
                 </span>
             );
@@ -1201,10 +1201,10 @@ const organismDevelopmentSeriesTableColumns = {
             let biosamples;
             let lifeStageBiosample;
 
-            if (experiment.replicates && experiment.replicates.length) {
+            if (experiment.replicates && experiment.replicates.length > 0) {
                 biosamples = experiment.replicates.map(replicate => replicate.library && replicate.library.biosample);
             }
-            if (biosamples && biosamples.length) {
+            if (biosamples && biosamples.length > 0) {
                 lifeStageBiosample = _(biosamples).find(biosample => biosample.life_stage);
                 return lifeStageBiosample.life_stage;
             }
@@ -1267,7 +1267,7 @@ export class SeriesComponent extends React.Component {
         experiments = _.values(experiments);
 
         // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -1289,7 +1289,7 @@ export class SeriesComponent extends React.Component {
 
         // Calculate the biosample summary
         let speciesRender = null;
-        if (context.organism && context.organism.length) {
+        if (context.organism && context.organism.length > 0) {
             const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
             speciesRender = (
                 <span>
@@ -1357,18 +1357,18 @@ export class SeriesComponent extends React.Component {
                                         <dd>{diversity}</dd>
                                     </div>
 
-                                    {context.assay_term_name && context.assay_term_name.length ?
+                                    {context.assay_term_name && context.assay_term_name.length > 0 ?
                                         <div data-test="description">
                                             <dt>Assay</dt>
                                             <dd>{context.assay_term_name.join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {terms.length || speciesRender ?
+                                    {terms.length > 0 || speciesRender ?
                                         <div data-test="biosamplesummary">
                                             <dt>Biosample summary</dt>
                                             <dd>
-                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
+                                                {terms.length > 0 ? <span>{terms.join(' and ')} </span> : null}
                                                 {speciesRender ? <span>({speciesRender})</span> : null}
                                             </dd>
                                         </div>
@@ -1394,7 +1394,7 @@ export class SeriesComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
 
-                                    {context.aliases.length ?
+                                    {context.aliases.length > 0 ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd>{context.aliases.join(', ')}</dd>
@@ -1404,7 +1404,7 @@ export class SeriesComponent extends React.Component {
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
+                                            {context.dbxrefs && context.dbxrefs.length > 0 ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>

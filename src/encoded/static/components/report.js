@@ -103,7 +103,7 @@ function lookupColumn(result, column) {
         }
     }
 
-    for (let i = 0, len = names.length; i < len && nodes.length; i += 1) {
+    for (let i = 0, len = names.length; i < len && nodes.length > 0; i += 1) {
         let nextnodes = [];
         _.each(nodes.map(node => node[names[i]]), (v) => {
             if (v === undefined) return;
@@ -124,12 +124,12 @@ function lookupColumn(result, column) {
         }
     }
     // if we ended with an embedded object, show the @id
-    if (nodes.length && nodes[0]['@id'] !== undefined) {
+    if (nodes.length > 0 && nodes[0]['@id'] !== undefined) {
         nodes = nodes.map(node => node['@id']);
     }
 
     // Stringify any nodes that are objects or arrays. Objects and arrays have typeof `object`.
-    if (nodes.length) {
+    if (nodes.length > 0) {
         nodes = nodes.map(item => (typeof item === 'object' ? JSON.stringify(item) : item));
     }
 

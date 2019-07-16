@@ -13,7 +13,7 @@ const SearchResultsLayout = (props) => {
     return (
         <div className="panel">
             <ul className="nav result-table">
-                {results.length ?
+                {results.length > 0 ?
                     results.map(result => Listing({ context: result, columns, key: result['@id'] }))
                 : null}
             </ul>

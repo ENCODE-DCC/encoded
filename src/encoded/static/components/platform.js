@@ -22,7 +22,7 @@ const Platform = (props) => {
                 <div data-test="externalresources">
                     <dt>External resources</dt>
                     <dd>
-                        {context.dbxrefs.length ?
+                        {context.dbxrefs.length > 0 ?
                             <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                         : <em>None submitted</em> }
                     </dd>

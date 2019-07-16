@@ -66,7 +66,7 @@ export default class Navigation extends React.Component {
         // If collection with .sticky-header on page, jiggle scroll position
         // to force the sticky header to jump to the top of the page.
         const hdrs = document.getElementsByClassName('sticky-header');
-        if (hdrs.length) {
+        if (hdrs.length > 0) {
             window.scrollBy(0, -1);
             window.scrollBy(0, 1);
         }
@@ -298,7 +298,7 @@ export const Breadcrumbs = (props) => {
 
                 // Build up tooltip if not specified completely
                 if (!crumb.wholeTip) {
-                    accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
+                    accretingTip += crumb.tip ? (accretingTip.length > 0 ? ' and ' : '') + crumb.tip : '';
                 }
 
                 // Append released tag to link and link title if the object is released itself

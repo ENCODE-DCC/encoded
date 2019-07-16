@@ -21,7 +21,7 @@ const AutocompleteBox = (props) => {
     const handleClick = props.handleClick;
     const userTerm = props.userTerm && props.userTerm.toLowerCase(); // Term user entered
 
-    if (!props.hide && userTerm && userTerm.length && terms && terms.length) {
+    if (!props.hide && userTerm && userTerm.length > 0 && terms && terms.length > 0) {
         return (
             <ul className="adv-search-autocomplete">
                 {terms.map((term) => {
@@ -293,7 +293,7 @@ class RegionSearch extends React.Component {
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
         let visualizeKeys = [];
-        if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+        if (context.visualize_batch && Object.keys(context.visualize_batch).length > 0) {
             visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                 const aLower = a.toLowerCase();
                 const bLower = b.toLowerCase();

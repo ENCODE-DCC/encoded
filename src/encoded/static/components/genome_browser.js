@@ -435,7 +435,7 @@ class GenomeBrowser extends React.Component {
                 });
             }
         });
-        if (this.browserFiles.length) {
+        if (this.browserFiles.length > 0) {
             browserCfg.sources = browserCfg.sources.concat(this.browserFiles);
         }
 
@@ -466,7 +466,7 @@ class GenomeBrowser extends React.Component {
 
     componentDidUpdate() {
         // Remove old tiers
-        if (this.browser && this.browserFiles && this.browserFiles.length) {
+        if (this.browser && this.browserFiles && this.browserFiles.length > 0) {
             this.browserFiles.forEach((fileSource) => {
                 this.browser.removeTier({
                     name: fileSource.name,
@@ -477,7 +477,7 @@ class GenomeBrowser extends React.Component {
         }
 
         const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
-        if (this.browser && files && files.length) {
+        if (this.browser && files && files.length > 0) {
             let domain = `${window.location.protocol}//${window.location.hostname}`;
             if (domain.includes('localhost')) {
                 domain = domainName;

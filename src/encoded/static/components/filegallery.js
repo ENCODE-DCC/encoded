@@ -147,7 +147,7 @@ export class FileTable extends React.Component {
             selectedAnnotation = filterOptions[selectedFilterValue].annotation;
         }
 
-        let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
+        let datasetFiles = _((items && items.length > 0) ? items : []).uniq(file => file['@id']);
         if (datasetFiles.length > 0) {
             const unfilteredCount = datasetFiles.length;
 
@@ -464,8 +464,8 @@ const sortBioReps = (a, b) => {
     // Sorting function for biological replicates of the given files.
     let result; // Ends sorting loop once it has a value
     let i = 0;
-    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+    let repA = (a.biological_replicates && a.biological_replicates.length > 0) ? a.biological_replicates[i] : undefined;
+    let repB = (b.biological_replicates && b.biological_replicates.length > 0) ? b.biological_replicates[i] : undefined;
 
     while (result === undefined) {
         if (repA !== undefined && repB !== undefined) {
@@ -513,7 +513,7 @@ class RawSequencingTable extends React.Component {
         const { files, meta, showReplicateNumber } = this.props;
         const { loggedIn, adminUser } = meta;
 
-        if (files && files.length) {
+        if (files && files.length > 0) {
             // Make object keyed by all files' @ids to make searching easy. Each key's value
             // points to the corresponding file object.
             const filesKeyed = {};
@@ -572,7 +572,7 @@ class RawSequencingTable extends React.Component {
             // so that they'll sort at the end.
             let pairedRepGroups = {};
             let pairedRepKeys = [];
-            if (pairedFiles.length) {
+            if (pairedFiles.length > 0) {
                 pairedRepGroups = _(pairedFiles).groupBy(file => (
                     (file.biological_replicates && file.biological_replicates.length === 1) ?
                         globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '')
@@ -667,7 +667,7 @@ class RawSequencingTable extends React.Component {
                                     runType = 'PE';
                                 }
                                 const rowClasses = [
-                                    pairedRepKeys.length && i === 0 ? 'table-raw-separator' : null,
+                                    pairedRepKeys.length > 0 && i === 0 ? 'table-raw-separator' : null,
                                 ];
 
                                 // Determine if accession should be a button or not.
@@ -676,7 +676,7 @@ class RawSequencingTable extends React.Component {
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         {showReplicateNumber ?
-                                            <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
+                                            <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
                                         null}
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
@@ -744,7 +744,7 @@ class RawFileTable extends React.Component {
         const { files, meta, showReplicateNumber } = this.props;
         const { loggedIn, adminUser } = meta;
 
-        if (files && files.length) {
+        if (files && files.length > 0) {
             // Group all files by their library accessions. Any files without replicates or
             // libraries get grouped under library 'Z' so they get sorted at the end.
             const libGroups = _(files).groupBy((file) => {
@@ -815,7 +815,7 @@ class RawFileTable extends React.Component {
                                         <tr key={file['@id']}>
                                             {showReplicateNumber && i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                                    {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                                    {groupFiles[0].biological_replicates.length > 0 ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
                                             {i === 0 ?
@@ -841,7 +841,7 @@ class RawFileTable extends React.Component {
                             {nonGrouped.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
-                                    groupKeys.length && i === 0 ? 'table-raw-separator' : null,
+                                    groupKeys.length > 0 && i === 0 ? 'table-raw-separator' : null,
                                 ];
 
                                 // Determine if accession should be a button or not.
@@ -850,7 +850,7 @@ class RawFileTable extends React.Component {
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         {showReplicateNumber ?
-                                            <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
+                                            <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length > 0) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
                                         null}
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
@@ -901,8 +901,8 @@ RawFileTable.defaultProps = {
 export const DatasetFiles = (props) => {
     const { items } = props;
 
-    const files = _.uniq((items && items.length) ? items : []);
-    if (files.length) {
+    const files = _.uniq((items && items.length > 0) ? items : []);
+    if (files.length > 0) {
         return <FileTable {...props} items={files} />;
     }
     return null;
@@ -974,7 +974,7 @@ function collectAssembliesAnnotations(files) {
     // Eliminate duplicate entries in filterOptions. Duplicates are detected by combining the
     // assembly and annotation into a long string. Use the '!' separator so that highly unlikely
     // anomalies don't pass undetected (e.g. hg19!V19 and hg1!9V19 -- again, highly unlikely).
-    filterOptions = filterOptions.length ? _(filterOptions).uniq(option => `${option.assembly}!${option.annotation ? option.annotation : ''}`) : [];
+    filterOptions = filterOptions.length > 0 ? _(filterOptions).uniq(option => `${option.assembly}!${option.annotation ? option.annotation : ''}`) : [];
 
     // Now begin a two-stage sort, with the primary key being the assembly in a specific priority
     // order specified by the assemblyPriority array, and the secondary key being the annotation
@@ -1228,7 +1228,7 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
     // going up the chain once we get to a file not in the current dataset, which might be a
     // processed file that doesn't belong in the graph, or a contributing file. Note that we have a
     // risk of infinite recursion if the file data incluees a derived_from loop, which isn't valid.
-    if (file.derived_from && file.derived_from.length && file.dataset === fileDataset['@id']) {
+    if (file.derived_from && file.derived_from.length > 0 && file.dataset === fileDataset['@id']) {
         // File is the product of at least one derived_from chain, so for any files this file
         // derives from (parent files), go up the chain continuing to collect the files involved
         // in the current branch of the chain.
@@ -1300,7 +1300,7 @@ const fileCssClassGen = (file, active, colorizeNode, addClasses) => {
 export function assembleGraph(files, dataset, options, loggedIn = false) {
     // Calculate a step ID from a file's derived_from array.
     function rDerivedFileIds(file) {
-        if (file.derived_from && file.derived_from.length) {
+        if (file.derived_from && file.derived_from.length > 0) {
             return file.derived_from.sort().join();
         }
         return '';
@@ -1331,14 +1331,14 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
         if ((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation))) {
             // Note whether any files have an analysis step
             const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-            if (!fileAnalysisStep || (file.derived_from && file.derived_from.length)) {
+            if (!fileAnalysisStep || (file.derived_from && file.derived_from.length > 0)) {
                 // File has no analysis step or derives from other files, so it can be included in
                 // the graph.
                 matchingFiles[file['@id']] = file;
 
                 // Collect any QC info that applies to this file and make it searchable by file
                 // @id.
-                if (file.quality_metrics && file.quality_metrics.length) {
+                if (file.quality_metrics && file.quality_metrics.length > 0) {
                     fileQcMetrics[file['@id']] = file.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
                 }
 
@@ -1420,7 +1420,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
         const noIslandFiles = {};
         Object.keys(matchingFiles).forEach((matchingFileId) => {
             const matchingFile = matchingFiles[matchingFileId];
-            const hasDerivedFroms = matchingFile && matchingFile.derived_from && matchingFile.derived_from.length &&
+            const hasDerivedFroms = matchingFile && matchingFile.derived_from && matchingFile.derived_from.length > 0 &&
                 matchingFile.derived_from.some(derivedFileAtId => derivedFileAtId in derivedFromList);
             if (hasDerivedFroms || allDerivedFroms[matchingFileId]) {
                 // This file either has derived_from set, or other files derive from it. Copy it to
@@ -1452,7 +1452,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
 
     // Make a list of contributing files that matchingFiles files derive from.
     const usedContributingFiles = {};
-    if (dataset.contributing_files && dataset.contributing_files.length) {
+    if (dataset.contributing_files && dataset.contributing_files.length > 0) {
         dataset.contributing_files.forEach((contributingFileAtId) => {
             if (contributingFileAtId in allDerivedFroms) {
                 usedContributingFiles[contributingFileAtId] = allDerivedFroms[contributingFileAtId];
@@ -1464,7 +1464,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
     // derive from it. We'll need that for coalescing contributing files.
     const allCoalesced = {};
     let coalescingGroups = {};
-    if (Object.keys(usedContributingFiles).length) {
+    if (Object.keys(usedContributingFiles).length > 0) {
         // Now use the derivedFiles property of every contributing file to group them into potential
         // coalescing nodes. `coalescingGroups` gets assigned an object keyed by dataset file ids
         // hashed to a stringified 32-bit integer, and mapped to an array of contributing files they
@@ -1477,7 +1477,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
         // Set a `coalescingGroup` property in each contributing file with its coalescing group's hash
         // value. That'll be important when we add step nodes.
         const coalescingGroupKeys = Object.keys(coalescingGroups);
-        if (coalescingGroupKeys && coalescingGroupKeys.length) {
+        if (coalescingGroupKeys && coalescingGroupKeys.length > 0) {
             coalescingGroupKeys.forEach((groupHash) => {
                 const group = coalescingGroups[groupHash];
                 if (group.length >= MINIMUM_COALESCE_COUNT) {
@@ -1524,7 +1524,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
 
     // Create nodes for the replicates.
     Object.keys(allReplicates).forEach((replicateNum) => {
-        if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
+        if (allReplicates[replicateNum] && allReplicates[replicateNum].length > 0) {
             jsonGraph.addNode(`rep:${replicateNum}`, `Replicate ${replicateNum}`, {
                 cssClass: 'pipeline-replicate',
                 type: 'Rep',
@@ -1563,7 +1563,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
             let metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later.
-            if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length) {
+            if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length > 0) {
                 const sortedMetrics = fileQcMetrics[fileId].sort((a, b) => (a['@type'][0] > b['@type'][0] ? 1 : (a['@type'][0] < b['@type'][0] ? -1 : 0)));
                 metricsInfo = sortedMetrics.map((metric) => {
                     const qcId = genQcId(metric, file);
@@ -1669,7 +1669,7 @@ export function assembleGraph(files, dataset, options, loggedIn = false) {
     // Now add coalesced nodes to the graph.
     Object.keys(coalescingGroups).forEach((groupHash) => {
         const coalescingGroup = coalescingGroups[groupHash];
-        if (coalescingGroup.length) {
+        if (coalescingGroup.length > 0) {
             const fileNodeId = `coalesced:${groupHash}`;
             const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
             jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
@@ -1707,7 +1707,7 @@ const FileGraph = (props) => {
 
     // Build node graph of the files and analysis steps with this experiment
     let graph;
-    if (files.length) {
+    if (files.length > 0) {
         try {
             graph = assembleGraph(
                 files,
@@ -1843,8 +1843,8 @@ class FileGalleryRendererComponent extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState, prevContext) {
-        this.updateFiles(!!(prevContext.session && prevContext.session['auth.userid']));
+    componentDidUpdate(prevProps) {
+        this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']));
     }
 
     // Called from child components when the selected node changes.
@@ -2156,14 +2156,24 @@ FileGalleryRendererComponent.inclusionStatuses = [
 ];
 
 FileGalleryRendererComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Dataset whose files we're rendering
-    data: PropTypes.object, // File data retrieved from search request
-    schemas: PropTypes.object, // Schemas for the entire system; used for QC property titles
-    hideGraph: PropTypes.bool, // T to hide graph display
-    altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
-    auditIndicators: PropTypes.func.isRequired, // Inherited from auditDecor HOC
-    auditDetail: PropTypes.func.isRequired, // Inherited from auditDecor HOC
-    showReplicateNumber: PropTypes.bool, // True to show replicate number
+    /** Dataset whose files we're rendering */
+    context: PropTypes.object.isRequired,
+    /** File data retrieved from search request */
+    data: PropTypes.object,
+    /** Schemas for the entire system; used for QC property titles */
+    schemas: PropTypes.object,
+    /** True to hide graph display */
+    hideGraph: PropTypes.bool,
+    /** True to default to All Assemblies and Annotations */
+    altFilterDefault: PropTypes.bool,
+    /** Inherited from auditDecor HOC */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Inherited from auditDecor HOC */
+    auditDetail: PropTypes.func.isRequired,
+    /** True to show replicate number */
+    showReplicateNumber: PropTypes.bool,
+    /** ENCODE session object from <App> */
+    session: PropTypes.object.isRequired,
 };
 
 FileGalleryRendererComponent.defaultProps = {
@@ -2278,7 +2288,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
     const loggedIn = !!(session && session['auth.userid']);
     const adminUser = !!(sessionProperties && sessionProperties.admin);
 
-    if (selectedFile && Object.keys(selectedFile).length) {
+    if (selectedFile && Object.keys(selectedFile).length > 0) {
         let contributingAccession;
 
         if (node.metadata.contributing) {
@@ -2316,14 +2326,14 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
-                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length > 0 ?
                         <div data-test="bioreplicate">
                             <dt>Biological replicate(s)</dt>
                             <dd>{`[${selectedFile.biological_replicates.join(',')}]`}</dd>
                         </div>
                     : null}
 
-                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                    {selectedFile.biological_replicates && selectedFile.biological_replicates.length > 0 ?
                         <div data-test="techreplicate">
                             <dt>Technical replicate(s)</dt>
                             <dd>{`[${selectedFile.technical_replicates.join(',')}]`}</dd>
@@ -2365,7 +2375,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
-                    {selectedFile.analysis_step_version && selectedFile.analysis_step_version.software_versions && selectedFile.analysis_step_version.software_versions.length ?
+                    {selectedFile.analysis_step_version && selectedFile.analysis_step_version.software_versions && selectedFile.analysis_step_version.software_versions.length > 0 ?
                         <div data-test="software">
                             <dt>Software</dt>
                             <dd>{softwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
@@ -2458,7 +2468,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
     let header;
     let body;
 
-    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
+    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length > 0) {
         // Configuration for reference file table
         const coalescedFileColumns = {
             accession: {
