@@ -170,6 +170,28 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
     return { subCategorySums, maxSubCategoryValue, minSubCategoryValue: minSubCategoryValue - 1 };
 };
 
+/**
+ * Remove spaces from id so it can be accepted as an id by HTML
+ *
+ * @param {string} id
+ * @returns id without space or dash if id is empty
+ */
+const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
+
+let _navbarHeight = null;
+
+/**
+ * Get height of the navbar
+ *
+ * @returns height of navbar on first call and restores same value until page is garbage collected
+ */
+const getNavbarHeight = () => {
+    if (_navbarHeight === null) {
+        const navbar = document.querySelector('#navbar');
+        _navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
+    }
+    return _navbarHeight;
+};
 
 /**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
@@ -275,7 +297,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 {
                     rowContent: [{
                         header: (
-                            <div style={{ backgroundColor: rowCategoryColor }}>
+                            <div id={sanitizeId(rowCategoryBucket.key)} style={{ backgroundColor: rowCategoryColor }}>
                                 {expandableRowCategory ?
                                     <RowCategoryExpander
                                         categoryId={rowCategoryBucket.key}
@@ -449,7 +471,19 @@ class MatrixPresentation extends React.Component {
                 return { expandedRowCategories: prevState.expandedRowCategories.concat(category) };
             }
 
-            // Category does exist in array, so remove it.
+            // Category does exist in array
+            // Move close to header
+            const header = document.querySelector(`#${sanitizeId(category)}`);
+            const headerToPageTopDistance = header ? header.getBoundingClientRect().top : 0;
+            const buffer = 20; // extra space between navbar and header
+            const top = headerToPageTopDistance - (getNavbarHeight() + buffer);
+            window.scrollBy({
+                top,
+                left: 0,
+                behavior: 'smooth',
+            });
+
+            // Remove category.
             const expandedCategories = prevState.expandedRowCategories;
             return { expandedRowCategories: [...expandedCategories.slice(0, matchingCategoryIndex), ...expandedCategories.slice(matchingCategoryIndex + 1)] };
         });
