@@ -901,7 +901,7 @@
         "aliases": 1.0,
         "alternate_accessions": 1.0,
         "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.term_name": 5.0,
         "biosample_ontology.organ_slims": 1.0,
         "biosample_ontology.cell_slims": 1.0,
         "biosample_ontology.developmental_slims": 1.0,
