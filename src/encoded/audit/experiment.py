@@ -2616,6 +2616,8 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
         level = 'ERROR'
     else:
         level = 'WARNING'
+    detail = ''
+    no_characterizations = False
     if 'replicates' in value:
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and
@@ -2623,24 +2625,33 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                 rep['library']['status'] not in excluded_types and
                 'biosample' in rep['library'] and
                 rep['library']['biosample']['status'] not in excluded_types):
+                
                 biosample = rep['library']['biosample']
-                if (biosample.get('applied_modifications') and
-                    not biosample.get('characterizations')):
+                modifications = biosample.get('applied_modifications')
+                biosample_characterizations = biosample.get('characterizations')
+                if (modifications and 
+                    biosample_characterizations):
+                    return
+                elif (modifications and 
+                    not biosample_characterizations):
+                    no_characterizations = True
                     mod_ids = str(
-                        [mod['@id'] for mod in biosample['applied_modifications']]
+                        [mod['@id'] for mod in modifications]
                     ).replace('\'', ' ')
-                    detail = (
-                        'Biosample {} which has been modified by {} '
-                        'is missing validating characterization.'
-                    ).format(
-                        biosample['@id'],
-                        mod_ids
-                    )
-                    yield AuditFailure(
-                        'missing biosample characterization',
-                        detail,
-                        level
-                    )
+                    detail += (
+                            'biosample {} which has been modified by {} '
+                            'is missing characterization validating the modification, '
+                        ).format(
+                            biosample['@id'],
+                            mod_ids
+                        )
+        if no_characterizations:
+            detail = 'B' + detail[1:-2] + '.'
+            yield AuditFailure(
+                'missing biosample characterization',
+                detail,
+                level
+            )
 
 
 def audit_experiment_replicates_biosample(value, system, excluded_types):
