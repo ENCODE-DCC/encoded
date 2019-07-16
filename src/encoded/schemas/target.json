@@ -248,7 +248,7 @@
         }
     },
     "boost_values": {
-        "label": 1.0, 
+        "label": 20.0, 
         "dbxref": 1.0, 
         "aliases": 1.0, 
         "organism.name": 1.0,  
