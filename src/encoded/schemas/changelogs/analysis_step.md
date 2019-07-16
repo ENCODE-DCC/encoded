@@ -1,5 +1,10 @@
 ## Changelog for analysis_step.json
 
+### Minor changes since schema version 7
+
+* *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
+* *analysis_step_type* were updated to have the following enum terms *transcriptome annotation* and *barcodes mapping generation*
+
 ### Schema version 7
 
 * Changed enum value *candidate regulatory elements* in *input_file_types* and *output_file_types* to *candidate Cis-Regulatory Elements*
