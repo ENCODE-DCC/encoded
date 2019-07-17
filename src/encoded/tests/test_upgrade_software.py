@@ -31,5 +31,4 @@ def test_software_upgrade_5_6(upgrader, software_1):
     software_1['purpose'] = ['single-nuclei ATAC-seq', 'HiC']
     value = upgrader.upgrade('software', software_1, target_version='6')
     assert value['schema_version'] == '6'
-    assert 'single-nucleus ATAC-seq' in value['purpose']
-    assert 'single-nuclei ATAC-seq' not in value['purpose']
+    assert value['purpose'] == ['single-nucleus ATAC-seq', 'HiC']
