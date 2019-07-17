@@ -1,5 +1,4 @@
 from snovault import upgrade_step
-import re
 
 
 @upgrade_step('software', '', '2')
@@ -30,10 +29,6 @@ def software_2_3(value, system):
 @upgrade_step('software', '5', '6')
 def software_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4711
-    for p in value['purpose']:
-        if re.match('single-nuclei ATAC-seq', p):
-            new_purpose = p.replace('single-nuclei', 'single-nucleus')
-        else:
-            continue
-        value['purpose'].append(new_purpose)
-        value['purpose'].remove(p)
+    for i, p in enumerate(value['purpose']):
+        if p == 'single-nuclei ATAC-seq':
+            value['purpose'][i] = 'single-nucleus ATAC-seq'
