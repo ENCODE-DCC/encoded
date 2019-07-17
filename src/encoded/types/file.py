@@ -140,7 +140,8 @@ class File(Item):
         keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             file_output_category = self.schema['output_type_output_category'].get(properties.get('output_type'))
-            if (file_output_category == 'raw data' and 'md5sum' in properties):
+            if ((properties.get('lab') != 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d' or 
+                file_output_category == 'raw data') and 'md5sum' in properties):
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
