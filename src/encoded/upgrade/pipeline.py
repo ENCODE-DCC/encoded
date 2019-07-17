@@ -1,5 +1,4 @@
 from snovault import upgrade_step
-import re
 
 
 @upgrade_step('pipeline', '', '2')
@@ -75,10 +74,6 @@ def pipeline_8_9(value, system):
 @upgrade_step('pipeline', '9', '10')
 def pipeline_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4711
-    for a in value['assay_term_names']:
-        if re.match('single-nuclei ATAC-seq', a):
-            new_assay_term_name = a.replace('single-nuclei', 'single-nucleus')
-        else:
-            continue
-        value['assay_term_names'].append(new_assay_term_name)
-        value['assay_term_names'].remove(a)
+    for i, a in enumerate(value['assay_term_names']):
+        if a == 'single-nuclei ATAC-seq':
+            value['assay_term_names'][i] = 'single-nucleus ATAC-seq'
