@@ -1658,6 +1658,7 @@
     },
      "boost_values": {
          "accession": 5.0,
+         "@type": 1.0,
          "assembly": 5.0,
          "file_format": 5.0,
          "file_type": 5.0,
