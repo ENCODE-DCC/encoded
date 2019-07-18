@@ -946,7 +946,7 @@
         "pooled_from.biosample_ontology.term_id": 1.0,
         "pooled_from.biosample_ontology.term_name": 1.0,
         "characterizations.characterization_method": 1.0,
-        "organism.name": 10.0,
+        "organism.name": 5.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "references.title": 1.0,
