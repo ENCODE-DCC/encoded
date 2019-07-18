@@ -150,23 +150,27 @@ const AuditRenderDetail = ({ detail }) => {
     }
 
     // TODO: Remove this segment of code once no audits include bare paths.
-    linkMatches = pathRegex.exec(detail);
-    if (linkMatches) {
-        // `detail` has at least one "markdown" sequence, so treat the whole thing as marked-down
-        // text. Each loop iteration finds each markdown sequence. That gets broken into the
-        // non-link text before the link and then the link itself.
-        const renderedDetail = [];
-        let segmentIndex = 0;
-        while (linkMatches) {
-            const preText = detail.substring(segmentIndex, linkMatches.index);
-            renderedDetail.push(preText ? <span key={segmentIndex}>{preText}</span> : null, <a href={linkMatches[0]} key={linkMatches.index}>{linkMatches[0]}</a>);
-            segmentIndex = linkMatches.index + linkMatches[0].length;
-            linkMatches = pathRegex.exec(detail);
-        }
+    const matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
+    if (matches) {
+        // Build React object of text followed by path for all paths in detail string
+        let lastStart = 0;
+        const result = matches.map((match) => {
+            let preMatchedChar = '';
+            const linkStart = detail.indexOf(match, lastStart);
+            const preText = detail.slice(lastStart, linkStart);
+            lastStart = linkStart + match.length;
+            const linkText = detail.slice(linkStart, lastStart);
+            if (linkText[0] !== '/') {
+                preMatchedChar = linkText[0];
+            }
+            return <span key={linkStart}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
+        });
 
-        // Lastly, render any non-link text after the last link.
-        const postText = detail.substring(segmentIndex, detail.length);
-        return renderedDetail.concat(postText ? <span key={segmentIndex}>{postText}</span> : null);
+        // Pick up any trailing text after the last path, if any
+        const postText = detail.slice(lastStart);
+
+        // Render all text and paths, plus the trailing text
+        return <span>{result}{postText}</span>;
     }
 
     return detail;
