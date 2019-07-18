@@ -1768,14 +1768,13 @@ FileGraph.defaultProps = {
  */
 const InclusionSelector = ({ inclusionOn, handleInclusionChange, tab }) => (
     <div className="checkbox--right">
-        <label htmlFor="filterIncArchive" className={`${tab === 'browser' ? 'disabled-checkbox' : ''}`}>
+        <label htmlFor="filterIncArchive">
             Include deprecated files
             <input
                 name="filterIncArchive"
                 type="checkbox"
                 checked={inclusionOn}
                 onChange={handleInclusionChange}
-                disabled={(tab === 'browser')}
             />
         </label>
     </div>
@@ -2111,16 +2110,16 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ selectedFilterValue: '0' });
         }
         // Determine how many visualizable files there are
-        const tempFiles = this.state.files.filter(file => (
-            (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-            && (file.file_format_type !== 'bedMethyl')
-            && (file.file_format_type !== 'bedLogR')
-            && (file.file_format_type !== 'idr_peak')
-            && (file.file_format_type !== 'tss_peak')
-            && (file.file_format_type !== 'pepMap')
-            && (file.file_format_type !== 'modPepMap')
-            && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-        ));
+        // const tempFiles = this.state.files.filter(file => (
+        //     (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+        //     && (file.file_format_type !== 'bedMethyl')
+        //     && (file.file_format_type !== 'bedLogR')
+        //     && (file.file_format_type !== 'idr_peak')
+        //     && (file.file_format_type !== 'tss_peak')
+        //     && (file.file_format_type !== 'pepMap')
+        //     && (file.file_format_type !== 'modPepMap')
+        //     && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+        // ));
         // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
         // if (this.props.hideGraph && tempFiles.length < 1) {
         if (this.props.hideGraph) {
@@ -2440,22 +2439,22 @@ class FileGalleryRendererComponent extends React.Component {
     // Handle a click on a tab
     handleTabClick(tab) {
         if (tab !== this.state.currentTab) {
-            this.setState({ currentTab: tab });
-            if (tab === 'tables') {
-                // Always set the table assembly to be 'All assemblies'
-                this.filterFiles('All assemblies', 'assembly');
-            } else if (tab === 'browser' || tab === 'graph') {
-                // Reset assembly filter if it is 'All assemblies' because assembly is required for browser / graph
-                // Do not reset if a particular assembly has already been chosen
-                if (this.state.fileFilters.assembly[0] === 'All assemblies') {
-                    // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                    const newAssembly = Object.keys(this.state.assemblyList).reduce((a, b) => (((this.state.assemblyList[a] > this.state.assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                    this.filterFiles(newAssembly, 'assembly');
+            this.setState({ currentTab: tab }, () => {
+                if (tab === 'tables') {
+                    // Always set the table assembly to be 'All assemblies'
+                    this.filterFiles('All assemblies', 'assembly');
+                } else if (tab === 'browser' || tab === 'graph') {
+                    // Determine available assemblies
+                    const assemblyList = this.setAssemblyList(this.state.files);
+                    // Reset assembly filter if it is 'All assemblies' because assembly is required for browser / graph
+                    // Do not reset if a particular assembly has already been chosen
+                    if (this.state.fileFilters.assembly[0] === 'All assemblies') {
+                        // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                        const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                        this.filterFiles(newAssembly, 'assembly');
+                    }
                 }
-            }
-            if (tab === 'browser') {
-                this.setState({ inclusionOn: false });
-            }
+            });
         }
     }
 
