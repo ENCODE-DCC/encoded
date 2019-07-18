@@ -66,6 +66,14 @@ def property_closure(request, propname, root_uuid):
     return seen
 
 
+def is_md5sum_constrained_file(file_properties, unique_md5_output_categories, uniform_processing_pipeline_uuid):
+    if ((file_properties.get('lab') != uniform_processing_pipeline_uuid or 
+        file_properties.get('output_category') in unique_md5_output_categories) and 
+        'md5sum' in file_properties):
+        return True
+    return False
+
+
 @collection(
     name='files',
     unique_key='accession',
@@ -135,13 +143,15 @@ class File(Item):
         if properties.get('status') == 'replaced':
             return self.uuid
         return properties.get(self.name_key, None) or self.uuid
-
+    
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
+        ENCODE_PROCESSING_PIPELINE_UUID = "a558111b-4c50-4b2e-9de8-73fd8fd3a67d"
         if properties.get('status') != 'replaced':
-            file_output_category = self.schema['output_type_output_category'].get(properties.get('output_type'))
-            if ((properties.get('lab') != 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d' or 
-                file_output_category == 'raw data') and 'md5sum' in properties):
+            if is_md5sum_constrained_file(
+                properties,
+                ['raw data'],
+                ENCODE_PROCESSING_PIPELINE_UUID):    
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
