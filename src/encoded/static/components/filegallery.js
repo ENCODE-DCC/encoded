@@ -1766,7 +1766,7 @@ FileGraph.defaultProps = {
  * Display the checkbox for the user to choose whether to include depcrecated files in the graph
  * and table displays.
  */
-const InclusionSelector = ({ inclusionOn, handleInclusionChange, tab }) => (
+const InclusionSelector = ({ inclusionOn, handleInclusionChange }) => (
     <div className="checkbox--right">
         <label htmlFor="filterIncArchive">
             Include deprecated files
@@ -1785,8 +1785,6 @@ InclusionSelector.propTypes = {
     inclusionOn: PropTypes.bool.isRequired,
     /** Function to call when checkbox is clicked */
     handleInclusionChange: PropTypes.func.isRequired,
-    /** Which tab is selected (inclusion selector is only enabled for graph and table views) */
-    tab: PropTypes.string.isRequired,
 };
 
 // Display facets for files
@@ -1994,7 +1992,17 @@ const TabPanelFacets = (props) => {
     // We do not count how many results there are for a given assembly because we will not display the bars
     fileList.forEach((file) => {
         if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
-            assembly[`${file.assembly} ${file.genome_annotation}`] = +file.assembly.match(/[0-9]+/g);
+            const assemblyNumber = file.assembly.match(/[0-9]+/g);
+            const annotationNumber = +file.genome_annotation.match(/[0-9]+/g);
+            let annotationDecimal = 0;
+            // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
+            // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
+            if (annotationNumber === 65) {
+                annotationDecimal = (+annotationNumber / 10000);
+            } else {
+                annotationDecimal = (+annotationNumber / 1000);
+            }
+            assembly[`${file.assembly} ${file.genome_annotation}`] = +assemblyNumber + +annotationDecimal;
         } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
             assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
         }
@@ -2073,8 +2081,6 @@ class FileGalleryRendererComponent extends React.Component {
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
-            /** Possible assemblies */
-            assemblyList: [],
         };
 
         /** Used to see if related_files has been updated */
@@ -2149,8 +2155,9 @@ class FileGalleryRendererComponent extends React.Component {
         // }
     }
 
-    componentDidUpdate(prevProps) {
-        this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']));
+    componentDidUpdate(prevProps, prevState) {
+        const updateAssemblyForTabChange = prevState.currentTab !== this.state.currentTab;
+        this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssemblyForTabChange);
     }
 
     // Called from child components when the selected node changes.
@@ -2178,12 +2185,21 @@ class FileGalleryRendererComponent extends React.Component {
         }
         fileList.forEach((file) => {
             if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
-                assembly[`${file.assembly} ${file.genome_annotation}`] = +file.assembly.match(/[0-9]+/g);
+                const assemblyNumber = file.assembly.match(/[0-9]+/g);
+                const annotationNumber = +file.genome_annotation.match(/[0-9]+/g);
+                let annotationDecimal = 0;
+                // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
+                // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
+                if (annotationNumber === 65) {
+                    annotationDecimal = (+annotationNumber / 10000);
+                } else {
+                    annotationDecimal = (+annotationNumber / 1000);
+                }
+                assembly[`${file.assembly} ${file.genome_annotation}`] = +assemblyNumber + +annotationDecimal;
             } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
                 assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
             }
         });
-        this.setState({ assemblyList: assembly });
         return assembly;
     }
 
@@ -2247,7 +2263,7 @@ class FileGalleryRendererComponent extends React.Component {
      * content changes. In addition, collect all the assemblies/annotations associated with the
      * combined files so we can choose a visualization browser.
      */
-    updateFiles(prevLoggedIn) {
+    updateFiles(prevLoggedIn, updateAssemblyForTabChange) {
         const { context, data } = this.props;
         const { session } = this.context;
         const loggedIn = !!(session && session['auth.userid']);
@@ -2303,6 +2319,24 @@ class FileGalleryRendererComponent extends React.Component {
                 this.setState({ files: filteredFiles });
             }
             this.resetCurrentBrowser(null, allFiles);
+
+            // If new tab has been selected, we may need to update which assembly is chosen
+            if (updateAssemblyForTabChange) {
+                if (this.state.currentTab === 'tables') {
+                    // Always set the table assembly to be 'All assemblies'
+                    this.filterFiles('All assemblies', 'assembly');
+                } else if (this.state.currentTab === 'browser' || this.state.currentTab === 'graph') {
+                    // Determine available assemblies
+                    const assemblyList = this.setAssemblyList(this.state.files);
+                    // Reset assembly filter if it is 'All assemblies' because assembly is required for browser / graph
+                    // Do not reset if a particular assembly has already been chosen
+                    if (this.state.fileFilters.assembly[0] === 'All assemblies') {
+                        // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                        const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                        this.filterFiles(newAssembly, 'assembly');
+                    }
+                }
+            }
         });
     }
 
@@ -2439,22 +2473,7 @@ class FileGalleryRendererComponent extends React.Component {
     // Handle a click on a tab
     handleTabClick(tab) {
         if (tab !== this.state.currentTab) {
-            this.setState({ currentTab: tab }, () => {
-                if (tab === 'tables') {
-                    // Always set the table assembly to be 'All assemblies'
-                    this.filterFiles('All assemblies', 'assembly');
-                } else if (tab === 'browser' || tab === 'graph') {
-                    // Determine available assemblies
-                    const assemblyList = this.setAssemblyList(this.state.files);
-                    // Reset assembly filter if it is 'All assemblies' because assembly is required for browser / graph
-                    // Do not reset if a particular assembly has already been chosen
-                    if (this.state.fileFilters.assembly[0] === 'All assemblies') {
-                        // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                        const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                        this.filterFiles(newAssembly, 'assembly');
-                    }
-                }
-            });
+            this.setState({ currentTab: tab });
         }
     }
 
@@ -2529,7 +2548,7 @@ class FileGalleryRendererComponent extends React.Component {
                     <TabPanel
                         tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
                         tabs={{ browser: 'Genome browser', graph: 'Association graph', tables: 'File details' }}
-                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} tab={this.state.currentTab} />}
+                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
                         decorationClasses="file-gallery__inclusion-selector"
                         selectedTab={this.state.currentTab}
                         handleTabClick={this.handleTabClick}
