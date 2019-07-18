@@ -2073,7 +2073,7 @@ class FileGalleryRendererComponent extends React.Component {
             /** Filters for files */
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
-            currentTab: 'browser',
+            currentTab: 'tables',
             /** Possible assemblies */
             assemblyList: [],
         };
@@ -2122,12 +2122,14 @@ class FileGalleryRendererComponent extends React.Component {
             && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
         ));
         // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
-        if (this.props.hideGraph && tempFiles.length < 1) {
+        // if (this.props.hideGraph && tempFiles.length < 1) {
+        if (this.props.hideGraph) {
             this.setState({ currentTab: 'tables' }, () => {
                 this.filterFiles('All assemblies', 'assembly');
             });
         // If the graph is not hidden and there are no visualizable files, set default tab to be graph and set default assembly to be the most recent assembly
-        } else if (tempFiles.length < 1) {
+        } else {
+        // } else if (tempFiles.length < 1) {
             // Display graph as default if there are no visualizable files
             let assemblyList = [];
             this.setState({ currentTab: 'graph' }, () => {
@@ -2138,13 +2140,14 @@ class FileGalleryRendererComponent extends React.Component {
                 this.filterFiles(newAssembly, 'assembly');
             });
         // If there are visualizable files, set default tab to be browser and set default assembly to be the most recent assembly
-        } else {
-            // Determine available assemblies
-            const assemblyList = this.setAssemblyList(this.state.files);
-            // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-            const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-            this.filterFiles(newAssembly, 'assembly');
         }
+        //  else {
+        //     // Determine available assemblies
+        //     const assemblyList = this.setAssemblyList(this.state.files);
+        //     // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+        //     const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+        //     this.filterFiles(newAssembly, 'assembly');
+        // }
     }
 
     componentDidUpdate(prevProps) {
@@ -2492,7 +2495,6 @@ class FileGalleryRendererComponent extends React.Component {
                 noDefaultClasses
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
                 showReplicateNumber={showReplicateNumber}
-                tab={this.state.currentTab}
             />
         );
 
