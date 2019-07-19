@@ -897,8 +897,8 @@
         }
     },
     "boost_values": {
-        "accession": 5.0,
-        "@type": 1.0,
+        "accession": 7.0,
+        "@type": 2.0,
         "aliases": 1.0,
         "alternate_accessions": 1.0,
         "biosample_ontology.term_id": 1.0,
