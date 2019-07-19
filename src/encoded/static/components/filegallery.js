@@ -1997,8 +1997,8 @@ const TabPanelFacets = (props) => {
             let annotationDecimal = 0;
             // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
             // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
-            if (annotationNumber === 65) {
-                annotationDecimal = (+annotationNumber / 10000);
+            if (+annotationNumber === 65) {
+                annotationDecimal = (+annotationNumber / 100000);
             } else {
                 annotationDecimal = (+annotationNumber / 1000);
             }
@@ -2190,8 +2190,8 @@ class FileGalleryRendererComponent extends React.Component {
                 let annotationDecimal = 0;
                 // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
                 // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
-                if (annotationNumber === 65) {
-                    annotationDecimal = (+annotationNumber / 10000);
+                if (+annotationNumber === 65) {
+                    annotationDecimal = (+annotationNumber / 100000);
                 } else {
                     annotationDecimal = (+annotationNumber / 1000);
                 }
@@ -2327,10 +2327,12 @@ class FileGalleryRendererComponent extends React.Component {
                     this.filterFiles('All assemblies', 'assembly');
                 } else if (this.state.currentTab === 'browser' || this.state.currentTab === 'graph') {
                     // Determine available assemblies
-                    const assemblyList = this.setAssemblyList(this.state.files);
-                    // Reset assembly filter if it is 'All assemblies' because assembly is required for browser / graph
-                    // Do not reset if a particular assembly has already been chosen
-                    if (this.state.fileFilters.assembly[0] === 'All assemblies') {
+                    const assemblyList = this.setAssemblyList(allFiles);
+                    // Reset assembly filter if it is 'All assemblies' or is not in assemblyList
+                    // Assembly is required for browser / graph and available assemblies may be different for graph and browser
+                    // Do not reset if a particular assembly has already been chosen and it is an available option
+                    const currentAssembly = this.state.fileFilters.assembly[0];
+                    if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
                         // We want to get the assembly with the highest assembly number (but not 'All assemblies')
                         const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
                         this.filterFiles(newAssembly, 'assembly');
