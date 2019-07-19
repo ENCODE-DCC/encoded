@@ -1983,6 +1983,50 @@ export function filterForVisualizableFiles(fileList) {
     return fileList;
 }
 
+// Convert assembly and annotation to a single value
+// Values computed such that assembly and annotations that are the most recent have the highest value
+// The correct sorting is as follows:
+// Genome mm9 or mm10
+//                 "ENSEMBL V65",
+//                 "M2",
+//                 "M3",
+//                 "M4",
+//                 "M7",
+//                 "M14",
+//                 "M21",
+// Genome hg19
+//                 "V3c",
+//                 "V7",
+//                 "V10",
+//                 "V19",
+//                 "miRBase V21",
+//                 "V22",
+// Genome GRCh38
+//                 "V24",
+//                 "V29",
+//                 "V30"
+// Genome ce10 or ce11
+//                 "WS235",
+//                 "WS245"
+// outlier:
+//                 "None"
+function computeAssemblyAnnotationValue(assembly, annotation) {
+    const assemblyNumber = assembly.match(/[0-9]+/g)[0];
+    if (annotation) {
+        const annotationNumber = +annotation.match(/[0-9]+/g)[0];
+        let annotationDecimal = 0;
+        // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
+        // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
+        if (+annotationNumber === 65) {
+            annotationDecimal = (+annotationNumber / 100000);
+        } else {
+            annotationDecimal = (+annotationNumber / 1000);
+        }
+        return +assemblyNumber + +annotationDecimal;
+    }
+    return assemblyNumber;
+}
+
 const TabPanelFacets = (props) => {
     const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters } = props;
 
@@ -2000,19 +2044,9 @@ const TabPanelFacets = (props) => {
     // We do not count how many results there are for a given assembly because we will not display the bars
     fileList.forEach((file) => {
         if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
-            const assemblyNumber = file.assembly.match(/[0-9]+/g);
-            const annotationNumber = +file.genome_annotation.match(/[0-9]+/g);
-            let annotationDecimal = 0;
-            // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
-            // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
-            if (+annotationNumber === 65) {
-                annotationDecimal = (+annotationNumber / 100000);
-            } else {
-                annotationDecimal = (+annotationNumber / 1000);
-            }
-            assembly[`${file.assembly} ${file.genome_annotation}`] = +assemblyNumber + +annotationDecimal;
+            assembly[`${file.assembly} ${file.genome_annotation}`] = computeAssemblyAnnotationValue(file.assembly, file.genome_annotation);
         } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
-            assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
+            assembly[file.assembly] = computeAssemblyAnnotationValue(file.assembly);
         }
     });
 
@@ -2176,19 +2210,9 @@ class FileGalleryRendererComponent extends React.Component {
         }
         fileList.forEach((file) => {
             if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {
-                const assemblyNumber = file.assembly.match(/[0-9]+/g);
-                const annotationNumber = +file.genome_annotation.match(/[0-9]+/g);
-                let annotationDecimal = 0;
-                // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
-                // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
-                if (+annotationNumber === 65) {
-                    annotationDecimal = (+annotationNumber / 100000);
-                } else {
-                    annotationDecimal = (+annotationNumber / 1000);
-                }
-                assembly[`${file.assembly} ${file.genome_annotation}`] = +assemblyNumber + +annotationDecimal;
+                assembly[`${file.assembly} ${file.genome_annotation}`] = computeAssemblyAnnotationValue(file.assembly, file.genome_annotation);
             } else if (file.assembly && !assembly[file.assembly] && !(file.genome_annotation)) {
-                assembly[file.assembly] = +file.assembly.match(/[0-9]+/g);
+                assembly[file.assembly] = computeAssemblyAnnotationValue(file.assembly);
             }
         });
         return assembly;
