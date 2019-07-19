@@ -483,7 +483,8 @@
         "notes": 1.0,
         "internal_tags": 5.0,
         "biosample_summary": 8.0,
-        "description": 8.0
+        "description": 8.0,
+        "replication_type": 1.0
     },
     "changelog": "/profiles/changelogs/experiment.md"
 }
