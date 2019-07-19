@@ -264,10 +264,18 @@ const Biosample = auditDecor(BiosampleComponent);
 globals.listingViews.register(Biosample, 'Biosample');
 
 
+/**
+ * Renders both Experiment and FunctionalCharacterizationExperiment search results.
+ */
 const ExperimentComponent = (props, reactContext) => {
     const { cartControls } = props;
     const result = props.context;
     let synchronizations;
+
+    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    const experimentType = result['@type'][0];
+    const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
 
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
@@ -299,7 +307,7 @@ const ExperimentComponent = (props, reactContext) => {
                 <div className="result-item__data">
                     <PickerActions {...props} />
                     <div className="pull-right search-meta">
-                        <p className="type meta-title">Experiment</p>
+                        <p className="type meta-title">{displayType}</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
@@ -371,6 +379,7 @@ ExperimentComponent.contextTypes = {
 const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
+globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 
 
 const DatasetComponent = (props, reactContext) => {
