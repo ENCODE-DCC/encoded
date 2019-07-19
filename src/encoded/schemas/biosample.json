@@ -898,6 +898,7 @@
     },
     "boost_values": {
         "accession": 20.0,
+        "@type": 1.0,
         "aliases": 1.0,
         "alternate_accessions": 1.0,
         "biosample_ontology.term_id": 1.0,
@@ -957,6 +958,8 @@
         "summary": 5.0,
         "description": 3.0,
         "age": 5.0,
+        "age_display": 5.0,
+        "age_units": 2.0,
         "sex": 2.0
     },
     "changelog": "/profiles/changelogs/biosample.md"
