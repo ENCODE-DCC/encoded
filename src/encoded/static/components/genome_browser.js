@@ -358,6 +358,7 @@ class GenomeBrowser extends React.Component {
     }
 
     drawTracks(container) {
+        // eslint-disable-next-line no-undef
         const visualizer = new GenomeVisualizer({
             clampToTracks: true,
             removableTracks: false,
