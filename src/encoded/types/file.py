@@ -153,9 +153,15 @@ class File(Item):
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
-            if 'md5sum' in properties and file_is_md5sum_constrained(properties):   
+            if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
-                keys.setdefault('alias', []).append(value)
+                if self.connection.get_by_unique_key('alias', value):
+                    if file_is_md5sum_constrained(properties):
+                        value = 'md5:{md5sum}'.format(**properties)
+                        keys.setdefault('alias', []).append(value)   
+                else:
+                    value = 'md5:{md5sum}'.format(**properties)
+                    keys.setdefault('alias', []).append(value)          
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
