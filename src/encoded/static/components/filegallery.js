@@ -1967,6 +1967,22 @@ function createFacetObject(propertyKey, fileList, filters) {
     return facetObject;
 }
 
+// Not all files can be visualized on the Valis genome browser
+// Some of these files should be visualizable later, after updates to browser
+export function filterForVisualizableFiles(fileList) {
+    fileList = fileList.filter(file => (
+        (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+        && (file.file_format_type !== 'bedMethyl')
+        && (file.file_format_type !== 'bedLogR')
+        && (file.file_format_type !== 'idr_peak')
+        && (file.file_format_type !== 'tss_peak')
+        && (file.file_format_type !== 'pepMap')
+        && (file.file_format_type !== 'modPepMap')
+        && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+    ));
+    return fileList;
+}
+
 const TabPanelFacets = (props) => {
     const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters } = props;
 
@@ -1974,15 +1990,7 @@ const TabPanelFacets = (props) => {
     let fileList = allFiles;
     fileList = fileList.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
     if (currentTab === 'browser') {
-        fileList = fileList.filter(file => (
-            (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-            && (file.file_format_type !== 'bedMethyl')
-            && (file.file_format_type !== 'bedLogR')
-            && (file.file_format_type !== 'idr_peak')
-            && (file.file_format_type !== 'tss_peak')
-            && (file.file_format_type !== 'pepMap')
-            && (file.file_format_type !== 'modPepMap')
-        ));
+        fileList = filterForVisualizableFiles(fileList);
     }
 
     // Initialize assembly object
@@ -2116,16 +2124,7 @@ class FileGalleryRendererComponent extends React.Component {
             this.setState({ selectedFilterValue: '0' });
         }
         // Determine how many visualizable files there are
-        // const tempFiles = this.state.files.filter(file => (
-        //     (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-        //     && (file.file_format_type !== 'bedMethyl')
-        //     && (file.file_format_type !== 'bedLogR')
-        //     && (file.file_format_type !== 'idr_peak')
-        //     && (file.file_format_type !== 'tss_peak')
-        //     && (file.file_format_type !== 'pepMap')
-        //     && (file.file_format_type !== 'modPepMap')
-        //     && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-        // ));
+        // const tempFiles = filterForVisualizableFiles(this.state.files);
         // If the graph is hidden and there are no visualizable files, set default tab to be table and set default assembly to be 'All assemblies'
         // if (this.props.hideGraph && tempFiles.length < 1) {
         if (this.props.hideGraph) {
@@ -2173,15 +2172,7 @@ class FileGalleryRendererComponent extends React.Component {
         const assembly = { 'All assemblies': 100 };
         let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
         if (this.state.currentTab === 'browser') {
-            fileList = fileList.filter(file => (
-                (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-                && (file.file_format_type !== 'bedMethyl')
-                && (file.file_format_type !== 'bedLogR')
-                && (file.file_format_type !== 'idr_peak')
-                && (file.file_format_type !== 'tss_peak')
-                && (file.file_format_type !== 'pepMap')
-                && (file.file_format_type !== 'modPepMap')
-            ));
+            fileList = filterForVisualizableFiles(fileList);
         }
         fileList.forEach((file) => {
             if (file.genome_annotation && file.assembly && !assembly[`${file.assembly} ${file.genome_annotation}`]) {

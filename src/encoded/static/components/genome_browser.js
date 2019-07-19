@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from './fetched';
 import AutocompleteBox from './region_search';
+import { filterForVisualizableFiles } from './filegallery';
 
 const domainName = 'https://www.encodeproject.org';
 
@@ -133,16 +134,8 @@ class GenomeBrowser extends React.Component {
                 domain = domainName;
                 newFiles = [...this.state.pinnedFiles, ...dummyFiles];
             } else {
-                const propsFiles = this.props.files.filter(file => (
-                    (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-                    && (file.file_format_type !== 'bedMethyl')
-                    && (file.file_format_type !== 'bedLogR')
-                    && (file.file_format_type !== 'idr_peak')
-                    && (file.file_format_type !== 'tss_peak')
-                    && (file.file_format_type !== 'pepMap')
-                    && (file.file_format_type !== 'modPepMap')
-                    && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-                ));
+                let propsFiles = this.props.files;
+                propsFiles = filterForVisualizableFiles(propsFiles);
                 files = _.chain(propsFiles)
                     .sortBy(obj => obj.output_type)
                     .sortBy((obj) => {
@@ -288,16 +281,8 @@ class GenomeBrowser extends React.Component {
             newFiles = [...this.state.pinnedFiles, ...dummyFiles];
         } else {
             // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
-            const propsFiles = this.props.files.filter(file => (
-                (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-                && (file.file_format_type !== 'bedMethyl')
-                && (file.file_format_type !== 'bedLogR')
-                && (file.file_format_type !== 'idr_peak')
-                && (file.file_format_type !== 'tss_peak')
-                && (file.file_format_type !== 'pepMap')
-                && (file.file_format_type !== 'modPepMap')
-                && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-            ));
+            let propsFiles = this.props.files;
+            propsFiles = filterForVisualizableFiles(propsFiles);
             // Set default ordering of tracks to be first by replicate then by output_type
             // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
             // Multiplication by 1000 orders the replicates with a single replicate at the end
