@@ -338,7 +338,7 @@ class GenomeBrowser extends React.Component {
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
             if (file.file_format_type &&
-                ((file.file_format_type.toLowerCase() === 'bedrnaelements') || (file.file_format_type.toLowerCase() === 'peptidemapping') || (file.file_format_type.toLowerCase() === 'bedexonscore') || (file.file_format_type.toLowerCase() === 'bed12') || (file.file_format_type.toLowerCase() === 'bed9'))) {
+                (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase() > -1))) {
                 trackObj.heightPx = 120;
             } else {
                 trackObj.heightPx = 80;
