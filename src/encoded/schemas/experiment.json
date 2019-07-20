@@ -422,7 +422,7 @@
         "objective_slims": 1.0,
         "type_slims": 1.0,
         "assay_synonyms": 1.0,
-f        "biosample_ontology.synonyms": 1.0,
+        "biosample_ontology.synonyms": 1.0,
         "files.accession": 1.0,
         "files.alternate_accessions": 1.0,
         "files.file_format": 1.0,
