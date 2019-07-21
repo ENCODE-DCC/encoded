@@ -26,13 +26,13 @@ ORDER = [
     'biosample_type',
     'antibody_characterization',
     'treatment',
-    'genetic_modification',
-    'genetic_modification_characterization',
     'mouse_donor',
     'fly_donor',
     'worm_donor',
     'human_donor',
     'donor_characterization',
+    'genetic_modification',
+    'genetic_modification_characterization',
     'biosample',
     'biosample_characterization',
     'platform',
@@ -577,13 +577,13 @@ PHASE1_PIPELINES = {
         remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'mouse_donor': [
-        remove_keys('parent_strains'),
+        remove_keys('parent_strains', 'genetic_modifications'),
     ],
     'fly_donor': [
-        remove_keys('parent_strains'),
+        remove_keys('parent_strains', 'genetic_modifications'),
     ],
     'worm_donor': [
-        remove_keys('outcrossed_strain', 'parent_strains'),
+        remove_keys('outcrossed_strain', 'parent_strains', 'genetic_modifications'),
     ],
     'human_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
@@ -636,7 +636,6 @@ PHASE1_PIPELINES = {
     'treatment': [
         remove_keys('biosamples_used')
     ]
-
 }
 
 
@@ -667,13 +666,13 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
     ],
     'mouse_donor': [
-        skip_rows_missing_all_keys('parent_strains'),
+        skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'worm_donor': [
-        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains'),
+        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains', 'genetic_modifications'),
     ],
     'fly_donor': [
-        skip_rows_missing_all_keys('parent_strains'),
+        skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),

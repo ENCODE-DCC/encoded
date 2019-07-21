@@ -207,6 +207,7 @@
         ],
         "category": "episome",
         "purpose": "characterization",
+        "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
         "introduced_elements": "sheared genomic DNA",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "method": "transient transfection"
