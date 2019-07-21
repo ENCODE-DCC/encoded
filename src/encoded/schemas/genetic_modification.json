@@ -256,13 +256,25 @@
                     ]
                 },
                 {
-                    "required": ["donor"],
-                    "properties": {
-                        "introduced_elements": {
-                            "enum": ["sheared genomic DNA"]
+                    "oneOf": [
+                        {
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["sheared genomic DNA"]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "required": ["donor"],
+                            "properties": {
+                                "introduced_elements": {
+                                    "enum": ["sheared genomic DNA"]
+                                }
+                            }
                         }
-                    }
-
+                    ]
                 }
             ]
         },
