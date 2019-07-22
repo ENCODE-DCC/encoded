@@ -7,7 +7,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
-import GenomeBrowser from './genome_browser';
+import { GenomeBrowser, filterForVisualizableFiles } from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
 import { requestFiles, DownloadableAccession } from './objectutils';
@@ -1965,22 +1965,6 @@ function createFacetObject(propertyKey, fileList, filters) {
         });
     }
     return facetObject;
-}
-
-// Not all files can be visualized on the Valis genome browser
-// Some of these files should be visualizable later, after updates to browser
-export function filterForVisualizableFiles(fileList) {
-    const newFileList = fileList.filter(file => (
-        (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-        && (file.file_format_type !== 'bedMethyl')
-        && (file.file_format_type !== 'bedLogR')
-        && (file.file_format_type !== 'idr_peak')
-        && (file.file_format_type !== 'tss_peak')
-        && (file.file_format_type !== 'pepMap')
-        && (file.file_format_type !== 'modPepMap')
-        && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-    ));
-    return newFileList;
 }
 
 // Convert assembly and annotation to a single value
