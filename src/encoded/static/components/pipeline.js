@@ -400,7 +400,7 @@ class PipelineComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">

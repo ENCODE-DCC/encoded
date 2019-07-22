@@ -1,4 +1,4 @@
-import pytest
+import pytest, re
 
 RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
@@ -1143,6 +1143,14 @@ def test_audit_experiment_documents_excluded(testapp, base_experiment,
     testapp.patch_json(award['@id'], {'rfa': 'modENCODE'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] != 'missing documents'
+               for error in collect_audit_errors(res))
+
+def test_audit_experiment_links_included(testapp, base_experiment,
+                                             base_library, award, base_replicate):
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(award['@id'], {'rfa': 'modENCODE'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(re.search(r'{.+?\|.+?}', error['detail'])
                for error in collect_audit_errors(res))
 
 

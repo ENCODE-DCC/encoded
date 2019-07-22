@@ -40,7 +40,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                     <DisplayAsJson />
                 </div>
             </header>
-            {props.auditDetail(context.audit, 'biosample-type-audit', { session: reactContext.session, except: context['@id'] })}
+            {props.auditDetail(context.audit, 'biosample-type-audit', { session: reactContext.session })}
             <div className="panel">
                 <dl className="key-value">
                     <div data-test="term-name">
@@ -128,7 +128,7 @@ const ListingComponent = (props, reactContext) => {
                     <strong>Ontology ID: </strong><BiosampleTermId termId={result.term_id} />
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

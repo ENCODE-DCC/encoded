@@ -143,7 +143,7 @@ const ExperimentSeriesComponent = (props, reactContext) => {
                     <DisplayAsJson />
                 </div>
             </header>
-            {props.auditDetail(context.audit, 'series-audit', { session: reactContext.session, except: context['@id'] })}
+            {props.auditDetail(context.audit, 'series-audit', { session: reactContext.session })}
             <Panel addClasses="data-display">
                 <PanelBody addClasses="panel-body-with-header">
                     <div className="flexrow">
@@ -363,7 +363,7 @@ const ListingComponent = (props, reactContext) => {
                     </div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

@@ -381,7 +381,7 @@ class FileComponent extends React.Component {
                         : null}
                         <ReplacementAccessions context={context} />
                         {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
+                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
                 </header>
@@ -722,7 +722,7 @@ class ListingComponent extends React.Component {
                         </div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }

@@ -426,7 +426,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                     {auditIndicators(context.audit, 'experiment-audit', { session: reactContext.session })}
                 </div>
             </header>
-            {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session })}
             <Panel addClasses="data-display">
                 <PanelBody addClasses="panel-body-with-header">
                     <div className="flexrow">
