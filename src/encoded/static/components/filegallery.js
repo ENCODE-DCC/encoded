@@ -1970,7 +1970,7 @@ function createFacetObject(propertyKey, fileList, filters) {
 // Not all files can be visualized on the Valis genome browser
 // Some of these files should be visualizable later, after updates to browser
 export function filterForVisualizableFiles(fileList) {
-    fileList = fileList.filter(file => (
+    const newFileList = fileList.filter(file => (
         (file.file_format === 'bigWig' || file.file_format === 'bigBed')
         && (file.file_format_type !== 'bedMethyl')
         && (file.file_format_type !== 'bedLogR')
@@ -1980,7 +1980,7 @@ export function filterForVisualizableFiles(fileList) {
         && (file.file_format_type !== 'modPepMap')
         && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
     ));
-    return fileList;
+    return newFileList;
 }
 
 // Convert assembly and annotation to a single value
