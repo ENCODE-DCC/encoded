@@ -7,7 +7,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
-import { GenomeBrowser, filterForVisualizableFiles } from './genome_browser';
+import GenomeBrowser, { filterForVisualizableFiles } from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
 import { requestFiles, DownloadableAccession } from './objectutils';
