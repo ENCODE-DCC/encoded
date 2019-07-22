@@ -54,8 +54,8 @@ def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
         {'Key': 'commit', 'Value': tag_data['commit']},
         {'Key': 'started_by', 'Value': tag_data['username']},
     ]
-    if elasticsearch == 'yes':
-        tags.append({'Key': 'elasticsearch', 'Value': elasticsearch})
+    if elasticsearch:
+        tags.append({'Key': 'elasticsearch', 'Value': 'yes'})
         # This if for integration with nagios server.
         # Only used on production.
         tags.append({'Key': 'Role', 'Value': 'data'})
@@ -156,7 +156,7 @@ def _get_instances_tag_data(main_args):
                 instances_tag_data['username'],
             )
         )
-        if main_args.elasticsearch == 'yes':
+        if main_args.elasticsearch:
             instances_tag_data['name'] = 'elasticsearch-' + instances_tag_data['name']
     return instances_tag_data
 
@@ -178,7 +178,7 @@ def _get_ec2_client(main_args, instances_tag_data):
 def _get_run_args(main_args, instances_tag_data, config_yaml):
     master_user_data = None
     cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
-    if not main_args.elasticsearch == 'yes':
+    if not main_args.elasticsearch:
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
         count = 1
@@ -277,10 +277,9 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
     tmp_name = instances_tag_data['name']
     instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
     output_list = ['']
-    is_elasticsearch = main_args.elasticsearch == 'yes'
     is_cluster_master = False
     is_cluster = False
-    if is_elasticsearch and run_args['count'] > 1:
+    if main_args.elasticsearch and run_args['count'] > 1:
         if cluster_master and run_args['master_user_data']:
             is_cluster_master = True
             output_list.append('Creating Elasticsearch Master Node for cluster')
@@ -322,7 +321,7 @@ def _get_cloud_config_yaml(
         branch=None,
         conf_dir=None,
         cluster_name=None,
-        elasticsearch=None,
+        elasticsearch=False,
         no_es=False,
         build_new_config=False,
         use_local_config=False,
@@ -341,13 +340,13 @@ def _get_cloud_config_yaml(
         )
     filename = 'demo.yml'
     if single_data_master:
-        if elasticsearch == 'yes':
+        if elasticsearch:
             filename = 'es-wait-head.yml'
         else:
             filename = 'es-head.yml'
     elif no_es:
         filename = 'frontend.yml'
-    elif elasticsearch == 'yes':
+    elif elasticsearch:
         filename = 'es-elect-head.yml'
     filepath = build_dir + '/' + filename
     if build_new_config:
@@ -408,7 +407,7 @@ def _test_cloud_configs(branch):
         'build_new_config': True,
         'cluster_name': 'dryruncc-cluster',
         'conf_dir': './cloud-config',
-        'elasticsearch': None,
+        'elasticsearch': False,
         'no_es': False,
         'single_data_master': False,
         'use_local_config': False,
@@ -434,7 +433,7 @@ def _test_cloud_configs(branch):
     es_elect_head_kwargs = copy.copy(kwargs)
     es_elect_head_kwargs.update({
         'cluster_name': 'dryruncc-cluster',
-        'elasticsearch': 'yes',
+        'elasticsearch': True,
     })
     if not _test_config(title, es_elect_head_kwargs):
         return False
@@ -445,7 +444,7 @@ def _test_cloud_configs(branch):
     es_wait_head_kwargs = copy.copy(kwargs)
     es_wait_head_kwargs.update({
         'cluster_name': 'dryruncc-cluster',
-        'elasticsearch': 'yes',
+        'elasticsearch': True,
         'single_data_master': True,
     })
     if not _test_config(title, es_wait_head_kwargs):
@@ -515,7 +514,7 @@ def main():
     _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
     if 'master_user_data' in run_args and main_args.single_data_master:
         # ES MASTER instance when deploying elasticsearch data clusters
-        if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch == 'yes':
+        if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch:
             instances = ec2_client.create_instances(
                 ImageId='ami-2133bc59',
                 MinCount=1,
@@ -590,7 +589,7 @@ def parse_args():
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
     parser.add_argument('--conf-dir', default='./cloud-config', help="Location of cloud build config")
-    parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
+    parser.add_argument('--elasticsearch', action='store_true', help="Launch an Elasticsearch cluster")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
     parser.add_argument('--image-id', default='ami-2133bc59',
