@@ -70,3 +70,10 @@ def test_pipeline_upgrade_8_9(upgrader, pipeline_8):
     value = upgrader.upgrade('pipeline', pipeline_8, current_version='8', target_version='9')
     assert value['schema_version'] == '9'
     assert value.get('status') == 'released'
+
+def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '9'
+    pipeline_8['assay_term_names'] = ['single-nuclei ATAC-seq', 'HiC']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='10')
+    assert value['schema_version'] == '10'
+    assert value['assay_term_names'] == ['single-nucleus ATAC-seq', 'HiC']
