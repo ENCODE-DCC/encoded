@@ -20,7 +20,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "1"
         },
         "genes_detected": {
             "title": "Genes detected",
