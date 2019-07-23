@@ -384,4 +384,6 @@ RegionSearch.contextTypes = {
     navigate: PropTypes.func,
 };
 
+export default AutocompleteBox;
+
 globals.contentViews.register(RegionSearch, 'region-search');

@@ -20,19 +20,21 @@ $pipeline-node-types:
     // Audit icons
     g.pipeline-node-#{$node-type} {
         fill: $color;
-
-        &.active {
-            fill: desaturate(darken($color, 20%), 30%);
-
+        
+        &.highlight {
             > rect, > ellipse {
-                stroke: #606060;
+                stroke: #F4442E;
                 stroke-width: 3px;
             }
 
             line {
-                stroke: #606060;
+                stroke: #F4442E;
                 stroke-width: 1px;
             }
+        }
+
+        &.active {
+            fill: desaturate(darken($color, 20%), 30%);
         }
 
         &.error, &.restricted {
@@ -183,8 +185,17 @@ g.pipeline-node-qc-metric {
 
     &.active {
         > circle {
-            stroke: #404040;
             fill: darken(#80ffc0, 50%);
+        }
+
+        > text {
+            fill: #fff;
+        }
+    }
+    
+    &.highlight {
+        > circle {
+            stroke: #F4442E;
         }
 
         > text {

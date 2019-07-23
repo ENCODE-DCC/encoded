@@ -189,6 +189,9 @@ class TabPanel extends React.Component {
                                 <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
                                     <TabItem tab={tab} handleClick={this.handleClick}>
                                         {tabs[tab]}
+                                        {tabs[tab] === 'Genome browser' ?
+                                            <span className="BETA">BETA</span>
+                                        : null}
                                     </TabItem>
                                 </li>
                             );
