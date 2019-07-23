@@ -775,7 +775,8 @@
         "modified_site_by_target_id.label": 1.0,
         "modified_site_by_target_id.dbxref": 1.0,
         "modified_site_by_target_id.genes.symbol": 1.0,
-        "modified_site_by_target_id.aliases": 1.0
+        "modified_site_by_target_id.aliases": 1.0,
+        "method": 1.0
     },
     "changelog": "/profiles/changelogs/genetic_modification.md"
 }

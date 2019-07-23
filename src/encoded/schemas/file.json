@@ -1665,7 +1665,8 @@
          "file_format_type": 2.0,
          "output_category": 2.0,
          "output_type": 2.0,
-         "status": 1.0
+         "status": 1.0,
+         "lab.title": 1.0
      },
     "changelog": "/profiles/changelogs/file.md"
 }
