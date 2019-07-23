@@ -2763,7 +2763,7 @@
         "file_format": "gtf",
         "assembly": "hg19",
         "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "14be72b6e11515391414f4ebfa62d58e",
+        "md5sum": "14be74b6e11515394414f4ebfa66d58e",
         "output_type": "transcriptome annotations",
         "status": "released",
         "file_size": 20122,

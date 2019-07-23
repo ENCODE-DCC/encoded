@@ -66,6 +66,20 @@ def property_closure(request, propname, root_uuid):
     return seen
 
 
+ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
+RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
+
+
+def file_is_md5sum_constrained(properties):
+    conditions = [
+        properties.get('lab') != ENCODE_PROCESSING_PIPELINE_UUID,
+        properties.get('output_type') in RAW_OUTPUT_TYPES
+    ]
+    if any(conditions):
+        return True
+    return False
+
+
 @collection(
     name='files',
     unique_key='accession',
@@ -136,12 +150,17 @@ class File(Item):
             return self.uuid
         return properties.get(self.name_key, None) or self.uuid
 
+
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
-                keys.setdefault('alias', []).append(value)
+                if self.registry[CONNECTION].get_by_unique_key('alias', value):
+                    if file_is_md5sum_constrained(properties):
+                        keys.setdefault('alias', []).append(value)   
+                else:
+                    keys.setdefault('alias', []).append(value)        
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
