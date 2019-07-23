@@ -2529,25 +2529,27 @@ class FileGalleryRendererComponent extends React.Component {
         };
         const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
-        const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        let tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        if (hideGraph) {
+            tabs = { browser: 'Genome browser', tables: 'File details' };
+        }
 
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                 </PanelHeading>
-
-                { (!hideGraph) ?
-                    <div className="file-gallery-container">
-                        <TabPanelFacets
-                            open={this.state.facetsOpen}
-                            currentTab={this.state.currentTab}
-                            filters={this.state.fileFilters}
-                            allFiles={facetFiles}
-                            filterFiles={this.filterFiles}
-                            toggleFacets={this.toggleFacets}
-                            clearFileFilters={this.clearFileFilters}
-                        />
+                <div className="file-gallery-container">
+                    <TabPanelFacets
+                        open={this.state.facetsOpen}
+                        currentTab={this.state.currentTab}
+                        filters={this.state.fileFilters}
+                        allFiles={facetFiles}
+                        filterFiles={this.filterFiles}
+                        toggleFacets={this.toggleFacets}
+                        clearFileFilters={this.clearFileFilters}
+                    />
+                    { (!hideGraph) ?
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
                             tabs={tabs}
@@ -2598,24 +2600,43 @@ class FileGalleryRendererComponent extends React.Component {
                                 {fileTable}
                             </TabPanelPane>
                         </TabPanel>
-                    </div>
-                :
-                    <div>
-                        <FilterControls
-                            selectedFilterValue={this.state.selectedFilterValue}
-                            filterOptions={this.state.availableAssembliesAnnotations}
-                            inclusionOn={this.state.inclusionOn}
-                            browsers={browsers}
-                            currentBrowser={this.state.currentBrowser}
-                            selectedBrowserFiles={this.state.selectedBrowserFiles}
-                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                            handleInclusionChange={this.handleInclusionChange}
-                            browserChangeHandler={this.handleBrowserChange}
-                            visualizeHandler={this.handleVisualize}
-                        />
-                        {fileTable}
-                    </div>
-                }
+                    :
+                        <TabPanel
+                            tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
+                            tabs={tabs}
+                            decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                            decorationClasses="file-gallery__inclusion-selector"
+                            selectedTab={this.state.currentTab}
+                            handleTabClick={this.handleTabClick}
+                        >
+                            <TabPanelPane key="browser">
+                                <GenomeBrowser
+                                    files={includedFiles}
+                                    expanded={this.state.facetsOpen}
+                                    assembly={this.state.selectedAssembly}
+                                />
+                            </TabPanelPane>
+                            <TabPanelPane key="tables">
+                                <FilterControls
+                                    selectedFilterValue={this.state.selectedFilterValue}
+                                    filterOptions={this.state.availableAssembliesAnnotations}
+                                    inclusionOn={this.state.inclusionOn}
+                                    browsers={browsers}
+                                    currentBrowser={this.state.currentBrowser}
+                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
+                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                                    handleInclusionChange={this.handleInclusionChange}
+                                    browserChangeHandler={this.handleBrowserChange}
+                                    visualizeHandler={this.handleVisualize}
+                                />
+                                {/* If logged in and dataset is released, need to combine search of files that reference
+                                    this dataset to get released and unreleased ones. If not logged in, then just get
+                                    files from dataset.files */}
+                                {fileTable}
+                            </TabPanelPane>
+                        </TabPanel>
+                    }
+                </div>
 
                 {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
