@@ -128,7 +128,7 @@ class AuditView(MatrixView):  #pylint: disable=too-few-public-methods
             del query['query']['query_string']
         else:
             query['query']['query_string']['fields'].extend(
-                ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
+                ['_all']
             )
         audit_field_list, used_filters = self._set_query_aggs(query)
         return query, audit_field_list, used_filters

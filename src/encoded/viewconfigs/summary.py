@@ -44,7 +44,7 @@ class SummaryView(MatrixView):  #pylint: disable=too-few-public-methods
             del query['query']['query_string']
         else:
             query['query']['query_string']['fields'].extend(
-                ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
+                ['_all']
             )
         used_filters = self._set_query_aggs(query)
         query['size'] = 0
