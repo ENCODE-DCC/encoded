@@ -69,17 +69,3 @@ def test_award_upgrade_title_requirement(upgrader, award_5):
     value = upgrader.upgrade('award', award_5, target_version='6')
     assert value['title']
     assert value['schema_version'] == '6'
-
-
-def test_award_upgrade_milestones(upgrader, award_2):
-    award_2['schema_version'] = '6'
-    award_2['milestones'] = [
-        {'assay_term_name': 'single-nuclei ATAC-seq'},
-        {'assay_term_name': 'HiC'},
-    ]
-    value = upgrader.upgrade('award', award_2, target_version='7')
-    assert value['schema_version'] == '7'
-    assert value['milestones'] == [
-        {'assay_term_name': 'single-nucleus ATAC-seq'},
-        {'assay_term_name': 'HiC'},
-    ]
