@@ -164,9 +164,10 @@
         }
     },
     "boost_values": {
-        "accession": 1.0,
+        "accession": 20.0,
         "alternate_accessions": 1.0,
         "aliases": 1.3,
+        "award.project": 5.0,
         "description": 1.0,
         "dbxrefs": 1.0,
         "award.title": 1.0,
