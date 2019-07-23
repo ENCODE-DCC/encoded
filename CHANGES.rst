@@ -1,6 +1,30 @@
 Changes
 =======
 
+v88.0 (candidate) snovault 1.0.34
+---------------------------------------
+1. ENCD-4760 Update to snovault 1.0.34 (#2858)
+2. SNO-108-improve-search-new (#2856)
+3. Revert "ENCD-4711 Changed name of snATAC-seq (#2838)" (#2857)
+4. ENCD-4724 md5 uniqueness adjustment (#2855)
+5. ENCD-4720-change-es-deploy-arg-to-bool (#2853)
+6. ENCD-4711 Changed name of snATAC-seq (#2838)
+7. ENCD-4692 Add mechanism for audit details to include links (#2854)
+8. SNO-106-fix-spec-char-500-error (#2851)
+9. ENCD-4685-matrix-vertical-scroll (#2836)
+10. ENCD-4717 adding output types (#2839)
+11. ENCD-4682 Award title required (#2831)
+12. ENCD-4677 Update biosample characterization audit (#2847)
+13. ENCD-3567 Upgrade React JS 15.6.0 (#2841)
+14. ENCD-4697 add biosample summary to experiment series (#2842)
+15. ENCD-4701 Update STAR quality metric for chimeric reads (#2843)
+16. ENCD-4706-store-circleci-results (#2848)
+17. ENCD-4702-remove-dup-gm-column-in-biosample (#2846)
+18. ENCD-4684-remove-facet-duplication (#2844)
+19. ENCD-4511-make-pool-table (#2820)
+20. ENCD-4699 Fix Javascript crash display series file tables (#2829)
+21. ENCD-4063-ambulance-icon-for-only-logged-in-users (#2819)
+
 v87.0 (released) snovault 1.0.32/1.0.33
 ---------------------------------------
 1. ENCD-4723 update-snovault-1.0.33 (#2840)
