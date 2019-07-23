@@ -85,9 +85,7 @@ def human_single_annotation(r):
 
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None and r['Synonyms'] != '':
-            # r['Synonyms'] has double quotes-string at both
-            # ends, that must be removed
-            synonyms = [x.strip(' ') + species for x in r['Synonyms'].strip('\"').split(',')]
+            synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
             doc['suggest']['input'] = doc['suggest']['input'] + synonyms
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
@@ -191,7 +189,9 @@ def get_rows_from_file(file_name, row_delimiter):
     response = requests.get(file_name)
     rows = response.content.decode('utf-8').split(row_delimiter)
     header = rows[0].split('\t')
-    zipped_rows = [dict(zip(header, row.split('\t'))) for row in rows[1:]]
+    # remove the leading and ending double-quote string 
+    # that sometimes is present in source-file fields
+    zipped_rows = [dict(zip(header, [r.strip('\"') for r in row.split('\t')])) for row in rows[1:]]
     return zipped_rows
 
 
