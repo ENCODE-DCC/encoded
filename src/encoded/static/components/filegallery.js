@@ -2712,8 +2712,6 @@ const FilterMenu = (props) => {
 
     return (
         <select className="form-control--select" value={selectedFilterValue} onChange={handleFilterChange}>
-            <option value="default">All Assemblies and Annotations</option>
-            <option disabled="disabled" />
             {filterOptions.map((option, i) =>
                 <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
             )}
