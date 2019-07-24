@@ -1067,7 +1067,6 @@ class FilterControls extends React.Component {
         if (filterOptions.length > 0 || browsers.length > 0) {
             return (
                 <div className="file-gallery-controls">
-                    <span className="file-gallery-instructions">Select files, assembly, and external browser to visualize</span>
                     {filterOptions.length > 0 ?
                         <div className="file-gallery-controls__assembly-selector">
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
@@ -2580,18 +2579,20 @@ class FileGalleryRendererComponent extends React.Component {
                                 />
                             </TabPanelPane>
                             <TabPanelPane key="tables">
-                                <FilterControls
-                                    selectedFilterValue={this.state.selectedFilterValue}
-                                    filterOptions={this.state.availableAssembliesAnnotations}
-                                    inclusionOn={this.state.inclusionOn}
-                                    browsers={browsers}
-                                    currentBrowser={this.state.currentBrowser}
-                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                    handleInclusionChange={this.handleInclusionChange}
-                                    browserChangeHandler={this.handleBrowserChange}
-                                    visualizeHandler={this.handleVisualize}
-                                />
+                                {browsers.length > 0 ?
+                                    <FilterControls
+                                        selectedFilterValue={this.state.selectedFilterValue}
+                                        filterOptions={this.state.availableAssembliesAnnotations}
+                                        inclusionOn={this.state.inclusionOn}
+                                        browsers={browsers}
+                                        currentBrowser={this.state.currentBrowser}
+                                        selectedBrowserFiles={this.state.selectedBrowserFiles}
+                                        handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                                        handleInclusionChange={this.handleInclusionChange}
+                                        browserChangeHandler={this.handleBrowserChange}
+                                        visualizeHandler={this.handleVisualize}
+                                    />
+                                : null}
                                 {/* If logged in and dataset is released, need to combine search of files that reference
                                     this dataset to get released and unreleased ones. If not logged in, then just get
                                     files from dataset.files */}
