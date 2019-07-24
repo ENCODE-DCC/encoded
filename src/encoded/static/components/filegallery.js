@@ -1020,7 +1020,6 @@ class VisualizationControls extends React.Component {
 
         return (
             <div className="file-gallery-controls__visualization-selector">
-                <span className="file-gallery-instructions">Select files, assembly, and external browser to visualize</span>
                 <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
                     {browsers.map(browser => (
                         <option key={browser} value={browser}>{browser}</option>
@@ -1068,6 +1067,7 @@ class FilterControls extends React.Component {
         if (filterOptions.length > 0 || browsers.length > 0) {
             return (
                 <div className="file-gallery-controls">
+                    <span className="file-gallery-instructions">Select files, assembly, and external browser to visualize</span>
                     {filterOptions.length > 0 ?
                         <div className="file-gallery-controls__assembly-selector">
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
