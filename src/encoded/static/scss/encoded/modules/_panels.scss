@@ -276,11 +276,12 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     justify-content: flex-end;
     background-color: #fff;
     background: #fff;
-    select, button {
-        background: #4f689e;
-        color: #fff !important;
-        border: none !important;
-        font-weight: 500;
+    border-bottom: 1px solid #c0c0c0;
+    select {
+        border: 2px solid #4f689e !important;
+        color: #4f689e !important;
+        font-weight: 600;
+        border-radius: 5px;
     }
 }
 
@@ -321,6 +322,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             -moz-transition: right .1s ease-in-out;
             -o-transition: right .1s ease-in-out;
             transition: right .1s ease-in-out;
+            background: white;
             @media screen and (max-width: $screen-md-min) {
                 display: none;
             }

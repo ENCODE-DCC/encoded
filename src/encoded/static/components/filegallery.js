@@ -1020,6 +1020,7 @@ class VisualizationControls extends React.Component {
 
         return (
             <div className="file-gallery-controls__visualization-selector">
+                <span className="file-gallery-instructions">Select files, assembly, and external browser to visualize</span>
                 <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
                     {browsers.map(browser => (
                         <option key={browser} value={browser}>{browser}</option>
@@ -2600,18 +2601,20 @@ class FileGalleryRendererComponent extends React.Component {
                     </div>
                 :
                     <div>
-                        <FilterControls
-                            selectedFilterValue={this.state.selectedFilterValue}
-                            filterOptions={this.state.availableAssembliesAnnotations}
-                            inclusionOn={this.state.inclusionOn}
-                            browsers={browsers}
-                            currentBrowser={this.state.currentBrowser}
-                            selectedBrowserFiles={this.state.selectedBrowserFiles}
-                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                            handleInclusionChange={this.handleInclusionChange}
-                            browserChangeHandler={this.handleBrowserChange}
-                            visualizeHandler={this.handleVisualize}
-                        />
+                        {browsers.length > 0 ?
+                            <FilterControls
+                                selectedFilterValue={this.state.selectedFilterValue}
+                                filterOptions={this.state.availableAssembliesAnnotations}
+                                inclusionOn={this.state.inclusionOn}
+                                browsers={browsers}
+                                currentBrowser={this.state.currentBrowser}
+                                selectedBrowserFiles={this.state.selectedBrowserFiles}
+                                handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                                handleInclusionChange={this.handleInclusionChange}
+                                browserChangeHandler={this.handleBrowserChange}
+                                visualizeHandler={this.handleVisualize}
+                            />
+                        : null}
                         {fileTable}
                     </div>
                 }
