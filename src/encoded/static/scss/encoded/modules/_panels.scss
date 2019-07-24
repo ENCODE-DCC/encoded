@@ -274,6 +274,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-controls {
     justify-content: flex-end;
+    background-color: #fff;
+    background: #fff;
+    select, button {
+        background: #4f689e;
+        color: #fff !important;
+        border: none !important;
+        font-weight: 500;
+    }
 }
 
 .file-gallery-container {
@@ -411,7 +419,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     display: flex;
     align-items: center;
     padding: 5px;
-    background-color: #c0c0c0;
     
     @media screen and (max-width: $screen-sm-min) {
         display: block;
