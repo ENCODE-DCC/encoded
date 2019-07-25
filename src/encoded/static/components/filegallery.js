@@ -2580,20 +2580,18 @@ class FileGalleryRendererComponent extends React.Component {
                                 />
                             </TabPanelPane>
                             <TabPanelPane key="tables">
-                                {browsers.length > 0 ?
-                                    <FilterControls
-                                        selectedFilterValue={this.state.selectedFilterValue}
-                                        filterOptions={this.state.availableAssembliesAnnotations}
-                                        inclusionOn={this.state.inclusionOn}
-                                        browsers={browsers}
-                                        currentBrowser={this.state.currentBrowser}
-                                        selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                        handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                        handleInclusionChange={this.handleInclusionChange}
-                                        browserChangeHandler={this.handleBrowserChange}
-                                        visualizeHandler={this.handleVisualize}
-                                    />
-                                : null}
+                                <FilterControls
+                                    selectedFilterValue={this.state.selectedFilterValue}
+                                    filterOptions={this.state.availableAssembliesAnnotations}
+                                    inclusionOn={this.state.inclusionOn}
+                                    browsers={browsers}
+                                    currentBrowser={this.state.currentBrowser}
+                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
+                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                                    handleInclusionChange={this.handleInclusionChange}
+                                    browserChangeHandler={this.handleBrowserChange}
+                                    visualizeHandler={this.handleVisualize}
+                                />
                                 {/* If logged in and dataset is released, need to combine search of files that reference
                                     this dataset to get released and unreleased ones. If not logged in, then just get
                                     files from dataset.files */}
@@ -2603,20 +2601,18 @@ class FileGalleryRendererComponent extends React.Component {
                     </div>
                 :
                     <div>
-                        {browsers.length > 0 ?
-                            <FilterControls
-                                selectedFilterValue={this.state.selectedFilterValue}
-                                filterOptions={this.state.availableAssembliesAnnotations}
-                                inclusionOn={this.state.inclusionOn}
-                                browsers={browsers}
-                                currentBrowser={this.state.currentBrowser}
-                                selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                handleInclusionChange={this.handleInclusionChange}
-                                browserChangeHandler={this.handleBrowserChange}
-                                visualizeHandler={this.handleVisualize}
-                            />
-                        : null}
+                        <FilterControls
+                            selectedFilterValue={this.state.selectedFilterValue}
+                            filterOptions={this.state.availableAssembliesAnnotations}
+                            inclusionOn={this.state.inclusionOn}
+                            browsers={browsers}
+                            currentBrowser={this.state.currentBrowser}
+                            selectedBrowserFiles={this.state.selectedBrowserFiles}
+                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                            handleInclusionChange={this.handleInclusionChange}
+                            browserChangeHandler={this.handleBrowserChange}
+                            visualizeHandler={this.handleVisualize}
+                        />
                         {fileTable}
                     </div>
                 }
