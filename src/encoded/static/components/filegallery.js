@@ -1025,7 +1025,7 @@ class VisualizationControls extends React.Component {
                         <option key={browser} value={browser}>{browser}</option>
                     ))}
                 </select>
-                <button className="btn btn-info" onClick={this.handleVisualize} type="button">Visualize</button>
+                <button className="btn btn-info" onClick={this.handleVisualize} type="button" disabled={this.props.visualizeDisabled}>Visualize</button>
             </div>
         );
     }
@@ -1040,10 +1040,13 @@ VisualizationControls.propTypes = {
     browserChangeHandler: PropTypes.func.isRequired,
     /** Callback to handle click in Visualize button */
     visualizeHandler: PropTypes.func.isRequired,
+    /** Flag that button should be disabled */
+    visualizeDisabled: PropTypes.bool,
 };
 
 VisualizationControls.defaultProps = {
     currentBrowser: '',
+    visualizeDisabled: false,
 };
 
 
@@ -1072,9 +1075,7 @@ class FilterControls extends React.Component {
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                         </div>
                     : null}
-                    {browsers.length > 0 ?
-                        <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} />
-                    : null}
+                    <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} visualizeDisabled={!(browsers.length > 0)} />
                 </div>
             );
         }
