@@ -273,7 +273,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .file-gallery-controls {
-    justify-content: start;
+    justify-content: flex-end;
     border-bottom: 1px solid #c0c0c0;
     select {
         border: 2px solid #4f689e !important;
@@ -434,8 +434,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 
     @at-root #{&}__visualization-selector {
-        flex: 0 1 25%;
-
         select {
             display: inline-block;
             width: auto;
