@@ -1020,11 +1020,13 @@ class VisualizationControls extends React.Component {
 
         return (
             <div className="file-gallery-controls__visualization-selector">
-                <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
-                    {browsers.map(browser => (
-                        <option key={browser} value={browser}>{browser}</option>
-                    ))}
-                </select>
+                {browsers.length > 0 ?
+                    <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
+                        {browsers.map(browser => (
+                            <option key={browser} value={browser}>{browser}</option>
+                        ))}
+                    </select>
+                : null}
                 <button className="btn btn-info" onClick={this.handleVisualize} type="button" disabled={this.props.visualizeDisabled}>Visualize</button>
             </div>
         );
