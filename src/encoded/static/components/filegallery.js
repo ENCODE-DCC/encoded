@@ -1020,12 +1020,14 @@ class VisualizationControls extends React.Component {
 
         return (
             <div className="file-gallery-controls__visualization-selector">
-                <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
-                    {browsers.map(browser => (
-                        <option key={browser} value={browser}>{browser}</option>
-                    ))}
-                </select>
-                <button className="btn btn-info" onClick={this.handleVisualize} type="button">Visualize</button>
+                {browsers.length > 0 ?
+                    <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
+                        {browsers.map(browser => (
+                            <option key={browser} value={browser}>{browser}</option>
+                        ))}
+                    </select>
+                : null}
+                <button className="btn btn-info" onClick={this.handleVisualize} type="button" disabled={this.props.visualizeDisabled}>Visualize</button>
             </div>
         );
     }
@@ -1040,10 +1042,13 @@ VisualizationControls.propTypes = {
     browserChangeHandler: PropTypes.func.isRequired,
     /** Callback to handle click in Visualize button */
     visualizeHandler: PropTypes.func.isRequired,
+    /** Flag that button should be disabled */
+    visualizeDisabled: PropTypes.bool,
 };
 
 VisualizationControls.defaultProps = {
     currentBrowser: '',
+    visualizeDisabled: false,
 };
 
 
@@ -1067,15 +1072,12 @@ class FilterControls extends React.Component {
         if (filterOptions.length > 0 || browsers.length > 0) {
             return (
                 <div className="file-gallery-controls">
-                    <span className="file-gallery-instructions">Select files, choose an assembly, and pick an external browser to visualize</span>
                     {filterOptions.length > 0 ?
                         <div className="file-gallery-controls__assembly-selector">
                             <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                         </div>
                     : null}
-                    {browsers.length > 0 ?
-                        <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} />
-                    : null}
+                    <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} visualizeDisabled={!(browsers.length > 0)} />
                 </div>
             );
         }
@@ -2529,6 +2531,7 @@ class FileGalleryRendererComponent extends React.Component {
         };
         const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
+        const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
 
         return (
             <Panel>
@@ -2536,32 +2539,32 @@ class FileGalleryRendererComponent extends React.Component {
                     <h4>Files</h4>
                 </PanelHeading>
 
-                <div className="file-gallery-container">
-                    <TabPanelFacets
-                        open={this.state.facetsOpen}
-                        currentTab={this.state.currentTab}
-                        filters={this.state.fileFilters}
-                        allFiles={facetFiles}
-                        filterFiles={this.filterFiles}
-                        toggleFacets={this.toggleFacets}
-                        clearFileFilters={this.clearFileFilters}
-                    />
-                    <TabPanel
-                        tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
-                        tabs={{ browser: 'Genome browser', graph: 'Association graph', tables: 'File details' }}
-                        decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
-                        decorationClasses="file-gallery__inclusion-selector"
-                        selectedTab={this.state.currentTab}
-                        handleTabClick={this.handleTabClick}
-                    >
-                        <TabPanelPane key="browser">
-                            <GenomeBrowser
-                                files={includedFiles}
-                                expanded={this.state.facetsOpen}
-                                assembly={this.state.selectedAssembly}
-                            />
-                        </TabPanelPane>
-                        { (!hideGraph) ?
+                { (!hideGraph) ?
+                    <div className="file-gallery-container">
+                        <TabPanelFacets
+                            open={this.state.facetsOpen}
+                            currentTab={this.state.currentTab}
+                            filters={this.state.fileFilters}
+                            allFiles={facetFiles}
+                            filterFiles={this.filterFiles}
+                            toggleFacets={this.toggleFacets}
+                            clearFileFilters={this.clearFileFilters}
+                        />
+                        <TabPanel
+                            tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
+                            tabs={tabs}
+                            decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                            decorationClasses="file-gallery__inclusion-selector"
+                            selectedTab={this.state.currentTab}
+                            handleTabClick={this.handleTabClick}
+                        >
+                            <TabPanelPane key="browser">
+                                <GenomeBrowser
+                                    files={includedFiles}
+                                    expanded={this.state.facetsOpen}
+                                    assembly={this.state.selectedAssembly}
+                                />
+                            </TabPanelPane>
                             <TabPanelPane key="graph">
                                 <FileGraph
                                     dataset={context}
@@ -2578,27 +2581,43 @@ class FileGalleryRendererComponent extends React.Component {
                                     auditDetail={this.props.auditDetail}
                                 />
                             </TabPanelPane>
-                        : null}
-                        <TabPanelPane key="tables">
-                            <FilterControls
-                                selectedFilterValue={this.state.selectedFilterValue}
-                                filterOptions={this.state.availableAssembliesAnnotations}
-                                inclusionOn={this.state.inclusionOn}
-                                browsers={browsers}
-                                currentBrowser={this.state.currentBrowser}
-                                selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                handleInclusionChange={this.handleInclusionChange}
-                                browserChangeHandler={this.handleBrowserChange}
-                                visualizeHandler={this.handleVisualize}
-                            />
-                            {/* If logged in and dataset is released, need to combine search of files that reference
-                                this dataset to get released and unreleased ones. If not logged in, then just get
-                                files from dataset.files */}
-                            {fileTable}
-                        </TabPanelPane>
-                    </TabPanel>
-                </div>
+                            <TabPanelPane key="tables">
+                                <FilterControls
+                                    selectedFilterValue={this.state.selectedFilterValue}
+                                    filterOptions={this.state.availableAssembliesAnnotations}
+                                    inclusionOn={this.state.inclusionOn}
+                                    browsers={browsers}
+                                    currentBrowser={this.state.currentBrowser}
+                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
+                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                                    handleInclusionChange={this.handleInclusionChange}
+                                    browserChangeHandler={this.handleBrowserChange}
+                                    visualizeHandler={this.handleVisualize}
+                                />
+                                {/* If logged in and dataset is released, need to combine search of files that reference
+                                    this dataset to get released and unreleased ones. If not logged in, then just get
+                                    files from dataset.files */}
+                                {fileTable}
+                            </TabPanelPane>
+                        </TabPanel>
+                    </div>
+                :
+                    <div>
+                        <FilterControls
+                            selectedFilterValue={this.state.selectedFilterValue}
+                            filterOptions={this.state.availableAssembliesAnnotations}
+                            inclusionOn={this.state.inclusionOn}
+                            browsers={browsers}
+                            currentBrowser={this.state.currentBrowser}
+                            selectedBrowserFiles={this.state.selectedBrowserFiles}
+                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                            handleInclusionChange={this.handleInclusionChange}
+                            browserChangeHandler={this.handleBrowserChange}
+                            visualizeHandler={this.handleVisualize}
+                        />
+                        {fileTable}
+                    </div>
+                }
 
                 {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
@@ -2692,8 +2711,6 @@ const FilterMenu = (props) => {
 
     return (
         <select className="form-control--select" value={selectedFilterValue} onChange={handleFilterChange}>
-            <option value="default">All Assemblies and Annotations</option>
-            <option disabled="disabled" />
             {filterOptions.map((option, i) =>
                 <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
             )}
