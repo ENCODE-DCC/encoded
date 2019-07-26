@@ -2018,7 +2018,6 @@ const TabPanelFacets = (props) => {
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
-    fileList = fileList.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
     if (currentTab === 'browser') {
         fileList = filterForVisualizableFiles(fileList);
     }
@@ -2175,8 +2174,8 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const updateAssemblyForTabChange = prevState.currentTab !== this.state.currentTab;
-        this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssemblyForTabChange);
+        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn;
+        this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssembly);
     }
 
     // Called from child components when the selected node changes.
@@ -2190,7 +2189,7 @@ class FileGalleryRendererComponent extends React.Component {
 
     setAssemblyList(allFiles) {
         const assembly = { 'All assemblies': 100 };
-        let fileList = allFiles.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
+        let fileList = allFiles;
         if (this.state.currentTab === 'browser') {
             fileList = filterForVisualizableFiles(fileList);
         }
@@ -2264,7 +2263,7 @@ class FileGalleryRendererComponent extends React.Component {
      * content changes. In addition, collect all the assemblies/annotations associated with the
      * combined files so we can choose a visualization browser.
      */
-    updateFiles(prevLoggedIn, updateAssemblyForTabChange) {
+    updateFiles(prevLoggedIn, updateAssembly) {
         const { context, data } = this.props;
         const { session } = this.context;
         const loggedIn = !!(session && session['auth.userid']);
@@ -2285,7 +2284,8 @@ class FileGalleryRendererComponent extends React.Component {
         // the first genome browser for them.
         relatedPromise.then((relatedFiles) => {
             this.prevRelatedFiles = relatedFiles;
-            const allFiles = datasetFiles.concat(relatedFiles);
+            let allFiles = datasetFiles.concat(relatedFiles);
+            allFiles = this.filterForInclusion(allFiles);
 
             // If there are filters, filter the new files
             let filteredFiles = allFiles;
@@ -2322,7 +2322,7 @@ class FileGalleryRendererComponent extends React.Component {
             this.resetCurrentBrowser(null, allFiles);
 
             // If new tab has been selected, we may need to update which assembly is chosen
-            if (updateAssemblyForTabChange) {
+            if (updateAssembly) {
                 if (this.state.currentTab === 'tables') {
                     // Always set the table assembly to be 'All assemblies'
                     this.filterFiles('All assemblies', 'assembly');
