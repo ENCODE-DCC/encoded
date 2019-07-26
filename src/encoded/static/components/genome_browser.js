@@ -425,10 +425,10 @@ class GenomeBrowser extends React.Component {
             const annotation = annotations[annotationIndex];
 
             // Compute gene location information from the annotation
-            const annotationLength = annotation.end - annotation.start;
+            const annotationLength = +annotation.end - +annotation.start;
             const contig = `chr${annotation.chromosome}`;
-            const xStart = annotation.start - (annotationLength / 2);
-            const xEnd = annotation.end + (annotationLength / 2);
+            const xStart = +annotation.start - (annotationLength / 2);
+            const xEnd = +annotation.end + (annotationLength / 2);
             console.log(annotation);
             const printStatement = `Success: found gene location for ${this.state.searchTerm}`;
             console.log(printStatement);
