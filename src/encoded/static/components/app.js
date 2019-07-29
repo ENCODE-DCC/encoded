@@ -29,6 +29,8 @@ import Footer from './footer';
 import Home from './home';
 import { requestSearch } from './objectutils';
 import newsHead from './page';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+
 
 const portal = {
     portal_title: 'ENCODE',
@@ -188,6 +190,27 @@ class Timeout {
     }
 }
 
+const EulaModal = ({ closeModal, signup }) => (
+    <Modal>
+        <ModalHeader title="Creating a new account" closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                You are about to create an ENCODE account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            closeModal={closeModal}
+            submitBtn={signup}
+            submitTitle="Proceed"
+        />
+    </Modal>
+);
+
+EulaModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+    signup: PropTypes.func.isRequired,
+};
+
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -221,6 +244,8 @@ class App extends React.Component {
             contextRequest: null,
             unsavedChanges: [],
             promisePending: false,
+            eulaModalVisibility: false,
+            authResult: '',
         };
 
         this.triggers = {
@@ -228,6 +253,9 @@ class App extends React.Component {
             profile: 'triggerProfile',
             logout: 'triggerLogout',
         };
+
+        this.domain = 'encode.auth0.com';
+        this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
@@ -250,6 +278,8 @@ class App extends React.Component {
         this.listActionsFor = this.listActionsFor.bind(this);
         this.currentResource = this.currentResource.bind(this);
         this.currentAction = this.currentAction.bind(this);
+        this.closeSignupModal = this.closeSignupModal.bind(this);
+        this.signup = this.signup.bind(this);
     }
 
     // Data for child components to subscrie to.
@@ -298,7 +328,7 @@ class App extends React.Component {
         };
         const logoUrl = url.format(logoHrefInfo);
 
-        this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+        this.lock = new Auth0Lock(this.clientId, this.domain, {
             auth: {
                 responseType: 'token',
                 redirect: false,
@@ -498,12 +528,53 @@ class App extends React.Component {
         });
     }
 
-    handleAuth0Login(authResult, retrying) {
+    closeSignupModal() {
+        this.setState({ eulaModalVisibility: false });
+    }
+
+    signup() {
+        const authResult = this.state.authResult;
+        
+        if (!authResult || !authResult.accessToken) {
+            console.warn('authResult object or access token not available');
+            return;
+        }
+        const accessToken = authResult.accessToken;
+        this.closeSignupModal();
+        this.fetch('users/@@sign-up', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ accessToken }),
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Failed to create new account');
+            }
+            // sign in after account creation
+            this.handleAuth0Login(authResult, false, false);
+        }).catch((err) => {
+            console.warn(err);
+        });
+    }
+
+    /**
+    * Login with exisiting user or bring up account-creation modal
+    *
+    * @param {object} authResult- Authorization information
+    * @param {boolean} retrying- Attempt to retry login or not
+    * @param {boolean} createAccount- Where or not to attempt to create an account
+    * @returns Null
+    * @memberof App
+    */
+    handleAuth0Login(authResult, retrying, createAccount = true) {
         const accessToken = authResult.accessToken;
         if (!accessToken) {
             return;
         }
         this.sessionPropertiesRequest = true;
+        this.setState({ authResult });
         this.fetch('/login', {
             method: 'POST',
             headers: {
@@ -528,18 +599,22 @@ class App extends React.Component {
             }
             this.navigate(nextUrl, { replace: true });
         }, (err) => {
-            this.sessionPropertiesRequest = null;
-            globals.parseError(err).then((data) => {
+            if (err.status === 403 && createAccount) {
+                this.setState({ eulaModalVisibility: true });
+            } else {
+                this.sessionPropertiesRequest = null;
+                globals.parseError(err).then((data) => {
                 // Server session creds might have changed.
-                if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
-                    if (!retrying) {
-                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
-                        return;
+                    if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
+                        if (!retrying) {
+                            window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
+                            return;
+                        }
                     }
-                }
-                // If there is an error, show the error messages
-                this.setState({ context: data });
-            });
+                    // If there is an error, show the error messages
+                    this.setState({ context: data });
+                });
+            }
         });
     }
 
@@ -1119,6 +1194,12 @@ class App extends React.Component {
                                     <div id="layout-footer" />
                                 </div>
                             </Provider>
+                            {this.state.eulaModalVisibility ?
+                                <EulaModal
+                                    closeModal={this.closeSignupModal}
+                                    signup={this.signup}
+                                /> :
+                            null}
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>

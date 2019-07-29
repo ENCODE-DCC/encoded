@@ -2933,8 +2933,8 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 {auditsDisplayed(selectedFile.audit, session) ?
                     <div className="graph-modal-audits">
                         <h5>File audits:</h5>
-                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
-                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session }) : null}
+                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session, sessionProperties }) : null}
+                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session, sessionProperties }) : null}
                     </div>
                 : null}
             </div>

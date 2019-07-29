@@ -406,7 +406,7 @@ class FileComponent extends React.Component {
                     : null}
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'file-audit', except: context['@id'] }} />
                 </header>
-                {auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
+                {auditDetail(context.audit, 'file-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 <Panel>
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
@@ -740,11 +740,11 @@ class ListingComponent extends React.Component {
                         <div className="result-item__meta-title">File</div>
                         <div className="result-item__meta-id">{` ${result.title}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
                     <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
             </li>
         );
     }
@@ -759,6 +759,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

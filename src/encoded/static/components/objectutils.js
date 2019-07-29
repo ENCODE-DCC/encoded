@@ -806,7 +806,7 @@ export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) 
     <div className="item-accessories">
         <div className="item-accessories--left">
             {audit ?
-                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, except: audit.except })
+                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
             : null}
         </div>
         <div className="item-accessories--right">

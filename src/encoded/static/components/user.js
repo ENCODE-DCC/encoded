@@ -270,6 +270,9 @@ const User = ({ context }) => {
         { id: 'Users' },
     ];
     const crumbsReleased = (context.status === 'released');
+    const isVerifiedMember = context.groups && context.groups.includes('verified');
+    const isAdmin = context.groups && context.groups.includes('admin');
+    const hasAccessKeyRights = isVerifiedMember || isAdmin;
 
     return (
         <div className={itemClass}>
@@ -303,7 +306,7 @@ const User = ({ context }) => {
                 </PanelBody>
             </Panel>
 
-            {context.access_keys ? <AccessKeyTable user={context} accessKeys={context.access_keys} /> : null}
+            {hasAccessKeyRights ? <AccessKeyTable user={context} accessKeys={context.access_keys} /> : null}
         </div>
     );
 };

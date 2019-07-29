@@ -1,5 +1,5 @@
 import pytest
-
+from webtest import AppError
 
 def basic_auth(username, password):
     from base64 import b64encode
@@ -72,8 +72,29 @@ def test_access_key_principals(anontestapp, execute_counter, access_key, submitt
     ]
 
 
-def test_access_key_self_create(anontestapp, access_key, submitter):
-    extra_environ = {'REMOTE_USER': str(submitter['email'])}
+def test_access_key_self_create_by_verified_member(anontestapp, verified_member):
+    extra_environ = {'REMOTE_USER': str(verified_member['email'])}
+    res = anontestapp.post_json(
+        '/access_key/', {}, extra_environ=extra_environ
+        )
+    access_key_id = res.json['access_key_id']
+    headers = {
+        'Authorization': basic_auth(access_key_id, res.json['secret_access_key']),
+    }
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_id
+
+
+def test_access_key_self_create_by_unverified_member(anontestapp, unverified_member):
+    with pytest.raises(AppError):
+        extra_environ = {'REMOTE_USER': str(unverified_member['email'])}
+        res = anontestapp.post_json(
+            '/access_key/', {}, extra_environ=extra_environ
+        )
+
+
+def test_access_key_self_create_by_admin(anontestapp, admin):
+    extra_environ = {'REMOTE_USER': str(admin['email'])}
     res = anontestapp.post_json(
         '/access_key/', {}, extra_environ=extra_environ
         )

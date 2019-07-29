@@ -519,7 +519,7 @@ class GeneticModificationComponent extends React.Component {
     }
 
     render() {
-        const { context, session } = this.props;
+        const { context, session, sessionProperties } = this.props;
 
         // Configure breadcrumbs for the page.
         const crumbs = [
@@ -540,7 +540,7 @@ class GeneticModificationComponent extends React.Component {
                     </div>
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'genetic-modification-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session, sessionProperties, except: context['@id'] })}
                 <Panel>
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
@@ -637,10 +637,12 @@ GeneticModificationComponent.propTypes = {
     auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
     auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
     session: PropTypes.object, // Login information from <App>
+    sessionProperties: PropTypes.object,
 };
 
 GeneticModificationComponent.defaultProps = {
     session: null,
+    sessionProperties: null,
 };
 
 const GeneticModificationInternal = (props, reactContext) => (
@@ -655,6 +657,7 @@ GeneticModificationInternal.propTypes = {
 
 GeneticModificationInternal.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const GeneticModification = auditDecor(GeneticModificationInternal);
@@ -679,11 +682,11 @@ const ListingComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">Genetic modification</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -696,6 +699,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);
