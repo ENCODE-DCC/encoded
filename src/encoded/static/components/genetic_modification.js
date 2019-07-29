@@ -522,7 +522,7 @@ class GeneticModificationComponent extends React.Component {
     }
 
     render() {
-        const { context } = this.props;
+        const { context, session } = this.props;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
 
         // Configure breadcrumbs for the page.
@@ -540,11 +540,11 @@ class GeneticModificationComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-                        {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
+                        {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session })}
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session })}
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
