@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { collapseIcon } from '../libs/svg-icons';
-import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
+import { auditDecor, auditsDisplayed, ObjectAuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser, { filterForVisualizableFiles } from './genome_browser';
 import * as globals from './globals';
@@ -19,22 +19,6 @@ import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowse
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
-
-
-// Get the audit icon for the highest audit level in the given file.
-function fileAuditStatus(file, loggedIn) {
-    let highestAuditLevel;
-
-    if (file.audit) {
-        const sortedAuditLevels = _(Object.keys(file.audit)).sortBy(level => -file.audit[level][0].level);
-
-        // only logged in users should see ambulance icon (INTERNAL_ACTION)
-        highestAuditLevel = !loggedIn && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
-    } else {
-        highestAuditLevel = 'OK';
-    }
-    return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
-}
 
 
 // Sort callback to compare the accession/external_accession of two files.
@@ -386,7 +370,7 @@ FileTable.procTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <div>{fileAuditStatus(item, meta.loggedIn)}</div>,
+        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
@@ -437,7 +421,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <div>{fileAuditStatus(item, meta.loggedIn)}</div>,
+        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
@@ -641,7 +625,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}>{fileAuditStatus(file, loggedIn)}</td>
+                                            <td className={pairClass}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -677,7 +661,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td>{fileAuditStatus(file, loggedIn)}</td>
+                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -821,7 +805,7 @@ class RawFileTable extends React.Component {
                                             <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={groupBottom}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}>{fileAuditStatus(file, loggedIn)}</td>
+                                            <td className={groupBottom}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                             <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -851,7 +835,7 @@ class RawFileTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td>{fileAuditStatus(file, loggedIn)}</td>
+                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
