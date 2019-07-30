@@ -3,6 +3,7 @@
 ### Minor changes since schema version 14
 
 * *output_type* list was updated to include the following enums: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
+* Added *read_structure*
 
 ### Schema version 14
 
