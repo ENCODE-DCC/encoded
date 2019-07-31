@@ -2615,6 +2615,12 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                         level)
 
 
+def is_tagging_genetic_modification(modification):
+    if modification['purpose'] == 'tagging':
+        return True
+    return False
+
+
 def audit_experiment_biosample_characterization(value, system, excluded_types):
     if check_award_condition(value, ["ENCODE4"]):
         level = 'ERROR'
@@ -2638,6 +2644,10 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                     return
                 elif (modifications and 
                     not biosample_characterizations):
+                    needs_characterization_flag = False
+                    for mod in modifications:
+                        if not is_tagging_genetic_modification(mod):
+                            needs_characterization_flag = True
                     no_characterizations = True
                     mod_ids = str(
                         [mod['@id'] for mod in modifications]
@@ -2649,7 +2659,7 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                             biosample['@id'],
                             mod_ids
                         )
-        if no_characterizations:
+        if no_characterizations and needs_characterization_flag:
             detail = 'B' + detail[1:-2] + '.'
             yield AuditFailure(
                 'missing biosample characterization',
