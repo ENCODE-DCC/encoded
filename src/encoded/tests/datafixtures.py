@@ -114,6 +114,18 @@ def award(testapp):
 
 
 @pytest.fixture
+def award_encode4(testapp):
+    item = {
+        'name': 'encode4-award',
+        'rfa': 'ENCODE4',
+        'project': 'ENCODE',
+        'title': 'A Generic ENCODE4 Award',
+        'viewing_group': 'ENCODE4',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+
+@pytest.fixture
 def award_modERN(testapp):
     item = {
         'name': 'modERN-award',
@@ -514,6 +526,25 @@ def construct_genetic_modification_N(
         'purpose': 'tagging',
         'method': 'stable transfection',
         'introduced_tags': [{'name':'eGFP', 'location': 'N-terminal'}],
+        'modified_site_by_target_id': target['@id']
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def interference_genetic_modification(
+        testapp,
+        lab,
+        award,
+        document,
+        target):
+    item = {
+        'award': award['@id'],
+        'documents': [document['@id']],
+        'lab': lab['@id'],
+        'category': 'interference',
+        'purpose': 'repression',
+        'method': 'RNAi',        
         'modified_site_by_target_id': target['@id']
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]

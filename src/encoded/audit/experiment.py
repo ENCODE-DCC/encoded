@@ -2622,13 +2622,10 @@ def is_tagging_genetic_modification(modification):
 
 
 def audit_experiment_biosample_characterization(value, system, excluded_types):
-    if check_award_condition(value, ["ENCODE4"]):
-        level = 'ERROR'
-    else:
-        level = 'WARNING'
     detail = ''
     no_characterizations = False
     if 'replicates' in value:
+        needs_characterization_flag = False
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and
                 'library' in rep and
@@ -2644,9 +2641,8 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                     return
                 elif (modifications and 
                     not biosample_characterizations):
-                    needs_characterization_flag = False
                     for mod in modifications:
-                        if not is_tagging_genetic_modification(mod):
+                        if is_tagging_genetic_modification(mod):
                             needs_characterization_flag = True
                     no_characterizations = True
                     mod_ids = str(
@@ -2659,7 +2655,11 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                             biosample['@id'],
                             mod_ids
                         )
-        if no_characterizations and needs_characterization_flag:
+        if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag:
+            level = 'ERROR'
+        else:
+            level = 'WARNING'
+        if no_characterizations:
             detail = 'B' + detail[1:-2] + '.'
             yield AuditFailure(
                 'missing biosample characterization',
