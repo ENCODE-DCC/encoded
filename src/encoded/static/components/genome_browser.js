@@ -192,8 +192,13 @@ class GenomeBrowser extends React.Component {
         if (assembly === 'GRCh38') {
             pinnedFiles = [
                 {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
+                },
+                {
                     file_format: 'vgenes-dir',
                     href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
+                    title: 'GENCODE V29',
                 },
             ];
             contig = 'chr1';
@@ -202,8 +207,13 @@ class GenomeBrowser extends React.Component {
         } else if (assembly === 'hg19' || assembly === 'GRCh37') {
             pinnedFiles = [
                 {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vdna-dir',
+                },
+                {
                     file_format: 'vgenes-dir',
                     href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vgenes-dir',
+                    title: 'GENCODE V29',
                 },
             ];
             contig = 'chr21';
@@ -212,8 +222,13 @@ class GenomeBrowser extends React.Component {
         } else if (assembly === 'mm10' || assembly === 'mm10-minimal' || assembly === 'GRCm38') {
             pinnedFiles = [
                 {
+                    file_format: 'vdna-dir',
+                    href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vdna-dir',
+                },
+                {
                     file_format: 'vgenes-dir',
                     href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
+                    title: 'GENCODE M21',
                 },
             ];
             contig = 'chr12';
@@ -340,14 +355,14 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             } else if (file.file_format === 'vdna-dir') {
                 const trackObj = {};
-                trackObj.name = 'Genome';
+                trackObj.name = this.props.assembly.split(' ')[0];
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
                 trackObj.heightPx = 40;
                 return trackObj;
             } else if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
-                trackObj.name = this.props.assembly;
+                trackObj.name = file.title;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
                 trackObj.heightPx = 120;
@@ -455,7 +470,7 @@ class GenomeBrowser extends React.Component {
     render() {
         return (
             <React.Fragment>
-                {(this.state.trackList.length > 1 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
+                {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
                     <React.Fragment>
                         { (this.state.genome.indexOf('GRC') !== -1) ?
                             <div className="gene-search">
