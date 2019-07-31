@@ -1395,6 +1395,7 @@
             "type": "string",
             "permission": "import_items"
         },
+
         "read_structure": {
             "title": "Read structure",
             "description": "A list of elements in the read describing the structure of a read.",
@@ -1427,6 +1428,20 @@
                         "type": "integer"
                     }
                 }
+            }
+        },
+
+        "matching_md5sum": {
+            "title": "Matching md5sum",
+            "description": "Array of files which have a matching md5sum.",
+            "comment": "Do not submit. This field is updated by checkfiles.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
             }
         }
     },
