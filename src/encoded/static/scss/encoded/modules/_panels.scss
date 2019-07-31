@@ -285,7 +285,9 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-container {
     display: flex;
-    flex-wrap: wrap;
+    @media screen and (max-width: $screen-md-min) {
+        flex-wrap: wrap;
+    }
     .disabled-checkbox {
         color: #6D6D6D;
     }

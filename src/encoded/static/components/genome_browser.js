@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from './fetched';
+import { BrowserFeat } from './browserfeat';
 import AutocompleteBox from './region_search';
 
 const domainName = 'https://www.encodeproject.org';
@@ -105,6 +106,7 @@ class GenomeBrowser extends React.Component {
             x0: 0,
             x1: 59e6,
             pinnedFiles: [],
+            disableBrowserForIE: false,
         };
         this.setBrowserDefaults = this.setBrowserDefaults.bind(this);
         this.filesToTracks = this.filesToTracks.bind(this);
@@ -118,18 +120,23 @@ class GenomeBrowser extends React.Component {
     }
 
     componentDidMount() {
-        // Determine pinned files based on genome, filter and sort files, compute and draw tracks
-        this.setGenomeAndTracks();
+        // Check if browser is IE 11 and disable browser if so
+        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+            this.setState({ disableBrowserForIE: true });
+        } else {
+            // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+            this.setGenomeAndTracks();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.contig !== prevState.contig) {
+        if (this.state.contig !== prevState.contig && !(this.state.disableBrowserForIE)) {
             if (this.state.visualizer) {
                 this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
             }
         }
 
-        if (this.props.assembly !== prevProps.assembly) {
+        if (this.props.assembly !== prevProps.assembly && !(this.state.disableBrowserForIE)) {
             // Determine pinned files based on genome, filter and sort files, compute and draw tracks
             this.setGenomeAndTracks();
             // Clear the gene search
@@ -137,11 +144,11 @@ class GenomeBrowser extends React.Component {
         }
 
         // If the parent container changed size, we need to update the browser width
-        if (this.props.expanded !== prevProps.expanded) {
+        if (this.props.expanded !== prevProps.expanded && !(this.state.disableBrowserForIE)) {
             setTimeout(this.drawTracksResized, 1000);
         }
 
-        if (!(_.isEqual(this.props.files, prevProps.files))) {
+        if (!(_.isEqual(this.props.files, prevProps.files)) && !(this.state.disableBrowserForIE)) {
             let newFiles = [];
             let files = [];
             let domain = `${window.location.protocol}//${window.location.hostname}`;
@@ -446,7 +453,7 @@ class GenomeBrowser extends React.Component {
     render() {
         return (
             <div>
-                {(this.state.trackList.length > 1 && this.state.genome !== null) ?
+                {(this.state.trackList.length > 1 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
                     <div>
                         { (this.state.genome.indexOf('GRC') !== -1) ?
                             <div className="gene-search">
@@ -475,7 +482,12 @@ class GenomeBrowser extends React.Component {
                         <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
                     </div>
                 :
-                    <div className="browser-error valis-browser">There are no visualizable results.
+                    <div>
+                        {(this.state.disableBrowserForIE) ?
+                            <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge in order to visualize files on ENCODE.</div>
+                        :
+                            <div className="browser-error valis-browser">There are no visualizable results.</div>
+                        }
                     </div>
                 }
             </div>
