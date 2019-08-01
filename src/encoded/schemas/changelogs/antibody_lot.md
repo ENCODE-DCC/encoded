@@ -3,6 +3,7 @@
 ### Minor changes since schema version 9
 
 * Added *single cell* to biosample_type enums
+* Added *used_by_biosample_characterizations* to reversely link to biosample characterizations using the antibody
 
 ### Schema 9
 
