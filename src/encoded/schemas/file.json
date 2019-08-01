@@ -1403,6 +1403,7 @@
             "items": {
                 "title": "Sequence element",
                 "description": "One element in the read with start and end coordinates.",
+                "required": ["sequence_element", "start", "end"],
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {

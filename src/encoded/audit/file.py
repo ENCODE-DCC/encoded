@@ -373,6 +373,31 @@ def audit_file_in_correct_bucket(value, system):
         )
 
 
+def audit_read_structure(value, system):
+    read_structure = value.get('read_structure', [])
+    for element in read_structure:
+        if element['start'] == 0 or element['end'] == 0:
+            detail = (
+                'The read_stucture is 1-based. '
+                'Neither start or end can be 0 for sequence element {}'
+            ).format(element['sequence_element'])
+            yield AuditFailure(
+                'invalid read_structure',
+                detail,
+                level='ERROR'
+            )
+        if element['start'] > element['end']:
+            detail = (
+                'The start coordinate is bigger than the end coordinate '
+                'for sequence element {}'
+            ).format(element['sequence_element'])
+            yield AuditFailure(
+                'invalid read_structure',
+                detail,
+                level='ERROR'
+            )
+
+
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
@@ -383,6 +408,7 @@ function_dispatcher = {
     'audit_controlled_by': audit_file_controlled_by,
     'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
     'audit_file_in_correct_bucket': audit_file_in_correct_bucket,
+    'audit_read_structure': audit_read_structure,
 }
 
 
