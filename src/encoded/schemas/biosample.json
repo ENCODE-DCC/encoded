@@ -769,7 +769,7 @@
         "model_organism_health_status": {
             "title": "Model organism health status",
             "type": "string",
-            "description": "Model organism health status of the model organism.",
+            "description": "Health status of the model organism.",
             "comment": "model_organism_health_status is not valid for a human biosample."
         },
         "nih_institutional_certification": {
