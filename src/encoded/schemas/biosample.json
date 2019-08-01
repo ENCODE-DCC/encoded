@@ -587,9 +587,9 @@
             ]
         },
         "model_organism_sex": {
-            "title": "Sex",
+            "title": "Model organism sex",
             "type": "string",
-            "description": "The sex of the organism the biosample comes from.",
+            "description": "The sex of the model organism the biosample comes from.",
             "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
                 "female",
