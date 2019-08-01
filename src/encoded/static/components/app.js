@@ -36,7 +36,7 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment&status=released' },
+                { id: 'assaymatrix', title: 'Experiment Matrix', url: '/matrix/?type=Experiment&status=released' },
                 { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released' },
                 { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment&status=released' },
                 { id: 'sep-mm-1' },
@@ -60,7 +60,7 @@ const portal = {
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
                 { id: 'sep-mm-1' },
                 { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'http://screen.encodeproject.org/' },
-                { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
+                { id: 'annotationmatrix', title: 'Annotation Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
                 { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=4' },
                 { id: 'annotationmethods', title: 'Methods', url: 'http://screen.encodeproject.org/index/about' },
             ],
