@@ -1,4 +1,5 @@
 import pytest
+from unittest import TestCase
 
 
 @pytest.fixture
@@ -31,4 +32,4 @@ def test_software_upgrade_5_6(upgrader, software_1):
     software_1['purpose'] = ['single-nuclei ATAC-seq', 'HiC']
     value = upgrader.upgrade('software', software_1, target_version='6')
     assert value['schema_version'] == '6'
-    assert value['purpose'] == ['single-nucleus ATAC-seq', 'HiC']
+    TestCase().assertListEqual(value['purpose'], ['single-nucleus ATAC-seq', 'HiC'])

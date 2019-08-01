@@ -1,4 +1,5 @@
 import pytest
+from unittest import TestCase
 
 
 @pytest.fixture
@@ -76,4 +77,4 @@ def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
     pipeline_8['assay_term_names'] = ['single-nuclei ATAC-seq', 'HiC']
     value = upgrader.upgrade('pipeline', pipeline_8, target_version='10')
     assert value['schema_version'] == '10'
-    assert value['assay_term_names'] == ['single-nucleus ATAC-seq', 'HiC']
+    TestCase().assertListEqual(value['assay_term_names'], ['single-nucleus ATAC-seq', 'HiC'])

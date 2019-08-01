@@ -1,5 +1,5 @@
 import pytest
-
+from unittest import TestCase
 
 @pytest.fixture
 def award():
@@ -79,7 +79,10 @@ def test_award_upgrade_milestones(upgrader, award_2):
     ]
     value = upgrader.upgrade('award', award_2, target_version='7')
     assert value['schema_version'] == '7'
-    assert value['milestones'] == [
-        {'assay_term_name': 'single-nucleus ATAC-seq'},
-        {'assay_term_name': 'HiC'},
-    ]
+    TestCase().assertListEqual(
+        value['milestones'],
+        [
+            {'assay_term_name': 'single-nucleus ATAC-seq'},
+            {'assay_term_name': 'HiC'}
+        ]
+    )
