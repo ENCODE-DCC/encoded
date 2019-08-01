@@ -211,7 +211,7 @@ const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
     const searchTerm = id.query.searchTerm || '';
     return (
-        <form className="navbar-form navbar-right" action="/search/">
+        <form className="navbar-form navbar-right navbar-search-form" action="/search/">
             <div className="search-wrapper">
                 <input
                     className="form-control search-query"
@@ -222,6 +222,9 @@ const Search = (props, context) => {
                     defaultValue={searchTerm}
                     key={searchTerm}
                 />
+                <button type="submit" className="search-button">
+                    <i className="icon icon-search" />
+                </button>
             </div>
         </form>
     );
