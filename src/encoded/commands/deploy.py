@@ -180,7 +180,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
     cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
     if not main_args.elasticsearch:
         security_groups = ['ssh-http-https']
-        iam_role = 'encoded-instance'
+        iam_role = main_args.iam_role
         count = 1
         data_insert = {
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
@@ -208,7 +208,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             sys.exit(1)
         count = int(main_args.cluster_size)
         security_groups = ['elasticsearch-https']
-        iam_role = 'elasticsearch-instance'
+        iam_role = main_args.iam_role_es
         data_insert = {
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_DATA': 'true',
@@ -525,7 +525,7 @@ def main():
                 BlockDeviceMappings=bdm,
                 InstanceInitiatedShutdownBehavior='terminate',
                 IamInstanceProfile={
-                    "Name": 'encoded-instance',
+                    "Name": main_args.iam_role,
                 },
                 Placement={
                     'AvailabilityZone': main_args.availability_zone,
@@ -592,6 +592,8 @@ def parse_args():
     parser.add_argument('--elasticsearch', action='store_true', help="Launch an Elasticsearch cluster")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
+    parser.add_argument('--iam-role', default='encoded-instance', help="Set AWS iam role for demo and cluster frontends")
+    parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="Set AWS iam role for elasticsearch nodes")
     parser.add_argument('--image-id', default='ami-2133bc59',
                         help=(
                             "https://us-west-2.console.aws.amazon.com/ec2/home"
