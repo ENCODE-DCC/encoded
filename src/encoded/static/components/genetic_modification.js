@@ -10,7 +10,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, requestSearch, DisplayAsJson } from './objectutils';
+import { singleTreatment, requestSearch, DisplayAsJson, AlternateAccession } from './objectutils';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -540,6 +540,9 @@ class GeneticModificationComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session })}
                         <DisplayAsJson />
                     </div>
