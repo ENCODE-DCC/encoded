@@ -156,11 +156,12 @@ class File(Item):
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
-                if self.registry[CONNECTION].get_by_unique_key('alias', value):
+                resource = self.registry[CONNECTION].get_by_unique_key('alias', value)
+                if resource and resource.uuid != properties.get('uuid'):
                     if file_is_md5sum_constrained(properties):
-                        keys.setdefault('alias', []).append(value)   
+                        keys.setdefault('alias', []).append(value)
                 else:
-                    keys.setdefault('alias', []).append(value)        
+                    keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
