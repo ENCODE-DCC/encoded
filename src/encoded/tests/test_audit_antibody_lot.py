@@ -67,6 +67,30 @@ def base_antibody_characterization2(testapp, lab, award, base_target2, antibody_
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def gfp_target(testapp, organism):
+    item = {
+        'label': 'gfp',
+        'target_organism': organism['@id'],
+        'investigated_as': ['tag'],
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
+
+@pytest.fixture
+def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_target):
+    item = {
+        'product_id': 'WH0000468M1',
+        'lot_id': 'CB191-2B3',
+        'award': encode4_award['@id'],
+        'lab': lab['@id'],
+        'source': source['@id'],
+        'host_organism': mouse['@id'],
+        'targets': [gfp_target['@id']],
+    }
+    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
+
+
 def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characterization1, base_antibody_characterization2):
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -92,3 +116,52 @@ def test_audit_control_characterizations(testapp, antibody_lot, base_target1):
     errors = res.json['audit']
     print(errors)
     assert 'NOT_COMPLIANT' not in errors
+
+
+def test_audit_encode4_tag_ab_characterizations(
+    testapp,
+    encode4_tag_antibody_lot,
+    biosample_characterization,
+    lab,
+    submitter
+):
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(
+        error['category'] == 'no biosample characterizations linked'
+        for errs in errors.values() for error in errs
+    )
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {'antibody': encode4_tag_antibody_lot['@id']}
+    )
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert all(
+        error['category'] != 'no biosample characterizations linked'
+        for errs in errors.values() for error in errs
+    )
+    assert any(
+        error['category'] == 'need one compliant biosample characterization'
+        for errs in errors.values() for error in errs
+    )
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'lab': lab['@id'],
+                'reviewed_by': submitter['@id'],
+                'status': 'exempt from standards'
+            }
+        }
+    )
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert all(
+        error['category'] != 'no biosample characterizations linked'
+        for errs in errors.values() for error in errs
+    )
+    assert all(
+        error['category'] != 'need one compliant biosample characterization'
+        for errs in errors.values() for error in errs
+    )
