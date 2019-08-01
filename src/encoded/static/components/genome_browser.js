@@ -130,53 +130,55 @@ class GenomeBrowser extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.contig !== prevState.contig && !(this.state.disableBrowserForIE)) {
-            if (this.state.visualizer) {
-                this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
-            }
-        }
-
-        if (this.props.assembly !== prevProps.assembly && !(this.state.disableBrowserForIE)) {
-            // Determine pinned files based on genome, filter and sort files, compute and draw tracks
-            this.setGenomeAndTracks();
-            // Clear the gene search
-            this.setState({ searchTerm: '' });
-        }
-
-        // If the parent container changed size, we need to update the browser width
-        if (this.props.expanded !== prevProps.expanded && !(this.state.disableBrowserForIE)) {
-            setTimeout(this.drawTracksResized, 1000);
-        }
-
-        if (!(_.isEqual(this.props.files, prevProps.files)) && !(this.state.disableBrowserForIE)) {
-            let newFiles = [];
-            let files = [];
-            let domain = `${window.location.protocol}//${window.location.hostname}`;
-            if (domain.includes('localhost')) {
-                domain = domainName;
-                newFiles = [...this.state.pinnedFiles, ...dummyFiles];
-            } else {
-                const propsFiles = filterForVisualizableFiles(this.props.files);
-                files = _.chain(propsFiles)
-                    .sortBy(obj => obj.output_type)
-                    .sortBy((obj) => {
-                        if (obj.biological_replicates.length > 1) {
-                            return +obj.biological_replicates.join('');
-                        }
-                        return +obj.biological_replicates * 1000;
-                    })
-                    .value();
-                newFiles = [...this.state.pinnedFiles, ...files];
-            }
-            let tracks = [];
-            if (files.length > 0) {
-                tracks = this.filesToTracks(newFiles, domain);
-            }
-            this.setState({ trackList: tracks }, () => {
-                if (this.chartdisplay && tracks !== []) {
-                    this.drawTracks(this.chartdisplay);
+        if (!(this.state.disableBrowserForIE)) {
+            if (this.state.contig !== prevState.contig) {
+                if (this.state.visualizer) {
+                    this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
                 }
-            });
+            }
+
+            if (this.props.assembly !== prevProps.assembly) {
+                // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+                this.setGenomeAndTracks();
+                // Clear the gene search
+                this.setState({ searchTerm: '' });
+            }
+
+            // If the parent container changed size, we need to update the browser width
+            if (this.props.expanded !== prevProps.expanded) {
+                setTimeout(this.drawTracksResized, 1000);
+            }
+
+            if (!(_.isEqual(this.props.files, prevProps.files))) {
+                let newFiles = [];
+                let files = [];
+                let domain = `${window.location.protocol}//${window.location.hostname}`;
+                if (domain.includes('localhost')) {
+                    domain = domainName;
+                    newFiles = [...this.state.pinnedFiles, ...dummyFiles];
+                } else {
+                    const propsFiles = filterForVisualizableFiles(this.props.files);
+                    files = _.chain(propsFiles)
+                        .sortBy(obj => obj.output_type)
+                        .sortBy((obj) => {
+                            if (obj.biological_replicates.length > 1) {
+                                return +obj.biological_replicates.join('');
+                            }
+                            return +obj.biological_replicates * 1000;
+                        })
+                        .value();
+                    newFiles = [...this.state.pinnedFiles, ...files];
+                }
+                let tracks = [];
+                if (files.length > 0) {
+                    tracks = this.filesToTracks(newFiles, domain);
+                }
+                this.setState({ trackList: tracks }, () => {
+                    if (this.chartdisplay && tracks !== []) {
+                        this.drawTracks(this.chartdisplay);
+                    }
+                });
+            }
         }
     }
 
@@ -452,9 +454,9 @@ class GenomeBrowser extends React.Component {
 
     render() {
         return (
-            <div>
+            <React.Fragment>
                 {(this.state.trackList.length > 1 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
-                    <div>
+                    <React.Fragment>
                         { (this.state.genome.indexOf('GRC') !== -1) ?
                             <div className="gene-search">
                                 <i className="icon icon-search" />
@@ -480,17 +482,17 @@ class GenomeBrowser extends React.Component {
                             </div>
                         : null}
                         <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
-                    </div>
+                    </React.Fragment>
                 :
-                    <div>
+                    <React.Fragment>
                         {(this.state.disableBrowserForIE) ?
-                            <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge in order to visualize files on ENCODE.</div>
+                            <div className="browser-error valis-browser">The genome browser does not support Internet Explorer. Please upgrade your browser to Edge to visualize files on ENCODE.</div>
                         :
                             <div className="browser-error valis-browser">There are no visualizable results.</div>
                         }
-                    </div>
+                    </React.Fragment>
                 }
-            </div>
+            </React.Fragment>
         );
     }
 }
