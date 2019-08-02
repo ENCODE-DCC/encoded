@@ -1997,7 +1997,7 @@ function createFacetObject(propertyKey, fileList, filters) {
 // outlier:
 //                 "None"
 function computeAssemblyAnnotationValue(assembly, annotation) {
-    const assemblyNumber = assembly.match(/[0-9]+/g)[0];
+    const assemblyNumber = +assembly.match(/[0-9]+/g)[0];
     if (annotation) {
         const annotationNumber = +annotation.match(/[0-9]+/g)[0];
         let annotationDecimal = 0;
