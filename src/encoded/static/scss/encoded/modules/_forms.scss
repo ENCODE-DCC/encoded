@@ -73,9 +73,6 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	margin-top: 3px;
 	border: none;
 	box-shadow: none !important;
-	font-family: inherit;
-	font-size: 1rem;
-	font-weight: normal;
 	-ms-transition: width 0.3s ease-out;
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
@@ -98,7 +95,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	position: 0;
 	background-color: white;
 	border-radius: 20px;
-	padding: 2px !important;
+	padding: 2px;
 
 	&:after {
 		font-family: "FontAwesome";
@@ -121,7 +118,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 .search-button {
 	background-color: white;
-    border: 0 none white; 
+    border: 0; 
 	border-radius: 20px;
 }
 
