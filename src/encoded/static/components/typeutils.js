@@ -4,6 +4,7 @@ import _ from 'underscore';
 import * as globals from './globals';
 import { AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
+import Status from './status';
 
 
 // BIOSAMPLE UTILITIES
@@ -459,4 +460,85 @@ ControllingExperiments.defaultProps = {
     items: [],
     total: 0,
     url: '',
+};
+
+/**
+ * Display a count of biosample characterizations in the footer, with a link to the corresponding search if needed.
+ */
+const BiosampleCharacterizationTableFooter = ({ items, total, url }) => (
+    <div>
+        <span>Displaying {items.length} of {total} </span>
+        {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+    </div>
+);
+
+BiosampleCharacterizationTableFooter.propTypes = {
+    /** Array of biosample characterizations that were displayed in the table */
+    items: PropTypes.array.isRequired,
+    /** Total number of biosample characterizations */
+    total: PropTypes.number,
+    /** URL to link to equivalent biosample characterization search results */
+    url: PropTypes.string.isRequired,
+};
+
+BiosampleCharacterizationTableFooter.defaultProps = {
+    total: 0,
+};
+
+
+const biosampleCharacterizationTableColumns = {
+    'characterizes.biosample_ontology.term_name': {
+        title: 'Biosample term',
+        display: char => <a href={char['@id']}>{char.characterizes.biosample_ontology.term_name}</a>,
+    },
+    characterization_method: {
+        title: 'Characterization method',
+        getValue: char => char.characterization_method && char.characterization_method.uppercaseFirstChar(),
+    },
+    'lab.title': {
+        title: 'Characterization lab',
+        getValue: char => char.lab.title,
+    },
+    'review.lab.title': {
+        title: 'Review lab',
+        getValue: char => char.review && char.review.lab.title,
+    },
+    'review.status': {
+        title: 'Review status',
+        display: char => char.review && <Status item={char.review.status} badgeSize="small" inline />,
+    },
+};
+
+
+export const BiosampleCharacterizationTable = ({ items, limit, total, url, title }) => {
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements.
+    const biosampleCharacterizations = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+
+    return (
+        <div>
+            <SortTablePanel title={title}>
+                <SortTable list={biosampleCharacterizations} columns={biosampleCharacterizationTableColumns} footer={<BiosampleCharacterizationTableFooter items={biosampleCharacterizations} total={total} url={url} />} />
+            </SortTablePanel>
+        </div>
+    );
+};
+
+BiosampleCharacterizationTable.propTypes = {
+    /** List of biosample characterizations to display in the table */
+    items: PropTypes.array.isRequired,
+    /** Maximum number of biosample characterizations to display in the table */
+    limit: PropTypes.number,
+    /** Total number of biosample characterizations */
+    total: PropTypes.number,
+    /** URI to go to equivalent search results */
+    url: PropTypes.string.isRequired,
+    /** Title for the table of biosample characterizations */
+    title: PropTypes.string,
+};
+
+BiosampleCharacterizationTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    title: '',
 };

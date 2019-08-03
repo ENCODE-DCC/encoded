@@ -31,6 +31,7 @@ class AntibodyLot(SharedItem):
         )
     }
     embedded = [
+        'award',
         'source',
         'host_organism',
         'targets',

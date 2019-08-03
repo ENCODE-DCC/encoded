@@ -66,5 +66,22 @@
             "title": "Status"
         }
     },
+    "columns": {
+        "characterizes.biosample_ontology.term_name": {
+            "title": "Biosample term"
+        },
+        "characterization_method": {
+            "title": "Characterization method"
+        },
+        "lab.title": {
+            "title": "Characterization lab"
+        },
+        "review.lab.title": {
+            "title": "Review lab"
+        },
+        "review.status": {
+            "title": "Review status"
+        }
+    },
     "changelog": "/profiles/changelogs/biosample_characterization.md"
 }
