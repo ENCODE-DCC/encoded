@@ -1,0 +1,97 @@
+{
+    "title": "Lab Results",
+    "id": "/profiles/lab_results.json",
+    "description": "Schema for describing the lab results.",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "value_units", "value", "reference_flag"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "value": {
+            "title": "Value",
+            "description": "Lab value measured and converted to standard units.",
+            "type": "number"
+        },
+        "value_units": {
+            "title": "Value units",
+            "type": "string",
+            "enum": [
+                "g/dl",
+                "mg/dl",
+                "u/l",
+                "x10(3)/ul",
+                "mmol/l"
+            ]
+        },
+        "reference_low": {
+            "title": "Reference Low",
+            "description": "Lower range of reference provided by testing lab and converted to standard units.",
+            "type": "number"
+        },
+        "reference_high": {
+            "title": "Reference high",
+            "description": "Higher range of reference provided by testing lab and converted to standard units.",
+            "type": "number"
+        },
+        "reference_flag": {
+            "title": "Reference flag",
+            "description": "Annotated flag provided by testing lab.",
+            "type": "string",
+            "enum": [
+                "Normal",
+                "Low",
+                "High",
+                "Abnormal"
+            ]
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the lab was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "lab": {
+            "title": "Lab type",
+            "type": "string",
+            "enum": [
+                "ALBUMIN",
+                "CALCIUM",
+                "CREATININE",
+                "HEMOGLOBIN",
+                "LACTATE_DE",
+                "NEUTROPHILS",
+                "PLATELETS",
+                "SODIUM",
+                "WBC"
+            ]
+        },
+        "date": {
+            "title": "Lab date",
+            "description": "Date of lab.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        }
+    },
+    "facets": {
+        "lab": {
+            "title": "Lab type"
+        },
+        "reference_flag": {
+            "title": "Reference Flag"
+        }
+    },
+    "changelog": "/profiles/changelogs/lab_results.md"
+
+}

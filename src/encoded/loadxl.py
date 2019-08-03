@@ -18,8 +18,9 @@ ORDER = [
     'lab',
     'image',
     'page',
-    'cart',
-    'patient'
+    'patient',
+    'lab_results',
+    'cart'
 ]
 
 IS_ATTACHMENT = [

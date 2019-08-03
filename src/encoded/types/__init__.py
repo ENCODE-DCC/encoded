@@ -296,3 +296,22 @@ class SoftwareVersion(Item):
         root = find_root(self)
         software = root.get_by_uuid(properties['software'])
         return software.__ac_local_roles__()
+
+
+@collection(
+    name='lab-results',
+    properties={
+        'title': 'Lab results',
+        'description': 'Lab results pages',
+    })
+class LabResults(Item):
+    item_type = 'lab_results'
+    schema = load_schema('encoded:schemas/lab_results.json')
+    embedded = ['patient']
+
+    def __ac_local_roles__(self):
+        # Use patient object for access control.
+        properties = self.upgrade_properties()
+        root = find_root(self)
+        patient = root.get_by_uuid(properties['patient'])
+        return patient.__ac_local_roles__()
