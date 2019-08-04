@@ -18,7 +18,7 @@ import { isAllowedElementsPossible } from '../cart/util';
 // Create the Redux mock store.
 const initialCart = {
     elements: [],
-    name: 'Third cart',
+    name: 'Third cohort',
     current: '/carts/9570dbda-191d-42c3-8ac9-f479ca55f6f6/',
     inProgress: false,
 };
@@ -39,17 +39,17 @@ describe('Cart actions', () => {
         });
 
         test('ADD_TO_CART works and does not mutate state', () => {
-            const newState = cartModule(state, { type: ADD_TO_CART, elementAtId: '/experiment/ENCSR000AAA/' });
+            const newState = cartModule(state, { type: ADD_TO_CART, elementAtId: '/patient/KCEPT359MHZ/' });
             expect(newState.elements).toHaveLength(1);
-            expect(newState.elements[0]).toEqual('/experiment/ENCSR000AAA/');
+            expect(newState.elements[0]).toEqual('/patient/KCEPT359MHZ/');
             expect(newState).not.toEqual(state);
         });
 
         test('ADD_MULTIPLE_TO_CART works and does not mutate state', () => {
             const elementAtIds = [
-                '/experiment/ENCSR000AAA/',
-                '/experiment/ENCSR001AAA/',
-                '/experiment/ENCSR002AAA/',
+                '/patient/KCEPT359MHZ/',
+                '/patient/KCEPT708IJT/',
+                '/patient/KCEPT026PGS/',
             ];
             const newState = cartModule(state, { type: ADD_MULTIPLE_TO_CART, elementAtIds });
             expect(_.isEqual(newState.elements, elementAtIds)).toEqual(true);
@@ -62,7 +62,7 @@ describe('Cart actions', () => {
 
         beforeAll(() => {
             state = {
-                elements: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR001AAA/', '/experiment/ENCSR002AAA/'],
+                elements: ['/patient/KCEPT359MHZ/', '/patient/KCEPT708IJT/', '/patient/KCEPT026PGS/'],
                 name: 'Untitled',
                 savedCartObj: {},
                 inProgress: false,
@@ -70,38 +70,38 @@ describe('Cart actions', () => {
         });
 
         test('REMOVE_FROM_CART works and does not mutate state', () => {
-            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR001AAA/' });
+            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/patient/KCEPT708IJT/' });
             expect(newState.elements).toHaveLength(2);
-            expect(newState.elements[0]).toEqual('/experiment/ENCSR000AAA/');
-            expect(newState.elements[1]).toEqual('/experiment/ENCSR002AAA/');
+            expect(newState.elements[0]).toEqual('/patient/KCEPT359MHZ/');
+            expect(newState.elements[1]).toEqual('/patient/KCEPT026PGS');
             expect(newState).not.toEqual(state);
         });
 
         test('Failed REMOVE_FROM_CART does not modify contents', () => {
-            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/experiment/ENCSR004AAA/' });
+            const newState = cartModule(state, { type: REMOVE_FROM_CART, elementAtId: '/patient/KCEPT925TMI/' });
             expect(_.isEqual(state.elements, newState.elements)).toEqual(true);
         });
 
         test('REMOVE_MULTIPLE_FROM_CART works and does not mutate state', () => {
-            const newState = cartModule(state, { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR002AAA/'] });
+            const newState = cartModule(state, { type: REMOVE_MULTIPLE_FROM_CART, elementAtIds: ['/patient/KCEPT359MHZ/', '/patient/KCEPT026PGS'] });
             expect(newState.elements).toHaveLength(1);
-            expect(newState.elements[0]).toEqual('/experiment/ENCSR001AAA/');
+            expect(newState.elements[0]).toEqual('/patient/KCEPT708IJT/');
             expect(newState).not.toEqual(state);
         });
     });
 
     test('CACHE_SAVED_CART works and does not mutate state', () => {
         const state = {
-            elements: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR001AAA/', '/experiment/ENCSR002AAA/'],
+            elements: ['/patient/KCEPT359MHZ/', '/patient/KCEPT708IJT/', '/patient/KCEPT026PGS/'],
             name: 'Untitled',
             savedCartObj: {},
             inProgress: false,
         };
         const savedCartObj = {
             '@id': '/carts/eb0cf599-6a8d-44fd-8bab-227c35f0d9a8/',
-            '@type': ['Cart', 'Item'],
+            '@type': ['Cohort', 'Item'],
             date_created: '2018-06-18T16:17:46.291603+00:00',
-            items: ['/experiments/ENCSR001CON/', '/experiments/ENCSR002SER/', '/experiments/ENCSR003CON/'],
+            items: ['/patient/KCEPT480NBU/', '/patient/KCEPT873QVK/', '/patient/KCEPT802XRB/'],
             name: 'J. Michael Cherry cart',
             schema_version: '1',
             status: 'current',
@@ -115,7 +115,7 @@ describe('Cart actions', () => {
 
     test('CART_OPERATION_IN_PROGRESS works and does not mutate state', () => {
         let state = {
-            elements: ['/experiment/ENCSR000AAA/', '/experiment/ENCSR001AAA/', '/experiment/ENCSR002AAA/'],
+            elements: ['/patient/KCEPT359MHZ/', '/patient/KCEPT708IJT/', '/patient/KCEPT026PGS/'],
             name: 'Untitled',
             savedCartObj: {},
             inProgress: false,
@@ -153,13 +153,13 @@ describe('Utility functions', () => {
         const filters = [
             {
                 field: 'type',
-                remove: '/search/?type=Experiment',
+                remove: '/search/?type=Patient',
                 term: 'Biosample',
             },
             {
                 field: 'type',
                 remove: '/search/?type=Biosample',
-                term: 'Experiment',
+                term: 'Patient',
             },
         ];
         const result = isAllowedElementsPossible(filters);

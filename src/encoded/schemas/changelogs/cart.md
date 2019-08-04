@@ -1,10 +1,5 @@
-## Changelog for cart.json
-
-### Minor changes since schema version 1
-
-* Added optional *identifier* property.
-
+## Changelog for cohort.json
 
 ### Schema version 1
 
-* New schema for cart added
+* New schema for cohort added

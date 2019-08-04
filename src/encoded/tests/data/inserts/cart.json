@@ -1,15 +1,14 @@
 [
     {
-        "name": "First cart",
+        "name": "First cohort",
         "elements": [
-            "/experiments/KCESR000AER/",
-            "/experiments/KCESR000AEM/",
-            "/experiments/KCESR000ADH/",
-            "/experiments/KCESR002CON/",
-            "/experiments/KCESR706IDL/"
+            "/patients/KCEPT359MHZ/",
+            "/patients/KCEPT873QVK/",
+            "/patients/KCEPT802XRB/",
+            "/patients/KCEPT186NZW/"
         ],
-        "identifier": "ali-mortazavi-first-cart",
-        "submitted_by": "netus.lorem@risus.lobortis",
+        "identifier": "venkat-malladi-first-cohort",
+        "submitted_by": "vsmalladi@gmail.com",
         "status": "current",
         "uuid": "d8850d88-946b-43e0-9199-efee2c8f5303"
     }

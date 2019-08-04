@@ -99,7 +99,7 @@ class CartBatchDownloadComponent extends React.Component {
                 additionalContent={elements.length >= ELEMENT_WARNING_LENGTH_MIN ?
                     <p className="cart__batch-download-warning">
                         The &ldquo;files.txt&rdquo; file can take a very long time to generate
-                        with {elements.length} experiments in your cart. Cart operations will be
+                        with {elements.length} patients in your cohort. Cohort operations will be
                         unavailable until this file completes downloading.
                     </p>
                 : null}

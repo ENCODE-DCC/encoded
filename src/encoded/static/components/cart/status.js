@@ -96,19 +96,19 @@ class CartStatusComponent extends React.Component {
             // Define the menu items for the Cart Status menu.
             const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
-            const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
-            const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cart</button>;
+            const viewCartItem = <a key="view" href="/cart-view/">View cohort</a>;
+            const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cohort</button>;
             if (loggedIn) {
                 menuItems.push(<span key="name" className="disabled-menu-item">{`Current: ${cartName}`}</span>, <DropdownMenuSep key="sep-1" />);
                 if (elements.length > 0) {
                     menuItems.push(
                         viewCartItem,
-                        <button key="share" onClick={this.shareCartClick}>Share cart</button>,
+                        <button key="share" onClick={this.shareCartClick}>Share cohort</button>,
                         clearCartItem,
                         <DropdownMenuSep key="sep-2" />
                     );
                 }
-                menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
+                menuItems.push(<a key="manage" href="/cart-manager/">Cohort manager</a>);
             } else {
                 menuItems.push(viewCartItem, clearCartItem);
             }

@@ -41,7 +41,7 @@ def cart_view(context, request):
     result = {
         '@id': '/cart-view/',
         '@type': ['cart-view'],
-        'title': 'Cart',
+        'title': 'Cohort',
         'facets': [],
         '@graph': [],
         'columns': OrderedDict(),
@@ -53,7 +53,7 @@ def cart_view(context, request):
 
 @view_config(route_name='cart-manager', request_method='GET', permission='search')
 def cart_manager(context, request):
-    '''Cart manager page context object generation'''
+    '''Cohort manager page context object generation'''
     userid = get_userid(request)
     blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
     user_carts = get_cart_objects_by_user(request, userid, blocked_statuses)

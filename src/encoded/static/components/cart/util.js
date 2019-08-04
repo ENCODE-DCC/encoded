@@ -22,7 +22,7 @@ export const MaximumElementsLoggedoutModal = ({ closeClickHandler }) => (
     <Modal>
         <ModalHeader title="Too many experiments selected" closeModal={closeClickHandler} />
         <ModalBody>
-            <p>You can add a maximum of {CART_MAXIMUM_ELEMENTS_LOGGEDOUT} experiments to a cart if you have not logged in.</p>
+            <p>You can add a maximum of {CART_MAXIMUM_ELEMENTS_LOGGEDOUT} patients to a cart if you have not logged in.</p>
         </ModalBody>
         <ModalFooter closeModal={closeClickHandler} />
     </Modal>

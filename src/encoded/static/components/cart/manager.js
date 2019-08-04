@@ -323,8 +323,8 @@ class NameCartButtonComponent extends React.Component {
 
     render() {
         const { create, cart, inProgress, actuatorCss, disabled, disabledTooltip } = this.props;
-        const modalTitle = create ? 'New cart' : <span>Rename cart: {cart.name}</span>;
-        const actuatorTitle = create ? 'New cart' : 'Rename';
+        const modalTitle = create ? 'New cohort' : <span>Rename cohort: {cart.name}</span>;
+        const actuatorTitle = create ? 'New cohort' : 'Rename';
         return (
             <div className="cart-manager-table__action-button">
                 {disabled ?
@@ -342,12 +342,12 @@ class NameCartButtonComponent extends React.Component {
                                 <NameInput
                                     inputChangeHandler={this.handleNameInputChange}
                                     name={this.state.newName}
-                                    label="New name for cart"
+                                    label="New name for cohort"
                                     nonValidMessage={this.state.nameConflict ? 'Same name as another of your carts' : ''}
                                 />
                                 <p className="cart-rename__explanation" id="name-cart-description" role="document">
-                                    The cart name can comprise any characters you need to identify
-                                    your carts to yourself. Every cart belonging to you must have a
+                                    The cohort name can comprise any characters you need to identify
+                                    your cohorts to yourself. Every cohort belonging to you must have a
                                     unique name.
                                 </p>
                             </div>
@@ -364,10 +364,10 @@ class NameCartButtonComponent extends React.Component {
                                     nonValidMessage={this.state.identifierConflict ? 'Another cart exists with that identifier' : ''}
                                 />
                                 <p className="cart-rename__explanation">
-                                    The cart identifier appears in the URL for your cart and can
+                                    The cohort identifier appears in the URL for your cohort and can
                                     only comprise lowercase letters, numbers, underscores, and
-                                    hyphens. It must be unique among all carts belonging to all
-                                    ENCODE portal users. Carts without an identifier can be viewed
+                                    hyphens. It must be unique among all cohort belonging to all
+                                    KCE portal users. Cohorts without an identifier can be viewed
                                     with an automatically assigned identifier.
                                 </p>
                             </div>
@@ -481,11 +481,11 @@ class DeleteCartButtonComponent extends React.Component {
         const { cart, current, inProgress } = this.props;
         let disabledTooltip = '';
         if (cart['@id'] === current) {
-            disabledTooltip = 'Cannot delete the current cart';
+            disabledTooltip = 'Cannot delete the current cohort';
         } else if (cart.status === 'deleted') {
-            disabledTooltip = 'Cart has already been deleted';
+            disabledTooltip = 'Cohort has already been deleted';
         } else if (inProgress) {
-            disabledTooltip = 'Cart operation in progress';
+            disabledTooltip = 'Cohort operation in progress';
         }
         return (
             <div className="cart-manager-table__action-button">
@@ -502,7 +502,7 @@ class DeleteCartButtonComponent extends React.Component {
                     <Modal closeModal={this.handleCloseClick}>
                         <ModalHeader title={<h4>Delete cart: {cart.name}</h4>} closeModal={this.handleCloseClick} />
                         <ModalBody>
-                            This cart contains {cart.element_count} item{cart.element_count !== 1 ? 's' : ''}. Deleting carts is not reversible.
+                            This cohort contains {cart.element_count} item{cart.element_count !== 1 ? 's' : ''}. Deleting cohorts is not reversible.
                         </ModalBody>
                         <ModalFooter
                             submitBtn={this.handleSubmitClick}
@@ -582,9 +582,9 @@ class ShareCartButtonComponent extends React.Component {
         const { cart } = this.props;
         let disabledTooltip;
         if (cart.status === 'deleted') {
-            disabledTooltip = 'Cannot share a deleted cart';
+            disabledTooltip = 'Cannot share a deleted cohort';
         } else if (cart.status === 'disabled') {
-            disabledTooltip = 'Cannot share the auto-save cart';
+            disabledTooltip = 'Cannot share the auto-save cohort';
         }
         return (
             <div className="cart-manager-table__action-button">
@@ -642,9 +642,9 @@ const cartTableColumns = {
         display: (item, meta) => {
             let disabledTooltip;
             if (item.status === 'disabled') {
-                disabledTooltip = 'Cannot rename the auto-save cart';
+                disabledTooltip = 'Cannot rename the auto-save cohort';
             } else if (meta.operationInProgress) {
-                disabledTooltip = 'Cart operation in progress';
+                disabledTooltip = 'Cohort operation in progress';
             }
             return (
                 <div className="cart-manager-table__action">
@@ -689,7 +689,7 @@ const CartCounts = ({ cartManager }) => {
     const cartCount = cartManager['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' ? sum + 1 : sum), 0);
     return (
         <div className="cart-counts">
-            {cartCount} cart{cartCount !== 1 ? 's' : ''} ({cartManager.cart_user_max} maximum)
+            {cartCount} cohort{cartCount !== 1 ? 's' : ''} ({cartManager.cart_user_max} maximum)
         </div>
     );
 };
@@ -750,7 +750,7 @@ class CartManagerComponent extends React.Component {
         const user = sessionProperties && sessionProperties.user;
         const cartPanelHeader = (
             <div className="cart-manager-header">
-                <h4 className="cart-manager-header__title">Cart manager</h4>
+                <h4 className="cart-manager-header__title">Cohort manager</h4>
                 <NameCartButton
                     cartManager={cartContext}
                     user={user}

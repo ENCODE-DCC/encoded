@@ -1,8 +1,8 @@
 {
-    "title": "Cart",
-    "description": "Cart of objects aka shopping cart.",
+    "title": "Cohort",
+    "description": "Cohort of objects aka chart review.",
     "comment": "This object gets connected with user objects.",
-    "id": "/profiles/cart.json",
+    "id": "/profiles/cohort.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["name"],
@@ -10,7 +10,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/submitted" },     
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/uuid" }
     ],
@@ -20,27 +20,27 @@
         },
         "name": {
             "title": "Name",
-            "description": "The name of the cart",
+            "description": "The name of the cohort",
             "type": "string"
         },
         "identifier": {
-            "title": "URI-compatible cart identifier",
-            "description": "User-specified identifer for this cart that can be used in a URI for the cart.",
+            "title": "URI-compatible cohort identifier",
+            "description": "User-specified identifer for this cohort that can be used in a URI for the cohort.",
             "comment": "This can only contain non-space characters, and must be unique throughout the system.",
             "uniqueKey": "cart:identifier",
             "type": "string",
             "pattern": "^(?!\\s)[\\S]*\\S$"
         },
         "elements": {
-            "title": "Cart elements",
-            "description": "Tracks all elements in the cart",
+            "title": "Cohort elements",
+            "description": "Tracks all elements in the cohort",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Cart element",
-                "description": "Reference to one element in the cart",
+                "title": "Cohort element",
+                "description": "Reference to one element in the cohort",
                 "type":  "string",
-                "linkTo": "Dataset"
+                "linkTo": "Patient"
             }
         }
     },
@@ -49,7 +49,7 @@
             "title": "Schema version"
         },
         "elements": {
-            "title": "Cart elements"
+            "title": "Cohort elements"
         },
         "name": {
             "title": "Name"
