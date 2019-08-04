@@ -289,7 +289,7 @@ class App extends React.Component {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
             protocol: hrefInfo.protocol,
-            pathname: '/static/img/encode-logo-small-2x.png',
+            pathname: '/static/img/kidney-logo-small.png',
         };
         const logoUrl = url.format(logoHrefInfo);
 

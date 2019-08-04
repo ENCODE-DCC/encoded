@@ -9,9 +9,9 @@ const Footer = ({ version }, reactContext) => {
     let userActionRender;
 
     if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
+        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign-in</a>;
     } else {
-        userActionRender = <a href="#" data-trigger="logout">Submitter sign out</a>;
+        userActionRender = <a href="#" data-trigger="logout">Sign out</a>;
     }
     return (
         <footer id="page-footer">
@@ -27,8 +27,8 @@ const Footer = ({ version }, reactContext) => {
                             <div className="footer-links-section">
                                 <ul className="footer-links">
                                     <li><a href="/help/citing-encode">Citing ENCODE</a></li>
-                                    <li><a href="https://www.stanford.edu/site/privacy/">Privacy</a></li>
-                                    <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
+                                    <li><a href="https://www.utsouthwestern.edu/legal/privacy-policy.html">Privacy</a></li>
+                                    <li><a href="mailto:BICF@UTSouthwestern.edu">Contact</a></li>
                                 </ul>
                                 <ul className="footer-links">
                                     <li id="user-actions-footer">{userActionRender}</li>
@@ -37,13 +37,13 @@ const Footer = ({ version }, reactContext) => {
 
                             <div className="footer-logos-section">
                                 <ul className="footer-logos">
-                                    <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
-                                    <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white-2x.png" alt="Stanford University" id="su-logo" width="105px" height="49px" /></a></li>
+                                    <li><a href="/"><img src="/static/img/kidney-logo-small.png" alt="KCE" id="kce-logo" height="35px" width="46px" /></a></li>
+                                    <li><a href="https://www.utsouthwestern.edu/"><img src="/static/img/utsw-logo-white.png" alt="UT Southwestern" id="su-logo" width="105px" height="35px" /></a></li>
                                     <li><a href="https://creativecommons.org/licenses/by/4.0/"><img src="/static/img/creative-commons-logo.png" alt="Creative Commons" id="cc-logo" /></a></li>
                                 </ul>
                             </div>
                         </div>
-                        <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University</p>
+                        <p className="copy-notice">&copy;{new Date().getFullYear()} The University of Texas Southwestern Medical Center</p>
                     </div>
                 </div>
             </div>
