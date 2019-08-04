@@ -65,7 +65,7 @@ def cart_manager(context, request):
     result = {
         '@id': '/cart-manager/',
         '@type': ['cart-manager'],
-        'title': 'Cart',
+        'title': 'Cohort',
         'facets': [],
         '@graph': user_carts,
         'columns': OrderedDict(),
