@@ -44,18 +44,6 @@ const portal = {
             ],
         },
         {
-            id: 'encyclopedia',
-            title: 'Encyclopedia',
-            children: [
-                { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
-                { id: 'sep-mm-1' },
-                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'http://screen.encodeproject.org/' },
-                { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
-                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=4' },
-                { id: 'annotationmethods', title: 'Methods', url: 'http://screen.encodeproject.org/index/about' },
-            ],
-        },
-        {
             id: 'materialsmethods',
             title: 'Materials & Methods',
             children: [
