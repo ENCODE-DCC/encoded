@@ -102,6 +102,7 @@ class AntibodyLot(SharedItem):
             "type": ['string', 'object'],
             "linkFrom": "BiosampleCharacterization.antibody",
         },
+        'notSubmittable': True,
     })
     def used_by_biosample_characterizations(self, request, used_by_biosample_characterizations):
         return paths_filtered_by_status(request, used_by_biosample_characterizations)
