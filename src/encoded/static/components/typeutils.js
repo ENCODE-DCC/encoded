@@ -505,7 +505,7 @@ const biosampleCharacterizationTableColumns = {
     },
     'review.status': {
         title: 'Review status',
-        display: char => char.review && <Status item={char.review.status} badgeSize="small" inline />,
+        display: char => char.review && char.review.status && <Status item={char.review.status} badgeSize="small" inline />,
     },
 };
 
