@@ -1997,18 +1997,27 @@ function createFacetObject(propertyKey, fileList, filters) {
 // outlier:
 //                 "None"
 function computeAssemblyAnnotationValue(assembly, annotation) {
-    const assemblyNumber = +assembly.match(/[0-9]+/g)[0];
+    // There are three levels of sorting
+    // First level of sorting: most recent assemblies are ordered first (represented by numerical component of assembly)
+    // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimial')
+    // Third level of sorting: Annotations within an assembly are ordered with most recent first, with more recent annotations having a higher annotation number (with the exception of "ENSEMBL V65") (represented by the annotation number divided by 10,000, or, the three decimal places after the tenths place)
+    let assemblyNumber = +assembly.match(/[0-9]+/g)[0];
+    if (assembly.indexOf('minimal') === -1) {
+        // If there is no '-minimal', add 0.5 which will order this assembly ahead of any assembly with '-minimal' and the same numerical component
+        assemblyNumber += 0.5;
+    }
     if (annotation) {
         const annotationNumber = +annotation.match(/[0-9]+/g)[0];
         let annotationDecimal = 0;
         // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
-        // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
+        // We divide by 10000 because the highest annotation number (for now) is 245
         if (+annotationNumber === 65) {
-            annotationDecimal = (+annotationNumber / 100000);
+            annotationDecimal = (+annotationNumber / 1000000);
         } else {
-            annotationDecimal = (+annotationNumber / 1000);
+            annotationDecimal = (+annotationNumber / 10000);
         }
-        return +assemblyNumber + +annotationDecimal;
+        assemblyNumber += annotationDecimal;
+        return assemblyNumber;
     }
     return assemblyNumber;
 }
