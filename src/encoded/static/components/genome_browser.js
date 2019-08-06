@@ -301,7 +301,7 @@ class GenomeBrowser extends React.Component {
         genomePromise.then(() => {
             const domain = `${window.location.protocol}//${window.location.hostname}`;
             const files = this.compileFiles(domain);
-            if (files.length > 1) {
+            if (files.length > 0) {
                 const tracks = this.filesToTracks(files, domain);
                 this.setState({ trackList: tracks }, () => {
                     this.drawTracks(this.chartdisplay);
@@ -332,7 +332,9 @@ class GenomeBrowser extends React.Component {
                     return +obj.biological_replicates * 1000;
                 })
                 .value();
-            newFiles = [...this.state.pinnedFiles, ...files];
+            if (files.length > 0) {
+                newFiles = [...this.state.pinnedFiles, ...files];
+            }
         }
         return newFiles;
     }
