@@ -1122,6 +1122,7 @@ class App extends React.Component {
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>
+                    <div id="modal-root" />
                 </body>
             </html>
         );

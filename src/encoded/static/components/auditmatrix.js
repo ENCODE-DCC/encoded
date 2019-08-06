@@ -1,8 +1,3 @@
-/**
- * @fileOverview Render both the experiment and audit matrices whenever their corresponding
- *               endpoints send their JSON.
- */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
@@ -14,7 +9,8 @@ import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
 import { MatrixInternalTags } from './objectutils';
-import { FacetList, TextFilter, ClearFilters, SearchControls } from './search';
+import { FacetList, TextFilter, ClearFilters } from './search';
+import { ViewControls } from './view_controls';
 
 
 /**
@@ -22,13 +18,6 @@ import { FacetList, TextFilter, ClearFilters, SearchControls } from './search';
  * @constant
  */
 const SUB_CATEGORY_SHORT_SIZE = 5;
-
-
-/**
- * Maximum number of selected items that can be visualized.
- * @constant
- */
-const VISUALIZE_LIMIT = 500;
 
 
 /**
@@ -138,8 +127,6 @@ SearchFilter.contextTypes = {
  * summary information about that data.
  * @param {array}  subCategoryData Array of subcategory objects, each containing an array of data
  * @param {string} columnCategoryType `subCategoryData` property that contains data array
- * @param {array}  colTitleMap Maps column titles to the column indices they correspond to
- * @param {number} colCount Number of columns in matrix
  *
  * @return {object} Summary information about given matrix data:
  *     {
@@ -148,25 +135,23 @@ SearchFilter.contextTypes = {
  *         {number} minSubCategoryValue: Minimum value in all cells in all subcategory rows
  *     }
  */
-const analyzeSubCategoryData = (subCategoryData, columnCategoryType, colTitleMap, colCount) => {
-    const subCategorySums = Array(colCount).fill(0);
+const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
+    const subCategorySums = [];
     let maxSubCategoryValue = 0;
     let minSubCategoryValue = Number.MAX_VALUE;
 
     subCategoryData.forEach((rowData) => {
         // `rowData` has all the data for one row. Collect sums of all data for each column.
-        rowData[columnCategoryType].buckets.forEach((value) => {
-            const colIndex = colTitleMap[value.key];
-            subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + value.doc_count;
+        rowData[columnCategoryType].forEach((value, colIndex) => {
+            subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + value;
         });
 
         // Update min and max values found within all subcategories of the given category.
-        const rowDataValues = rowData[columnCategoryType].buckets.map(bucket => bucket.doc_count);
-        const prospectiveMax = Math.max(...rowDataValues);
+        const prospectiveMax = Math.max(...rowData[columnCategoryType]);
         if (maxSubCategoryValue < prospectiveMax) {
             maxSubCategoryValue = prospectiveMax;
         }
-        const prospectiveMin = Math.min(...rowDataValues.filter(value => value));
+        const prospectiveMin = Math.min(...rowData[columnCategoryType].filter(value => value));
         if (minSubCategoryValue > prospectiveMin) {
             minSubCategoryValue = prospectiveMin;
         }
@@ -219,14 +204,9 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
 
     // Generate the top-row sideways header labels. First item is null for the empty upper-left
     // cell.
-    const colCount = context.matrix.x[context.matrix.x.group_by].buckets.length;
-    const colTitleMap = {};
-    const colCategoryNames = context.matrix.x[context.matrix.x.group_by].buckets.map((colCategoryBucket, colIndex) => {
-        colTitleMap[colCategoryBucket.key] = colIndex;
-        return colCategoryBucket.key;
-    });
+    const colCategoryNames = context.matrix.x.buckets.map(colCategoryBucket => colCategoryBucket.key);
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${context.search_base}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${context.matrix.search_base}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -248,7 +228,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         // on the rowCategory parent row. Also get the minimum and maximum subCategory values
         // within the current rowCategory so we can scale the tints of this rowCategory's color.
         // A log curve gets applied to the tint scale, so prep for that as well.
-        const { subCategorySums, minSubCategoryValue, maxSubCategoryValue } = analyzeSubCategoryData(subCategoryData, columnCategoryType, colTitleMap, colCount);
+        const { subCategorySums, minSubCategoryValue, maxSubCategoryValue } = analyzeSubCategoryData(rowCategoryBucket[subCategory].buckets, columnCategoryType);
         const logBase = Math.log(1 + maxSubCategoryValue + minSubCategoryValue);
 
         // Generate one rowCategory's rows of subCategories, adding a header cell for each
@@ -258,35 +238,30 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         const renderedData = categoryExpanded ? subCategoryData : subCategoryData.slice(0, SUB_CATEGORY_SHORT_SIZE);
         matrixRowKeys[matrixRow] = rowCategoryBucket.key;
         matrixRow += 1;
-
-        const cells = Array(colCount);
         const subCategoryRows = renderedData.map((subCategoryBucket) => {
             // If needed, map the current subcategory queries to a query-string component.
             const mappedSubCategoryQuery = mapSubCategoryQueries(subCategory, subCategoryBucket.key, rowCategoryBucket);
 
             // Generate an array of data cells for a single subCategory row's data.
-            cells.fill(null);
-            subCategoryBucket[columnCategoryType].buckets.forEach((cellData) => {
-                const columnIndex = colTitleMap[cellData.key];
-
+            const cells = subCategoryBucket[columnCategoryType].map((cellData, columnIndex) => {
                 // Generate one data cell with a color tint that varies based on its value within
                 // the range of data in this category.
                 let tintFactor = 0;
-                if (cellData.doc_count > 0) {
+                if (cellData > 0) {
                     // Generate a tint from 0 (no change) to 1 (white) with a log curve over the
                     // range of data.
-                    tintFactor = maxSubCategoryValue > minSubCategoryValue ? 1 - (Math.log(1 + (cellData.doc_count - minSubCategoryValue)) / logBase) : 0.5;
+                    tintFactor = maxSubCategoryValue > minSubCategoryValue ? 1 - (Math.log(1 + (cellData - minSubCategoryValue)) / logBase) : 0.5;
                 }
                 const cellColor = tintColor(rowCategoryColor, tintFactor);
                 const textColor = isLight(cellColor) ? '#000' : '#fff';
-                cells[columnIndex] = {
+                return {
                     content: (
-                        cellData.doc_count > 0 ?
-                            <a href={`${context.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                        cellData > 0 ?
+                            <a href={`${context.matrix.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData}</a>
                         :
                             <div />
                     ),
-                    style: { backgroundColor: cellData.doc_count > 0 ? cellColor : 'transparent' },
+                    style: { backgroundColor: cellData > 0 ? cellColor : 'transparent' },
                 };
             });
 
@@ -295,7 +270,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}&${mappedSubCategoryQuery}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${context.matrix.search_base}&${mappedSubCategoryQuery}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -327,7 +302,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.matrix.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
@@ -370,21 +345,12 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
 /**
  * Render the title panel and list of experiment internal tags.
  */
-const MatrixHeader = ({ context }) => {
-    // Compose a type title for the page if only one type is included in the query string.
-    // Currently, only one type is allowed in the query string or the server returns a 400, so this
-    // code exists in case more than one type is allowed in future.
-    let type = '';
-    if (context.filters && context.filters.length > 0) {
-        const typeFilters = context.filters.filter(filter => filter.field === 'type');
-        if (typeFilters.length === 1) {
-            type = typeFilters[0].term;
-        }
-    }
+const MatrixHeader = (props) => {
+    const { context } = props;
 
     return (
         <div className="matrix__header">
-            <h1>{type ? `${type} ` : ''}{context.title}</h1>
+            <h1>{context.title}</h1>
             <MatrixInternalTags context={context} />
         </div>
     );
@@ -426,7 +392,7 @@ class MatrixVerticalFacets extends React.Component {
 
         return (
             <div className="matrix__facets-vertical">
-                <ClearFilters searchUri={context.clear_filters} enableDisplay={context.filters.length > 0} />
+                <ClearFilters searchUri={context.matrix.clear_matrix} enableDisplay={context.filters.length > 0} />
                 <SearchFilter context={context} />
                 <FacetList
                     facets={context.facets}
@@ -540,7 +506,6 @@ class MatrixPresentation extends React.Component {
     render() {
         const { context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries } = this.props;
         const { scrolledRight } = this.state;
-        const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
         // Convert encode matrix data to a DataTable object.
         const { dataTable, rowKeys } = convertExperimentToDataTable(context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries, this.state.expandedRowCategories, this.expanderClickHandler);
@@ -552,8 +517,12 @@ class MatrixPresentation extends React.Component {
 
         return (
             <div className="matrix__presentation">
-                <h4>Showing {context.total} results</h4>
-                <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} />
+                <h4>Showing {context.matrix.doc_count} results</h4>
+                <div className="results-table-control">
+                    <div className="results-table-control__main">
+                        <ViewControls results={context} filterTerm="Experiment" />
+                    </div>
+                </div>
                 <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
                     <span>{context.matrix.x.label}</span>
                     {svgIcon('largeArrow')}
@@ -607,100 +576,6 @@ MatrixContent.propTypes = {
     /** Callback to map subcategory query values */
     mapSubCategoryQueries: PropTypes.func.isRequired,
 };
-
-
-/**
- * Map query values to a query-string component actually used in experiment matrix row category
- * link queries.
- * @param {string} rowCategory row category value to map
- * @param {object} rowCategoryBucket Matrix search result row bucket object
- *
- * @return {string} mapped row category query
- */
-const mapRowCategoryQueriesExperiment = (rowCategory, rowCategoryBucket) => (
-    `${rowCategory}=${globals.encodedURIComponent(rowCategoryBucket.key)}`
-);
-
-
-/**
- * Map query values to a query-string component actually used in experiment matrix subcategory link
- * queries.
- * @param {string} subCategory subcategory value to map
- * @param {string} subCategoryQuery subcategory query value to map
- * @param {object} rowCategoryBucket Matrix search result row bucket object
- *
- * @return {string} mapped subcategory query
- */
-const mapSubCategoryQueriesExperiment = (subCategory, subCategoryQuery) => (
-    `${subCategory}=${globals.encodedURIComponent(subCategoryQuery)}`
-);
-
-
-/**
- * View component for the experiment matrix page.
- */
-class Matrix extends React.Component {
-    constructor() {
-        super();
-        this.getRowCategories = this.getRowCategories.bind(this);
-        this.getRowSubCategories = this.getRowSubCategories.bind(this);
-    }
-
-    /**
-     * Called to retrieve row category data for the experiment matrix.
-     */
-    getRowCategories() {
-        const rowCategory = this.props.context.matrix.y.group_by[0];
-        const rowCategoryData = this.props.context.matrix.y[rowCategory].buckets;
-        const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryData.map(rowCategoryDatum => rowCategoryDatum.key));
-        const rowCategoryNames = {};
-        rowCategoryData.forEach((datum) => {
-            rowCategoryNames[datum.key] = datum.key;
-        });
-        return {
-            rowCategoryData,
-            rowCategoryColors,
-            rowCategoryNames,
-        };
-    }
-
-    /**
-     * Called to retrieve subcategory data for the experiment matrix.
-     */
-    getRowSubCategories(rowCategoryBucket) {
-        const subCategoryName = this.props.context.matrix.y.group_by[1];
-        return rowCategoryBucket[subCategoryName].buckets;
-    }
-
-    render() {
-        const { context } = this.props;
-        const itemClass = globals.itemClass(context, 'view-item');
-
-        if (context.total > 0) {
-            return (
-                <Panel addClasses={itemClass}>
-                    <PanelBody>
-                        <MatrixHeader context={context} />
-                        <MatrixContent context={context} rowCategoryGetter={this.getRowCategories} rowSubCategoryGetter={this.getRowSubCategories} mapRowCategoryQueries={mapRowCategoryQueriesExperiment} mapSubCategoryQueries={mapSubCategoryQueriesExperiment} />
-                    </PanelBody>
-                </Panel>
-            );
-        }
-        return <h4>No results found</h4>;
-    }
-}
-
-Matrix.propTypes = {
-    context: PropTypes.object.isRequired,
-};
-
-Matrix.contextTypes = {
-    location_href: PropTypes.string,
-    navigate: PropTypes.func,
-    biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
-};
-
-globals.contentViews.register(Matrix, 'Matrix');
 
 
 /**

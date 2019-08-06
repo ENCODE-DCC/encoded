@@ -199,10 +199,6 @@ $disabled-color-factor: 20%;
         @include button-size($padding-xs-vertical, $padding-xs-horizontal, $font-size-small, $btn-height-xs, $border-radius-small);
     }
 
-    &[disabled] {
-        opacity: 0.65;
-    }
-
     @at-root a#{&} {
         text-decoration: none;
         display: flex;
@@ -263,8 +259,11 @@ $disabled-color-factor: 20%;
 }
 
 input[disabled],
-button[disabled] {
+button[disabled],
+button[aria-disabled=true] {
+    opacity: 0.7;
     cursor: not-allowed;
+    pointer-events: none;
 }
 
 

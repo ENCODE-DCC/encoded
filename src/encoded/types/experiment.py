@@ -208,6 +208,36 @@ class Experiment(Dataset,
         },
     }
 
+    summary = {
+        'x': {
+            'group_by': 'status'
+        },
+        'y': {
+            'group_by': ['replication_type']
+        }
+    }
+
+    audit = {
+        'audit.ERROR.category': {
+            'group_by': 'audit.ERROR.category',
+            'label': 'Error'
+        },
+        'audit.INTERNAL_ACTION.category': {
+            'group_by': 'audit.INTERNAL_ACTION.category',
+            'label': 'Internal Action'},
+        'audit.NOT_COMPLIANT.category': {
+            'group_by': 'audit.NOT_COMPLIANT.category',
+            'label': 'Not Compliant'
+        },
+        'audit.WARNING.category': {
+            'group_by': 'audit.WARNING.category',
+            'label': 'Warning'
+        },
+        'x': {
+            'group_by': 'assay_title', 'label': 'Assay'
+        }
+    }
+
     summary_data = {
         'y': {
             'facets': [

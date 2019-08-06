@@ -16,6 +16,15 @@ import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import ViewControlRegistry, { ViewControlTypes } from './view_controls';
+
+
+ViewControlRegistry.register('Experiment', [
+    ViewControlTypes.SEARCH,
+    ViewControlTypes.MATRIX,
+    ViewControlTypes.REPORT,
+    ViewControlTypes.SUMMARY,
+]);
 
 
 const anisogenicValues = [

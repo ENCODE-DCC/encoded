@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
-
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
 // typical format looks like:
@@ -84,8 +82,9 @@ const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 // dontClose: Supply this as a boolean to prevent the submit button from closing the modal. Of
 //            course you'll need to provide some other way to close the modal.
 //
-// The method of rendering the modal to a div appended to <body> rather than into the React virtual
-// DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
+// The method of rendering the modal to a div inserted to a specific <div> in <body> rather than
+// into the React virtual DOM comes from:
+// http://jamesknelson.com/rendering-react-components-to-the-document-body/
 
 
 export class ModalHeader extends React.Component {
@@ -282,48 +281,123 @@ ModalFooter.defaultProps = {
 };
 
 
-export class Modal extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React component state.
-        this.state = {
-            modalOpen: false, // True if modal is visible. Ignored if no actuator given
-        };
-
-        // Bind this to non-React methods.
-        this.handleEsc = this.handleEsc.bind(this);
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.renderModal = this.renderModal.bind(this);
+/**
+ * Renders the modal without conditions -- conditions need to be handled outside this component.
+ */
+export class ModalElement extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTab = this.handleTab.bind(this);
+        this.modalEl = document.createElement('div');
+        this.focusableElements = null;
     }
 
     componentDidMount() {
         // Modal HTML gets injected at the end of <body> so the backdrop overlay works, even with other
-        // fixed elements on the page.
-        this.modalEl = document.createElement('div');
-        document.body.appendChild(this.modalEl);
-        this.renderModal();
+        // fixed elements on the page. The "modal-root" div is defined in app.js at the end of the
+        // <body> section.
+        const modalRoot = document.getElementById('modal-root');
+        modalRoot.appendChild(this.modalEl);
 
-        // Have ESC key press close the modal.
-        document.addEventListener('keydown', this.handleEsc, false);
-
-        // Focus screen reader on modal's description.
+        // Focus screen reader on the given element if specified.
         if (this.props.focusId) {
             const focusElement = document.getElementById(this.props.focusId);
             if (focusElement) {
                 focusElement.focus();
             }
         }
-    }
 
-    componentDidUpdate() {
-        this.renderModal();
+        // Attach tab-key listener.
+        document.addEventListener('keydown', this.handleTab, false);
+
+        // Collect all the focusable elements.
+        this.focusableElements = this.modalEl.querySelectorAll('a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select');
     }
 
     componentWillUnmount() {
-        ReactDOM.unmountComponentAtNode(this.modalEl);
-        document.body.removeChild(this.modalEl);
+        const modalRoot = document.getElementById('modal-root');
+        modalRoot.removeChild(this.modalEl);
+        document.removeEventListener('keydown', this.handleTab, false);
+        this.focusableElements = null;
+    }
+
+    /**
+     * Handle key presses while the modal is open, but only handle and consume TAB key presses
+     * setting focus to the next or previous elements within the modal, depending on whether the
+     * shift key is held down at the time.
+     * @param {object} e React synthetic event
+     */
+    handleTab(e) {
+        if (e.keyCode === 9 && this.focusableElements) {
+            const firstFocusableElement = this.focusableElements[0];
+            const lastFocusableElement = this.focusableElements[this.focusableElements.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === firstFocusableElement) {
+                    lastFocusableElement.focus();
+                    e.preventDefault();
+                }
+            } else if (document.activeElement === lastFocusableElement) {
+                firstFocusableElement.focus();
+                e.preventDefault();
+            }
+        }
+    }
+
+    render() {
+        return ReactDOM.createPortal(
+            <div>
+                <div className="modal" style={{ display: 'block' }}>
+                    <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={this.props.labelId} aria-describedby={this.props.descriptionId}>
+                        <div className="modal-content">
+                            {this.props.modalChildren}
+                        </div>
+                    </div>
+                </div>
+                <div className="modal-backdrop in" />
+            </div>,
+            this.modalEl
+        );
+    }
+}
+
+ModalElement.propTypes = {
+    /** Array of child elements inside the modal */
+    modalChildren: PropTypes.array.isRequired,
+    /** id of modal description element */
+    descriptionId: PropTypes.string,
+    /** CSS classes to add to the default */
+    addClasses: PropTypes.string,
+    /** id of first focusable element */
+    focusId: PropTypes.string,
+    /** id of modal label element */
+    labelId: PropTypes.string,
+};
+
+ModalElement.defaultProps = {
+    descriptionId: '',
+    addClasses: '',
+    focusId: '',
+    labelId: '',
+};
+
+
+export class Modal extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modalOpen: false, // True if modal is visible. Ignored if no actuator given
+        };
+        this.handleEsc = this.handleEsc.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+    }
+
+    componentDidMount() {
+        // Have ESC key press close the modal.
+        document.addEventListener('keydown', this.handleEsc, false);
+    }
+
+    componentWillUnmount() {
         document.removeEventListener('keydown', this.handleEsc, false);
     }
 
@@ -335,20 +409,6 @@ export class Modal extends React.Component {
                 this.props.closeModal();
             } else {
                 this.closeModal();
-            }
-        } else if (e.keyCode === 9) {
-            // User typed TAB.
-            const focusableElements = this.modalEl.querySelectorAll('a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select');
-            const firstFocusableElement = focusableElements[0];
-            const lastFocusableElement = focusableElements[focusableElements.length - 1];
-            if (e.shiftKey) {
-                if (document.activeElement === firstFocusableElement) {
-                    lastFocusableElement.focus();
-                    e.preventDefault();
-                }
-            } else if (document.activeElement === lastFocusableElement) {
-                firstFocusableElement.focus();
-                e.preventDefault();
             }
         }
     }
@@ -363,30 +423,6 @@ export class Modal extends React.Component {
         this.setState({ modalOpen: false });
     }
 
-    // Render the modal JSX into the element this component appended to the <body> element. that
-    // lets us properly render the fixed-position backdrop so that it overlays the fixed-position
-    // navigation bar.
-    renderModal() {
-        renderSubtreeIntoContainer(
-            this,
-            <div>
-                {!this.props.actuator || this.state.modalOpen ?
-                    <div>
-                        <div className="modal" style={{ display: 'block' }}>
-                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`} role="alertdialog" aria-modal="true" aria-labelledby={this.props.labelId} aria-describedby={this.props.descriptionId}>
-                                <div className="modal-content">
-                                    {this.modalChildren}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="modal-backdrop in" />
-                    </div>
-                    : null}
-            </div>,
-            this.modalEl
-        );
-    }
-
     render() {
         // We don't require/allow a click handler for the actuator, so we attach the one from
         // ModalMixin here. You can't add attributes to an existing component in React, but React
@@ -395,14 +431,27 @@ export class Modal extends React.Component {
 
         // Pass important Modal states and functions to child objects without the parent component
         // needing to do it explicitly.
-        this.modalChildren = React.Children.map(this.props.children, (child) => {
+        const modalChildren = React.Children.map(this.props.children, (child) => {
             if (child.type === ModalHeader || child.type === ModalBody || child.type === ModalFooter) {
                 return React.cloneElement(child, { c_closeModal: this.closeModal, c_modalOpen: this.state.modalOpen });
             }
             return child;
         });
 
-        return actuator ? <React.Fragment>{actuator}</React.Fragment> : null;
+        return (
+            <React.Fragment>
+                {actuator ? <React.Fragment>{actuator}</React.Fragment> : null}
+                {!this.props.actuator || this.state.modalOpen ?
+                    <ModalElement
+                        modalChildren={modalChildren}
+                        descriptionId={this.props.descriptionId}
+                        addClasses={this.props.addClasses}
+                        labelId={this.props.labelId}
+                        focusId={this.props.focusId}
+                    />
+                : null}
+            </React.Fragment>
+        );
     }
 }
 

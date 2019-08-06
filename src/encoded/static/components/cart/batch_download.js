@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import { encodedURIComponent } from '../globals';
-import { BatchDownloadModal } from '../search';
 import { cartOperationInProgress } from './actions';
+import { BatchDownloadModal } from '../view_controls';
 
 
 /** Maximum number of elements in cart that generates warning in download dialog */
