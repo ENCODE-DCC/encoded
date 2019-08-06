@@ -666,9 +666,9 @@ export class Graph extends React.Component {
                         <table className="zoom-control">
                             <tbody>
                                 <tr>
-                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-4)}><i className="icon icon-minus" /></button></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-6)}><i className="icon icon-minus" /></button></td>
                                     <td className="zomm-controller"><input type="range" className="zoom-slider" ref={this.slider} min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onInput={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(4)}><i className="icon icon-plus" /></button></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(6)}><i className="icon icon-plus" /></button></td>
                                 </tr>
                             </tbody>
                         </table>
