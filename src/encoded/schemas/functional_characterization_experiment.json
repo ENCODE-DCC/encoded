@@ -54,11 +54,11 @@
         },
         "target_expression_range_minimum": {
             "comment": "Only functional characterization assays with target can specify target expression range.",
-            "required": ["target"]
+            "required": ["target", "target_expression_range_maximum"]
         },
         "target_expression_range_maximum": {
             "comment": "Only functional characterization assays with target can specify target expression range.",
-            "required": ["target"]
+            "required": ["target", "target_expression_range_minimum"]
         }
     },
     "properties": {

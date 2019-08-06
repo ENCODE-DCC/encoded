@@ -15,6 +15,20 @@ def functional_characterization_experiment_item(testapp, lab, award, cell_free):
 
 
 @pytest.fixture
+def functional_characterization_experiment_screen(testapp, lab, award, heart, target):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'target': target['uuid']
+
+    }
+    return item
+
+
+@pytest.fixture
 def functional_characterization_experiment(testapp, lab, award, cell_free):
     item = {
         'lab': lab['@id'],
@@ -33,6 +47,14 @@ def test_valid_functional_characterization_experiment(testapp, functional_charac
 def test_invalid_functional_characterization_experiment(testapp, functional_characterization_experiment_item):
     functional_characterization_experiment_item['assay_term_name'] = 'ChIP-seq'
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_item, status=422)
+
+
+def test_functional_characterization_experiment_screen(testapp, functional_characterization_experiment_screen):
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_screen, status=201)
+    functional_characterization_experiment_screen['target_expression_range_maximum'] = 45
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_screen, status=422)
+    functional_characterization_experiment_screen['target_expression_range_minimum'] = 25
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_screen, status=201)
 
 
 @pytest.mark.parametrize(
