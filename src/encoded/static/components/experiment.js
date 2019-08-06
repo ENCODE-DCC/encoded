@@ -470,10 +470,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                             <dt>Target</dt>
                                             <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
                                         </div>
-                                        {isFunctionalExperiment ?
+                                        {context.target_expression_range_minimum !== undefined && context.target_expression_range_maximum !== undefined ?
                                             <div data-test="target-min">
                                                 <dt>Target expression range minimum - maximum</dt>
-                                                <dd>{context.target_expression_range_minimum} &ndash; {context.target_expression_range_maximum}</dd>
+                                                <dd>{context.target_expression_range_minimum}% &ndash; {context.target_expression_range_maximum}%</dd>
                                             </div>
                                         : null}
                                     </React.Fragment>
