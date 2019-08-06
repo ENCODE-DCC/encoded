@@ -396,14 +396,16 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
     });
-    const biosampleTermName = context.biosample_ontology.term_name;
-    const biosampleTermQuery = biosampleTermName ? `biosample_ontology.term_name=${biosampleTermName}` : '';
     const crumbs = [
         { id: displayType },
         { id: assayName, query: assayQuery, tip: assayName },
         { id: names.length > 0 ? names : null, query: nameQuery, tip: nameTip },
-        { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
     ];
+    if (context.biosample_ontology) {
+        const biosampleTermName = context.biosample_ontology.term_name;
+        const biosampleTermQuery = `biosample_ontology.term_name=${biosampleTermName}`;
+        crumbs.push({ id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName });
+    }
     const crumbsReleased = (context.status === 'released');
 
     // Compile the document list.

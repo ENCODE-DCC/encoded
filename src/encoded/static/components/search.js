@@ -319,7 +319,7 @@ const ExperimentComponent = (props, reactContext) => {
                             :
                                 <span>{result.assay_term_name}</span>
                             }
-                            {result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
+                            {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
                         </a>
                     </div>
                     {result.biosample_summary ?
