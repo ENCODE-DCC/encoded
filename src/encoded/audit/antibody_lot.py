@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-
+def audit_antibody_missing_characterizations
 
 @audit_checker('AntibodyLot', frame='object')
 def audit_antibody_dbxrefs_ar(value, system):
@@ -12,8 +12,7 @@ def audit_antibody_dbxrefs_ar(value, system):
         for entry in dbxrefs:
             if entry.startswith('AR:'):
                 return
-    detail = '{} '.format(value['@id']) + \
-             'does not have AR dbxrefs.'
+    detail = 'Antibody {} does not have AR dbxrefs.'.format(audit_link(value['accession'], value['@id']))
     yield AuditFailure('missing antibody registry reference', detail,
                        level='INTERNAL_ACTION')
 
@@ -73,7 +72,7 @@ def audit_antibody_missing_characterizations(value, system):
         return
 
     if not value['characterizations']:
-        detail = '{} does not have any supporting characterizations submitted.'.format(value['@id'])
+        detail = 'Antibody {} does not have any supporting characterizations submitted.'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure('no characterizations submitted', detail, level='NOT_COMPLIANT')
         return
 
@@ -90,11 +89,11 @@ def audit_antibody_missing_characterizations(value, system):
                 compliant_secondary = True
 
     if not primary_chars:
-        detail = '{} does not have any primary characterizations submitted.'.format(value['@id'])
+        detail = 'Antibody {} does not have any primary characterizations submitted.'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure('no primary characterizations', detail, level='NOT_COMPLIANT')
 
     if not secondary_chars:
-        detail = '{} does not have any secondary characterizations submitted.'.format(value['@id'])
+        detail = 'Antibody {} does not have any secondary characterizations submitted.'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure('no secondary characterizations', detail, level='NOT_COMPLIANT')
 
     for lot_review in value['lot_reviews']:
@@ -115,10 +114,13 @@ def audit_antibody_missing_characterizations(value, system):
             if biosample == 'any cell type or tissue':
                 biosample = 'one or more cell types/tissues.'
 
-            detail = '{} needs a compliant primary in {}'.format(value['@id'], biosample)
+            detail = 'Antibody {} needs a compliant primary in {}'.format(
+                audit_link(value['accession'], value['@id']),
+                biosample
+                )
             yield AuditFailure('need compliant primaries', detail, level='NOT_COMPLIANT')
 
     if secondary_chars and not compliant_secondary:
-        detail = '{} needs a compliant secondary characterization.'.format(value['@id'])
+        detail = 'Antibody {} needs a compliant secondary characterization.'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure('need compliant secondary', detail, level='NOT_COMPLIANT')
         return

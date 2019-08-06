@@ -4,6 +4,11 @@ from snovault import (
 )
 from .conditions import rfa
 
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
+
 
 @audit_checker('antibody_characterization', frame=[
     'characterization_reviews',
@@ -29,11 +34,11 @@ def audit_antibody_characterization_unique_reviews(value, system):
         if review_lane not in unique_reviews:
             unique_reviews.add(review_lane)
         else:
-            detail = 'Lane {} in {} is a duplicate review for {} - {}'.format(
+            detail = 'Lane {} in antibody characterization {} is a duplicate review for biosample ontology{} - {}'.format(
                 lane,
-                value['@id'],
-                biosample_ontology,
-                organism
+                audit_link(path_to_text(value['@id']), value['@id']),
+                audit_link(path_to_text(biosample_ontology), biosample_ontology),
+                audit_link(path_to_text(organism), organism)
                 )
             raise AuditFailure('duplicate lane review', detail, level='INTERNAL_ACTION')
 
@@ -62,17 +67,17 @@ def audit_antibody_characterization_target(value, system):
         if ('tag' not in unique_investigated_as
             and 'synthetic tag' not in unique_investigated_as):
             detail = 'Antibody {} is not for a tagged protein, yet target {} in {} is investigated_as a recombinant protein'.format(
-                antibody['@id'],
+                audit_link(path_to_text(antibody['@id']), antibody['@id']),
                 prefix,
-                value['@id']
+                audit_link(path_to_text(value['@id']), value['@id']),
                 )
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else:
             if prefix not in unique_antibody_target:
-                detail = '{} is not found in target list in {} for antibody {}'.format(
+                detail = '{} is not found in target list in antibody characterization {} for antibody {}'.format(
                     prefix,
-                    value['@id'],
-                    antibody['@id']
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    audit_link(path_to_text(antibody['@id']), antibody['@id'])
                     )
                 raise AuditFailure('mismatched tag target', detail, level='ERROR')
     else:
@@ -84,11 +89,12 @@ def audit_antibody_characterization_target(value, system):
                 target_matches = True
         if not target_matches:
             antibody_targets_string = str(antibody_targets).replace('\'', '')
-            detail = 'Antibody characterization {} target is {}, '.format(
-                value['@id'],
-                target['name']) + \
-                'but it could not be found in antibody\'s {} '.format(antibody['@id']) + \
-                'target list {}.'.format(antibody_targets_string)
+            detail = 'Antibody characterization {} target is {}, but it could not be found in antibody\'s {} target list {}'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                target['name'], #originally not linked
+                audit_link(path_to_text(antibody['@id']), antibody['@id']),
+                audit_link(target['name'], target['@id']) #originally not linked
+                )
             raise AuditFailure('inconsistent target', detail, level='ERROR')
 
 
@@ -115,9 +121,9 @@ def audit_antibody_characterization_status(value, system):
         is_pending = True
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
-            detail = 'A lane.status of {} in {} is incompatible with antibody_characterization.status of {}'.format(
+            detail = 'A lane\'s status of {} in antibody characterization {} is incompatible with antibody characterization\'s status of {}'.format(
                 lane['lane_status'],
-                value['@id'],
+                audit_link(path_to_text(value['@id']), value['@id']),
                 value['status']
                 )
             raise AuditFailure('mismatched lane status', detail, level='INTERNAL_ACTION')
@@ -127,9 +133,9 @@ def audit_antibody_characterization_status(value, system):
             has_compliant_lane = True
 
     if has_compliant_lane and value['status'] != 'compliant':
-        detail = 'A lane.status of {} in {} is incompatible with antibody_characterization status of {}'.format(
+        detail = 'A lane\'s status of {} in antibody characterization {} is incompatible with antibody characterization status of {}'.format(
             lane['lane_status'],
-            value['@id'],
+            audit_link(path_to_text(value['@id']), value['@id']),
             value['status']
             )
         raise AuditFailure('mismatched lane status', detail, level='INTERNAL_ACTION')
@@ -147,5 +153,5 @@ def audit_antibody_pending_review(value, system):
                             'in progress']):
         return
     if value['status'] == 'pending dcc review':
-        detail = '{} has characterization(s) needing review.'.format(value['@id'])
+        detail = 'Antibody characterization {} has characterization(s) needing review.'.format(audit_link(path_to_text(value['@id']), value['@id'])) #change, not id
         raise AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')
