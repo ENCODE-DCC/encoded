@@ -643,11 +643,11 @@ export class Graph extends React.Component {
     */
     changeZoom(change) {
         const currentValue = Number(this.slider.current.value) || 0;
-        const newValue = currentValue + change;
+        let newValue = currentValue + change;
 
-        // do not exceed range-value (0 - 100)
+        // normalize value if outside range (0 - 100)
         if (newValue < 0 || newValue > 100) {
-            return;
+            newValue = newValue < 0 ? 0 : 100;
         }
         this.slider.current.value = newValue.toString();
         const event = new Event('input', { bubbles: true });
@@ -666,9 +666,9 @@ export class Graph extends React.Component {
                         <table className="zoom-control">
                             <tbody>
                                 <tr>
-                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-1)} touchstart={() => this.changeZoom(-1)}><i className="icon icon-minus" /></button></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-4)}><i className="icon icon-minus" /></button></td>
                                     <td className="zomm-controller"><input type="range" className="zoom-slider" ref={this.slider} min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onInput={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(1)} touchstart={() => this.changeZoom(1)}><i className="icon icon-plus" /></button></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(4)}><i className="icon icon-plus" /></button></td>
                                 </tr>
                             </tbody>
                         </table>
