@@ -466,10 +466,10 @@ ControllingExperiments.defaultProps = {
  * Display a count of biosample characterizations in the footer, with a link to the corresponding search if needed.
  */
 const BiosampleCharacterizationTableFooter = ({ items, total, url }) => (
-    <div>
+    <React.Fragment>
         <span>Displaying {items.length} of {total} </span>
         {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-    </div>
+    </React.Fragment>
 );
 
 BiosampleCharacterizationTableFooter.propTypes = {
@@ -516,11 +516,9 @@ export const BiosampleCharacterizationTable = ({ items, limit, total, url, title
     const biosampleCharacterizations = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
 
     return (
-        <div>
-            <SortTablePanel title={title}>
-                <SortTable list={biosampleCharacterizations} columns={biosampleCharacterizationTableColumns} footer={<BiosampleCharacterizationTableFooter items={biosampleCharacterizations} total={total} url={url} />} />
-            </SortTablePanel>
-        </div>
+        <SortTablePanel title={title}>
+            <SortTable list={biosampleCharacterizations} columns={biosampleCharacterizationTableColumns} footer={<BiosampleCharacterizationTableFooter items={biosampleCharacterizations} total={total} url={url} />} />
+        </SortTablePanel>
     );
 };
 
