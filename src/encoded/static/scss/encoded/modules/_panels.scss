@@ -315,6 +315,34 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     .disabled-checkbox {
         color: #6D6D6D;
     }
+    .file-gallery-controls__visualization-selector {
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        &:empty {
+            border: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+    }
+    .external-browser-link {
+        background: transparent;
+        background-color: white;
+        padding: 0;
+        border: 0;
+        height: auto;
+        margin: 4px;
+        line-height: 1.2;
+        color: #4F689E;
+        font-weight: 500;
+        font-size: 1rem;
+        &:hover {
+            text-decoration: underline;
+        }
+        .icon-external-link {
+            margin-right: 5px;
+        }
+    }
     .clear-file-facets {
         background: white;
         border: 0;

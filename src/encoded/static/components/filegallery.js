@@ -983,7 +983,7 @@ function collectAssembliesAnnotations(files) {
 
 
 /**
- * Render the visualization controls, including the browser selector and Visulize button.
+ * Render the visualization controls, including the browser selector and Visualize button.
  */
 class VisualizationControls extends React.Component {
     constructor() {
@@ -1044,6 +1044,47 @@ VisualizationControls.defaultProps = {
     visualizeDisabled: false,
 };
 
+/**
+ * Render the visualization controls, including the browser selector and Visualize button.
+ */
+class VisualizationLinks extends React.Component {
+    constructor() {
+        super();
+        this.handleVisualize = this.handleVisualize.bind(this);
+    }
+
+    /**
+     * Called when the user clicks the Visualize button.
+     */
+    handleVisualize(browser) {
+        visOpenBrowser(this.props.context, browser, this.props.assembly, this.props.selectedBrowserFiles, this.props.context.location_href);
+    }
+
+    render() {
+        const { browsers } = this.props;
+        return (
+            <div className="file-gallery-controls__visualization-selector">
+                {browsers.map(browser => (
+                    <button key={browser} value={browser} onClick={() => { this.handleVisualize(browser); }} className="external-browser-link">
+                        <i className="icon icon-external-link" />
+                        {browser}
+                    </button>
+                ))}
+            </div>
+        );
+    }
+}
+
+VisualizationLinks.propTypes = {
+    /** Dataset-type object being rendered */
+    context: PropTypes.object.isRequired,
+    /** All available browsers */
+    browsers: PropTypes.array.isRequired,
+    /** Selected assembly */
+    assembly: PropTypes.string.isRequired,
+    /** Selected browser files */
+    selectedBrowserFiles: PropTypes.array.isRequired,
+};
 
 // Displays the file filtering controls for the file association graph and file tables.
 
@@ -2028,7 +2069,7 @@ function computeAssemblyAnnotationValue(assembly, annotation) {
 }
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, getAvailableBrowsers, selectedBrowserFiles, context, currentAssembly } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2053,11 +2094,13 @@ const TabPanelFacets = (props) => {
     const fileType = createFacetObject('file_type', fileList, filters);
     const outputType = createFacetObject('output_type', fileList, filters);
     const replicate = createFacetObject('biological_replicates', fileList, filters);
+    const browsers = getAvailableBrowsers();
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
             <h4>Choose an assembly </h4>
             <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+            <VisualizationLinks context={context} browsers={browsers} assembly={currentAssembly} selectedBrowserFiles={selectedBrowserFiles} />
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
@@ -2083,6 +2126,10 @@ TabPanelFacets.propTypes = {
     filterFiles: PropTypes.func.isRequired,
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
+    getAvailableBrowsers: PropTypes.func.isRequired,
+    selectedBrowserFiles: PropTypes.array.isRequired,
+    context: PropTypes.object.isRequired,
+    currentAssembly: PropTypes.string.isRequired,
 };
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
@@ -2546,6 +2593,12 @@ class FileGalleryRendererComponent extends React.Component {
         const modalClass = meta ? `graph-modal--${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
         const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        let currentAssembly = '';
+        let currentAnnotation = '';
+        if (this.state.fileFilters.assembly) {
+            currentAssembly = String(this.state.fileFilters.assembly).split(' ')[0];
+            currentAnnotation = String(this.state.fileFilters.assembly).split(' ')[1];
+        }
 
         return (
             <Panel>
@@ -2563,6 +2616,10 @@ class FileGalleryRendererComponent extends React.Component {
                             filterFiles={this.filterFiles}
                             toggleFacets={this.toggleFacets}
                             clearFileFilters={this.clearFileFilters}
+                            getAvailableBrowsers={this.getAvailableBrowsers}
+                            selectedBrowserFiles={this.state.selectedBrowserFiles}
+                            context={context}
+                            currentAssembly={currentAssembly}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
@@ -2585,8 +2642,8 @@ class FileGalleryRendererComponent extends React.Component {
                                     files={graphIncludedFiles}
                                     highlightedFiles={highlightedFiles}
                                     infoNode={this.state.infoNode}
-                                    selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
-                                    selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
+                                    selectedAssembly={this.state.selectedAssembly ? currentAssembly : undefined}
+                                    selectedAnnotation={this.state.selectedAssembly ? currentAnnotation : undefined}
                                     schemas={schemas}
                                     colorize={this.state.inclusionOn}
                                     handleNodeClick={this.handleNodeClick}
