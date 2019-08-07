@@ -229,16 +229,33 @@ def lot_reviews(
     }
 
     if is_tag and request.embed(award, '@@object?skip_calculated=true')['rfa'] == 'ENCODE4':
-        if not used_by_biosample_characterizations:
-            return [base_review]
+        # ENCD-4608 standards for ENCODE4 tag antibody needs different
+        # configurations to start with
+        encode4_tag_ab_states = {
+            'compliant': 'characterized to standards',
+            'not compliant': 'not characterized to standards',
+            'exempt from standards': 'characterized to standards with exemption',
+            'requires secondary opinion': 'awaiting characterization',
+            None: 'awaiting characterization',
+        }
+        encode4_tag_ab_state_details = {
+            'compliant': 'Fully characterized.',
+            'not compliant': 'Awaiting compliant biosample characterizations.',
+            'exempt from standards': 'Fully characterized with exemption.',
+            'requires secondary opinion': 'Awaiting to be linked to biosample characterizations.',
+            None: 'Awaiting to be linked to biosample characterizations.',
+        }
+        # Techincally, a tag antibody can be a control at the same time
+        if not is_control:
+            base_review['status'] = 'awaiting characterization'
+            base_review['detail'] = 'Awaiting to be linked to biosample characterizations.'
+
         char_reviews = {}
         for bio_char in used_by_biosample_characterizations:
             bio_char_obj = request.embed(
                 bio_char, '@@object?skip_calculated=true'
             )
             bio_char_status = bio_char_obj.get('review', {}).get('status')
-            if bio_char_status == 'requires secondary opinion':
-                bio_char_status = None
             bio_obj = request.embed(
                 bio_char_obj['characterizes'], '@@object?skip_calculated=true'
             )
@@ -250,8 +267,8 @@ def lot_reviews(
                 'biosample_term_id': bio_type_obj['term_id'],
                 'organisms': [bio_obj['organism']],
                 'targets': sorted(targets),
-                'status': ab_states[(bio_char_status, bio_char_status)],
-                'detail': ab_state_details[(bio_char_status, bio_char_status)]
+                'status': encode4_tag_ab_states[bio_char_status],
+                'detail': encode4_tag_ab_state_details[bio_char_status]
             }
             key = (
                 bio_char_review['biosample_term_name'],
