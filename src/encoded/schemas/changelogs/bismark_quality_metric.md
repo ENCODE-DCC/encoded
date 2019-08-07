@@ -1,5 +1,9 @@
 ## Changelog for bismark_quality_metric.json
 
+### Schema version 9
+
+* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+
 ### Schema version 8
 
 * *status* property was restricted to one of  

@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "3prime_overlapping_ncrna": {
             "description": "3' overlapping ncrna",
