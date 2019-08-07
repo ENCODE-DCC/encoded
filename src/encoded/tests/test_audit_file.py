@@ -991,3 +991,58 @@ def test_audit_incorrect_file_bucket_has_audit_no_file_available_false(testapp, 
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
     assert errors_list
+
+
+def test_audit_read_structure(testapp, file1_2):
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': -5,
+                'end': -1
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert all(
+        error['category'] != 'invalid read_structure'
+        for error in errors
+    )
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': 0,
+                'end': 5
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert any(
+        error['category'] == 'invalid read_structure'
+        and error['detail'].startswith('The read_stucture is 1-based.')
+        for error in errors
+    )
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': 1,
+                'end': -1
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert any(
+        error['category'] == 'invalid read_structure'
+        and error['detail'].startswith(
+            'The start coordinate is bigger than the end coordinate'
+        )
+        for error in errors
+    )

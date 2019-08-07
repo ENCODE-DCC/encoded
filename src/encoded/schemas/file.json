@@ -208,6 +208,14 @@
                 }
             }
         },
+        "read_structure": {
+            "comment": "Only fastq files can have read_structure specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                }
+            }
+        },
         "mapped_run_type": {
             "comment": "Only bam files can have mapped_run_type specified.",
             "properties": {
@@ -1386,6 +1394,40 @@
             "comment": "Do not submit. The field would be posted by DCC.",
             "type": "string",
             "permission": "import_items"
+        },
+        "read_structure": {
+            "title": "Read structure",
+            "description": "A list of elements in the read describing the structure of a read.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequence element",
+                "description": "One element in the read with start and end coordinates.",
+                "required": ["sequence_element", "start", "end"],
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "sequence_element": {
+                        "title": "Element name",
+                        "type": "string",
+                        "enum": [
+                            "adapter",
+                            "barcode",
+                            "UMI"
+                        ]
+                    },
+                    "start": {
+                        "title": "Start coordinate",
+                        "description": "The 1-based start coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    },
+                    "end": {
+                        "title": "End coordinate",
+                        "description": "The 1-based end coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    }
+                }
+            }
         }
     },
     "columns": {
