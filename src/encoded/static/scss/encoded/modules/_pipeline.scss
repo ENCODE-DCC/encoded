@@ -286,6 +286,15 @@ g.pipeline-node-qc-metric {
 .zoom-indicator {
     width: 15%;
     text-align: center;
+
+    button {
+        background-color: white;
+        border: none;
+    }
+
+    button:focus {
+        outline:none;
+    }
 }
 
 .zoom-decoration {
