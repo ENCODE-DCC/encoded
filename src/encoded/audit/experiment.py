@@ -3175,15 +3175,31 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
         ab_targets_investigated_as = set()
         sample_match = False
 
-        if not antibody['characterizations']:
+        for t in antibody_targets:
+            for i in t['investigated_as']:
+                ab_targets_investigated_as.add(i)
+
+        characterized = False
+        # ENCODE4 tagged antibodies are characterized differently (ENCD-4608)
+        ab_award = system.get('request').embed(
+            antibody['award'], '@@object?skip_calculated=true'
+        )['rfa']
+        if (
+            ab_award == 'ENCODE4'
+            and (
+                'tag' in ab_targets_investigated_as
+                or 'synthetic tag' in ab_targets_investigated_as
+            )
+        ):
+            characterized = bool(antibody['used_by_biosample_characterizations'])
+        else:
+            characterized = bool(antibody['characterizations'])
+
+        if not characterized:
             detail = '{} has not yet been characterized in any cell type or tissue in {}.'.format(
                 antibody['@id'], organism)
             yield AuditFailure('uncharacterized antibody', detail, level='NOT_COMPLIANT')
             return
-
-        for t in antibody_targets:
-            for i in t['investigated_as']:
-                ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
         # and if has not been characterized to standards. Otherwise, it doesn't apply and we

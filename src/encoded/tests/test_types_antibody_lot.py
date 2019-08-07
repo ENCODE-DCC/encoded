@@ -64,6 +64,105 @@ def mouse_target_H3K9me3(testapp, mouse):
     return testapp.post_json('/target', item).json['@graph'][0]
 
 
+@pytest.fixture
+def gfp_target(testapp, organism):
+    item = {
+        'label': 'gfp',
+        'target_organism': organism['@id'],
+        'investigated_as': ['tag'],
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
+
+@pytest.fixture
+def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_target):
+    item = {
+        'product_id': 'WH0000468M1',
+        'lot_id': 'CB191-2B3',
+        'award': encode4_award['@id'],
+        'lab': lab['@id'],
+        'source': source['@id'],
+        'host_organism': mouse['@id'],
+        'targets': [gfp_target['@id']],
+    }
+    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_characterization_no_review(testapp, award, lab, biosample, attachment):
+    item = {
+        'characterizes': biosample['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+    }
+    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_characterization_2nd_opinion(testapp, award, lab, submitter, biosample, attachment):
+    item = {
+        'characterizes': biosample['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'review': {
+            'status': 'requires secondary opinion',
+            'lab': lab['@id'],
+            'reviewed_by': submitter['@id'],
+        },
+    }
+    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_characterization_exempt(testapp, award, lab, submitter, biosample, attachment):
+    item = {
+        'characterizes': biosample['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'review': {
+            'status': 'exempt from standards',
+            'lab': lab['@id'],
+            'reviewed_by': submitter['@id'],
+        },
+    }
+    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_characterization_not_compliant(testapp, award, lab, submitter, biosample, attachment):
+    item = {
+        'characterizes': biosample['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'review': {
+            'status': 'not compliant',
+            'lab': lab['@id'],
+            'reviewed_by': submitter['@id'],
+        },
+    }
+    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_characterization_compliant(testapp, award, lab, submitter, biosample, attachment):
+    item = {
+        'characterizes': biosample['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'review': {
+            'status': 'compliant',
+            'lab': lab['@id'],
+            'reviewed_by': submitter['@id'],
+        },
+    }
+    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
+
+
 # A single characterization (primary or secondary) associated with an ab that is not submitted
 # for review, should result in a not pursued antibody lot status.
 def test_not_submitted_secondary_missing_primary(testapp, motif_enrichment, antibody_lot):
@@ -489,3 +588,104 @@ def test_chars_not_reviewed(testapp,
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
     assert ab['lot_reviews'][0]['detail'] == 'Primary and secondary characterizations not reviewed.'
+
+
+def test_encode4_tagged_ab_review_status(testapp,
+                                         encode4_tag_antibody_lot,
+                                         biosample_characterization_no_review,
+                                         biosample_characterization_2nd_opinion,
+                                         biosample_characterization_exempt,
+                                         biosample_characterization_not_compliant,
+                                         biosample_characterization_compliant,
+                                         biosample_1):
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 0
+    assert res.json['object']['lot_reviews'] == [{
+        'biosample_term_id': 'NTR:99999999',
+        'biosample_term_name': 'any cell type or tissue',
+        'detail': 'Awaiting to be linked to biosample characterizations.',
+        'organisms': ['/organisms/human/'],
+        'status': 'awaiting characterization',
+        'targets': ['/targets/gfp-human/'],
+    }]
+    testapp.patch_json(biosample_characterization_not_compliant['@id'],
+                       {'antibody': encode4_tag_antibody_lot['@id']})
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 1
+    assert res.json['object']['lot_reviews'] == [{
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Awaiting compliant biosample characterizations.',
+        'organisms': ['/organisms/human/'],
+        'status': 'not characterized to standards',
+        'targets': ['/targets/gfp-human/'],
+    }]
+    testapp.patch_json(biosample_characterization_no_review['@id'],
+                       {'antibody': encode4_tag_antibody_lot['@id']})
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 2
+    assert res.json['object']['lot_reviews'] == [{
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Awaiting to be linked to biosample characterizations.',
+        'organisms': ['/organisms/human/'],
+        'status': 'awaiting characterization',
+        'targets': ['/targets/gfp-human/'],
+    }]
+    testapp.patch_json(biosample_characterization_2nd_opinion['@id'],
+                       {'antibody': encode4_tag_antibody_lot['@id']})
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 3
+    assert res.json['object']['lot_reviews'] == [{
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Awaiting to be linked to biosample characterizations.',
+        'organisms': ['/organisms/human/'],
+        'status': 'awaiting characterization',
+        'targets': ['/targets/gfp-human/'],
+    }]
+    testapp.patch_json(biosample_characterization_exempt['@id'],
+                       {'antibody': encode4_tag_antibody_lot['@id']})
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 4
+    assert res.json['object']['lot_reviews'] == [{
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Fully characterized with exemption.',
+        'organisms': ['/organisms/human/'],
+        'status': 'characterized to standards with exemption',
+        'targets': ['/targets/gfp-human/'],
+    }]
+    testapp.patch_json(biosample_characterization_compliant['@id'],
+                       {'antibody': encode4_tag_antibody_lot['@id']})
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 5
+    assert res.json['object']['lot_reviews'] == [{
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Fully characterized.',
+        'organisms': ['/organisms/human/'],
+        'status': 'characterized to standards',
+        'targets': ['/targets/gfp-human/'],
+    }]
+    testapp.patch_json(biosample_characterization_exempt['@id'],
+                       {'characterizes': biosample_1['@id']})
+    res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
+    assert len(res.json['object']['used_by_biosample_characterizations']) == 5
+    assert len(res.json['object']['lot_reviews']) == 2
+    assert {
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Fully characterized.',
+        'organisms': ['/organisms/human/'],
+        'status': 'characterized to standards',
+        'targets': ['/targets/gfp-human/'],
+    } in res.json['object']['lot_reviews']
+    assert {
+        'biosample_term_id': 'UBERON:0002107',
+        'biosample_term_name': 'liver',
+        'detail': 'Fully characterized with exemption.',
+        'organisms': ['/organisms/human/'],
+        'status': 'characterized to standards with exemption',
+        'targets': ['/targets/gfp-human/'],
+    } in res.json['object']['lot_reviews']
