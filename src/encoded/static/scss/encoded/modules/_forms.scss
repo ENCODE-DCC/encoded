@@ -63,21 +63,24 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 // Navbar search
 #navbar-search {
+	background-color: white;
 	width: 180px;
 	border-radius: 14px;
-	height: 27px;
+	height: 25px;
 	padding: 3px 26px 4px 14px;
 	padding-top: 3px;
 	padding-bottom: 4px;
 	margin-top: 3px;
+	border: none;
+	box-shadow: none !important;
 	-ms-transition: width 0.3s ease-out;
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
 	transition: width 0.3s ease-out;
 
 	&:focus {
-		width: 230px;
 		transition: width 0.3s ease-out;
+		width: 230px;
 	}
 }
 
@@ -90,10 +93,12 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 .search-wrapper {
 	position: 0;
+	background-color: white;
+	border-radius: 20px;
+	padding: 2px;
 
 	&:after {
 		font-family: "FontAwesome";
-		content: "\f002";
 		position: relative;
 		top: 0;
 		left: -24px;
@@ -103,6 +108,18 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 			top: 2px;
 		}
 	}
+}
+
+.navbar-search-form {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.search-button {
+	background-color: white;
+    border: 0; 
+	border-radius: 20px;
 }
 
 // large text inputBorder
