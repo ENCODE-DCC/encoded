@@ -1,9 +1,5 @@
 ## Changelog for idr_quality_metric.json
 
-### Schema version 7
-
-* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
-
 ### Minor changes since schema version 6
 
 * *size*, *width*, and *height* in *IDR_plot_true* were set to have a minimum of 0.

@@ -1,9 +1,5 @@
 ## Changelog for correlation_quality_metric.json
 
-### Schema version 8
-
-* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
-
 ### Schema version 7
 
 * *status* property was restricted to one of  
