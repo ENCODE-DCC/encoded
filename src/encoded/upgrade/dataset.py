@@ -483,10 +483,3 @@ def annotation_24_25(value, system):
     if value.get('annotation_type') == 'candidate regulatory elements':
         value['annotation_type'] = 'candidate Cis-Regulatory Elements'
     return
-
-
-@upgrade_step('experiment', '26', '27')
-def experiment_26_27(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-4711
-    if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
-        value['assay_term_name'] = 'single-nucleus ATAC-seq'
