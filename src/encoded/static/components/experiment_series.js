@@ -174,7 +174,7 @@ class ExperimentSeriesComponent extends React.Component {
         ];
         const crumbsReleased = (context.status === 'released');
 
-        // Calculate the biosample summary from the organism and the biosample onotology.
+        // Calculate the biosample summary from the organism and the biosample ontology.
         let speciesRender = null;
         if (context.organism && context.organism.length > 0) {
             const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
