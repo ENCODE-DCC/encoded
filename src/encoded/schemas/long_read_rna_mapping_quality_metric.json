@@ -20,7 +20,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "full_length_non_chimeric_read_count": {
             "title": "Full length non-chimeric read count",

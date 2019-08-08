@@ -1,5 +1,9 @@
 ## Changelog for pipeline.json
 
+### Schema version 10
+
+* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+
 ### Minor changes since schema version 9
 
 * *pipeline_version* was set to have a minimum of 1.

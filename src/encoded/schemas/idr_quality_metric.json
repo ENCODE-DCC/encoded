@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "Fp": {
             "title": "FRiP score from pooled pseudoreplicate peaks",

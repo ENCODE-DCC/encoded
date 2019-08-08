@@ -433,7 +433,7 @@ ntr_assays = {
         "assay": ['DNA accessibility'],
         "category": [],
         "developmental": [],
-        "name": "single-nuclei ATAC-seq",
+        "name": "single-nucleus ATAC-seq",
         "objectives": [],
         "organs": [],
         "preferred_name": "snATAC-seq",

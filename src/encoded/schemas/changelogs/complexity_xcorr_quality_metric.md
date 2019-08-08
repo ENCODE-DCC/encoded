@@ -1,5 +1,9 @@
 ## Changelog for complexity_xcorr_quality_metric.json
 
+### Schema version 8
+
+* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+
 ### Minor changes since schema version 7
 
 * *size* in *cross_correlation_plot* was set to have a minimum of 0.
