@@ -77,4 +77,7 @@ def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
     pipeline_8['assay_term_names'] = ['single-nuclei ATAC-seq', 'HiC']
     value = upgrader.upgrade('pipeline', pipeline_8, target_version='10')
     assert value['schema_version'] == '10'
-    TestCase().assertListEqual(value['assay_term_names'], ['single-nucleus ATAC-seq', 'HiC'])
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['single-nucleus ATAC-seq', 'HiC'])
+    )

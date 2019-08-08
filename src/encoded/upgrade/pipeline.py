@@ -74,6 +74,6 @@ def pipeline_8_9(value, system):
 @upgrade_step('pipeline', '9', '10')
 def pipeline_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4711
-    for i, a in enumerate(value['assay_term_names']):
+    for i, a in enumerate(value.get('assay_term_names', [])):
         if a == 'single-nuclei ATAC-seq':
             value['assay_term_names'][i] = 'single-nucleus ATAC-seq'

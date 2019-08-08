@@ -29,6 +29,6 @@ def software_2_3(value, system):
 @upgrade_step('software', '5', '6')
 def software_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4711
-    for i, p in enumerate(value['purpose']):
+    for i, p in enumerate(value.get('purpose', [])):
         if p == 'single-nuclei ATAC-seq':
             value['purpose'][i] = 'single-nucleus ATAC-seq'

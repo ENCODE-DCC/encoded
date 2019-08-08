@@ -80,9 +80,12 @@ def test_award_upgrade_milestones(upgrader, award_2):
     value = upgrader.upgrade('award', award_2, target_version='7')
     assert value['schema_version'] == '7'
     TestCase().assertListEqual(
-        value['milestones'],
-        [
-            {'assay_term_name': 'single-nucleus ATAC-seq'},
-            {'assay_term_name': 'HiC'}
-        ]
+        sorted(value['milestones'], key=lambda x: x['assay_term_name']),
+        sorted(
+            [
+                {'assay_term_name': 'single-nucleus ATAC-seq'},
+                {'assay_term_name': 'HiC'}
+            ],
+            key=lambda x: x['assay_term_name']
+        )
     )

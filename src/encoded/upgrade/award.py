@@ -35,7 +35,7 @@ def award_5_6(value, system):
 @upgrade_step('award', '6', '7')
 def award_6_7(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4711
-    for milestone in value['milestones']:
+    for milestone in value.get('milestones', []):
         assay_term_name = milestone.get('assay_term_name', '')
         if assay_term_name == 'single-nuclei ATAC-seq':
             milestone['assay_term_name'] = 'single-nucleus ATAC-seq'
