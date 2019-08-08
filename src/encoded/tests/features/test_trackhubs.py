@@ -141,11 +141,9 @@ def test_visualize(submitter_testapp, workbook):
     expected = {
         'GRCh38': [
             "Ensembl",
-            "Quick View",
             "UCSC",
         ],
         'hg19': [
-            "Quick View",
             "UCSC"
         ]
     }

@@ -70,7 +70,6 @@ const ASSEMBLY_DETAILS = {
  */
 const browserFileTypes = {
     UCSC: [],
-    'Quick View': ['bigWig', 'bigBed'],
     Ensembl: ['bigWig', 'bigBed'],
     hic: ['hic'],
 };
@@ -80,7 +79,7 @@ const browserFileTypes = {
  * Open a browser visualization in a new tab. If called from a React component, that component must
  * be mounted.
  * @param {object} dataset Dataset object whose files we're visualizing
- * @param {string} browser Specifies browser to use: UCSC, Quick View, Ensembl, hic currently
+ * @param {string} browser Specifies browser to use: UCSC, Ensembl, hic currently
  *                         acceptable
  * @param {string} assembly Assembly to use with visualizer
  * @param {array} files Array of files to visualize if applicable
@@ -93,11 +92,6 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
         // UCSC does not use `files` under any circumstances.
         const ucscAssembly = ASSEMBLY_DETAILS[assembly].ucsc_assembly;
         href = `http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=${datasetUrl}@@hub/hub.txt&db=${ucscAssembly}`;
-        break;
-    }
-    case 'Quick View': {
-        const fileQueries = files.map(file => `accession=${globals.atIdToAccession(file['@id'])}`);
-        href = `/search/?type=File&assembly=${assembly}&dataset=${dataset['@id']}&${fileQueries.join('&')}#browser`;
         break;
     }
     case 'hic': {
@@ -165,9 +159,6 @@ export const visFileSelectable = (file, selectedFiles, browser) => {
     case 'UCSC':
         // Always not selectable.
         break;
-    case 'Quick View':
-        selectable = browserFileTypes[browser].indexOf(file.file_format) !== -1;
-        break;
     case 'hic':
         selectable = (browserFileTypes[browser].indexOf(file.file_format) !== -1) && (selectedFiles.length < MAX_HIC_FILES_SELECTED);
         break;
@@ -187,7 +178,6 @@ export const visFileSelectable = (file, selectedFiles, browser) => {
  */
 const browserOrder = [
     'UCSC',
-    'Quick View',
     'hic',
     'Ensembl',
 ];
