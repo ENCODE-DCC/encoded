@@ -3335,6 +3335,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
 def test_audit_experiment_tagging_biosample_characterization(
         testapp,
         construct_genetic_modification,
+        interference_genetic_modification,
         biosample_characterization,
         base_experiment,
         recombinant_target,
@@ -3345,13 +3346,14 @@ def test_audit_experiment_tagging_biosample_characterization(
         biosample_1,
         biosample_2,
         donor_1,
-        k562):
+        k562,
+        award_encode4):
     testapp.patch_json(biosample_1['@id'],
-                       {'genetic_modifications': [construct_genetic_modification['@id']],
+                       {'genetic_modifications': [interference_genetic_modification['@id']],
                         'biosample_ontology': k562['uuid'],
                         'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'],
-                       {'genetic_modifications': [construct_genetic_modification['@id']],
+                       {'genetic_modifications': [interference_genetic_modification['@id']],
                         'biosample_ontology': k562['uuid'],
                         'donor': donor_1['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -3360,10 +3362,18 @@ def test_audit_experiment_tagging_biosample_characterization(
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'],
                        {'assay_term_name': 'ChIP-seq',
+                        'award': award_encode4['@id'],
                         'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing biosample characterization'
-               for error in collect_audit_errors(res))
+               for error in collect_audit_errors(res, ['WARNING']))
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing biosample characterization'
+               for error in collect_audit_errors(res, ['ERROR']))                  
     testapp.patch_json(biosample_characterization['@id'],
                        {'characterizes': biosample_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
