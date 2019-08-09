@@ -58,12 +58,12 @@
             "maximum": 100.0
         },
         "total_fragments": {
-            "title": "Total fragment",
+            "title": "Total fragments",
             "type": "integer",
             "minimum": 0
         },
         "distinct_fragments": {
-            "title": "Distinct fragment",
+            "title": "Distinct fragments",
             "type": "integer",
             "minimum": 0
         },
