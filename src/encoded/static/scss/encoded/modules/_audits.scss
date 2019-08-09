@@ -4,7 +4,7 @@ $audit-group-height: 40px;
 .btn.btn-info.audit-indicators {
     margin-top: 5px;
     vertical-align: top;
-    padding: 0 5px;
+    padding: 0 10px;
     background: #fff;
     font-size: 1rem;
     background-color: #fff;
@@ -85,14 +85,21 @@ $audit-types:
     }
 }
 
-.btn-audit {
-    display: inline-block;
-    margin: 0 10px;
-    height: 26px;
 
-    .audit-search & {
-        margin: 0 6px;
-        height: 24px;
+// Wraps around audit count display
+.audit-counts {
+    display: flex;
+    flex-wrap: nowrap;
+
+    @at-root #{&}__level {
+        flex: 0 1 auto;
+        margin-left: 10px;
+        font-weight: bold;
+        white-space: nowrap;
+
+        &:first-child {
+            margin-left: 0;
+        }
     }
 }
 
@@ -148,12 +155,8 @@ $audit-types:
     }
 
     // Button for each class of audit error
-    .btn-audit-#{$audit-type} {
-        color: $color;
-
-        &:hover, &:focus {
-            color: $color;
-        }
+    .audit-counts__level--#{$audit-type} {
+        color: audit-level-color($color);
     }
 
     // Audit detail
@@ -172,12 +175,6 @@ $audit-types:
         &:hover {
             background-color: darken(fg-to-bg-color($color), 10%);
         }
-    }
-
-    // Audit level name text
-    .audit-level-#{$audit-type} {
-        margin-left: 5px !important;
-        color: audit-level-color($color);
     }
 
     .audit-item-#{$audit-type} {
@@ -225,4 +222,9 @@ $audit-types:
             color: #428bca;
         }
     }
+}
+
+.audit-icon {
+    height: 13px;
+    line-height: 13px;
 }

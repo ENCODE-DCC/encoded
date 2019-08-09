@@ -116,10 +116,44 @@ AuditIcon.defaultProps = {
 };
 
 
+/**
+ * Display the audit icon for the highest audit level for the given object.
+ */
+export const ObjectAuditIcon = ({ object, audit, loggedIn }) => {
+    if (audit !== null) {
+        let highestAuditLevel;
+        const objectAudit = audit || object.audit;
+
+        if (objectAudit) {
+            const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy(level => -objectAudit[level][0].level);
+
+            // Only logged-in users should see ambulance icon (INTERNAL_ACTION)
+            highestAuditLevel = !loggedIn && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
+        } else {
+            highestAuditLevel = 'OK';
+        }
+        return <AuditIcon level={highestAuditLevel} addClasses="audit-status" />;
+    }
+    return null;
+};
+
+ObjectAuditIcon.propTypes = {
+    /** Object whose audit we display */
+    object: PropTypes.object.isRequired,
+    /** Audit object when `object` has none; null to suppress display */
+    audit: PropTypes.object,
+    /** True if user is logged in */
+    loggedIn: PropTypes.bool,
+};
+
+ObjectAuditIcon.defaultProps = {
+    audit: null,
+    loggedIn: false,
+};
+
+
 // Regex to find a simplified markdown in the form "{link text|path}"
 const markdownRegex = /{(.+?)\|(.+?)}/g;
-// Regex to find a paths in the form "/xxxx/yyyy/"
-const pathRegex = /(\/.+?\/.+?\/)/g;
 
 
 /**
@@ -253,6 +287,63 @@ export function auditsDisplayed(audits, session) {
 }
 
 
+/**
+ * Display a summary of audit levels and their counts. Useful in audit buttons.
+ */
+export const AuditCounts = ({ audits, useWrapper, loggedIn }) => {
+    // Sort the audit levels by their level number, using the first element of each warning
+    // category.
+    if (audits && Object.keys(audits).length > 0) {
+        const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
+        const auditCountsContent = (
+            sortedAuditLevels.map((level) => {
+                if (loggedIn || level !== 'INTERNAL_ACTION') {
+                    // Calculate the CSS class for the icon.
+                    const levelName = level.toLowerCase();
+                    const btnClass = `audit-counts__level audit-counts__level--${levelName}`;
+                    const groupedAudits = _(audits[level]).groupBy('category');
+                    return (
+                        <span className={btnClass} key={level}>
+                            <AuditIcon level={level} />
+                            {Object.keys(groupedAudits).length}
+                        </span>
+                    );
+                }
+                return null;
+            })
+        );
+
+        // Render components surrounded by a default wrapper div.
+        if (useWrapper) {
+            return (
+                <div className="audit-counts">
+                    {auditCountsContent}
+                </div>
+            );
+        }
+
+        // Render components so that the parent component can provide the wrapper.
+        return auditCountsContent;
+    }
+    return null;
+};
+
+AuditCounts.propTypes = {
+    /** Audit object from any encode object that has audits */
+    audits: PropTypes.object,
+    /** True to wrap counts in a div with appropriate CSS class; false if taken care of outside */
+    useWrapper: PropTypes.bool,
+    /** True if user is logged in */
+    loggedIn: PropTypes.bool,
+};
+
+AuditCounts.defaultProps = {
+    audits: null,
+    useWrapper: true,
+    loggedIn: false,
+};
+
+
 // Audit decorator function. For any component that displays audits, pass this component as the
 // parameter to this function. This decorator returns a component that's the original component
 // plus the audit rendering functions. These functions get added to the original component's
@@ -275,32 +366,13 @@ export const auditDecor = AuditComponent => class extends React.Component {
         const loggedIn = !!(session && session['auth.userid']);
 
         if (auditsDisplayed(audits, session)) {
-            // Sort the audit levels by their level number, using the first element of each warning
-            // category.
-            const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
-
             // Calculate the class of the indicator button based on whether the audit detail panel
             // is open or not.
             const indicatorClass = `audit-indicators btn btn-info${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
-                    {sortedAuditLevels.map((level) => {
-                        if (loggedIn || level !== 'INTERNAL_ACTION') {
-                            // Calculate the CSS class for the icon
-                            const levelName = level.toLowerCase();
-                            const btnClass = `btn-audit btn-audit-${levelName} audit-level-${levelName}`;
-                            const groupedAudits = _(audits[level]).groupBy('category');
-
-                            return (
-                                <span className={btnClass} key={level}>
-                                    <AuditIcon level={level} />
-                                    {Object.keys(groupedAudits).length}
-                                </span>
-                            );
-                        }
-                        return null;
-                    })}
+                    <AuditCounts audits={audits} useWrapper={false} loggedIn={loggedIn} />
                 </button>
             );
         }
