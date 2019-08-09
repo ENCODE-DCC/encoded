@@ -91,7 +91,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/pdf"
+                        "application/pdf",
+                        "image/png"
                     ]
                 },
                 "size": {
@@ -103,6 +104,16 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },
@@ -200,7 +211,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/pdf"
+                        "application/pdf",
+                        "image/png"
                     ]
                 },
                 "size": {
@@ -212,6 +224,16 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },

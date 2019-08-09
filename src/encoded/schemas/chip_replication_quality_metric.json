@@ -72,7 +72,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/pdf"
+                        "application/pdf",
+                        "image/png"
                     ]
                 },
                 "size": {
