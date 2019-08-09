@@ -979,7 +979,7 @@ def check_experiment_chip_seq_standards(
 
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
-    idr_peaks_files = files_structure.get('optimal_idr_peaks').values()
+    idr_peaks_files = files_structure.get('preferred_default_idr_peaks').values()
 
     upper_limit_read_length = 50
     medium_limit_read_length = 36
@@ -3787,7 +3787,7 @@ def create_files_mapping(files_list, excluded):
                  'peaks_files': {},
                  'gene_quantifications_files': {},
                  'signal_files': {},
-                 'optimal_idr_peaks': {},
+                 'preferred_default_idr_peaks': {},
                  'cpg_quantifications': {},
                  'contributing_files': {},
                  'excluded_types': excluded}
@@ -3833,9 +3833,17 @@ def create_files_mapping(files_list, excluded):
                 if file_output and file_output == 'signal of unique reads':
                     to_return['signal_files'][file_object['@id']] = file_object
 
-                if file_output and file_output == 'optimal idr thresholded peaks':
-                    to_return['optimal_idr_peaks'][file_object['@id']
-                                                   ] = file_object
+                if file_output and file_output == 'optimal IDR thresholded peaks':
+                    to_return['preferred_default_idr_peaks'][
+                        file_object['@id']
+                    ] = file_object
+                if (
+                    file_object.get('preferred_default')
+                    and file_output == 'IDR thresholded peaks'
+                ):
+                    to_return['preferred_default_idr_peaks'][
+                        file_object['@id']
+                    ] = file_object
 
                 if file_output and file_output == 'methylation state at CpG':
                     to_return['cpg_quantifications'][file_object['@id']

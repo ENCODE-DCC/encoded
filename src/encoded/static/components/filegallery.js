@@ -1099,6 +1099,11 @@ function qcAbbr(qc) {
     const qcAbbrMap = {
         BigwigcorrelateQualityMetric: 'BC',
         BismarkQualityMetric: 'BK',
+        ChipAlignmentQualityMetric: 'AL',
+        ChipAlignmentEnrichmentQualityMetric: 'AE',
+        ChipLibraryQualityMetric: 'LB',
+        ChipPeakEnrichmentQualityMetric: 'PE',
+        ChipReplicationQualityMetric: 'RP',
         ChipSeqFilterQualityMetric: 'CF',
         ComplexityXcorrQualityMetric: 'CX',
         CorrelationQualityMetric: 'CN',

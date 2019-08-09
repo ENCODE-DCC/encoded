@@ -55,7 +55,7 @@ RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of 
 
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
-        'output_type': ['optimal idr thresholded peaks'],
+        'output_type': ['optimal IDR thresholded peaks', 'IDR thresholded peaks'],
         'file_format': ['bed']
     },
     'DNase-seq': {

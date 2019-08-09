@@ -336,8 +336,9 @@ OUTPUT_TYPE_8CHARS = {
     # "male genome reference":"XY ref",   # references not to be viewed
     # "male genome index":"XY rix",       # references not to be viewed
     # "spike-in sequence":"spike",        # references not to be viewed
-    "optimal idr thresholded peaks":        "oIDR pk",
-    "conservative idr thresholded peaks":   "cIDR pk",
+    "IDR thresholded peaks":                "IDRt pk",
+    "optimal IDR thresholded peaks":        "oIDR pk",
+    "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
     "semi-automated genome annotation":     "saga"
     }
@@ -660,7 +661,7 @@ class VisDefines(object):
         # Starting with a little cheat for rare cases where techreps are compared instead of bioreps
         if a_file.get("file_format_type", "none") in ["idr_peak"]:
             return "combined"
-        if a_file['output_type'].endswith("idr thresholded peaks"):
+        if a_file['output_type'].endswith("IDR thresholded peaks"):
             return "combined"
 
         bio_rep = 0
