@@ -900,7 +900,8 @@ def encode_lab(testapp):
     item = {
         'name': 'encode-processing-pipeline',
         'title': 'ENCODE Processing Pipeline',
-        'status': 'current'
+        'status': 'current',
+        'uuid': 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d',
         }
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 

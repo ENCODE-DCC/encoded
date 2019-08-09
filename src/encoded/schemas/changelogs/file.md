@@ -4,6 +4,7 @@
 
 * *output_type* list was updated to include the following enums: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
 * Added *read_structure*
+* Added *matching_md5sum* property, which tracks a list of other files with identical md5 sums.
 
 ### Schema version 14
 

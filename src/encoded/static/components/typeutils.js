@@ -309,7 +309,7 @@ export const ReplacementAccessions = ({ context }) => {
             <div className="replacement-accessions">
                 <AlternateAccession altAcc={alternateAccessions} />
                 {supersededByAtIds.length > 0 ?
-                    <h4 className="replacement-accessions__superseded-by">
+                    <h4 className="replacement-accessions">
                         <span>Superseded by </span>
                         {supersededByAtIds.map((supersededByAtId, index) => (
                             <span key={supersededByAtId}>
@@ -320,7 +320,7 @@ export const ReplacementAccessions = ({ context }) => {
                     </h4>
                 : null}
                 {supersedes.length > 0 ?
-                    <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4>
+                    <h4 className="replacement-accessions">Supersedes {supersedes.join(', ')}</h4>
                 : null}
             </div>
         );

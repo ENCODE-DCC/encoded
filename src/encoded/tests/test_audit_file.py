@@ -1046,3 +1046,34 @@ def test_audit_read_structure(testapp, file1_2):
         )
         for error in errors
     )
+
+
+def test_audit_matching_md5sum(testapp, file7, file6):
+    testapp.patch_json(
+        file7['@id'],
+        {
+            'matching_md5sum': [file6['@id']]
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'Incorrect matching_md5sum'
+               for error in errors_list)
+
+    testapp.patch_json(
+        file6['@id'],
+        {
+            'lab': '/labs/encode-processing-pipeline/',
+            'md5sum': '91be74b6e11515394507f4ebfa66d78a',
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'Matching md5 sums'
+               for error in errors_list)
