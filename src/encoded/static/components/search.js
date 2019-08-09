@@ -51,6 +51,7 @@ const types = {
     treatment_concentration_series: { title: 'Treatment concentration series' },
     treatment_time_series: { title: 'Treatment time series' },
     ucsc_browser_composite: { title: 'UCSC browser composite file set' },
+    functional_characterization_experiment: { title: 'Functional characterization experiments' },
 };
 
 const datasetTypes = {
@@ -67,6 +68,7 @@ const datasetTypes = {
     TreatmentTimeSeries: types.treatment_time_series.title,
     AggregateSeries: types.aggregate_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
+    FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
 };
 
 
@@ -262,10 +264,18 @@ const Biosample = auditDecor(BiosampleComponent);
 globals.listingViews.register(Biosample, 'Biosample');
 
 
+/**
+ * Renders both Experiment and FunctionalCharacterizationExperiment search results.
+ */
 const ExperimentComponent = (props, reactContext) => {
     const { cartControls } = props;
     const result = props.context;
     let synchronizations;
+
+    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    const experimentType = result['@type'][0];
+    const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
 
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
@@ -297,7 +307,7 @@ const ExperimentComponent = (props, reactContext) => {
                 <div className="result-item__data">
                     <PickerActions {...props} />
                     <div className="pull-right search-meta">
-                        <p className="type meta-title">Experiment</p>
+                        <p className="type meta-title">{displayType}</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
@@ -309,7 +319,7 @@ const ExperimentComponent = (props, reactContext) => {
                             :
                                 <span>{result.assay_term_name}</span>
                             }
-                            {result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
+                            {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
                         </a>
                     </div>
                     {result.biosample_summary ?
@@ -369,6 +379,7 @@ ExperimentComponent.contextTypes = {
 const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
+globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 
 
 const DatasetComponent = (props, reactContext) => {

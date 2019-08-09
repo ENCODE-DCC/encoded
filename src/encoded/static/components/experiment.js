@@ -272,11 +272,20 @@ LibrarySubmitterComments.propTypes = {
 };
 
 
+/**
+ * Renders both Experiment and FunctionalCharacterizationExperiment objects.
+ */
 const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
     let condensedReplicates = [];
     const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const itemClass = globals.itemClass(context, 'view-item');
+
+    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    const experimentType = context['@type'][0];
+    const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
+
     const replicates = context.replicates && context.replicates.length > 0 ? context.replicates : [];
     if (replicates.length > 0) {
         // Make an array of arrays of replicates, called “condensed replicates" here. Each top-
@@ -387,14 +396,16 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
     });
-    const biosampleTermName = context.biosample_ontology.term_name;
-    const biosampleTermQuery = biosampleTermName ? `biosample_ontology.term_name=${biosampleTermName}` : '';
     const crumbs = [
-        { id: 'Experiments' },
+        { id: displayType },
         { id: assayName, query: assayQuery, tip: assayName },
         { id: names.length > 0 ? names : null, query: nameQuery, tip: nameTip },
-        { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
     ];
+    if (context.biosample_ontology) {
+        const biosampleTermName = context.biosample_ontology.term_name;
+        const biosampleTermQuery = `biosample_ontology.term_name=${biosampleTermName}`;
+        crumbs.push({ id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName });
+    }
     const crumbsReleased = (context.status === 'released');
 
     // Compile the document list.
@@ -410,14 +421,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
 
-    // Render tags badges.
-
     return (
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>Experiment summary for {context.accession}</h2>
+                    <Breadcrumbs root={`/search/?type=${experimentType}`} crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h2>{displayType} summary for {context.accession}</h2>
                     <ReplacementAccessions context={context} />
                     <div className="cart__toggle--header">
                         <CartToggle element={context} />
@@ -456,10 +465,18 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
 
                                 {context.target ?
-                                    <div data-test="target">
-                                        <dt>Target</dt>
-                                        <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                    </div>
+                                    <React.Fragment>
+                                        <div data-test="target">
+                                            <dt>Target</dt>
+                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                        </div>
+                                        {context.target_expression_range_minimum !== undefined && context.target_expression_range_maximum !== undefined ?
+                                            <div data-test="target-min">
+                                                <dt>Target expression range minimum - maximum</dt>
+                                                <dd>{context.target_expression_range_minimum}% &ndash; {context.target_expression_range_maximum}%</dd>
+                                            </div>
+                                        : null}
+                                    </React.Fragment>
                                 : null}
 
                                 {context.biosample_summary ?
@@ -535,6 +552,31 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                         </dd>
                                     </div>
                                 : null}
+
+                                {context.elements_references && context.elements_references.length > 0 ?
+                                    <div data-test="elements-references">
+                                        <dt>Elements references</dt>
+                                        <dd>
+                                            <ul>
+                                                {context.elements_references.map(reference => (
+                                                    <li key={reference} className="multi-comma">
+                                                        <a href={reference}>
+                                                            {globals.atIdToAccession(reference)}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </dd>
+                                    </div>
+                                : null}
+
+                                {context.elements_mapping ?
+                                    <div data-test="elements-mapping">
+                                        <dt>Elements mapping</dt>
+                                        <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
+                                    </div>
+                                : null}
+
                             </dl>
                         </div>
 
@@ -651,6 +693,7 @@ const Experiment = auditDecor(ExperimentComponent);
 export default Experiment;
 
 globals.contentViews.register(Experiment, 'Experiment');
+globals.contentViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 
 
 const replicateTableColumns = {

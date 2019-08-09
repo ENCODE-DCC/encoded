@@ -1,11 +1,11 @@
 {
-    "title": "Experiment",
-    "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
-    "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/experiment.json",
+    "title": "Functional characterization experiment",
+    "description": "Schema for submitting metadata for a functional characterization assay.",
+    "comment": "A functional characterization experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
+    "id": "/profiles/functional_characterization_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name", "experiment_classification", "biosample_ontology"],
+    "required": ["award", "lab", "assay_term_name"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -20,7 +20,6 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
-        { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
@@ -53,43 +52,29 @@
                 }
             ]
         },
-        "internal_status": {
-            "oneOf": [
-                {
-                    "required": ["pipeline_error_detail"],
-                    "properties": {
-                        "internal_status": {
-                            "enum": ["pipeline error"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "oneOf": [
-                            {
-                                "required": ["pipeline_error_detail"],
-                                "properties": {
-                                    "internal_status": {
-                                        "enum": ["unreviewed", "no available pipeline", "unrunnable", "pipeline ready", "processing", "pipeline completed", "requires lab review", "release ready"]
-                                    }
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "internal_status": {
-                                        "enum": ["pipeline error"]
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
+        "target_expression_range_minimum": {
+            "comment": "Only functional characterization assays with target can specify target expression range.",
+            "required": ["target", "target_expression_range_maximum"]
+        },
+        "target_expression_range_maximum": {
+            "comment": "Only functional characterization assays with target can specify target expression range.",
+            "required": ["target", "target_expression_range_minimum"]
         }
     },
     "properties": {
         "schema_version": {
-            "default": "27"
+            "default": "1"
+        },
+        "assay_term_name": {
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "type": "string",
+            "enum": [
+                "CRISPR screen",
+                "MPRA",
+                "pooled clone sequencing",
+                "STARR-seq"
+            ]
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -101,117 +86,71 @@
         },
         "target": {
             "title": "Target",
-            "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",
+            "description": "For assays, such as CRISPR screen, the name of the gene whose expression or product is under investigation for the functional characterization experiment.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
         },
-        "experiment_classification": {
-            "title": "Experiment classification",
-            "description": "The categorization of the experiment.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "oneOf": [
-                    {
-                        "enum": [
-                            "functional genomics assay"
-                        ]
-                    },
-                    {
-                        "comment": "Assay classification migrated into new functional characterization experiment object, not valid for new submissions.",
-                        "permission": "import_items",
-                        "enum": [
-                            "functional characterization assay"
-                        ]
-                    }
-                ]
-                
-            }    
+        "target_expression_range_minimum": {
+            "title": "Target expression range minimum",
+            "description": "Target expression read-out range minimum percentage value",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
         },
-        "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "External identifier",
-                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-                "type":  "string",
-                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
-            }
-        },
-        "documents": {
-            "description": "Protocols or other documents that describe the assay or the results (not data files)."
+        "target_expression_range_maximum": {
+            "title": "Target expression range maximum",
+            "description": "Target expression read-out range maximum percentage value",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
         },
         "possible_controls": {
             "title": "Controls",
-            "description": "Dataset that contain files that can serve as scientific controls for this experiment.",
+            "description": "Dataset that contain files that can serve as scientific controls for this functional characterization experiment.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Control",
-                "description": "A dataset that contains files that can serve as a scientific control for this experiment.",
-                "comment": "See dataset.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
+                "description": "A dataset that contains files that can serve as a scientific control for this functional characterization experiment.",
+                "comment": "See dataset.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "Dataset"
             }
         },
-        "supersedes": {
-            "title": "Supersedes" ,
-            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+        "elements_references": {
+            "title": "Elements references",
+            "description": "Datasets that contain reference files listing the elements being characterized in this functional characterization experiment.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                    "comment": "See experiment.json for a list of available identifiers.",
-                    "type": "string",
-                    "linkTo": "Experiment"
+                "title": "Reference",
+                "description": "Dataset that contain reference file listing the elements being characterized in this functional characterization experiment.",
+                "comment": "See reference.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Reference"
             }
         },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "To be removed in a future release after data cleanup.",
+        "elements_mapping": {
+            "title": "Elements mapping",
+            "description": "A functional characterization experiment that contains mapping of elements being characterized to barcodes.",
+            "comment": "See FunctionalCharacterizationExperiment.json for a list of available identifiers.",
+            "type": "string",
+            "linkTo": "FunctionalCharacterizationExperiment"
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The functional characterization experiment(s) that this functional characterization experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
-            "permission": "import_items",
+            "uniqueItems": true,
             "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
+                "comment": "See functional_characterization_experiment.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "File"
+                "linkTo": "FunctionalCharacterizationExperiment"
             }
-        },
-        "internal_status": {
-            "type": "string",
-            "description": "The status of an experiment in the DCC process.",
-            "comment":"unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
-            "default": "unreviewed",
-            "permission": "import_items",
-            "title": "Internal status",
-            "enum": [
-                "unreviewed",
-                "pipeline ready",
-                "processing",
-                "pipeline completed",
-                "release ready",
-                "requires lab review",
-                "no available pipeline",
-                "pipeline error",
-                "unrunnable"
-            ]
-        },
-        "pipeline_error_detail": {
-            "type": "string",
-            "description": "Explanation of why the experiment failed pipeline analysis.",
-            "comment": "should be used on experiments with internal_status:pipeline error",
-            "permission": "import_items",
-            "title": "Pipeline error message"
         }
     },
     "facets": {
@@ -309,7 +248,6 @@
         "replication_type": {
             "title": "Replication type"
         }
-        
     },
     "columns": {
         "accession": {
@@ -404,18 +342,16 @@
         }
     },
     "boost_values": {
-        "accession": 20.0,
-        "@type": 1.0,
+        "accession": 1.0,
         "alternate_accessions": 1.0,
-        "assay_term_name": 20.0,
+        "assay_term_name": 1.0,
         "assay_term_id": 1.0,
-        "assay_title": 20.0,
-        "assay_slims": 5.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "award.title": 1.0,
         "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.term_name": 10.0,
-        "biosample_ontology.classification": 10.0,
+        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.classification": 1.0,
         "biosample_ontology.organ_slims": 1.0,
         "biosample_ontology.cell_slims": 1.0,
         "biosample_ontology.developmental_slims": 1.0,
@@ -429,23 +365,12 @@
         "files.file_format": 1.0,
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
-        "files.assembly": 5.0,
-        "files.replicate.experiment.assay_term_name": 5.0,
-        "files.replicate.experiment.assay_title": 5.0,
         "replicates.library.accession": 1.0,
         "replicates.library.alternate_accessions": 1.0,
         "replicates.library.aliases": 1.0,
         "replicates.library.biosample.accession": 1.0,
         "replicates.library.biosample.alternate_accessions": 1.0,
         "replicates.library.biosample.aliases": 1.0,
-        "replicates.library.biosample.health_status": 2.0,
-        "replicates.library.biosample.age": 15.0,
-        "replicates.library.biosample.age_display": 5.0,
-        "replicates.library.biosample.age_units": 2.0,
-        "replicates.library.biosample.sex": 3.0,
-        "replicates.library.biosample.life_stage": 2.0,
-        "replicates.library.biosample.treatments.treatment_term_name": 3.0,
-        "replicates.library.biosample.treatments.duration": 3.0,
         "replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
         "replicates.library.biosample.donor.accession": 1.0,
         "replicates.library.biosample.donor.alternate_accessions": 1.0,
@@ -459,35 +384,31 @@
         "replicates.antibody.product_id": 1.0,
         "replicates.antibody.aliases": 1.0,
         "replicates.antibody.dbxrefs": 1.0,
-        "replicates.library.biosample.phase": 2.0,
-        "replicates.library.biosample.donor.organism.name": 10.0,
+        "replicates.library.biosample.phase":2.0,
+        "replicates.library.biosample.donor.organism.name": 1.0,
         "replicates.library.biosample.donor.organism.scientific_name": 1.0,
+        "replicates.library.biosample.donor.organism.taxon_id": 1.0,
         "replicates.library.notes": 1.0,
         "replicates.library.nucleic_acid_term_name": 1.0,
-        "award.title": 1.0,
-        "award.project": 8.0,
+        "award.project": 1.0,
         "award.name": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,
         "submitted_by.last_name": 1.0,
-        "status": 1.0,
         "lab.institute_name": 1.0,
         "lab.institute_label": 1.0,
-        "lab.title": 5.0,
+        "lab.title": 1.0,
         "possible_controls.accession": 1.0,
         "possible_controls.alternate_accessions": 1.0,
-        "target.aliases": 3.0,
-        "target.genes.symbol": 10.0,
-        "target.label": 10.0,
+        "target.aliases": 1.0,
+        "target.genes.symbol": 1.0,
+        "target.label": 1.0,
         "target.dbxref": 1.0,
-        "target.organism.name": 5.0,
-        "target.organism.scientific_name": 5.0,
+        "target.organism.name": 1.0,
+        "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
         "notes": 1.0,
-        "internal_tags": 5.0,
-        "biosample_summary": 12.0,
-        "description": 8.0,
-        "replication_type": 1.0
+        "internal_tags": 1.0
     },
-    "changelog": "/profiles/changelogs/experiment.md"
+    "changelog": "/profiles/changelogs/functional_characterization_experiment.md"
 }

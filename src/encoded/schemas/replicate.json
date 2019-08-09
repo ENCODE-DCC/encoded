@@ -48,7 +48,7 @@
             "description": "The experiment the replicate belongs to.",
             "comment": "See experiment.json for available identifiers.",
             "type": "string",
-            "linkTo": "Experiment"
+            "linkTo": ["Experiment", "FunctionalCharacterizationExperiment"]
         },
         "library": {
             "title": "Library",
