@@ -31,7 +31,7 @@ const qcAttachmentProperties = {
     ],
     ChipAlignmentEnrichmentQualityMetric: [
         { cross_correlation_plot: 'Cross-correlation plot' },
-        { fingerprint_plot: 'Fingerprint plot' },
+        { jsd_plot: 'Jensen-Shannon distance plot' },
         { gc_bias_plot: 'GC bias plot' },
     ],
     ChipReplicationQualityMetric: [
