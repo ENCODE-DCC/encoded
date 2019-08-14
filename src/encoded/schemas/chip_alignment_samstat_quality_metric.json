@@ -103,9 +103,8 @@
         },
         "properly_paired_reads_qc_failed": {
             "title": "Number of properly paired reads failing QC",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100.0
+            "type": "integer",
+            "minimum": 0
         },
         "pct_properly_paired_reads": {
             "title": "Percentage of properly paired reads passing QC",
