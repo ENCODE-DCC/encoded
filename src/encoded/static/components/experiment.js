@@ -284,7 +284,15 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
     const experimentType = context['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
-    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
+    let displayType;
+    let displayTypeBreadcrumbs;
+    if (isFunctionalExperiment) {
+        displayTypeBreadcrumbs = 'Functional Characterization Experiments';
+        displayType = 'Functional Characterization Experiment';
+    } else {
+        displayTypeBreadcrumbs = 'Experiments';
+        displayType = 'Experiment';
+    }
 
     const replicates = context.replicates && context.replicates.length > 0 ? context.replicates : [];
     if (replicates.length > 0) {
@@ -397,7 +405,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
     });
     const crumbs = [
-        { id: displayType },
+        { id: displayTypeBreadcrumbs },
         { id: assayName, query: assayQuery, tip: assayName },
         { id: names.length > 0 ? names : null, query: nameQuery, tip: nameTip },
     ];
