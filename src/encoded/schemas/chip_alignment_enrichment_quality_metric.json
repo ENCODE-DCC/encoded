@@ -118,7 +118,7 @@
             }
         },
         "auc": {
-            "title": "AUC of the fingerprint",
+            "title": "AUC of the plot",
             "description": "The “area under the curve”, with a maximum value of 0.5. Lower values generally indicate higher and more focal enrichment.",
             "type": "number",
             "minimum": 0,
@@ -192,8 +192,8 @@
             "type": "number",
             "minimum": 0
         },
-        "fingerprint_plot": {
-            "title": "Fingerprint plot",
+        "jsd_plot": {
+            "title": "Jensen-Shannon distance plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

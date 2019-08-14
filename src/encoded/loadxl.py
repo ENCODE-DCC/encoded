@@ -104,7 +104,7 @@ IS_ATTACHMENT = [
     'IDR_parameters_rep2_pr',
     'IDR_parameters_pool_pr',
     'cross_correlation_plot',
-    'fingerprint_plot',
+    'jsd_plot',
     'gc_bias_plot',
     'IDR_dispersion_plot',
 ]
