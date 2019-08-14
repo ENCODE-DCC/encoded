@@ -8,7 +8,7 @@ import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
-import { PanelLookup, DisplayAsJson } from './objectutils';
+import { PanelLookup, DisplayAsJson, AlternateAccession } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
 import Status from './status';
@@ -396,6 +396,9 @@ class PipelineComponent extends React.Component {
                     <div className="col-sm-12">
                         {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
                         <h2>{context.title}</h2>
+                        <div className="replacement-accessions">
+                            <AlternateAccession altAcc={context.alternate_accessions} />
+                        </div>
                         {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
