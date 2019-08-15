@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
+import { PanelBody } from '../libs/ui/panel';
 
 const Platform = (props) => {
     const context = props.context;
-    const itemClass = globals.itemClass(context, 'view-detail key-value');
+    const itemClass = globals.itemClass(context, 'key-value');
     return (
-        <div className="panel">
+        <PanelBody>
             <dl className={itemClass}>
                 <div data-test="name">
                     <dt>Platform name</dt>
@@ -28,7 +29,7 @@ const Platform = (props) => {
                     </dd>
                 </div>
             </dl>
-        </div>
+        </PanelBody>
     );
 };
 

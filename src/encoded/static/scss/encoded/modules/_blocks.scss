@@ -10,6 +10,10 @@
 
     @media screen and (min-width: $screen-md-min) {
         margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-items: stretch;
     }
 
     &.richtextblock {

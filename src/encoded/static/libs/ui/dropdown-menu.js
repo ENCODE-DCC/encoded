@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 // <li><a href="#">Third</a></li>
 
 export const DropdownMenu = props => (
-    <ul className="dropdown-menu" aria-labelledby={props.label}>
+    <ul className="dropdown__menu" aria-labelledby={props.label}>
         {props.children.map((child, i) => <li key={i}>{child}</li>)}
     </ul>
 );

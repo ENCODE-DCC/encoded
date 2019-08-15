@@ -121,10 +121,10 @@ export class ModalHeader extends React.Component {
         }
 
         return (
-            <div className={`modal-header${addCss ? ` ${addCss}` : ''}`} id={labelId}>
-                {closeModal ? <button type="button" className="close" aria-label="Close" onClick={this.closeModal}><span aria-hidden="true">&times;</span></button> : null}
-                {titleRender ? <div>{titleRender}</div> : null}
+            <div className={`modal__header${addCss ? ` ${addCss}` : ''}`} id={labelId}>
+                {titleRender ? <div className="modal__header-title">{titleRender}</div> : null}
                 {this.props.children}
+                {closeModal ? <button type="button" className="modal__header-close" aria-label="Close" onClick={this.closeModal}><span aria-hidden="true">&times;</span></button> : null}
             </div>
         );
     }
@@ -156,7 +156,7 @@ ModalHeader.defaultProps = {
 
 
 export const ModalBody = props => (
-    <div className={`modal-body${props.addCss ? ` ${props.addCss}` : ''}`}>
+    <div className={`modal__body${props.addCss ? ` ${props.addCss}` : ''}`}>
         {props.children}
     </div>
 );
@@ -233,14 +233,14 @@ export class ModalFooter extends React.Component {
         // old Javascript characteristic.
         if (closeModal) {
             const closeBtnFunc = (typeof closeModal === 'function') ? closeModal : (typeof closeModal === 'boolean' ? this.props.c_closeModal : null);
-            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button className="btn btn-info" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
+            closeBtnComponent = (typeof closeModal === 'object') ? closeModal : <button className="btn btn-default" onClick={closeBtnFunc} id={this.props.closeId}>{cancelTitle}</button>;
         }
 
         return (
-            <div className={`modal-footer${addCss ? ` ${addCss}` : ''}`}>
+            <div className={`modal__footer${addCss ? ` ${addCss}` : ''}`}>
                 {this.props.children ? this.props.children : null}
                 {submitBtnComponent || closeBtnComponent ?
-                    <div className="modal-footer-controls">
+                    <div className="modal__footer-controls">
                         {closeBtnComponent}
                         {submitBtnComponent}
                     </div>
@@ -402,7 +402,7 @@ export class Modal extends React.Component {
             return child;
         });
 
-        return actuator ? <span>{actuator}</span> : null;
+        return actuator ? <React.Fragment>{actuator}</React.Fragment> : null;
     }
 }
 

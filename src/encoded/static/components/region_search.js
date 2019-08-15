@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
 import { BrowserSelector } from './objectutils';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -215,29 +215,27 @@ class AdvSearch extends React.Component {
                 <PanelBody>
                     <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.handleOnFocus} >
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
-                        <div className="form-group">
-                            <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
-                            <div className="input-group input-group-region-input">
-                                <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
-                                {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                    <FetchedData loadingComplete>
-                                        <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
-                                        <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
-                                    </FetchedData>
-                                : null}
-                                <div className="input-group-addon input-group-select-addon">
-                                    <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
-                                        {regionGenomes.map(genomeId =>
-                                            <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
-                                        )}
-                                    </select>
-                                </div>
-                                {context.notification ?
-                                    <p className="input-region-error">{context.notification}</p>
-                                : null}
-                            </div>
+                        <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
+                        <div className="adv-search-form__input">
+                            <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
+                            {(this.state.showAutoSuggest && this.state.searchTerm) ?
+                                <FetchedData loadingComplete>
+                                    <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
+                                </FetchedData>
+                            : null}
+                            <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
+                                {regionGenomes.map(genomeId =>
+                                    <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
+                                )}
+                            </select>
                         </div>
-                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
+                        {context.notification ?
+                            <p className="adv-search-form__notification">{context.notification}</p>
+                        : null}
+                        <div className="adv-search-form__submit">
+                            <input type="submit" value="Search" className="btn btn-info" />
+                        </div>
                     </form>
                     {context.coordinates ?
                         <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
@@ -303,65 +301,61 @@ class RegionSearch extends React.Component {
 
         return (
             <div>
-                <h2>Region search</h2>
+                <h1>Region search</h1>
                 <AdvSearch {...this.props} />
                 {notification === 'Success' ?
-                    <div className="panel data-display main-panel">
-                        <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3">
-                                <FacetList
-                                    {...this.props}
-                                    facets={facets}
-                                    filters={filters}
-                                    searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                    onFilter={this.onFilter}
-                                />
-                            </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9">
-                                <div>
-                                    <h4>
-                                        Showing {results.length} of {total}
-                                    </h4>
-                                    <div className="results-table-control">
-                                        {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                    <div className="search-results">
+                        <div className="search-results__facets">
+                            <FacetList
+                                {...this.props}
+                                facets={facets}
+                                filters={filters}
+                                searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                onFilter={this.onFilter}
+                            />
+                        </div>
+                        <div className="search-results__result-list">
+                            <h4>
+                                Showing {results.length} of {total}
+                            </h4>
+                            <div className="results-table-control">
+                                {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                        <a
+                                            rel="nofollow"
+                                            className="btn btn-info btn-sm"
+                                            href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                            onClick={this.onFilter}
+                                        >
+                                            View All
+                                        </a>
+                                :
+                                    <span>
+                                        {results.length > 25 ?
                                                 <a
-                                                    rel="nofollow"
                                                     className="btn btn-info btn-sm"
-                                                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                                    href={trimmedSearchBase || '/region-search/'}
                                                     onClick={this.onFilter}
                                                 >
-                                                    View All
+                                                    View 25
                                                 </a>
-                                        :
-                                            <span>
-                                                {results.length > 25 ?
-                                                        <a
-                                                            className="btn btn-info btn-sm"
-                                                            href={trimmedSearchBase || '/region-search/'}
-                                                            onClick={this.onFilter}
-                                                        >
-                                                            View 25
-                                                        </a>
-                                                : null}
-                                            </span>
-                                        }
-
-                                        {visualizeKeys && context.visualize_batch ?
-                                            <BrowserSelector
-                                                visualizeCfg={context.visualize_batch}
-                                                disabled={visualizeDisabled}
-                                                title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                            />
                                         : null}
+                                    </span>
+                                }
 
-                                    </div>
-                                </div>
+                                {visualizeKeys && context.visualize_batch ?
+                                    <BrowserSelector
+                                        visualizeCfg={context.visualize_batch}
+                                        disabled={visualizeDisabled}
+                                        title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
+                                    />
+                                : null}
 
-                                <hr />
-                                <ul className="nav result-table" id="result-table">
-                                    {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
-                                </ul>
                             </div>
+
+                            <hr />
+                            <ul className="nav result-table" id="result-table">
+                                {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
+                            </ul>
                         </div>
                     </div>
                 : null}

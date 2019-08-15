@@ -1,3 +1,7 @@
+$panel-heading-inset: 10px; // Number of pixels padding inside panel heading
+$panel-body-inset:    10px; // Number of pixels padding inside panel body
+
+
 /* Panels */
 .panel {
     background-color: #fff;
@@ -27,11 +31,11 @@
 
 .panel-heading {
     position: relative;
-    padding: 10px;
+    padding: $panel-heading-inset;
 }
 
 .panel-body {
-    padding: 10px;
+    padding: $panel-body-inset;
 }
 
 .panel-body-with-header {
@@ -70,7 +74,19 @@
 
 .panel h3, .panel h4 {color: #0A253D;}
 
-.view-detail h3 {line-height: 24.5px;}
+.view-detail {
+    overflow: hidden;
+
+    h3 {
+        line-height: 24.5px;
+    }
+
+    // Any JSON object output.
+    pre {
+        margin: 20px;
+        white-space: pre-wrap;
+    }
+}
 
 /* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
 .panel a[href^="http"]:after, td a[href^="http"]:after      {
@@ -102,45 +118,49 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 
-.split-panel {
+.panel__split {
     display: block;
+    padding: 0;
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
         flex-wrap: nowrap;
     }
 
-    @at-root #{&}__part {
+    @at-root #{&}-element {
         padding-left: 10px;
         padding-right: 10px;
 
         @media screen and (min-width: $screen-md-min) {
-            flex-grow: 0;
-            flex-shrink: 1;
+            flex: 0 1 50%;
             border-left: 1px solid #c0c0c0;
 
             &:first-child {
                 border-left: 0;
             }
         }
-
-        @at-root #{&}--p50 {
-            @media screen and (min-width: $screen-md-min) {
-                flex-basis: 50%;
-            }
-        }
     }
 
-    @at-root #{&}__heading {
+    @at-root #{&}-heading {
         position: relative;
-        margin-right: -10px;
-        margin-left: -10px;
+        margin-left: -$panel-body-inset;
+        margin-right: -$panel-body-inset;
         padding: 10px;
         background-color: #d8d8d8;
 
         h4 {
             margin: 0;
         }
+    }
+}
+
+
+// <PanelBody> class for below split panel area.
+.panel__below-split {
+    border-top: 1px solid #c0c0c0;
+
+    h4 {
+        margin: 0px 0px 10px;
     }
 }
 
@@ -235,6 +255,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             display: flex;
             flex-wrap: wrap;
         }
+
+        .document {
+            @media screen and (min-width: $screen-sm-min) {
+                flex: 0 1 50%;
+            }
+
+            @media screen and (min-width: $screen-md-min) {
+                flex: 0 1 33.33%;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex: 0 1 25%;
+            }
+        }
     }
 }
 
@@ -244,16 +278,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .attachment-panel-outer {
     padding: 3px 6px;
-}
-
-.attachment-panel-inner {
-    padding: 0 5px;
-    flex-wrap: wrap;
-}
-
-.attachment-panel {
-    flex: 0 1 48%;
-    margin: 5px;
 }
 
 .type-QualityMetric.view-detail {
@@ -417,6 +441,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 0 5px;
 }
 
+$file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-controls
+
 .file-gallery-controls {
     display: flex;
     align-items: center;
@@ -431,20 +457,23 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     @at-root #{&}__assembly-selector {
         flex: 0 1 auto;
-        vertical-align: bottom;
         margin-right: 5px;
+
+        select {
+            height: $file-gallery-controls-height + 2;
+        }
     }
 
     @at-root #{&}__visualization-selector {
         select {
             display: inline-block;
+            height: $file-gallery-controls-height + 2;
             width: auto;
             margin-right: 5px;
-            vertical-align: top;
         }
 
         button {
-            height: 34px;
+            height: $file-gallery-controls-height;
             vertical-align: top;
         }
     }
@@ -560,6 +589,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     h4 {
         margin: 0 0 0 40px;
+        text-align: left;
     }
 
     h5 {
@@ -656,11 +686,13 @@ $nav-tab-border-radius: 4px;
     }
 }
 
-.nav.nav-tabs {
+.nav-tabs {
     display: flex;
+    margin: 0;
+    padding: 5px 5px 0;
     align-items: flex-end;
     position: relative;
-    padding: 5px 40px 0;
+    list-style: none;
     z-index: 1;
     top: 1px;
     border: none;
@@ -669,9 +701,12 @@ $nav-tab-border-radius: 4px;
     }
 
     > li {
+        display: block;
         flex: 0 1 auto;
 
         a, a:focus {
+            display: block;
+            text-decoration: none;
             margin: 0;
             padding: 5px 20px;
             border-top: 3px solid transparent;

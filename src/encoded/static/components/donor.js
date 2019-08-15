@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
@@ -10,9 +10,9 @@ import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { requestObjects, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
+import { requestObjects, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
-import { PickerActions } from './search';
+import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleTable, ExperimentTable } from './typeutils';
@@ -566,17 +566,14 @@ class DonorComponent extends React.Component {
 
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.accession}</h2>
-                        <div className="replacement-accessions">
-                            <AlternateAccession altAcc={context.alternate_accessions} />
-                        </div>
-                        {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session })}
-                        <DisplayAsJson />
+                <header>
+                    <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h2>{context.accession}</h2>
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
+                    <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'experiment-audit', except: context['@id'] }} />
+                    {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
@@ -644,30 +641,30 @@ const DonorListingComponent = (props, reactContext) => {
     ].filter(Boolean);
 
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">{organismTitle}</p>
-                    <p className="type">{` ${result.accession}`}</p>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                </div>
-                <div className="accession">
-                    <a href={result['@id']}>
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">
                         <i>{result.organism.scientific_name}</i>
                         {details.length > 0 ? ` (${details.join(', ')})` : null}
                     </a>
+                    <div className="result-item__data-row">
+                        {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
+                        {result.external_ids && result.external_ids.length ?
+                            <div>
+                                <strong>External resources: </strong>
+                                <DbxrefList context={result} dbxrefs={result.external_ids} />
+                            </div>
+                        : null}
+                    </div>
                 </div>
-                <div className="data-row">
-                    {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
-                    {result.external_ids && result.external_ids.length > 0 ?
-                        <div>
-                            <strong>External resources: </strong>
-                            <DbxrefList context={result} dbxrefs={result.external_ids} />
-                        </div>
-                    : null}
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">{organismTitle}</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
+                <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>

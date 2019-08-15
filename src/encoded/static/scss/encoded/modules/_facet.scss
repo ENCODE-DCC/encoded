@@ -93,11 +93,21 @@
     position: relative;
     padding-bottom: 0;
     word-break: break-word;
-    .term-list {
-        max-height: 85px;
-        overflow-y: scroll;
+
+    @at-root #{&}__content {
+        margin: 0;
         padding: 5px 0;
         will-change: transform;
+    }
+    
+    @at-root #{&}__terms {
+        position: relative;
+
+        .term-list {
+            max-height: 85px;
+            overflow-y: scroll;
+            padding: 5px 0;
+        }
     }
 }
 
@@ -162,6 +172,7 @@
         align-self: stretch;
         text-align: left;
         color: #000;
+        text-decoration: none;
 
         &:hover, &:focus {
             color: #000;
@@ -171,7 +182,7 @@
 
     // Text part of facet term
     @at-root #{&}__text {
-        flex: 0 1 auto;
+        flex: 1 1 auto;
     }
 
     @at-root #{&}__count {
@@ -253,6 +264,11 @@
     h5 {
         margin-bottom: 10px;
     }
+
+    @at-root #{&}__controls {
+        display: flex;
+        margin: 10px 0;
+    }
 }
 
 .date-selector-btn {
@@ -261,6 +277,7 @@
     border: none;
     padding-left: 0;
     margin-left: 5px;
+    font-size: 1rem;
     &:hover {
         text-decoration: underline;
     }
@@ -282,11 +299,11 @@
     align-items: flex-end;
     .date-selector-module {
         flex: 0 0 45%;
-    }
-}
 
-.apply-date-selector {
-    margin: 10px auto;
+        h6 {
+            margin: 10px 0;
+        }
+    }
 }
 
 .reset-date-selector {
@@ -454,113 +471,6 @@
 
 div.meta-status {
     text-align: right;
-}
-
-.highlight-row {
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.data-row {
-    margin-left: 25px;
-    margin-bottom: 10px;
-}
-
-.data-row ul {
-    text-decoration: none;
-    list-style-type: none;
-    padding: 0px;
-    margin-left: 25px;
-}
-
-.data-row ul li {
-    display: inline;
-    list-style-type: none;
-    border: none;
-    margin-right: 5px;
-}
-
-.data-row ul li a{
-    display: inline;
-}
-
-.data-row img {
-    max-width: 128px;
-    height: auto;
-    margin: auto;
-    display: block;
-}
-
-.result-table {
-    position: relative;
-    z-index: 10;
-    list-style-type: none;
-    margin: 0;
-    padding: 10px;
-    overflow: hidden;
-    border: 1px solid #a0a0a0;
-
-    li {
-        margin-top: 10px;
-        border-bottom: 1px solid #E8E8E8;
-        margin-bottom: 10px;
-        font-size: 0.9rem;
-
-        &:first {
-            margin-top: 0px;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        &:last-child {
-            border-bottom: none;
-        }
-    }
-
-    &:before {
-        content: none;
-        display: block;
-    }
-
-    .pull-right {
-        position: relative;
-        z-index: 2;
-    }
-
-    &.result-table-tabbed {
-        border-top: 0;
-    }
-}
-
-.result-item {
-    display: flex;
-    flex-wrap: nowrap;
-
-    @at-root #{&}__data {
-        flex: 1 1 auto;
-        position: relative;
-    }
-
-    @at-root #{&}__cart-overlay {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        pointer-events: none;
-        background-color: rgba(255, 255, 255, 0.5);
-        z-index: 3;
-    }
-
-    // Cart control in search results
-    @at-root #{&}__cart-control {
-        flex: 0 0 35px;
-
-        .cart__toggle {
-            margin-left: auto;
-        }
-    }
 }
 
 .main-panel {

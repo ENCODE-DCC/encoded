@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
 import DataColors from './datacolors';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
 
 
 // Maximum number of facet charts to display.
@@ -187,12 +187,10 @@ class Collection extends React.Component {
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{context.title}</h2>
-                        {context.schema_description ? <h4 className="collection-sub-header">{context.schema_description}</h4> : null}
-                    </div>
-                    <DisplayAsJson />
+                <header>
+                    <h1>{context.title}</h1>
+                    {context.schema_description ? <h4 className="collection-sub-header">{context.schema_description}</h4> : null}
+                    <ItemAccessories item={context} />
                 </header>
                 <Panel>
                     <PanelHeading addClasses="collection-heading">

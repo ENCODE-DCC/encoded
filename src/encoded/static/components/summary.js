@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
 import { FacetList, ViewControls, ClearFilters } from './search';

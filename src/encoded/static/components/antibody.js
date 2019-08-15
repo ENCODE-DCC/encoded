@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import _ from 'underscore';
 import { auditDecor } from './audit';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
-import { AlternateAccession, DisplayAsJson } from './objectutils';
-import { PickerActions } from './search';
+import { AlternateAccession, ItemAccessories } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ExperimentTable, BiosampleCharacterizationTable } from './typeutils';
 
@@ -27,19 +27,30 @@ const antibodyStatusOrder = [
 ];
 
 
-const LotComponent = (props, reactContext) => {
-    const context = props.context;
-
+/**
+ * Retrieve, filter, and sort the antibody characterizations associated with an AntibodyLot object.
+ * @param {object} item AntibodyLot object containing characterizations to retrieve
+ * @param {object} reactContext React context from <App>; session and session_properties
+ *
+ * @return {array} AntibodyCharacterization objects ready for display
+ */
+const getAntibodyCharacterizations = (characterizations, reactContext) => {
     // Sort characterization arrays, filtering for the current logged-in and administrative status.
     const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
     const viewableStatuses = getObjectStatuses('AntibodyCharacterization', accessLevel);
-    let characterizations = context.characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
-    characterizations = _(characterizations).sortBy(characterization => ([
+    const filteredCharacterizations = characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
+    return _(filteredCharacterizations).sortBy(characterization => ([
         characterization.target.label,
         characterization.target.organism ? characterization.target.organism.name : characterization.target.investigated_as[0],
     ]));
+};
+
+
+const LotComponent = (props, reactContext) => {
+    const context = props.context;
 
     // Compile the document list
+    const characterizations = getAntibodyCharacterizations(context.characterizations, reactContext);
     const documentSpecs = [
         { documents: characterizations },
     ];
@@ -114,28 +125,25 @@ const LotComponent = (props, reactContext) => {
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.accession}</h2>
-                    <div className="replacement-accessions">
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
-                    <h3>
-                        {targetKeys.length > 0 ?
-                            <span>
-                                Antibody against {Object.keys(targets).map((target, i) => {
-                                    const targetObj = targets[target];
-                                    return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{` ${targetObj.label}`}</span>;
-                                })}
-                            </span>
-                        :
-                            <span>Antibody</span>
-                        }
-                    </h3>
-                    {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
-                    <DisplayAsJson />
+            <header>
+                <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>{context.accession}</h1>
+                <div className="replacement-accessions">
+                    <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
+                <h3>
+                    {targetKeys.length > 0 ?
+                        <span>
+                            Antibody against {Object.keys(targets).map((target, i) => {
+                                const targetObj = targets[target];
+                                return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{` ${targetObj.label}`}</span>;
+                            })}
+                        </span>
+                    :
+                        <span>Antibody</span>
+                    }
+                </h3>
+                <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'antibody-audit' }} />
             </header>
             {props.auditDetail(context.audit, 'antibody-audit', { session: reactContext.session })}
 
@@ -523,7 +531,24 @@ CharacterizationDetail.defaultProps = {
 };
 
 
+/**
+ * Display an antibody characterization object.
+ */
+const AntibodyCharacterization = ({ context }) => {
+    const documentSpecs = [
+        { documents: [context] },
+    ];
+    return <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />;
+};
+
+AntibodyCharacterization.propTypes = {
+    /** AntibodyCharacterization object (not inside AntibodyLot) */
+    context: PropTypes.object.isRequired,
+};
+
+
 // Parts of individual document panels
+globals.contentViews.register(AntibodyCharacterization, 'AntibodyCharacterization');
 globals.panelViews.register(Document, 'AntibodyCharacterization');
 globals.documentViews.header.register(CharacterizationHeader, 'AntibodyCharacterization');
 globals.documentViews.caption.register(CharacterizationCaption, 'AntibodyCharacterization');
@@ -668,30 +693,30 @@ const ListingComponent = (props, reactContext) => {
     });
 
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Antibody</p>
-                    <p className="type">{` ${result.accession}`}</p>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                </div>
-                <div className="accession">
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
                     {Object.keys(targetTree).map(target =>
                         <div key={target}>
-                            <a href={result['@id']}>
+                            <a href={result['@id']} className="result-item__link">
                                 {targetTree[target].target.label}
                                 <span>{' ('}{targetTree[target].target.organism ? <i>{targetTree[target].target.organism.scientific_name}</i> : <span>{targetTree[target].target.investigated_as[0]}</span>}{')'}</span>
                             </a>
                             <StatusIndicators targetTree={targetTree} target={target} />
                         </div>
                     )}
+                    <div className="result-item__data-row">
+                        <div><strong>Source: </strong>{result.source.title}</div>
+                        <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
+                    </div>
                 </div>
-                <div className="data-row">
-                    <div><strong>Source: </strong>{result.source.title}</div>
-                    <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Antibody</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
+                <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>

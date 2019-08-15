@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import { SortTablePanel, SortTable } from '../sorttable';
 import Status from '../status';
 import { setCartNameIdentifierAndSave, cartOperationInProgress } from './actions';
@@ -381,7 +381,7 @@ class NameCartButtonComponent extends React.Component {
                                 >
                                     {actuatorTitle}
                                 </button>}
-                            closeModal={<button className="btn btn-info" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
+                            closeModal={<button className="btn btn-default" onClick={this.handleClose}>{inProgress ? <span>Close</span> : <span>Cancel</span>}</button>}
                             addCss="cart-rename__footer-controls"
                         />
                     </Modal>

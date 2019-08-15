@@ -1,12 +1,3 @@
-/* top padding for small screens */
-#content {
-    padding-top: 0;
-    
-    @media screen and (min-width: $screen-md-min) {
-        padding-top: 75px;
-    }
-}
-
 .app-version {
     height: $appVersionHeight;
     line-height: $appVersionHeight;
@@ -27,6 +18,11 @@
         display: flex;
         padding: 15px 10px 0;
         flex-direction: row-reverse;
+
+        @media screen and (min-width: $screen-sm-min) {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 
     .footer-links-section {

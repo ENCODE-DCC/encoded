@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
-import { Panel } from '../libs/bootstrap/panel';
 
 // This module supports the display of an object's audits in the form of an indicator button that
 // shows a summary of the categories of audits in the current object. Currently, we have four
@@ -156,12 +155,8 @@ ObjectAuditIcon.defaultProps = {
 const markdownRegex = /{(.+?)\|(.+?)}/g;
 
 
-/**
- * Render audit-detail text, converting an extremely simplified markdown to links. If the text
- * doesn't contain any simplified markdown, convert anything that looks like a path to links.
- * Otherwise, just render the text without any link conversion.
- */
-const AuditRenderDetail = ({ detail }) => {
+// Display details text with embedded links. This gets displayed in each row of the audit details.
+const DetailEmbeddedLink = ({ detail }) => {
     let linkMatches = markdownRegex.exec(detail);
     if (linkMatches) {
         // `detail` has at least one "markdown" sequence, so treat the whole thing as marked-down
@@ -210,7 +205,7 @@ const AuditRenderDetail = ({ detail }) => {
     return detail;
 };
 
-AuditRenderDetail.propTypes = {
+DetailEmbeddedLink.propTypes = {
     /** Audit detail text, possibly containing @ids or marks to turn into links */
     detail: PropTypes.string.isRequired,
 };
@@ -225,40 +220,46 @@ class AuditGroup extends React.Component {
 
     detailSwitch() {
         // Click on the detail disclosure triangle
-        this.setState({ detailOpen: !this.state.detailOpen });
+        this.setState(prevState => (
+            ({ detailOpen: !prevState.detailOpen })
+        ));
     }
 
     render() {
         const { group, auditLevelName } = this.props;
         const level = auditLevelName.toLowerCase();
         const { detailOpen } = this.state;
-        const alertClass = `audit-detail-${level}`;
-        const alertItemClass = `panel-collapse collapse audit-item-${level}${detailOpen ? ' in' : ''}`;
+        const alertClass = `audit-detail__${level}`;
+        const alertItemClass = `audit-item-${level}`;
         const iconClass = `icon audit-icon-${level}`;
         const categoryName = group[0].category.uppercaseFirstChar();
 
         return (
             <div className={alertClass}>
-                <div className={`icon audit-detail-trigger-${level}`}>
-                    <button onClick={this.detailSwitch} className="collapsing-title">
-                        {collapseIcon(!detailOpen)}
-                    </button>
-                </div>
-                <div className="audit-detail-info">
-                    <i className={iconClass} />
-                    <strong>&nbsp;{categoryName}</strong>
-                    <div className="btn-info-audit">
-                        <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-question-circle" /></a>
+                <div className="audit-detail__summary">
+                    <div className={`icon audit-detail__trigger--${level}`}>
+                        <button onClick={this.detailSwitch} className="collapsing-title">
+                            {collapseIcon(!detailOpen)}
+                        </button>
+                    </div>
+                    <div className="audit-detail__info">
+                        <i className={iconClass} />
+                        <strong>&nbsp;{categoryName}</strong>
+                        <div className="btn-info-audit">
+                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-question-circle" /></a>
+                        </div>
                     </div>
                 </div>
-                <div className="audit-details-section">
-                    <div className="audit-details-decoration" />
-                    {group.map((audit, i) =>
-                        <div className={alertItemClass} key={i} role="alert">
-                            <AuditRenderDetail detail={audit.detail} />
-                        </div>
-                    )}
-                </div>
+                {this.state.detailOpen ?
+                    <div className="audit-details-section">
+                        <div className="audit-details-decoration" />
+                        {group.map((audit, i) =>
+                            <div className={alertItemClass} key={i} role="alert">
+                                <DetailEmbeddedLink detail={audit.detail} />
+                            </div>
+                        )}
+                    </div>
+                : null}
             </div>
         );
     }
@@ -368,7 +369,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
         if (auditsDisplayed(audits, session)) {
             // Calculate the class of the indicator button based on whether the audit detail panel
             // is open or not.
-            const indicatorClass = `audit-indicators btn btn-info${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
+            const indicatorClass = `audit-indicators btn btn-sm${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
@@ -391,7 +392,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
 
             // First loop by audit level, then by audit group
             return (
-                <Panel addClasses="audit-details" id={id.replace(/\W/g, '')} aria-hidden={!this.state.auditDetailOpen}>
+                <div className="audit-detail" id={id.replace(/\W/g, '')} aria-hidden={!this.state.auditDetailOpen}>
                     {sortedAuditLevelNames.map((auditLevelName) => {
                         if (loggedIn || auditLevelName !== 'INTERNAL_ACTION') {
                             const audit = audits[auditLevelName];
@@ -411,7 +412,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
                         }
                         return null;
                     })}
-                </Panel>
+                </div>
             );
         }
         return null;

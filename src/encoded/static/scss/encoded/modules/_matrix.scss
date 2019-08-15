@@ -20,6 +20,7 @@ $row-data-header-width: 200px;
 .matrix {
     border-collapse: separate;
     max-width: none;
+    border-spacing: 0;
 	
     @at-root #{&}__header {
         border-bottom: 1px solid #eeeeee;
@@ -132,6 +133,7 @@ $row-data-header-width: 200px;
             position: -webkit-sticky;
             position: sticky;
             left: 0;
+            font-size: 1rem;
             border-bottom: 1px solid #fff;
 
             &:after {
@@ -158,9 +160,11 @@ $row-data-header-width: 200px;
             text-align: center;
             border-bottom: 1px solid #f0f0f0;
             border-left: 1px solid #f0f0f0;
+            font-size: 1rem;
 
             > a {
                 display: block;
+                text-decoration: none;
 
                 &:hover {
                     text-decoration: none;
@@ -191,9 +195,14 @@ $row-data-header-width: 200px;
                 position: -webkit-sticky;
                 position: sticky;
                 left: 0;
+                z-index: 1; // For focus outline
 
                 &:after {
                     @include matrix-freeze-shadow;
+                }
+
+                button {
+                    margin-left: 5px;
                 }
             }
         }
@@ -226,9 +235,10 @@ $row-data-header-width: 200px;
             position: -webkit-sticky;
             position: sticky;
             left: 0;
-            border-bottom: 1px solid #fff;
             background-color: #fff;
             z-index: 1;
+            text-align: left;
+            font-size: 1.1rem;
 
             &:after {
                 @include matrix-freeze-shadow();
@@ -242,8 +252,8 @@ $row-data-header-width: 200px;
 
                 & > a {
                     flex: 0 1 auto;
-                    font-size: 1.1rem;
                     font-weight: bold;
+                    text-decoration: none;
                 }
             }
         }
@@ -263,18 +273,17 @@ $row-data-header-width: 200px;
         > td {
             padding: 0 !important;
             border-left: 1px solid #f0f0f0;
-            border-bottom: 1px solid #fff;
+            font-size: 1rem;
 
             &:last-child > div, &:last-child > a {
                 border-top-right-radius: 14px;
             }
 
             > div, > a {
-                display: table-cell;
-                width: $data-cell-width;
+                display: block;
                 height: $row-category-cell-height;
+                line-height: $row-category-cell-height;
                 text-align: center;
-                vertical-align: middle;
                 font-weight: normal;
                 font-size: 0.9rem;
                 color: #fff;

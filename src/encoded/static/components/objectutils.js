@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import { CartToggle } from './cart';
 import * as globals from './globals';
 
 // Display information on page as JSON formatted data
@@ -25,7 +26,7 @@ export class DisplayAsJson extends React.Component {
 
     render() {
         return (
-            <button className="convert-to-json" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
+            <button className="btn btn-info btn-sm" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
         );
     }
 }
@@ -542,7 +543,7 @@ export class BrowserSelector extends React.Component {
         const assemblyList = _(Object.keys(visualizeCfg)).sortBy(assembly => _(globals.assemblyPriority).indexOf(assembly));
 
         return (
-            <div className="browser-selector__actuator">
+            <React.Fragment>
                 <button onClick={this.openModal} disabled={disabled} className="btn btn-info btn-sm" data-test="visualize">{title ? <span>{title}</span> : <span>Visualize</span>}</button>
                 {this.state.selectorOpen ?
                     <Modal closeModal={this.closeModal} addClasses="browser-selector__modal">
@@ -586,7 +587,7 @@ export class BrowserSelector extends React.Component {
                         <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                     </Modal>
                 : null}
-            </div>
+            </React.Fragment>
         );
     }
 }
@@ -795,4 +796,46 @@ DocTypeTitle.defaultProps = {
 
 DocTypeTitle.contextTypes = {
     profilesTitles: PropTypes.object,
+};
+
+
+/**
+ * Display a block of accessory controls on object-display pages, e.g. the audit indicator button.
+ */
+export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) => (
+    <div className="item-accessories">
+        <div className="item-accessories--left">
+            {audit ?
+                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, except: audit.except })
+            : null}
+        </div>
+        <div className="item-accessories--right">
+            <DisplayAsJson />
+            {hasCartControls ?
+                <CartToggle element={item} />
+            : null}
+        </div>
+    </div>
+);
+
+ItemAccessories.propTypes = {
+    /** Object being displayed that needs these accessories */
+    item: PropTypes.object.isRequired,
+    /** Audit information */
+    audit: PropTypes.shape({
+        auditIndicators: PropTypes.func, // Function to display audit indicators
+        auditId: PropTypes.string, // Audit HTML ID to use for a11y
+        except: PropTypes.string, // Don't link any references to this @id
+    }),
+    /** True if object has cart controls */
+    hasCartControls: PropTypes.bool,
+};
+
+ItemAccessories.defaultProps = {
+    audit: null,
+    hasCartControls: false,
+};
+
+ItemAccessories.contextTypes = {
+    session: PropTypes.object,
 };
