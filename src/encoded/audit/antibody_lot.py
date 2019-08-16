@@ -7,7 +7,7 @@ from .formatter import (
     path_to_text,
 )
 from .conditions import rfa
-def audit_antibody_missing_characterizations
+
 
 @audit_checker('AntibodyLot', frame='object')
 def audit_antibody_dbxrefs_ar(value, system):
@@ -95,7 +95,7 @@ def audit_antibody_missing_characterizations(value, system):
         yield AuditFailure('no secondary characterizations', detail, level='NOT_COMPLIANT')
 
     for lot_review in value['lot_reviews']:
-        if lot_review['detail'] in 
+        if lot_review['detail'] in \
             ['Awaiting a compliant primary and pending review of a secondary characterization.',
              'Awaiting a compliant primary and secondary characterization was not reviewed.',
              'Awaiting a compliant primary and submission of a secondary characterization.',

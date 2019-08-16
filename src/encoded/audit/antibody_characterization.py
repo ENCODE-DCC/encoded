@@ -120,7 +120,7 @@ def audit_antibody_characterization_status(value, system):
         is_pending = True
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
-            detail = 'A lane\'s status of {} in antibody characterization {} is incompatible with antibody characterization\'s status of {}'.format(
+            detail = 'A lane_status of {} in antibody characterization {} is incompatible with antibody characterization\'s status of {}'.format(
                 lane['lane_status'],
                 audit_link(path_to_text(value['@id']), value['@id']),
                 value['status']
@@ -132,7 +132,7 @@ def audit_antibody_characterization_status(value, system):
             has_compliant_lane = True
 
     if has_compliant_lane and value['status'] != 'compliant':
-        detail = 'A lane\'s status of {} in antibody characterization {} is incompatible with antibody characterization status of {}'.format(
+        detail = 'A lane_status of {} in antibody characterization {} is incompatible with antibody characterization status of {}'.format(
             lane['lane_status'],
             audit_link(path_to_text(value['@id']), value['@id']),
             value['status']
