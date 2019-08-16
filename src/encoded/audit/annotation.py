@@ -2,7 +2,6 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-
 from .formatter import audit_link
 
 @audit_checker('Annotation', frame='object')
@@ -15,5 +14,5 @@ def audit_annotation_organism(value, system):
         return
 
     if 'organism' not in value:
-        detail = 'Annotation {} lacks organism inforamtion.'.format(audit_link(value['accession'], value['@id']))
+        detail = 'Annotation {} lacks organism information.'.format(audit_link(value['accession'], value['@id']))
         raise AuditFailure('missing organism', detail, level='INTERNAL_ACTION')

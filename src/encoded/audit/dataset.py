@@ -2,7 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 
 @audit_checker('Dataset', frame=['original_files'])
 def audit_experiment_released_with_unreleased_files(value, system):
@@ -14,8 +17,9 @@ def audit_experiment_released_with_unreleased_files(value, system):
         if f['status'] not in ['released', 'deleted',
                                'revoked', 'replaced',
                                'archived']:
-            detail = 'Released dataset {} '.format(value['@id']) + \
-                     'contains file  {} '.format(f['@id']) + \
-                     'that has not been released.'
+            detail = 'Released dataset {} contains file {} that has not been released.'.format(
+                audit_link(value['accession'], value['@id']),
+                audit_link(path_to_link(f['@id']), f['@id'])
+                )
             yield AuditFailure('mismatched file status', detail, level='INTERNAL_ACTION')
     return

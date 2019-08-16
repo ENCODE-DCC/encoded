@@ -2,6 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 from .conditions import rfa
 def audit_antibody_missing_characterizations
 
@@ -43,10 +47,7 @@ def audit_antibody_missing_characterizations(value, system):
         }
     ]):
         if not value['used_by_biosample_characterizations']:
-            detail = (
-                '{} is an ENCODE4 antibody'
-                'and hasn\'t been linked to any biosample characterizations.'
-            ).format(value['@id'])
+            detail = '{} is an ENCODE4 antibody and hasn\'t been linked to any biosample characterizations.'.format(audit_link(value['accession'], value['@id']))
             yield AuditFailure(
                 'no biosample characterizations linked',
                 detail,
@@ -60,10 +61,7 @@ def audit_antibody_missing_characterizations(value, system):
             } & {r['status'] for r in value['lot_reviews']}
         ):
             return
-        detail = (
-            '{} is an ENCODE4 antibody and hasn\'t been linked to '
-            'any compliant biosample characterizations.'
-        ).format(value['@id'])
+        detail = '{} is an ENCODE4 antibody and hasn\'t been linked to any compliant biosample characterizations.'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure(
             'need one compliant biosample characterization',
             detail,
@@ -97,7 +95,7 @@ def audit_antibody_missing_characterizations(value, system):
         yield AuditFailure('no secondary characterizations', detail, level='NOT_COMPLIANT')
 
     for lot_review in value['lot_reviews']:
-        if lot_review['detail'] in \
+        if lot_review['detail'] in 
             ['Awaiting a compliant primary and pending review of a secondary characterization.',
              'Awaiting a compliant primary and secondary characterization was not reviewed.',
              'Awaiting a compliant primary and submission of a secondary characterization.',

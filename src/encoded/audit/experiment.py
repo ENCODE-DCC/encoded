@@ -92,13 +92,11 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
                 fragmentation_methods_for_experiment.update(library_fragmentation_methods)
             else:
                 detail = (
-                    'Experiment {} contains a library {} '
-                    'lacking the specification of the fragmentation '
-                    'method used to generate it'.format(
-                        value['@id'],
-                        library_id,
-                    )
-                )
+                    'Experiment {} contains a library {}'
+                    ' lacking the specification of the fragmentation method used to generate it'.format(
+                        audit_link(value['accession'], value['@id']),
+                        audit_link(path_to_text(library_id), library_id)
+                    ))
                 yield AuditFailure('missing fragmentation method', detail, level='WARNING')
 
     for library_id, library_fragmentation_methods in fragmentation_methods_by_library.items():
@@ -107,8 +105,8 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
                 'Experiment {} contains library {} generated using {} '
                 'fragmentation methods, which are inconsistent with '
                 'fragmentation methods {} used for other libraries.'.format(
-                    value['@id'],
-                    library_id,
+                    audit_link(value['accession'], value['@id']),
+                    audit_link(path_to_text(library_id), library_id),
                     sorted(list(library_fragmentation_methods)),
                     sorted(list(fragmentation_methods_for_experiment))
                 ))
@@ -194,7 +192,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                             'Control {} file {} ' +
                             'has no associated quality metric, preventing calculation of the read depth.').format(
                                 bam_file['output_type'],
-                                bam_file['@id'])
+                                audit_link(path_to_text(bam_file['@id']), bam_file['@id']))
                         yield AuditFailure('missing control quality metric', detail, level='WARNING')
                         missing_control_quality_metric = True
                     else:
@@ -220,7 +218,8 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
         detail = (
             'Control {} file {} ' +
             'has no target specified.').format(
-                bam_type, bam_id)
+                bam_type,
+                audit_link(path_to_text(bam_file['@id']), bam_file['@id']))
         target_failures.append(AuditFailure('missing target of control experiment', detail, level='WARNING'))
         return target_failures
     if control['@type'][0] == 'Experiment':
@@ -229,7 +228,9 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
                 'Control {} file {} ' +
                 'has a target {} that is neither ' +
                 'Control-human nor Control-mouse.').format(
-                    bam_type, bam_id, control['target']['name'])
+                    bam_type,
+                    audit_link(path_to_text(bam_file['@id']), bam_file['@id']),
+                    control['target']['name'])
             target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
             return target_failures
     else:
@@ -239,7 +240,10 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
                     'Control {} file {} ' +
                     'has a target {} that is neither ' +
                     'Control-human nor Control-mouse.').format(
-                        bam_type, bam_id, target_of_related_dataset['name'])
+                        bam_type,
+                        audit_link(path_to_text(bam_file['@id']), bam_file['@id']),
+                        target_of_related_dataset['name']
+                        )
                 target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
     return target_failures
 
@@ -280,8 +284,8 @@ def generate_control_bam_details_string(control_bam_details):
     to_return = ''
     for (file_id, depth, exp_id) in control_bam_details:
         to_return += 'file {} from control experiment {} has {} usable fragments;'.format(
-            file_id,
-            exp_id,
+            audit_link(path_to_text(file_id), file_id),
+            audit_link(path_to_text(exp_id), exp_id),
             depth
         )
     return to_return[:-1]
@@ -300,7 +304,7 @@ def check_control_read_depth_standards(peaks_file_id,
     if not control_bam_details:
         detail = ('The peaks file {} produced by ENCODE uniformly processing '
                   'ChIP-seq pipeline has no valid control alignments specified.').format(
-                      peaks_file_id
+                      audit_link(path_to_text(peaks_file_id), peaks_file_id)
                   )
         yield AuditFailure('missing control alignments', detail, level='ERROR')
         return
@@ -321,13 +325,15 @@ def check_control_read_depth_standards(peaks_file_id,
         'The minimum ENCODE standard for a control of ChIP-seq assays '
         'targeting {} {} is {} million usable fragments, '
         'the recommended number of usable fragments is > {} million. '
-        '(See /data-standards/chip-seq/ )')
+        '(See {})')
     if 'broad histone mark' in target_investigated_as:
         detail = detail.format(
             'broad histone mark',
             control_to_target,
             35,
-            45)
+            45,
+            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
+            )
         if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
         elif read_depth >= marks['broad']['low'] and read_depth < marks['broad']['minimal']:
@@ -339,7 +345,9 @@ def check_control_read_depth_standards(peaks_file_id,
             'narrow histone mark',
             control_to_target,
             10,
-            20)
+            20,
+            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
+            )
         if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
         elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
@@ -351,7 +359,9 @@ def check_control_read_depth_standards(peaks_file_id,
             control_to_target,
             'and investigated as a transcription factor',
             10,
-            20)
+            20,
+            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
+            )
         if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
         elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
@@ -379,9 +389,11 @@ def audit_experiment_mixed_libraries(value, system, excluded_types):
                 nucleic_acids.add(rep['library']['nucleic_acid_term_name'])
 
     if len(nucleic_acids) > 1:
-        detail = 'Experiment {} '.format(value['@id']) + \
+        detail = 'Experiment {} ' + \
                  'contains libraries with mixed nucleic acids {} '.format(
-                     nucleic_acids)
+                    audit_link(value['accession'], value['@id']),
+                    nucleic_acids
+                    )
         yield AuditFailure('mixed libraries', detail, level='INTERNAL_ACTION')
     return
 
@@ -391,7 +403,7 @@ def audit_experiment_pipeline_assay_details(value, system, files_structure):
         if value.get('assay_term_name') not in pipeline['assay_term_names']:
             detail = 'This experiment ' + \
                 'contains file(s) associated with ' + \
-                'pipeline {} '.format(pipeline['@id']) + \
+                'pipeline {} '.format(audit_link(path_to_link(pipeline['@id']), pipeline['@id'])) + \
                 'which assay_term_names list does not include experiments\'s assay_term_name.'
             yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
     return
@@ -419,10 +431,10 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
                          '{} with a filtered {} file {}, mapped to '
                          'a {} assembly, but has no unfiltered '
                          '{} file.').format(
-                             value['@id'],
+                             audit_link(path_to_link(value['@id']), value['@id']),
                              filtered_file['biological_replicates'],
                              filtered_file['output_type'],
-                             filtered_file['@id'],
+                             audit_link(path_to_link(filtered_file['@id']), filtered_file['@id']),
                              filtered_file['assembly'],
                              filtered_file['output_type']
                          )
@@ -440,9 +452,11 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
                 category = 'file in uploading state'
             if category:
                 detail = ('Experiment {} contains a file {} '
-                          'with the status {}.'.format(value['@id'],
-                                                       file_object['@id'],
-                                                       file_object['status']))
+                          'with the status {}.'.format(
+                            audit_link(path_to_link(value['@id']), value['@id']),
+                            audit_link(path_to_link(file_object['@id']), file_object['@id']),
+                            file_object['status'])
+                          )
                 yield AuditFailure(category, detail, level='ERROR')
     return
 
@@ -475,10 +489,11 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                     detail = ('Experiment {} ' +
                              '{} file {} mapped to {}' +
                              'is out of date.').format(
-                                value['@id'],
+                                audit_link(path_to_link(value['@id']), value['@id']),
                                 bam_file['output_type'],
-                                bam_file['@id'],
-                                assembly_detail)
+                                audit_link(path_to_link(bam_file['@id']), bam_file['@id']),
+                                assembly_detail
+                                )
                     yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
     return
 
@@ -636,26 +651,31 @@ def check_experiment_dnase_seq_standards(experiment,
                 if 'mapped' in metric and 'quality_metric_of' in metric:
                     alignment_file = files_structure.get(
                         'alignments')[metric['quality_metric_of'][0]]
-                    suffix = 'According to ENCODE standards, conventional ' + \
-                             'DNase-seq profile requires a minimum of 20 million uniquely mapped ' + \
-                             'reads to generate a reliable ' + \
-                             'SPOT (Signal Portion of Tags) score. ' + \
-                             'The recommended value is > 50 million. For deep, foot-printing depth ' + \
-                             'DNase-seq 150-200 million uniquely mapped reads are ' + \
+                    suffix = 'According to ENCODE standards, conventional '
+                             'DNase-seq profile requires a minimum of {} million uniquely mapped '
+                             'reads to generate a reliable '
+                             'SPOT (Signal Portion of Tags) score. '
+                             'The recommended value is > {} million. For deep, foot-printing depth '
+                             'DNase-seq {}-{} million uniquely mapped reads are '
                              'recommended. (See {} )'.format(
-                                 link_to_standards)
+                                20,
+                                50,
+                                150,
+                                200,
+                                audit_link('ENCODE DNase-seq standards', link_to_standards)
+                                )
                     if 'assembly' in alignment_file:
-                        detail = 'Alignment file {} '.format(alignment_file['@id']) + \
+                        detail = 'Alignment file {} '.format(audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])) + \
                                  'produced by {} '.format(pipelines[0]['title']) + \
-                                 '( {} ) '.format(pipelines[0]['@id']) + \
+                                 '( {} ) '.format(audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id'])) + \
                                  'for {} assembly has {} '.format(
                                      alignment_file['assembly'],
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
                     else:
-                        detail = 'Alignment file {} '.format(alignment_file['@id']) + \
+                        detail = 'Alignment file {} '.format(audit_link(path_to_text(alignment_file['@id']), alignment_file['@id'])) + \
                                  'produced by {} '.format(pipelines[0]['title']) + \
-                                 '( {} ) '.format(pipelines[0]['@id']) + \
+                                 '( {} ) '.format(audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id'])) + \
                                  'has {} '.format(
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
@@ -669,9 +689,10 @@ def check_experiment_dnase_seq_standards(experiment,
             files_list = []
             for f in alignment_files:
                 files_list.append(f['@id'])
-            detail = 'Alignment files ( {} ) '.format(', '.join(files_list)) + \
+                file_name_links = [audit_link(path_to_text(file), file) for file in files_list]
+            detail = 'Alignment files ( {} ) '.format(', '.join(files_name_links)) + \
                      'produced by {} '.format(pipelines[0]['title']) + \
-                     '( {} ) '.format(pipelines[0]['@id']) + \
+                     '( {} ) '.format(audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id'])) + \
                      'lack read depth information.'
             yield AuditFailure('missing read depth', detail, level='WARNING')
 
@@ -699,7 +720,7 @@ def check_experiment_dnase_seq_standards(experiment,
                     file_names = []
                     for f in metric['quality_metric_of']:
                         file_names.append(f.split('/')[2])
-                    file_names_string = str(file_names).replace('\'', ' ')
+                    file_names_links = str(file_names).replace('\'', ' ')
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
                              "ENCODE processed alignment files {} ".format(file_names_string) + \

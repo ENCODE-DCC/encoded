@@ -3,7 +3,6 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-
 from .formatter import (
     audit_link,
     path_to_text,
@@ -91,9 +90,9 @@ def audit_antibody_characterization_target(value, system):
             antibody_targets_string = str(antibody_targets).replace('\'', '')
             detail = 'Antibody characterization {} target is {}, but it could not be found in antibody\'s {} target list {}'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
-                target['name'], #originally not linked
+                target['name'],
                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                audit_link(target['name'], target['@id']) #originally not linked
+                target['name']
                 )
             raise AuditFailure('inconsistent target', detail, level='ERROR')
 
@@ -153,5 +152,5 @@ def audit_antibody_pending_review(value, system):
                             'in progress']):
         return
     if value['status'] == 'pending dcc review':
-        detail = 'Antibody characterization {} has characterization(s) needing review.'.format(audit_link(path_to_text(value['@id']), value['@id'])) #change, not id
+        detail = 'Antibody characterization {} has characterization(s) needing review.'.format(audit_link(path_to_text(value['@id']), value['@id']))
         raise AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')
