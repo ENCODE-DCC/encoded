@@ -2,7 +2,7 @@
 
 ### Schema version 8
 
-* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+* *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
 
 ### Minor changes since schema version 7
 

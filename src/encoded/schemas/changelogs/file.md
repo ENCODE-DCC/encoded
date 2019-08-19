@@ -24,8 +24,8 @@
 * *read_count*, *file _size*, *read_length*, *mapped_read_length* were set to have a minimum of 0.
 * *barcode_position* in  *flowcell_details* was set to have a minimum of 1.
 * *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only.
-* added "gene alignments" to *output_type* enum.
-* added idx "file_format" to support kallisto indexes.
+* added *gene alignments* to *output_type* enum.
+* added *idx* to *file_format* to support kallisto indexes.
 * added *txt* to *file_format* enum, added *restriction enzyme site locations* to *output_type* enum, and created *restriction_enzymes* property to specify the restriction enzymes for which a *restriction enzyme site locations* file is applicable
 * added *M21*, *V29*, and *V30* to the list of enums for the *genome_annotation* property.
 * *file_format* was updated to include *database*.
@@ -36,9 +36,9 @@
 
 ### Minor changes since schema version 12
 
-* New enumerations that could be posted only by the DCC were added in output_types: ""redacted alignments" and "redacted unfiltered alignments"; both enumerations are categorized as "alignments".
+* New enumerations that could be posted only by the DCC were added in output_types: *redacted alignments* and *redacted unfiltered alignments*; both enumerations are categorized as *alignments*.
 DNA sequence information was removed from these analyses, since they are based on primary data with restricted public access (such as dbGap).
-* New enumerations were added in output_types: "differential expression quantifications" and "differential splicing quantifications"; both enumerations are categorized as "quantification"
+* New enumerations were added in output_types: *differential expression quantifications* and *differential splicing quantifications*; both enumerations are categorized as *quantification*
 * *fastq_signature* list items (colon separated flowcell, lane, read-end and barcode items) now can include 3 as the read-end portion of the signature item.
 
 
@@ -50,7 +50,7 @@ DNA sequence information was removed from these analyses, since they are based o
 
 * *alternate_accessions* now must match accession format, "ENCFF..." or "TSTFF..."
 * *no_file_available* field was added. The DCC will post this boolean field. Files with no_files_available = true will not be required to specify md5sum and file_size values.
-* *revoke_detail* was added.  The DCC will post this field. The goal is to mkae the reason for file revoke clear.:
+* *revoke_detail* was added.  The DCC will post this field. The goal is to make the reason for file revoke clear:
 
         "revoke_detail": {
             "title": "Revoke error detail",
@@ -83,7 +83,7 @@ DNA sequence information was removed from these analyses, since they are based o
 * *platform* value is now required for files with *file_format* that is one of ["fastq", "rcc", "csfasta", "csqual", "sra", "CEL", "idat"]
 * *assembly* value is required for files with *file_format* that is one of ["bam", "sam", "gtf", "bigWig"]
 * *file_size* value is now required for files with *status* that is one of ["in progress", "released", "archived", "revoked"]
-* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended and forbidden for run_type that is one of ["single-ended", "unknown"]
+* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended and forbidden for *run_type* that is one of ["single-ended", "unknown"]
 * *read_length* value is now required for files with *output_type* = reads and *file_format* that is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
 
 #### Formats and enums are more restrictive for several fields:
@@ -134,7 +134,7 @@ DNA sequence information was removed from these analyses, since they are based o
        
 ### Schema version 5
 
-* *run_type* was migrated from replicate.paired_ended. It will be required for fastq files.  If run_type is paired-ended then "paired_with" will be required as well.:
+* *run_type* was migrated from replicate.paired_ended. It will be required for fastq files.  If *run_type* is paired-ended then *paired_with* will be required as well:
 
            "run_type": {
             "title": "Run type for sequencing files",

@@ -2,7 +2,7 @@
 
 ### Schema version 10
 
-* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+* *assay_term_names* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
 
 ### Minor changes since schema version 9
 
@@ -10,7 +10,7 @@
 
 ### Schema version 9
 
-Add *revoked* to possible statuses and change *active* to *released*.
+* Add *revoked* to possible statuses and change *active* to *released*.
 
 ### Schema version 8
 
@@ -28,11 +28,11 @@ Add *revoked* to possible statuses and change *active* to *released*.
 
 ### Schema version 5
 
-* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name, if present
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the *term_name*, if present
 
 ### Schema version 4
 
-* array properties analysis_steps, aliases, documents and references must contain unique elements
+* Array properties *analysis_steps*, *aliases*, *documents* and *references* must contain unique elements
 
 ### Schema version 3
 
