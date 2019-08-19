@@ -30,7 +30,7 @@ def audit_biosample_modifications(value, system):
         if modification_difference and model_modifications_present:
             detail = 'Biosample {} contains genetic modifications {} that are not present in the list of genetic modifications {} of the corresponding strain.'.format(
                 audit_link(value['accession'], value['@id']),
-                modification_differences,
+                modification_difference,
                 model_modifications_ids
                 )
             yield AuditFailure('mismatched genetic modifications', detail,
@@ -253,7 +253,7 @@ def audit_biosample_post_differentiation_time(value, system):
     if biosample_type not in ['organoid', 'in vitro differentiated cells']:
         if value.get('post_differentiation_time') or value.get('post_differentiation_time_units'):
             detail = (
-                'Biosample {} of type {} has post_differentiation_time and/or post_differentiation_time_units specified, properties which are restricted to biosamples of type organoid or in vitro differentiated cells'.format(
+                'Biosample {} of type {} has post_differentiation_time and/or post_differentiation_time_units specified, properties which are restricted to biosamples of type organoid or in vitro differentiated cells').format(
                 audit_link(value['accession'], value['@id']),
                 biosample_type
                 )

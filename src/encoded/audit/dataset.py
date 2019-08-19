@@ -19,7 +19,7 @@ def audit_experiment_released_with_unreleased_files(value, system):
                                'archived']:
             detail = 'Released dataset {} contains file {} that has not been released.'.format(
                 audit_link(value['accession'], value['@id']),
-                audit_link(path_to_link(f['@id']), f['@id'])
+                audit_link(path_to_text(f['@id']), f['@id'])
                 )
             yield AuditFailure('mismatched file status', detail, level='INTERNAL_ACTION')
     return
