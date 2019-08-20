@@ -1,5 +1,32 @@
 Changes
 =======
+v88.0 (released) snovault 1.0.34
+---------------------------------------
+1.  ENCD-4811 Change breadcrumb pluralization (#2893)
+2.  ENCD-4801 fix bugs related to award embedding in AntibodyLot (#2890)
+3.  ENCD-4539-pipelines-missing-alt-accession (#2879)
+4.  ENCD-4802 update ChIP-seq QMs (#2891)
+5.  ENCD-4641 new ChIP-seq quality metrics (#2789)
+6.  ENCD-4779 fix default tracks (#2884)
+7.  ENCD-4664 FCC experiment modeling (#2882)
+8.  ENCD-4768 Add matching md5sum property (#2870)
+9.  ENCD-4769 Add dataset properties on ExperimentPage (#2888)
+10. ENCD-4711-update-sn-atac-name (#2889)
+11. ENCD-4785 correcting md5 uniqueness behavior (#2881)
+12. ENCD-4778 Add link for Mouse Dev Series collection to drop down menu (#2874)
+13. ENCD-4775 default to mm10 over mm9 (#2883)
+14. ENCD-4773 fix browser styles on IE 11 (#2872)
+15. ENCD-4750 rename duplicated health status column (#2876)
+16. ENCD-4791 remove Quick View (#2886)
+17. ENCD-4745 biosample characterization audit update (#2880)
+18. ENCD-4730-change-menu-item-names-for-matrices (#2877)
+19. ENCD-4740-fix-broken-report-link (#2862)
+20. ENCD-4729-fix-add-minus-btn-on-graph (#2885)
+21. ENCD-4228-genetic-mod-missing-alter-acc (#2878)
+22. ENCD-4752 read_structure for fastq files (#2868)
+23. ENCD-4646-add-search-btn-top-nav (#2871)
+24. ENCD-4608 ENCODE4 antibody review (#2849)
+25. ENCD-4744 Added erez-aiden to aliases list (#2873)
 
 v88.0 (released) snovault 1.0.34
 ---------------------------------------
