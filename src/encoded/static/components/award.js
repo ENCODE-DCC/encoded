@@ -2133,7 +2133,7 @@ const Award = ({ context }, reactContext) => {
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header >
+            <header>
                 {context.pi && context.pi.lab ?
                     <h1>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h1>
                     :

@@ -651,10 +651,10 @@ const DonorListingComponent = (props, reactContext) => {
                     <div className="result-item__data-row">
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                         {result.external_ids && result.external_ids.length ?
-                            <div>
+                            <React.Fragment>
                                 <strong>External resources: </strong>
                                 <DbxrefList context={result} dbxrefs={result.external_ids} />
-                            </div>
+                            </React.Fragment>
                         : null}
                     </div>
                 </div>

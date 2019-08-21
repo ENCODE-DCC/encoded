@@ -118,7 +118,7 @@ export const PickerActions = ({ context }, reactContext) => {
     }
 
     // No actions; don't render anything.
-    return <span />;
+    return null;
 };
 
 PickerActions.propTypes = {

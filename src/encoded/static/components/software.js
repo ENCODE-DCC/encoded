@@ -171,10 +171,10 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
                 <div className="result-item__data-row">
                     <div>{result.description}</div>
                     {result.software_type && result.software_type.length > 0 ?
-                        <div>
+                        <React.Fragment>
                             <strong>Software type: </strong>
                             {result.software_type.join(', ')}
-                        </div>
+                        </React.Fragment>
                     : null}
                 </div>
             </div>

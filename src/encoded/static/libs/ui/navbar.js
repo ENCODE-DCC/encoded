@@ -61,7 +61,7 @@ HamburgerTrigger.defaultProps = {
  * Controls an entire navigation menu with one or more navigation areas defined by <Nav>
  * components. Handles the toggling of the mobile menu expansion, and provides a property and
  * function for handling clicks in dropdowns. <Navbar> passes an `openDropdown` and `dropdownClick`
- * prop to all direct child components, so any components intervenining between <Navbar> and
+ * prop to all direct child components, so any components intervening between <Navbar> and
  * <NavItem> must pass along the `openDropdown` and `dropdownClick` props to their descendants.
  */
 export class Navbar extends React.Component {
@@ -251,15 +251,21 @@ class NavItemButton extends React.Component {
 }
 
 NavItemButton.propTypes = {
-    clickHandler: PropTypes.func, // Parent function to react to clicks in this dropdown menu title
-    dropdownOpen: PropTypes.bool, // True if the dropdown menu for this item is visible
-    dropdownId: PropTypes.string, // ID of the dropdown that was clicked
-    dropdownTitle: PropTypes.oneOfType([ // Title to display within the actutor part of the dropdown
+    /** Parent function to react to clicks in this dropdown menu title */
+    clickHandler: PropTypes.func,
+    /** True if the dropdown menu for this item is visible */
+    dropdownOpen: PropTypes.bool,
+    /** ID of the dropdown that was clicked */
+    dropdownId: PropTypes.string,
+    /** Title to display within the actuator part of the dropdown */
+    dropdownTitle: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.object,
     ]),
-    label: PropTypes.string, // aria-label text
-    css: PropTypes.string, // CSS classes to add to button
+    /** aria-label text */
+    label: PropTypes.string,
+    /** CSS classes to add to button */
+    css: PropTypes.string,
 };
 
 NavItemButton.defaultProps = {

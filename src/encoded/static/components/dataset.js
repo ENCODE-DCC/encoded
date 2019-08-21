@@ -1397,15 +1397,13 @@ export const SeriesComponent = (props, reactContext) => {
             </Panel>
 
             {addAllToCartControl ?
-                <div>
-                    <SortTablePanel header={addAllToCartControl}>
-                        <SortTable
-                            list={experimentList}
-                            columns={seriesComponent.table}
-                            meta={{ adminUser }}
-                        />
-                    </SortTablePanel>
-                </div>
+                <SortTablePanel header={addAllToCartControl}>
+                    <SortTable
+                        list={experimentList}
+                        columns={seriesComponent.table}
+                        meta={{ adminUser }}
+                    />
+                </SortTablePanel>
             : null}
 
             {/* Display list of released and unreleased files */}

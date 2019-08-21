@@ -267,7 +267,7 @@ class SupplementaryDataListing extends React.Component {
         const nodeId = id.replace(/\//g, '') + index;
 
         return (
-            <div className="list-supplementary">
+            <div className="list-supplementary__item">
                 {data.supplementary_data_type ?
                     <div><strong>Available supplemental data: </strong>{data.supplementary_data_type}</div>
                 : null}
@@ -281,16 +281,17 @@ class SupplementaryDataListing extends React.Component {
                 : null}
 
                 {summary ?
-                    <span id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
-                        <strong>Data summary: </strong>{excerpt ?
-                            <span>
+                    <div id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
+                        <strong>Data summary: </strong>
+                        {excerpt ?
+                            <React.Fragment>
                                 {this.state.excerptExpanded ? summary : excerpt}
-                                <button className="btn btn-link" aria-controls={nodeId} onClick={this.handleClick}>
+                                <button className="btn btn-default btn-xs" aria-controls={nodeId} onClick={this.handleClick}>
                                     {this.state.excerptExpanded ? <span>See less</span> : <span>See more</span>}
                                 </button>
-                            </span>
+                            </React.Fragment>
                         : summary}
-                    </span>
+                    </div>
                 : null}
             </div>
         );
@@ -323,11 +324,13 @@ const ListingComponent = (props, context) => {
                         <p className="list-citation"><Citation context={result} /></p>
                         {result.identifiers && result.identifiers.length ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
                         {result.supplementary_data && result.supplementary_data.length ?
-                            <div>
+                            <React.Fragment>
                                 {result.supplementary_data.map((data, i) =>
-                                    <SupplementaryDataListing data={data} id={result['@id']} index={i} key={i} />
+                                    <section className="list-supplementary" key={i}>
+                                        <SupplementaryDataListing data={data} id={result['@id']} index={i} />
+                                    </section>
                                 )}
-                            </div>
+                            </React.Fragment>
                         : null}
                     </div>
                 </div>
