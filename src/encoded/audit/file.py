@@ -22,7 +22,7 @@ def audit_file_processed_step_run(value, system):
     if check_award_condition(value.get('dataset'), ['ENCODE3', 'ENCODE4']):
         if 'step_run' not in value:
             detail = ('Missing analysis_step_run '
-                      'information in {}.').format(value['@id'])
+                      'information in file {}.').format(audit_link(path_to_text(value['@id']), value['@id']))
             if value.get('lab', '') == '/labs/encode-processing-pipeline/':
                 yield AuditFailure('missing analysis_step_run',
                                    detail, level='ERROR')
@@ -40,7 +40,7 @@ def audit_file_processed_derived_from(value, system):
         detail = 'derived_from is a list of files that were used to create a given file; ' + \
                  'for example, fastq file(s) will appear in the derived_from list of an ' + \
                  'alignments file. ' + \
-                 'Processed file {} '.format(value['@id']) + \
+                 'Processed file {} '.format(audit_link(path_to_text(value['@id']), value['@id'])) + \
                  'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='INTERNAL_ACTION')
@@ -74,10 +74,10 @@ def audit_file_processed_derived_from(value, system):
                          'for example, fastq file(s) will appear in the ' + \
                          'derived_from list of an ' + \
                          'alignments file. ' + \
-                         'Alignments file {} '.format(value['@id']) + \
-                         'from experiment {} '.format(value['dataset']['@id']) + \
-                         'specifies a file {} '.format(f['@id']) + \
-                         'from a different experiment {} '.format(f['dataset']) + \
+                         'Alignments file {} '.format(audit_link(path_to_text(value['@id']), value['@id'])) + \
+                         'from experiment {} '.format(audit_link(path_to_text(value['dataset']['@id']), value['dataset']['@id'])) + \
+                         'specifies a file {} '.format(audit_link(path_to_text(f['@id']), f['@id'])) + \
+                         'from a different experiment {} '.format(audit_link(path_to_text(f['dataset']), f['dataset'])) + \
                          'in its derived_from list.'
                 yield AuditFailure('inconsistent derived_from',
                                    detail, level='INTERNAL_ACTION')
@@ -85,7 +85,7 @@ def audit_file_processed_derived_from(value, system):
         detail = 'derived_from is a list of files that were used to create a given file; ' + \
                  'for example, fastq file(s) will appear in the derived_from list of an ' + \
                  'alignments file. ' + \
-                 'Alignments file {} '.format(value['@id']) + \
+                 'Alignments file {} '.format(audit_link(path_to_text(value['@id']), value['@id'])) + \
                  'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='INTERNAL_ACTION')
@@ -97,11 +97,11 @@ def audit_file_assembly(value, system):
     for f in value['derived_from']:
         if f.get('assembly') and value.get('assembly') and \
            f.get('assembly') != value.get('assembly'):
-            detail = 'Processed file {} '.format(value['@id']) + \
+            detail = 'Processed file {} '.format(audit_link(path_to_text(value['@id']), value['@id'])) + \
                 'assembly {} '.format(value['assembly']) + \
                 'does not match assembly {} of the file {} '.format(
                 f['assembly'],
-                f['@id']) + \
+                audit_link(path_to_text(f['@id']), f['@id'])) + \
                 'it was derived from.'
             yield AuditFailure('inconsistent assembly',
                                detail, level='WARNING')
@@ -121,13 +121,15 @@ def audit_file_replicate_match(value, system):
     file_exp = value['dataset']['@id']
 
     if rep_exp != file_exp:
-        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']['@id']) + \
+        detail = 'File {} from experiment {} '.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            audit_link(path_to_text(value['dataset']['@id']), value['dataset']['@id'])) + \
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \
                  '{}, but that replicate is associated with a different '.format(
-                     value['replicate']['@id']) + \
-                 'experiment {}.'.format(value['replicate']['experiment'])
+                     audit_link(path_to_text(value['replicate']['@id']), value['replicate']['@id'])) + \
+                 'experiment {}.'.format(audit_link(path_to_text(value['replicate']['experiment']), value['replicate']['experiment']))
         yield AuditFailure('inconsistent replicate', detail, level='ERROR')
         return
 
@@ -156,8 +158,8 @@ def audit_paired_with(value, system):
             'Both the files in a paired-end run must be fastq files. ' 
             'Fastq file {} is paired with file {}, which is a {} file.'
         ).format(
-            value['@id'],
-            value['paired_with']['@id'],
+            audit_link(path_to_text(value['@id']), value['@id']),
+            audit_link(path_to_text(value['paired_with']['@id']), value['paired_with']['@id']),
             paired_with_file_format
         )
         yield AuditFailure('paired with non-fastq', detail, level='ERROR')
@@ -167,15 +169,16 @@ def audit_paired_with(value, system):
 
     if 'replicate' not in value:
         detail = 'File {} has paired_end = {}. It requires a replicate'.format(
-            value['@id'],
+            audit_link(path_to_text(value['@id']), value['@id']),
             value['paired_end'])
         yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
     elif value['replicate'].get('@id') != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
-            value['@id'],
-            value['replicate'].get('@id'),
-            value['paired_with']['@id'],
-            value['paired_with'].get('replicate'))
+            audit_link(path_to_text(value['@id']), value['@id']),
+            audit_link(path_to_text(value['replicate'].get('@id')), value['replicate'].get('@id')),
+            audit_link(path_to_text(value['paired_with']['@id']), value['paired_with']['@id']),
+            audit_link(path_to_text(value['paired_with'].get('replicate'), value['paired_with'].get('replicate')))
+            )
         yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
 
     if value['paired_end'] == '1':
@@ -183,7 +186,7 @@ def audit_paired_with(value, system):
         paired_with = context.get_rev_links('paired_with')
         if len(paired_with) > 1:
             detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
-                value['@id'],
+                audit_link(path_to_text(value['@id']), value['@id']),
                 paired_with
             )
             yield AuditFailure('multiple paired_with', detail, level='ERROR')
@@ -195,9 +198,9 @@ def audit_paired_with(value, system):
     if (file_read_count and paired_with_read_count) and (file_read_count != paired_with_read_count):
         detail = ('File {} has {} reads. It is'
                   ' paired_with file {} that has {} reads').format(
-                      value['@id'],
+                      audit_link(path_to_text(value['@id']), value['@id']),
                       file_read_count,
-                      value['paired_with']['@id'],
+                      audit_link(path_to_text(value['paired_with']['@id']), value['paired_with']['@id']),
                       paired_with_read_count)
         yield AuditFailure('inconsistent read count', detail, level='ERROR')
 
@@ -205,8 +208,8 @@ def audit_file_format_specifications(value, system):
     for doc in value.get('file_format_specifications', []):
         if doc['document_type'] != "file format specification":
             detail = 'File {} has document {} not of type file format specification'.format(
-                value['@id'],
-                doc['@id']
+                audit_link(path_to_text(value['@id']), value['@id']),
+                audit_link(path_to_text(doc['@id']), doc['@id'])
             )
             yield AuditFailure('inconsistent document_type', detail, level='ERROR')
             return
@@ -240,7 +243,7 @@ def audit_file_controlled_by(value, system):
                      value['dataset']['assay_term_name']) + \
                  'specification of control fastq file(s) in the controlled_by list. ' + \
                  'Fastq file {} '.format(
-                     value['@id']) + \
+                     audit_link(path_to_text(value['@id']), value['@id'])) + \
                  'is missing the requisite file specification in controlled_by list.'
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
@@ -260,9 +263,9 @@ def audit_file_controlled_by(value, system):
             if control_bs != biosample:
                 detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
                          'This experiment was performed using {}, but '.format(biosample_term_name) + \
-                         'file {} contains in controlled_by list a file '.format(value['@id']) + \
+                         'file {} contains in controlled_by list a file '.format(audit_link(path_to_text(value['@id']), value['@id'])) + \
                          '{} that belongs to experiment with different biosample {}.'.format(
-                             ff['@id'],
+                             audit_link(path_to_text(ff['@id']), ff['@id']),
                              ff['dataset'].get('biosample_ontology', {}).get('term_name'))
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
@@ -270,10 +273,10 @@ def audit_file_controlled_by(value, system):
             if ff['file_format'] != value['file_format']:
                 detail = 'controlled_by is a list of files that are used as controls for a given file. ' + \
                          'File {} with file_format {} contains in controlled_by list '.format(
-                             value['@id'],
+                             audit_link(path_to_text(value['@id']), value['@id']),
                              value['file_format'],) + \
                          'a file {} with different file_format {}.'.format(
-                             ff['@id'],
+                             audit_link(path_to_text(ff['@id']), ff['@id']),
                              ff['file_format'])
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
                 return
@@ -284,9 +287,9 @@ def audit_file_controlled_by(value, system):
                          'controlled_by is a list of files that are used as ' + \
                          'controls for a given file. ' + \
                          'File {} contains in controlled_by list a file {} '.format(
-                             value['@id'],
-                             ff['@id']) + \
-                         'that belongs to an experiment {} that '.format(ff['dataset']['@id']) + \
+                             audit_link(path_to_text(value['@id']), value['@id']),
+                             audit_link(path_to_text(ff['@id']), ff['@id'])) + \
+                         'that belongs to an experiment {} that '.format(audit_link(path_to_text(ff['dataset']['@id']), ff['dataset']['@id'])) + \
                          'is not specified in possible_controls list of this experiment.'
 
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
@@ -301,9 +304,9 @@ def audit_file_controlled_by(value, system):
             if run_type != control_run and \
                value['dataset'].get('assay_term_name') not in ['RAMPAGE', 'CAGE']:
                 detail = 'File {} is {} but its control file {} is {}'.format(
-                    value['@id'],
+                    audit_link(path_to_text(value['@id']), value['@id']),
                     run_type,
-                    ff['@id'],
+                    audit_link(path_to_text(ff['@id']), ff['@id']),
                     control_run
                 )
                 yield AuditFailure('inconsistent control run_type',
@@ -317,9 +320,9 @@ def audit_file_controlled_by(value, system):
                      'CRISPR genome editing followed by RNA-seq']:
 
                 detail = 'File {} is {} but its control file {} is {}'.format(
-                    value['@id'],
+                    audit_link(path_to_text(value['@id']), value['@id']),
                     value['read_length'],
-                    ff['@id'],
+                    audit_link(path_to_text(ff['@id']), ff['@id']),
                     ff['read_length']
                 )
                 yield AuditFailure('inconsistent control read length',
@@ -345,7 +348,7 @@ def audit_duplicate_quality_metrics(value, system):
             # Add so only yields audit once per signature per file.
             audit_signatures.append(signature)
             detail = 'File {} has more than one {} quality metric'.format(
-                value.get('@id'),
+                audit_link(path_to_text(value.get('@id')), value.get('id')),
                 metric_type
             )
             yield AuditFailure(
@@ -413,8 +416,8 @@ def audit_file_matching_md5sum(value, system):
 
     for file in value.get('matching_md5sum'):
         if file.get('md5sum') != value.get('md5sum'):
-            detail = 'File {} is listed as having a matching md5 sum '.format(file['@id']) + \
-                     'as file {}, but the files have different md5 sums.'.format(value['@id'])
+            detail = 'File {} is listed as having a matching md5 sum '.format(audit_link(path_to_text(file['@id']), file['@id'])) + \
+                     'as file {}, but the files have different md5 sums.'.format(audit_link(path_to_text(value['@id']), value['@id']))
             yield AuditFailure('Incorrect matching_md5sum', detail, level='ERROR')
         else:
             matching_files.append(file['@id'])
@@ -429,7 +432,7 @@ def audit_file_matching_md5sum(value, system):
     else:
         matching_files_joined = ' and '.join(matching_files)
 
-    detail = 'The md5 sum of file {} '.format(value['@id']) + \
+    detail = 'The md5 sum of file {} '.format(audit_link(path_to_text(value['@id']), value['@id'])) + \
              'matches that of file(s) {}.'.format(matching_files_joined)
     yield AuditFailure('Matching md5 sums', detail, level='WARNING')
 
