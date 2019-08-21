@@ -28,7 +28,9 @@ const SummaryTitle = (props) => {
         <div className="summary-header__title_control">
             <div className="summary-header__title">
                 <h1>{context.title}</h1>
-                <ViewControls views={context.views} />
+                <div className="results-table-control__main">
+                    <ViewControls views={context.views} />
+                </div>
             </div>
             <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
         </div>
