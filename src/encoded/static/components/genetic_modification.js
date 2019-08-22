@@ -852,7 +852,9 @@ const CharacterizationDetail = (props) => {
                 {doc.award && doc.award.name ?
                     <div data-test="award">
                         <dt>Grant</dt>
-                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
+                        <dd>
+                            {doc.award['@id'] ? <a href={doc.award['@id']}>{doc.award.name}</a> : doc.award['@id']}
+                        </dd>
                     </div>
                 : null}
 
