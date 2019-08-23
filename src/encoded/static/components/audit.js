@@ -147,7 +147,7 @@ ObjectAuditIcon.propTypes = {
 };
 
 ObjectAuditIcon.defaultProps = {
-    audit: null,
+    audit: undefined,
     loggedIn: false,
 };
 
