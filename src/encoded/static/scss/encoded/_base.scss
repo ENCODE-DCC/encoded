@@ -288,3 +288,15 @@ $disabled-color-factor: 20%;
     white-space: nowrap; 
     width: 1px;
 }
+
+
+// Inline code
+code {
+    padding: 2px 4px;
+    font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+    font-size: 1rem;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    white-space: nowrap;
+    border-radius: 3px;
+}
