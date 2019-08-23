@@ -421,7 +421,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} audit={object.audit} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
