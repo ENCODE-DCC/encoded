@@ -31,15 +31,13 @@
         padding: 20px;
         line-height: 1.6;
 
-        .col-md-12 & {
-            @media screen and (min-width: $screen-md-min) {
-                padding: 20px 10%;
-            }
+        @media screen and (min-width: $screen-md-min) {
+            padding: 20px 10%;
+        }
 
-            &.full-width {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
+        &.full-width {
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         pre {
@@ -156,10 +154,8 @@
             color: #000;
         }
 
-        .col-md-12 & {
-            @media screen and (min-width: $screen-md-min) {
-                padding: 20px;
-            }
+        @media screen and (min-width: $screen-md-min) {
+            padding: 20px;
         }
     }
 
@@ -201,7 +197,7 @@ a.url {
 
 
 // All figures get this class
-.fig {
+img {
     display: block;
     width: 100%;
     margin: 0 0 1em;
@@ -212,11 +208,6 @@ a.url {
         &.fig-width-50 { width: 50%; }
         &.fig-width-75 { width: 75%; }
         &.fig-width-100 { width: 100%; }
-    }
-
-    img {
-        display: block;
-        width: 100%;
     }
 
     &.fig-align-center {
@@ -249,16 +240,14 @@ img.fig-align-right {
     width: 100%;
     margin-bottom: 1em;
 
-    .col-md-12 & {
-        @media screen and (min-width: $screen-md-min) {
-            float: right;
-            margin-left: 10px;
-            width: auto;
+    @media screen and (min-width: $screen-md-min) {
+        float: right;
+        margin-left: 10px;
+        width: auto;
 
-            &.fig-width-25 { width: 25%; }
-            &.fig-width-50 { width: 50%; }
-            &.fig-width-75 { width: 75%; }
-        }
+        &.fig-width-25 { width: 25%; }
+        &.fig-width-50 { width: 50%; }
+        &.fig-width-75 { width: 75%; }
     }
 }
 
@@ -269,17 +258,15 @@ img.fig-align-left {
     width: 100%;
     margin-bottom: 1em;
 
-    .col-md-12 & {
-        @media screen and (min-width: $screen-md-min) {
-            float: left;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            width: 50%;
+    @media screen and (min-width: $screen-md-min) {
+        float: left;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        width: 50%;
 
-            &.fig-width-25 { width: 25%; }
-            &.fig-width-50 { width: 50%; }
-            &.fig-width-75 { width: 75%; }
-        }
+        &.fig-width-25 { width: 25%; }
+        &.fig-width-50 { width: 50%; }
+        &.fig-width-75 { width: 75%; }
     }
 }
 
@@ -288,9 +275,7 @@ img.fig-align-left {
 img.fig-align-center {
     display: block;
     width: 100%;
-    margin-bottom: 1em;
-
-    .col-md-12 & {
+    margin: 0 auto 1em;
 
         @media screen and (min-width: $screen-md-min) {
             width: auto;
@@ -301,7 +286,6 @@ img.fig-align-center {
             &.fig-width-75 { width: 75%; }
             &.fig-width-100 { width: 100%; }
         }
-    }
 }
 
 
@@ -331,24 +315,20 @@ img.fig-align-center {
     }
 
     .caption {
-        .col-md-12 & {
-            @media screen and (min-width: $screen-sm-min) {
-                float: right;
-                width: 33.33%;
-                padding: 0 20px !important;
-                line-height: 1.6;
-            }
+        @media screen and (min-width: $screen-sm-min) {
+            float: right;
+            width: 33.33%;
+            padding: 0 20px !important;
+            line-height: 1.6;
         }
     }
 
     figure {
         margin-bottom: 0;
 
-        .col-md-12 & {
-            @media screen and (min-width: $screen-sm-min) {
-                float: left;
-                width: 66.66%;
-            }
+        @media screen and (min-width: $screen-sm-min) {
+            float: left;
+            width: 66.66%;
         }
     }
 
