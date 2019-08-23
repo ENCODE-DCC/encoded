@@ -112,6 +112,9 @@ IS_ATTACHMENT = [
     'jsd_plot',
     'gc_bias_plot',
     'IDR_dispersion_plot',
+    'tss_enrichment_plot',
+    'fragment_length_distribution_plot',
+    'peak_width_distribution_plot',
 ]
 
 

@@ -93,6 +93,51 @@
             "minimum":0,
             "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
+        },
+        "fragment_length_distribution_plot": {
+            "title": "Fragment length distribution plot",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "application/pdf",
+                        "image/png"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
         }
     },
     "facets": {

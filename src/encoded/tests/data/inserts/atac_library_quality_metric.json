@@ -20,6 +20,7 @@
         "positions_with_one_read": 191,
         "NRF": 0.999129,
         "PBC1": 0.99915,
-        "PBC2": 1194.575916
+        "PBC2": 1194.575916,
+        "fragment_length_distribution_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png"
     }
 ]

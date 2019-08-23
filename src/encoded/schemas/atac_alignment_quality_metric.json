@@ -147,6 +147,66 @@
             "title": "Number of reads with mate mapped to diff chr failing QC",
             "type": "integer",
             "minimum": 0
+        },
+        "non_mito_reads": {
+            "title": "Number of non-mitochondrial reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mito_reads": {
+            "title": "Number of mitochondrial reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "frac_mito_reads": {
+            "title": "Fraction of mitochondrial reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "frac_reads_in_nfr": {
+            "title": "Fraction of NFR reads",
+            "description": "Fraction of reads in nucleosome free region (NFR)",
+            "type": "number",
+            "minimum":0,
+            "maximum": 1
+        },
+        "frac_reads_in_nfr_qc_pass": {
+            "title": "Pass quality check on fraction of NFR reads?",
+            "type": "boolean"
+        },
+        "frac_reads_in_nfr_qc_reason": {
+            "title": "Quality check result on fraction of NFR reads",
+            "type": "string",
+            "pattern": "^((OK)|(out of range \\[(-?[\\d.]+|-inf), (-?[\\d.]+|inf)\\]))$"
+        },
+        "nfr_over_mono_nun_reads": {
+            "title": "Ratio of NFR reads to Mono-Nuc reads",
+            "description": "Ratio of reads in nucleosome free region (NFR) to reads in mononucleosome region (Mono-Nuc).",
+            "type": "number",
+            "minimum": 0
+        },
+        "nfr_over_mono_nun_reads_qc_pass": {
+            "title": "Pass quality check on ratio of NFR reads to Mono-Nuc reads?",
+            "type": "boolean"
+        },
+        "nfr_over_mono_nun_reads_qc_reason": {
+            "title": "Quality check result on ratio of NFR reads to Mono-Nuc reads",
+            "type": "string",
+            "pattern": "^((OK)|(out of range \\[(-?[\\d.]+|-inf), (-?[\\d.]+|inf)\\]))$"
+        },
+        "nfr_peak_exists": {
+            "title": "Presence of NFR peak",
+            "type": "boolean"
+        },
+        "mono_nuc_peak_exists": {
+            "title": "Presence of Mono-Nuc peak",
+            "type": "boolean"
+        },
+        "di_nuc_peak_exists": {
+            "title": "Presence of Di-Nuc peak",
+            "description": "Whether there are peaks in dinucleosome regions (Di-Nuc).",
+            "type": "boolean"
         }
     },
     "facets": {
