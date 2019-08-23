@@ -25,6 +25,10 @@
                 padding-top: 40px !important;
             }
         }
+
+        table {
+            border-collapse: collapse;
+        }
     }
 
     &.richtextblock, .teaser .caption {
