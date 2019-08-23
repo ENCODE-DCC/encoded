@@ -189,6 +189,10 @@ $disabled-color-factor: 20%;
         @include button-size($padding-xs-vertical, $padding-xs-horizontal, $font-size-small, $btn-height-xs, $border-radius-small);
     }
 
+    &[disabled] {
+        opacity: 0.65;
+    }
+
     @at-root a#{&} {
         text-decoration: none;
         display: flex;
