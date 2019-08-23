@@ -50,6 +50,15 @@
             margin: 10px 0;
             white-space: pre;
             border: none;
+
+            @media screen and (min-width: $screen-md-min) {
+                width: 766px;
+            }
+
+
+            @media screen and (min-width: $screen-lg-min) {
+                width: 925px;
+            }
         }
 
         code {
