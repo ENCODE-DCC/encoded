@@ -1097,6 +1097,11 @@ FilterControls.defaultProps = {
 function qcAbbr(qc) {
     // As we add more QC object types, add to this object.
     const qcAbbrMap = {
+        AtacAlignmentQualityMetric: 'AL',
+        AtacAlignmentEnrichmentQualityMetric: 'AE',
+        AtacLibraryQualityMetric: 'LB',
+        AtacPeakEnrichmentQualityMetric: 'PE',
+        AtacReplicationQualityMetric: 'RP',
         BigwigcorrelateQualityMetric: 'BC',
         BismarkQualityMetric: 'BK',
         ChipAlignmentQualityMetric: 'AL',

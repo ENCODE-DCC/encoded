@@ -37,6 +37,14 @@ const qcAttachmentProperties = {
     ChipReplicationQualityMetric: [
         { IDR_dispersion_plot: 'IDR dispersion plot' },
     ],
+    AtacAlignmentEnrichmentQualityMetric: [
+        { cross_correlation_plot: 'Cross-correlation plot' },
+        { jsd_plot: 'Jensen-Shannon distance plot' },
+        { gc_bias_plot: 'GC bias plot' },
+    ],
+    AtacReplicationQualityMetric: [
+        { IDR_dispersion_plot: 'IDR dispersion plot' },
+    ],
 };
 
 

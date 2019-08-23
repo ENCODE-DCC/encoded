@@ -328,3 +328,53 @@ class ChipPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
 class ChipReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chip_replication_quality_metric'
     schema = load_schema('encoded:schemas/chip_replication_quality_metric.json')
+
+
+@collection(
+    name='atac-alignment-quality-metrics',
+    properties={
+        'title': "ATAC-seq Alignment Quality Metric",
+    })
+class AtacAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/atac_alignment_quality_metric.json')
+
+
+@collection(
+    name='atac-alignment-enrichment-quality-metrics',
+    properties={
+        'title': "ATAC-seq Alignment Enrichment Quality Metric",
+    })
+class AtacAlignmentEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_alignment_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/atac_alignment_enrichment_quality_metric.json')
+
+
+@collection(
+    name='atac-library-quality-metrics',
+    properties={
+        'title': "ATAC-seq Library Metrics",
+    })
+class AtacLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_library_quality_metric'
+    schema = load_schema('encoded:schemas/atac_library_quality_metric.json')
+
+
+@collection(
+    name='atac-peak-enrichment-quality-metrics',
+    properties={
+        'title': "ATAC-seq Peak Enrichment Quality Metric",
+    })
+class AtacPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_peak_enrichment_quality_metric'
+    schema = load_schema('encoded:schemas/atac_peak_enrichment_quality_metric.json')
+
+
+@collection(
+    name='atac-replication-quality-metrics',
+    properties={
+        'title': "ATAC-seq Replication Quality Metric",
+    })
+class AtacReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'atac_replication_quality_metric'
+    schema = load_schema('encoded:schemas/atac_replication_quality_metric.json')
