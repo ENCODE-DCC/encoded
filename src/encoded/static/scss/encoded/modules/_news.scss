@@ -42,6 +42,11 @@
 .news-post-header {
     padding: 20px;
 
+    @media screen and (min-width: $screen-md-min) {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+
     h1 {
         margin-bottom: 0;
         font-weight: normal;
@@ -49,11 +54,18 @@
     }
 
     h2 {
+        display: flex;
+        align-items: center;
         margin-top: 0;
         color: #808080;
         font-style: italic;
         font-weight: normal;
         font-size: 0.9rem;
+
+        .news-share-list {
+            flex: 0 1 auto;
+            margin-left: 5px;
+        }
     }
 }
 
@@ -73,6 +85,11 @@
 
 .news-keyword-section {
     padding: 0 20px 20px;
+
+    @media screen and (min-width: $screen-md-min) {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
 }
 
 .news-keyword-list {
