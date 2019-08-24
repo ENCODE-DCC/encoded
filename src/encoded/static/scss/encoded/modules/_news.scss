@@ -83,23 +83,12 @@
         color: #808080;
     }
     padding-bottom: 40px;
-}
 
-.news-keyword {
-    @extend .btn;
-    @extend .btn-sm;
-    @extend .btn-info;
-    margin-right: 5px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.news-share-list {
-    display: inline-block;
-    position: relative;
-    top: 4px;
+    .news-keyword {
+        display: inline-flex;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
 }
 
 %share-button {

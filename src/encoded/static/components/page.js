@@ -70,9 +70,9 @@ const NewsKeywordList = (props) => {
         return (
             <div className="news-keyword-list">
                 <p>View news matching these terms, or all recent news</p>
-                <a className="news-keyword" href={'/search/?type=Page&news=true'} title="Show all recent news posts">All recent news</a>
+                <a className="btn btn-default btn-sm news-keyword" href={'/search/?type=Page&news=true'} title="Show all recent news posts">All recent news</a>
                 {post.news_keywords.map(keyword =>
-                    <a key={keyword} className="news-keyword" href={`/search/?type=Page&news=true&news_keywords=${keyword}`} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
+                    <a key={keyword} className="btn btn-default btn-sm news-keyword" href={`/search/?type=Page&news=true&news_keywords=${keyword}`} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
                 )}
             </div>
         );
