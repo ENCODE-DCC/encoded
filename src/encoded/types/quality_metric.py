@@ -328,3 +328,23 @@ class ChipPeakEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID):
 class ChipReplicationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chip_replication_quality_metric'
     schema = load_schema('encoded:schemas/chip_replication_quality_metric.json')
+
+
+@collection(
+    name='gene-quantification-quality-metrics',
+    properties={
+        'title': "RNA-seq Gene Quantification Quality Metric",
+    })
+class GeneQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gene_quantification_quality_metric'
+    schema = load_schema('encoded:schemas/gene_quantification_quality_metric.json')
+
+
+@collection(
+    name='gene-type-quantification-quality-metrics',
+    properties={
+        'title': "RNA-seq Gene Type Quantification Quality Metric",
+    })
+class GeneTypeQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gene_type_quantification_quality_metric'
+    schema = load_schema('encoded:schemas/gene_type_quantification_quality_metric.json')
