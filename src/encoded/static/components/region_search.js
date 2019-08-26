@@ -320,7 +320,7 @@ class RegionSearch extends React.Component {
                                     <h4>
                                         Showing {results.length} of {total}
                                     </h4>
-                                    <div className="results-table-control">
+                                    <div className="results-table-control__main">
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                                 <a
                                                     rel="nofollow"
