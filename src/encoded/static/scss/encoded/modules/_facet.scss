@@ -83,6 +83,9 @@
     padding-bottom: 5px;
 }
 
+// Note: "will-change" under .term-list is to fix a Chrome slow-scrolling issue when scrollable
+// facets exist.
+// https://stackoverflow.com/questions/24741502/can-i-do-anything-about-repaints-on-scroll-warning-in-chrome-for-overflowscr/#answer-41026886
 .facet {
     margin-bottom: 15px;
     border-bottom: 1px solid #eee;
@@ -94,6 +97,7 @@
         max-height: 85px;
         overflow-y: scroll;
         padding: 5px 0;
+        will-change: transform;
     }
 }
 
