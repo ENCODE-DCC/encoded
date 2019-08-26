@@ -71,6 +71,10 @@
             @media screen and (min-width: $screen-lg-min) {
                 width: 925px;
             }
+
+            @media screen and (min-width: $screen-xl-min) {
+                width: 1372px;
+            }
         }
 
         code {
