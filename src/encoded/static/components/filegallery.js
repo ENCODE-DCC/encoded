@@ -421,7 +421,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
@@ -625,7 +625,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}><ObjectAuditIcon object={file} audit={file.audit} loggedIn={loggedIn} /></td>
+                                            <td className={pairClass}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -661,7 +661,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} audit={file.audit} loggedIn={loggedIn} /></td>
+                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -805,7 +805,7 @@ class RawFileTable extends React.Component {
                                             <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={groupBottom}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}><ObjectAuditIcon object={file} audit={file.audit} loggedIn={loggedIn} /></td>
+                                            <td className={groupBottom}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                             <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -835,7 +835,7 @@ class RawFileTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} audit={file.audit} loggedIn={loggedIn} /></td>
+                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
