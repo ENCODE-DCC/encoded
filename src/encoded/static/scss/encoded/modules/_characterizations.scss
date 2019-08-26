@@ -507,8 +507,15 @@ $detail-switch-width: 30px;
     }
 }
 
-.journal, .author {
-   font-size: 1rem;
+.journal {
+    margin-top: 5px;
+    font-size: 1rem;
+    color: #606060;
+}
+
+.authors {
+    margin-top: 20px;
+    line-height: 1.4;
 }
 
 // Characterization panel biosample terms
