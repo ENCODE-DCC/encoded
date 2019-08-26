@@ -304,7 +304,7 @@ class RegionSearch extends React.Component {
                 <h1>Region search</h1>
                 <AdvSearch {...this.props} />
                 {notification === 'Success' ?
-                    <div className="search-results">
+                    <Panel addClasses="search-results">
                         <div className="search-results__facets">
                             <FacetList
                                 {...this.props}
@@ -357,7 +357,7 @@ class RegionSearch extends React.Component {
                                 {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
                             </ul>
                         </div>
-                    </div>
+                    </Panel>
                 : null}
             </div>
         );
