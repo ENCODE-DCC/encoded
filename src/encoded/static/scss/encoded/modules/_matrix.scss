@@ -230,7 +230,6 @@ $row-data-header-width: 200px;
     // Rows showing category
     @at-root #{&}__row-category {
         > th {
-            vertical-align: bottom;
             white-space: nowrap;
             position: -webkit-sticky;
             position: sticky;
@@ -245,6 +244,8 @@ $row-data-header-width: 200px;
             }
 	
             > div {
+                display: flex;
+                align-items: center;
                 padding-left: 10px;
                 padding-right: 10px;
                 border-top-left-radius: 14px;
@@ -259,8 +260,10 @@ $row-data-header-width: 200px;
         }
 
         .matrix__category-expander {
-            margin-left: -9px;
             margin-right: 5px;
+            padding: 0;
+            flex: 0 0 auto;
+            height: 10px;
             border: none;
             background-color: transparent;
 
