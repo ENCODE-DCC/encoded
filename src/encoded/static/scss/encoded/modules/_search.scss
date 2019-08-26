@@ -192,6 +192,7 @@ $form-bg: #f3f3f3;
 
     @at-root #{&}__input {
         display: flex;
+        position: relative;
 
         input[type="text"] {
             flex: 1 1 auto;
@@ -223,7 +224,7 @@ $form-bg: #f3f3f3;
 .adv-search-autocomplete {
     position: absolute;
     z-index: 10;
-    top: 33px;
+    top: 18px;
     left: 0;
     padding: 0;
     max-height: 300px;
