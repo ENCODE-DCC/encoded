@@ -311,6 +311,7 @@ $detail-switch-width: 30px;
     @at-root #{&}__caption {
         flex: 1 1 auto;
         margin: 5px;
+        line-height: 1.4;
     }
 
     @at-root #{&}__preview {
