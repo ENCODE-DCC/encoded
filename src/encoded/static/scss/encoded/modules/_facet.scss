@@ -96,8 +96,7 @@
 
     @at-root #{&}__content {
         margin: 0;
-        padding: 5px 0;
-        will-change: transform;
+        padding: 0;
     }
     
     @at-root #{&}__terms {
@@ -107,6 +106,7 @@
             max-height: 85px;
             overflow-y: scroll;
             padding: 5px 0;
+            will-change: transform;
         }
     }
 }
