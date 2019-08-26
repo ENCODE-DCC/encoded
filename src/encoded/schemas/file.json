@@ -1682,6 +1682,7 @@
         "sequence uniqueness": "reference",
         "sequence barcodes": "reference",
         "sequence adapters": "reference",
+        "elements reference": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
