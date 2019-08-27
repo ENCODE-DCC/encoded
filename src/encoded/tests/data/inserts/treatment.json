@@ -153,9 +153,11 @@
         "treatment_type": "protein"
     },
     {
+        "uuid": "9e8a867f-6b82-4542-a228-e927914833bb",
         "aliases": [
             "encode:injection_of_rTr_2"
         ],
+        "amount": 20,
         "amount_units": "mg/kg",
         "antibodies_used": [],
         "biosamples_used": [],
