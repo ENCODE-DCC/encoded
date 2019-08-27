@@ -51,7 +51,6 @@ function recordBrowserStats (browser_stats, timingVar) {
 // point should be definitions.
 if (!window.TEST_RUNNER) {
     domready(() => {
-        console.log('ready');
         // Set <html> class depending on browser features
         const props = getRenderedProps(document);
         const serverStats = require('querystring').parse(window.stats_cookie);

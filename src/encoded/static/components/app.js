@@ -1030,7 +1030,6 @@ class App extends React.Component {
     }
 
     render() {
-        console.log('render app');
         let content;
         let containerClass;
         let context = this.state.context;
