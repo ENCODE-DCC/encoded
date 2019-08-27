@@ -2805,5 +2805,21 @@
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "adapter_set.txt",
         "uuid": "12171a1b-23de-431c-9001-181acb0642c2"
+    },
+    {
+        "_test": "elements reference",
+        "accession": "ENCFF814ELR",
+        "award": "U41HG006992",
+        "dataset": "ENCSR500ELM",
+        "date_created": "2019-04-18T16:46:18.670068+00:00",
+        "file_format": "fasta",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "2a7111b6ea473ea6f26869771fa96843",
+        "output_type": "elements reference",
+        "status": "released",
+        "file_size": 2941813,
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "elements_ref.fasta",
+        "uuid": "26a96f85-0e22-463c-83d0-4106ba588e4c"
     }
 ]

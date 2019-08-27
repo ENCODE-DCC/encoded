@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 15
+
+* *output_type* list was updated to include the enum *elements reference*
+
 ### Schema version 15
 
 * Add *IDR ranked peaks* and *IDR thresholded peaks* for *output_type*

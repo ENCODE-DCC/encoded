@@ -1096,6 +1096,7 @@
                         "DHS peaks",
                         "differential expression quantifications",
                         "differential splicing quantifications",
+                        "elements reference",
                         "enhancer validation",
                         "enrichment",
                         "exon quantifications",
@@ -1681,6 +1682,7 @@
         "sequence uniqueness": "reference",
         "sequence barcodes": "reference",
         "sequence adapters": "reference",
+        "elements reference": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
