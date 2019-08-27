@@ -2987,7 +2987,9 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
         };
 
         header = (
-            <h4>Selected contributing files</h4>
+            <div className="graph-modal-header__content">
+                <h2>Selected contributing files</h2>
+            </div>
         );
         body = (
             <div className="coalesced-table">
@@ -3001,7 +3003,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
     } else {
         header = (
             <div className="details-view-info">
-                <h4>Unknown files</h4>
+                <h2>Unknown files</h2>
             </div>
         );
         body = <p className="browser-error">No information available</p>;
