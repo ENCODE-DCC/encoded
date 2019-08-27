@@ -102,6 +102,16 @@ form.table-filter {
     display: block;
 }
 
+.collection-table {
+    > tbody {
+        > tr {
+            > td {
+                vertical-align: top;
+            }
+        }
+    }
+}
+
 .tcell-sortable {
     cursor: pointer;
 }
