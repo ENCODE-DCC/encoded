@@ -43,8 +43,10 @@
         padding: 20px;
         line-height: 1.6;
 
-        @media screen and (min-width: $screen-md-min) {
-            padding: 20px 10%;
+        .layout__block--100 & {
+            @media screen and (min-width: $screen-md-min) {
+                padding: 20px 10%;
+            }
         }
 
         &.full-width {
