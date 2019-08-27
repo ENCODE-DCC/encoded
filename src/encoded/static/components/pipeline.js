@@ -519,7 +519,11 @@ const StepDetailView = function StepDetailView(node) {
         return AnalysisStep(selectedStep, node);
     }
     return {
-        header: <h4>Software unknown</h4>,
+        header: (
+            <div className="graph-modal-header__content">
+                <h2>Software unknown</h2>
+            </div>
+        ),
         body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>,
         type: 'Step',
     };
