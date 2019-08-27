@@ -109,7 +109,12 @@
 	}
 
 	@at-root #{&}__controls {
+		display: flex;
 		flex: 0 1 auto;
+
+		.btn {
+			margin-left: 5px;
+		}
 	}
 }
 
