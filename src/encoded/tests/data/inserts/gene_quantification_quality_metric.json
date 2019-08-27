@@ -7,7 +7,6 @@
         "uuid": "aa0a0168-d36d-4c1c-89ff-b85bb45d9f5b",
         "assay_term_name": "RNA-seq",
         "quality_metric_of": [ "ENCFF413RGP" ],
-
         "number_of_genes_detected": 783
     }
 ]

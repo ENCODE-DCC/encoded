@@ -7,7 +7,6 @@
         "uuid": "c0946680-6bd3-4e3c-b5f7-cbacdf427ea6",
         "assay_term_name": "RNA-seq",
         "quality_metric_of": [ "ENCFF413RGP" ],
-
         "3prime_overlapping_ncrna": 0,
         "IG_C_gene": 0,
         "IG_C_pseudogene": 0,
