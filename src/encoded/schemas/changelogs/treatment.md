@@ -4,7 +4,7 @@
 * *product_id* and *source* properties were added using imports from mixins.json.
 * *stimulation* was added to the enum list for the *treatment_type* property in mixins.json.
 * *purpose* property was added
-* *mg/kg* can now be specified as amount units.
+* *μg/kg* can now be specified as amount units.
 
 ### Schema version 11
 

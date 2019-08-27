@@ -16,7 +16,7 @@ def test_treatment_patch_amount_units(testapp, treatment):
         {
             'treatment_type': 'injection',
             'amount': 20,
-            'amount_units': 'mg/kg'
+            'amount_units': 'μg/kg'
         },
         status=200,
     )

@@ -158,7 +158,7 @@
             "encode:injection_of_rTr_2"
         ],
         "amount": 20,
-        "amount_units": "mg/kg",
+        "amount_units": "μg/kg",
         "antibodies_used": [],
         "biosamples_used": [],
         "dbxrefs": [],
