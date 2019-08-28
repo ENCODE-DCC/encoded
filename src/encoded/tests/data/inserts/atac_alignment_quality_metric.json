@@ -7,7 +7,6 @@
         "uuid": "983a6ee5-cd13-4f6a-a547-6e04e761c814",
         "assay_term_name": "ATAC-seq",
         "quality_metric_of": [ "ENCFF032OJW" ],
-
         "total_reads": 691166,
         "total_reads_qc_failed": 0,
         "duplicate_reads": 0,
@@ -43,7 +42,6 @@
         "uuid": "87c18e2f-1f93-4f4f-b75f-0274d95dc1f2",
         "assay_term_name": "ATAC-seq",
         "quality_metric_of": [ "ENCFF032OJW" ],
-
         "total_reads": 488656,
         "total_reads_qc_failed": 0,
         "duplicate_reads": 0,

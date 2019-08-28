@@ -7,7 +7,6 @@
         "uuid": "eb47487b-f6bd-4a34-a2a5-fcc8d3e77d3d",
         "assay_term_name": "ATAC-seq",
         "quality_metric_of": [ "ENCFF182CHA" ],
-
         "reproducible_peaks": 14831,
         "rescue_ratio": 1.06435036303,
         "self_consistency_ratio": 1.07275301733,

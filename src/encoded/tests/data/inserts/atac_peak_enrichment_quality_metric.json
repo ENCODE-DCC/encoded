@@ -7,7 +7,6 @@
         "uuid": "e61f4346-4a83-4ff1-ba89-17ae61508d85",
         "assay_term_name": "ATAC-seq",
         "quality_metric_of": [ "ENCFF182CHA" ],
-
         "FRiP": 0.989380104666,
         "min_size": 73,
         "25_pct": 73,

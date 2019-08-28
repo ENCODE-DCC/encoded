@@ -7,7 +7,6 @@
         "uuid": "c9425c2c-1edd-4f21-8243-ebd70268a061",
         "assay_term_name": "ATAC-seq",
         "quality_metric_of": [ "ENCFF032OJW" ],
-
         "unpaired_reads": 0,
         "paired_reads": 245210,
         "unmapped_reads": 0,
