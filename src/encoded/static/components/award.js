@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
-import { PickerActions } from './search';
+import { ItemAccessories } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { DisplayAsJson } from './objectutils';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
@@ -637,10 +637,10 @@ class AntibodyChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Antibodies {this.relevantData.length > 0 ?
-                    <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award.@id=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    :
-                    null}
+                    <div className="reagentsreporttitle">Antibodies</div>
+                    {this.relevantData.length > 0 ?
+                        <a className="btn btn-info btn-xs reagentsreportlink" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award.@id=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    : null}
                 </div>
                 {this.relevantData.length > 0 ?
                     <div>
@@ -757,8 +757,9 @@ class BiosampleChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Biosamples {this.relevantData.length > 0 ?
-                        <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    <div className="reagentsreporttitle">Biosamples</div>
+                    {this.relevantData.length > 0 ?
+                        <a className="btn btn-info btn-sm reagentsreportlink" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     : null}
                 </div>
                 {this.relevantData.length > 0 ?
@@ -1451,8 +1452,9 @@ const ChartRenderer = (props) => {
             <PanelBody>
                 <div className="award-chart__group-wrapper">
                     <h2>
-                        Assays {experimentsConfig.labs.length > 0 ?
-                            <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&${ExperimentQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        Assays
+                        {experimentsConfig.labs.length > 0 ?
+                            <a className="btn btn-info btn-sm" href={`/report/?type=Experiment&${ExperimentQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                         : null}
                     </h2>
                     {experimentsConfig.labs.length > 0 ?
@@ -2126,92 +2128,83 @@ AffiliatedLabs.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
-/* eslint-disable react/prefer-stateless-function */
-class Award extends React.Component {
-    render() {
-        // const { award } = this.props;
-        const { context } = this.props;
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+const Award = ({ context }, reactContext) => {
+    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
 
-        return (
-            <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        {context.pi && context.pi.lab ?
-                            <h2>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h2>
-                            :
-                            <h2>AWARD SUMMARY for ({context.name})</h2>
-                        }
-                        <DisplayAsJson />
-                    </div>
-                </header>
-                <AwardCharts award={context} />
-                <Panel>
-                    <PanelHeading>
-                        <h4>{context.title || context.name}</h4>
-                    </PanelHeading>
-                    <PanelBody>
-                        {context.description ?
-                            <div className="two-column-long-text two-column-long-text--gap">
-                                <p>{context.description}</p>
-                            </div>
-                        :
-                            <p className="browser-error">Award has no description</p>
-                        }
-                        <div className="description">
-                            <hr />
-                            <div className="description__columnone">
-                                <dl className="key-value">
-                                    <div data-test="projectinfo">
-                                        <dt>Status</dt>
-                                        <dd><Status item={context} inline /></dd>
-                                    </div>
-
-                                    <div data-test="projectinfo">
-                                        <dt>NIH Grant</dt>
-                                        <dd><a href={context.url} title={`${context.name} NIH Grant`}>{context.name}</a></dd>
-                                    </div>
-
-                                    {context.pi && context.pi.lab ?
-                                        <div data-test="pi">
-                                            <dt>Primary Investigator</dt>
-                                            <dd>{context.pi.lab.title}</dd>
-                                        </div>
-                                    : null}
-
-                                    <div data-test="labs">
-                                        <dt>Affiliated Labs</dt>
-                                        <dd><AffiliatedLabs award={context} /> </dd>
-                                    </div>
-                                </dl>
-                            </div>
-                            <div className="description__columnone">
-                                <dl className="key-value">
-                                    <div data-test="dates">
-                                        <dt>Dates</dt>
-                                        <dd>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dd>
-                                    </div>
-
-                                    <div data-test="rfa">
-                                        <dt>Award RFA</dt>
-                                        <dd>{context.rfa}</dd>
-                                    </div>
-                                </dl>
-                            </div>
+    return (
+        <div className={globals.itemClass(context, 'view-item')}>
+            <header>
+                {context.pi && context.pi.lab ?
+                    <h1>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h1>
+                    :
+                    <h1>AWARD SUMMARY for ({context.name})</h1>
+                }
+                <ItemAccessories item={context} />
+            </header>
+            <AwardCharts award={context} />
+            <Panel>
+                <PanelHeading>
+                    <h4>{context.title || context.name}</h4>
+                </PanelHeading>
+                <PanelBody>
+                    {context.description ?
+                        <div className="two-column-long-text two-column-long-text--gap">
+                            <p>{context.description}</p>
                         </div>
-                    </PanelBody>
-                </Panel>
+                    :
+                        <p className="browser-error">Award has no description</p>
+                    }
+                </PanelBody>
+                <PanelBody addClasses="panel__split">
+                    <div className="panel__split-element">
+                        <dl className="key-value">
+                            <div data-test="projectinfo">
+                                <dt>Status</dt>
+                                <dd><Status item={context} inline /></dd>
+                            </div>
 
-                {context.milestones && loggedIn ?
-                    <MilestonesTable award={context} />
-                : null}
+                            <div data-test="projectinfo">
+                                <dt>NIH Grant</dt>
+                                <dd><a href={context.url} title={`${context.name} NIH Grant`}>{context.name}</a></dd>
+                            </div>
 
-                <LineChart award={context} />
-            </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+                            {context.pi && context.pi.lab ?
+                                <div data-test="pi">
+                                    <dt>Primary Investigator</dt>
+                                    <dd>{context.pi.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="labs">
+                                <dt>Affiliated Labs</dt>
+                                <dd><AffiliatedLabs award={context} /> </dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div className="panel__split-element">
+                        <dl className="key-value">
+                            <div data-test="dates">
+                                <dt>Dates</dt>
+                                <dd>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dd>
+                            </div>
+
+                            <div data-test="rfa">
+                                <dt>Award RFA</dt>
+                                <dd>{context.rfa}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </PanelBody>
+            </Panel>
+
+            {context.milestones && loggedIn ?
+                <MilestonesTable award={context} />
+            : null}
+
+            <LineChart award={context} />
+        </div>
+    );
+};
 
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
@@ -2223,27 +2216,24 @@ Award.contextTypes = {
 
 globals.contentViews.register(Award, 'Award');
 
-const Listing = (props) => {
-    const result = props.context;
-    return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Award</p>
-                    <p className="type">{` ${result.name}`}</p>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                </div>
-                <div className="accession">
-                    <a href={result['@id']}>{result.title}</a>
-                </div>
-                <div className="data-row">
-                    <div><strong>Project / RFA: </strong>{result.project} / {result.rfa}</div>
+const Listing = ({ context: result }) => (
+    <li className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">{result.title}</a>
+                <div className="result-item__data-row">
+                    <strong>Project / RFA: </strong>{result.project} / {result.rfa}
                 </div>
             </div>
-        </li>
-    );
-};
+            <div className="result-item__meta">
+                <div className="result-item__meta-title">Award</div>
+                <div className="type">{` ${result.name}`}</div>
+                <Status item={result.status} badgeSize="small" css="result-table__status" />
+            </div>
+            <PickerActions context={result} />
+        </div>
+    </li>
+);
 
 Listing.propTypes = {
     context: PropTypes.object.isRequired, // Object whose search result we're displaying

@@ -181,7 +181,7 @@ class TabPanel extends React.Component {
         return (
             <div className={tabPanelCss}>
                 <div className="tab-nav">
-                    <ul className={`nav nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
+                    <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {Object.keys(tabs).map((tab, i) => {
                             const currentTab = this.props.selectedTab ? this.props.selectedTab : this.state.currentTab ? this.state.currentTab : i === 0 ? tab : '';
 

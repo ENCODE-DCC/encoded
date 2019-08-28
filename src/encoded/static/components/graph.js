@@ -675,7 +675,7 @@ export class Graph extends React.Component {
                     </div>
                     <div ref={(div) => { this.graphdisplay = div; }} className="graph-display" onScroll={this.scrollHandler} />
                     {colorize ? <GraphLegend /> : null}
-                    <div className="graph-dl clearfix">
+                    <div className="graph-dl">
                         <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
                         <button ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
@@ -697,8 +697,6 @@ Graph.propTypes = {
 };
 
 Graph.defaultProps = {
-    selectedAssembly: '',
-    selectedAnnotation: '',
     schemas: null,
     colorize: false,
     children: null,

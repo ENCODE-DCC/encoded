@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import { addMultipleToCartAndSave } from './actions';
 import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT } from './util';
 

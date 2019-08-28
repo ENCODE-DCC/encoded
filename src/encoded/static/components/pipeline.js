@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
-import { PanelLookup, DisplayAsJson, AlternateAccession } from './objectutils';
-import { PickerActions } from './search';
+import { PanelLookup, ItemAccessories, AlternateAccession } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import { softwareVersionList } from './software';
 import Status from './status';
 
@@ -45,14 +45,14 @@ function AnalysisStep(step, node) {
         }
 
         header = (
-            <div className="details-view-info">
-                <h4>
+            <div className="graph-modal-header__content">
+                <h2>
                     {swVersions && swVersions.length > 0 ?
                         <span>{`${step.title} — Version ${node.metadata.ref.major_version}.${node.metadata.stepVersion.minor_version}`}</span>
                     :
                         <span>{step.title} — Version {node.metadata.ref.major_version}</span>
                     }
-                </h4>
+                </h2>
             </div>
         );
         body = (
@@ -392,19 +392,16 @@ class PipelineComponent extends React.Component {
 
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
-                        <h2>{context.title}</h2>
-                        <div className="replacement-accessions">
-                            <AlternateAccession altAcc={context.alternate_accessions} />
-                        </div>
-                        {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
-                        <DisplayAsJson />
+                <header>
+                    {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
+                    <h1>{context.title}</h1>
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
+                    <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'pipeline-audit' }} />
                 </header>
                 {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session })}
-                <Panel addClasses="data-display">
+                <Panel>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="status">
@@ -470,7 +467,7 @@ class PipelineComponent extends React.Component {
                 {this.jsonGraph ?
                     <Panel>
                         <PanelHeading>
-                            <h3>Pipeline schematic</h3>
+                            <h4>Pipeline schematic</h4>
                         </PanelHeading>
                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} />
                     </Panel>
@@ -522,7 +519,11 @@ const StepDetailView = function StepDetailView(node) {
         return AnalysisStep(selectedStep, node);
     }
     return {
-        header: <h4>Software unknown</h4>,
+        header: (
+            <div className="graph-modal-header__content">
+                <h2>Software unknown</h2>
+            </div>
+        ),
         body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>,
         type: 'Step',
     };
@@ -563,31 +564,31 @@ class ListingComponent extends React.Component {
         swTitle = _.uniq(swTitle);
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Pipeline</p>
-                        <p className="type">{` ${result.accession}`}</p>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">{result.title}</a>
+                        <div className="result-item__data-row">
+                            {result.assay_term_names && result.assay_term_names.length ?
+                                <div><strong>Assays: </strong>{result.assay_term_names.join(', ')}</div>
+                            : null}
+
+                            {swTitle.length ?
+                                <div><strong>Software: </strong>{swTitle.join(', ')}</div>
+                            : null}
+
+                            {publishedBy.length ?
+                                <div><strong>References: </strong>{publishedBy.join(', ')}</div>
+                            : null}
+                        </div>
+                    </div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Pipeline</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession">
-                        <a href={result['@id']}>{result.title}</a>
-                    </div>
-                    <div className="data-row">
-                        {result.assay_term_names && result.assay_term_names.length > 0 ?
-                            <div><strong>Assays: </strong>{result.assay_term_names.join(', ')}</div>
-                        : null}
-
-                        {swTitle.length > 0 ?
-                            <div><strong>Software: </strong>{swTitle.join(', ')}</div>
-                        : null}
-
-                        {publishedBy.length > 0 ?
-                            <div><strong>References: </strong>{publishedBy.join(', ')}</div>
-                        : null}
-                    </div>
+                    <PickerActions context={result} />
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, forcedEditLink: true })}
             </li>

@@ -13,6 +13,10 @@ dd.h3, dd.h4 {
 dl.key-value, dl.key-value-doc {
     margin: 0;
 
+    .panel-body > & {
+        margin: -10px 0;
+    }
+
     dt, dd {
         display: block;
         float: none;
@@ -227,6 +231,11 @@ dd ul, .multi-value-line {
     border-top: 1px solid #c0c0c0;
 
     &:first-child {
+        margin-top: -10px;
         border-top: none;
+    }
+
+    &:last-child {
+        margin-bottom: -10px;
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { CartAddAllElements, CartToggle } from './cart';
 import { auditDecor, AuditCounts } from './audit';
 import { FilePanelHeader } from './dataset';
@@ -9,8 +9,8 @@ import { FetchedItems } from './fetched';
 import { DatasetFiles } from './filegallery';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { DisplayAsJson, InternalTags } from './objectutils';
-import { PickerActions } from './search';
+import { ItemAccessories, InternalTags } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
@@ -43,6 +43,7 @@ const experimentTableColumns = {
     audit: {
         title: 'Audit status',
         display: (item, meta) => <AuditCounts audits={meta.auditsByDataset[item['@id']]} loggedIn={meta.loggedIn} />,
+        sorter: false,
     },
 
     cart: {
@@ -209,92 +210,89 @@ class ExperimentSeriesComponent extends React.Component {
 
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>Summary for experiment series {context.accession}</h2>
-                        {auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
-                        <DisplayAsJson />
-                    </div>
+                <header>
+                    <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h2>Summary for experiment series {context.accession}</h2>
+                    <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
                 </header>
                 {auditDetail(context.audit, 'series-audit', { session: this.context.session })}
-                <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                                <dl className="key-value">
-                                    <div data-test="status">
-                                        <dt>Status</dt>
-                                        <dd><Status item={context} inline /></dd>
-                                    </div>
-
-                                    {context.description ?
-                                        <div data-test="description">
-                                            <dt>Description</dt>
-                                            <dd>{context.description}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.assay_term_name && context.assay_term_name.length > 0 ?
-                                        <div data-test="description">
-                                            <dt>Assay</dt>
-                                            <dd>{context.assay_term_name.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {(context.biosample_summary && context.biosample_summary.length > 0) || speciesRender ?
-                                        <div data-test="biosamplesummary">
-                                            <dt>Biosample summary</dt>
-                                            <dd>
-                                                {speciesRender ? <span>{speciesRender}&nbsp;</span> : null}
-                                                {context.biosample_summary && context.biosample_summary.length > 0 ? <span>{context.biosample_summary.join(' and ')} </span> : null}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
+                <Panel>
+                    <PanelBody addClasses="panel__split">
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--experiment-series">
+                                <h4>Summary</h4>
                             </div>
-
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Attribution</h4>
+                            <dl className="key-value">
+                                <div data-test="status">
+                                    <dt>Status</dt>
+                                    <dd><Status item={context} inline /></dd>
                                 </div>
-                                <dl className="key-value">
-                                    {context.contributors.length > 0 ?
-                                        <div data-test="contributors">
-                                            <dt>Contributors</dt>
-                                            <dd>
-                                                {context.contributors.map(contributor => (
-                                                    <span key={contributor['@id']} className="line-item">
-                                                        {contributor.title}
-                                                    </span>
-                                                ))}
-                                            </dd>
-                                        </div>
-                                    : null}
 
-                                    {context.aliases.length > 0 ?
-                                        <div data-test="aliases">
-                                            <dt>Aliases</dt>
-                                            <dd>{context.aliases.join(', ')}</dd>
-                                        </div>
-                                    : null}
+                                {context.description ?
+                                    <div data-test="description">
+                                        <dt>Description</dt>
+                                        <dd>{context.description}</dd>
+                                    </div>
+                                : null}
 
-                                    {context.submitter_comment ?
-                                        <div data-test="submittercomment">
-                                            <dt>Submitter comment</dt>
-                                            <dd>{context.submitter_comment}</dd>
-                                        </div>
-                                    : null}
+                                {context.assay_term_name && context.assay_term_name.length > 0 ?
+                                    <div data-test="description">
+                                        <dt>Assay</dt>
+                                        <dd>{context.assay_term_name.join(', ')}</dd>
+                                    </div>
+                                : null}
 
-                                    {internalTags.length > 0 ?
-                                        <div className="tag-badges" data-test="tags">
-                                            <dt>Tags</dt>
-                                            <dd><InternalTags internalTags={internalTags} objectType="Experiment" /></dd>
-                                        </div>
-                                    : null}
-                                </dl>
+                                {(context.biosample_summary && context.biosample_summary.length > 0) || speciesRender ?
+                                    <div data-test="biosamplesummary">
+                                        <dt>Biosample summary</dt>
+                                        <dd>
+                                            {speciesRender ? <span>{speciesRender}&nbsp;</span> : null}
+                                            {context.biosample_summary && context.biosample_summary.length > 0 ? <span>{context.biosample_summary.join(' and ')} </span> : null}
+                                        </dd>
+                                    </div>
+                                : null}
+                            </dl>
+                        </div>
+
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--experiment-series">
+                                <h4>Attribution</h4>
                             </div>
+                            <dl className="key-value">
+                                {context.contributors.length > 0 ?
+                                    <div data-test="contributors">
+                                        <dt>Contributors</dt>
+                                        <dd>
+                                            {context.contributors.map(contributor => (
+                                                <span key={contributor['@id']} className="line-item">
+                                                    {contributor.title}
+                                                </span>
+                                            ))}
+                                        </dd>
+                                    </div>
+                                : null}
+
+                                {context.aliases.length > 0 ?
+                                    <div data-test="aliases">
+                                        <dt>Aliases</dt>
+                                        <dd>{context.aliases.join(', ')}</dd>
+                                    </div>
+                                : null}
+
+                                {context.submitter_comment ?
+                                    <div data-test="submittercomment">
+                                        <dt>Submitter comment</dt>
+                                        <dd>{context.submitter_comment}</dd>
+                                    </div>
+                                : null}
+
+                                {internalTags.length > 0 ?
+                                    <div className="tag-badges" data-test="tags">
+                                        <dt>Tags</dt>
+                                        <dd><InternalTags internalTags={internalTags} objectType="Experiment" /></dd>
+                                    </div>
+                                : null}
+                            </dl>
                         </div>
                     </PanelBody>
                 </Panel>
@@ -393,49 +391,41 @@ const ListingComponent = (props, reactContext) => {
     const totalDatasetCount = result.related_datasets.reduce((datasetCount, dataset) => (searchableDatasetStatuses.includes(dataset.status) ? datasetCount + 1 : datasetCount), 0);
 
     return (
-        <li>
+        <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <PickerActions {...props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Experiment Series</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <div className="result-experiment-series-search">
-                            <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}${searchableDatasetStatusQuery}`}>View {totalDatasetCount} datasets</a>
-                        </div>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>
-                            {result.assay_title && result.assay_title.length > 0 ? <span>{result.assay_title.join(', ')} </span> : null}
-                            Experiment Series
-                            <span>
-                                {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-                                {lifeSpec.length > 0 ?
-                                    <span>
-                                        {' ('}
-                                        {organism ? <i>{organism}</i> : null}
-                                        {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
-                                        {')'}
-                                    </span>
-                                : null}
-                            </span>
-                        </a>
-                    </div>
-                    {result.biosample_summary && result.biosample_summary.length > 0 ?
-                        <div className="highlight-row">
-                            {organism ? <i>{organism} </i> : null}
-                            <span>{result.biosample_summary.join(' and ')} </span>
-                        </div>
-                    : null}
-                    <div className="data-row">
+                    <a href={result['@id']} className="result-item__link">
+                        {result.assay_title && result.assay_title.length > 0 ? <span>{result.assay_title.join(', ')} </span> : null}
+                        Experiment Series
+                        <span>
+                            {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+                            {lifeSpec.length > 0 ?
+                                <span>
+                                    {' ('}
+                                    {organism ? <i>{organism}</i> : null}
+                                    {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                    {')'}
+                                </span>
+                            : null}
+                        </span>
+                    </a>
+                    <div className="result-item__data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
                         {targets.length > 0 ? <div><strong>Target: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{contributors.join(', ')}</div>
                         <div><strong>Project: </strong>{contributingAwards.join(', ')}</div>
                     </div>
                 </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Experiment Series</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <div className="result-experiment-series-search">
+                        <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}${searchableDatasetStatusQuery}`}>View {totalDatasetCount} datasets</a>
+                    </div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>

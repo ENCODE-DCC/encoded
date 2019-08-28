@@ -127,9 +127,9 @@ export const BiosampleTableFooter = (props) => {
     const { items, total, url } = props;
 
     return (
-        <div>
-            <span>Displaying {items.length} of {total} </span>
-            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        <div className="table-panel__std-footer">
+            <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
         </div>
     );
 };
@@ -205,9 +205,9 @@ const DonorTableFooter = (props) => {
     const { items, total, url } = props;
 
     return (
-        <div>
-            <span>Displaying {items.length} of {total} </span>
-            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        <div className="table-panel__std-footer">
+            <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
         </div>
     );
 };
@@ -337,9 +337,9 @@ ReplacementAccessions.propTypes = {
  * Display a count of experiments in the footer, with a link to the corresponding search if needed.
  */
 const ExperimentTableFooter = ({ items, total, url }) => (
-    <div>
-        <span>Displaying {items.length} of {total} </span>
-        {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+    <div className="table-panel__std-footer">
+        <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
     </div>
 );
 

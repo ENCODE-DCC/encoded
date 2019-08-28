@@ -4,8 +4,8 @@ import _ from 'underscore';
 import moment from 'moment';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import Tooltip from '../libs/bootstrap/tooltip';
+import { Panel, PanelBody } from '../libs/ui/panel';
+import Tooltip from '../libs/ui/tooltip';
 
 
 const newsUri = '/search/?type=Page&news=true&status=released';
@@ -59,22 +59,22 @@ class EncodeSearch extends React.Component {
         return (
             <div className="site-search__encode">
                 <div className="site-search__reference">
-                    <a href="/help/project-overview/" role="button" className="site-search__reference-element">About ENCODE Project</a>
-                    <a href="/help/getting-started/" role="button" className="site-search__reference-element">Getting Started</a>
-                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__reference-element">Experiments</a>
+                    <a href="/help/project-overview/" className="btn btn-info btn-sm">About ENCODE Project</a>
+                    <a href="/help/getting-started/" className="btn btn-info btn-sm">Getting Started</a>
+                    <a href="/matrix/?type=Experiment&status=released" className="btn btn-info btn-sm">Experiments</a>
                 </div>
                 <form action="/search/">
                     <fieldset>
                         <legend className="sr-only">Encode search</legend>
                         <div className="site-search__input">
-                            <label htmlFor="encode-search">Search ENCODE portal</label>
+                            <label htmlFor="encode-search" className="label--inline">Search ENCODE portal</label>
                             <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
                                 Search the entire ENCODE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
                             </Tooltip>
-                            <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
+                            <input id="encode-search" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
                         </div>
                         <div className="site-search__submit">
-                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">ENCODE <i className="icon icon-search" /></button>
+                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info btn-sm site-search__submit-element">ENCODE <i className="icon icon-search" /></button>
                         </div>
                     </fieldset>
                 </form>
@@ -460,8 +460,8 @@ class ScreenSearch extends React.Component {
         return (
             <div className="site-search__screen">
                 <div className="site-search__reference">
-                    <a href="/data/annotations/" role="button" className="site-search__reference-element">About ENCODE Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+Cis-Regulatory+Elements" role="button" className="site-search__reference-element">candidate Cis-Regulatory Elements</a>
+                    <a href="/data/annotations/" className="btn btn-info btn-sm">About ENCODE Encyclopedia</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+Cis-Regulatory+Elements" className="btn btn-info btn-sm">candidate Cis-Regulatory Elements</a>
                 </div>
                 <form>
                     <fieldset>
@@ -472,8 +472,7 @@ class ScreenSearch extends React.Component {
                                 <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
-                                <br />
-                                <span className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></span>
+                                <div className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></div>
                             </label>
                             <InputSuggest
                                 value={this.state.currSearchTerm}
@@ -487,8 +486,8 @@ class ScreenSearch extends React.Component {
                             />
                         </div>
                         <div className="site-search__submit">
-                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
-                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info btn-sm site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
+                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info btn-sm site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
                         </div>
                     </fieldset>
                 </form>
@@ -637,35 +636,27 @@ export default class Home extends React.Component {
         const currentQuery = generateQuery(this.state.organisms, this.state.assayCategory);
 
         return (
-            <div className="whole-page">
-                <div className="row">
-                    <div className="col-xs-12">
-                        <Panel>
-                            <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
-                            <HomeBanner adminUser={adminUser} />
-                            <div className="organism-tabs">
-                                <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
-                            </div>
-                            <div className="graphs">
-                                <div className="row">
-                                    <HomepageChartLoader organisms={this.state.organisms} assayCategory={this.state.assayCategory} query={currentQuery} />
-                                </div>
-                            </div>
-                            <div className="social">
-                                <div className="social-news">
-                                    <div className="news-header">
-                                        <h2>News <a href={newsUri} title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
-                                    </div>
-                                    <NewsLoader newsLoaded={this.newsLoaded} />
-                                </div>
-                                <div className="social-twitter">
-                                    <TwitterWidget height={this.state.socialHeight} />
-                                </div>
-                            </div>
-                        </Panel>
+            <Panel>
+                <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
+                <HomeBanner adminUser={adminUser} />
+                <div className="organism-tabs">
+                    <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
+                </div>
+                <div className="graphs">
+                    <HomepageChartLoader organisms={this.state.organisms} assayCategory={this.state.assayCategory} query={currentQuery} />
+                </div>
+                <div className="social">
+                    <div className="social-news">
+                        <div className="news-header">
+                            <h2>News <a href={newsUri} title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
+                        </div>
+                        <NewsLoader newsLoaded={this.newsLoaded} />
+                    </div>
+                    <div className="social-twitter">
+                        <TwitterWidget height={this.state.socialHeight} />
                     </div>
                 </div>
-            </div>
+            </Panel>
         );
     }
 }
@@ -679,7 +670,7 @@ Home.contextTypes = {
 const ChartGallery = props => (
     <PanelBody>
         <div className="view-all">
-            <a href={`/matrix/${props.query}`} className="view-all-button btn btn-info btn-sm" role="button">
+            <a href={`/matrix/${props.query}`} className="presented-link presented-link--lg">
                 {props.assayCategory !== '' || props.organisms.length > 0 ? 'Filtered ' : ''}
                 Data Matrix
             </a>
@@ -730,6 +721,10 @@ class AssayClicking extends React.Component {
         if (e.type === 'touchend') {
             handleClick(category, this);
             this.assayClickHandled = true;
+        } else if (e.type === 'keydown' && (e.keyCode === 13 || e.keyCode === 32)) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClick(category, this);
         } else if (e.type === 'click' && !this.assayClickHandled) {
             handleClick(category, this);
         } else {
@@ -770,14 +765,10 @@ class AssayClicking extends React.Component {
                             </svg>
                         </div>
 
-                        <div className="site-banner-intro">
-                            <div className="site-banner-intro-content">
-                                <div className="site-search">
-                                    <EncodeSearch />
-                                    <hr />
-                                    <ScreenSearch />
-                                </div>
-                            </div>
+                        <div className="site-banner__intro">
+                            <EncodeSearch />
+                            <hr />
+                            <ScreenSearch />
                         </div>
                     </div>
                 </div>
@@ -804,6 +795,9 @@ const BannerOverlayButton = (props) => {
             height={height}
             className={`rectangle-box${selected ? ' selected' : ''}`}
             onClick={(e) => { clickHandler(item, e); }}
+            onKeyDown={(e) => { clickHandler(item, e); }}
+            aria-label={item}
+            tabIndex="0"
         />
     );
 };
@@ -1013,9 +1007,9 @@ class HomepageChart extends React.Component {
                                 if (chartData[i]) {
                                     text.push('<li>');
                                     text.push(`<a href="/matrix/${this.props.query}&award.project=${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    text.push(`<span class="chart-legend__chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                     if (chart.data.labels[i]) {
-                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                        text.push(`<span class="chart-legend__label">${chart.data.labels[i]}</span>`);
                                     }
                                     text.push('</a></li>');
                                 }
@@ -1100,7 +1094,7 @@ class HomepageChart extends React.Component {
             <div>
                 <div className="title">
                     Project
-                    <center><hr width="80%" color="blue" /></center>
+                    <center><hr width="80%" /></center>
                 </div>
                 {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-1" className="chart-wrapper">
@@ -1209,9 +1203,9 @@ class HomepageChart2 extends React.Component {
                                 if (chartData[i]) {
                                     text.push('<li>');
                                     text.push(`<a href="/matrix/${this.props.query}&biosample_ontology.classification=${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    text.push(`<span class="chart-legend__chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                     if (chart.data.labels[i]) {
-                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                        text.push(`<span class="chart-legend__label">${chart.data.labels[i]}</span>`);
                                     }
                                     text.push('</a></li>');
                                 }
@@ -1302,7 +1296,7 @@ class HomepageChart2 extends React.Component {
             <div>
                 <div className="title">
                     Biosample Type
-                    <center><hr width="80%" color="blue" /></center>
+                    <center><hr width="80%" /></center>
                 </div>
                 {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-2" className="chart-wrapper">
@@ -1522,7 +1516,7 @@ class HomepageChart3 extends React.Component {
             <div>
                 <div className="title">
                     Assay Categories
-                    <center><hr width="80%" color="blue" /></center>
+                    <center><hr width="80%" /></center>
                 </div>
                 {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-3" className="chart-wrapper">
@@ -1566,12 +1560,12 @@ class News extends React.Component {
             return (
                 <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
                     {newsSearch['@graph'].map(item =>
-                        <div key={item['@id']} className="news-listing-item">
+                        <div key={item['@id']} className="news-listing__item">
                             <h3>{item.title}</h3>
                             <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
-                            <div className="news-excerpt">{item.news_excerpt}</div>
-                            <div className="news-listing-readmore">
-                                <a className="btn btn-info btn-sm" href={item['@id']} title={`View news post for ${item.title}`} key={item['@id']}>Read more</a>
+                            <div className="news-listing__excerpt">{item.news_excerpt}</div>
+                            <div className="news-listing__readmore">
+                                <a href={item['@id']} aria-label={`View news post for ${item.title}`} key={item['@id']}>Read more</a>
                             </div>
                         </div>
                     )}

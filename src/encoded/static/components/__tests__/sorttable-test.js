@@ -67,7 +67,7 @@ describe('Software', () => {
             const files = [file0];
             table = mount(
                 <SortTablePanel>
-                    <SortTable list={files} columns={tableConfig} />
+                    <SortTable list={files} columns={tableConfig} footer={<div>Footer</div>} />
                 </SortTablePanel>
             );
 

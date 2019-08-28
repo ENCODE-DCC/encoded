@@ -41,7 +41,13 @@ $tooltip-color: #000;
 }
 
 .tooltip {
+    position: absolute;
+    z-index: 1030;
+    display: block;
     visibility: hidden;
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0;
 
     &.right {
         transform: translateY(-50%);
@@ -66,6 +72,16 @@ $tooltip-color: #000;
             min-width: 250px; 
         }
     }
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 3px 8px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    background-color: #000;
+    border-radius: 3px;
 }
 
 .tooltip-open {

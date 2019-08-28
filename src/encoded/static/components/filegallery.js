@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
-import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed, ObjectAuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
@@ -370,7 +370,7 @@ FileTable.procTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
@@ -558,7 +558,7 @@ class RawSequencingTable extends React.Component {
             }
 
             return (
-                <table className="table table-sortable table-raw">
+                <table className="table table__sortable table-raw">
                     <thead>
                         <tr className="table-section">
                             <th colSpan="11">
@@ -2527,7 +2527,7 @@ class FileGalleryRendererComponent extends React.Component {
             Step: 'analysis-step',
             QualityMetric: 'quality-metric',
         };
-        const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
+        const modalClass = meta ? `graph-modal--${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
         const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
 
@@ -2782,8 +2782,8 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
         }
         const dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         header = (
-            <div className="details-view-info">
-                <h4>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h4>
+            <div className="graph-modal-header__content">
+                <h2>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h2>
             </div>
         );
         const fileQualityMetrics = selectedFile.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
@@ -2924,21 +2924,17 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 </dl>
 
                 {auditsDisplayed(selectedFile.audit, session) ?
-                    <div className="row graph-modal-audits">
-                        <div className="col-xs-12">
-                            <h5>File audits:</h5>
-                            {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
-                            {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session }) : null}
-                        </div>
+                    <div className="graph-modal-audits">
+                        <h5>File audits:</h5>
+                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
+                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session }) : null}
                     </div>
                 : null}
             </div>
         );
     } else {
         header = (
-            <div className="details-view-info">
-                <h4>Unknown file</h4>
-            </div>
+            <div className="details-view-info">Unknown file</div>
         );
         body = <p className="browser-error">No information available</p>;
     }
@@ -2991,7 +2987,9 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
         };
 
         header = (
-            <h4>Selected contributing files</h4>
+            <div className="graph-modal-header__content">
+                <h2>Selected contributing files</h2>
+            </div>
         );
         body = (
             <div className="coalesced-table">
@@ -3005,7 +3003,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
     } else {
         header = (
             <div className="details-view-info">
-                <h4>Unknown files</h4>
+                <h2>Unknown files</h2>
             </div>
         );
         body = <p className="browser-error">No information available</p>;

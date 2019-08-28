@@ -2,10 +2,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Navbar, Nav, NavItem } from '../libs/bootstrap/navbar';
-import { DropdownMenu, DropdownMenuSep } from '../libs/bootstrap/dropdown-menu';
+import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
+import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartStatus } from './cart';
 import { productionHost } from './globals';
+
+
+/**
+ * Navigation bar home-page button.
+ */
+class HomeBrand extends React.Component {
+    constructor() {
+        super();
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        this.context.navigate('/');
+    }
+
+    render() {
+        return (
+            <button className="home-brand" onClick={this.handleClick}>
+                {this.context.portal.portal_title}
+                <span className="sr-only">Home</span>
+            </button>
+        );
+    }
+}
+
+HomeBrand.contextTypes = {
+    navigate: PropTypes.func,
+    portal: PropTypes.object,
+};
 
 
 export default class Navigation extends React.Component {
@@ -14,8 +43,10 @@ export default class Navigation extends React.Component {
 
         // Set initial React state.
         this.state = {
-            testWarning: !productionHost[url.parse(context.location_href).hostname],
+            /** ID of the currently dropped-down main navigation menu; '' if none */
             openDropdown: '',
+            /** True if test warning banner visible; default depends on domain */
+            testWarning: !productionHost[url.parse(context.location_href).hostname],
         };
 
         // Bind this to non-React methods.
@@ -42,21 +73,31 @@ export default class Navigation extends React.Component {
         document.removeEventListener('click', this.documentClickHandler);
     }
 
+    /**
+     * A click outside the DropdownButton closes the dropdown.
+     */
     documentClickHandler() {
-        // A click outside the DropdownButton closes the dropdown
         this.setState({ openDropdown: '' });
     }
 
+    /**
+     * Called when the user clicks a main navigation drop-down menu.
+     * @param {string} dropdownId ID of the clicked menu, if any
+     * @param {object} e React synthetic event
+     */
     dropdownClick(dropdownId, e) {
         // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
         e.nativeEvent.stopImmediatePropagation();
         this.setState(prevState => ({
-            openDropdown: dropdownId === prevState.openDropdown ? '' : dropdownId,
+            openDropdown: dropdownId !== prevState.openDropdown ? dropdownId : '',
         }));
     }
 
+    /**
+     * Handle a click in the close box of the test-data warning.
+     * @param {object} e React synthetic event
+     */
     handleClickWarning(e) {
-        // Handle a click in the close box of the test-data warning
         e.preventDefault();
         e.stopPropagation();
 
@@ -73,27 +114,27 @@ export default class Navigation extends React.Component {
     }
 
     render() {
-        const portal = this.context.portal;
         return (
-            <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
-                <div className="container">
-                    <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main" openDropdown={this.state.openDropdown} dropdownClick={this.dropdownClick}>
-                        <GlobalSections />
-                        <CartStatus />
-                        <UserActions />
-                        {this.props.isHomePage ? null : <ContextActions />}
-                        <Search />
-                    </Navbar>
-                </div>
+            <div id="navbar" className="navbar__wrapper">
+                <Navbar
+                    brand={<HomeBrand />}
+                    brandlink="/"
+                    label="main"
+                    dropdownClick={this.dropdownClick}
+                    openDropdown={this.state.openDropdown}
+                    navClasses="navbar-main"
+                >
+                    <GlobalSections />
+                    <SecondarySections isHomePage={this.props.isHomePage} />
+                </Navbar>
                 {this.state.testWarning ?
                     <div className="test-warning">
-                        <div className="container">
-                            <p>
-                                The data displayed on this page is not official and only for testing purposes.
-                                <button className="test-warning-close icon icon-times-circle-o" onClick={this.handleClickWarning}>
-                                    <span className="sr-only">Close test warning banner</span>
-                                </button>
-                            </p>
+                        <div className="container test-warning__content">
+                            <div className="test-warning__text">The data displayed on this page is not official and only for testing purposes.</div>
+                            <button className="test-warning__close" onClick={this.handleClickWarning}>
+                                <i className="icon icon-times-circle-o" />
+                                <span className="sr-only">Close test warning banner</span>
+                            </button>
                         </div>
                     </div>
                 : null}
@@ -112,7 +153,6 @@ Navigation.defaultProps = {
 
 Navigation.contextTypes = {
     location_href: PropTypes.string,
-    portal: PropTypes.object,
 };
 
 Navigation.childContextTypes = {
@@ -143,13 +183,15 @@ const GlobalSections = (props, context) => {
                 </DropdownMenu>
             : null}
         </NavItem>
-    );
+    ).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
     return <Nav>{actions}</Nav>;
 };
 
 GlobalSections.propTypes = {
-    openDropdown: PropTypes.string, // ID of the dropdown currently visible
-    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
 };
 
 GlobalSections.defaultProps = {
@@ -159,6 +201,30 @@ GlobalSections.defaultProps = {
 
 GlobalSections.contextTypes = {
     listActionsFor: PropTypes.func.isRequired,
+};
+
+
+const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }) => (
+    <Nav>
+        <Search />
+        {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
+        <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
+    </Nav>
+);
+
+SecondarySections.propTypes = {
+    /** True if current page is home page */
+    isHomePage: PropTypes.bool,
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
+};
+
+SecondarySections.defaultProps = {
+    isHomePage: false,
+    openDropdown: '',
+    dropdownClick: null,
 };
 
 
@@ -178,23 +244,23 @@ const ContextActions = (props, context) => {
     // Action menu with editing dropdown menu
     if (actions.length > 1) {
         return (
-            <Nav right>
-                <NavItem dropdownId="context" dropdownTitle={<i className="icon icon-gear" />} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
-                    <DropdownMenu label="context">
-                        {actions}
-                    </DropdownMenu>
-                </NavItem>
-            </Nav>
+            <NavItem dropdownId="actions" label="Actions" dropdownTitle={<i className="icon icon-gear" />} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
+                <DropdownMenu label="actions">
+                    {actions}
+                </DropdownMenu>
+            </NavItem>
         );
     }
 
     // Action menu without a dropdown menu
-    return <Nav right><NavItem>{actions}</NavItem></Nav>;
+    return <NavItem>{actions}</NavItem>;
 };
 
 ContextActions.propTypes = {
-    openDropdown: PropTypes.string, // ID of the dropdown currently visible
-    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
 };
 
 ContextActions.defaultProps = {
@@ -211,11 +277,10 @@ const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
     const searchTerm = id.query.searchTerm || '';
     return (
-        <form className="navbar-form navbar-right navbar-search-form" action="/search/">
-            <div className="search-wrapper">
+        <li className="navbar__item navbar__item--search">
+            <form className="navbar__search" action="/search/">
                 <input
-                    className="form-control search-query"
-                    id="navbar-search"
+                    aria-label="Search"
                     type="text"
                     placeholder="Search..."
                     name="searchTerm"
@@ -224,9 +289,10 @@ const Search = (props, context) => {
                 />
                 <button type="submit" className="search-button">
                     <i className="icon icon-search" />
+                    <span className="sr-only">Search</span>
                 </button>
-            </div>
-        </form>
+            </form>
+        </li>
     );
 };
 
@@ -249,19 +315,19 @@ const UserActions = (props, context) => {
     const user = sessionProperties.user;
     const fullname = (user && user.title) || 'unknown';
     return (
-        <Nav right>
-            <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
-                <DropdownMenu label="useractions">
-                    {actions}
-                </DropdownMenu>
-            </NavItem>
-        </Nav>
+        <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
+            <DropdownMenu label="useractions">
+                {actions}
+            </DropdownMenu>
+        </NavItem>
     );
 };
 
 UserActions.propTypes = {
-    openDropdown: PropTypes.string, // ID of the dropdown currently visible
-    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
 };
 
 UserActions.defaultProps = {

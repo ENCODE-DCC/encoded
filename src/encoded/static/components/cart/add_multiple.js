@@ -94,7 +94,7 @@ class CartAddAllSearchComponent extends React.Component {
         const { savedCartObj, inProgress } = this.props;
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         return (
-            <span>
+            <React.Fragment>
                 <button
                     disabled={inProgress}
                     className="btn btn-info btn-sm"
@@ -106,7 +106,7 @@ class CartAddAllSearchComponent extends React.Component {
                 {this.state.overMaximumError ?
                     <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
                 : null}
-            </span>
+            </React.Fragment>
         );
     }
 }

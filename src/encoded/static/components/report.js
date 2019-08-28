@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { FacetList, ViewControls } from './search';
-import StickyHeader from './StickyHeader';
 
 
 function columnChoices(schema, selected) {
@@ -226,25 +226,19 @@ class Table extends React.Component {
         const sort = this.getSort();
 
         const headers = columns.map((column, index) => {
-            let className;
             const sortable = context.non_sortable.indexOf(column.path) === -1;
-            if (column.path === sort.column && sortable) {
-                className = `icon ${sort.reversed ? 'icon-chevron-up' : 'icon-chevron-down'}`;
-            }
-            return <ColumnHeader key={index} setSort={this.setSort} sortable={sortable} column={column} className={className} />;
+            return <ColumnHeader key={index} setSort={this.setSort} sortable={sortable} column={column} sort={sort} reversed={sort.reversed} />;
         });
 
         const data = this.extractData(context['@graph']).concat(this.extractData(this.props.more));
         const rows = data.map(row => RowView({ row }));
-        const tableClass = 'sticky-area collection-table';
+        const tableClass = 'collection-table';
         return (
-            <div className="table-responsive">
-                <table className={`${tableClass} table table-striped table-hover table-panel`}>
-                    <StickyHeader>
-                        <thead className="sticky-header">
-                            <tr className="col-headers">{headers}</tr>
-                        </thead>
-                    </StickyHeader>
+            <div className="report__table">
+                <table className={`${tableClass} table table-panel`}>
+                    <thead>
+                        <tr className="col-headers">{headers}</tr>
+                    </thead>
                     <tbody>{rows}</tbody>
                 </table>
             </div>
@@ -279,26 +273,46 @@ class ColumnHeader extends React.Component {
     }
 
     render() {
-        const { column, className, sortable } = this.props;
+        const { column, sort, reversed, sortable } = this.props;
+
+        let columnClass;
+        if (sortable) {
+            if (column.path === sort.column) {
+                columnClass = reversed ? 'tcell-desc' : 'tcell-asc';
+            } else {
+                columnClass = 'tcell-sort';
+            }
+        } else {
+            columnClass = null;
+        }
 
         return (
-            <th onClick={this.setSort} className={sortable ? null : 'non-sortable'}>
-                {column.title}&nbsp;<i className={className} />
+            <th onClick={this.setSort} className={sortable ? 'tcell-sortable' : null}>
+                <div className={sortable ? 'tcell-sortable__column-header' : null}>
+                    {column.title}
+                    <i className={columnClass} />
+                </div>
             </th>
         );
     }
 }
 
 ColumnHeader.propTypes = {
-    setSort: PropTypes.func, // Parent function to handle a click in a column header
+    /** Column whose header is being displayed */
     column: PropTypes.object.isRequired,
-    className: PropTypes.string, // CSS class string for column title
-    sortable: PropTypes.bool, // True if column isn't sortable
+    /** Column sort information */
+    sort: PropTypes.object.isRequired,
+    /** Parent function to handle a click in a column header */
+    setSort: PropTypes.func,
+    /** True if column sort is reversed */
+    reversed: PropTypes.bool,
+    /** True if column is sortable */
+    sortable: PropTypes.bool,
 };
 
 ColumnHeader.defaultProps = {
     setSort: null,
-    className: '',
+    reversed: false,
     sortable: true,
 };
 
@@ -556,7 +570,6 @@ class Report extends React.Component {
             from,
             size,
             to: from + size,
-            loading: false,
             more: [],
             selectorOpen: false, // True if column selector modal is open
         };
@@ -621,7 +634,6 @@ class Report extends React.Component {
         }).catch(globals.parseAndLogError.bind(undefined, 'loadMore')).then((data) => {
             this.setState({
                 more: this.state.more.concat(data['@graph']),
-                loading: false,
                 request: null,
             });
         });
@@ -629,7 +641,6 @@ class Report extends React.Component {
         this.setState({
             request,
             to: this.state.to + this.state.size,
-            loading: true,
         });
     }
 
@@ -658,59 +669,54 @@ class Report extends React.Component {
         }
         const columns = columnChoices(schema, queryFields);
 
-        /* eslint-disable jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
-            <div>
-                <div className="panel data-display main-panel">
-                    <div className="row">
-                        <div className="col-sm-5 col-md-4 col-lg-3">
+            <Panel>
+                <PanelBody>
+                    <div className="search-results">
+                        <div className="search-results__facets">
                             <FacetList context={context} facets={context.facets} filters={context.filters} searchBase={searchBase} docTypeTitleSuffix="report" />
                         </div>
-                        <div className="col-sm-7 col-md-8 col-lg-9">
-                            <h4>
-                                Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
-                            </h4>
+                        <div className="search-results__report-list">
+                            <h4>Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}</h4>
                             <div className="results-table-control">
-                                <ViewControls
-                                    views={context.views}
-                                    hrefProcessor={
-                                        (viewHref) => {
-                                            // Strip any `field` properties out of the view's href as
-                                            // they don't apply to search or matrix
-                                            const parsedViewUrl = url.parse(viewHref, true);
-                                            delete parsedViewUrl.query.field;
-                                            delete parsedViewUrl.search;
-                                            return url.format(parsedViewUrl);
+                                <div className="results-table-control__main">
+                                    <ViewControls
+                                        views={context.views}
+                                        hrefProcessor={
+                                            (viewHref) => {
+                                                // Strip any `field` properties out of the view's href as
+                                                // they don't apply to search or matrix
+                                                const parsedViewUrl = url.parse(viewHref, true);
+                                                delete parsedViewUrl.query.field;
+                                                delete parsedViewUrl.search;
+                                                return url.format(parsedViewUrl);
+                                            }
                                         }
-                                    }
-                                />
-                                <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
-                                    <i className="icon icon-columns" /> Columns
-                                </button>
-                                <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass data-test="download-tsv">Download TSV</a>
+                                    />
+                                    <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
+                                        <i className="icon icon-columns" /> Columns
+                                    </button>
+                                    <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass data-test="download-tsv">Download TSV</a>
+                                </div>
                             </div>
                             <Table context={context} more={this.state.more} columns={columns} setSort={this.setSort} />
-                            {this.state.to < context.total &&
-                                <h4 className={this.state.loading ? 'communicating' : ''}>
-                                    {this.state.loading ?
-                                        <div className="loading-spinner" />
-                                    : <a className="btn btn-info btn-sm" onClick={this.loadMore}>Load more</a>} Showing
-                                    results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
-                                </h4>
-                            }
+                            {this.state.to < context.total ?
+                                <button className="btn btn-info btn-sm" onClick={this.loadMore}>Load more</button>
+                            : null}
                         </div>
+                        {this.state.selectorOpen ?
+                            <ColumnSelector
+                                columns={columns}
+                                setColumnState={this.setColumnState}
+                                closeSelector={this.closeSelector}
+                            />
+                        : null}
                     </div>
-                </div>
-                {this.state.selectorOpen ?
-                    <ColumnSelector
-                        columns={columns}
-                        setColumnState={this.setColumnState}
-                        closeSelector={this.closeSelector}
-                    />
-                : null}
-            </div>
+                </PanelBody>
+            </Panel>
         );
-        /* eslint-enable jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 

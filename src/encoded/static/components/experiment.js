@@ -2,17 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import _ from 'underscore';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
-import { CartToggle } from './cart';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, DisplayAsJson, InternalTags } from './objectutils';
+import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -431,240 +430,231 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
     return (
         <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root={`/search/?type=${experimentType}`} crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{displayType} summary for {context.accession}</h2>
-                    <ReplacementAccessions context={context} />
-                    <div className="cart__toggle--header">
-                        <CartToggle element={context} />
-                    </div>
-                    <DisplayAsJson />
-                    {auditIndicators(context.audit, 'experiment-audit', { session: reactContext.session })}
-                </div>
+            <header>
+                <Breadcrumbs root={`/search/?type=${experimentType}`} crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>{displayType} summary for {context.accession}</h1>
+                <ReplacementAccessions context={context} />
+                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />
             </header>
-            {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session })}
-            <Panel addClasses="data-display">
-                <PanelBody addClasses="panel-body-with-header">
-                    <div className="flexrow">
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading">
-                                <h4>Summary</h4>
+            {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session, except: context['@id'] })}
+            <Panel>
+                <PanelBody addClasses="panel__split">
+                    <div className="panel__split-element">
+                        <div className="panel__split-heading panel__split-heading--experiment">
+                            <h4>Summary</h4>
+                        </div>
+                        <dl className="key-value">
+                            <div data-test="status">
+                                <dt>Status</dt>
+                                <dd>
+                                    <Status item={context} css="dd-status" title="Experiment status" inline />
+                                    {adminUser && context.internal_status ?
+                                        <Status item={context.internal_status} title="Internal status" inline />
+                                    : null}
+                                </dd>
                             </div>
-                            <dl className="key-value">
-                                <div data-test="status">
-                                    <dt>Status</dt>
-                                    <dd>
-                                        <Status item={context} css="dd-status" title="Experiment status" inline />
-                                        {adminUser && context.internal_status ?
-                                            <Status item={context.internal_status} title="Internal status" inline />
-                                        : null}
-                                    </dd>
-                                </div>
 
-                                <div data-test="assay">
-                                    <dt>Assay</dt>
-                                    <dd>
-                                        {context.assay_term_name}
-                                        {context.assay_term_name !== context.assay_title ?
-                                            <span>{` (${context.assay_title})`}</span>
-                                        : null}
-                                    </dd>
-                                </div>
+                            <div data-test="assay">
+                                <dt>Assay</dt>
+                                <dd>
+                                    {context.assay_term_name}
+                                    {context.assay_term_name !== context.assay_title ?
+                                        <span>{` (${context.assay_title})`}</span>
+                                    : null}
+                                </dd>
+                            </div>
 
-                                {context.target ?
-                                    <React.Fragment>
-                                        <div data-test="target">
-                                            <dt>Target</dt>
-                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                            {context.target ?
+                                <React.Fragment>
+                                    <div data-test="target">
+                                        <dt>Target</dt>
+                                        <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                    </div>
+                                    {context.target_expression_range_minimum !== undefined && context.target_expression_range_maximum !== undefined ?
+                                        <div data-test="target-min">
+                                            <dt>Target expression range minimum - maximum</dt>
+                                            <dd>{context.target_expression_range_minimum}% &ndash; {context.target_expression_range_maximum}%</dd>
                                         </div>
-                                        {context.target_expression_range_minimum !== undefined && context.target_expression_range_maximum !== undefined ?
-                                            <div data-test="target-min">
-                                                <dt>Target expression range minimum - maximum</dt>
-                                                <dd>{context.target_expression_range_minimum}% &ndash; {context.target_expression_range_maximum}%</dd>
-                                            </div>
+                                    : null}
+                                </React.Fragment>
+                            : null}
+
+                            {context.biosample_summary ?
+                                <div data-test="biosample-summary">
+                                    <dt>Biosample summary</dt>
+                                    <dd>
+                                        {organismNames.length > 0 ?
+                                            <span>
+                                                {organismNames.map((organismName, i) =>
+                                                    <span key={organismName}>
+                                                        {i > 0 ? <span> and </span> : null}
+                                                        <i>{organismName}</i>
+                                                    </span>
+                                                )}
+                                                &nbsp;
+                                            </span>
                                         : null}
-                                    </React.Fragment>
-                                : null}
+                                        <span>{context.biosample_summary}</span>
+                                    </dd>
+                                </div>
+                            : null}
 
-                                {context.biosample_summary ?
-                                    <div data-test="biosample-summary">
-                                        <dt>Biosample summary</dt>
-                                        <dd>
-                                            {organismNames.length > 0 ?
-                                                <span>
-                                                    {organismNames.map((organismName, i) =>
-                                                        <span key={organismName}>
-                                                            {i > 0 ? <span> and </span> : null}
-                                                            <i>{organismName}</i>
-                                                        </span>
-                                                    )}
-                                                    &nbsp;
-                                                </span>
-                                            : null}
-                                            <span>{context.biosample_summary}</span>
-                                        </dd>
-                                    </div>
-                                : null}
+                            {context.biosample_ontology ?
+                                <div data-test="biosample-type">
+                                    <dt>Biosample Type</dt>
+                                    <dd>{context.biosample_ontology.classification}</dd>
+                                </div>
+                            : null}
 
-                                {context.biosample_ontology ?
-                                    <div data-test="biosample-type">
-                                        <dt>Biosample Type</dt>
-                                        <dd>{context.biosample_ontology.classification}</dd>
-                                    </div>
-                                : null}
+                            {context.replication_type ?
+                                <div data-test="replicationtype">
+                                    <dt>Replication type</dt>
+                                    <dd>{context.replication_type}</dd>
+                                </div>
+                            : null}
 
-                                {context.replication_type ?
-                                    <div data-test="replicationtype">
-                                        <dt>Replication type</dt>
-                                        <dd>{context.replication_type}</dd>
-                                    </div>
-                                : null}
+                            {context.description ?
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
+                                </div>
+                            : null}
 
-                                {context.description ?
-                                    <div data-test="description">
-                                        <dt>Description</dt>
-                                        <dd>{context.description}</dd>
-                                    </div>
-                                : null}
+                            <LibraryProperties replicates={replicates} />
 
-                                <LibraryProperties replicates={replicates} />
+                            {Object.keys(platforms).length > 0 ?
+                                <div data-test="platform">
+                                    <dt>Platform</dt>
+                                    <dd>
+                                        {Object.keys(platforms).map((platformId, i) =>
+                                            <span key={platformId}>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                            </span>
+                                        )}
+                                    </dd>
+                                </div>
+                            : null}
 
-                                {Object.keys(platforms).length > 0 ?
-                                    <div data-test="platform">
-                                        <dt>Platform</dt>
-                                        <dd>
-                                            {Object.keys(platforms).map((platformId, i) =>
-                                                <span key={platformId}>
-                                                    {i > 0 ? <span>, </span> : null}
-                                                    <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
-                                                </span>
-                                            )}
-                                        </dd>
-                                    </div>
-                                : null}
+                            {context.possible_controls && context.possible_controls.length > 0 ?
+                                <div data-test="possible-controls">
+                                    <dt>Controls</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.possible_controls.map(control => (
+                                                <li key={control['@id']} className="multi-comma">
+                                                    <a href={control['@id']}>
+                                                        {control.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
 
-                                {context.possible_controls && context.possible_controls.length > 0 ?
-                                    <div data-test="possible-controls">
-                                        <dt>Controls</dt>
-                                        <dd>
-                                            <ul>
-                                                {context.possible_controls.map(control => (
-                                                    <li key={control['@id']} className="multi-comma">
-                                                        <a href={control['@id']}>
-                                                            {control.accession}
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </dd>
-                                    </div>
-                                : null}
+                            {context.elements_references && context.elements_references.length > 0 ?
+                                <div data-test="elements-references">
+                                    <dt>Elements references</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.elements_references.map(reference => (
+                                                <li key={reference} className="multi-comma">
+                                                    <a href={reference}>
+                                                        {globals.atIdToAccession(reference)}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
 
-                                {context.elements_references && context.elements_references.length > 0 ?
-                                    <div data-test="elements-references">
-                                        <dt>Elements references</dt>
-                                        <dd>
-                                            <ul>
-                                                {context.elements_references.map(reference => (
-                                                    <li key={reference} className="multi-comma">
-                                                        <a href={reference}>
-                                                            {globals.atIdToAccession(reference)}
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </dd>
-                                    </div>
-                                : null}
+                            {context.elements_mapping ?
+                                <div data-test="elements-mapping">
+                                    <dt>Elements mapping</dt>
+                                    <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </div>
 
-                                {context.elements_mapping ?
-                                    <div data-test="elements-mapping">
-                                        <dt>Elements mapping</dt>
-                                        <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
-                                    </div>
-                                : null}
-
-                            </dl>
+                    <div className="panel__split-element">
+                        <div className="panel__split-heading panel__split-heading--experiment">
+                            <h4>Attribution</h4>
+                            <ProjectBadge award={context.award} addClasses="badge-heading" />
                         </div>
-
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading">
-                                <h4>Attribution</h4>
-                                <ProjectBadge award={context.award} addClasses="badge-heading" />
+                        <dl className="key-value">
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
                             </div>
-                            <dl className="key-value">
-                                <div data-test="lab">
-                                    <dt>Lab</dt>
-                                    <dd>{context.lab.title}</dd>
+
+                            <AwardRef context={context} adminUser={adminUser} />
+
+                            <div data-test="project">
+                                <dt>Project</dt>
+                                <dd>{context.award.project}</dd>
+                            </div>
+
+                            {context.dbxrefs.length > 0 ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                 </div>
+                            : null}
 
-                                <AwardRef context={context} adminUser={adminUser} />
-
-                                <div data-test="project">
-                                    <dt>Project</dt>
-                                    <dd>{context.award.project}</dd>
+                            {references ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd>{references}</dd>
                                 </div>
+                            : null}
 
-                                {context.dbxrefs.length > 0 ?
-                                    <div data-test="external-resources">
-                                        <dt>External resources</dt>
-                                        <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
-                                    </div>
-                                : null}
+                            {context.aliases.length > 0 ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{context.aliases.join(', ')}</dd>
+                                </div>
+                            : null}
 
-                                {references ?
-                                    <div data-test="references">
-                                        <dt>References</dt>
-                                        <dd>{references}</dd>
-                                    </div>
-                                : null}
+                            {context.date_submitted ?
+                                <div data-test="date-submitted">
+                                    <dt>Date submitted</dt>
+                                    <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
+                                </div>
+                            : null}
 
-                                {context.aliases.length > 0 ?
-                                    <div data-test="aliases">
-                                        <dt>Aliases</dt>
-                                        <dd>{context.aliases.join(', ')}</dd>
-                                    </div>
-                                : null}
+                            {context.date_released ?
+                                <div data-test="date-released">
+                                    <dt>Date released</dt>
+                                    <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
+                                </div>
+                            : null}
 
-                                {context.date_submitted ?
-                                    <div data-test="date-submitted">
-                                        <dt>Date submitted</dt>
-                                        <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
-                                    </div>
-                                : null}
+                            {seriesList.length > 0 ?
+                                <div data-test="relatedseries">
+                                    <dt>Related datasets</dt>
+                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                                </div>
+                            : null}
 
-                                {context.date_released ?
-                                    <div data-test="date-released">
-                                        <dt>Date released</dt>
-                                        <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
-                                    </div>
-                                : null}
+                            {context.submitter_comment ?
+                                <div data-test="submittercomment">
+                                    <dt>Submitter comment</dt>
+                                    <dd>{context.submitter_comment}</dd>
+                                </div>
+                            : null}
 
-                                {seriesList.length > 0 ?
-                                    <div data-test="relatedseries">
-                                        <dt>Related datasets</dt>
-                                        <dd><RelatedSeriesList seriesList={seriesList} /></dd>
-                                    </div>
-                                : null}
+                            <LibrarySubmitterComments replicates={replicates} />
 
-                                {context.submitter_comment ?
-                                    <div data-test="submittercomment">
-                                        <dt>Submitter comment</dt>
-                                        <dd>{context.submitter_comment}</dd>
-                                    </div>
-                                : null}
-
-                                <LibrarySubmitterComments replicates={replicates} />
-
-                                {context.internal_tags && context.internal_tags.length > 0 ?
-                                    <div className="tag-badges" data-test="tags">
-                                        <dt>Tags</dt>
-                                        <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
-                                    </div>
-                                : null}
-                            </dl>
-                        </div>
+                            {context.internal_tags && context.internal_tags.length > 0 ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
+                                </div>
+                            : null}
+                        </dl>
                     </div>
                 </PanelBody>
             </Panel>

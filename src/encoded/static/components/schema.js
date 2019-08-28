@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
-import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
@@ -593,11 +593,9 @@ const SchemaPage = (props) => {
 
     return (
         <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{title}</h2>
-                </div>
+            <header>
+                <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h2>{title}</h2>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <SchemaPanel schema={context} schemaName={schemaName} />
@@ -640,28 +638,23 @@ const AllSchemasPage = (props, reactContext) => {
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>Schemas</h2>
-                </div>
+            <header>
+                <h1>Schemas</h1>
             </header>
             <Panel>
                 <PanelBody>
-                    <div className="row">
-                        <div className="col-md-12 block-text">
-                            <p>
-                                Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
-                                structures defining each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
-                                To support ENCODE Project submitters and public users alike, this page
-                                provides a user-friendly visualization method for our schemas to help
-                                organize and understand the data.
-                            </p>
-                            <p>
-                                The links below lead to pages describing each schema ENCODE supports.
-                            </p>
-                        </div>
+                    <div className="schema-description">
+                        <p>
+                            Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
+                            structures defining each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
+                            To support ENCODE Project submitters and public users alike, this page
+                            provides a user-friendly visualization method for our schemas to help
+                            organize and understand the data.
+                        </p>
+                        <p>
+                            The links below lead to pages describing each schema ENCODE supports.
+                        </p>
                     </div>
-                    <hr />
                     <div className="schema-list">
                         {objectNames.map((objectName) => {
                             // `objectName` is the @type of each objects e.g. GeneticModification
