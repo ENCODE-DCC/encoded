@@ -29,43 +29,43 @@
         },
         "IG_C_gene": {
             "title": "Number of reads in immunoglobulin constant gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the mmunoglobulin constant group according to the IMGT.",
+            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin constant group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
         "IG_C_pseudogene": {
             "title": "Number of reads in inactivated immunoglobulin constant gene",
-            "description": "Number of reads in inactivated immunoglobulin gene belonging to the mmunoglobulin constant group according to the IMGT.",
+            "description": "Number of reads in inactivated immunoglobulin gene belonging to the immunoglobulin constant group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
         "IG_D_gene": {
             "title": "Number of reads in immunoglobulin diversity gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the mmunoglobulin diversity group according to the IMGT.",
+            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin diversity group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
         "IG_J_gene": {
             "title": "Number of reads in immunoglobulin joining gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the mmunoglobulin joining group according to the IMGT.",
+            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin joining group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
         "IG_J_pseudogene": {
             "title": "Number of reads in inactivated immunoglobulin joining gene",
-            "description": "Number of reads in inactivated immunoglobulin gene belonging to the mmunoglobulin joining group according to the IMGT.",
+            "description": "Number of reads in inactivated immunoglobulin gene belonging to the immunoglobulin joining group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
         "IG_V_gene": {
             "title": "Number of reads in immunoglobulin variable gene",
-            "description": "Number of reads in immunoglobulin gene belonging to the mmunoglobulin variable group according to the IMGT.",
+            "description": "Number of reads in immunoglobulin gene belonging to the immunoglobulin variable group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
         "IG_V_pseudogene": {
             "title": "Number of reads in inactivated immunoglobulin variable gene",
-            "description": "Number of reads in inactivated immunoglobulin gene belonging to the mmunoglobulin variable group according to the IMGT.",
+            "description": "Number of reads in inactivated immunoglobulin gene belonging to the immunoglobulin variable group according to the IMGT.",
             "type": "integer",
             "minimum": 0
         },
@@ -157,7 +157,7 @@
         },
         "non_coding": {
             "title": "Number of reads in non-coding gene",
-            "description": "Number of reads in ranscript which is known from the literature to not be protein coding.",
+            "description": "Number of reads in transcript which is known from the literature to not be protein coding.",
             "type": "integer",
             "minimum": 0
         },
