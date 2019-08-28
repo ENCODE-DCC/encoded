@@ -180,17 +180,17 @@
             "type": "string",
             "pattern": "^((OK)|(out of range \\[(-?[\\d.]+|-inf), (-?[\\d.]+|inf)\\]))$"
         },
-        "nfr_over_mono_nun_reads": {
+        "nfr_over_mono_nuc_reads": {
             "title": "Ratio of NFR reads to Mono-Nuc reads",
             "description": "Ratio of reads in nucleosome free region (NFR) to reads in mononucleosome region (Mono-Nuc).",
             "type": "number",
             "minimum": 0
         },
-        "nfr_over_mono_nun_reads_qc_pass": {
+        "nfr_over_mono_nuc_reads_qc_pass": {
             "title": "Pass quality check on ratio of NFR reads to Mono-Nuc reads?",
             "type": "boolean"
         },
-        "nfr_over_mono_nun_reads_qc_reason": {
+        "nfr_over_mono_nuc_reads_qc_reason": {
             "title": "Quality check result on ratio of NFR reads to Mono-Nuc reads",
             "type": "string",
             "pattern": "^((OK)|(out of range \\[(-?[\\d.]+|-inf), (-?[\\d.]+|inf)\\]))$"

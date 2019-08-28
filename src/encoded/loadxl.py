@@ -65,7 +65,7 @@ ORDER = [
     'cpg_correlation_quality_metric',
     'atac_alignment_quality_metric',
     'atac_alignment_enrichment_quality_metric',
-    'atac_library_quality_metric',
+    'atac_library_complexity_quality_metric',
     'atac_peak_enrichment_quality_metric',
     'atac_replication_quality_metric',
     'chip_alignment_samstat_quality_metric',

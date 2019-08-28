@@ -356,8 +356,8 @@ class AtacAlignmentEnrichmentQualityMetric(QualityMetric, CalculatedAssayTermID)
         'title': "ATAC-seq Library Metrics",
     })
 class AtacLibraryQualityMetric(QualityMetric, CalculatedAssayTermID):
-    item_type = 'atac_library_quality_metric'
-    schema = load_schema('encoded:schemas/atac_library_quality_metric.json')
+    item_type = 'atac_library_complexity_quality_metric'
+    schema = load_schema('encoded:schemas/atac_library_complexity_quality_metric.json')
 
 
 @collection(

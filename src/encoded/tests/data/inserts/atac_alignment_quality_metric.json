@@ -70,9 +70,9 @@
         "frac_reads_in_nfr": 0.516038971437,
         "frac_reads_in_nfr_qc_pass": true,
         "frac_reads_in_nfr_qc_reason": "OK",
-        "nfr_over_mono_nun_reads": 1.607099018,
-        "nfr_over_mono_nun_reads_qc_pass": false,
-        "nfr_over_mono_nun_reads_qc_reason": "out of range [2.5, inf]",
+        "nfr_over_mono_nuc_reads": 1.607099018,
+        "nfr_over_mono_nuc_reads_qc_pass": false,
+        "nfr_over_mono_nuc_reads_qc_reason": "out of range [2.5, inf]",
         "nfr_peak_exists": true,
         "mono_nuc_peak_exists": true,
         "di_nuc_peak_exists": true
