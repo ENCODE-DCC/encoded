@@ -61,6 +61,8 @@ ORDER = [
     'analysis_step_run',
     'file',
     'star_quality_metric',
+    'gene_quantification_quality_metric',
+    'gene_type_quantification_quality_metric',
     'bismark_quality_metric',
     'cpg_correlation_quality_metric',
     'chip_alignment_samstat_quality_metric',
