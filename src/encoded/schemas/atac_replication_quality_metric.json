@@ -100,7 +100,6 @@
         },
         "idr_parameters": {
             "title": "IDR run parameters",
-            "description": "IDR run parameters",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

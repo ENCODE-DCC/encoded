@@ -50,7 +50,7 @@ const qcAttachmentProperties = {
         { peak_width_distribution_plot: 'Peak width distribution plot' },
     ],
     AtacReplicationQualityMetric: [
-        { IDR_dispersion_plot: 'IDR dispersion plot' },
+        { idr_dispersion_plot: 'IDR dispersion plot' },
     ],
 };
 
