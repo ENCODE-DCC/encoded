@@ -3,7 +3,7 @@
 /* jshint strict: false */
 
 if (process.env.NODE_ENV === undefined) {
-    require('babel-core/register')({
+    require('@babel/register')({
         only: ['src/encoded/static'],
     });
 } else {

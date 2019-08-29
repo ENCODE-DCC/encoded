@@ -1,5 +1,5 @@
 /*jshint strict:false */
-require('babel-polyfill');
+require('@babel/polyfill'); // this is deprecated.
 
 // Chrome 42 fetch does not have abort.
 window.fetch = undefined;

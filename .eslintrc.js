@@ -20,7 +20,7 @@ module.exports = {
             imports: 'always-multiline',
             exports: 'always-multiline',
         }],
-        flatTernaryExpressions: false,
+        flatTernaryExpressions: 0,
         'function-paren-newline': 0,
         'global-require': 0,
         indent: ['error', 4, { ignoredNodes: ['ConditionalExpression'] }],
