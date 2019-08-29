@@ -257,6 +257,11 @@ $disabled-color-factor: 20%;
 	}
 }
 
+input[disabled],
+button[disabled] {
+    cursor: not-allowed;
+}
+
 
 // Calculate lightness using a smarter algorithm than Sass's `lightness`.
 // https://medium.com/@tonipinel/how-to-get-an-accurate-contrast-color-with-sass-b0ebc01bf17f
