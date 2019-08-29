@@ -41,7 +41,7 @@ const qcAttachmentProperties = {
         { cross_correlation_plot: 'Cross-correlation plot' },
         { jsd_plot: 'Jensen-Shannon distance plot' },
         { gc_bias_plot: 'GC bias plot' },
-        { tss_enrichment_plot: 'TSS enrichement plot' },
+        { tss_enrichment_plot: 'TSS enrichment plot' },
     ],
     AtacLibraryQualityMetric: [
         { fragment_length_distribution_plot: 'Fragment length distribution plot' },

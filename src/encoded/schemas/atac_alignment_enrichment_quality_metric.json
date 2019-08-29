@@ -29,7 +29,7 @@
         "estimated_fragment_len": {
             "title": "Estimated fragment length",
             "type": "number",
-            "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis",
+            "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand shift cross-correlation analysis",
             "minimum": 0
         },
         "corr_estimated_fragment_len": {
@@ -40,7 +40,7 @@
             "maximum": 1
         },
         "phantom_peak": {
-            "title": "Phantom peak",
+            "title": "Phantom peak strand shift",
             "type": "integer"
         },
         "corr_phantom_peak": {
@@ -50,12 +50,12 @@
             "maximum": 1
         },
         "argmin_corr": {
-            "title": "Minimum correlation strand shift",
+            "title": "Strand shift with minimum correlation",
             "type": "integer"
         },
         "min_corr": {
-            "title": "Minimum correlation at strand shift",
-            "description": "Minimum crosscorrelation over a sufficiently wide range of strand shifts (typically -100 bp to ~3 times the expected size of DNA fragments based on sonication and size selection protocols).",
+            "title": "Correlation minimum",
+            "description": "Minimum cross-correlation over a sufficiently wide range of strand shifts (typically -100 bp to ~3 times the expected size of DNA fragments based on sonication and size selection protocols).",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -67,9 +67,9 @@
             "minimum": 0
         },
         "RSC": {
-            "title": "Relative cross correlation coefficient",
+            "title": "Relative strand cross-correlation coefficient",
             "type": "number",
-            "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length  and at read length",
+            "description": "Relative cross-correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length",
             "minimum": 0
         },
         "cross_correlation_plot": {
@@ -133,7 +133,7 @@
         },
         "x_intercept": {
             "title": "X-intercept",
-            "description": "The point (on the X-axis) at which the curve is not 0. This is approximately the percentage of the genome that was not sequenced in a particular sample.",
+            "description": "The point (on the X-axis) at which the curve is 0. This is approximately the percentage of the genome that was not sequenced in a particular sample.",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -168,7 +168,7 @@
         },
         "syn_jsd": {
             "title": "Synthetic JS distance",
-            "description": "This metric shows the Jensen-Shannon distance between a given sample and a perfect input sample with the same coverage depth (i.e., the plot generated from the Poisson probability mass function with lambda equal to the mean coverage in the sample).",
+            "description": "The Jensen-Shannon distance between a given sample and a perfect input sample with the same coverage depth (i.e., the plot generated from the Poisson probability mass function with lambda equal to the mean coverage in the sample).",
             "type": "number",
             "minimum": 0,
             "maximum": 1
@@ -282,12 +282,12 @@
                 }
             }
         },
-        "tss_enrich": {
-            "title": "TSS enrichement",
+        "tss_enrichment": {
+            "title": "Transcription start site (TSS) enrichment",
             "type": "number"
         },
         "tss_enrichment_plot": {
-            "title": "TSS enrichement plot",
+            "title": "Transcription start site (TSS) enrichment plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

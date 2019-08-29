@@ -76,7 +76,7 @@
         "NRF": {
             "title": "Non-redundant fraction",
             "type": "number",
-            "description": "Non redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads",
+            "description": "Non-redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads",
             "minimum": 0,
             "maximum": 1
         },

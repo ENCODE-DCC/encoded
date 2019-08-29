@@ -21,7 +21,7 @@
         "schema_version": {
             "default": "1"
         },
-        "FRiP": {
+        "frip": {
             "title": "FRiP score of peaks",
             "description": "Fraction of reads in the peak file",
             "type": "number",

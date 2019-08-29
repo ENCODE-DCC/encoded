@@ -11,6 +11,7 @@
         "rescue_ratio": 1.06435036303,
         "self_consistency_ratio": 1.07275301733,
         "reproducibility": "pass",
-        "IDR_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+        "idr_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "idr_parameters": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
     }
 ]
