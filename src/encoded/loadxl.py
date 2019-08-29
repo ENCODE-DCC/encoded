@@ -113,6 +113,7 @@ IS_ATTACHMENT = [
     'gc_bias_plot',
     'IDR_dispersion_plot',
     'idr_dispersion_plot',
+    'idr_parameters',
     'tss_enrichment_plot',
     'fragment_length_distribution_plot',
     'peak_width_distribution_plot',
