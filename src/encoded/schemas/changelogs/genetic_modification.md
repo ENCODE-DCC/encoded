@@ -11,7 +11,7 @@
 * The *introduced_elements* property was added for characterization of groups of elements.
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
-* Zygosity is now required for modifications of *method* TALEN
+* *zygosity* is now required for modifications of *method* TALEN
 * The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 * *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
 * Within *reagents*, an *identifier* is no longer allowed to be free text and must conform to the pattern. Listed below are indivdual sources, their corresponding *identifier* regular expressions, and examples of allowed identifiers. Note that the
@@ -32,13 +32,12 @@ identifier is prefixed by 'source-name:'.
 
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
-* Zygosity is now required for modifications of *method* TALEN
 * The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 * *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
 
 ### Schema version 7
 
-* *purpose* property "validation" was renamed to "characterization", and "screening" was also added to the list of enums
+* *purpose* property *validation* was renamed to *characterization*, and *screening* was also added to the list of enums
 
 ### Schema version 6
 

@@ -29,5 +29,5 @@
 
 ### Schema version 2
 
-* proprties *lab*, *submitted_by* and *award* were removed.
+* properties *lab*, *submitted_by* and *award* were removed.
 * *status* values were changed to be lowercase
