@@ -1,5 +1,5 @@
 /* global process, __dirname */
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -15,7 +15,7 @@ const PATHS = {
 
 const plugins = [];
 // don't include momentjs locales (large)
-plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
+plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/));
 
 // To get auth0 v11 to build correctly:
 // https://github.com/felixge/node-formidable/issues/337#issuecomment-183388869
@@ -23,6 +23,7 @@ plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
 
 let chunkFilename = '[name].js';
 let styleFilename = './css/[name].css';
+let mode = 'development'
 
 if (env === 'production') {
     // uglify code for production
@@ -41,10 +42,11 @@ if (env === 'production') {
     // add chunkhash to chunk names for production only (it's slower)
     chunkFilename = '[name].[chunkhash].js';
     styleFilename = './css/[name].[chunkhash].css';
+
+    mode = 'production';
 }
 
-const loaders = [
-    // add babel to load .js files as ES6 and transpile JSX
+const rules = [
     {
         test: /\.js$/,
         include: [
@@ -53,20 +55,29 @@ const loaders = [
             path.resolve(__dirname, 'node_modules/dalliance'),
             path.resolve(__dirname, 'node_modules/superagent'),
         ],
-        loader: 'babel',
-    },
-    {
-        test: /\.json$/,
-        loader: 'json',
+        use: {
+                loader: 'babel-loader',
+            },       
     },
     {
         test: /\.(jpg|png|gif)$/,
-        loader: 'url?limit=25000',
         include: PATHS.images,
+        use: [
+            {
+                loader: 'url-loader',
+                options: {
+                    limit: 25000,
+                },
+            }
+        ],
     },
     {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('css!sass'),
+        use: [
+            MiniCssExtractPlugin.loader,
+            { loader: 'css-loader', options: { url: false, sourceMap: true } },
+            { loader: 'sass-loader', options: { sourceMap: true } }
+        ],
     },
 ];
 
@@ -85,16 +96,16 @@ module.exports = [
             chunkFilename,
         },
         module: {
-            loaders,
+            rules,
         },
         devtool: 'source-map',
+        mode,
         plugins: plugins.concat(
             // Add a browser-only plugin to extract Sass-compiled styles and place them into an
             // external CSS file
-            new ExtractTextPlugin(styleFilename, {
-                disable: false,
-                allChunks: true,
-            }),
+            new MiniCssExtractPlugin({
+                filename: styleFilename,
+              }),
 
             // Add a browser-only plugin executed when webpack is done with all transforms. it
             // writes minimal build statistics to the "build" directory that contains the hashed
@@ -108,7 +119,6 @@ module.exports = [
                 });
             }
         ),
-        debug: true,
     },
     // for server-side rendering
     {
@@ -129,7 +139,7 @@ module.exports = [
             'chart.js',
             'dalliance',
             // avoid bundling babel transpiler, which is not used at runtime
-            'babel-core/register',
+            '@babel/register',
         ],
         output: {
             path: PATHS.serverbuild,
@@ -139,10 +149,10 @@ module.exports = [
             chunkFilename,
         },
         module: {
-            loaders,
+            rules,
         },
         devtool: 'source-map',
+        mode,
         plugins,
-        debug: true,
     },
 ];
