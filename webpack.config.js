@@ -52,7 +52,6 @@ const rules = [
         include: [
             PATHS.static,
             path.resolve(__dirname, 'node_modules/dagre-d3'),
-            path.resolve(__dirname, 'node_modules/dalliance'),
             path.resolve(__dirname, 'node_modules/superagent'),
         ],
         use: {
@@ -137,7 +136,6 @@ module.exports = [
             'd3',
             'dagre-d3',
             'chart.js',
-            'dalliance',
             // avoid bundling babel transpiler, which is not used at runtime
             '@babel/register',
         ],
