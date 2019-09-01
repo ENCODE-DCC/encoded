@@ -82,7 +82,7 @@
     "moment": "^2.24.0",
     "pluralize": "^8.0.0",
     "prop-types": "^15.7.2",
-    "query-string": "^4.1.0",
+    "query-string": "^6.8.3",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^5.0.7",
@@ -92,6 +92,6 @@
     "source-map-support": "^0.4.18",
     "subprocess-middleware": "^0.1.0",
     "underscore": "^1.8.3",
-    "whatwg-fetch": "git+https://github.com/ENCODE-DCC/fetch.git"
+    "whatwg-fetch": "^3.0.0"
   }
 }
