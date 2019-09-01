@@ -72,7 +72,7 @@
     "create-react-class": "^15.5.2",
     "d3": "^3.4.6",
     "dagre-d3": "^0.6.3",
-    "domready": "^0.3.0",
+    "domready": "^1.0.8",
     "form-serialize": "^0.6.0",
     "google-analytics": "file:node_shims/google-analytics",
     "immutable": "^3.7.5",
