@@ -2,6 +2,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const env = process.env.NODE_ENV;
 
@@ -24,10 +25,14 @@ plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
 let chunkFilename = '[name].js';
 let styleFilename = './css/[name].css';
 let mode = 'development'
+const optimization = {};
 
 if (env === 'production') {
     // uglify code for production
-    plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+    //plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+    optimization.minimizer= [
+        new TerserPlugin()
+    ];
 
     // Set production version of React
     // https://stackoverflow.com/questions/37311972/react-doesnt-switch-to-production-mode#answer-37311994
@@ -99,6 +104,7 @@ module.exports = [
         },
         devtool: 'source-map',
         mode,
+        optimization,
         plugins: plugins.concat(
             // Add a browser-only plugin to extract Sass-compiled styles and place them into an
             // external CSS file
@@ -151,6 +157,7 @@ module.exports = [
         },
         devtool: 'source-map',
         mode,
+        optimization,
         plugins,
     },
 ];
