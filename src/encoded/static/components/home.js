@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { Panel, PanelBody } from '../libs/ui/panel';
@@ -9,7 +10,7 @@ import Tooltip from '../libs/ui/tooltip';
 
 
 const newsUri = '/search/?type=Page&news=true&status=released';
-
+dayjs.extend(utc);
 
 // Convert the selected organisms and assays into an encoded query.
 function generateQuery(selectedOrganisms, selectedAssayCategory) {
@@ -1562,7 +1563,7 @@ class News extends React.Component {
                     {newsSearch['@graph'].map(item =>
                         <div key={item['@id']} className="news-listing__item">
                             <h3>{item.title}</h3>
-                            <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
+                            <h4>{dayjs.utc(item.date_created).format('MMMM D, YYYY')}</h4>
                             <div className="news-listing__excerpt">{item.news_excerpt}</div>
                             <div className="news-listing__readmore">
                                 <a href={item['@id']} aria-label={`View news post for ${item.title}`} key={item['@id']}>Read more</a>

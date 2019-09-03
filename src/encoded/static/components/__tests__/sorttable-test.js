@@ -1,10 +1,12 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 
 // Import test component.
 import { SortTablePanel, SortTable } from '../sorttable';
 
+dayjs.extend(utc)
 
 describe('Software', () => {
     const tableConfig = {
@@ -37,7 +39,7 @@ describe('Software', () => {
         },
         date_created: {
             title: 'Date added',
-            getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+            getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
             sorter: (a, b) => {
                 if (a.date_created && b.date_created) {
                     return Date.parse(a.date_created) - Date.parse(b.date_created);

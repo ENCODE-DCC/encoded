@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { Panel } from '../libs/ui/panel';
 import * as globals from './globals';
 import Layout from './layout';
 import { PickerActions, resultItemClass } from './search';
 
+dayjs.extend(utc);
 
 const Page = (props) => {
     const context = props.context;
@@ -14,7 +16,7 @@ const Page = (props) => {
             <Panel addClasses="news-post">
                 <div className="news-post-header">
                     <h1>{context.title}</h1>
-                    <h2>{moment.utc(context.date_created).format('MMMM D, YYYY')} — <NewsShareList post={context} /></h2>
+                    <h2>{dayjs.utc(context.date_created).format('MMMM D, YYYY')} — <NewsShareList post={context} /></h2>
                 </div>
                 <Layout value={context.layout} />
                 <div className="news-keyword-section">
@@ -46,7 +48,7 @@ const Listing = ({ context: result }) => (
     <li className={resultItemClass(result)}>
         <div className="result-item">
             <div className="result-item__data">
-                <a href={result['@id']} className="result-item__link">{result.title}</a> <span className="page-listing-date">{moment.utc(result.date_created).format('MMMM D, YYYY')}</span>
+                <a href={result['@id']} className="result-item__link">{result.title}</a> <span className="page-listing-date">{dayjs.utc(result.date_created).format('MMMM D, YYYY')}</span>
                 <div className="result-item__data-row">
                     {result.news ? result.news_excerpt : null}
                 </div>
