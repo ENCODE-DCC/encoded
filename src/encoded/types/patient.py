@@ -6,6 +6,7 @@ from pyramid.security import (
     Deny,
     Everyone,
 )
+from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
@@ -48,6 +49,46 @@ class Patient(Item):
     item_type = 'patient'
     schema = load_schema('encoded:schemas/patient.json')
     name_key = 'accession'
+    embedded = [
+        'labs',
+    ]
+    rev = {
+        'labs': ('LabResult', 'patient'),
+    }
+    set_status_up = [
+    ]
+    set_status_down = []
+    @calculated_property(schema={
+        "title": "Labs",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "LabResult",
+        },
+    })
+    def labs(self, request, labs):
+        return paths_filtered_by_status(request, labs)
+
+
+@collection(
+    name='lab-results',
+    properties={
+        'title': 'Lab results',
+        'description': 'Lab results pages',
+    })
+class LabResult(Item):
+    item_type = 'lab_results'
+    schema = load_schema('encoded:schemas/lab_results.json')
+    embeded = [
+        'patient'
+    ]
+
+    def __ac_local_roles__(self):
+        # Use patient object for access control.
+        properties = self.upgrade_properties()
+        root = find_root(self)
+        patient = root.get_by_uuid(properties['patient'])
+        return patient.__ac_local_roles__()
 
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
