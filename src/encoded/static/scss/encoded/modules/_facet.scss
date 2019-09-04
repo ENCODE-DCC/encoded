@@ -334,11 +334,10 @@
     margin: 5px 0;
     .icon-search {
         margin-right: 5px;
-        float: left;
-        flex-shrink: 0;
+        flex: 0 0 auto;
     }
     .searchform {
-        flex-grow: 1;
+        flex: 1 0 auto;
     }
     input {
         border-radius: 5px;

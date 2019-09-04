@@ -67,6 +67,16 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	}
 }
 
+input[type="search"] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+}
+
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+    display: none;
+}
+
 .form-inline,
 .navbar-form {
 	.form-control {
