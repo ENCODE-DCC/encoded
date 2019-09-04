@@ -83,13 +83,6 @@ class LabResult(Item):
         'patient'
     ]
 
-    def __ac_local_roles__(self):
-        # Use patient object for access control.
-        properties = self.upgrade_properties()
-        root = find_root(self)
-        patient = root.get_by_uuid(properties['patient'])
-        return patient.__ac_local_roles__()
-
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
@@ -108,7 +101,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'lab_results']:
         try:
             filtered[key] = properties[key]
         except KeyError:
