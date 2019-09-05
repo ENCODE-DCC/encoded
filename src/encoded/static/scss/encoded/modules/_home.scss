@@ -289,12 +289,8 @@
 
 // Positions View All
 .view-all {
-    text-align: center;
-    font-size: 1.3rem;
-
-    .presented-link {
-        display: inline-block;
-    }
+    display: flex;
+    justify-content: center;
 }
 
 .social {

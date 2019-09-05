@@ -670,7 +670,7 @@ Home.contextTypes = {
 const ChartGallery = props => (
     <PanelBody>
         <div className="view-all">
-            <a href={`/matrix/${props.query}`} className="presented-link presented-link--lg">
+            <a href={`/matrix/${props.query}`} className="btn btn-info">
                 {props.assayCategory !== '' || props.organisms.length > 0 ? 'Filtered ' : ''}
                 Data Matrix
             </a>
