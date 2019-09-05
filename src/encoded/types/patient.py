@@ -56,6 +56,7 @@ class Patient(Item):
         'labs': ('LabResult', 'patient'),
     }
     set_status_up = [
+        'labs'
     ]
     set_status_down = []
     @calculated_property(schema={
@@ -101,7 +102,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'lab_results']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs']:
         try:
             filtered[key] = properties[key]
         except KeyError:
