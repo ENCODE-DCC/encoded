@@ -1901,15 +1901,13 @@ export class ResultTable extends React.Component {
 
         return (
             <div className="search-results">
-                <div className="search-results__facets">
-                    <FacetList
-                        {...this.props}
-                        facets={facets}
-                        filters={filters}
-                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                        onFilter={this.onFilter}
-                    />
-                </div>
+                <FacetList
+                    {...this.props}
+                    facets={facets}
+                    filters={filters}
+                    searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                    onFilter={this.onFilter}
+                />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
                         <h4>Showing {results.length} of {total} {label}</h4>
