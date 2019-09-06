@@ -96,7 +96,12 @@ body {
 }
 
 a {
+    text-decoration: none;
     color: $brand-primary;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 hr { clear: both; }
