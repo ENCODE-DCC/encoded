@@ -101,6 +101,7 @@ class File(Item):
         'award',
         'award.pi',
         'award.pi.lab',
+        'dataset',
         'replicate',
         'replicate.experiment',
         'replicate.experiment.lab',
