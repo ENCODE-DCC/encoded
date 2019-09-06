@@ -13,7 +13,7 @@ $form-bg: #f3f3f3;
         display: flex;
     }
 
-    @at-root #{&}__facets {
+    .box.facets {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 25%;
             margin-right: 10px;
