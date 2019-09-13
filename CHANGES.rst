@@ -1,6 +1,29 @@
 Changes
 =======
-v88.0 (released) snovault 1.0.34
+
+v90.0 (released) snovault 1.0.34
+---------------------------------------
+1. ENCD-4828 Remove extra div and style .box.facets (#2919)
+2. ENCD-4827 Restore old link underlines (#2918)
+3. ENCD-4824 Make Safari search box styling the same as others (#2915)
+4. ENCD-4825 Return button style and clean up CSS (#2916)
+5. ENCD-4817 Fix default value (#2902)
+6. ENCD-4538 Fixed minor typos and formatting inconsistencies (#2895)
+7. ENCD-4376 new ATAC-seq QC (#2907)
+8. ENCD-4819 Use not-allowed cursor on disabled inputs, buttons (#2909)
+9. ENCD-4818 downgrade ChIP-seq QM schema versions (#2908)
+10. ENCD-4788-add-mg-kg-treat (#2900)
+11. ENCD-4714-move-pg-deploy-echos-to-file (#2905)
+12. ENCD-4794 update bulk RNA QC (#2901)
+13. ENCD-4680 Remove and replace Bootstrap styling (#2894)
+14. ENCD-4783-set-iam-role-on-deploy (#2904)
+15. ENCD-4797 Add new file FCC output_type elements reference (#2899)
+16. ENCD-4789 Add wranglers' uuids to antibody_characterization.json (#2898)
+17. ENCD-4776 Add Bonita's info to user.json (#2897)
+18. ENCD-4800 Fix Chrome slow scrolling with scrollable facets (#2892)
+
+
+v89.0 (released) snovault 1.0.34
 ---------------------------------------
 1.  ENCD-4811 Change breadcrumb pluralization (#2893)
 2.  ENCD-4801 fix bugs related to award embedding in AntibodyLot (#2890)
