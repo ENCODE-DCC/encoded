@@ -55,7 +55,7 @@
         "assay_slims": {
             "title": "Assay type"
         },
-        "assay_titles": {
+        "assay_title": {
             "title": "Assay title"
         },
         "biosample_ontology.cell_slims": {
