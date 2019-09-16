@@ -148,6 +148,9 @@
             border: 1px solid #bdbdbd;
             background: white;
             z-index: 99999;
+            &:empty {
+                border: 0;
+            }
         }
         .adv-search-autocomplete {
             right: 0;
