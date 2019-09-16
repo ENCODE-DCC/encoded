@@ -6,6 +6,7 @@ import ga from 'google-analytics';
 import { Provider } from 'react-redux';
 import _ from 'underscore';
 import url from 'url';
+import * as cookie from 'js-cookie';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
 import { BrowserFeat } from './browserfeat';
@@ -114,8 +115,7 @@ Title.propTypes = {
 
 // Get the current browser cookie from the DOM.
 function extractSessionCookie() {
-    const cookie = require('cookie-monster');
-    return cookie(document).get('session');
+    return cookie.get('session');
 }
 
 
