@@ -196,11 +196,11 @@ dd ul, .multi-value-line {
     border: 1px solid #c0c0c0;
     color: #333;
     font-size: 0.9rem;
-    text-decoration: none;
 
     &:hover {
         color: #eee;
         background-color: #333;
+        text-decoration: none;
 
         .version {
             color: #fff;
