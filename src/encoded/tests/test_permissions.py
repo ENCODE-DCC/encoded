@@ -120,8 +120,7 @@ def test_submitter_post_update_experiment(submitter_testapp, lab, award, cell_fr
     experiment = {'lab': lab['@id'],
                   'award': award['@id'],
                   'assay_term_name': 'RNA-seq',
-                  'biosample_ontology': cell_free['uuid'],
-                  'experiment_classification': ['functional genomics assay']}
+                  'biosample_ontology': cell_free['uuid']}
     res = submitter_testapp.post_json('/experiment', experiment, status=201)
     location = res.location
     res = submitter_testapp.get(location + '@@testing-allowed?permission=edit', status=200)
@@ -134,8 +133,7 @@ def test_submitter_post_other_lab(submitter_testapp, other_lab, award, cell_free
     experiment = {'lab': other_lab['@id'],
                   'award': award['@id'],
                   'assay_term_name': 'RNA-seq',
-                  'biosample_ontology': cell_free['uuid'],
-                  'experiment_classification': ['functional genomics assay']}
+                  'biosample_ontology': cell_free['uuid']}
     res = submitter_testapp.post_json('/experiment', experiment, status=422)
     assert "not in user submits_for" in res.json['errors'][0]['description']
 
@@ -192,8 +190,7 @@ def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award, cell_free):
     experiment = {'lab': other_lab['@id'],
                   'award': award['@id'],
                   'assay_term_name': 'RNA-seq',
-                  'biosample_ontology': cell_free['uuid'],
-                  'experiment_classification': ['functional genomics assay']}
+                  'biosample_ontology': cell_free['uuid']}
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
@@ -363,8 +360,7 @@ def test_submitter_post_restricted_assay_fcc_experiment(submitter_testapp, wrang
     experiment = {'lab': lab['@id'],
                   'award': award['@id'],
                   'assay_term_name': 'MPRA',
-                  'biosample_ontology': cell_free['uuid'],
-                  'experiment_classification': ['functional characterization assay']}
+                  'biosample_ontology': cell_free['uuid']}
     submitter_testapp.post_json('/experiment', experiment, status=422)
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
@@ -373,21 +369,8 @@ def test_submitter_patch_restricted_assay_fcc_experiment(submitter_testapp, wran
     experiment = {'lab': lab['@id'],
                   'award': award['@id'],
                   'assay_term_name': 'ChIP-seq',
-                  'biosample_ontology': cell_free['uuid'],
-                  'experiment_classification': ['functional genomics assay']}
+                  'biosample_ontology': cell_free['uuid']}
     res = submitter_testapp.post_json('/experiment', experiment, status=201)
     term_name = {'assay_term_name': 'STARR-seq'}
     submitter_testapp.patch_json(res.json['@graph'][0]['@id'], term_name, status=422)
     wrangler_testapp.patch_json(res.json['@graph'][0]['@id'], term_name, status=200)
-
-
-def test_submitter_patch_restricted_classification_fcc_experiment(submitter_testapp, wrangler_testapp, lab, award, cell_free):
-    experiment = {'lab': lab['@id'],
-                  'award': award['@id'],
-                  'assay_term_name': 'ChIP-seq',
-                  'biosample_ontology': cell_free['uuid'],
-                  'experiment_classification': ['functional genomics assay']}
-    res = submitter_testapp.post_json('/experiment', experiment, status=201)
-    classification = {'experiment_classification': ['functional characterization assay']}
-    submitter_testapp.patch_json(res.json['@graph'][0]['@id'], classification, status=422)
-    wrangler_testapp.patch_json(res.json['@graph'][0]['@id'], classification, status=200)

@@ -270,6 +270,17 @@ def experiment_26(root, experiment):
     })
     return properties
 
+@pytest.fixture
+def experiment_27(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+                      'schema_version': '27',
+                      'experiment_classification': ['functional genomics assay']
+                      
+    })
+    return properties
+
 
 @pytest.fixture
 def annotation_20(award, lab):
@@ -632,3 +643,11 @@ def test_upgrade_experiment_26_to_27(upgrader, experiment_26):
     value = upgrader.upgrade('experiment', experiment_26, current_version='26', target_version='27')
     assert value['schema_version'] == '27'
     assert value['assay_term_name'] == 'HiC'
+
+def test_upgrade_experiment_27_to_28(upgrader, experiment_27):
+    assert experiment_27['schema_version'] == '27'
+    assert experiment_27['experiment_classification'] == ['functional genomics assay']
+    value = upgrader.upgrade('experiment', experiment_27, current_version='27', target_version='28')
+    assert experiment_27['schema_version'] == '28'
+    assert 'experiment_classification' not in value
+

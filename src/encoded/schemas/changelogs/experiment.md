@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Schema version 28
+* Removed required property *experiment_classification*.
+
 ### Schema version 27
 
 * *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
