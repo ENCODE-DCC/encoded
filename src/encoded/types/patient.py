@@ -19,6 +19,7 @@ from .base import (
 )
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
+from collections import defaultdict
 
 
 ONLY_ADMIN_VIEW_DETAILS = [
@@ -36,6 +37,14 @@ USER_ALLOW_CURRENT = [
 USER_DELETED = [
     (Deny, Everyone, 'visible_for_edit')
 ] + ONLY_ADMIN_VIEW_DETAILS
+
+
+def group_values_by_lab(request, labs):
+    values_by_key = defaultdict(list)
+    for path in labs:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        values_by_key[properties.get('lab')].append(properties)
+    return dict(values_by_key)
 
 
 @collection(
@@ -56,10 +65,9 @@ class Patient(Item):
         'labs': ('LabResult', 'patient'),
     }
     set_status_up = [
-        'labs'
     ]
     set_status_down = []
-    @calculated_property(schema={
+    @calculated_property( schema={
         "title": "Labs",
         "type": "array",
         "items": {
@@ -68,7 +76,9 @@ class Patient(Item):
         },
     })
     def labs(self, request, labs):
-        return paths_filtered_by_status(request, labs)
+        labs_filter = paths_filtered_by_status(request, labs)
+        return group_values_by_lab(request, labs)
+
 
 
 @collection(
@@ -80,9 +90,7 @@ class Patient(Item):
 class LabResult(Item):
     item_type = 'lab_results'
     schema = load_schema('encoded:schemas/lab_results.json')
-    embeded = [
-        'patient'
-    ]
+    embeded = []
 
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
