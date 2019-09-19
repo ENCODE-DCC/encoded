@@ -31,6 +31,7 @@ from snovault.elasticsearch.searches.fields import NotificationResponseField
 from snovault.elasticsearch.searches.fields import NonSortableResponseField
 from snovault.elasticsearch.searches.fields import RawMatrixWithAggsResponseField
 from snovault.elasticsearch.searches.fields import RawSearchWithAggsResponseField
+from snovault.elasticsearch.searches.fields import RawTopHitsResponseField
 from snovault.elasticsearch.searches.fields import SearchBaseResponseField
 from snovault.elasticsearch.searches.fields import SortResponseField
 from snovault.elasticsearch.searches.fields import TitleResponseField
@@ -60,6 +61,7 @@ def includeme(config):
     config.add_route('cart-search', '/cart-search{slash:/?}')
     config.add_route('cart-report', '/cart-report{slash:/?}')
     config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
+    config.add_route('top-hits-raw', '/top-hits-raw{slash:/?}')
     config.scan(__name__)
 
 
@@ -588,6 +590,21 @@ def cart_matrix(context, request):
             CartFiltersResponseField(),
             TypeOnlyClearFiltersResponseFieldWithCarts(),
             DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='top-hits-raw', request_method='GET', permission='search')
+def top_hits_raw(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            RawTopHitsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
+            )
         ]
     )
     return fr.render()
