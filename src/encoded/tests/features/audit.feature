@@ -2,14 +2,14 @@
 Feature: Title
 
     Scenario: Title updates
-        When I visit "/auditv2/?type=Experiment"
+        When I visit "/audit/?type=Experiment"
         And I wait for the content to load
         Then the title should contain the text "Audit – ENCODE"
 
 @audit @usefixtures(workbook)
 Feature: Audit
     Background:
-        When I visit "/auditv2/?type=Experiment"
+        When I visit "/audit/?type=Experiment"
         And I wait for the content to load
 
 

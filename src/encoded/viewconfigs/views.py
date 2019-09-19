@@ -43,7 +43,7 @@ def includeme(config):
     config.add_route('search_elements', '/search_elements/{search_params}')
     config.add_route('reportv1', '/reportv1{slash:/?}')
     config.add_route('matrixv1', '/matrixv1{slash:/?}')
-    config.add_route('audit', '/audit/')
+    config.add_route('auditv1', '/auditv1/')
     config.add_route('summaryv1', '/summaryv1{slash:/?}')
     config.scan(__name__)
 
@@ -80,8 +80,8 @@ def _get_search_views(view_instance, context, request):
     return views
 
 
-@view_config(route_name='audit', request_method='GET', permission='search')
-def audit(context, request):
+@view_config(route_name='auditv1', request_method='GET', permission='search')
+def auditv1(context, request):
     '''
     Audit Page Endpoint
     /audit/?type=Experiment

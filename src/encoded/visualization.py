@@ -1261,7 +1261,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     })
     params['frame'] = ['object']
 
-    view = 'searchv1'
+    view = 'search'
     if 'region' in param_list:
         view = 'region-search'
     path = '/%s/?%s' % (view, urlencode(params, True))
@@ -1429,7 +1429,7 @@ def generate_batch_hubs(context, request):
         param_list = parse_qs(search_params.replace(',,', '&'))
         log.debug('parse_qs: %s' % (param_list))
 
-        view = 'searchv1'
+        view = 'search'
         if 'region' in param_list:
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(param_list, True))
