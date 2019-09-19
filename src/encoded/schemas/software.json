@@ -225,6 +225,7 @@
     },
     "boost_values": {
         "title": 1.0,
+        "@type": 1.0,
         "name": 1.0,
         "purpose": 1.0,
         "used_by": 1.0,

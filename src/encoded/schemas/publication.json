@@ -270,6 +270,7 @@
     },
     "boost_values": {
         "title": 5.0,
+        "@type": 1.0,
         "authors": 1.0,
         "identifiers": 1.0,
         "abstract": 1.0,

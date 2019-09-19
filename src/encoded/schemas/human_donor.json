@@ -298,6 +298,7 @@
     },
     "boost_values": {
         "accession": 1.0,
+        "@type": 1.0,
         "internal_tags": 1.0,
         "alternate_accessions": 1.0
     },

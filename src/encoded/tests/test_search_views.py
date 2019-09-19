@@ -947,3 +947,17 @@ def test_search_views_cart_matrix_response_with_cart_filter(index_workbook, test
         '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true',
         status=400
     )
+
+
+def test_search_views_top_hits_raw_view(index_workbook, testapp):
+    r = testapp.get(
+        '/top-hits-raw/?searchTerm=a549&field=@id'
+    )
+    assert 'aggregations' in r.json
+
+
+def test_search_views_top_hits_view(index_workbook, testapp):
+    r = testapp.get(
+        '/top-hits/'
+    )
+    assert r.json['@type'] == ['TopHitsSearch']

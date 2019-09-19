@@ -270,6 +270,7 @@
     },
     "boost_values": {
         "name": 1.0,
+        "@type": 1.0,
         "title": 1.0,
         "project": 1.0,
         "pi.title": 1.0

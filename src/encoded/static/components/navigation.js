@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import url from 'url';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartStatus } from './cart';
 import { isProductionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
 import { BrowserFeat } from './browserfeat';
+import { NavBarSearch } from './top_hits/search';
 
 /**
  * Navigation bar home-page button.
@@ -280,7 +280,7 @@ const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }, context)
 
     return (
         <Nav>
-            <Search />
+            <NavBarSearch />
             {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
             <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
             <li className="dropdown" id="user-actions-footer">{userActionRender}</li>
@@ -349,34 +349,6 @@ ContextActions.defaultProps = {
 
 ContextActions.contextTypes = {
     listActionsFor: PropTypes.func,
-};
-
-
-const Search = (props, context) => {
-    const id = url.parse(context.location_href, true);
-    const searchTerm = id.query.searchTerm || '';
-    return (
-        <li className="navbar__item navbar__item--search">
-            <form className="navbar__search" action="/search/">
-                <input
-                    aria-label="Search"
-                    type="text"
-                    placeholder="Search..."
-                    name="searchTerm"
-                    defaultValue={searchTerm}
-                    key={searchTerm}
-                />
-                <button type="submit" className="search-button">
-                    <i className="icon icon-search" />
-                    <span className="sr-only">Search</span>
-                </button>
-            </form>
-        </li>
-    );
-};
-
-Search.contextTypes = {
-    location_href: PropTypes.string,
 };
 
 

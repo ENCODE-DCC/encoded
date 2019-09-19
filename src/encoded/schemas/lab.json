@@ -131,6 +131,7 @@
         }
     },
     "boost_values": {
+        "@type": 1.0,
         "pi": 1.0,
         "name":1.0,
         "awards.title":1.0,

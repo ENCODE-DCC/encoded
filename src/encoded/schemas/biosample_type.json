@@ -216,6 +216,7 @@
     },
     "boost_values": {
         "aliases": 1.0,
+        "@type": 1.0,
         "classification": 1.0,
         "dbxrefs": 1.0,
         "developmental_slims": 1.0,
