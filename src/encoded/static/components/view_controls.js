@@ -54,16 +54,6 @@ Object.freeze(ViewControlTypes);
 
 
 /**
- * The views in this array apply to every object. Extend this for new views that apply to every
- * object, or shrink this if an existing default view becomes object-dependent.
- */
-const defaultViewControlTypes = [
-    ViewControlTypes.SEARCH,
-    ViewControlTypes.REPORT,
-];
-
-
-/**
  * Maps search result @type[0] to corresponding view control path link components. Extend this
  * object with new pairs on the rare occasions that a new search view gets implemented. The keys
  * correspond to the values in `ViewControlTypes`, and the values fit in the view-control link
@@ -90,6 +80,19 @@ const viewOrder = [
 
 
 /**
+ * Object types that have child object types, and therefore cannot display /report/ views.
+ */
+const parentTypes = [
+    'Characterization',
+    'Dataset',
+    'Donor',
+    'FileSet',
+    'QualityMetric',
+    'Series',
+];
+
+
+/**
  * Manages the view-control registry. Objects (e.g. Experiment) register with a global object of
  * this class to indicate what kinds of view buttons that search results that specify that "type="
  * of object should display.
@@ -100,12 +103,17 @@ class ViewControl {
     }
 
     /**
-     * Register a list of views available for an object @type. Any in `defaultViewControlTypes`
-     * gets added to this list, though no harm in including any already in the defaults.
+     * Register a list of views available for an object @type. Add Search view, and Report view if
+     * not disallowed by the object type.
      * @param {string} type @type of object to register
      * @param {array} controlTypes Elements of ViewControlTypes to register
      */
     register(type, controlTypes) {
+        const defaultViewControlTypes = [ViewControlTypes.SEARCH];
+        if (!parentTypes.includes(type)) {
+            // Add report view if object type has no child types.
+            defaultViewControlTypes.push(ViewControlTypes.REPORT);
+        }
         this._registry[type] = new Set(controlTypes.concat(defaultViewControlTypes));
     }
 
@@ -119,7 +127,15 @@ class ViewControl {
      */
     lookup(resultType) {
         if (this._registry[resultType]) {
+            // Registered search result type. Sort and return saved views for that type.
             return _.sortBy(Array.from(this._registry[resultType]), viewName => viewOrder.indexOf(viewName));
+        }
+
+        // Unregistered search result type. Return all default views that apply to the type.
+        const defaultViewControlTypes = [ViewControlTypes.SEARCH];
+        if (!parentTypes.includes(resultType)) {
+            // Add report view if object type has no child types.
+            defaultViewControlTypes.push(ViewControlTypes.REPORT);
         }
         return defaultViewControlTypes;
     }
