@@ -1370,8 +1370,21 @@ TextFilter.propTypes = {
 };
 
 
+/**
+ * Determine whether a facet should be displayed or not.
+ * @param {object} facet One facet object from search results
+ * @param {object} session From <App> React context
+ * @param {object} sessionProperties From <App> React context
+ *
+ * @return True if given facet should be hidden
+ */
+const isFacetHidden = (facet, session, sessionProperties) => (
+    facet.field === 'internal_status' && !sessionProperties.admin
+);
+
+
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
-export const FacetList = (props) => {
+export const FacetList = (props, reactContext) => {
     const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix } = props;
 
     // Get "normal" facets, meaning non-audit facets.
@@ -1443,7 +1456,7 @@ export const FacetList = (props) => {
                             />
                         );
                     }
-                    if (facet.field === 'date_submitted') {
+                    if (facet.field === 'date_submitted' || isFacetHidden(facet, reactContext.session, reactContext.session_properties)) {
                         return null;
                     }
                     return (
@@ -1487,6 +1500,7 @@ FacetList.defaultProps = {
 
 FacetList.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
