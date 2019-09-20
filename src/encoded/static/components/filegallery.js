@@ -740,7 +740,7 @@ class RawFileTable extends React.Component {
             const groupKeys = Object.keys(grouped).sort();
 
             return (
-                <table className="table table-sortable table-raw">
+                <table className="table table__sortable table-raw">
                     <thead>
                         <tr className="table-section">
                             <th colSpan="11">
