@@ -1692,18 +1692,22 @@ const FileGraph = (props) => {
     // Build node graph of the files and analysis steps with this experiment
     let graph;
     if (files.length > 0) {
-        graph = assembleGraph(
-            files,
-            highlightedFiles,
-            dataset,
-            {
-                infoNode,
-                selectedAssembly,
-                selectedAnnotation,
-                colorize,
-            },
-            loggedIn
-        );
+        try {
+            graph = assembleGraph(
+                files,
+                highlightedFiles,
+                dataset,
+                {
+                    infoNode,
+                    selectedAssembly,
+                    selectedAnnotation,
+                    colorize,
+                },
+                loggedIn
+            );
+        } catch (e) {
+            console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
+        }
     }
 
     // Build node graph of the files and analysis steps with this experiment
