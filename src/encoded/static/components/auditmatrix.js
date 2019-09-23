@@ -203,11 +203,12 @@ const getNavbarHeight = () => {
  * @param {object} context Matrix JSON for the page
  * @param {array}  expandedRowCategories Names of rowCategories the user has expanded
  * @param {func}   expanderClickHandler Called when the user expands/collapses a row category
+ * @param {bool}   loggedIn True if current user is a logged in
  *
  * @return {object} Generated object suitable for passing to <DataTable>
  */
 
-const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHandler) => {
+const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHandler, loggedIn) => {
     // Make a couple utility structures -- one (`colTitleMap`) to map column names to the
     // corresponding column index, useful for placing matrix data into the correct column -- the
     // other (`colCategoryNames`) to hold all column category titles in column order.
@@ -228,7 +229,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
     // presentation order. Use these to get each audit level's data from the matrix data. Changes
     // to the order should happen in the global, `auditOrderKey`. The `x` property in `matrix`
     // holds other data we need later, so that doesn't get included.
-    const unsortedRowCategoryNames = Object.keys(context.matrix).filter(auditLevel => auditLevel !== 'x');
+    const unsortedRowCategoryNames = Object.keys(context.matrix).filter(auditLevel => auditLevel !== 'x' && (loggedIn || auditLevel !== 'audit.INTERNAL_ACTION.category'));
     const rowCategoryNames = _.sortBy(unsortedRowCategoryNames, rowCategoryName => auditOrderKey.indexOf(rowCategoryName));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -533,9 +534,10 @@ class MatrixPresentation extends React.Component {
         const { context } = this.props;
         const { scrolledRight } = this.state;
         const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
 
         // Convert encode matrix data to a DataTable object.
-        const { dataTable, rowKeys } = convertAuditToDataTable(context, this.state.expandedRowCategories, this.expanderClickHandler);
+        const { dataTable, rowKeys } = convertAuditToDataTable(context, this.state.expandedRowCategories, this.expanderClickHandler, loggedIn);
         const matrixConfig = {
             rows: dataTable,
             rowKeys,
@@ -566,6 +568,10 @@ class MatrixPresentation extends React.Component {
 MatrixPresentation.propTypes = {
     /** Matrix search result object */
     context: PropTypes.object.isRequired,
+};
+
+MatrixPresentation.contextTypes = {
+    session: PropTypes.object,
 };
 
 
