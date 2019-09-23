@@ -914,7 +914,14 @@ class DateSelectorFacet extends React.Component {
     handleReset(resetString) {
         this.setState({ activeFacet: 'date_released' }, () => {
             this.setActiveFacetParameters();
-            this.context.navigate(resetString);
+
+            // * Strip trailing & for the ENCD-4803 branch because it keeps the training ampersand.
+            let processedResetString = resetString;
+            if (resetString[resetString.length - 1] === '&') {
+                processedResetString = resetString.substring(0, resetString.length - 1);
+            }
+
+            this.context.navigate(processedResetString);
         });
     }
 
