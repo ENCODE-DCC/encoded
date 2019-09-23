@@ -359,6 +359,13 @@ export class BrowserSelector extends React.Component {
     render() {
         const { results, disabledTitle } = this.props;
 
+        // Only consider Visualize button if exactly one type= of Experiment or Annotation exists
+        // in query string.
+        const docTypes = results.filters.filter(filter => filter.field === 'type').map(filter => filter.term);
+        if (docTypes.length > 1 || (docTypes.length === 1 && docTypes[0] !== 'Experiment' && docTypes[0] !== 'Annotation')) {
+            return null;
+        }
+
         // Generate the batch hub URL used in batch visualization query strings.
         const parsedLocationHref = url.parse(this.context.location_href);
         const hostName = `${parsedLocationHref.protocol}//${parsedLocationHref.host}`;
