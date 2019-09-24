@@ -8,7 +8,7 @@
         "assay_term_name": "ChIP-seq",
         "quality_metric_of": [ "ENCFF002COS" ],
 
-        "FRiP": 0.255018460109,
+        "frip": 0.255018460109,
         "min_size": 98,
         "25_pct": 390,
         "50_pct": 390,
@@ -25,6 +25,6 @@
         "assay_term_name": "ChIP-seq",
         "quality_metric_of": [ "ENCFF003COS" ],
 
-        "FRiP": 0.253147998729
+        "frip": 0.253147998729
     }
 ]
