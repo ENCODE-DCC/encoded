@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import _ from 'underscore';
 import Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
@@ -16,6 +17,8 @@ import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { ReplacementAccessions } from './typeutils';
 
+
+dayjs.extend(utc)
 
 /**
  * Display list of file.matching_md5sum accessions as links to their respective files. This assumes
@@ -544,7 +547,7 @@ class FileComponent extends React.Component {
                                 {context.date_created ?
                                     <div data-test="datecreated">
                                         <dt>Date added</dt>
-                                        <dd>{moment.utc(context.date_created).format('YYYY-MM-DD')}</dd>
+                                        <dd>{dayjs.utc(context.date_created).format('YYYY-MM-DD')}</dd>
                                     </div>
                                 : null}
 

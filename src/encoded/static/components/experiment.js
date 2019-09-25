@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
@@ -621,14 +621,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                             {context.date_submitted ?
                                 <div data-test="date-submitted">
                                     <dt>Date submitted</dt>
-                                    <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
+                                    <dd>{dayjs(context.date_submitted).format('MMMM D, YYYY')}</dd>
                                 </div>
                             : null}
 
                             {context.date_released ?
                                 <div data-test="date-released">
                                     <dt>Date released</dt>
-                                    <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
+                                    <dd>{dayjs(context.date_released).format('MMMM D, YYYY')}</dd>
                                 </div>
                             : null}
 

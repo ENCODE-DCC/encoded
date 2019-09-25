@@ -14,8 +14,6 @@ const PATHS = {
 };
 
 const plugins = [];
-// don't include momentjs locales (large)
-plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
 
 // To get auth0 v11 to build correctly:
 // https://github.com/felixge/node-formidable/issues/337#issuecomment-183388869

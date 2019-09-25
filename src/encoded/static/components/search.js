@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import url from 'url';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { Panel, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
@@ -798,7 +798,7 @@ class DateSelectorFacet extends React.Component {
 
         // Set possible years to be 2009 -> current year for 'date_released'
         // Set possible years to be 2008 -> current year for 'date_submitted'
-        const currentYear = moment().format('YYYY');
+        const currentYear = dayjs().format('YYYY');
         let firstYear = 2007;
         if (activeFacet === 'date_released') {
             firstYear = 2008;
@@ -922,9 +922,9 @@ class DateSelectorFacet extends React.Component {
 
     // Set dropdowns to match quick link query and nagivate to quick link
     handleQuickLink(searchBaseForDateRange, field) {
-        const currentYear = moment().format('YYYY');
-        const currentMonth = moment().format('MM');
-        const currentDay = moment().format('DD');
+        const currentYear = dayjs().format('YYYY');
+        const currentMonth = dayjs().format('MM');
+        const currentDay = dayjs().format('DD');
         const quickLinkString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
         this.setState({
             startMonth: currentMonth,
@@ -945,7 +945,7 @@ class DateSelectorFacet extends React.Component {
         const field = this.state.activeFacet;
         const activeFacet = facets.filter(f => f.field === this.state.activeFacet)[0];
 
-        const daysInEndMonth = moment(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
+        const daysInEndMonth = dayjs(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
 
         // if a date range has already been selected, we want to over-write that date range with a new one
         const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
@@ -1149,11 +1149,11 @@ class Facet extends React.Component {
         // For date facets, sort by date
         let terms = [];
         if (field.match('date')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
         } else if (field.match('month')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(obj.key, 'MMMM, YYYY').toISOString()).reverse();
         } else if (field.match('year')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(obj.key, 'YYYY').toISOString()).reverse();
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => obj.key);
