@@ -438,9 +438,6 @@ class GenomeBrowser extends React.Component {
 
     handleOnFocus() {
         this.setState({ showAutoSuggest: false });
-        console.log(this.props.assembly);
-        console.log(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`);
-
         getCoordinateData(`${this.context.location_href.split('/experiments/')[0]}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`, this.context.fetch).then((response) => {
             // Find the response line that matches the search
             const responseIndex = response['@graph'].findIndex(responseLine => responseLine.text === this.state.searchTerm);
@@ -455,9 +452,6 @@ class GenomeBrowser extends React.Component {
             const contig = `chr${annotation.chromosome}`;
             const xStart = +annotation.start - (annotationLength / 2);
             const xEnd = +annotation.end + (annotationLength / 2);
-            console.log(annotation);
-            const printStatement = `Success: found gene location for ${this.state.searchTerm}`;
-            console.log(printStatement);
 
             if (contig !== '') {
                 this.state.visualizer.setLocation({
