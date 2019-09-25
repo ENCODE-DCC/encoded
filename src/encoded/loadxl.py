@@ -20,6 +20,7 @@ ORDER = [
     'page',
     'patient',
     'lab_results',
+    'vital_results',
     'cart'
 ]
 

@@ -47,6 +47,14 @@ def group_values_by_lab(request, labs):
     return dict(values_by_key)
 
 
+def group_values_by_vital(request, vitals):
+    values_by_key = defaultdict(list)
+    for path in vitals:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        values_by_key[properties.get('vital')].append(properties)
+    return dict(values_by_key)
+
+
 @collection(
      name='patients',
      unique_key='accession',
@@ -60,13 +68,16 @@ class Patient(Item):
     name_key = 'accession'
     embedded = [
         'labs',
+        'vitals'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
+        'vitals': ('VitalResult', 'patient'),
     }
     set_status_up = [
     ]
     set_status_down = []
+
     @calculated_property( schema={
         "title": "Labs",
         "type": "array",
@@ -76,9 +87,18 @@ class Patient(Item):
         },
     })
     def labs(self, request, labs):
-        labs_filter = paths_filtered_by_status(request, labs)
         return group_values_by_lab(request, labs)
 
+    @calculated_property( schema={
+        "title": "Vitals",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "VitalResult",
+        },
+    })
+    def vitals(self, request, vitals):
+        return group_values_by_vital(request, vitals)
 
 
 @collection(
@@ -92,6 +112,17 @@ class LabResult(Item):
     schema = load_schema('encoded:schemas/lab_results.json')
     embeded = []
 
+
+@collection(
+    name='vital-results',
+    properties={
+        'title': 'Vital results',
+        'description': 'Vital results pages',
+    })
+class VitalResult(Item):
+    item_type = 'vital_results'
+    schema = load_schema('encoded:schemas/vital_results.json')
+    embeded = []
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
@@ -110,7 +141,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals']:
         try:
             filtered[key] = properties[key]
         except KeyError:

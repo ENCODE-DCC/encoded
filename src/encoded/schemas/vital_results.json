@@ -1,0 +1,70 @@
+{
+    "title": "Vital Results",
+    "id": "/profiles/vital_results.json",
+    "description": "Schema for describing the vital results.",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["vital", "value_units", "value"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/standard_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "value": {
+            "title": "Value",
+            "description": "Vital value measured and converted to standard units.",
+            "type": "number"
+        },
+        "value_units": {
+            "title": "Value units",
+            "type": "string",
+            "enum": [
+                "kg/m2",
+                "mm Hg",
+                "Inches",
+                "Pounds"
+            ]
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the lab was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "vital": {
+            "title": "Vital type",
+            "type": "string",
+            "enum": [
+                "BMI",
+                "BP_DIAS",
+                "BP_SYS",
+                "HEMOGLOBIN",
+                "HEIGHT",
+                "WEIGHT"
+            ]
+        },
+        "date": {
+            "title": "Vital date",
+            "description": "Date of lab.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        }
+    },
+    "facets": {
+        "vital": {
+            "title": "Vital type"
+        }
+    },
+    "changelog": "/profiles/changelogs/vital_results.md"
+
+}
