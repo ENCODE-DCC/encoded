@@ -2950,6 +2950,8 @@ def test_audit_experiment_dnase_low_correlation(testapp,
                                                 base_experiment,
                                                 replicate_1_1,
                                                 replicate_2_1,
+                                                fastq_file_1,
+                                                fastq_file_2,
                                                 library_1,
                                                 library_2,
                                                 biosample_1,
@@ -2979,6 +2981,18 @@ def test_audit_experiment_dnase_low_correlation(testapp,
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    rep1 = {
+        'replicate': replicate_1_1['@id'],
+        'dataset': base_experiment['@id'],
+        'status': 'released',                                    
+    }
+    rep2 = {
+        'replicate': replicate_2_1['@id'],
+        'dataset': base_experiment['@id'],
+        'status': 'released',
+    }
+    testapp.patch_json(fastq_file_1['@id'], rep1)
+    testapp.patch_json(fastq_file_2['@id'], rep2)
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
@@ -3132,6 +3146,7 @@ def test_audit_experiment_out_of_date_analysis_DNase(testapp,
                                                      base_experiment,
                                                      replicate_1_1,
                                                      replicate_1_2,
+                                                     fastq_file_1,
                                                      file_fastq_3,
                                                      file_fastq_4,
                                                      file_bam_1_1,
@@ -3139,6 +3154,9 @@ def test_audit_experiment_out_of_date_analysis_DNase(testapp,
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(
+        fastq_file_1['@id'],
+        {'dataset': base_experiment['@id'], 'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_fastq_3['@id'], {'replicate': replicate_1_1['@id'],
                                              'status': 'deleted'})
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_2['@id']})
