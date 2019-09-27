@@ -7,6 +7,11 @@ from snovault import (
 )
 from snovault.schema_utils import validate
 from snovault.util import simple_path_ids
+from .formatter import (
+    audit_link,
+    path_to_text,
+    space_in_words,
+)
 
 
 @audit_checker('Item', frame='object')
@@ -42,8 +47,12 @@ def audit_item_schema(value, system):
         path = list(error.path)
         if path:
             category += ': ' + '/'.join(str(elem) for elem in path)
-        detail = 'Object {} has schema error {}'.format(
-            value['@id'], error.message)
+        detail = ('{} {} has schema error {}.'.format(
+            space_in_words(value['@type'][0]).capitalize(),
+            audit_link(path_to_text(value['@id']), value['@id']),
+            error.message
+            )
+        )
         yield AuditFailure(category, detail, level='INTERNAL_ACTION')
 
 
@@ -97,13 +106,15 @@ def audit_item_relations_status(value, system):
                 else:
                     linked_level = STATUS_LEVEL.get(
                         linked_value['status'], 50)
-                    detail = \
-                        '{} with status \'{}\' supersedes {} with status \'{}\''.format(
-                            value['@id'],
-                            value['status'],
-                            linked_value['@id'],
-                            linked_value['status']
+                    detail = ('{} {} with status \'{}\' supersedes {} {} with status \'{}\'.'.format(
+                        space_in_words(value['@type'][0]).capitalize(),
+                        audit_link(path_to_text(value['@id']), value['@id']),
+                        value['status'],
+                        space_in_words(linked_value['@type'][0]).lower(),
+                        audit_link(path_to_text(linked_value['@id']), linked_value['@id']),
+                        linked_value['status']
                         )
+                    )
                     if level == 100 and linked_level in [0, 50, 100]:
                         yield AuditFailure(
                             'mismatched status',
@@ -136,14 +147,16 @@ def audit_item_relations_status(value, system):
                     linked_level = STATUS_LEVEL.get(
                         linked_value['status'], 50)
                     if level > linked_level:
-                        detail = \
-                            '{} with status \'{}\' {} {} with status \'{}\''.format(
-                                value['@id'],
-                                value['status'],
-                                message,
-                                linked_value['@id'],
-                                linked_value['status']
+                        detail = ('{} {} with status \'{}\' {} {} {} with status \'{}\'.'.format(
+                            space_in_words(value['@type'][0]).capitalize(),
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            value['status'],
+                            message,
+                            space_in_words(linked_value['@type'][0]).lower(),
+                            audit_link(path_to_text(linked_value['@id']), linked_value['@id']),
+                            linked_value['status']
                             )
+                        )
                         yield AuditFailure(
                             'mismatched status',
                             detail,
@@ -195,10 +208,24 @@ def audit_item_status(value, system):
         if linked_value['status'] in ['revoked', 'archived']:
             linked_level += 50
         if linked_level == 0:
-            detail = '{} {} has {} subobject {}'.format(
-                value['status'], value['@id'], linked_value['status'], linked_value['@id'])
+            detail = ('{} {} {} has {} subobject {} {}'.format(
+                value['status'].capitalize(),
+                space_in_words(value['@type'][0]).lower(),
+                audit_link(path_to_text(value['@id']), value['@id']),
+                linked_value['status'],
+                space_in_words(linked_value['@type'][0]).lower(),
+                audit_link(path_to_text(linked_value['@id']), linked_value['@id'])
+                )
+            )
             yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
         elif linked_level < level:
-            detail = '{} {} has {} subobject {}'.format(
-                value['status'], value['@id'], linked_value['status'], linked_value['@id'])
+            detail = ('{} {} {} has {} subobject {} {}'.format(
+                value['status'].capitalize(),
+                space_in_words(value['@type'][0]).lower(),
+                audit_link(path_to_text(value['@id']), value['@id']),
+                linked_value['status'],
+                space_in_words(linked_value['@type'][0]).lower(),
+                audit_link(path_to_text(linked_value['@id']), linked_value['@id'])
+                )
+            )
             yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
