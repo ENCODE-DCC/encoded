@@ -11,6 +11,7 @@ import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 import DropdownButton from '../libs/ui/button';
 import { DropdownMenu } from '../libs/ui/dropdown-menu';
+import * as globals from './globals';
 
 const validator = new jsonschema.Validator();
 
@@ -598,6 +599,11 @@ export class Field extends UpdateChildMixin(React.Component) {
         const errors = this.context.errors;
         const isValid = !errors[path];
         const type = schema.type || 'string';
+        const sessionProperties = this.context.session_properties;
+        const roles = globals.getRoles(sessionProperties);
+        // check if user is not admin nor submitter
+        const notAuthorized = !['admin', 'submitter'].some(role => roles.includes(role));
+
         let classBase = 'rf-Field';
         if (type === 'object') {
             classBase = 'rf-Fieldset';
@@ -671,7 +677,9 @@ export class Field extends UpdateChildMixin(React.Component) {
                 // React key.
                 options = [<option key="_null_" value={null} />].concat(options);
             }
-            input = <select className="form-control" {...inputProps}>{options}</select>;
+            // special case where Status is disabled for unpriviledged users
+            const isDisabled = notAuthorized && schema.title === 'Status';
+            input = <select className="form-control" {...inputProps} disabled={isDisabled} >{options}</select>;
         } else if (schema.linkTo) {
             // Restrict ObjectPicker to finding the specified type
             // FIXME this should handle an array of types too
@@ -734,6 +742,7 @@ Field.contextTypes = {
     showReadOnly: PropTypes.bool,
     readonly: PropTypes.bool,
     id: PropTypes.string,
+    session_properties: PropTypes.object,
 };
 
 Field.childContextTypes = {
