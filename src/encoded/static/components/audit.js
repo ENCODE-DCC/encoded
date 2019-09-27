@@ -119,7 +119,7 @@ AuditIcon.defaultProps = {
 /**
  * Display the audit icon for the highest audit level for the given object.
  */
-export const ObjectAuditIcon = ({ object, audit, loggedIn }) => {
+export const ObjectAuditIcon = ({ object, audit, isAuthorized }) => {
     if (audit !== null) {
         let highestAuditLevel;
         const objectAudit = audit || object.audit;
@@ -127,8 +127,8 @@ export const ObjectAuditIcon = ({ object, audit, loggedIn }) => {
         if (objectAudit) {
             const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy(level => -objectAudit[level][0].level);
 
-            // Only logged-in users should see ambulance icon (INTERNAL_ACTION)
-            highestAuditLevel = !loggedIn && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
+            // Only authorized users should see ambulance icon (INTERNAL_ACTION)
+            highestAuditLevel = !isAuthorized && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
         } else {
             highestAuditLevel = 'OK';
         }
@@ -142,13 +142,13 @@ ObjectAuditIcon.propTypes = {
     object: PropTypes.object.isRequired,
     /** Audit object when `object` has none; null to suppress display */
     audit: PropTypes.object,
-    /** True if user is logged in */
-    loggedIn: PropTypes.bool,
+    /** True if user is authorized in */
+    isAuthorized: PropTypes.bool,
 };
 
 ObjectAuditIcon.defaultProps = {
     audit: undefined,
-    loggedIn: false,
+    isAuthorized: false,
 };
 
 
@@ -372,6 +372,12 @@ export const auditDecor = AuditComponent => class extends React.Component {
             // Calculate the class of the indicator button based on whether the audit detail panel
             // is open or not.
             const indicatorClass = `audit-indicators btn btn-sm${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
+            const auditItems = Object.keys(audits);
+
+            // special case for unauthorized users
+            if (!isAuthorized && auditItems.length === 1 && auditItems[0] === 'INTERNAL_ACTION') {
+                return;
+            }
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>

@@ -838,4 +838,5 @@ ItemAccessories.defaultProps = {
 
 ItemAccessories.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
