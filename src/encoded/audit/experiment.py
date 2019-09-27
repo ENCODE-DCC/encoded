@@ -3340,7 +3340,7 @@ def audit_experiment_ChIP_control(value, system, files_structure):
         if value.get('assay_term_name') == 'ChIP-seq':
             # The binding group agreed that ChIP-seqs all should have an input control.
             detail = ('Experiment {} is ChIP-seq and requires at least one input control,'
-                ' as agreed upon by the binding group. {} is not an input control'.format(
+                ' as agreed upon by the binding group. Experiment {} is not an input control'.format(
                     audit_link(path_to_text(value['@id']), value['@id']),
                     audit_link(path_to_text(control_dataset['@id']), control_dataset['@id'])
                 )
