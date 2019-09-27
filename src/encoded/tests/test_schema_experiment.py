@@ -10,7 +10,6 @@ def experiment_pipeline_error(testapp, lab, award, cell_free):
         'assay_term_name': 'ChIP-seq',
         'biosample_ontology': cell_free['uuid'],
         'internal_status': 'pipeline error',
-        'experiment_classification': ['functional genomics assay']
     }
     return item
 
@@ -23,7 +22,6 @@ def experiment_no_error(testapp, lab, award, cell_free):
         'assay_term_name': 'ChIP-seq',
         'biosample_ontology': cell_free['uuid'],
         'internal_status': 'release ready',
-        'experiment_classification': ['functional genomics assay']
     }
     return item
 

@@ -18,8 +18,7 @@ def reference_experiment_RNA_seq(testapp, lab, award, ileum):
         'status': 'released',
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'experiment_classification': ['functional genomics assay']
+        'assay_term_name': 'RNA-seq'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -33,8 +32,7 @@ def reference_experiment_RRBS(testapp, lab, award, ileum):
         'status': 'released',
         'date_released': '2019-01-08',
         'assay_term_name': 'RRBS',
-        'biosample_ontology': ileum['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'biosample_ontology': ileum['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -48,8 +46,7 @@ def reference_experiment_WGBS(testapp, lab, award, ileum):
         'lab': lab['uuid'],
         'status': 'released',
         'date_released': '2019-01-08',
-        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
-        'experiment_classification': ['functional genomics assay']
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -64,8 +61,7 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control, i
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_control['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'target': target_control['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -80,8 +76,7 @@ def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3,
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27me3['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'target': target_H3K27me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -96,9 +91,7 @@ def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3,
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K36me3['uuid'],
-        'experiment_classification': ['functional genomics assay']
-
+        'target': target_H3K36me3['uuid']
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -112,8 +105,7 @@ def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1, i
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me1['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'target': target_H3K4me1['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -128,8 +120,7 @@ def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3, i
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'target': target_H3K4me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -144,8 +135,7 @@ def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac, i
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27ac['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'target': target_H3K27ac['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -160,8 +150,7 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3, i
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K9me3['uuid'],
-        'experiment_classification': ['functional genomics assay']
+        'target': target_H3K9me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

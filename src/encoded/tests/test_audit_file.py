@@ -10,8 +10,7 @@ def file_exp(lab, award, testapp, experiment, ileum):
         'biosample_ontology': ileum['uuid'],
         'possible_controls': [experiment['uuid']],
         'status': 'released',
-        'date_released': '2016-01-01',
-        'experiment_classification': ['functional genomics assay']
+        'date_released': '2016-01-01'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -34,8 +33,7 @@ def file_exp2(lab, award, testapp, ileum):
         'assay_term_name': 'RAMPAGE',
         'biosample_ontology': ileum['uuid'],
         'status': 'released',
-        'date_released': '2016-01-01',
-        'experiment_classification': ['functional genomics assay']
+        'date_released': '2016-01-01'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
