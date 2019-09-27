@@ -6,12 +6,12 @@ import jsonschema from 'jsonschema';
 import _ from 'underscore';
 import offset from '../libs/offset';
 import { FetchedData, Param } from './fetched';
-import { parseAndLogError, listingTitles } from './globals';
+import { parseAndLogError, listingTitles, getRoles } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 import DropdownButton from '../libs/ui/button';
 import { DropdownMenu } from '../libs/ui/dropdown-menu';
-import * as globals from './globals';
+
 
 const validator = new jsonschema.Validator();
 
@@ -600,7 +600,7 @@ export class Field extends UpdateChildMixin(React.Component) {
         const isValid = !errors[path];
         const type = schema.type || 'string';
         const sessionProperties = this.context.session_properties;
-        const roles = globals.getRoles(sessionProperties);
+        const roles = getRoles(sessionProperties);
         // check if user is not admin nor submitter
         const notAuthorized = !['admin', 'submitter'].some(role => roles.includes(role));
 

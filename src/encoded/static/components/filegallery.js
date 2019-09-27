@@ -282,8 +282,6 @@ FileTable.propTypes = {
     setInfoNodeVisible: PropTypes.func,
     /** User session */
     session: PropTypes.object,
-    /** User session properties */
-    session_properties: PropTypes.object,
     /** True if user is an admin user */
     adminUser: PropTypes.bool,
     /** Object from /profiles/ containing all schemas */

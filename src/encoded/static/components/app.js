@@ -534,7 +534,7 @@ class App extends React.Component {
 
     signup() {
         const authResult = this.state.authResult;
-        
+
         if (!authResult || !authResult.accessToken) {
             console.warn('authResult object or access token not available');
             return;

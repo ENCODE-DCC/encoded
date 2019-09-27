@@ -376,7 +376,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
 
             // special case for unauthorized users
             if (!isAuthorized && auditItems.length === 1 && auditItems[0] === 'INTERNAL_ACTION') {
-                return;
+                return null;
             }
 
             return (
