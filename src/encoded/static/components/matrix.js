@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
+import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
@@ -424,9 +425,19 @@ class MatrixVerticalFacets extends React.Component {
         // have terms added to it.
         const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
 
+        let clearButton;
+        const searchQuery = url.parse(context['@id']).search;
+        if (searchQuery) {
+            // If we have a 'type' query string term along with others terms, we need a Clear Filters
+            // button.
+            const terms = queryString.parse(searchQuery);
+            const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
+            clearButton = nonPersistentTerms && terms.type;
+        }
+
         return (
             <div className="matrix__facets-vertical">
-                <ClearFilters searchUri={context.clear_filters} enableDisplay={context.filters.length > 0} />
+                <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
                 <SearchFilter context={context} />
                 <FacetList
                     facets={context.facets}
