@@ -345,6 +345,44 @@ def fastq_file(testapp, lab, award, experiment, replicate, platform1):
 
 
 @pytest.fixture
+def fastq_file_1(testapp, lab, award, experiment, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': '21be74b6e11515393507f4ebfa66d28b',
+        'replicate': replicate['@id'],
+        'output_type': 'reads',
+        "read_length": 36,
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'run_type': 'single-ended',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def fastq_file_2(testapp, lab, award, experiment, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': '91be74b2e12515393507f4ebfa66d28b',
+        'replicate': replicate['@id'],
+        'output_type': 'reads',
+        "read_length": 36,
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'run_type': 'single-ended',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
 def bam_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],

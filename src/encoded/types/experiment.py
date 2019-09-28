@@ -285,19 +285,21 @@ class Replicate(Item):
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()
 
-    @calculated_property(schema={
-        "title": "Libraries",
-        "description": "The nucleic acid libraries used in this replicate.",
-        "type": "array",
-        "uniqueItems": True,
-        "items": {
-            "title": "Library",
-            "description": "The nucleic acid library used in this replicate.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
+    @calculated_property(
+        schema={
+            "title": "Libraries",
+            "description": "The nucleic acid libraries used in this replicate.",
+            "type": "array",
+            "uniqueItems": True,
+            "items": {
+                "title": "Library",
+                "description": "The nucleic acid library used in this replicate.",
+                "comment": "See library.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Library"
+            }
         }
-    })
+    )
     def libraries(self, status, biological_replicate_number,
                   technical_replicate_number):
         if status == 'deleted':
