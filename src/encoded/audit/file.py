@@ -275,7 +275,7 @@ def audit_file_controlled_by(value, system):
                 audit_link(path_to_text(value['@id']), value['@id'])
             )
         )
-        yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing controlled_by', detail, level='WARNING')
         return
 
     possible_controls = value['dataset'].get('possible_controls')
