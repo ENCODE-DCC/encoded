@@ -258,7 +258,9 @@ $form-bg: #f3f3f3;
 
 .results-table-control {
     display: flex;
+    flex-wrap: wrap;
     margin-bottom: 20px;
+    justify-content: space-between;
 
     @at-root #{&}__main {
         display: flex;
@@ -315,7 +317,6 @@ $form-bg: #f3f3f3;
         @media screen and (min-width: $screen-sm-min) {
             display: block;
             flex: 0 1 auto;
-            margin-left: auto;
         }
     }
 }

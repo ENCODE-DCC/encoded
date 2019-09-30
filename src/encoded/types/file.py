@@ -139,6 +139,27 @@ class File(Item):
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
+    audit = {
+        'audit.ERROR.category': {
+            'group_by': 'audit.ERROR.category',
+            'label': 'Error'
+        },
+        'audit.INTERNAL_ACTION.category': {
+            'group_by': 'audit.INTERNAL_ACTION.category',
+            'label': 'Internal Action'},
+        'audit.NOT_COMPLIANT.category': {
+            'group_by': 'audit.NOT_COMPLIANT.category',
+            'label': 'Not Compliant'
+        },
+        'audit.WARNING.category': {
+            'group_by': 'audit.WARNING.category',
+            'label': 'Warning'
+        },
+        'x': {
+            'group_by': 'file_format', 'label': 'File format'
+        }
+    }
+
     @property
     def __name__(self):
         properties = self.upgrade_properties()

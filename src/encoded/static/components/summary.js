@@ -6,8 +6,9 @@ import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
-import { FacetList, ViewControls, ClearFilters } from './search';
+import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
+import { ViewControls } from './view_controls';
 
 
 // Render the title pane.
@@ -29,7 +30,7 @@ const SummaryTitle = (props) => {
             <div className="summary-header__title">
                 <h1>{context.title}</h1>
                 <div className="results-table-control__main">
-                    <ViewControls views={context.views} />
+                    <ViewControls results={context} />
                 </div>
             </div>
             <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
@@ -365,17 +366,17 @@ class SummaryData extends React.Component {
         // Get the status data with a process completely different from the others because it comes
         // in its own property in the /summary/ context. Start by getting the name of the property
         // that contains the status data, as well as the number of items within it.
-        const statusProp = context.summary.grouping[0];
-        const statusSection = context.summary[statusProp];
-        const statusDataCount = statusSection.doc_count;
-        const statusData = statusSection[statusProp].buckets;
+        const statusProp = context.matrix.y.group_by[0];
+        const statusSection = context.matrix.y[statusProp];
+        const statusDataCount = context.total;
+        const statusData = statusSection.buckets;
 
         // Collect selected facet terms to add to the base linkUri.
         let searchQuery = '';
         if (context.filters && context.filters.length > 0) {
-            searchQuery = context.filters.reduce((queryAcc, filter) => `${queryAcc}&${filter.field}=${globals.encodedURIComponent(filter.term)}`, '');
+            searchQuery = context.filters.map(filter => `${filter.field}=${globals.encodedURIComponent(filter.term)}`).join('&');
         }
-        const linkUri = `/matrix/?type=Experiment${searchQuery}`;
+        const linkUri = `/matrix/?${searchQuery}`;
 
         return (
             <div className="summary-content__data">
@@ -435,7 +436,7 @@ const Summary = (props) => {
     const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
 
-    if (context.summary.doc_count) {
+    if (context.total) {
         return (
             <Panel addClasses={itemClass}>
                 <PanelBody>

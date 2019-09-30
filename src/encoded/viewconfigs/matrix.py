@@ -187,7 +187,7 @@ class MatrixView(BaseView):  #pylint: disable=too-few-public-methods
         Main function to construct query and build view results json
         * Only publicly accessible function
         '''
-        matrix_route = self._request.route_path('matrix', slash='/')
+        matrix_route = self._request.route_path('matrixv1', slash='/')
         result_filters = {'filters': []}
         # TODO: Validate doc types in base class in one location
         # Now we do it here and in _validate_items

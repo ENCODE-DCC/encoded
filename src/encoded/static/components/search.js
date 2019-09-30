@@ -4,9 +4,7 @@ import queryString from 'query-string';
 import _ from 'underscore';
 import dayjs from 'dayjs';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { Panel, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
-import { svgIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
 import { FetchedData, Param } from './fetched';
@@ -14,15 +12,15 @@ import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
 import {
-    BrowserSelector,
     DisplayAsJson,
-    requestSearch,
     DocTypeTitle,
     shadeOverflowOnScroll,
 } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
+import { BatchDownloadControls, ViewControls } from './view_controls';
+import { BrowserSelector } from './vis_defines';
 
 
 // Should really be singular...
@@ -602,7 +600,7 @@ function termSelected(term, facet, filters) {
         // The given term is selected. Return the href to remove the term from the URI, as well as
         // whether this term was a negation term or not.
         return {
-            selected: url.parse(matchingFilter.remove).search,
+            selected: url.parse(matchingFilter.remove).search || matchingFilter.remove,
             negated,
             exists,
         };
@@ -921,7 +919,14 @@ class DateSelectorFacet extends React.Component {
     handleReset(resetString) {
         this.setState({ activeFacet: 'date_released' }, () => {
             this.setActiveFacetParameters();
-            this.context.navigate(resetString);
+
+            // * Strip trailing & for the ENCD-4803 branch because it keeps the training ampersand.
+            let processedResetString = resetString;
+            if (resetString[resetString.length - 1] === '&') {
+                processedResetString = resetString.substring(0, resetString.length - 1);
+            }
+
+            this.context.navigate(processedResetString);
         });
     }
 
@@ -1377,8 +1382,21 @@ TextFilter.propTypes = {
 };
 
 
+/**
+ * Determine whether a facet should be displayed or not.
+ * @param {object} facet One facet object from search results
+ * @param {object} session From <App> React context
+ * @param {object} sessionProperties From <App> React context
+ *
+ * @return True if given facet should be hidden
+ */
+const isFacetHidden = (facet, session, sessionProperties) => (
+    facet.field === 'internal_status' && !sessionProperties.admin
+);
+
+
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
-export const FacetList = (props) => {
+export const FacetList = (props, reactContext) => {
     const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix } = props;
 
     // Get "normal" facets, meaning non-audit facets.
@@ -1450,7 +1468,7 @@ export const FacetList = (props) => {
                             />
                         );
                     }
-                    if (facet.field === 'date_submitted') {
+                    if (facet.field === 'date_submitted' || isFacetHidden(facet, reactContext.session, reactContext.session_properties)) {
                         return null;
                     }
                     return (
@@ -1494,125 +1512,7 @@ FacetList.defaultProps = {
 
 FacetList.contextTypes = {
     session: PropTypes.object,
-};
-
-
-/**
- * Display the modal for batch download, and pass back clicks in the Download button
- */
-export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title || 'Download'}</button>}>
-        <ModalHeader title="Using batch download" closeModal />
-        <ModalBody>
-            <p>
-                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file has the URL or command line to download the metadata file.
-            </p>
-            <p>
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-            </p>
-            <p>
-                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:
-            </p>
-            <code>xargs -L 1 curl -O -L &lt; files.txt</code><br />
-            <div>{additionalContent}</div>
-        </ModalBody>
-        <ModalFooter
-            closeModal={<button className="btn btn-default">Close</button>}
-            submitBtn={<button className="btn btn-info" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
-            dontClose
-        />
-    </Modal>
-);
-
-BatchDownloadModal.propTypes = {
-    /** Function to call when Download button gets clicked */
-    handleDownloadClick: PropTypes.func.isRequired,
-    /** Title to override usual actuator "Download" button title */
-    title: PropTypes.string,
-    /** True to disable Download button */
-    disabled: PropTypes.bool,
-    /** Additional content in modal as component */
-    additionalContent: PropTypes.object,
-};
-
-BatchDownloadModal.defaultProps = {
-    title: '',
-    disabled: false,
-    additionalContent: null,
-};
-
-
-export class BatchDownload extends React.Component {
-    constructor() {
-        super();
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-    }
-
-    handleDownloadClick() {
-        if (!this.props.context) {
-            requestSearch(this.props.query).then((results) => {
-                this.context.navigate(results.batch_download);
-            });
-        } else {
-            this.context.navigate(this.props.context.batch_download);
-        }
-    }
-
-    render() {
-        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
-    }
-}
-
-BatchDownload.propTypes = {
-    context: PropTypes.object, // Search result object whose batch_download we're using
-    query: PropTypes.string, // Without `context`, perform a search using this query string
-};
-
-BatchDownload.defaultProps = {
-    context: null,
-    query: '',
-};
-
-BatchDownload.contextTypes = {
-    navigate: PropTypes.func,
-};
-
-
-/**
- * Display the search-result view controls that lets users go to the different search results pages
- * (matrix, report, etc).
- */
-export const ViewControls = ({ views, css, hrefProcessor }) => {
-    if (views && views.length > 0) {
-        return (
-            <div className={`btn-attached${css ? ` ${css}` : ''}`}>
-                {views.map((view) => {
-                    // Checks for the callback every iteration, but with so few buttons I don't
-                    // expect performance issues.
-                    const href = hrefProcessor ? hrefProcessor(view.href) : view.href;
-                    return <a href={href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(globals.viewToSvg[view.icon])}</a>;
-                })}
-            </div>
-        );
-    }
-    return null;
-};
-
-ViewControls.propTypes = {
-    /** Views from a search-result object */
-    views: PropTypes.array,
-    /** CSS to add to the wrapper <div> */
-    css: PropTypes.string,
-    /** Callback to modify hrefs for each button */
-    hrefProcessor: PropTypes.func,
-};
-
-ViewControls.defaultProps = {
-    views: null,
-    css: '',
-    hrefProcessor: null,
+    session_properties: PropTypes.object,
 };
 
 
@@ -1645,16 +1545,6 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-
-    // Get a sorted list of batch hubs keys with case-insensitive sort.
-    let visualizeKeys = [];
-    if (context.visualize_batch && Object.keys(context.visualize_batch).length > 0) {
-        visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-            const aLower = a.toLowerCase();
-            const bLower = b.toLowerCase();
-            return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
-        });
-    }
 
     let resultsToggle = null;
     if (showResultsToggle) {
@@ -1689,18 +1579,10 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
-                <ViewControls views={context.views} />
+                <ViewControls results={context} />
                 {resultsToggle}
-                {context.batch_download ?
-                    <BatchDownload context={context} />
-                : null}
-                {visualizeKeys.length > 0 ?
-                    <BrowserSelector
-                        visualizeCfg={context.visualize_batch}
-                        disabled={!!visualizeDisabledTitle}
-                        title={visualizeDisabledTitle || 'Visualize'}
-                    />
-                : null}
+                <BatchDownloadControls results={context} />
+                <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
             </div>
             <div className="results-table-control__json">
                 <DisplayAsJson />

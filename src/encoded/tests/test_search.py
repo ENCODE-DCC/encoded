@@ -217,22 +217,15 @@ def test_matrix_view(workbook, testapp):
     assert res['@id'] == '/matrix/?type=Experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
-    assert res['title'] == 'Experiment matrix'
+    assert res['title'] == 'Matrix'
     assert res['total'] > 0
-    assert 'facets' in res
     assert 'filters' in res
     assert 'matrix' in res
-    assert res['matrix']['max_cell_doc_count'] > 0
-    assert res['matrix']['search_base'] == '/search/?type=Experiment'
     assert res['matrix']['x']['group_by'] == 'assay_title'
     assert res['matrix']['x']['label'] == 'Assay'
-    assert res['matrix']['x']['limit'] == 20
-    assert len(res['matrix']['x']['buckets']) > 0
-    assert len(res['matrix']['x']['facets']) > 0
     assert res['matrix']['y']['group_by'] == [
         'biosample_ontology.classification', 'biosample_ontology.term_name']
     assert res['matrix']['y']['label'] == 'Biosample'
-    assert res['matrix']['y']['limit'] == 5
     assert len(res['matrix']['y'][
         'biosample_ontology.classification']['buckets']) > 0
     assert len(res['matrix']['y'][

@@ -1,5 +1,6 @@
 // Require all components to ensure javascript load ordering
 require('./lib');
+require('./view_controls.js');
 require('./antibody');
 require('./app');
 require('./award');
@@ -25,6 +26,8 @@ require('./platform');
 require('./search');
 require('./report');
 require('./matrix');
+require('./auditmatrixv1');
+require('./auditmatrix');
 require('./target');
 require('./publication');
 require('./pipeline');

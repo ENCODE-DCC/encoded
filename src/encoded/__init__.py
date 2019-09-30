@@ -231,6 +231,7 @@ def main(global_config, **local_config):
         config.include('encoded.viewconfigs.views')
         config.include('.vis_indexer')
         config.include('.cart_view')
+        config.include('encoded.search_views')
 
     if 'snp_search.server' in config.registry.settings:
         addresses = aslist(config.registry.settings['snp_search.server'])

@@ -1,7 +1,18 @@
+/**
+ * Functions and components for both dataset visualizations and batch visualizations.
+ */
+import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import * as globals from './globals';
 
+
+/**
+ * Dataset visualization section.
+ **************************************************************************************************
+ */
 
 /**
  * Maximum number of hic files allowed to be selected at once.
@@ -191,3 +202,260 @@ const browserOrder = [
 export const visSortBrowsers = browsers => (
     _.sortBy(browsers, browser => browserOrder.indexOf(browser))
 );
+
+
+/**
+ * Batch visualization section.
+ **************************************************************************************************
+ */
+
+/**
+ * Generate a batch hub URL from the search results. This URL gets inserted into visualization
+ * URLs.
+ * @param {object} results Search results
+ * @param {string} hostName Domain name of host
+ *
+ * @return {string} hub URL used in visualization URLs
+ */
+const generateBatchHubUrl = (results, hostName) => {
+    const parsedUrl = url.parse(results['@id']).search;
+    if (parsedUrl) {
+        return `${hostName}/batch_hub/${encodeURIComponent(parsedUrl.substr(1).replace('&', ',,'))}/hub.txt`;
+    }
+    return null;
+};
+
+
+/**
+ * Generate a list of relevant assemblies from the given search results. This includes any
+ * assemblies included in the search results, filtered by any specified in the query string that
+ * generated these search results, or all included assemblies if no assemblies were given in the
+ * query string.
+ * @param {object} results Search results
+ *
+ * @return {array} Assemblies in search results, filtered by query string assemblies if any
+ */
+const getRelevantAssemblies = (results) => {
+    let relevantAssemblies = [];
+    const assemblyFacet = results.facets.find(facet => facet.field === 'assembly');
+    if (assemblyFacet) {
+        // Get array of assemblies specified in the search query; empty array if none.
+        const specifiedAssemblies = results.filters.filter(filter => filter.field === 'assembly').map(filter => filter.term);
+        relevantAssemblies = assemblyFacet.terms.filter(term => term.doc_count > 0 && (specifiedAssemblies.length === 0 || specifiedAssemblies.includes(term.key)));
+    }
+    return relevantAssemblies.map(assembly => assembly.key).sort((a, b) => globals.assemblyPriority.indexOf(a) - globals.assemblyPriority.indexOf(b));
+};
+
+
+/**
+ * Currently this maps an assembly as stored in encode to an assembly that UCSC uses in the URL.
+ * Each mapping results in an object to allow for future expansion.
+ */
+const ucscAssemblyDetails = {
+    GRCh38: { mappedAssembly: 'hg38' },
+    'GRCh38-minimal': { mappedAssembly: 'hg38' },
+    hg19: { mappedAssembly: 'hg19' },
+    mm10: { mappedAssembly: 'mm10' },
+    'mm10-minimal': { mappedAssembly: 'mm10' },
+    mm9: { mappedAssembly: 'mm9' },
+    dm6: { mappedAssembly: 'dm6' },
+    dm3: { mappedAssembly: 'dm3' },
+    ce11: { mappedAssembly: 'ce11' },
+    ce10: { mappedAssembly: 'ce10' },
+    ce6: { mappedAssembly: 'ce6' },
+};
+
+
+/**
+ * Generate a batch hub URL for UCSC based on the given assembly.
+ * @param {string} assembly Assembly to use for the generated URL
+ * @param {object} {
+ *      visualizer {string} "UCSC" visualizer name to use in UI
+ *      url {string} URL to pass to UCSC to visualize the given assembly
+ * }
+ */
+const ucscUrlGenerator = (assembly, batchHubUrl) => {
+    const details = ucscAssemblyDetails[assembly];
+    if (details) {
+        return {
+            visualizer: 'UCSC',
+            url: `http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=${batchHubUrl}&db=${details.mappedAssembly}`,
+        };
+    }
+    return null;
+};
+
+
+/**
+ * Currently this maps an assembly as stored in encode to a species that ENSEMBL uses in the URL.
+ * Each mapping results in an object to allow for future expansion.
+ */
+const ensembleAssemblyDetails = {
+    GRCh38: { species: 'Homo_sapiens' },
+    'GRCh38-minimal': { species: 'Homo_sapiens' },
+    mm10: { species: 'Mus_musculus' },
+    'mm10-minimal': { species: 'Mus_musculus' },
+};
+
+
+/**
+ * Generate a batch hub URL for ENSEMBL based on the given assembly.
+ * @param {string} assembly Assembly to use for the generated URL
+ * @param {object} {
+ *      visualizer {string} "Ensembl" visualizer name to use in UI
+ *      url {string} URL to pass to ENSEMBL to visualize the given assembly
+ * }
+ */
+const ensemblUrlGenerator = (assembly, batchHubUrl) => {
+    const details = ensembleAssemblyDetails[assembly];
+    if (details) {
+        return {
+            visualizer: 'Ensembl',
+            url: `http://www.ensembl.org/Trackhub?url=${batchHubUrl};species=${details.species}`,
+        };
+    }
+    return null;
+};
+
+
+/**
+ * Used for the loop through each external visualization we support. Add new generator functions to
+ * this array to support new visualizers.
+ */
+const urlGenerators = [ucscUrlGenerator, ensemblUrlGenerator];
+
+
+/**
+ * Display a Visualize button that brings up a modal that lets you choose an assembly and a browser
+ * in which to display the visualization.
+ */
+export class BrowserSelector extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React state.
+        this.state = { selectorOpen: false };
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    // Called to open the browser-selection modal.
+    openModal() {
+        this.setState({ selectorOpen: true });
+    }
+
+    // Called to close the browser-seletino modal.
+    closeModal() {
+        this.setState({ selectorOpen: false });
+    }
+
+    // When the link to open a browser gets clicked, this gets called to close the modal in
+    // addition to going to the link.
+    handleClick() {
+        this.closeModal();
+    }
+
+    render() {
+        const { results, disabledTitle } = this.props;
+
+        // Only consider Visualize button if exactly one type= of Experiment or Annotation exists
+        // in query string.
+        const docTypes = results.filters.filter(filter => filter.field === 'type').map(filter => filter.term);
+        if (docTypes.length > 1 || (docTypes.length === 1 && docTypes[0] !== 'Experiment' && docTypes[0] !== 'Annotation')) {
+            return null;
+        }
+
+        // Generate the batch hub URL used in batch visualization query strings.
+        const parsedLocationHref = url.parse(this.context.location_href);
+        const hostName = `${parsedLocationHref.protocol}//${parsedLocationHref.host}`;
+        const batchHubUrl = generateBatchHubUrl(results, hostName);
+        if (!batchHubUrl) {
+            return null;
+        }
+
+        const relevantAssemblies = getRelevantAssemblies(results);
+        const visualizeCfg = {};
+        relevantAssemblies.forEach((assembly) => {
+            visualizeCfg[assembly] = {};
+            urlGenerators.forEach((urlGenerator) => {
+                const visualizationMechanism = urlGenerator(assembly, batchHubUrl);
+                if (visualizationMechanism) {
+                    visualizeCfg[assembly][visualizationMechanism.visualizer] = visualizationMechanism.url;
+                }
+            });
+        });
+
+        if (relevantAssemblies.length > 0) {
+            return (
+                <React.Fragment>
+                    <button onClick={this.openModal} className="btn btn-info btn-sm" data-test="visualize" id="visualize-control">
+                        Visualize
+                    </button>
+                    {this.state.selectorOpen ?
+                        <Modal closeModal={this.closeModal} addClasses="browser-selector__modal" focusId="visualize-limit-close">
+                            <ModalHeader title="Open visualization browser" closeModal={this.closeModal} />
+                            <ModalBody>
+                                {disabledTitle ?
+                                    <div>{disabledTitle}</div>
+                                :
+                                    <div className="browser-selector">
+                                        <div className="browser-selector__inner">
+                                            <div className="browser-selector__title">
+                                                <div className="browser-selector__assembly-title">
+                                                    Assembly
+                                                </div>
+                                                <div className="browser-selector__browsers-title">
+                                                    Visualize with browser…
+                                                </div>
+                                            </div>
+                                            <hr />
+                                            {relevantAssemblies.map((assembly) => {
+                                                const assemblyBrowsers = visualizeCfg[assembly];
+                                                const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
+
+                                                return (
+                                                    <div key={assembly} className="browser-selector__assembly-option">
+                                                        <div className="browser-selector__assembly">
+                                                            {assembly}:
+                                                        </div>
+                                                        <div className="browser-selector__browsers">
+                                                            {browserList.map(browser =>
+                                                                <div key={browser} className="browser-selector__browser">
+                                                                    <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
+                                                                        {browser}
+                                                                    </a>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                }
+                            </ModalBody>
+                            <ModalFooter closeModal={<button id="visualize-limit-close" className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                        </Modal>
+                    : null}
+                </React.Fragment>
+            );
+        }
+        return null;
+    }
+}
+
+BrowserSelector.propTypes = {
+    /** Search results that might include visualizations */
+    results: PropTypes.object.isRequired,
+    /** Title of accessible text for disabled title; also flag for disabling */
+    disabledTitle: PropTypes.string,
+};
+
+BrowserSelector.defaultProps = {
+    disabledTitle: '',
+};
+
+BrowserSelector.contextTypes = {
+    location_href: PropTypes.string,
+};
