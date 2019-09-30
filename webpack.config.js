@@ -62,6 +62,7 @@ const rules = [
         ],
         use: {
             loader: 'babel-loader',
+            query: { compact: false },
         },
     },
     {

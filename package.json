@@ -77,6 +77,7 @@
     "dayjs": "^1.8.16",
     "domready": "^1.0.8",
     "form-serialize": "^0.6.0",
+    "genome-visualizer": "github:VALIS-software/valis-hpgv",
     "google-analytics": "file:node_shims/google-analytics",
     "immutable": "^3.7.5",
     "install": "^0.13.0",
