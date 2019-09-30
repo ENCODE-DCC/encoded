@@ -306,7 +306,6 @@ FileTable.defaultProps = {
     setInfoNodeId: null,
     setInfoNodeVisible: null,
     session: null,
-    session_properties: null,
     adminUser: false,
     schemas: null,
     noDefaultClasses: false,
@@ -779,15 +778,19 @@ class RawFileTable extends React.Component {
                     {!this.state.collapsed ?
                         <tbody>
                             {groupKeys.map((groupKey, j) => {
-                                // groupFiles is an array of files under a bioreplicate/library
+                                // groupFiles is an array of files under a bioreplicate/library.
+                                // Determine whether to draw a bottom border based on whether this
+                                // is the last group displayed (don't draw) or not (do draw).
                                 const groupFiles = grouped[groupKey];
-                                const bottomClass = j < (groupKeys.length - 1) ? 'merge-bottom' : '';
-                                const groupFilesLength = groupFiles.length;
+                                const groupBottom = j < groupKeys.length - 1 ? 'group-bottom' : '';
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
-                                    const groupBottom = i === (groupFilesLength - 1) ? 'group-bottom' : '';
+                                    // Determine whether to draw a bottom border based on whether
+                                    // this is the last file in a group (do draw) or not (don't
+                                    // draw) and it's not within the last group (don't draw).
+                                    const fileBottom = (i === groupFiles.length - 1 && groupBottom) ? 'group-bottom' : '';
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
@@ -796,26 +799,26 @@ class RawFileTable extends React.Component {
                                     return (
                                         <tr key={file['@id']}>
                                             {showReplicateNumber && i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                                <td rowSpan={groupFiles.length} className={`${groupBottom} merge-right table-raw-merged table-raw-biorep`}>
                                                     {groupFiles[0].biological_replicates.length > 0 ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
+                                                <td rowSpan={groupFiles.length} className={`${groupBottom} merge-right table-raw-merged`}>
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
-                                            <td className={groupBottom}>
+                                            <td className={fileBottom}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
-                                            <td className={groupBottom}>{file.file_type}</td>
-                                            <td className={groupBottom}>{file.output_type}</td>
-                                            <td className={groupBottom}>{file.assembly}</td>
-                                            <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                            <td className={groupBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
-                                            <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                            <td className={fileBottom}>{file.file_type}</td>
+                                            <td className={fileBottom}>{file.output_type}</td>
+                                            <td className={fileBottom}>{file.assembly}</td>
+                                            <td className={fileBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                            <td className={fileBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={fileBottom}>{globals.humanFileSize(file.file_size)}</td>
+                                            <td className={fileBottom}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
+                                            <td className={fileBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
