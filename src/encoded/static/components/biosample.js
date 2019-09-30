@@ -71,7 +71,7 @@ class BiosampleComponent extends React.Component {
                     </div>
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'biosample-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 <Panel>
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
@@ -413,6 +413,7 @@ BiosampleComponent.propTypes = {
 
 BiosampleComponent.contextTypes = {
     session: PropTypes.object, // Login information
+    session_properties: PropTypes.object,
 };
 
 const Biosample = auditDecor(BiosampleComponent);

@@ -88,7 +88,7 @@ const AnnotationComponent = (props, reactContext) => {
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'annotation-audit' }} />
             </header>
-            {auditDetail(context.audit, 'annotation-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'annotation-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -276,7 +276,7 @@ const PublicationDataComponent = (props, reactContext) => {
                 </div>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'publicationdata-audit' }} />
             </header>
-            {auditDetail(context.audit, 'publicationdata-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'publicationdata-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -433,7 +433,7 @@ const ReferenceComponent = (props, reactContext) => {
                 </div>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'reference-audit' }} />
             </header>
-            {auditDetail(context.audit, 'reference-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'reference-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -774,7 +774,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
                 </div>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'ucscbrowsercomposite-audit' }} />
             </header>
-            {auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -1293,7 +1293,7 @@ export const SeriesComponent = (props, reactContext) => {
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
             </header>
-            {auditDetail(context.audit, 'series-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'series-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">

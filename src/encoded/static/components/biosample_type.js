@@ -37,7 +37,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
                 </h1>
                 <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'biosample-type-audit' }} />
             </header>
-            {props.auditDetail(context.audit, 'biosample-type-audit', { session: reactContext.session })}
+            {props.auditDetail(context.audit, 'biosample-type-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties })}
             <div className="panel">
                 <dl className="key-value">
                     <div data-test="term-name">
@@ -99,6 +99,7 @@ BiosampleTypeComponenet.propTypes = {
 
 BiosampleTypeComponenet.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const BiosampleType = auditDecor(BiosampleTypeComponenet);
@@ -119,11 +120,11 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
             </div>
             <div className="result-item__meta">
                 <div className="type meta-title">Biosample Type</div>
-                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
             </div>
             <PickerActions context={result} />
         </div>
-        {auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
     </li>
 );
 
@@ -135,6 +136,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

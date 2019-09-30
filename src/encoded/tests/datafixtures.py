@@ -48,6 +48,31 @@ def wrangler(testapp):
 
 
 @pytest.fixture
+def verified_member(testapp, lab, award):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'VerifiedMember',
+        'email': 'Verified_member@example.org',
+        'groups': ['verified'],
+    }
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
+
+
+@pytest.fixture
+def unverified_member(testapp, lab, award):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'NonVerifiedMember',
+        'email': 'Non_verified_member@example.org',
+    }
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
+
+
+@pytest.fixture
 def submitter(testapp, lab, award):
     item = {
         'first_name': 'ENCODE',

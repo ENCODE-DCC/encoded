@@ -145,12 +145,12 @@ const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactC
                 {result.accession ?
                     <div className="result-item__meta">
                         <div className="result-item__meta-title">{itemType}: {` ${result.accession}`}</div>
-                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                     </div>
                 : null}
                 <PickerActions context={result} />
             </div>
-            {auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -163,6 +163,7 @@ ItemComponent.propTypes = {
 
 ItemComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Item = auditDecor(ItemComponent);
@@ -238,11 +239,11 @@ class BiosampleComponent extends React.Component {
                         <div className="result-item__meta-title">Biosample</div>
                         <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
                     <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
             </li>
         );
     }
@@ -257,6 +258,7 @@ BiosampleComponent.propTypes = {
 
 BiosampleComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Biosample = auditDecor(BiosampleComponent);
@@ -343,7 +345,7 @@ const ExperimentComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">{displayType}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
@@ -352,7 +354,7 @@ const ExperimentComponent = (props, reactContext) => {
                 : null}
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -371,6 +373,7 @@ ExperimentComponent.defaultProps = {
 ExperimentComponent.contextTypes = {
     session: PropTypes.object,
     actions: PropTypes.array,
+    session_properties: PropTypes.object,
 };
 
 const Experiment = auditDecor(ExperimentComponent);
@@ -461,11 +464,11 @@ const DatasetComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -478,6 +481,7 @@ DatasetComponent.propTypes = {
 
 DatasetComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Dataset = auditDecor(DatasetComponent);
@@ -501,11 +505,11 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
             </div>
             <div className="result-item__meta">
                 <div className="result-item__meta-title">Target</div>
-                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
             </div>
             <PickerActions context={result} />
         </div>
-        {auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
     </li>
 );
 
@@ -517,6 +521,7 @@ TargetComponent.propTypes = {
 
 TargetComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Target = auditDecor(TargetComponent);

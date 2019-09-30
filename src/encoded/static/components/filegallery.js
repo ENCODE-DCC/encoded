@@ -121,7 +121,10 @@ export class FileTable extends React.Component {
             adminUser,
             showReplicateNumber,
         } = this.props;
+        const sessionProperties = this.context.session_properties;
         const loggedIn = !!(session && session['auth.userid']);
+        const roles = globals.getRoles(sessionProperties);
+        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
         // Establish the selected assembly and annotation for the tabs
         const selectedAssembly = null;
@@ -177,6 +180,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 session,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -190,6 +194,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 session,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -215,6 +220,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 browserOptions,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -238,6 +244,7 @@ export class FileTable extends React.Component {
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -299,6 +306,7 @@ FileTable.defaultProps = {
     setInfoNodeId: null,
     setInfoNodeVisible: null,
     session: null,
+    session_properties: null,
     adminUser: false,
     schemas: null,
     noDefaultClasses: false,
@@ -371,7 +379,7 @@ FileTable.procTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} isAuthorized={meta.isAuthorized} />,
     },
     status: {
         title: 'File status',
@@ -422,7 +430,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} isAuthorized={meta.isAuthorized} />,
     },
     status: {
         title: 'File status',
@@ -485,7 +493,7 @@ class RawSequencingTable extends React.Component {
 
     render() {
         const { files, meta, showReplicateNumber } = this.props;
-        const { loggedIn, adminUser } = meta;
+        const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
             // Make object keyed by all files' @ids to make searching easy. Each key's value
@@ -626,7 +634,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                            <td className={pairClass}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -662,7 +670,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -716,7 +724,7 @@ class RawFileTable extends React.Component {
 
     render() {
         const { files, meta, showReplicateNumber } = this.props;
-        const { loggedIn, adminUser } = meta;
+        const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
             // Group all files by their library accessions. Any files without replicates or
@@ -806,7 +814,7 @@ class RawFileTable extends React.Component {
                                             <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={groupBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                            <td className={groupBottom}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                             <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -836,7 +844,7 @@ class RawFileTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -2934,8 +2942,8 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 {auditsDisplayed(selectedFile.audit, session) ?
                     <div className="graph-modal-audits">
                         <h5>File audits:</h5>
-                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
-                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session }) : null}
+                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session, sessionProperties }) : null}
+                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session, sessionProperties }) : null}
                     </div>
                 : null}
             </div>

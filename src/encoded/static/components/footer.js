@@ -9,9 +9,9 @@ const Footer = ({ version }, reactContext) => {
     let userActionRender;
 
     if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
+        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in</a>;
     } else {
-        userActionRender = <a href="#" data-trigger="logout">Submitter sign out</a>;
+        userActionRender = <a href="#" data-trigger="logout">Sign out</a>;
     }
     return (
         <footer>
