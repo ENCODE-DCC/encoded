@@ -197,101 +197,24 @@ SummaryStatusChart.contextTypes = {
 };
 
 
-// Render the horizontal facets.
-class SummaryHorizontalFacets extends React.Component {
-    constructor() {
-        super();
-
-        // Bind `this` to non-React methods
-        this.onFilter = this.onFilter.bind(this);
-    }
-
-    onFilter(e) {
-        const search = e.currentTarget.getAttribute('href');
-        this.context.navigate(search);
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    render() {
-        const { context } = this.props;
-        const allFacets = context.facets;
-
-        // Get the array of facet field values to display in the horizontal facet area.
-        const horzFacetFields = context.summary.x.facets;
-
-        // Extract the horizontal facets from the list of all facets. We use the array of horizontal
-        // facet field values of facets that should appear in the horizontal facets.
-        const horzFacets = allFacets.filter(facet => horzFacetFields.indexOf(facet.field) >= 0);
-
-        // Calculate the searchBase, which is the current search query string fragment that can have
-        // terms added to it.`
-        const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
-
-        return (
-            <div className="summary-header__facets-horizontal">
-                <FacetList
-                    facets={horzFacets}
-                    filters={context.filters}
-                    orientation="horizontal"
-                    searchBase={searchBase}
-                    onFilter={this.onFilter}
-                    addClasses="summary-facets"
-                />
-            </div>
-        );
-    }
-}
-
-SummaryHorizontalFacets.propTypes = {
-    context: PropTypes.object.isRequired, // Summary search result object
-};
-
-SummaryHorizontalFacets.contextTypes = {
-    location_href: PropTypes.string, // Current URL
-    navigate: PropTypes.func, // encoded navigation
-};
-
-
 // Render the vertical facets.
-class SummaryVerticalFacets extends React.Component {
-    constructor() {
-        super();
+const SummaryVerticalFacets = ({ context }, reactContext) => {
+    // All facets are vertical facets.
+    const vertFacets = context.facets;
 
-        // Bind `this` to non-React methods.
-        this.onFilter = this.onFilter.bind(this);
-    }
+    // Calculate the searchBase, which is the current search query string fragment that can have
+    // terms added to it.
+    const searchBase = `${url.parse(reactContext.location_href).search}&` || '?';
 
-    onFilter(e) {
-        const search = e.currentTarget.getAttribute('href');
-        this.context.navigate(search);
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    render() {
-        const { context } = this.props;
-
-        // All facets are vertical facets
-        const vertFacets = context.facets;
-
-        // Calculate the searchBase, which is the current search query string fragment that can have
-        // terms added to it.`
-        const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
-
-        return (
-            <div className="summary-content__facets-vertical">
-                <FacetList
-                    facets={vertFacets}
-                    filters={context.filters}
-                    searchBase={searchBase}
-                    onFilter={this.onFilter}
-                    addClasses="summary-facets"
-                />
-            </div>
-        );
-    }
-}
+    return (
+        <FacetList
+            facets={vertFacets}
+            filters={context.filters}
+            searchBase={searchBase}
+            addClasses="summary-facets"
+        />
+    );
+};
 
 SummaryVerticalFacets.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object

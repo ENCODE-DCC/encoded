@@ -9,7 +9,6 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { MatrixInternalTags } from './objectutils';
 import { FacetList, TextFilter, ClearFilters, SearchControls } from './search';
 
 
@@ -26,9 +25,6 @@ const auditOrderKey = [
     'audit.ERROR.category',
     'audit.INTERNAL_ACTION.category',
 ];
-
-/** Maximum number of selected items that can be visualized. */
-const VISUALIZE_LIMIT = 500;
 
 
 /**
@@ -375,10 +371,31 @@ const MatrixHeader = ({ context }) => {
         }
     }
 
+    let clearButton;
+    const searchQuery = url.parse(context['@id']).search;
+    if (searchQuery) {
+        // If we have a 'type' query string term along with others terms, we need a Clear Filters
+        // button.
+        const terms = queryString.parse(searchQuery);
+        const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
+        clearButton = nonPersistentTerms && terms.type;
+    }
+
     return (
-        <div className="matrix__header">
-            <h1>{type ? `${type} ` : ''}{context.title}</h1>
-            <MatrixInternalTags context={context} />
+        <div className="matrix-header">
+            <div className="matrix-header__title">
+                <h1>{type ? `${type} ` : ''}{context.title}</h1>
+            </div>
+            <div className="matrix-header__controls">
+                <div className="matrix-header__filter-controls">
+                    <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                    <SearchFilter context={context} />
+                </div>
+                <div className="matrix-header__search-controls">
+                    <h4>Showing {context.total} results</h4>
+                    <SearchControls context={context} />
+                </div>
+            </div>
         </div>
     );
 };
@@ -392,56 +409,14 @@ MatrixHeader.propTypes = {
 /**
  * Render the vertical facets.
  */
-class MatrixVerticalFacets extends React.Component {
-    constructor() {
-        super();
-        this.onFilter = this.onFilter.bind(this);
-    }
-
-    /**
-     * Called when the user filters the data using a facet. Navigate to the URL of the clicked
-     * facet term.
-     * @param {object} e React synthetic event containing the filtering URL.
-     */
-    onFilter(e) {
-        const search = e.currentTarget.getAttribute('href');
-        this.context.navigate(search);
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    render() {
-        const { context } = this.props;
-
-        // Calculate the searchBase, which is the current search query string fragment that can
-        // have terms added to it.
-        const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
-
-        let clearButton;
-        const searchQuery = url.parse(context['@id']).search;
-        if (searchQuery) {
-            // If we have a 'type' query string term along with others terms, we need a Clear Filters
-            // button.
-            const terms = queryString.parse(searchQuery);
-            const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
-            clearButton = nonPersistentTerms && terms.type;
-        }
-
-        return (
-            <div className="matrix__facets-vertical">
-                <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
-                <SearchFilter context={context} />
-                <FacetList
-                    facets={context.facets}
-                    filters={context.filters}
-                    searchBase={searchBase}
-                    onFilter={this.onFilter}
-                    addClasses="matrix-facets"
-                />
-            </div>
-        );
-    }
-}
+const MatrixVerticalFacets = ({ context }, reactContext) => (
+    <FacetList
+        facets={context.facets}
+        filters={context.filters}
+        searchBase={`${url.parse(reactContext.location_href).search}&` || '?'}
+        addClasses="matrix-facets"
+    />
+);
 
 MatrixVerticalFacets.propTypes = {
     /** Matrix search result object */
@@ -450,7 +425,6 @@ MatrixVerticalFacets.propTypes = {
 
 MatrixVerticalFacets.contextTypes = {
     location_href: PropTypes.string,
-    navigate: PropTypes.func,
 };
 
 
@@ -544,7 +518,6 @@ class MatrixPresentation extends React.Component {
     render() {
         const { context } = this.props;
         const { scrolledRight } = this.state;
-        const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
 
         // Convert encode matrix data to a DataTable object.
@@ -557,8 +530,6 @@ class MatrixPresentation extends React.Component {
 
         return (
             <div className="matrix__presentation">
-                <h4>Showing {context.total} results</h4>
-                <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} />
                 <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
                     <span>{context.matrix.x.label}</span>
                     {svgIcon('largeArrow')}
