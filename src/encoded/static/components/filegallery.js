@@ -1057,11 +1057,15 @@ class VisualizationLinks extends React.Component {
      * Called when the user clicks the Visualize button.
      */
     handleVisualize(browser) {
-        visOpenBrowser(this.props.context, browser, this.props.assembly, this.props.selectedBrowserFiles, this.props.context.location_href);
+        const selectedBrowserFiles = this.props.visFilterBrowserFiles(this.props.files, browser, true);
+        console.log('link browser files');
+        console.log(selectedBrowserFiles);
+        visOpenBrowser(this.props.context, browser, this.props.assembly, selectedBrowserFiles, this.props.context.location_href);
     }
 
     render() {
         const { browsers } = this.props;
+        console.log('browser files');
         return (
             <div className="file-gallery-controls__visualization-selector">
                 {browsers.map(browser => (
@@ -1082,8 +1086,9 @@ VisualizationLinks.propTypes = {
     browsers: PropTypes.array.isRequired,
     /** Selected assembly */
     assembly: PropTypes.string.isRequired,
-    /** Selected browser files */
-    selectedBrowserFiles: PropTypes.array.isRequired,
+    /** For selecting browser files */
+    visFilterBrowserFiles: PropTypes.func.isRequired,
+    files: PropTypes.array.isRequired,
 };
 
 // Displays the file filtering controls for the file association graph and file tables.
@@ -1101,16 +1106,11 @@ class FilterControls extends React.Component {
     }
 
     render() {
-        const { filterOptions, selectedFilterValue, browsers, currentBrowser, browserChangeHandler, visualizeHandler } = this.props;
+        const { filterOptions, browsers, currentBrowser, browserChangeHandler, visualizeHandler } = this.props;
 
         if (filterOptions.length > 0 || browsers.length > 0) {
             return (
                 <div className="file-gallery-controls">
-                    {filterOptions.length > 0 ?
-                        <div className="file-gallery-controls__assembly-selector">
-                            <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
-                        </div>
-                    : null}
                     <VisualizationControls browsers={browsers} currentBrowser={currentBrowser} browserChangeHandler={browserChangeHandler} visualizeHandler={visualizeHandler} visualizeDisabled={!(browsers.length > 0)} />
                 </div>
             );
@@ -1122,8 +1122,6 @@ class FilterControls extends React.Component {
 FilterControls.propTypes = {
     /** Assembly/annotation combos available */
     filterOptions: PropTypes.array.isRequired,
-    /** Currently-selected assembly/annotation <select> value */
-    selectedFilterValue: PropTypes.string,
     /** Array of browsers available in this experiment */
     browsers: PropTypes.array,
     /** Name of currently selected browser */
@@ -2069,7 +2067,7 @@ function computeAssemblyAnnotationValue(assembly, annotation) {
 }
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, getAvailableBrowsers, selectedBrowserFiles, context, currentAssembly } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, browsers, selectedBrowserFiles, context, currentAssembly } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2094,13 +2092,18 @@ const TabPanelFacets = (props) => {
     const fileType = createFacetObject('file_type', fileList, filters);
     const outputType = createFacetObject('output_type', fileList, filters);
     const replicate = createFacetObject('biological_replicates', fileList, filters);
-    const browsers = getAvailableBrowsers();
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
             <h4>Choose an assembly </h4>
             <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
-            <VisualizationLinks context={context} browsers={browsers} assembly={currentAssembly} selectedBrowserFiles={selectedBrowserFiles} />
+            <VisualizationLinks
+                context={context}
+                browsers={browsers}
+                assembly={currentAssembly}
+                visFilterBrowserFiles={visFilterBrowserFiles}
+                files={this.state.files}
+            />
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
@@ -2126,7 +2129,7 @@ TabPanelFacets.propTypes = {
     filterFiles: PropTypes.func.isRequired,
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
-    getAvailableBrowsers: PropTypes.func.isRequired,
+    browsers: PropTypes.array.isRequired,
     selectedBrowserFiles: PropTypes.array.isRequired,
     context: PropTypes.object.isRequired,
     currentAssembly: PropTypes.string.isRequired,
@@ -2290,10 +2293,13 @@ class FileGalleryRendererComponent extends React.Component {
      * @param {string} filterValue Optional <select> value for current assembly/annotation.
      *                             state.selectedFilterValue used if not given.
      */
-    getAvailableBrowsers(filterValue) {
-        const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation(filterValue);
-        if (selectedBrowserAssembly && this.props.context.visualize && this.props.context.visualize[selectedBrowserAssembly]) {
-            return visSortBrowsers(this.props.context.visualize[selectedBrowserAssembly]);
+    getAvailableBrowsers() {
+        let currentAssembly = '';
+        if (this.state.fileFilters.assembly) {
+            currentAssembly = String(this.state.fileFilters.assembly).split(' ')[0];
+        }
+        if (currentAssembly && this.props.context.visualize && this.props.context.visualize[currentAssembly]) {
+            return visSortBrowsers(this.props.context.visualize[currentAssembly]);
         }
         return [];
     }
@@ -2616,10 +2622,22 @@ class FileGalleryRendererComponent extends React.Component {
                             filterFiles={this.filterFiles}
                             toggleFacets={this.toggleFacets}
                             clearFileFilters={this.clearFileFilters}
-                            getAvailableBrowsers={this.getAvailableBrowsers}
+                            browsers={browsers}
                             selectedBrowserFiles={this.state.selectedBrowserFiles}
                             context={context}
                             currentAssembly={currentAssembly}
+                        />
+                        <FilterControls
+                            selectedFilterValue={this.state.selectedFilterValue}
+                            filterOptions={this.state.availableAssembliesAnnotations}
+                            inclusionOn={this.state.inclusionOn}
+                            browsers={browsers}
+                            currentBrowser={this.state.currentBrowser}
+                            selectedBrowserFiles={this.state.selectedBrowserFiles}
+                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                            handleInclusionChange={this.handleInclusionChange}
+                            browserChangeHandler={this.handleBrowserChange}
+                            visualizeHandler={this.handleVisualize}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
@@ -2653,18 +2671,6 @@ class FileGalleryRendererComponent extends React.Component {
                                 />
                             </TabPanelPane>
                             <TabPanelPane key="tables">
-                                <FilterControls
-                                    selectedFilterValue={this.state.selectedFilterValue}
-                                    filterOptions={this.state.availableAssembliesAnnotations}
-                                    inclusionOn={this.state.inclusionOn}
-                                    browsers={browsers}
-                                    currentBrowser={this.state.currentBrowser}
-                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                    handleInclusionChange={this.handleInclusionChange}
-                                    browserChangeHandler={this.handleBrowserChange}
-                                    visualizeHandler={this.handleVisualize}
-                                />
                                 {/* If logged in and dataset is released, need to combine search of files that reference
                                     this dataset to get released and unreleased ones. If not logged in, then just get
                                     files from dataset.files */}
@@ -2674,18 +2680,6 @@ class FileGalleryRendererComponent extends React.Component {
                     </div>
                 :
                     <div>
-                        <FilterControls
-                            selectedFilterValue={this.state.selectedFilterValue}
-                            filterOptions={this.state.availableAssembliesAnnotations}
-                            inclusionOn={this.state.inclusionOn}
-                            browsers={browsers}
-                            currentBrowser={this.state.currentBrowser}
-                            selectedBrowserFiles={this.state.selectedBrowserFiles}
-                            handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                            handleInclusionChange={this.handleInclusionChange}
-                            browserChangeHandler={this.handleBrowserChange}
-                            visualizeHandler={this.handleVisualize}
-                        />
                         {fileTable}
                     </div>
                 }
