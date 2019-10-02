@@ -52,7 +52,6 @@ seq_assays = [
     'RAMPAGE',
     'RIP-seq',
     'PLAC-seq',
-    'MPRA',
     'microRNA-seq',
     'long read RNA-seq',
 ]
