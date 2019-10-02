@@ -469,16 +469,6 @@
                         "whole genome sequencing assay",
                         "whole-genome shotgun bisulfite sequencing"
                     ]
-                },
-                {
-                    "comment": "Assay types migrated into new functional characterization experiment object, not valid for new submissions.",
-                    "permission": "import_items",
-                    "enum": [
-                        "STARR-seq",
-                        "MPRA",
-                        "CRISPR screen",
-                        "pooled clone sequencing"
-                    ]
                 }
             ]
         }
