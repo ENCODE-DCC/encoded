@@ -1060,6 +1060,8 @@ class VisualizationLinks extends React.Component {
         const selectedBrowserFiles = this.props.visFilterBrowserFiles(this.props.files, browser, true);
         console.log('clicked on LINKS visualize button!');
         console.log(selectedBrowserFiles);
+        console.log('alternative LINKS files');
+        console.log(this.props.selectedBrowserFiles);
         visOpenBrowser(this.props.context, browser, this.props.assembly, selectedBrowserFiles, this.props.context.location_href);
     }
 
