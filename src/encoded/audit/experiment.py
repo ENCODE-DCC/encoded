@@ -3425,7 +3425,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
     # The type and term name should be put into dependencies
 
     if term_id.startswith('NTR:'):
-        detail = ('{} has an NTR biosample {} - {}'.format(
+        detail = ('Experiment {} has an NTR biosample {} - {}'.format(
             audit_link(path_to_text(value['@id']), value['@id']),
             term_id,
             term_name)
@@ -3460,7 +3460,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
 
             lib = rep['library']
             if 'biosample' not in lib:
-                detail = ('{} is missing biosample, expecting one of type {}'.format(
+                detail = ('Library {} is missing biosample, expecting one of type {}'.format(
                     audit_link(path_to_text(lib['@id']), lib['@id']),
                     term_name)
                 )
