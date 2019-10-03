@@ -2102,7 +2102,7 @@ const TabPanelFacets = (props) => {
                 browsers={browsers}
                 assembly={currentAssembly}
                 visFilterBrowserFiles={visFilterBrowserFiles}
-                files={this.state.files}
+                files={allFiles}
             />
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
@@ -2317,6 +2317,8 @@ class FileGalleryRendererComponent extends React.Component {
         if (browsers.length > 0 && browsers.indexOf(this.state.currentBrowser) === -1) {
             // Current browser not available for new assembly/annotation. Set the current browser
             // to the first available.
+            console.log('resetting current browser');
+            console.log(visFilterBrowserFiles(files, browsers[0], true));
             this.setState({
                 currentBrowser: browsers[0],
                 selectedBrowserFiles: visFilterBrowserFiles(files, browsers[0], true),
