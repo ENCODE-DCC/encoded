@@ -1058,20 +1058,13 @@ class VisualizationLinks extends React.Component {
      */
     handleVisualize(browser) {
         const selectedBrowserFiles = this.props.visFilterBrowserFiles(this.props.files, browser, true);
-        console.log('clicked on visualize button!');
+        console.log('clicked on LINKS visualize button!');
         console.log(selectedBrowserFiles);
         visOpenBrowser(this.props.context, browser, this.props.assembly, selectedBrowserFiles, this.props.context.location_href);
     }
 
     render() {
         const { browsers } = this.props;
-        console.log('from dropdown');
-        console.log(this.props.selectedBrowserFiles);
-        console.log('computed by side bar');
-        browsers.forEach((browser) => {
-            console.log(`for browser ${browser}`);
-            console.log(this.props.visFilterBrowserFiles(this.props.files, browser, true));
-        });
         return (
             <div className="file-gallery-controls__visualization-selector">
                 {browsers.map(browser => (
@@ -2325,8 +2318,6 @@ class FileGalleryRendererComponent extends React.Component {
         if (browsers.length > 0 && browsers.indexOf(this.state.currentBrowser) === -1) {
             // Current browser not available for new assembly/annotation. Set the current browser
             // to the first available.
-            console.log('resetting current browser');
-            console.log(visFilterBrowserFiles(files, browsers[0], true));
             this.setState({
                 currentBrowser: browsers[0],
                 selectedBrowserFiles: visFilterBrowserFiles(files, browsers[0], true),
@@ -2487,6 +2478,8 @@ class FileGalleryRendererComponent extends React.Component {
      */
     handleVisualize() {
         const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation();
+        console.log('clicked on DROPDOWN visualize button!');
+        console.log(this.state.selectedBrowserFiles);
         visOpenBrowser(this.props.context, this.state.currentBrowser, selectedBrowserAssembly, this.state.selectedBrowserFiles, this.context.location_href);
     }
 
