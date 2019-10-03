@@ -122,7 +122,7 @@ Can continue with `bin/buildout`.
 
 Indexing will then proceed in a background thread similar to the production setup.
 
-### **10. :tata: Check out the app! :tada:**
+### **10. :tada: Check out the app! :tada:**
 - Browse to the interface at http://localhost:6543/.
 
 ## Linting your code within your code editor
