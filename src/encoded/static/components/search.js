@@ -1081,6 +1081,32 @@ const sanitizedString = inputString => inputString.toLowerCase()
     .replace(/ /g, '') // remove spaces (to allow multiple word searches)
     .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 
+/**
+ * Hack to get around an issue with firefox and safari where it cannot use the inbuilt Date object to
+ * format dates like 'January, 2016' (it is missing a day)
+ *
+ * @param {*} date
+ * @returns date
+ * @memberof Facet
+ * @todo: Need to fix this in a better way.
+ */
+const getValidDate = (date) => {
+    if (!date) {
+        return date;
+    }
+
+    const validDate = new Date(date);
+    if (validDate.getDay && !isNaN(validDate.getDay())) {
+        return date;
+    }
+
+    const dateComponents = date.split(' ');
+    if (dateComponents.length < 1) {
+        return date;
+    }
+    return `${dateComponents[0].replace(/(^,)|(,$)/g, '')} 1, ${dateComponents[1]}`;
+};
+
 class Facet extends React.Component {
     constructor() {
         super();
@@ -1159,11 +1185,11 @@ class Facet extends React.Component {
         // For date facets, sort by date
         let terms = [];
         if (field.match('date')) {
-            terms = _.sortBy(unsortedTerms, obj => dayjs(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(getValidDate(obj.key), 'YYYY-MM-DD').toISOString()).reverse();
         } else if (field.match('month')) {
-            terms = _.sortBy(unsortedTerms, obj => dayjs(obj.key, 'MMMM, YYYY').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(getValidDate(obj.key), 'MMMM, YYYY').toISOString()).reverse();
         } else if (field.match('year')) {
-            terms = _.sortBy(unsortedTerms, obj => dayjs(obj.key, 'YYYY').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(getValidDate(obj.key), 'YYYY').toISOString()).reverse();
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => obj.key);
