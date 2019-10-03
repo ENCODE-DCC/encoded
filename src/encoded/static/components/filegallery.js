@@ -1058,14 +1058,18 @@ class VisualizationLinks extends React.Component {
      */
     handleVisualize(browser) {
         const selectedBrowserFiles = this.props.visFilterBrowserFiles(this.props.files, browser, true);
-        console.log('link browser files');
-        console.log(selectedBrowserFiles);
         visOpenBrowser(this.props.context, browser, this.props.assembly, selectedBrowserFiles, this.props.context.location_href);
     }
 
     render() {
         const { browsers } = this.props;
-        console.log('browser files');
+        console.log('from dropdown');
+        console.log(this.props.selectedBrowserFiles);
+        console.log('computed by side bar');
+        browsers.forEach((browser) => {
+            console.log(`for browser ${browser}`);
+            console.log(this.props.visFilterBrowserFiles(this.props.files, browser, true));
+        });
         return (
             <div className="file-gallery-controls__visualization-selector">
                 {browsers.map(browser => (
@@ -1089,6 +1093,7 @@ VisualizationLinks.propTypes = {
     /** For selecting browser files */
     visFilterBrowserFiles: PropTypes.func.isRequired,
     files: PropTypes.array.isRequired,
+    selectedBrowserFiles: PropTypes.array.isRequired,
 };
 
 // Displays the file filtering controls for the file association graph and file tables.
@@ -2103,6 +2108,7 @@ const TabPanelFacets = (props) => {
                 assembly={currentAssembly}
                 visFilterBrowserFiles={visFilterBrowserFiles}
                 files={allFiles}
+                selectedBrowserFiles={selectedBrowserFiles}
             />
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
