@@ -221,6 +221,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
         iam_role = main_args.iam_role
         count = 1
         data_insert = {
+            'APP_WORKERS': main_args.app_workers,
             'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
             'CC_DIR': cc_dir,
             'COMMIT': instances_tag_data['commit'],
@@ -231,7 +232,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'GIT_REPO': main_args.git_repo,
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
-            'REGION_INDEX': 'False',
+            'REGION_INDEX': str(main_args.region_indexer),
             'ROLE': main_args.role,
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
         }
@@ -244,10 +245,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             data_insert.update({
                 'JVM_GIGS': main_args.jvm_gigs,
                 'ES_OPT_FILENAME': 'es-demo.yml',
-            })
-        if main_args.set_region_index_to:
-            data_insert.update({
-                'REGION_INDEX': main_args.set_region_index_to,
             })
         user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
     run_args = {
@@ -591,6 +588,7 @@ def parse_args():
     )
     
     # User Data Yamls
+    parser.add_argument('--app-workers', default='6', help="Apache config app workers")
     parser.add_argument('--conf-dir', default='./cloud-config', help="Location of cloud build config")
     parser.add_argument('--diff-configs', action='store_true', help="Diff new build config against prebuilt.")
     parser.add_argument(
@@ -604,9 +602,9 @@ def parse_args():
     )
     parser.add_argument('--use-prebuilt-config', default=None, help="Use prebuilt config file")
     parser.add_argument(
-        '--set-region-index-to', 
-        type=check_region_index,
-        help="Override region index in yaml to 'True' or 'False'"
+        '--region-indexer',
+        default=None,
+        help="Set region indexer to 'yes' or 'no'.  None is 'yes' for everything but demos."
     )
     parser.add_argument(
         '-i',
@@ -692,7 +690,7 @@ def parse_args():
         raise ValueError('--es-wait and --es-elect cannot be used in the same command')
     # Set Role
     # - 'demo' role is default for making single or clustered
-    # applications for feature building
+    # applications for feature building.
     # - '--test' will set role to test
     # - 'rc' role is for Release-Candidate QA testing and
     # is the same as 'demo' except batchupgrade will be skipped during deployment.
@@ -705,6 +703,16 @@ def parse_args():
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
+    # region_indexer is default True for everything but demos
+    if args.region_indexer is not None:
+        if args.region_indexer[0].lower() == 'y':
+            args.region_indexer = True
+        else:
+            args.region_indexer = False
+    elif args.role == 'demo':
+        args.region_indexer = False
+    else:
+        args.region_indexer = True
     # Add branch arg
     if not args.branch:
         args.branch = subprocess.check_output(
