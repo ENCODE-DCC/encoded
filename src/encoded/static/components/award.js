@@ -1750,11 +1750,11 @@ export const ExperimentDate = (props) => {
     let deduplicatedreleased = {};
     let deduplicatedsubmitted = {};
 
-    // Search experiments for month_released and date_submitted in facets
+    // Search experiments for date_released and date_submitted in facets
     if (experiments.facets && experiments.facets.length > 0) {
-        const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
+        const dateReleasedFacet = experiments.facets.find(facet => facet.field === 'date_released');
         const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
-        releasedDates = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length > 0) ? monthReleasedFacet.terms : [];
+        releasedDates = (dateReleasedFacet && dateReleasedFacet.terms && dateReleasedFacet.terms.length > 0) ? dateReleasedFacet.terms : [];
         submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length > 0) ? dateSubmittedFacet.terms : [];
     }
 
@@ -1762,7 +1762,7 @@ export const ExperimentDate = (props) => {
     function sortTerms(dateArray) {
         // Use dayjs to format arrays of submitted and released date
         const standardTerms = dateArray.map((term) => {
-            const standardDate = dayjs(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
+            const standardDate = dayjs(term.key).format('YYYY-MM');
             return { key: standardDate, doc_count: term.doc_count };
         });
 
@@ -1809,7 +1809,7 @@ export const ExperimentDate = (props) => {
         // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
         let awardStartDate;
         if (award && award.start_date) {
-            awardStartDate = dayjs(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
+            awardStartDate = dayjs(award.start_date).format('YYYY-MM');
         } else {
             const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
             const submittedIndex = sortedsubmittedTerms.findIndex(item => item.doc_count);
@@ -1821,12 +1821,9 @@ export const ExperimentDate = (props) => {
         deduplicatedsubmitted = fillDates(sortedsubmittedTerms, awardStartDate);
 
         // Create an array of dates.
-        date = deduplicatedreleased.map(dateTerm => dayjs(dateTerm.key, 'YYYY-MM').format('MMM YYYY'));
+        date = deduplicatedreleased.map(dateTerm => dayjs(dateTerm.key).format('MMM YYYY'));
         accumulatedDataReleased = createDataset(deduplicatedreleased);
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted);
-
-        // Adjust the submitted counts by the released counts so we can stack the chart.
-        accumulatedDataSubmitted = accumulatedDataReleased.map((count, i) => Math.max((accumulatedDataSubmitted[i] || 0) - count, 0));
     }
 
     return (
