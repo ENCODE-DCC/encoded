@@ -1057,12 +1057,13 @@ class VisualizationLinks extends React.Component {
      * Called when the user clicks the Visualize button.
      */
     handleVisualize(browser) {
-        const selectedBrowserFiles = this.props.visFilterBrowserFiles(this.props.files, browser, true);
         console.log('clicked on LINKS visualize button!');
-        console.log(selectedBrowserFiles);
-        console.log('alternative LINKS files');
+        console.log(this.props.context);
+        console.log(browser);
+        console.log(this.props.assembly);
         console.log(this.props.selectedBrowserFiles);
-        visOpenBrowser(this.props.context, browser, this.props.assembly, selectedBrowserFiles, this.props.context.location_href);
+        console.log(this.props.context.location_href);
+        visOpenBrowser(this.props.context, browser, this.props.assembly, this.props.selectedBrowserFiles, this.props.context.location_href);
     }
 
     render() {
@@ -2481,7 +2482,11 @@ class FileGalleryRendererComponent extends React.Component {
     handleVisualize() {
         const { selectedBrowserAssembly } = this.getSelectedAssemblyAnnotation();
         console.log('clicked on DROPDOWN visualize button!');
+        console.log(this.props.context);
+        console.log(this.state.currentBrowser);
+        console.log(selectedBrowserAssembly);
         console.log(this.state.selectedBrowserFiles);
+        console.log(this.props.context.location_href);
         visOpenBrowser(this.props.context, this.state.currentBrowser, selectedBrowserAssembly, this.state.selectedBrowserFiles, this.context.location_href);
     }
 
