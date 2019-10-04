@@ -30,7 +30,8 @@
 //     display -- (function): If the property to display has a more complicated display than just a single
 //                            value, this function returns JSX to display the property in any way it needs to.
 //                            It receives one parameter that's the single object of `list` being displayed in
-//                            a cell. If `display` is specified, the following `getValue` doesn't get called.
+//                            a cell. If `display` is specified, the following `getValue` doesn't get called
+//                            for displaying the value (however `getValue` can be called for sorting).
 //
 //     getValue -- (function): If the property to display can't be retrieved directly through item[columns.key],
 //                             this function retrieves and returns the value to be displayed in the cell. It
