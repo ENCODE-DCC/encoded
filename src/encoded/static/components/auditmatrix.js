@@ -15,6 +15,12 @@ import { FacetList, TextFilter, ClearFilters, SearchControls } from './search';
 /** Number of subcategory items to show when subcategory isn't expanded. */
 const SUB_CATEGORY_SHORT_SIZE = 5;
 
+/**
+ * Maximum number of selected items that can be visualized.
+ * @constant
+ */
+const VISUALIZE_LIMIT = 500;
+
 /** Audit matrix rowCategory colors. */
 const auditColors = ['#e0e000', '#ff8000', '#cc0700', '#a0a0a0'];
 
@@ -360,6 +366,8 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
  * Render the title panel and list of experiment internal tags.
  */
 const MatrixHeader = ({ context }) => {
+    const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+
     // Compose a type title for the page if only one type is included in the query string.
     // Currently, only one type is allowed in the query string or the server returns a 400, so this
     // code exists in case more than one type is allowed in future.
@@ -393,7 +401,7 @@ const MatrixHeader = ({ context }) => {
                 </div>
                 <div className="matrix-header__search-controls">
                     <h4>Showing {context.total} results</h4>
-                    <SearchControls context={context} />
+                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} />
                 </div>
             </div>
         </div>

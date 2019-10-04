@@ -14,7 +14,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { ImageWithFallback } from './objectutils';
+import { MatrixInternalTags } from './objectutils';
 import { FacetList, TextFilter, ClearFilters, SearchControls } from './search';
 
 
@@ -369,29 +369,10 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
 
 
 /**
- * Display internal tag badges from search results.
- */
-const MatrixInternalTags = ({ context }) => {
-    // Collect filters that are internal_tags.
-    const internalTags = _.uniq(context.filters.filter(filter => (
-        filter.field === 'internal_tags' && filter.term !== '*'
-    )).map(filter => filter.term));
-    return internalTags.map(tag => (
-        <ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />
-    ));
-};
-
-MatrixInternalTags.propTypes = {
-    /** encode search-results object being displayed */
-    context: PropTypes.object.isRequired,
-};
-
-
-/**
  * Render the area above the facets and matrix content.
  */
 const MatrixHeader = ({ context }) => {
-    const visualizeDisabledTitle = context.matrix.doc_count > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
     let clearButton;
     const searchQuery = url.parse(context['@id']).search;

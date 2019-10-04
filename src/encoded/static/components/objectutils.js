@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import url from 'url';
 import { CartToggle } from './cart';
 import * as globals from './globals';
@@ -638,6 +639,25 @@ export class ImageWithFallback extends React.Component {
 ImageWithFallback.propTypes = {
     imageUrl: PropTypes.string.isRequired,
     imageAlt: PropTypes.string.isRequired,
+};
+
+
+/**
+ * Display internal tag badges from search results.
+ */
+export const MatrixInternalTags = ({ context }) => {
+    // Collect filters that are internal_tags.
+    const internalTags = _.uniq(context.filters.filter(filter => (
+        filter.field === 'internal_tags' && filter.term !== '*'
+    )).map(filter => filter.term));
+    return internalTags.map(tag => (
+        <ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />
+    ));
+};
+
+MatrixInternalTags.propTypes = {
+    /** encode search-results object being displayed */
+    context: PropTypes.object.isRequired,
 };
 
 
