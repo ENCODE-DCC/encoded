@@ -11,6 +11,7 @@ def _type_length():
     return {
         name: len(json.load(utf8(resource_stream('encoded', 'tests/data/inserts/%s.json' % name))))
         for name in ORDER
+        if name != "access_key"
     }
 
 
