@@ -353,17 +353,21 @@ def request_url(item_type, method):
                 continue
 
             # XXX support for aliases
-            for key in ['@id', 'uuid', 'accession', 'name', 'email']:
+            for key in ['@id', 'uuid', 'accession', 'name', 'email', 'aliases']:
                 if key in row:
                     url = row[key]
+                    if isinstance(url, list):
+                        if len(url) == 0:
+                            continue
+                        url = url[0]
                     if key in ['name', 'email']:
                         url = '/%s/%s' % (item_type, url)
-                    elif not url.startswith('/'):
+                    if not url.startswith('/'):
                         url = '/' + url
                     row['_url'] = url
                     break
             else:
-                row['_errors'] = ValueError('No key found. Need one of @id, uuid, accession, name, email.')
+                row['_errors'] = ValueError('No key found. Need one of @id, uuid, accession, name, email, aliases.')
 
             yield row
 
@@ -552,7 +556,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         skip_rows_with_all_falsey_value('test') if test_only else noop,
         skip_rows_with_all_falsey_value('_test') if test_only else noop,
         remove_keys_with_empty_value,
-        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name', 'email'),
+        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name', 'email', 'aliases'),
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
