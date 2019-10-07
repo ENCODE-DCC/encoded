@@ -384,10 +384,21 @@ const MatrixHeader = ({ context }) => {
         clearButton = nonPersistentTerms && terms.type;
     }
 
+    // Compose a type title for the page if only one type is included in the query string.
+    // Currently, only one type is allowed in the query string or the server returns a 400, so this
+    // code exists in case more than one type is allowed in future.
+    let type = '';
+    if (context.filters && context.filters.length > 0) {
+        const typeFilters = context.filters.filter(filter => filter.field === 'type');
+        if (typeFilters.length === 1) {
+            type = typeFilters[0].term;
+        }
+    }
+
     return (
         <div className="matrix-header">
             <div className="matrix-header__title">
-                <h1>{context.title}</h1>
+                <h1>{type ? `${type} ` : ''}{context.title}</h1>
                 <div className="matrix-tags">
                     <MatrixInternalTags context={context} />
                 </div>
