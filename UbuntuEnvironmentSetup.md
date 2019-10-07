@@ -41,7 +41,7 @@ sudo apt-get install --reinstall ca-certificates
 ``` 
 If doesn't work then run
 ```bash
-sudo -E add-apt-repository ppa:ppaname/ppa
+sudo -E add-apt-repository -y ppa:openjdk-r/ppa
 ```
 "sudo -E " preserves the user environment, including any proxy config.
 
@@ -54,19 +54,20 @@ sudo apt-get install -y \
             nodejs \
             openjdk-11-jdk \
             postgresql-9.3
+sudo chown -R usrname /etc/elasticsearch
 ```
 ### **5. Set environment variables**
 Set environment in .bashrc file.
 ```bash
 vi ~/.bashrc
-export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
-:wq 
+export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH
 export BASH_ENV=~/.bashrc
 ```
 ### **6. Continue installation and environment setting**
 ```bash
 sudo apt-get install -y python3.4-dev python3-pip
 sed -i '1s;^;alias python=python3\n;' $BASH_ENV
+source ~/.bashrc
 sudo apt-get update
 ```
 ### **7. Install git, pull code and prepare for buildout.**
@@ -78,6 +79,10 @@ git clone https://github.com/utsw-bicf/pandiseased
 ```bash
 cd ~/pandiseased
 sudo pip3 install -U zc.buildout setuptools
+sudo apt-get install libjpeg-dev zlib1g-dev
+sudo pip3 install pillow==3.1.1
+sudo apt-get install nginx
+sudo apt-get update
 buildout bootstrap
 bin/buildout
 ```
