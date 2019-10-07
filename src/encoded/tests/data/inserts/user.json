@@ -1156,5 +1156,30 @@
             "ENCORE"
         ],
         "uuid": "64974e05-12df-4733-ae90-b402298b142e"
+    },
+    {
+        "email": "testuser@stanford.edu",
+        "first_name": "Test",
+        "groups": [
+            "admin",
+            "other"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "User",
+        "schema_version": "9",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "community",
+            "ENCODE3",
+            "ENCODE4",
+            "GGR",
+            "REMC",
+            "ENCORE"
+        ],
+        "uuid": "a072ca18-4c70-48ba-8d6b-49543021039a"
     }
 ]
