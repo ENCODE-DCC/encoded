@@ -42,3 +42,12 @@ def user_7_8(value, system):
             value['viewing_groups'].append('community')
     else:
         value['viewing_groups'] = ['community']
+
+@upgrade_step('user', '8', '9')
+def user_8_9(value, system):
+    if value.get('groups') == 'admin':
+        value['groups'] = 'admin'
+    elif value.get('groups') == 'verified':
+        value['groups'] = 'verified'
+    else:
+        del value['groups']
