@@ -1473,7 +1473,9 @@ export const FacetList = (props, reactContext) => {
                 {(context || clearButton) ?
                     <div className="search-header-control">
                         {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                        <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                        {context.clear_filters ?
+                            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                        : null}
                     </div>
                 : null}
                 {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
