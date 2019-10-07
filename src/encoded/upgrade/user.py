@@ -43,6 +43,7 @@ def user_7_8(value, system):
     else:
         value['viewing_groups'] = ['community']
 
+
 @upgrade_step('user', '8', '9')
 def user_8_9(value, system):
     if value.get('groups') == 'admin':

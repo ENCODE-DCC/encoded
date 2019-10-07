@@ -1167,7 +1167,7 @@
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
         "last_name": "User",
-        "schema_version": "9",
+        "schema_version": "8",
         "status": "current",
         "submits_for": [
             "/labs/j-michael-cherry/"
