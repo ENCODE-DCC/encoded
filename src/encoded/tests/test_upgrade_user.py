@@ -73,3 +73,20 @@ def test_user_upgrade_7_to_8(upgrader, user_3):
     value = upgrader.upgrade('user', user_3, current_version='7', target_version='8')
     assert value['schema_version'] == '8'
     assert 'community' in value['viewing_groups']
+
+@pytest.fixture
+def user_8(user):
+    item = user.copy()
+    item.update({
+        'schema_version': '3',
+        'viewing_groups': ['ENCODE'],
+        'groups': ['admin', 'wrangler']
+    })
+    return item
+
+def test_user_upgrade_8_to_9(upgrader, user_8):
+    user_8['schema_version'] = '8'
+    value = upgrader.upgrade('user', user_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert 'admin' in value['groups']
+    assert 'wrangler' not in value['groups']
