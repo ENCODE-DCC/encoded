@@ -1837,67 +1837,17 @@ def test_audit_experiment_long_rna_standards(testapp,
 
 def test_audit_experiment_micro_rna_standards(
     testapp,
-    base_experiment,
-    replicate_1_1,
-    replicate_2_1,
-    library_1,
-    library_2,
-    biosample_1,
-    biosample_2,
-    mouse_donor_1,
-    file_fastq_3,
-    file_fastq_4,
-    file_bam_1_1,
-    file_bam_2_1,
-    file_tsv_1_1,
-    file_tsv_1_2,
+    micro_rna_experiment,
     spearman_correlation_quality_metric,
     micro_rna_quantification_quality_metric_1_2,
     micro_rna_mapping_quality_metric_2_1,
-    analysis_step_run_bam,
-    analysis_step_version_bam,
-    analysis_step_bam,
-    pipeline_bam,
 ):
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
-    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
-    testapp.patch_json(
-        file_bam_1_1['@id'],
-        {'step_run': analysis_step_run_bam['@id'], 'assembly': 'mm10'}
-    )
-    testapp.patch_json(
-        file_bam_2_1['@id'],
-        {'step_run': analysis_step_run_bam['@id'], 'assembly': 'mm10'}
-    )
-    testapp.patch_json(
-        pipeline_bam['@id'],
-        {'title': 'microRNA-seq pipeline'}
-    )
-    testapp.patch_json(
-        spearman_correlation_quality_metric['@id'],
-        {'quality_metric_of': [file_tsv_1_1['@id'], file_tsv_1_2['@id']]}
-    )
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(
-        base_experiment['@id'],
-        {'status': 'released', 'date_released': '2016-01-01', 'assay_term_name': 'microRNA-seq'}
-    )
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
     expected_audits = [
         'borderline number of aligned reads',
         'borderline microRNAs expressed',
         'insufficient replicate concordance',
     ]
-    errors = collect_audit_errors(res)
+    errors = collect_audit_errors(micro_rna_experiment)
     for audit in expected_audits:
         assert any(
             error['category'] == audit for error in errors
@@ -1906,10 +1856,31 @@ def test_audit_experiment_micro_rna_standards(
     testapp.patch_json(spearman_correlation_quality_metric['@id'], {'Spearman correlation': 0.99})
     testapp.patch_json(micro_rna_quantification_quality_metric_1_2['@id'], {'expressed_mirnas': 1000000})
     testapp.patch_json(micro_rna_mapping_quality_metric_2_1['@id'], {'aligned_reads': 10000000})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    res = testapp.get(micro_rna_experiment['@id'] + '@@index-data')
     errors = collect_audit_errors(res)
     for audit in expected_audits:
         assert not any(
+            error['category'] == audit for error in errors
+        )
+
+
+def test_audit_experiment_micro_rna_standards_M21(
+    testapp,
+    micro_rna_experiment,
+    file_tsv_1_1,
+    file_tsv_1_2,
+):
+    testapp.patch_json(file_tsv_1_1['@id'], {'genome_annotation': 'M21'})
+    testapp.patch_json(file_tsv_1_2['@id'], {'genome_annotation': 'M21'})
+    res = testapp.get(micro_rna_experiment.json['object']['@id'] + '@@index-data')
+    expected_audits = [
+        'borderline number of aligned reads',
+        'borderline microRNAs expressed',
+        'insufficient replicate concordance',
+    ]
+    errors = collect_audit_errors(res)
+    for audit in expected_audits:
+        assert any(
             error['category'] == audit for error in errors
         )
 

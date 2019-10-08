@@ -557,11 +557,11 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
         value['replicates'], files_structure.get('excluded_types'))  # human/mouse
     if organism_name == 'human':
         desired_assembly = 'GRCh38'
-        desired_annotation = 'V24'
+        desired_annotation = ['V24', 'V29']
     else:
         if organism_name == 'mouse':
             desired_assembly = 'mm10'
-            desired_annotation = 'M4'
+            desired_annotation = ['M4', 'M21']
         else:
             return
 
@@ -4127,13 +4127,13 @@ def get_read_lengths_wgbs(fastq_files):
     return list_of_lengths
 
 
-def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
+def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=[]):
     metrics_dict = {}
     for f in files_list:
         if (desired_assembly is None or ('assembly' in f and
                                          f['assembly'] == desired_assembly)) and \
-            (desired_annotation is None or ('genome_annotation' in f and
-                                            f['genome_annotation'] == desired_annotation)):
+            (desired_annotation == [] or ('genome_annotation' in f and
+                                            f['genome_annotation'] in desired_annotation)):
             if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
                 for qm in f['quality_metrics']:
                     if metric_type in qm['@type']:
