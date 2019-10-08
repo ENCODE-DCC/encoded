@@ -25,7 +25,7 @@ Acquire::http::Proxy "http_proxy=http://myproxy.server:port";
 Acquire::https::Proxy "http_proxy=http://myproxy.server:port";
 ```
 
-### **3.Install and update dependencies:**
+### **3. Install and update dependencies:**
 ```bash
 sudo apt-get install apt-transport-https software-properties-common
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
