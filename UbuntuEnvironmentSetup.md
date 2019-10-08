@@ -11,10 +11,11 @@ These are the primary software versions used in production, and you should be ab
 
 
 ### **1. Install Ubuntu system**
-- Install [Ubuntu14.04LTS(Trusty Tahr)](http://releases.ubuntu.com/14.04/) from the website under [VirtualBox](https://www.virtualbox.org/), make sure you leave 20-40GB for the VM system.
+- Install [Ubuntu14.04LTS(Trusty Tahr)](http://releases.ubuntu.com/14.04/) from the website under [VirtualBox](https://www.virtualbox.org/) or VirtualBox friendly VMs such as osboxes, make sure you leave 20-40GB for the VM system.
   
 ### **2. Set proxy (Optional)**
-If you are working behind a proxy, you need to set the proxy in .conf file. Set proxy in terminal with the following commands, then restart VM to make it work.
+If you are working behind a proxy, you need to set the proxy in .conf file. Set the proxy in a terminal window with the following commands, then restart the VM to make it work.
+Replace http://myproxy.server:port with the proper url and port for your proxy
 ```bash
 sudo vi /etc/profile.d/proxy.sh
 export http_proxy=http://myproxy.server:port
@@ -57,7 +58,7 @@ sudo apt-get install -y \
 sudo chown -R usrname /etc/elasticsearch
 ```
 ### **5. Set environment variables**
-Set environment in .bashrc file.
+Set the environment in .bashrc file.
 ```bash
 vi ~/.bashrc
 export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH
@@ -128,9 +129,9 @@ Can continue with `bin/buildout`.
 Indexing will then proceed in a background thread similar to the production setup.
 
 ### **10. :tada: Check out the app! :tada:**
-- Browse to the interface at http://localhost:6543/.
+- Open this link in your web browser http://localhost:6543/.
 
-## Linting your code within your code editor
+## Linting your code within your code editor (optional)
 ### Visual Studio Code
 
 Go to the Visual Studio Code marketplace and install these extensions:
@@ -141,7 +142,7 @@ Go to the Visual Studio Code marketplace and install these extensions:
 
 ## Building Javascript and CSS
 
-Our Javascript is written using ES6 and JSX, so needs to be compiled using babel and webpack. Our CSS is written in the SCSS variant of [Sass](http://sass-lang.com/) and also needs compilation using webpack.
+Our Javascript is written using ES6 and JSX, it needs to be compiled using babel and webpack. Our CSS is written in the SCSS variant of [Sass](http://sass-lang.com/) and also needs compilation using webpack.
 
 - To re-build **production-ready** bundles, do:
 
