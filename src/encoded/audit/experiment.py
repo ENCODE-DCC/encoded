@@ -3549,7 +3549,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
         if not characterized:
             detail = ('Antibody {} has not yet been characterized in any cell type or tissue in {}.'.format(
                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                organism
+                path_to_text(organism)
                 )
             )
             yield AuditFailure('uncharacterized antibody', detail, level='NOT_COMPLIANT')
@@ -3567,7 +3567,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                         detail = ('Antibody {} has been characterized '
                             'to the standard with exemption for {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                                organism
+                                path_to_text(organism)
                             )
                         )
                         yield AuditFailure('antibody characterized with exemption',
@@ -3576,7 +3576,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                         detail = ('Antibody {} has not yet been characterized in '
                             'any cell type or tissue in {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                                organism
+                                path_to_text(organism)
                             )
                         )
                         yield AuditFailure('uncharacterized antibody',
@@ -3585,7 +3585,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                         detail = ('Antibody {} has not been '
                             'characterized to the standard for {}: {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                                organism,
+                                path_to_text(organism),
                                 lot_review['detail']
                             )
                         )
@@ -3597,7 +3597,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                             'but does not have the full complement of characterizations '
                             'meeting the standard in {}: {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                                organism,
+                                path_to_text(organism),
                                 lot_review['detail']
                             )
                         )
@@ -3623,7 +3623,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                             'standard with exemption for {} in {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
                                 biosample_term_name,
-                                organism
+                                path_to_text(organism)
                             )
                         )
                         yield AuditFailure('antibody characterized with exemption', detail,
@@ -3632,7 +3632,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                         detail = ('Antibody {} has not been characterized at al for {} in {}'.format(
                             audit_link(path_to_text(antibody['@id']), antibody['@id']),
                             biosample_term_name,
-                            organism
+                            path_to_text(organism)
                             )
                         )
                         yield AuditFailure('uncharacterized antibody',
@@ -3642,7 +3642,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                             'but does not have the full complement of characterizations '
                             'meeting the standard in {}: {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                                organism,
+                                path_to_text(organism),
                                 lot_review['detail']
                             )
                         )
@@ -3652,7 +3652,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
                         detail = ('Antibody {} has not been '
                             'characterized to the standard for {}: {}'.format(
                                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
-                                organism,
+                                path_to_text(organism),
                                 lot_review['detail']
                             )
                         )
