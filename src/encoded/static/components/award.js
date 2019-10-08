@@ -935,7 +935,7 @@ class ControlsChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&target.investigated_as=control&award.name=${award.name}&${objectQuery}&status=`;
+        chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&control_type=*&award.name=${award.name}&${objectQuery}&status=`;
         chart.update();
 
         // Redraw the updated legend
@@ -1290,8 +1290,8 @@ const ChartRenderer = (props) => {
             statuses: [],
             categoryFacet: 'assay_title',
             title: 'Assays',
-            uriBase: '/search/?type=Experiment&target.investigated_as!=control&award.name=',
-            linkUri: '/matrix/?type=Experiment&target.investigated_as!=control&award.name=',
+            uriBase: '/search/?type=Experiment&control_type!=*&award.name=',
+            linkUri: '/matrix/?type=Experiment&control_type!=*&award.name=',
         },
         annotations: {
             ident: 'annotations',
@@ -1334,8 +1334,8 @@ const ChartRenderer = (props) => {
             statuses: [],
             categoryFacet: 'assay_title',
             title: 'Assays',
-            uriBase: '/search/?type=Experiment&target.investigated_as=control&award.name=',
-            linkUri: '/matrix/?type=Experiment&target.investigated_as=control&award.name=',
+            uriBase: '/search/?type=Experiment&control_type=*&award.name=',
+            linkUri: '/matrix/?type=Experiment&control_type=*&award.name=',
         },
     };
     // Match the species to their genera
@@ -1933,14 +1933,14 @@ class AwardCharts extends React.Component {
                 </PanelHeading>
                 <div>
                     <FetchedData ignoreErrors>
-                        <Param name="experiments" url={`/search/?type=Experiment&target.investigated_as!=control&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="experiments" url={`/search/?type=Experiment&control_type!=*&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
                         <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
                         <Param name="antibodies" url={`/search/?type=AntibodyLot&award.@id=${award['@id']}${AntibodyQuery}`} />
-                        <Param name="controls" url={`/search/?type=Experiment&target.investigated_as=control&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="unreplicated" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="isogenic" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="anisogenic" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=anisogenic&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="controls" url={`/search/?type=Experiment&control_type=*&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="unreplicated" url={`/search/?type=Experiment&control_type!=*&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="isogenic" url={`/search/?type=Experiment&control_type!=*&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="anisogenic" url={`/search/?type=Experiment&control_type!=*&replication_type=anisogenic&award.name=${award.name}${ExperimentQuery}`} />
                         <ChartRenderer award={award} updatedGenusArray={updatedGenusArray} handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                     </FetchedData>
                 </div>

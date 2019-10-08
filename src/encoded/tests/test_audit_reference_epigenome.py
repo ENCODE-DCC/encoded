@@ -53,7 +53,7 @@ def reference_experiment_WGBS(testapp, lab, award, ileum):
 
 
 @pytest.fixture
-def reference_experiment_chip_seq_control(testapp, lab, award, target_control, ileum):
+def reference_experiment_chip_seq_control(testapp, lab, award, ileum):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -61,7 +61,7 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control, i
         'date_released': '2019-01-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_control['uuid']
+        'control_type': 'control'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -154,16 +154,6 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3, i
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def target_control(testapp, organism):
-    item = {
-        'label': 'Control',
-        'target_organism': organism['@id'],
-        'investigated_as': ['control']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
 
 
 @pytest.fixture

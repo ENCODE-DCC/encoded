@@ -1094,11 +1094,11 @@ class IhecDefines(object):
         # Then either 'Histone <target.label>' or 'Transcription Factor <target.label>' (example: 'Histone H3K4me3')
 
         if vis_type in ["ChIP", "GGRChIP", "HIST"]:
-            target = dataset.get('target',{}).get('label','unknown')
             # Controls have no visualizable files so we shouldn't see them, however...
             # Chip-seq Controls would have target.investigated_as=Control
-            if target.lower() == 'control':
-                target = 'Input'
+            if dataset.get('control_type'):
+                return "ChIP-seq Input"
+            target = dataset.get('target',{}).get('label','unknown')
             if vis_type == "HIST":
                 return "Histone " + target
             if target == "unknown":

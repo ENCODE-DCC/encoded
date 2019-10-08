@@ -99,6 +99,10 @@ const LotComponent = (props, reactContext) => {
             return <span key={organism.name}>{i > 0 ? <span> + {organismName}</span> : <span>{organismName}</span>}</span>;
         });
         organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${globals.encodedURIComponent(organism.name)}`).join('&');
+    } else if (context.control_type) {
+        organisms.push({ name: context.control_type });
+        organismComponents = <span>{context.control_type}</span>;
+        organismQuery = `control_type=${context.control_type}`;
     }
 
     // Build up the gene breadcrumb components.
@@ -139,6 +143,8 @@ const LotComponent = (props, reactContext) => {
                                 return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{` ${targetObj.label}`}</span>;
                             })}
                         </span>
+                    : context.control_type ?
+                        <span>Antibody {context.control_type} {context.host_organism.name} {context.isotype}</span>
                     :
                         <span>Antibody</span>
                     }
@@ -310,7 +316,7 @@ const AntibodyStatus = (props) => {
             lotReview.organisms = [null];
         }
         lotReview.organisms.forEach((organism) => {
-            const source = organism ? organism.scientific_name : lotReview.targets[0].investigated_as[0];
+            const source = organism ? organism.scientific_name : lotReview.targets.length > 0 ? lotReview.targets[0].investigated_as[0] : context.control_type;
             // If haven’t seen this source (organism) with this status before, remember it
             if (!statusNode[source]) {
                 statusNode[source] = {};
@@ -670,27 +676,40 @@ const ListingComponent = (props, reactContext) => {
 
     // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
     const targetTree = {};
-    lotReviews.forEach((lotReview) => {
-        lotReview.targets.forEach((target) => {
-            // If we haven't seen this target, save it in targetTree along with the
-            // corresponding target and organism structures.
-            if (!targetTree[target.name]) {
-                targetTree[target.name] = { target };
-            }
-            const targetNode = targetTree[target.name];
+    if (result.control_type) {
+        // Control antibody would have only one lotReview with defined info
+        const lotReview = lotReviews[0];
+        targetTree.control = {};
+        targetTree.control.target = {};
+        targetTree.control.target.label = `${result.host_organism.name} ${result.isotype}`;
+        targetTree.control.target.clazz = <span>{result.control_type}</span>;
+        targetTree.control[lotReview.status] = [lotReview.biosample_term_name];
+    } else {
+        lotReviews.forEach((lotReview) => {
+            lotReview.targets.forEach((target) => {
+                // If we haven't seen this target, save it in targetTree along with the
+                // corresponding target and organism structures.
+                if (!targetTree[target.name]) {
+                    targetTree[target.name] = {};
+                    targetTree[target.name].target = {};
+                    targetTree[target.name].target.label = target.label;
+                    targetTree[target.name].target.clazz = target.organism ? <i>{target.organism.scientific_name}</i> : <span>{target.investigated_as[0]}</span>;
+                }
+                const targetNode = targetTree[target.name];
 
-            // If we haven't seen the status, save it in the targetTree target
-            if (!targetNode[lotReview.status]) {
-                targetNode[lotReview.status] = [];
-            }
-            const statusNode = targetNode[lotReview.status];
+                // If we haven't seen the status, save it in the targetTree target
+                if (!targetNode[lotReview.status]) {
+                    targetNode[lotReview.status] = [];
+                }
+                const statusNode = targetNode[lotReview.status];
 
-            // If we haven't seen the biosample term name, save it in the targetTree target status
-            if (statusNode.indexOf(lotReview.biosample_term_name) === -1) {
-                statusNode.push(lotReview.biosample_term_name);
-            }
+                // If we haven't seen the biosample term name, save it in the targetTree target status
+                if (statusNode.indexOf(lotReview.biosample_term_name) === -1) {
+                    statusNode.push(lotReview.biosample_term_name);
+                }
+            });
         });
-    });
+    }
 
     return (
         <li className={resultItemClass(result)}>
@@ -700,7 +719,7 @@ const ListingComponent = (props, reactContext) => {
                         <div key={target}>
                             <a href={result['@id']} className="result-item__link">
                                 {targetTree[target].target.label}
-                                <span>{' ('}{targetTree[target].target.organism ? <i>{targetTree[target].target.organism.scientific_name}</i> : <span>{targetTree[target].target.investigated_as[0]}</span>}{')'}</span>
+                                <span>{' ('}{targetTree[target].target.clazz}{')'}</span>
                             </a>
                             <StatusIndicators targetTree={targetTree} target={target} />
                         </div>

@@ -463,16 +463,6 @@ def target_H3K9me3(testapp, organism):
 
 
 @pytest.fixture
-def target_control(testapp, organism):
-    item = {
-        'label': 'Control',
-        'target_organism': organism['@id'],
-        'investigated_as': ['control']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
 def target_promoter(testapp, fly):
     item = {
         'label': 'daf-2',

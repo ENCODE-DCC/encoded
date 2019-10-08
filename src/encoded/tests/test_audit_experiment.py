@@ -109,16 +109,6 @@ def mouse_H3K9me3(testapp, mouse):
 
 
 @pytest.fixture
-def control_target(testapp, organism):
-    item = {
-        'target_organism': organism['uuid'],
-        'label': 'Control',
-        'investigated_as': ['control']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
 def base_antibody(testapp, award, lab, source, organism, target):
     return {
         'award': award['uuid'],
@@ -132,13 +122,14 @@ def base_antibody(testapp, award, lab, source, organism, target):
 
 
 @pytest.fixture
-def IgG_antibody(testapp, award, lab, source, organism, control_target):
+def IgG_antibody(testapp, award, lab, source, organism):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'source': source['uuid'],
         'host_organism': organism['uuid'],
-        'targets': [control_target['uuid']],
+        'control_type': 'isotype control',
+        'isotype': 'IgG',
         'product_id': 'ABCDEF',
         'lot_id': '321'
     }
@@ -180,7 +171,7 @@ def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, o
 
 
 @pytest.fixture
-def ctrl_experiment(testapp, lab, award, control_target, cell_free):
+def ctrl_experiment(testapp, lab, award, cell_free):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -817,9 +808,8 @@ def test_ChIP_possible_control_roadmap(testapp, base_experiment, ctrl_experiment
 
 
 def test_audit_input_control(testapp, base_experiment,
-                             ctrl_experiment, IgG_ctrl_rep,
-                             control_target):
-    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
+                             ctrl_experiment, IgG_ctrl_rep):
+    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'control'})
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2186,7 +2176,6 @@ def test_audit_experiment_chip_seq_control_standards(
         analysis_step_version_bam,
         analysis_step_bam,
         pipeline_bam,
-        target_control,
         target_H3K9me3):
 
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_2_1['@id']],
@@ -2225,7 +2214,7 @@ def test_audit_experiment_chip_seq_control_standards(
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(experiment['@id'], {'target': target_control['@id'],
+    testapp.patch_json(experiment['@id'], {'control_type': 'input library',
                                            'status': 'released',
                                            'date_released': '2016-01-01',
                                            'assay_term_name': 'ChIP-seq'})
@@ -2261,7 +2250,6 @@ def test_audit_experiment_chip_seq_peaks_without_controls(
         analysis_step_version_bam,
         analysis_step_bam,
         pipeline_bam,
-        target_control,
         target_H3K9me3):
 
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_2_1['@id']],
@@ -2299,7 +2287,7 @@ def test_audit_experiment_chip_seq_peaks_without_controls(
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(experiment['@id'], {'target': target_control['@id'],
+    testapp.patch_json(experiment['@id'], {'control_type': 'control',
                                            'status': 'released',
                                            'date_released': '2016-01-01',
                                            'assay_term_name': 'ChIP-seq'})
@@ -2336,7 +2324,6 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
         analysis_step_version_bam,
         analysis_step_bam,
         pipeline_bam,
-        target_control,
         target_H3K9me3):
 
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']],
@@ -2371,7 +2358,7 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(experiment['@id'], {'target': target_control['@id'],
+    testapp.patch_json(experiment['@id'], {'control_type': 'input library',
                                            'status': 'released',
                                            'date_released': '2016-01-01',
                                            'assay_term_name': 'ChIP-seq'})
@@ -2418,7 +2405,6 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
         analysis_step_version_bam,
         analysis_step_bam,
         pipeline_bam,
-        target_control,
         target_H3K9me3):
 
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']],
@@ -2456,7 +2442,7 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(experiment['@id'], {'target': target_control['@id'],
+    testapp.patch_json(experiment['@id'], {'control_type': 'input library',
                                            'status': 'released',
                                            'date_released': '2016-01-01',
                                            'assay_term_name': 'ChIP-seq'})
@@ -2498,7 +2484,6 @@ def test_audit_experiment_chip_seq_peaks_with_subsampled_controls(
         analysis_step_version_bam,
         analysis_step_bam,
         pipeline_bam,
-        target_control,
         target_H3K9me3):
 
     
@@ -2538,7 +2523,7 @@ def test_audit_experiment_chip_seq_peaks_with_subsampled_controls(
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(experiment['@id'], {'target': target_control['@id'],
+    testapp.patch_json(experiment['@id'], {'control_type': 'control',
                                            'status': 'released',
                                            'date_released': '2016-01-01',
                                            'assay_term_name': 'ChIP-seq'})
@@ -3570,12 +3555,12 @@ def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, trea
     assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_ontology']['term_id']) == True
 
 
-def test_is_control_dataset(testapp, control_target, ctrl_experiment, publication_data, treatment_time_series):
+def test_is_control_dataset(testapp, ctrl_experiment, publication_data, treatment_time_series):
     from encoded.audit.experiment import is_control_dataset
     exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
     exp_embedded = exp.json['embedded']
     assert is_control_dataset(exp_embedded) == False
-    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
+    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'control'})
     exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
     exp_embedded = exp.json['embedded']
     assert is_control_dataset(exp_embedded) == True

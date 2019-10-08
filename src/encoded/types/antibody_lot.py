@@ -171,22 +171,21 @@ class AntibodyLot(SharedItem):
     },
 })
 def lot_reviews(
-    characterizations,
-    targets,
     request,
+    characterizations,
     award,
+    control_type=None,
+    targets=[],
     used_by_biosample_characterizations=[]
 ):
     characterizations = paths_filtered_by_status(request, characterizations)
     target_organisms = set()
 
-    is_control = False
+    is_control = bool(control_type)
     is_histone = False
     is_tag = False
     for t in targets:
         target = request.embed(t, '@@object')
-        if 'control' in target['investigated_as']:
-            is_control = True
         if 'histone' in target['investigated_as']:
             is_histone = True
         if (
@@ -286,7 +285,7 @@ def lot_reviews(
         else:
             return [base_review]
 
-    if not characterizations:
+    if is_control or not characterizations:
         # If there are no characterizations, then default to awaiting characterization.
         return [base_review]
 
