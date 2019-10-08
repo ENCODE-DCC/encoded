@@ -49,6 +49,7 @@ DEFAULT_ITEM_TYPES = [
     'Biosample',
     'BiosampleType',
     'Dataset',
+    'Donor',
     'GeneticModification',
     'Page',
     'Pipeline',
