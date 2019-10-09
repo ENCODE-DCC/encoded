@@ -1,5 +1,30 @@
 Changes
 =======
+v91.0 (released) snovault 1.0.36
+---------------------------------------
+1. ENCD-4891-region-search-crash-with-position (#2955)
+2. ENCD-4878-update-robots-txt (#2939)
+3. ENCD-4884-allow-apache-conf-variables-on-deploy
+4. ENCD-4718-Refactor-deployment-based-on-build-type
+5. ENCD-4881-fix-NTR-audit-detail (#2943)
+6. ENCD-4879-workaround-for-improper-date (#2942)
+7. ENCD-4880-restore-disabled-buttons (#2941)
+8. ENCD-4875-update-snovault-1.0.36 (#2936)
+9. ENCD-4803-new-search-views (#2928)
+10. ENCD-4871-summary-dates (#2935)
+11. ENCD-4398-allow-unprivileged-login-for-cart(#2869)
+12. ENCD-4753-fix-audit-details-and-cleanup (#2927)
+13. ENCD-4838 Remove Experiment Classification from Experiment Schema (#2929)
+14. ENCD-4856 break up test suite for circle-ci (#2932)
+15. ENCD-4826 updated chip-seq qc (#2930)
+16. ENCD-4846 Fix microRNA raw data table headers (#2933)
+17. ENCD-4820-update-ontology (#2917)
+18. ENCD-4690-remove-cln-msg-in-file-assoc-graph (#2903)
+19. ENCD-4050-replace-momentjs (#2914)
+20. ENCD-4832 remove border on empty results (#2926)
+21. ENCD-4844-Add-Jessica-to-users
+22. ENCD-4837 assay title facet for experimental series (#2921)
+23. ENCD-4213-replace-cookie-monster (#2906)
 
 v90.0 (released) snovault 1.0.34
 ---------------------------------------
