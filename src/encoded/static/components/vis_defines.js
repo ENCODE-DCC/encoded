@@ -269,17 +269,15 @@ const ucscAssemblyDetails = {
 /**
  * Generate a batch hub URL for UCSC based on the given assembly.
  * @param {string} assembly Assembly to use for the generated URL
- * @param {object} {
- *      visualizer {string} "UCSC" visualizer name to use in UI
- *      url {string} URL to pass to UCSC to visualize the given assembly
- * }
+ * @param {string} batchHubUrl Batch hub URL
+ * @param {string} position Optional region search position string
  */
-const ucscUrlGenerator = (assembly, batchHubUrl) => {
+const ucscUrlGenerator = (assembly, batchHubUrl, position) => {
     const details = ucscAssemblyDetails[assembly];
     if (details) {
         return {
             visualizer: 'UCSC',
-            url: `http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=${batchHubUrl}&db=${details.mappedAssembly}`,
+            url: `http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=${batchHubUrl}&db=${details.mappedAssembly}${position ? `&position=${position}` : ''}`,
         };
     }
     return null;
@@ -301,10 +299,7 @@ const ensembleAssemblyDetails = {
 /**
  * Generate a batch hub URL for ENSEMBL based on the given assembly.
  * @param {string} assembly Assembly to use for the generated URL
- * @param {object} {
- *      visualizer {string} "Ensembl" visualizer name to use in UI
- *      url {string} URL to pass to ENSEMBL to visualize the given assembly
- * }
+ * @param {string} batchHubUrl Batch hub URL
  */
 const ensemblUrlGenerator = (assembly, batchHubUrl) => {
     const details = ensembleAssemblyDetails[assembly];
@@ -374,12 +369,24 @@ export class BrowserSelector extends React.Component {
             return null;
         }
 
+        // If coordinates are given, construct a "position" query string parameter expanded by 200
+        // bp in either direction.
+        let position = '';
+        if (results.coordinates) {
+            const matches = results.coordinates.match(/(.+):(\d+)-(\d+)/);
+            if (matches) {
+                const lowCoordinate = Number(matches[2]);
+                const highCoordinate = Number(matches[3]);
+                position = `${matches[1]}:${lowCoordinate - 200}-${highCoordinate + 200}`;
+            }
+        }
+
         const relevantAssemblies = getRelevantAssemblies(results);
         const visualizeCfg = {};
         relevantAssemblies.forEach((assembly) => {
             visualizeCfg[assembly] = {};
             urlGenerators.forEach((urlGenerator) => {
-                const visualizationMechanism = urlGenerator(assembly, batchHubUrl);
+                const visualizationMechanism = urlGenerator(assembly, batchHubUrl, position);
                 if (visualizationMechanism) {
                     visualizeCfg[assembly][visualizationMechanism.visualizer] = visualizationMechanism.url;
                 }
