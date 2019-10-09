@@ -80,7 +80,7 @@ def user_8(user):
     item.update({
         'schema_version': '3',
         'viewing_groups': ['ENCODE'],
-        'groups': ['admin', 'wrangler']
+        'groups': ['admin', 'wrangler'],
     })
     return item
 
