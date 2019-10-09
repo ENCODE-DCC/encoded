@@ -312,6 +312,8 @@ $detail-switch-width: 30px;
         flex: 1 1 auto;
         margin: 5px;
         line-height: 1.4;
+        overflow: auto;
+        height: 55px;
     }
 
     @at-root #{&}__preview {
