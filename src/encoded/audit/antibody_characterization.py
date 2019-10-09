@@ -36,7 +36,7 @@ def audit_antibody_characterization_unique_reviews(value, system):
                 lane,
                 audit_link(path_to_text(value['@id']), value['@id']),
                 audit_link(path_to_text(biosample_ontology), biosample_ontology),
-                audit_link(path_to_text(organism), organism)
+                path_to_text(organism)
                 )
             )
             raise AuditFailure('duplicate lane review', detail, level='INTERNAL_ACTION')
