@@ -11,7 +11,6 @@ from urllib.parse import (
     quote,
 )
 from encoded.search_views import search
-from snovault.helpers.helper import list_visible_columns_for_schemas
 import csv
 import io
 import json
@@ -626,3 +625,43 @@ def report_download(context, request):
     )
     request.response.app_iter = generate_rows()
     return request.response
+
+
+def list_visible_columns_for_schemas(request, schemas):
+    """
+    Returns mapping of default columns for a set of schemas.
+    """
+    columns = OrderedDict({'@id': {'title': 'ID'}})
+    for schema in schemas:
+        if 'columns' in schema:
+            columns.update(schema['columns'])
+        else:
+            # default columns if not explicitly specified
+            columns.update(OrderedDict(
+                (name, {
+                    'title': schema['properties'][name].get('title', name)
+                })
+                for name in [
+                    '@id', 'title', 'description', 'name', 'accession',
+                    'aliases'
+                ] if name in schema['properties']
+            ))
+    fields_requested = request.params.getall('field')
+    if fields_requested:
+        limited_columns = OrderedDict()
+        for field in fields_requested:
+            if field in columns:
+                limited_columns[field] = columns[field]
+            else:
+                # We don't currently traverse to other schemas for embedded
+                # objects to find property titles. In this case we'll just
+                # show the field's dotted path for now.
+                limited_columns[field] = {'title': field}
+                for schema in schemas:
+                    if field in schema['properties']:
+                        limited_columns[field] = {
+                            'title': schema['properties'][field]['title']
+                        }
+                        break
+        columns = limited_columns
+    return columns
