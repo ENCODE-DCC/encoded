@@ -412,16 +412,15 @@ def audit_experiment_mixed_libraries(value, system, excluded_types):
 
 def audit_experiment_pipeline_assay_details(value, system, files_structure):
     for pipeline in get_pipeline_objects(files_structure.get('original_files').values()):
-        if 'assay_term_names' in pipeline:
-            if value.get('assay_term_name') not in pipeline['assay_term_names']:
-                detail = ('This experiment '
-                    'contains file(s) associated with '
-                    'pipeline {} which assay_term_names list '
-                    'does not include experiments\'s assay_term_name.'.format(
-                        audit_link(path_to_text(pipeline['@id']), pipeline['@id'])
-                    )
+        if 'assay_term_names' not in pipeline or value.get('assay_term_name') not in pipeline['assay_term_names']:
+            detail = ('This experiment '
+                'contains file(s) associated with '
+                'pipeline {} which assay_term_names list '
+                'does not include experiments\'s assay_term_name.'.format(
+                    audit_link(path_to_text(pipeline['@id']), pipeline['@id'])
                 )
-                yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
+            )
+            yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
     return
 
 
