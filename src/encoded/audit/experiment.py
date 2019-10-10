@@ -846,8 +846,11 @@ def check_experiment_rna_seq_standards(value,
 
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
+    unfiltered_alignment_files = files_structure.get('unfiltered_alignments').values()
     gene_quantifications = files_structure.get(
         'gene_quantifications_files').values()
+    transcript_quantifications = files_structure.get(
+        'transcript_quantifications_files').values()
     assay_term_name = value['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
@@ -968,8 +971,8 @@ def check_experiment_rna_seq_standards(value,
     elif pipeline_title == 'Long read RNA-seq pipeline':
         yield from check_experiment_long_read_rna_standards(
             value,
-            alignment_files,
-            gene_quantifications,
+            unfiltered_alignment_files,
+            transcript_quantifications,
             desired_assembly,
             desired_annotation,
             upper_limit_flnc=600000,
@@ -1369,8 +1372,8 @@ def check_experiment_micro_rna_standards(
 
 def check_experiment_long_read_rna_standards(
     experiment,
-    alignment_files,
-    gene_quantifications,
+    unfiltered_alignment_files,
+    transcript_quantifications,
     desired_assembly,
     desired_annotation,
     upper_limit_flnc,
@@ -1384,19 +1387,19 @@ def check_experiment_long_read_rna_standards(
 ):
     # Gather metrics
     quantification_metrics = get_metrics(
-        gene_quantifications,
+        transcript_quantifications,
         'LongReadRnaQuantificationQualityMetric',
         desired_assembly,
         desired_annotation,
     )
     # Desired annotation does not pertain to alignment files
-    alignment_metrics = get_metrics(
-        alignment_files,
+    unfiltered_alignment_metrics = get_metrics(
+        unfiltered_alignment_files,
         'LongReadRnaMappingQualityMetric',
         desired_assembly,
     )
     correlation_metrics = get_metrics(
-        gene_quantifications,
+        transcript_quantifications,
         'CorrelationQualityMetric',
         desired_assembly,
         desired_annotation,
@@ -1411,7 +1414,7 @@ def check_experiment_long_read_rna_standards(
     )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
-        alignment_metrics,
+        unfiltered_alignment_metrics,
         metric_name='full_length_non_chimeric_read_count',
         audit_name='sequencing depth',
         upper_limit=upper_limit_flnc,
@@ -1420,7 +1423,7 @@ def check_experiment_long_read_rna_standards(
     )
     # Audit mapping rate
     yield from check_replicate_metric_dual_threshold(
-        alignment_metrics,
+        unfiltered_alignment_metrics,
         metric_name='mapping_rate',
         audit_name='mapping rate',
         upper_limit=upper_limit_mapping_rate,
@@ -4197,6 +4200,7 @@ def create_files_mapping(files_list, excluded):
                  'transcriptome_alignments': {},
                  'peaks_files': {},
                  'gene_quantifications_files': {},
+                 'transcript_quantifications_files': {},
                  'signal_files': {},
                  'preferred_default_idr_peaks': {},
                  'cpg_quantifications': {},
@@ -4239,6 +4243,10 @@ def create_files_mapping(files_list, excluded):
 
                 if file_output and file_output == 'gene quantifications':
                     to_return['gene_quantifications_files'][file_object['@id']
+                                                            ] = file_object
+
+                if file_output and file_output == 'transcript quantifications':
+                    to_return['transcript_quantifications_files'][file_object['@id']
                                                             ] = file_object
 
                 if file_output and file_output == 'signal of unique reads':
