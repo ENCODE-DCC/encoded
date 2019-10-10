@@ -407,6 +407,24 @@ def file_fastq_6(testapp, lab, award, base_experiment, replicate_1_1, platform1)
 
 
 @pytest.fixture
+def file_fastq_no_read_length(testapp, lab, award, experiment, replicate_1_1, platform3):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate_1_1['@id'],
+        'file_format': 'fastq',
+        'file_size': 68,
+        'platform': platform3['@id'],
+        'output_type': 'reads',
+        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'aliases': ['encode:no read length alias'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
 def file_bam(testapp, lab, award, base_experiment, base_replicate):
     item = {
         'dataset': base_experiment['@id'],
@@ -699,6 +717,37 @@ def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_
         'step_run': analysis_step_run_bam['uuid']
     }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def experiment_no_read_length(
+    testapp,
+    experiment,
+    bam_file,
+    file_fastq_no_read_length,
+    replicate_1_1,
+    base_library,
+    analysis_step_bam,
+    analysis_step_version_bam,
+    analysis_step_run_bam,
+    encode_lab,
+):
+    testapp.patch_json(replicate_1_1['@id'], {'experiment': experiment['@id'],
+                                              'library': base_library['@id'],
+                                              })
+    testapp.patch_json(file_fastq_no_read_length['@id'], {'dataset': experiment['@id'],
+                                                          'replicate':replicate_1_1['@id'],
+                                                          })
+    testapp.patch_json(bam_file['@id'], {'dataset': experiment['@id'],
+                                         'step_run': analysis_step_run_bam['@id'],
+                                         'assembly': 'GRCh38',
+                                         'lab': encode_lab['@id'],
+                                         'derived_from': [file_fastq_no_read_length['@id']],
+                                         })
+    testapp.patch_json(experiment['@id'], {'status': 'released',
+                                           'date_released': '2016-01-01',
+                                           'assay_term_name': 'long read RNA-seq',
+                                           })
+    return testapp.get(experiment['@id'] + '@@index-data')
 
 
 def test_audit_experiment_missing_fragmentation_method(testapp,
@@ -1242,33 +1291,65 @@ def test_audit_experiment_with_library_without_biosample(testapp, base_experimen
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experiment, base_replicate,
-                                                         base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
+def test_audit_experiment_with_RNA_library_no_size_range(
+    testapp,
+    experiment_with_RNA_library,
+):
+    res = testapp.get(experiment_with_RNA_library.json['object']['@id'] + '@@index-data')
     assert any(error['category'] == 'missing RNA fragment size'
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
-                                                           base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
+def test_audit_experiment_with_RNA_library_with_size_range(
+    testapp,
+    experiment_with_RNA_library,
+    base_library,
+):
+    testapp.patch_json(base_library['@id'], {'size_range': '>200'})
+    res = testapp.get(experiment_with_RNA_library.json['object']['@id'] + '@@index-data')
     assert all(error['category'] != 'missing RNA fragment size'
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
-                                                            base_replicate,
-                                                            base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name':
-                                                'transcription profiling by array assay'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
+def test_audit_experiment_with_RNA_library_no_size_range_RNA_microarray(
+    testapp,
+    experiment_with_RNA_library,
+):
+    testapp.patch_json(experiment_with_RNA_library.json['object']['@id'], {'assay_term_name': 'transcription profiling by array assay'})
+    res = testapp.get(experiment_with_RNA_library.json['object']['@id'] + '@@index-data')
     assert all(error['category'] != 'missing RNA fragment size'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_with_RNA_library_no_size_range_long_read_RNA(
+    testapp,
+    experiment_with_RNA_library,
+):
+    testapp.patch_json(experiment_with_RNA_library.json['object']['@id'], {'assay_term_name': 'long read RNA-seq'})
+    res = testapp.get(experiment_with_RNA_library.json['object']['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing RNA fragment size'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_with_RNA_library_missing_read_length_long_read_RNA_seq(
+    testapp,
+    experiment_no_read_length,
+    pipeline_bam,
+):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'Long read RNA-seq pipeline'})
+    res = testapp.get(experiment_no_read_length.json['object']['@id'] + '@@index-data')
+    assert all(error['category'] != 'missing read_length'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_with_RNA_library_missing_read_length_RNA_seq(
+    testapp,
+    experiment_no_read_length,
+    pipeline_bam,
+):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'RNA-seq of long RNAs (paired-end, stranded)'})
+    res = testapp.get(experiment_no_read_length.json['object']['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing read_length'
                for error in collect_audit_errors(res))
 
 

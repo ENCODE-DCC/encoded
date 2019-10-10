@@ -856,11 +856,11 @@ def check_experiment_rna_seq_standards(value,
     }
 
     for f in fastq_files:
-        yield from check_file_read_length_rna(f, 50,
-                                              pipeline_title,
-                                              assay_term_name,
-                                              standards_links[pipeline_title])
-
+        if pipeline_title not in ['Long read RNA-seq pipeline']:
+            yield from check_file_read_length_rna(f, 50,
+                                                  pipeline_title,
+                                                  assay_term_name,
+                                                  standards_links[pipeline_title])
         yield from check_file_platform(f, ['OBI:0002024', 'OBI:0000696'])
 
     if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
@@ -3705,7 +3705,9 @@ def audit_library_RNA_size_range(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') == 'transcription profiling by array assay':
+    if value.get('assay_term_name') in ['transcription profiling by array assay',
+                                        'long read RNA-seq',
+                                        ]:
         return
 
     RNAs = ['RNA',
