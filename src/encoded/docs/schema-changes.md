@@ -1,17 +1,17 @@
 Making changes to encoded schemas
 =========================
 
-This document describes how to make changes to the JSON schemas ([JSONSchema], [JSON-LD]) and source code that describes the encoded metadata model.  For overview of code organization see [overview.rst].
+This document describes how to make changes to the JSON schemas ([JSONSchema], [JSON-LD]) and source code that describes the encoded metadata model. For overview of code organization see [overview.rst].
 
 Guide to where to edit Source Code
 ----------------
 
 * **src** directory - contains all the python and javascript code for front and backends
-    * **audit** - python instructions for checking metadata stored in the schema
+    * **audit** - contains python scripts that check metadata stored in the schema and triggers audits in cases as defined here.
     * **schemas** - JSON schemas ([JSONSchema], [JSON-LD]) describing allowed types and values for all metadata objects
     * **tests** - Unit and integration tests
     * **types** -  business logic for dispatching URLs and producing the correct JSON
-    * **upgrade** - python instructions for upgrading old objects stored to the latest 
+    * **upgrade** - python instructions for upgrading old objects to match the new schema
     * **loadxl.py** - python script that defines the schema objects to load
 
 
@@ -154,37 +154,40 @@ This new object is an array of example objects that can successfully POST agains
 Updating an existing schema
 ----------------
 
-There are 2 categories when we talk about updating an existing schema:
+There are two situations we need to consider when updating an existing schema:
 
-* No affect on schema version
-* Update schema version
+* No change in schema version
 
+**For some schema changes, there will be no change to the schema version. These will be some minor changes to the schema. One such example includes adding a new enum to an existing list of enums. Another example will be adding a new property to existing schemas.**
+### No change on schema version
 
-**The schema version is updated, requiring an upgrade of the schema, when the objects stored in the database will not validate and POST to the updated schema.**
-
-
-### No affect on schema version
-
-1. In the **schemas** directory, make edits  to properties in the JSON file named after the object.
+1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object.
 
 2. In the **types** directory, make appropriate updates to object class by adding *embedding*, *reverse links*, and *calculated properties* as necessary.
 
 3. Update sample data, **data/inserts** directory, to test the changes made to the schema in **tests** directory. 
 
+* Update schema version
+**In many other cases, a schema version update will be required. Examples of such cases include: cases where a property name is changed or if a previously existing property is removed from the schema. Hence, the previously existing objects will no longer validated with the new schema change. In addition, any new objects if posted using the old schema will no longer be valid after the schema update.** 
+
+**Other examples include: when a property that allowed free text is now changed to a possible list of enums or if an existing enum is removed or if one object is migrated into another object.**
+
+**An additional step that will be needed in all such cases will be adding an upgrader script that will change all the existing objects to fit into the new schema that is currently being implemented.**
+
+**In some situations even if we are not making any changes that may involve modifying existing properties and an upgrader step is not technically required; but if these involve several additional properties being added resulting in substantial schema changes, it is would be a good idea to update the schema version. For example if we are including ten new properties independent of the one's that already existed.**
 
 ### Update schema version
 
-1. In the **schemas** directory, increment the schema version (1->2), if it meets the above rule: 
+1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. For example if the original schema version was "1", change it to "2" (1->2): 
         
         "schema_version": {
             "default": "2"
         }
 
-2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example upgrades the object from schema version (2->3):
+2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example of the upgrade step is shown below. Changing schema version (1->2):
 
-        @upgrade_step('{metadata_object}', '2, '3')
-        def {metadata_object}_2_3(value, system):
-            # {Redmine Issue}
+        @upgrade_step('{metadata_object}', '1', '2')
+        def {metadata_object}_1_2(value, system):
 
             # lowercase all values in property 1
             if 'property_1' in value:
