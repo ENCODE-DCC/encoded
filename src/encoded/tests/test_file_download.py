@@ -56,7 +56,8 @@ def test_file_download_view_proxy_range(testapp, uploading_file, dummy_request):
         headers=dict(Range='bytes=0-4444'),
         extra_environ=dict(HTTP_X_FORWARDED_FOR='100.100.100.100')
     )
-    assert 'X-Accel-Redirect' in res.headers
+    assert '307 Temporary Redirect' in str(res.body)
+    assert 'X-Accel-Redirect' not in res.headers
 
 
 @mock_s3
