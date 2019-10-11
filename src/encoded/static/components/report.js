@@ -236,7 +236,7 @@ class Table extends React.Component {
         const tableClass = 'collection-table';
         return (
             <div className="report__table">
-                <table className={`${tableClass} table table-panel`}>
+                <table className={`${tableClass} table table-panel table-striped`}>
                     <thead>
                         <tr className="col-headers">{headers}</tr>
                     </thead>
