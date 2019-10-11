@@ -87,7 +87,6 @@ def user_8(user):
 def test_user_upgrade_8_to_9(upgrader, user_8):
     user_8['schema_version'] = '8'
     value = upgrader.upgrade('user', user_8, current_version='8', target_version='9')
-    print(value)
     assert value['schema_version'] == '9'
     assert 'admin' in value['groups']
     assert 'wrangler' not in value['groups']

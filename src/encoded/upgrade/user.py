@@ -46,9 +46,13 @@ def user_7_8(value, system):
 
 @upgrade_step('user', '8', '9')
 def user_8_9(value, system):
-    if value.get('groups') == 'admin':
-        value['groups'] = 'admin'
-    elif value.get('groups') == 'verified':
-        value['groups'] = 'verified'
-    else:
-        del value['groups']
+    if 'groups' in value:
+        new_groups = []
+        for grp in value['groups']:
+            if grp == 'admin':
+                new_groups.append(grp)
+            elif grp == 'verified':
+                new_groups.append(grp)
+            else:
+                pass
+        value['groups'] = new_groups
