@@ -1746,16 +1746,12 @@ const consolidateSortedDates = (dateTerms) => {
 export const ExperimentDate = (props) => {
     const { experiments, award, panelCss, panelHeadingCss } = props;
     let releasedDates = [];
-    let submittedDates = [];
     let deduplicatedreleased = {};
-    let deduplicatedsubmitted = {};
 
     // Search experiments for date_released and date_submitted in facets
     if (experiments.facets && experiments.facets.length > 0) {
         const dateReleasedFacet = experiments.facets.find(facet => facet.field === 'date_released');
-        const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
         releasedDates = (dateReleasedFacet && dateReleasedFacet.terms && dateReleasedFacet.terms.length > 0) ? dateReleasedFacet.terms : [];
-        submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length > 0) ? dateSubmittedFacet.terms : [];
     }
 
     // Take an array of date facet terms and return an array of terms sorted by date.
@@ -1791,20 +1787,9 @@ export const ExperimentDate = (props) => {
     }
 
     let accumulatedDataReleased = [];
-    let accumulatedDataSubmitted = [];
     let date = [];
-    if (releasedDates.length > 0 || submittedDates.length > 0) {
+    if (releasedDates.length > 0) {
         const sortedreleasedTerms = consolidateSortedDates(sortTerms(releasedDates));
-        const sortedsubmittedTerms = consolidateSortedDates(sortTerms(submittedDates));
-
-        // Add an object with the most current date to one of the arrays.
-        if ((releasedDates && releasedDates.length > 0) && (submittedDates && submittedDates.length > 0)) {
-            if (sortedreleasedTerms.length > 0 && dayjs(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
-                sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
-            } else if (sortedsubmittedTerms.length > 0 && dayjs(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
-                sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
-            }
-        }
 
         // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
         let awardStartDate;
@@ -1812,29 +1797,25 @@ export const ExperimentDate = (props) => {
             awardStartDate = dayjs(award.start_date).format('YYYY-MM');
         } else {
             const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
-            const submittedIndex = sortedsubmittedTerms.findIndex(item => item.doc_count);
             const earliestReleased = releasedIndex > -1 ? sortedreleasedTerms[releasedIndex].key : sortedreleasedTerms[sortedreleasedTerms.length - 1];
-            const earliestSubmitted = submittedIndex > -1 ? sortedsubmittedTerms[submittedIndex].key : sortedsubmittedTerms[sortedsubmittedTerms.length - 1];
-            awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
+            awardStartDate = earliestReleased;
         }
         deduplicatedreleased = fillDates(sortedreleasedTerms, awardStartDate);
-        deduplicatedsubmitted = fillDates(sortedsubmittedTerms, awardStartDate);
 
         // Create an array of dates.
         date = deduplicatedreleased.map(dateTerm => dayjs(dateTerm.key).format('MMM YYYY'));
         accumulatedDataReleased = createDataset(deduplicatedreleased);
-        accumulatedDataSubmitted = createDataset(deduplicatedsubmitted);
     }
 
     return (
         <div>
-            {accumulatedDataReleased.length > 0 || accumulatedDataSubmitted.length > 0 ?
+            {accumulatedDataReleased.length > 0 ?
                 <Panel addClasses={panelCss}>
                     <PanelHeading addClasses={panelHeadingCss}>
                         <h4>Cumulative Number of Experiments</h4>
                     </PanelHeading>
                     <PanelBody>
-                        <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
+                        <CumulativeGraph releaseddatavalue={accumulatedDataReleased} monthReleased={date} />
                     </PanelBody>
                 </Panel>
             : null}
@@ -1992,7 +1973,6 @@ class CumulativeGraph extends React.Component {
 
     shouldComponentUpdate(nextProps) {
         return !_.isEqual(this.props.releaseddatavalue, nextProps.releaseddatavalue) ||
-                !_.isEqual(this.props.submitteddatavalue, nextProps.submitteddatavalue) ||
                 !_.isEqual(this.props.monthReleased, nextProps.monthReleased);
     }
 
@@ -2005,7 +1985,7 @@ class CumulativeGraph extends React.Component {
     }
 
     createChart() {
-        const { releaseddatavalue, submitteddatavalue, monthReleased } = this.props;
+        const { releaseddatavalue, monthReleased } = this.props;
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
@@ -2045,11 +2025,6 @@ class CumulativeGraph extends React.Component {
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        label: 'Submitted',
-                        data: submitteddatavalue,
-                        backgroundColor: '#a9d18e',
-                    },
-                    {
                         label: 'Released',
                         data: releaseddatavalue,
                         backgroundColor: '#538235',
@@ -2060,11 +2035,10 @@ class CumulativeGraph extends React.Component {
     }
 
     updateChart() {
-        const { releaseddatavalue, submitteddatavalue, monthReleased } = this.props;
+        const { releaseddatavalue, monthReleased } = this.props;
 
         this.chart.data.labels = monthReleased;
-        this.chart.data.datasets[0].data = submitteddatavalue;
-        this.chart.data.datasets[1].data = releaseddatavalue;
+        this.chart.data.datasets[0].data = releaseddatavalue;
         this.chart.update();
     }
 
@@ -2079,14 +2053,9 @@ class CumulativeGraph extends React.Component {
 
 CumulativeGraph.propTypes = {
     releaseddatavalue: PropTypes.array.isRequired,
-    submitteddatavalue: PropTypes.array.isRequired,
     monthReleased: PropTypes.array.isRequired,
 };
 
-CumulativeGraph.defaultProps = {
-    data: [],
-    monthReleased: [],
-};
 
 // Create Affiliated Labs list with carriage return to be displayed under description panel
 const AffiliatedLabsArray = (props) => {
