@@ -37,10 +37,6 @@ dl.key-value, dl.key-value-doc {
 
     dt {
         font-weight: bold;
-      
-        &:after {
-            content: ":";
-        }
     }
 
     [data-test] {
@@ -60,7 +56,7 @@ dl.key-value, dl.key-value-doc {
         display: block;
 
         dt {
-            flex: 0 0 140px;
+            flex: 0 0 200px;
             padding: 8px 0;
 
             .modal-body & {
