@@ -138,7 +138,13 @@ const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactC
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{title}</a>
+                    <a href={result['@id']} className="result-item__link">
+                        {title}
+                        <span className="accession">{result.accession}</span>
+                        <div className="result-item__cart-control">
+                            <CartToggle element={result} />
+                        </div>
+                    </a>
                     <div className="result-item__data-row">
                         {result.description}
                     </div>
@@ -312,6 +318,11 @@ const ExperimentComponent = (props, reactContext) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
+                    {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                        <div className="result-item__cart-control">
+                            <CartToggle element={result} />
+                        </div>
+                    : null}
                     <a href={result['@id']} className="result-item__link">
                         {result.assay_title ?
                             <span>{result.assay_title}</span>
@@ -320,6 +331,7 @@ const ExperimentComponent = (props, reactContext) => {
                         }
                         {result.biosample_ontology && result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
                     </a>
+                    <span className="result-item__meta-id">{result.accession}</span>
                     {result.biosample_summary ?
                         <div className="result-item__highlight-row">
                             {organismNames.length > 0 ?
@@ -357,15 +369,9 @@ const ExperimentComponent = (props, reactContext) => {
                 </div>
                 <div className="result-item__meta">
                     <div className="result-item__meta-title">{displayType}</div>
-                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
-                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
-                    <div className="result-item__cart-control">
-                        <CartToggle element={result} />
-                    </div>
-                : null}
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
@@ -560,7 +566,9 @@ const Image = (props) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.caption}</a>
+                    <a href={result['@id']} className="result-item__link">
+                        {result.caption}
+                    </a>
                     <Attachment context={result} attachment={result.attachment} />
                 </div>
                 <div className="result-item__meta">
@@ -1449,7 +1457,7 @@ const isFacetHidden = (facet, session, sessionProperties) => (
 
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
 export const FacetList = (props, reactContext) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix } = props;
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses } = props;
 
     // Get "normal" facets, meaning non-audit facets.
     const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
@@ -1499,7 +1507,6 @@ export const FacetList = (props, reactContext) => {
                 <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
                     {(context || clearButton) ?
                         <div className="search-header-control">
-                            {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
                             {context.clear_filters ?
                                 <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
                             : null}
@@ -1597,7 +1604,7 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, actions, hideBrowserSelector }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
@@ -1641,6 +1648,9 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 {!hideBrowserSelector ?
                     <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
                 : null}
+                {!(actions && actions.length > 0) ?
+                    <CartSearchControls searchResults={context} />
+                : null}
             </div>
             <div className="results-table-control__json">
                 <DisplayAsJson />
@@ -1668,6 +1678,7 @@ SearchControls.propTypes = {
         }
         return null;
     },
+    actions: PropTypes.array,
     /** True to hide the Visualize button */
     hideBrowserSelector: PropTypes.bool,
 };
@@ -1676,6 +1687,7 @@ SearchControls.defaultProps = {
     visualizeDisabledTitle: '',
     showResultsToggle: false,
     onFilter: null,
+    actions: null,
     hideBrowserSelector: false,
 };
 
@@ -1858,11 +1870,9 @@ export class ResultTable extends React.Component {
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
+                        <h1>Experiment Search</h1>
                         <h4>Showing {results.length} of {total} {label}</h4>
-                        <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
-                        {!(actions && actions.length > 0) ?
-                            <CartSearchControls searchResults={context} />
-                        : null}
+                        <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle actions={actions} />
                         {browserAvail ?
                             <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} navCss="browser-tab-bg" tabFlange>
                                 <TabPanelPane key="listpane">
