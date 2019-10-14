@@ -210,7 +210,7 @@ def human_annotations(human_file):
     """
     zipped_rows = get_rows_from_file(human_file, '\n')
     # Too many processes causes the http requests causes the remote to respond with error
-    pool = mp.Pool(processes=10)
+    pool = mp.Pool(processes=1)
     annotations = pool.map(human_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
 
@@ -221,7 +221,7 @@ def mouse_annotations(mouse_file):
     """
     zipped_rows = get_rows_from_file(mouse_file, '\n')
     # Too many processes causes the http requests causes the remote to respond with error
-    pool = mp.Pool(processes=10)
+    pool = mp.Pool(processes=1)
     annotations = pool.map(mouse_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
 
