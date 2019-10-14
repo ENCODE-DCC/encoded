@@ -1171,6 +1171,7 @@ class App extends React.Component {
                     <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
+                    <link href="https://fonts.googleapis.com/css?family=Mada:400,500,600,700" rel="stylesheet" />
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>

@@ -1,0 +1,144 @@
+body {
+    font-family: 'Mada', sans-serif;
+}
+
+.test-warning {
+    display: none !important;
+}
+
+body {
+    background: white;
+}
+
+#application {
+    background: white;
+}
+
+.panel, .flexcol-sm-6, .flexcol-heading {
+    border: none !important;
+}
+
+.flexcol-heading {
+    background: none;
+}
+
+dd, dt {
+    padding: 2px 10px !important;
+    font-size: 1rem;
+}
+dt {
+    text-transform: uppercase;
+    font-weight: 400 !important;
+    flex: 0 0 200px
+}
+dd {
+    text-align: right !important;
+    // font-size: 1.1rem;
+    font-weight: 500;
+}
+
+// .panel-body-with-header {
+//     max-width: 600px;
+// }
+// 
+.flexcol-sm-6 {
+    // flex: 0 0 100% !important;
+}
+
+// .row {
+//     .col-sm-5 {
+//         width: 100%;
+//         .facets{
+//             display: flex;
+//             flex-wrap: nowrap;
+//             overflow-x: auto;
+//             align-items: flex-end;
+//             .facet {
+//                 width: 250px;
+//                 flex: 1 0 250px;
+//                 margin-bottom: 0;
+//                 border-bottom: none;
+//                 padding-right: 10px;
+//             }
+//         }
+//     }
+// }
+
+.row {
+    .col-sm-5 {
+        width: 100%;
+        padding: 0;
+        .facets {
+            border: 0;
+            padding: 0;
+            .facet {
+                display: inline-block;
+                text-align: center;
+                padding: 6px 10px 2px 10px;
+                margin: 0;
+                margin-right: 10px;
+                border-bottom: 0;
+                background: #ececec;
+                ul, .date-selector-toggle-wrapper, .date-container, button, .filter-container {
+                    display: none;
+                }
+                h5 {
+                    margin: 0;
+                    .icon-caret-down {
+                        margin-left: 3px;
+                    }
+                }
+            }
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.dropdown-menu {
+    li {
+        a {
+            letter-spacing: 0 !important;
+        }
+    }
+}
+
+.col-sm-7 {
+    width: 100%;
+}
+
+hr {
+    display: none;
+}
+
+.badge-heading {
+    display: none;
+}
+
+.cart__search-controls {
+    border: none;
+    background: none;
+}
+
+.highlight-row {
+    line-height: 1.2;
+}
+
+.panel-heading {
+    background: none;
+}
+
+.result-table {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: none !important;
+    div, p {
+        padding-bottom: 2px;
+    }
+    li {
+        flex: 0 1 49%;
+        border-bottom: none;
+        border: 1px solid #d2d2d2;
+        padding: 10px;
+    }
+} 
