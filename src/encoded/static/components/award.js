@@ -1797,8 +1797,7 @@ export const ExperimentDate = (props) => {
             awardStartDate = dayjs(award.start_date).format('YYYY-MM');
         } else {
             const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
-            const earliestReleased = releasedIndex > -1 ? sortedreleasedTerms[releasedIndex].key : sortedreleasedTerms[sortedreleasedTerms.length - 1];
-            awardStartDate = earliestReleased;
+            awardStartDate = releasedIndex > -1 ? sortedreleasedTerms[releasedIndex].key : sortedreleasedTerms[sortedreleasedTerms.length - 1];
         }
         deduplicatedreleased = fillDates(sortedreleasedTerms, awardStartDate);
 
