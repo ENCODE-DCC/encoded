@@ -186,7 +186,6 @@ class AdvSearch extends React.Component {
 
     handleOnFocus() {
         this.setState({ showAutoSuggest: false });
-        this.context.navigate(this.context.location_href);
     }
 
     tick() {
