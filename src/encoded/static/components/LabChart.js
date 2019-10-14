@@ -28,12 +28,22 @@ class LabChart extends React.Component {
         this.featuresChecked = {};
         this.data = {};
         this.viridisColors = [];
+        this.oldMethods = false;
+
+        // This binding is necessary to make `this` work in the callback
+        this.toggleMethods = this.toggleMethods.bind(this);
+        this.zoomIn = this.zoomIn.bind(this);
+        this.zoomOut = this.zoomOut.bind(this);
     }
     render() {
         return (<div>
             <div className="flex-container" style={styles.flexContainer}>
                 <div className="chart-menu" style={styles.chartMenu}>
                     <h4>Show/Hide Lab Results</h4>
+                <div>
+                    <button onClick={this.toggleMethods}>Switch data</button>
+                    <div>Currently using {this.oldMethods ? "old " : "new "} methods.</div>
+                </div>
                     <div className="chart-checkboxes pb-2" style={styles.chartCheckboxes, styles.pb2}>{this.state.checkboxes}</div>
                     {/* zoom in and out buttons */}
                     <div className="pt-2" style={styles.pt2}>
@@ -103,7 +113,12 @@ class LabChart extends React.Component {
         let checked = event.currentTarget.checked;
         let value = event.currentTarget.value;
         this.featuresChecked[value]["checked"] = checked;
-        this.updateChart(value, checked);
+        if (this.oldMethods) {
+            this.updateChart(value, checked);
+        }
+        else {
+            this.updateChart2(value, checked);
+        }
     }
     updateChart(value, checked) {
         this.myConfig.graphset = [];
@@ -452,12 +467,25 @@ class LabChart extends React.Component {
         console.log(this.viridisColors);
 
     }
+    toggleMethods() {
+        this.oldMethods = !this.oldMethods;
+        if (this.oldMethods) {
+            this.drawChart();
+        }
+        else {
+            this.drawChart2();
+        }
+    }
     componentDidMount() {
         this.zingchart = window.zingchart;
         this.moment = window.moment;
         this.axios = window.axios;
-        this.drawChart();
-        // this.drawChart2();
+        if (this.oldMethods) {
+            this.drawChart();
+        }
+        else {
+            this.drawChart2();
+        }
     }
 }
 
