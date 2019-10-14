@@ -7,7 +7,7 @@ import multiprocessing as mp
 
 EPILOG = __doc__
 
-_HGNC_FILE = 'https://test.encodedcc.org/files/TSTFF854506/@@download/TSTFF854506.tsv'
+_HGNC_FILE = 'https://test.encodedcc.org/files/TSTFF536342/@@download/TSTFF536342.tsv'
 _MOUSE_FILE = 'https://www.encodeproject.org/files/ENCFF097CIT/@@download/ENCFF097CIT.tsv'
 _DM_FILE = 'https://www.encodeproject.org/files/ENCFF311QAL/@@download/ENCFF311QAL.tsv'
 _CE_FILE = 'https://www.encodeproject.org/files/ENCFF324UJT/@@download/ENCFF324UJT.tsv'
@@ -208,7 +208,7 @@ def human_annotations(human_file):
     """
     Generates JSON from TSV files
     """
-    zipped_rows = get_rows_from_file(human_file, '\r')
+    zipped_rows = get_rows_from_file(human_file, '\n')
     # Too many processes causes the http requests causes the remote to respond with error
     pool = mp.Pool(processes=10)
     annotations = pool.map(human_single_annotation, zipped_rows)
