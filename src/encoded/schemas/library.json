@@ -282,6 +282,12 @@
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
+        "queried_RNP_size_range": {
+            "title": "Queried RNP size range",
+            "description": "The measured size range of queried ribonucleoprotein (RNP) eCLIP target, in kD.",
+            "type": "string",
+            "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+        },
         "rna_integrity_number": {
             "title": "RNA integrity number",
             "description": "The RNA integrity number (RIN) value.",
