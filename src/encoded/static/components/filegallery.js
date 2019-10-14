@@ -2552,10 +2552,6 @@ class FileGalleryRendererComponent extends React.Component {
 
         return (
             <Panel>
-                <PanelHeading addClasses="file-gallery-heading">
-                    <h4>Files</h4>
-                </PanelHeading>
-
                 { (!hideGraph) ?
                     <div className="file-gallery-container">
                         <TabPanelFacets

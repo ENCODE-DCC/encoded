@@ -359,7 +359,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             }
             padding: 0;
             .show-hide-facets {
-                right: -26px;
+                right: -24px;
                 border-top-right-radius: 5px;
                 border-bottom-right-radius: 5px;
                 border-top-left-radius: 0;
@@ -387,11 +387,12 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
                 padding-top: 20px;
             }
             .show-hide-facets {
-                right: -2px;
+                right: -4px;
                 border-top: 2px solid #d2d2d2;
                 border-bottom: 2px solid #d2d2d2;
                 border-left: 2px solid #d2d2d2;
-                border-right: 2px solid white;
+                // border-right: 2px solid white;
+                background: #f0f0f0;
             }
         }
         border-right: 2px solid #d2d2d2;
