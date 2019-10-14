@@ -1,814 +1,3073 @@
 [
-    {
-        "accession": "ENCLB309ZZZ",
-        "aliases": [
-            "richard-myers:SL14572"
-        ],
-        "award": "ENCODE2",
-        "biosample": "ENCBS057AAA",
-        "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
-        ],
-        "extraction_method": "see document",
-        "fragmentation_methods": ["sonication (Bioruptor Twin)"],
-        "lab": "richard-myers",
-        "library_size_selection_method": "SPRI beads AMPURE",
-        "lysis_method": "see document",
-        "nucleic_acid_term_name": "DNA",
-        "nucleic_acid_starting_quantity": "1",
-        "nucleic_acid_starting_quantity_units": "cell-equivalent",
-        "size_range": "100-300",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
-        "rna_integrity_number": 1.11,
-        "dbxrefs": [
-            "GEO:GSM433174"
-        ]
-    },
-    {
-        "accession": "ENCLB310ZZZ",
-        "aliases": [
-            "richard-myers:SL16339"
-        ],
-        "award": "ENCODE2",
-        "biosample": "ENCBS001AAA",
-        "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
-        ],
-        "extraction_method": "see document",
-        "fragmentation_methods": ["sonication (Bioruptor Twin)"],
-        "lab": "richard-myers",
-        "library_size_selection_method": "SPRI beads AMPURE",
-        "lysis_method": "see document",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "100-300",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "rna_integrity_number": 2.0,
-        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
-    },
-    {
-        "accession": "ENCLB055ZZZ",
-        "aliases": [
-            "thomas-gingeras:SID38806"
-        ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
-        "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
-        ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "lab": "thomas-gingeras",
-        "library_size_selection_method": "gel",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "nucleic_acid_term_name": "polyadenylated mRNA",
-        "size_range": ">200",
-        "strand_specificity": true,
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "rna_integrity_number": 7.3,
-        "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"
-    },
-    {
-        "accession": "ENCLB056ZZZ",
-        "aliases": [
-            "thomas-gingeras:SID38807"
-        ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
-        "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
-        ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "lab": "thomas-gingeras",
-        "library_size_selection_method": "gel",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "nucleic_acid_term_name": "polyadenylated mRNA",
-        "size_range": ">200",
-        "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
-        "strand_specificity": true,
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
-    },
-    {
-        "accession": "ENCLB065ZZZ",
-        "aliases": [
-            "thomas-gingeras:SID38815"
-        ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
-        "lab": "thomas-gingeras",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": true,
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
-    },
-    {
-        "accession": "ENCLB066ZZZ",
-        "aliases": [
-            "thomas-gingeras:SID38816"
-        ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
-        "lab": "thomas-gingeras",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": true,
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "e4824882-0ad8-4009-a169-44d5955800af"
-    },
-    {
-        "accession": "ENCLB067ZZZ",
-        "aliases": [
-            "thomas-gingeras:SID38822"
-        ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
-        "depleted_in_term_name": [
-            "polyadenylated mRNA"
-        ],
-        "documents": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
-        ],
-        "extraction_method": "Qiagen #74204",
-        "lab": "thomas-gingeras",
-        "lysis_method": "Qiagen #74204",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": "<200",
-        "strand_specificity": true,
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "treatments": [
-            "8661b120-5c82-11e3-949a-0800200c9a66"
-        ],
-        "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017"
-    },
-    {
-        "accession": "ENCLB068ZZZ",
-        "aliases": [
-            "thomas-gingeras:SID38823"
-        ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
-        "depleted_in_term_name": [
-            "polyadenylated mRNA"
-        ],
-        "documents": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
-        ],
-        "extraction_method": "Qiagen #74204",
-        "lab": "thomas-gingeras",
-        "lysis_method": "Qiagen #74204",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": "<200",
-        "strand_specificity": true,
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "treatments": [
-            "8661b120-5c82-11e3-949a-0800200c9a66"
-        ],
-        "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565"
-    },
-    {
-        "accession": "ENCLB057ZZZ",
-        "award": "U54HG007005",
-        "biosample": "ENCBS087RNA",
-        "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
-        ],
-        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
-        "fragmentation_methods": ["chemical (Illumina TruSeq)"],
-        "lab": "brenton-graveley",
-        "library_size_selection_method": "SPRI beads",
-        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": true,
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
-    },
-    {
-        "accession": "ENCLB072ZZZ",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_methods": ["sonication (generic)"],
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
-    },
-    {
-        "accession": "ENCLB304ZZZ",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_methods": ["sonication (generic)"],
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "835e166d-0253-41ce-add2-de67429a3612"
-    },
-    {
-        "accession": "ENCLB071ZZZ",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_methods": ["sonication (generic)"],
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
-    },
-    {
-        "accession": "ENCLB000ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ANI",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_methods": ["sonication (generic)"],
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f"
-    },
-    {
-        "accession": "ENCLB001ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS045ANI",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_methods": ["sonication (generic)"],
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
-    },
-    {
-        "accession": "ENCLB058ZZZ",
-        "award": "U54HG007005",
-        "biosample": "ENCBS088RNA",
-        "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
-        ],
-        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
-        "fragmentation_methods": ["chemical (Illumina TruSeq)"],
-        "lab": "brenton-graveley",
-        "library_size_selection_method": "SPRI beads",
-        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": true,
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
-    },
-    {
-        "accession": "ENCLB163ZZZ",
-        "award": "ENCODE2",
-        "biosample": "ENCBS417ENC",
-        "documents": [
-            "encode:Myers_Methyl450_protocol"
-        ],
-        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "9a230485-0062-4590-be42-6ea7c4258941"
-    },
-    {
-        "_test": "test -new",
-        "accession": "ENCLB158ZZZ",
-        "award": "ENCODE2",
-        "biosample": "ENCBS417ENC",
-        "documents": [
-            "encode:Myers_Methyl450_protocol"
-        ],
-        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79"
-    },
-    {
-        "_test": "test -new",
-        "accession": "ENCLB159ZZZ",
-        "award": "ENCODE2",
-        "biosample": "ENCBS000GEN",
-        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816"
-    },
-    {
-        "_test": "DNA-me pipeline",
-        "accession": "ENCLB742NWU",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "documents": [],
-        "uuid": "0cbd1597-831a-4628-9cd0-c428b208d259",
-        "strand_specificity": false,
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "status": "in progress",
-        "nucleic_acid_term_name": "DNA",
-        "treatments": [],
-        "award": "/awards/U54HG006998/",
-        "lab": "/labs/richard-myers/",
-        "size_range": "100-300",
-        "biosample": "ENCBS039ENC"
-    },
-    {
-        "accession": "ENCLB723GTS",
-        "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
-        "lab": "michael-snyder/",
-        "nucleic_acid_term_name": "DNA",
-        "status": "released",
-        "strand_specificity": false,
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
-    },
-    {
-        "accession": "ENCLB209APR",
-        "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
-        "lab": "michael-snyder",
-        "nucleic_acid_term_name": "DNA",
-        "status": "released",
-        "strand_specificity": false,
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
-    },
-    {
-        "accession": "ENCLB209APS",
-        "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
-        "lab": "michael-snyder",
-        "nucleic_acid_term_name": "DNA",
-        "status": "released",
-        "strand_specificity": false,
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "de797662-a71b-45d5-96bf-9dd800194907"
-    },
-    {
-        "_test": "Paired set 1 library",
-        "lab": "john-stamatoyannopoulos",
-        "accession": "ENCLB376WDO",
-        "biosample": "ENCBS278TPS",
-        "status": "released",
-        "strand_specificity": false,
-        "award": "U54HG007010",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939"
-    },
-    {
-        "_test": "Paired set 2 library",
-        "accession": "ENCLB033CJI",
-        "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "2b0693ed-6f10-449f-82c2-ca3bd6b34daa",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "Organism development series 1 library",
-        "accession": "ENCLB857STI",
-        "biosample": "ENCBS757XTA",
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "RNA",
-        "uuid": "d82037c7-d189-4111-bff8-589d0b614e84",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "strand_specificity": false,
-        "size_range": "350-600",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "aliases": ["robert-waterston:library_RB884_80_1_1"],
-        "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
-    },
-    {
-        "_test": "Organism development series 2 library",
-        "accession": "ENCLB332ELH",
-        "biosample": "ENCBS201ZPO",
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "RNA",
-        "uuid": "c36567eb-880a-41af-9b19-5d879a4ff6ce",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "strand_specificity": false,
-        "size_range": "350-600",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "aliases": ["robert-waterston:library_RB884_680_1_1"],
-        "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
-    },
-    {
-        "_test": "Organism development series 3 library",
-        "accession": "ENCLB595GWE",
-        "strand_specificity": false,
-        "biosample": "ENCBS598ADI",
-        "lab": "robert-waterston",
-        "status": "revoked",
-        "nucleic_acid_term_name": "RNA",
-        "uuid": "2f98377b-0305-4af2-aa6c-b39d04478817",
-        "aliases": ["robert-waterston:library_RB884_880_1_1"],
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
-    },
-    {
-        "_test": "Treatment time series 1 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB001SER",
-        "biosample": "ENCBS001SER",
-        "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a"
-    },
-    {
-        "_test": "Treatment time series 2 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB002SER",
-        "biosample": "ENCBS002SER",
-        "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef"
-    },
-    {
-        "_test": "Treatment time series 3 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB003SER",
-        "biosample": "ENCBS003SER",
-        "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e"
-    },
-    {
-        "_test": "Treatment concentration series 1 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB001CON",
-        "biosample": "ENCBS001SER",
-        "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89"
-    },
-    {
-        "_test": "Treatment time series 2 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB002CON",
-        "biosample": "ENCBS002CON",
-        "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d"
-    },
-    {
-        "_test": "Treatment time series 3 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB003CON",
-        "biosample": "ENCBS003CON",
-        "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d"
-    },
-    {
-        "_test": "Reference epigenome series 1 library RNA-seq",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "RNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB001EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc"
-    },
-    {
-        "_test": "Reference epigenome series 1 library WGBS",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB002EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91"
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K4me1",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB003EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89"
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K4me3",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB004EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62"
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K27ac",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB005EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba"
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K27ac",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB006EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa"
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K27me3",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB007EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137"
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K9me3",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB008EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c"
-    },
-    {
-        "_test": "Reference epigenome series 1 library control",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB009EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136"
-    },
-    {
-        "_test": "Replication timing series 1 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
-        "accession": "ENCLB001REP",
-        "biosample": "ENCBS001REP",
-        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6"
-    },
-    {
-        "_test": "Replication timing series 2 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-250",
-        "accession": "ENCLB002REP",
-        "biosample": "ENCBS002REP",
-        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970"
-    },
-    {
-        "_test": "Replication timing series 3 library",
-        "strand_specificity": false,
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "170-200",
-        "accession": "ENCLB003REP",
-        "biosample": "ENCBS003REP",
-        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0"
-    },
-    {
-        "_test": "RCC files",
-        "accession": "ENCLB000RCC",
-        "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "RCC files",
-        "accession": "ENCLB001RCC",
-        "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "idat files",
-        "accession": "ENCLB000DAT",
-        "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "single cell barcodes",
-        "accession": "ENCLB001SCL",
-        "strand_specificity": false,
-        "biosample": "ENCBS804RUL",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "barcode_details": [
-            {
-                "barcode": "ABCDEFG1"
-            },
-            {
-                "barcode": "ABCDEFG12",
-                "plate_id": "plate_1",
-                "plate_location": "A11"
-            }
-        ],
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "bbadf7f4-41ca-4410-b6c2-3003f98b41fe",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "CRISPR screen library",
-        "accession": "ENCLB009ACL",
-        "strand_specificity": false,
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b1710-70f0-11e9-a923-1681be663d3e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "pooled clone sequencing library",
-        "accession": "ENCLB001ACL",
-        "strand_specificity": false,
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b19ea-70f0-11e9-a923-1681be663d3e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "MPRA library",
-        "accession": "ENCLB001MPR",
-        "strand_specificity": false,
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b19ea-10f0-11e4-a923-1681be663d2e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "STARR-seq library",
-        "accession": "ENCLB011STR",
-        "strand_specificity": false,
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "in progress",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b29ea-10f0-11e4-a921-1681be563d2e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    }
+{
+    "accession": "ENCLB585VMC",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9025"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:30:51.091499+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051050"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "014a802d-d7cf-47f8-ad8c-889c7e6a0739"
+},
+{
+    "accession": "ENCLB565ZZZ",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11918-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "barcode_details": [],
+    "biosample": "ENCBS347RWF",
+    "date_created": "2013-11-15T01:28:26.866718+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "682c3e93-7ded-4ca4-beab-e5383ad2b862",
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "039ed85c-61fa-45a0-bd83-83a7d4ed19be"
+},
+{
+    "accession": "ENCLB483BRP",
+    "aliases": [
+        "thomas-gingeras:296636"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "barcode_details": [],
+    "biosample": "ENCBS320PNF",
+    "date_created": "2016-04-01T18:16:55.948208+00:00",
+    "dbxrefs": [
+        "GEO:GSM2343824"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "2319f3ec-e5c3-4b2e-a49d-77597115137c"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "RNA",
+    "rna_integrity_number": 6.8,
+    "schema_version": "9",
+    "size_range": "<200",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [
+        "35c68491-07b7-4cc4-8eb1-6e13787a6d5a"
+    ],
+    "uuid": "07a12f78-fe3d-42ba-b7e8-6078ff65f2fb"
+},
+{
+    "accession": "ENCLB333EAZ",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9802"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:27:28.596755+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "0873367d-a071-4926-ac42-47079bbe97da"
+},
+{
+    "accession": "ENCLB586ZZZ",
+    "aliases": [
+        "john-stamatoyannopoulos:DS8482-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "barcode_details": [],
+    "biosample": "ENCBS404ENC",
+    "date_created": "2013-11-15T01:28:32.395098+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "08dc5a76-5cf6-4452-baca-b664e5d1a5c5"
+},
+{
+    "accession": "ENCLB881QWX",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-15382",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me1 in human hES-I3 cells_Mar-03-2010_44115_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS599JGY",
+    "date_created": "2015-09-09T05:28:50.212059+00:00",
+    "dbxrefs": [
+        "GEO:GSM537668"
+    ],
+    "documents": [
+        "c074c060-8f7e-416a-b6d9-4e9b519b7b76"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537668",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "08f6700f-bb33-46ed-9ef3-91d585b53115"
+},
+{
+    "accession": "ENCLB739NYD",
+    "aliases": [
+        "john-stamatoyannopoulos:42116B"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007010",
+    "barcode_details": [],
+    "biosample": "ENCBS457HEW",
+    "date_created": "2017-09-28T06:03:37.393872+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "lab": "john-stamatoyannopoulos",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "treatments": [],
+    "uuid": "0c19d0fc-9b79-4728-89de-1641d7666364"
+},
+{
+    "accession": "ENCLB896PTB",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9799"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:26:42.151923+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "0f2bd1e6-ff62-45db-8f60-d4fb738cb864"
+},
+{
+    "accession": "ENCLB451EVE",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9022"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:41:27.860575+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051122"
+    ],
+    "documents": [],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "10bbdd22-b28a-4e6e-9bd7-71e6e5197ca4"
+},
+{
+    "accession": "ENCLB107YDG",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-15474",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me3 in human hES-I3 cells_Mar-03-2010_27521_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS682JTI",
+    "date_created": "2015-09-09T05:28:48.564063+00:00",
+    "dbxrefs": [
+        "GEO:GSM537665"
+    ],
+    "documents": [
+        "ae4487a7-d818-4cde-ab33-6cbd4b234f01"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537665",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "14cb56e7-2912-47ed-a8f2-b25f01707287"
+},
+{
+    "accession": "ENCLB559KDJ",
+    "aliases": [
+        "richard-myers:SL2905"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004576",
+    "barcode_details": [],
+    "biosample": "ENCBS404ENC",
+    "date_created": "2013-10-17T20:33:05.433096-08:00",
+    "dbxrefs": [],
+    "documents": [
+        "2f645c4a-dea3-49fb-817d-db81c7906ebe"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "richard-myers",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "treatments": [],
+    "uuid": "15b9c7e2-4157-4e8a-a6b5-54b570d85870"
+},
+{
+    "accession": "ENCLB417ZZZ",
+    "aliases": [
+        "john-stamatoyannopoulos:DS10081-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "barcode_details": [],
+    "biosample": "ENCBS074ENC",
+    "date_created": "2013-11-15T01:28:27.669724+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "198e206e-8d9c-4944-9459-b7a7a4841c59"
+},
+{
+    "accession": "ENCLB029LBI",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11560-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS488ZLU",
+    "date_created": "2013-12-19T20:11:02.852254+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "f2013c2b-4e13-46e9-be5a-9f941f328d2e"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "223d96d9-7225-4dfb-8902-9c668703c649"
+},
+{
+    "accession": "ENCLB393BYZ",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9107"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:34:18.371685+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051123"
+    ],
+    "documents": [],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "24629c69-a227-4452-93f6-9942760276c4"
+},
+{
+    "accession": "ENCLB559JXN",
+    "aliases": [
+        "richard-myers:SL2910"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004576",
+    "barcode_details": [],
+    "biosample": "ENCBS404ENC",
+    "date_created": "2013-10-17T20:32:39.838421-08:00",
+    "dbxrefs": [],
+    "documents": [
+        "2f645c4a-dea3-49fb-817d-db81c7906ebe"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "richard-myers",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "treatments": [],
+    "uuid": "24681af5-ea8d-444f-9427-7f449be35cc1"
+},
+{
+    "accession": "ENCLB992YNP",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9811"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:32:09.694239+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "261e58cf-37ed-45ea-bf0a-6590900ed5df"
+},
+{
+    "accession": "ENCLB559JHW",
+    "aliases": [
+        "richard-myers:SL2914"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004576",
+    "barcode_details": [],
+    "biosample": "ENCBS404ENC",
+    "date_created": "2013-10-17T20:31:29.355308-08:00",
+    "dbxrefs": [],
+    "documents": [
+        "2f645c4a-dea3-49fb-817d-db81c7906ebe"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "richard-myers",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "treatments": [],
+    "uuid": "2b7c2c1c-0123-40bc-8277-75ce3a6e76d1"
+},
+{
+    "accession": "ENCLB862DKJ",
+    "aliases": [
+        "roadmap-epigenomics:CE_AM_1013091",
+        "roadmap-epigenomics:Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types_May-18-2011_7074_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS224XQX",
+    "date_created": "2015-09-09T23:26:59.844931+00:00",
+    "dbxrefs": [
+        "GEO:GSM981282"
+    ],
+    "documents": [
+        "f00f4a80-c3fd-407c-a1a2-9d4600af039c"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM981282",
+    "nucleic_acid_term_name": "RNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "2cc50be7-dd54-436d-a0bb-cdc57a1d2284"
+},
+{
+    "accession": "ENCLB273DOY",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11782-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS767VYD",
+    "date_created": "2013-12-19T20:12:02.023333+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "2d5d1d0e-8d7b-479d-be53-2f037055d6b5"
+},
+{
+    "accession": "ENCLB275HIS",
+    "aliases": [
+        "richard-myers:SL161438"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS623YOK",
+    "crosslinking_method": "formaldehyde",
+    "date_created": "2017-01-31T16:26:36.449065+00:00",
+    "dbxrefs": [
+        "GEO:GSM2828636"
+    ],
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_date": "2016-09-26",
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "treatments": [],
+    "uuid": "2db92813-5751-4c21-979d-e4616dfb7d2c"
+},
+{
+    "accession": "ENCLB012ULW",
+    "aliases": [
+        "michael-snyder:L-3205"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "barcode_details": [],
+    "biosample": "ENCBS089HGD",
+    "date_created": "2016-12-09T02:39:39.664409+00:00",
+    "dbxrefs": [
+        "GEO:GSM2827447"
+    ],
+    "documents": [],
+    "lab": "michael-snyder",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "450-650",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "treatments": [],
+    "uuid": "2f4a9cfb-575c-4bce-84dd-70864580a689"
+},
+{
+    "accession": "ENCLB023YVU",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12215-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS606NNZ",
+    "date_created": "2013-12-19T20:12:02.736789+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "30180ef8-394f-4b6b-a8b1-03baeefb2762"
+},
+{
+    "accession": "ENCLB504ULQ",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9032"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:42:03.315559+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051107"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "33c83042-7019-41d4-a390-ef34871f2235"
+},
+{
+    "accession": "ENCLB956ZAA",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-15381",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K36me3 in human hES-I3 cells_Mar-03-2010_68512_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS421TWG",
+    "date_created": "2015-09-09T05:28:49.664892+00:00",
+    "dbxrefs": [
+        "GEO:GSM537669"
+    ],
+    "documents": [
+        "9f301d1f-ecd8-43ff-ac59-78acf93bd9e2"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537669",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "393f5bf1-9f64-4dd2-a3e8-904aa71c8628"
+},
+{
+    "accession": "ENCLB282KGI",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-15475",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9me3 in human hES-I3 cells_Mar-03-2010_60602_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS312JDV",
+    "date_created": "2015-09-09T05:28:48.374231+00:00",
+    "dbxrefs": [
+        "GEO:GSM537664"
+    ],
+    "documents": [
+        "f66d2c01-da3c-4a42-9b6d-62acffd06432"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537664",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "3b249652-b7cd-4fd5-8a05-1206dc9c399b"
+},
+{
+    "accession": "ENCLB278KKN",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11563-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS693PNC",
+    "date_created": "2013-12-19T20:11:01.614062+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "3bfea66d-9b31-4bde-9030-fd8bea377b2c"
+},
+{
+    "accession": "ENCLB620VEG",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12212-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS172JMM",
+    "date_created": "2013-12-19T20:12:02.568153+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "3ca70fc8-04a8-4150-a5f1-28fa68d83271"
+},
+{
+    "accession": "ENCLB934BAS",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9028"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:37:45.009153+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051118"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "3edbfe94-0881-4cab-a4ff-2a2eccbd2a11"
+},
+{
+    "accession": "ENCLB228MFG",
+    "aliases": [
+        "richard-myers:SL161439"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS002CZJ",
+    "crosslinking_method": "formaldehyde",
+    "date_created": "2017-01-31T16:26:37.923738+00:00",
+    "dbxrefs": [
+        "GEO:GSM3636232"
+    ],
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_date": "2016-09-26",
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "treatments": [],
+    "uuid": "46371c86-ddd0-4986-9360-ed043234c70c"
+},
+{
+    "accession": "ENCLB508EIZ",
+    "aliases": [
+        "roadmap-epigenomics:Lib_MC_20100211_02--ChIP_MC_20100208_02_hES_I3_TESR_H3K4Me1",
+        "roadmap-epigenomics:Lib_MC_20100211_02--ChIP_MC_20100208_02_hES I3 TESR_H3K4Me1",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me1 in human hES I3 TESR cells_Jul-26-2011_91396_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS401QZO",
+    "date_created": "2015-09-09T05:28:47.262715+00:00",
+    "dbxrefs": [
+        "GEO:GSM772789"
+    ],
+    "documents": [
+        "0456e0d8-f9a9-4759-9e87-ec2edb94bb4b"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM772789",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "46d08f3f-4aca-4d21-80f2-4f35a9f7037f"
+},
+{
+    "accession": "ENCLB122HWS",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9031"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:35:24.070150+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051048"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "48aea647-e20f-4af4-b5c9-d28ce5a8e630"
+},
+{
+    "accession": "ENCLB623MTB",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-16493",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K36me3 in human hES I3 TESR cells_Mar-03-2010_8784_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS057COO",
+    "date_created": "2015-09-09T05:28:49.269710+00:00",
+    "dbxrefs": [
+        "GEO:GSM537672"
+    ],
+    "documents": [
+        "79e0ac14-f970-4e07-bd13-9cfc103f4c32"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537672",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "491ec128-aeac-468d-b478-34356b553bc7"
+},
+{
+    "accession": "ENCLB555ARW",
+    "aliases": [
+        "thomas-gingeras:LID8968"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "barcode_details": [],
+    "biosample": "ENCBS367ENC",
+    "date_created": "2013-11-21T06:25:51.609840+00:00",
+    "dbxrefs": [
+        "GEO:GSM2400164"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "839d1ddc-117c-4e2c-8708-c392d6d3403e"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "polyadenylated mRNA",
+    "schema_version": "9",
+    "size_range": ">200",
+    "spikeins_used": [
+        "ENCSR402QNO"
+    ],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "4ea27ec5-1d86-486b-8e88-0cb41c16557c"
+},
+{
+    "accession": "ENCLB733UNX",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9809"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:23:47.651905+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "4f3adc1b-5c98-43ac-bc16-1d1163969b20"
+},
+{
+    "accession": "ENCLB251XQG",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9810"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:32:36.606380+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "509b07ad-4769-4e94-beff-1df41b784be3"
+},
+{
+    "accession": "ENCLB308EJA",
+    "aliases": [
+        "thomas-gingeras:296296"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "barcode_details": [],
+    "biosample": "ENCBS711XVO",
+    "date_created": "2015-12-02T19:49:26.760164+00:00",
+    "dbxrefs": [
+        "GEO:GSM2343696"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "da79b00c-e3f4-4a78-b9ff-02340bab044d"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "RNA",
+    "rna_integrity_number": 2.2,
+    "schema_version": "9",
+    "size_range": ">200",
+    "spikeins_used": [
+        "ENCSR156CIL"
+    ],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "528bb354-d195-4225-aa07-68c5fa43e51e"
+},
+{
+    "accession": "ENCLB555AQQ",
+    "aliases": [
+        "thomas-gingeras:LID20909"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "barcode_details": [],
+    "biosample": "ENCBS753AAA",
+    "date_created": "2013-11-14T19:28:24.535316+00:00",
+    "dbxrefs": [],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "449c2ec0-7631-4014-a0e3-01580f8a26b6",
+        "76321494-21b0-4808-8df0-14e7db32a712"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "RNA",
+    "schema_version": "9",
+    "size_range": "<200",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [
+        "35c68491-07b7-4cc4-8eb1-6e13787a6d5a"
+    ],
+    "uuid": "57068cb6-07df-4f61-ba4b-c99235d1f6e3"
+},
+{
+    "accession": "ENCLB928NWB",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9ac in human hES I3 TESR cells_Mar-03-2010_334_library",
+        "roadmap-epigenomics:Solexa-12682"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS412HHB",
+    "date_created": "2015-09-09T05:28:50.005959+00:00",
+    "dbxrefs": [
+        "GEO:GSM537624"
+    ],
+    "documents": [
+        "7c145fb5-4e45-454b-bd9b-6b87de166045"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537624",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "5c4cfdf4-207a-4982-b926-5500a233a43d"
+},
+{
+    "accession": "ENCLB655TXG",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-15380"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS058LJQ",
+    "date_created": "2015-10-14T22:19:45.630890+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "71739e57-2054-406a-bfe7-c23af351e800"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "treatments": [],
+    "uuid": "5ce9fb00-4925-468e-b69b-0e99ec4117ba"
+},
+{
+    "accession": "ENCLB718UZC",
+    "aliases": [
+        "michael-snyder:L-3152"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "barcode_details": [],
+    "biosample": "ENCBS089HGD",
+    "date_created": "2016-12-05T21:09:09.941946+00:00",
+    "dbxrefs": [
+        "GEO:GSM2825136"
+    ],
+    "documents": [],
+    "lab": "michael-snyder",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "450-650",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "treatments": [],
+    "uuid": "5deb5ad2-f18f-46bc-b541-08970854c388"
+},
+{
+    "accession": "ENCLB373XQT",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me3 in human hES I3 TESR cells_Mar-03-2010_48104_library",
+        "roadmap-epigenomics:Solexa-12681"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS524MEF",
+    "date_created": "2015-09-09T05:28:48.208140+00:00",
+    "dbxrefs": [
+        "GEO:GSM537626"
+    ],
+    "documents": [
+        "d8f059ac-d22a-4e5d-adde-8879d2604755"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537626",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "5defa352-c1e5-48d9-9f3b-8503cd4d248b"
+},
+{
+    "accession": "ENCLB645GYL",
+    "aliases": [
+        "john-stamatoyannopoulos:DS16206-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS748WVA",
+    "date_created": "2013-12-19T20:11:55.105279+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "5e27c833-a75e-40ec-b53a-76bf92f33f46"
+},
+{
+    "accession": "ENCLB926WTX",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12197-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS615IJU",
+    "date_created": "2013-12-19T20:11:00.984839+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "60a8799e-92bc-4e68-adbf-3a9427810b7b"
+},
+{
+    "accession": "ENCLB516JKG",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12404-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS606NNZ",
+    "date_created": "2013-12-19T20:12:02.397405+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "62f09502-e1e9-43ad-8146-cb5fa1354467"
+},
+{
+    "accession": "ENCLB372NFI",
+    "aliases": [
+        "john-stamatoyannopoulos:DS16204-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS748WVA",
+    "date_created": "2013-12-19T20:11:54.973242+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "f2013c2b-4e13-46e9-be5a-9f941f328d2e"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "65ec188e-568f-4aae-a313-14745b74e14e"
+},
+{
+    "accession": "ENCLB692ITP",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9043"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:35:55.443622+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051110"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "6b4d67f4-2364-4b4b-8f95-683122566c27"
+},
+{
+    "accession": "ENCLB048EBD",
+    "aliases": [
+        "john-stamatoyannopoulos:LN43684A"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007010",
+    "barcode_details": [],
+    "biosample": "ENCBS974IWX",
+    "date_created": "2017-03-12T19:46:00.278912+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "lab": "john-stamatoyannopoulos",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "treatments": [],
+    "uuid": "6b62cb69-21ed-4e40-8c4b-38c173023d3d"
+},
+{
+    "accession": "ENCLB271HNF",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS621MSH",
+    "date_created": "2017-10-30T17:36:46.965827+00:00",
+    "dbxrefs": [
+        "GEO:GSM3633955"
+    ],
+    "documents": [],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "2c67f476-983b-41d8-9958-7ac6cc1deb62",
+    "treatments": [],
+    "uuid": "6cf972e8-83f8-49d1-8f0a-310388996ff1"
+},
+{
+    "accession": "ENCLB985LFV",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-12683-16494",
+        "roadmap-epigenomics:Solexa-12683"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS268NCC",
+    "date_created": "2015-09-09T05:28:48.046750+00:00",
+    "dbxrefs": [
+        "GEO:GSM537625"
+    ],
+    "documents": [
+        "4eba5e94-736c-4028-a116-d998d0122841"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537625",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "6d333869-bacf-4b36-b3b0-3911a657d9f8"
+},
+{
+    "accession": "ENCLB648KAF",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9806"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:27:57.942143+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "70e89209-a28b-4b7c-83dd-6274daa91a8d"
+},
+{
+    "accession": "ENCLB555ASW",
+    "aliases": [
+        "thomas-gingeras:LID20910"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "barcode_details": [],
+    "biosample": "ENCBS754AAA",
+    "date_created": "2013-11-14T19:28:40.738346+00:00",
+    "dbxrefs": [],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "449c2ec0-7631-4014-a0e3-01580f8a26b6",
+        "76321494-21b0-4808-8df0-14e7db32a712"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "RNA",
+    "schema_version": "9",
+    "size_range": "<200",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [
+        "35c68491-07b7-4cc4-8eb1-6e13787a6d5a"
+    ],
+    "uuid": "7442fdc7-bc2b-4983-a0c9-66055327dccf"
+},
+{
+    "accession": "ENCLB117KMB",
+    "aliases": [
+        "roadmap-epigenomics:RNAPrp 24_513980",
+        "roadmap-epigenomics:Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types_Jun-29-2012_24530_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS401QZO",
+    "date_created": "2015-09-09T17:23:16.458989+00:00",
+    "dbxrefs": [
+        "GEO:GSM981293"
+    ],
+    "documents": [
+        "4384a038-0ee5-48f9-b92c-2393727508b3"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM981293",
+    "nucleic_acid_term_name": "RNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "77666a90-1927-48d5-934f-5c5315ed99bd"
+},
+{
+    "accession": "ENCLB566ZZZ",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11923-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "barcode_details": [],
+    "biosample": "ENCBS065ENC",
+    "date_created": "2013-11-15T01:28:26.779484+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "682c3e93-7ded-4ca4-beab-e5383ad2b862",
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "7794f7b1-304f-45e4-9bca-6fc5b828b643"
+},
+{
+    "accession": "ENCLB757TOM",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12195-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS628EGC",
+    "date_created": "2013-12-19T20:11:02.263858+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "7964909f-854a-4d69-a3a7-9f7b53809cc8"
+},
+{
+    "accession": "ENCLB463UWX",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12194-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS628EGC",
+    "date_created": "2013-12-19T20:11:02.657063+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "7c54d303-d7ef-44ac-a7e4-db42f0a24e13"
+},
+{
+    "accession": "ENCLB555ANH",
+    "aliases": [
+        "thomas-gingeras:LID8970"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "barcode_details": [],
+    "biosample": "ENCBS754AAA",
+    "date_created": "2013-11-21T06:19:24.574939+00:00",
+    "dbxrefs": [
+        "GEO:GSM2400144"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "eb84ab16-6202-44ee-84f5-d67b241f94db"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "polyadenylated mRNA",
+    "schema_version": "9",
+    "size_range": ">200",
+    "spikeins_used": [
+        "ENCSR402QNO"
+    ],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "7d162cfa-2bf8-4ca1-9a5a-9011bc684e35"
+},
+{
+    "accession": "ENCLB741ROH",
+    "aliases": [
+        "john-stamatoyannopoulos:DS16203-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS748WVA",
+    "date_created": "2013-12-19T20:11:55.618786+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "8231e615-8444-4696-9f89-c1123862be93"
+},
+{
+    "accession": "ENCLB514ZGR",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9042"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:41:20.029254+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051051"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "831c0d9e-5998-498e-adce-45524b68229e"
+},
+{
+    "accession": "ENCLB680AKS",
+    "aliases": [
+        "richard-myers:SL161432"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS002CZJ",
+    "crosslinking_method": "formaldehyde",
+    "date_created": "2017-01-31T16:26:37.200059+00:00",
+    "dbxrefs": [
+        "GEO:GSM3634332"
+    ],
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_date": "2016-09-26",
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "treatments": [],
+    "uuid": "832b8260-562b-4a50-83e2-7e590069ba1d"
+},
+{
+    "accession": "ENCLB426QBH",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9797"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:28:21.401642+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "8443efeb-32ba-42de-b82a-c9fb10fd3db0"
+},
+{
+    "accession": "ENCLB406YUK",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9801"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:27:09.732052+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "869bc8ae-5edd-46d7-bcae-9d44e97cc9f9"
+},
+{
+    "accession": "ENCLB468DDW",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9026"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:28:58.063418+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051109"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "86d94666-b86a-4443-81f6-60d7df3232cc"
+},
+{
+    "accession": "ENCLB669WNO",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11562-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS693PNC",
+    "date_created": "2013-12-19T20:11:01.460122+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "f2013c2b-4e13-46e9-be5a-9f941f328d2e"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "8aa9f9b9-3197-4bb2-b6f2-8bf7155eeb5d"
+},
+{
+    "accession": "ENCLB263TZE",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9047"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:32:34.414996+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051049"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "8c970530-319b-4e1c-b068-6344e6dac6e6"
+},
+{
+    "accession": "ENCLB072XZS",
+    "aliases": [
+        "thomas-gingeras:296639"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "barcode_details": [],
+    "biosample": "ENCBS711XVO",
+    "date_created": "2016-04-01T18:17:57.275259+00:00",
+    "dbxrefs": [
+        "GEO:GSM2344389"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "7feb0ace-54b1-4db7-a32d-df4c78297ae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "RNA",
+    "rna_integrity_number": 2.2,
+    "schema_version": "9",
+    "size_range": "<200",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [
+        "35c68491-07b7-4cc4-8eb1-6e13787a6d5a"
+    ],
+    "uuid": "8e58511e-07be-464c-b299-d2f26478feac"
+},
+{
+    "accession": "ENCLB603TXU",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12198-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS615IJU",
+    "date_created": "2013-12-19T20:11:02.458048+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "95b6eaf1-351f-4a30-a56d-ff3a75dd77e3"
+},
+{
+    "accession": "ENCLB246HWG",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9048"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:36:39.932879+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051106"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "9f9cd548-d74d-469d-bf99-90604b841de7"
+},
+{
+    "accession": "ENCLB381WRT",
+    "aliases": [
+        "thomas-gingeras:296289"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "barcode_details": [],
+    "biosample": "ENCBS320PNF",
+    "date_created": "2015-12-02T19:48:20.361015+00:00",
+    "dbxrefs": [
+        "GEO:GSM2343558"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "9c1a84e1-25c9-42ad-8c2b-7c34f9efd886"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "RNA",
+    "rna_integrity_number": 6.8,
+    "schema_version": "9",
+    "size_range": ">200",
+    "spikeins_used": [
+        "ENCSR156CIL"
+    ],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "a345973d-ffab-4888-85d4-cd550ff65954"
+},
+{
+    "accession": "ENCLB175MYB",
+    "aliases": [
+        "michael-snyder:L-3204"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "barcode_details": [],
+    "biosample": "ENCBS011GFV",
+    "date_created": "2016-12-09T02:54:30.249517+00:00",
+    "dbxrefs": [
+        "GEO:GSM2828972"
+    ],
+    "documents": [],
+    "lab": "michael-snyder",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "450-650",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "treatments": [],
+    "uuid": "a70e3596-24bf-4911-be33-e5a5e8fc80fb"
+},
+{
+    "accession": "ENCLB013JHL",
+    "aliases": [
+        "john-stamatoyannopoulos:DS12403-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS172JMM",
+    "date_created": "2013-12-19T20:12:02.223160+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "ac15d9c8-5441-47ba-a0c4-0582636a6598"
+},
+{
+    "accession": "ENCLB937HGI",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS482XWK",
+    "date_created": "2017-10-30T17:36:10.720442+00:00",
+    "dbxrefs": [
+        "GEO:GSM3633682"
+    ],
+    "documents": [],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "2c67f476-983b-41d8-9958-7ac6cc1deb62",
+    "treatments": [],
+    "uuid": "ac7cdaa7-0d09-48ec-96fd-7527d1097692"
+},
+{
+    "accession": "ENCLB062BUN",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9029"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:41:10.910950+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051028"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "ad63abb1-4ea5-4ca6-8093-91dce3bba4b9"
+},
+{
+    "accession": "ENCLB695NME",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11544-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS488ZLU",
+    "date_created": "2013-12-19T20:11:01.901154+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "b088c570-cfb1-4956-92a6-504349e96178"
+},
+{
+    "accession": "ENCLB317XDG",
+    "aliases": [
+        "michael-snyder:L-3147"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "barcode_details": [],
+    "biosample": "ENCBS011GFV",
+    "date_created": "2016-12-05T22:02:02.007518+00:00",
+    "dbxrefs": [
+        "GEO:GSM2824392"
+    ],
+    "documents": [],
+    "lab": "michael-snyder",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "450-650",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "treatments": [],
+    "uuid": "b4c5f50d-059f-455f-bfd6-f3caa39a0948"
+},
+{
+    "accession": "ENCLB200JLW",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9803"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:26:56.208309+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "b4e42ace-e7f5-4bbf-958f-7727b5d31110"
+},
+{
+    "accession": "ENCLB348TAL",
+    "aliases": [
+        "richard-myers:SL161431"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS623YOK",
+    "crosslinking_method": "formaldehyde",
+    "date_created": "2017-01-31T16:26:35.701117+00:00",
+    "dbxrefs": [
+        "GEO:GSM2828836"
+    ],
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_date": "2016-09-26",
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "treatments": [],
+    "uuid": "b55aba5d-d47f-4e11-ac47-821b9af681f2"
+},
+{
+    "accession": "ENCLB585ZZZ",
+    "aliases": [
+        "john-stamatoyannopoulos:DS8476-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "barcode_details": [],
+    "biosample": "ENCBS799ICU",
+    "date_created": "2013-11-15T01:28:38.860775+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "b969be82-ca8e-41c6-9b58-c5324a0d1da8"
+},
+{
+    "accession": "ENCLB094EOT",
+    "aliases": [
+        "richard-myers:SL161434"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS002CZJ",
+    "crosslinking_method": "formaldehyde",
+    "date_created": "2017-01-31T16:26:29.254603+00:00",
+    "dbxrefs": [
+        "GEO:GSM2824197"
+    ],
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_date": "2016-09-26",
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "treatments": [],
+    "uuid": "bae65575-5c85-4100-b6f7-855d38ab7da6"
+},
+{
+    "accession": "ENCLB037NNG",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-15383",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9ac in human hES-I3 cells_Mar-03-2010_32191_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS593HOC",
+    "date_created": "2015-09-09T05:28:49.822007+00:00",
+    "dbxrefs": [
+        "GEO:GSM537670"
+    ],
+    "documents": [
+        "ce01a71d-027e-4f68-905a-bd4d54849d33"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537670",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "bb35c4f0-c275-4c40-98eb-bbf71adb4b3f"
+},
+{
+    "accession": "ENCLB618CIA",
+    "aliases": [
+        "michael-snyder:L-3151"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "barcode_details": [],
+    "biosample": "ENCBS011GFV",
+    "date_created": "2016-12-05T22:18:04.529804+00:00",
+    "dbxrefs": [
+        "GEO:GSM2828802"
+    ],
+    "documents": [],
+    "lab": "michael-snyder",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "450-650",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "treatments": [],
+    "uuid": "bc380591-f00f-4365-a784-ed1414a3d396"
+},
+{
+    "accession": "ENCLB177PSJ",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9800"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:27:43.333293+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "bdff7122-3c1d-4bd8-a50c-2d278c866aed"
+},
+{
+    "accession": "ENCLB392GVP",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9045"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:40:59.370765+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051117"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "c06c7d59-3b4a-4d9b-8952-5423e5bda45b"
+},
+{
+    "accession": "ENCLB068TJN",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9807"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:31:40.251727+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "c106e27e-e93f-48a3-8f58-7e44f222fab8"
+},
+{
+    "accession": "ENCLB472FJF",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9798"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:23:03.396753+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "c5987449-a248-4b91-92f2-3ea77af21b4e"
+},
+{
+    "accession": "ENCLB801ROU",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9804"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:28:11.616451+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "c8e6d356-98e7-41e3-b191-f082ebcf718b"
+},
+{
+    "accession": "ENCLB895ROR",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11561-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS488ZLU",
+    "date_created": "2013-12-19T20:11:01.746099+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "cb43b02b-5f10-4257-b8e5-48f28dbd34fb"
+},
+{
+    "accession": "ENCLB846REQ",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-10213"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS811OSD",
+    "date_created": "2015-09-09T05:28:47.862950+00:00",
+    "dbxrefs": [
+        "GEO:GSM537648"
+    ],
+    "documents": [
+        "ccad8209-dd92-4b42-97e6-3c680b9f8a87"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537648",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "ce478e82-5eb6-43e0-97ac-e9d6c7854faa"
+},
+{
+    "accession": "ENCLB121WFX",
+    "aliases": [
+        "michael-snyder:L-3148"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "barcode_details": [],
+    "biosample": "ENCBS089HGD",
+    "date_created": "2016-12-05T20:51:11.063594+00:00",
+    "dbxrefs": [
+        "GEO:GSM2824395"
+    ],
+    "documents": [],
+    "lab": "michael-snyder",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "450-650",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "treatments": [],
+    "uuid": "d441eb0d-c2b0-46cc-8e58-87450fd8f708"
+},
+{
+    "accession": "ENCLB851IFS",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11605-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS767VYD",
+    "date_created": "2013-12-19T20:12:01.706050+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "d8be53cb-eb2c-468f-9c27-e4f7f34a47fa"
+},
+{
+    "accession": "ENCLB714SLK",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of WCE in human hES-I3 cells_Mar-03-2010_63229_library",
+        "roadmap-epigenomics:Solexa-10219"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS533SYQ",
+    "date_created": "2015-09-09T05:28:48.924173+00:00",
+    "dbxrefs": [
+        "GEO:GSM537647"
+    ],
+    "documents": [
+        "1c0a5193-4d60-4308-9a3c-8a5bc6536962"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537647",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "ddbad926-f099-445d-90ad-9e35b04851df"
+},
+{
+    "accession": "ENCLB693GEX",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11783-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS718MJZ",
+    "date_created": "2013-12-19T20:12:03.106679+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "e3a04fae-2ef2-4d33-af25-5e87063ff4fb"
+},
+{
+    "accession": "ENCLB974YKJ",
+    "aliases": [
+        "roadmap-epigenomics:Lib_MC_20090522_07--ChIP_MC_20090519_07_hES I3 TESR_WCE",
+        "roadmap-epigenomics:Lib_MC_20090522_07--ChIP_MC_20090519_07_hES_I3_TESR_WCE",
+        "roadmap-epigenomics:ChIP-Seq analysis of WCE in human hES I3 TESR cells_Sep-15-2010_6776_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS401QZO",
+    "date_created": "2015-09-09T05:28:46.992163+00:00",
+    "dbxrefs": [
+        "GEO:GSM621386"
+    ],
+    "documents": [
+        "8b431209-600b-4e44-b081-a01cae294224"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM621386",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "e6479412-0652-4a61-a1d5-6338f9d608dd"
+},
+{
+    "accession": "ENCLB934ZCF",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9808"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS943JOF",
+    "date_created": "2019-04-27T23:33:06.081760+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "e6ee1ab2-48f6-441a-9bc3-78cf1688c5ab"
+},
+{
+    "accession": "ENCLB221SSF",
+    "aliases": [
+        "richard-myers:SL161427"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "barcode_details": [],
+    "biosample": "ENCBS002CZJ",
+    "crosslinking_method": "formaldehyde",
+    "date_created": "2017-01-31T16:26:28.529889+00:00",
+    "dbxrefs": [
+        "GEO:GSM2827435"
+    ],
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_date": "2016-09-26",
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "richard-myers",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "treatments": [],
+    "uuid": "e6fbe0f9-6c7c-4a00-8fb0-db06ee6c6fb6"
+},
+{
+    "accession": "ENCLB559JHX",
+    "aliases": [
+        "richard-myers:SL2906"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004576",
+    "barcode_details": [],
+    "biosample": "ENCBS404ENC",
+    "date_created": "2013-10-17T20:31:29.511831-08:00",
+    "dbxrefs": [],
+    "documents": [
+        "2f645c4a-dea3-49fb-817d-db81c7906ebe"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "richard-myers",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "treatments": [],
+    "uuid": "eacf6036-b7eb-44eb-9881-0315ed8e375f"
+},
+{
+    "accession": "ENCLB761GCS",
+    "aliases": [
+        "john-stamatoyannopoulos:DS16205-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS271PJP",
+    "date_created": "2013-12-19T20:11:55.475673+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "f2013c2b-4e13-46e9-be5a-9f941f328d2e"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "eb0ee666-679e-49d0-9f3d-aef268522557"
+},
+{
+    "accession": "ENCLB748FBL",
+    "aliases": [
+        "john-stamatoyannopoulos:DS16207-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017156",
+    "barcode_details": [],
+    "biosample": "ENCBS271PJP",
+    "date_created": "2013-12-19T20:11:55.341263+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "efd78fc7-3288-49b0-bb70-aaf0600cc569"
+},
+{
+    "accession": "ENCLB555AOG",
+    "aliases": [
+        "thomas-gingeras:LID8967"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "barcode_details": [],
+    "biosample": "ENCBS366ENC",
+    "date_created": "2013-11-21T06:22:50.491319+00:00",
+    "dbxrefs": [
+        "GEO:GSM2400165"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "cb3339fe-e4c8-4f00-989c-1e192350b97f"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "polyadenylated mRNA",
+    "schema_version": "9",
+    "size_range": ">200",
+    "spikeins_used": [
+        "ENCSR402QNO"
+    ],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "f90a6ad6-8af8-4a87-95c9-ea742da9d55b"
+},
+{
+    "accession": "ENCLB555ANG",
+    "aliases": [
+        "thomas-gingeras:LID8969"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "barcode_details": [],
+    "biosample": "ENCBS753AAA",
+    "date_created": "2013-11-21T06:19:03.862788+00:00",
+    "dbxrefs": [
+        "GEO:GSM2400145"
+    ],
+    "depleted_in_term_name": [
+        "rRNA"
+    ],
+    "documents": [
+        "82e4c842-cba3-46f3-9660-e3c475b6ea40"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "thomas-gingeras",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "polyadenylated mRNA",
+    "schema_version": "9",
+    "size_range": ">200",
+    "spikeins_used": [
+        "ENCSR402QNO"
+    ],
+    "status": "released",
+    "strand_specificity": true,
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "f9834e4c-9cc8-4058-99d9-0a5f3f276a23"
+},
+{
+    "accession": "ENCLB800GUF",
+    "aliases": [
+        "bradley-bernstein:DNA_Lib 9046"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "barcode_details": [],
+    "biosample": "ENCBS939RMD",
+    "date_created": "2018-04-26T17:31:45.828616+00:00",
+    "dbxrefs": [
+        "GEO:GSM4051029"
+    ],
+    "documents": [
+        "be2a0f12-af38-430c-8f2d-57953baab5f5"
+    ],
+    "fragmentation_methods": [
+        "sonication (generic)"
+    ],
+    "lab": "bradley-bernstein",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "size_range": "200-600",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "fb9beb32-2317-4afd-8e6a-24b97767ad5c"
+},
+{
+    "accession": "ENCLB559JXO",
+    "aliases": [
+        "richard-myers:SL2918"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004576",
+    "barcode_details": [],
+    "biosample": "ENCBS404ENC",
+    "date_created": "2013-10-17T20:32:39.996605-08:00",
+    "dbxrefs": [],
+    "documents": [
+        "2f645c4a-dea3-49fb-817d-db81c7906ebe"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "richard-myers",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "treatments": [],
+    "uuid": "fc15c987-dc27-4acb-aeb7-3b01aa51d961"
+},
+{
+    "accession": "ENCLB416ZZZ",
+    "aliases": [
+        "john-stamatoyannopoulos:DS10018-library"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "barcode_details": [],
+    "biosample": "ENCBS911DVL",
+    "date_created": "2013-11-15T01:28:31.576199+00:00",
+    "dbxrefs": [],
+    "documents": [
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "extraction_method": "see document",
+    "fragmentation_methods": [
+        "see document"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "library_size_selection_method": "see document",
+    "lysis_method": "see document",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [],
+    "uuid": "fca96b2d-1416-4404-b4f4-44b9be866a71"
+},
+{
+    "accession": "ENCLB761ZUC",
+    "aliases": [
+        "roadmap-epigenomics:Solexa-12678",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES I3 TESR cells_Mar-03-2010_86385_library"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "barcode_details": [],
+    "biosample": "ENCBS065EQG",
+    "date_created": "2015-09-09T05:28:49.127121+00:00",
+    "dbxrefs": [
+        "GEO:GSM537627"
+    ],
+    "documents": [
+        "5ba7d8b6-1c1a-4ef4-ad3b-1098122c7d6f"
+    ],
+    "extraction_method": "see document",
+    "lab": "bradley-bernstein",
+    "library_size_selection_method": "see document",
+    "notes": "GSM537627",
+    "nucleic_acid_term_name": "DNA",
+    "schema_version": "9",
+    "spikeins_used": [],
+    "status": "released",
+    "strand_specificity": false,
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "fe21eb3e-4a7c-429c-aaf5-9f4e96fd3229"
+}
 ]

@@ -1,0 +1,1534 @@
+[
+{
+    "Ft": 0.8112595256315744,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-13T08:26:38.883280+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26477,
+    "nreads": 23514845,
+    "nreads_in_peaks": 19076642,
+    "quality_metric_of": [
+        "ENCFF444HAB"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "b16597fa-f9c5-44f9-b05f-367660f13092",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "029f9bb8-70e3-44c5-9178-35a4d9bf8f9b"
+},
+{
+    "F1": 0.3109910721484753,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:13.929092+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 28588,
+    "nreads": 88751924,
+    "nreads_in_peaks": 27601056,
+    "quality_metric_of": [
+        "ENCFF364SVF"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "f58bb1a2-bdeb-4092-9c76-5493a9765333",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "02c1b432-d367-45ab-8c83-75ae45c69c19"
+},
+{
+    "Ft": 0.7404278661928764,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-12T20:53:43.050860+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26338,
+    "nreads": 22984008,
+    "nreads_in_peaks": 17018000,
+    "quality_metric_of": [
+        "ENCFF719LRQ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "eea640e2-edc6-4f08-892f-34e96b985fb4",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "086989df-e604-4b29-ac6a-e7c969fa7760"
+},
+{
+    "Ft": 0.4026864270395075,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:47:26.054786+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 41179,
+    "nreads": 19792609,
+    "nreads_in_peaks": 7970215,
+    "quality_metric_of": [
+        "ENCFF940LNW"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "8593138c-b9c0-4098-b0c3-be7affd00367",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "0ba14c06-00ed-419f-8a94-f5e330d65ef4"
+},
+{
+    "Ft": 0.11232765641295037,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-12T20:48:13.764227+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 117587,
+    "nreads": 20998533,
+    "nreads_in_peaks": 2358716,
+    "quality_metric_of": [
+        "ENCFF550QYP"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "803cc60c-67fb-48d8-a5bb-8f049f58f115",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "0ddabfb7-6b61-4c0e-aefd-e884567c4aba"
+},
+{
+    "F1": 0.11999732275290412,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:21:45.505829+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 47832,
+    "nreads": 135138815,
+    "nreads_in_peaks": 16216296,
+    "quality_metric_of": [
+        "ENCFF369GHR"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "a87bf1fc-67d8-47b9-96e4-10d08f56e80e",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "0fdc77fa-fc43-49eb-ad73-a54275e64e06"
+},
+{
+    "Ft": 0.14808079034194252,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-13T07:00:29.183667+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 124238,
+    "nreads": 24906789,
+    "nreads_in_peaks": 3688217,
+    "quality_metric_of": [
+        "ENCFF410CRR"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "ff5adceb-a20e-4d54-8326-df33e942825b",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "14104012-1607-4349-a527-cff6e0ce91fb"
+},
+{
+    "Ft": 0.04585085832320984,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-06T20:51:19.290407+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 44261,
+    "nreads": 18378042,
+    "nreads_in_peaks": 842649,
+    "quality_metric_of": [
+        "ENCFF250HTP"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "80cfc528-731a-4070-a54d-96e480c7a4b2",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "169c17d6-7773-40ee-ae43-da8e1236c653"
+},
+{
+    "Ft": 0.08942618436491324,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T02:10:43.676177+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 93160,
+    "nreads": 22117191,
+    "nreads_in_peaks": 1977856,
+    "quality_metric_of": [
+        "ENCFF792HXN"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "a48b41fd-98ee-49ff-bf10-ec6f85a8f746",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "18598c47-7813-4969-bce8-af618578a448"
+},
+{
+    "F1": 0.005704260272426227,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:27:07.880963+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 3337,
+    "nreads": 60911316,
+    "nreads_in_peaks": 347454,
+    "quality_metric_of": [
+        "ENCFF480XBZ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "f5ef28fb-67da-4807-b884-f030020b06dc",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "1b927b17-b5cf-4ef8-9bc3-623a04c45934"
+},
+{
+    "Ft": 0.04585085832320984,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-06T20:58:26.244919+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 44261,
+    "nreads": 18378042,
+    "nreads_in_peaks": 842649,
+    "quality_metric_of": [
+        "ENCFF886QVI"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "fbd5d2d5-0106-4e54-a054-64482e26e872",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "1e13b715-a6b6-46fc-91de-6c690936d9ae"
+},
+{
+    "Ft": 0.8111864393799834,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T02:52:41.956605+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26448,
+    "nreads": 23504530,
+    "nreads_in_peaks": 19066556,
+    "quality_metric_of": [
+        "ENCFF988FQM"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "18993b9a-5433-42b4-9407-2c5411f972c8",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "228eb652-9936-4ced-8795-15a73fed89b5"
+},
+{
+    "F1": 0.013504157951620804,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T02:20:45.961545+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 14491,
+    "nreads": 61732320,
+    "nreads_in_peaks": 833643,
+    "quality_metric_of": [
+        "ENCFF860KNL",
+        "ENCFF395QWC"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "4ae146e9-c0d6-4a95-8cdc-91605bb97907",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "24b605f1-585e-4a49-95af-678e9ebc4cff"
+},
+{
+    "F1": 0.19131623374086815,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:21:48.891774+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 50066,
+    "nreads": 48920893,
+    "nreads_in_peaks": 9359361,
+    "quality_metric_of": [
+        "ENCFF065QSE"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "9bb50a81-e90e-434e-9861-9215d424cc56",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "25ae8ffb-47fd-4b2b-a1b7-3e425695e50f"
+},
+{
+    "F1": 0.4974067116378756,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-18T22:11:25.696891+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 23136,
+    "nreads": 31677156,
+    "nreads_in_peaks": 15756430,
+    "quality_metric_of": [
+        "ENCFF267BUL",
+        "ENCFF507ISF"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "bc5560d9-bebe-4951-b14d-9fee694ceac1",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "26b62ab1-f9b0-4c1e-a01a-820e7bbd8bce"
+},
+{
+    "Ft": 0.0930695013560078,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-13T07:05:38.973998+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 96314,
+    "nreads": 22121554,
+    "nreads_in_peaks": 2058842,
+    "quality_metric_of": [
+        "ENCFF220RQH"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "5119f25b-3a5f-4de3-a42c-8414595ea8ab",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "28ed121e-806b-4821-aa9b-3f74cf87b795"
+},
+{
+    "Ft": 0.0951529311950874,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:42:43.975935+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 69476,
+    "nreads": 16548455,
+    "nreads_in_peaks": 1574634,
+    "quality_metric_of": [
+        "ENCFF975RAE"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "f031254f-8ba5-4062-bffd-b125671cf19e",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "2a57d730-7192-4fcc-913c-4d543fd98df0"
+},
+{
+    "F1": 0.11887466465844936,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:31.510412+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 49074,
+    "nreads": 134960162,
+    "nreads_in_peaks": 16043344,
+    "quality_metric_of": [
+        "ENCFF515MAX"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "72d2cb77-bdac-49a8-9586-1498cc81b769",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "2df7352d-0448-4466-ab57-5b9e56149130"
+},
+{
+    "F1": 0.43740961884815466,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T01:17:58.038136+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 73064,
+    "nreads": 37561067,
+    "nreads_in_peaks": 16429572,
+    "quality_metric_of": [
+        "ENCFF097LEV",
+        "ENCFF307QJK"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "46bea39d-a5b2-42a6-9018-f3a3b21e0687",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "2f2ad403-a92a-41be-8259-e8ae8118e3ba"
+},
+{
+    "F1": 0.10224997917207955,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:26.737144+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 104911,
+    "nreads": 71838665,
+    "nreads_in_peaks": 7345502,
+    "quality_metric_of": [
+        "ENCFF913OSV"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "6b45558d-b5e2-4ae8-b7df-ea85b3cf2b17",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "313b6153-3629-4489-8285-398d805ae497"
+},
+{
+    "Ft": 0.6170414609976446,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-09T19:01:19.246619+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 38884,
+    "nreads": 48582912,
+    "nreads_in_peaks": 29977671,
+    "quality_metric_of": [
+        "ENCFF734HNE"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "0c634042-6a6e-4860-958f-9d58dae3dcc4",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "3806e8c1-abbd-4b61-9356-13cf63780b0e"
+},
+{
+    "F1": 0.2110442944859564,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T00:50:22.460064+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 108352,
+    "nreads": 58023317,
+    "nreads_in_peaks": 12245490,
+    "quality_metric_of": [
+        "ENCFF405DOY",
+        "ENCFF233OUN"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "78b207f7-8e36-4228-9a84-7abe7c3667d1",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "3d861428-6feb-4ffd-8050-fe67a1dacb4e"
+},
+{
+    "F1": 0.4977827869987639,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T00:59:10.831773+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 23129,
+    "nreads": 31662497,
+    "nreads_in_peaks": 15761046,
+    "quality_metric_of": [
+        "ENCFF150OFL",
+        "ENCFF142ZXD"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "b8f01371-6cf3-4ed4-aa9b-c03095f98ccd",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "3f2388d8-58e0-4ca0-a80d-83bcd6bc9d3e"
+},
+{
+    "Ft": 0.40280431932661676,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:47:41.659704+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 41123,
+    "nreads": 19802809,
+    "nreads_in_peaks": 7976657,
+    "quality_metric_of": [
+        "ENCFF072GNT"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "7662c3e5-c4b2-49b3-b12f-687195733d6d",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "3f78d918-2fdc-45c2-a077-5da8e4d5d73e"
+},
+{
+    "Ft": 0.046261184818912504,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-06T20:51:16.241530+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 44274,
+    "nreads": 18376918,
+    "nreads_in_peaks": 850138,
+    "quality_metric_of": [
+        "ENCFF580HYI"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "f3b42577-25d5-4316-b225-990507c6125e",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "4043bef9-9dba-4d2a-ade0-3ae88ca788cd"
+},
+{
+    "F1": 0.14510471078480433,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T01:04:52.144469+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 78975,
+    "nreads": 67304624,
+    "nreads_in_peaks": 9766218,
+    "quality_metric_of": [
+        "ENCFF926XWE",
+        "ENCFF679PBI"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "c792e7f4-979b-4132-bfa0-2e09ddd9b6ae",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "40e82c79-6bf5-481a-a681-276785041399"
+},
+{
+    "Ft": 0.8112595256315744,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-13T08:24:35.407829+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26477,
+    "nreads": 23514845,
+    "nreads_in_peaks": 19076642,
+    "quality_metric_of": [
+        "ENCFF761BNY"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "4f8f780c-17d1-4528-a173-37eb578217ed",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "45707ea8-ff91-4de2-bd4f-713b6ac36811"
+},
+{
+    "F1": 0.22118248884590228,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T01:26:16.261716+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 109767,
+    "nreads": 57998416,
+    "nreads_in_peaks": 12828234,
+    "quality_metric_of": [
+        "ENCFF014ZVF",
+        "ENCFF433RBT"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "3cfbab02-030b-48fa-a738-3ea03b540577",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "45c2b035-cb88-43f9-b7be-9a65bb2255f4"
+},
+{
+    "Ft": 0.6177735669230533,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:25:46.702469+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 38284,
+    "nreads": 48617208,
+    "nreads_in_peaks": 30034426,
+    "quality_metric_of": [
+        "ENCFF711UEX"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "376925f6-9c39-4628-a8bb-215e8b8e01f9",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "46061ebd-5592-45bf-9dc9-1abe03968343"
+},
+{
+    "F1": 0.31121525111930753,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:43.440581+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 28478,
+    "nreads": 88663971,
+    "nreads_in_peaks": 27593580,
+    "quality_metric_of": [
+        "ENCFF994BIY"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "345f4138-547e-49d6-ac6d-637d8b13419e",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "4835dbef-b23f-4e84-a9ba-f3d55016cdd9"
+},
+{
+    "F1": 0.10224997917207955,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:26:42.394745+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 104911,
+    "nreads": 71838665,
+    "nreads_in_peaks": 7345502,
+    "quality_metric_of": [
+        "ENCFF568JWS"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "8315501d-e9f8-4159-beb2-5d371d60e620",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "4847b36e-7c17-482b-a002-0a1438699a86"
+},
+{
+    "Ft": 0.11232765641295037,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-12T20:42:07.989127+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 117587,
+    "nreads": 20998533,
+    "nreads_in_peaks": 2358716,
+    "quality_metric_of": [
+        "ENCFF935EXG"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "2ef2d226-8eef-4f00-acdf-7d11c9355261",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "4a70f20a-0b41-4363-abe6-b90dad699f72"
+},
+{
+    "F1": 0.003139484007394131,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:21:45.617690+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 6257,
+    "nreads": 60993781,
+    "nreads_in_peaks": 191489,
+    "quality_metric_of": [
+        "ENCFF141OWM"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "dfe02248-ff25-4c2b-bed5-795a92951c65",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "519cd95f-5c19-407b-9749-b9b70f7c16c8"
+},
+{
+    "Ft": 0.09515021198164587,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:52:00.678192+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 69440,
+    "nreads": 16554971,
+    "nreads_in_peaks": 1575209,
+    "quality_metric_of": [
+        "ENCFF299ZUA"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "625f58b7-f6b7-4f9e-9cc9-c2f971c053d5",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "54e7d7ca-8f4f-4b4c-a0b3-593257476074"
+},
+{
+    "Ft": 0.23919269052757033,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:41:16.209692+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 163386,
+    "nreads": 35978520,
+    "nreads_in_peaks": 8605799,
+    "quality_metric_of": [
+        "ENCFF357RZS"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "82f785cd-9e0d-418f-bf45-95b117e251d2",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "5c019d3b-710c-45fb-86fd-df172275a0c5"
+},
+{
+    "F1": 0.005704260272426227,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:21:47.271479+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 3337,
+    "nreads": 60911316,
+    "nreads_in_peaks": 347454,
+    "quality_metric_of": [
+        "ENCFF037HYT"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "9c64eac9-1896-4bd2-9e88-deb66efcaf6f",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "6107cab8-9376-466f-8294-18bdd92c1e21"
+},
+{
+    "Ft": 0.4026864270395075,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:52:33.284487+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 41179,
+    "nreads": 19792609,
+    "nreads_in_peaks": 7970215,
+    "quality_metric_of": [
+        "ENCFF253EPG"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "ffd691b2-e376-46a6-9100-28b0afcfe543",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "67348ff2-502c-4518-8c1e-e72adaa4cfb2"
+},
+{
+    "Ft": 0.1210121810660675,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-12T20:48:30.645080+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 93654,
+    "nreads": 22165876,
+    "nreads_in_peaks": 2682341,
+    "quality_metric_of": [
+        "ENCFF080PQX"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "ce2d2f16-cb8e-4515-917f-7a3d7b517762",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "6cd12a6e-16d0-4ae0-8512-75546ba57591"
+},
+{
+    "Ft": 0.6170414609976446,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-09T18:56:13.830977+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 38884,
+    "nreads": 48582912,
+    "nreads_in_peaks": 29977671,
+    "quality_metric_of": [
+        "ENCFF111YIF"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "8d439db3-5290-4e55-a766-06ec122687b7",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "6f309f4e-ae69-4552-9038-efc5a7534c21"
+},
+{
+    "F1": 0.003139484007394131,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:27:03.610537+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 6257,
+    "nreads": 60993781,
+    "nreads_in_peaks": 191489,
+    "quality_metric_of": [
+        "ENCFF102GLV"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "63fe2cea-7bc4-4005-881f-9dec2616a6c8",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "718c62a5-093b-4066-9d99-a00430701028"
+},
+{
+    "F1": 0.047961905188462814,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:26:23.657512+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 20393,
+    "nreads": 57782567,
+    "nreads_in_peaks": 2771362,
+    "quality_metric_of": [
+        "ENCFF736DXD"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "56e490cb-2278-4a57-9b11-6397f101f063",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "733f2ce6-b3a6-426e-9b70-02c0b4360b5c"
+},
+{
+    "Ft": 0.09515021198164587,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:47:55.301335+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 69440,
+    "nreads": 16554971,
+    "nreads_in_peaks": 1575209,
+    "quality_metric_of": [
+        "ENCFF532DFT"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "8a265a22-3317-4caa-a2cd-6b8a1ba70088",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "743a40a8-9891-4cc1-bede-002e89604201"
+},
+{
+    "Ft": 0.1203284399553498,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-16T00:51:58.520725+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 94828,
+    "nreads": 22154430,
+    "nreads_in_peaks": 2665808,
+    "quality_metric_of": [
+        "ENCFF252HJC"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "bbac7bd5-d8a0-495d-a12a-4e11d294cb45",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "7532608b-f070-4c12-ae4d-bf242b9bc99e"
+},
+{
+    "Ft": 0.7404278661928764,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-12T21:00:50.029259+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26338,
+    "nreads": 22984008,
+    "nreads_in_peaks": 17018000,
+    "quality_metric_of": [
+        "ENCFF840OQZ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "5941080b-f638-4dc1-af89-18bd4da09627",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "76dceb3a-1c3d-4b17-aacd-0fe4becff64f"
+},
+{
+    "Ft": 0.08942618436491324,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T02:14:24.883314+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 93160,
+    "nreads": 22117191,
+    "nreads_in_peaks": 1977856,
+    "quality_metric_of": [
+        "ENCFF650ADK"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "db315e63-e7fe-441a-ad64-4c3570db5444",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "7dd40b5f-eeb0-47fe-a4ea-af8cc964ca6c"
+},
+{
+    "F1": 0.11887466465844936,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:26:48.466274+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 49074,
+    "nreads": 134960162,
+    "nreads_in_peaks": 16043344,
+    "quality_metric_of": [
+        "ENCFF306ECV"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "824bcb80-a6d3-4e6a-aec4-0c78287d1c05",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "86a7b810-b384-47ee-ba39-3cddc7cabe71"
+},
+{
+    "F1": 0.047961905188462814,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:12.647925+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 20393,
+    "nreads": 57782567,
+    "nreads_in_peaks": 2771362,
+    "quality_metric_of": [
+        "ENCFF631WUO"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "fbfe7fee-d906-41c6-b8e4-b5b80d9dc9f3",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "8707c368-810a-4e34-9d29-dbffa627410d"
+},
+{
+    "F1": 0.11999732275290412,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:27:03.588470+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 47832,
+    "nreads": 135138815,
+    "nreads_in_peaks": 16216296,
+    "quality_metric_of": [
+        "ENCFF352ATY"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "817fe9fa-5f07-4114-8036-4b0c79509f37",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "870d2c3c-5ebf-4867-a60e-ec7ac56847e9"
+},
+{
+    "Ft": 0.14934388084117595,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T02:52:45.743081+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 122244,
+    "nreads": 24891820,
+    "nreads_in_peaks": 3717441,
+    "quality_metric_of": [
+        "ENCFF433AOE"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "f1661eea-bcda-41a8-a6d4-24ccb9a54cef",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "89e849ed-65fa-45eb-b99d-a47d10d44fb0"
+},
+{
+    "Ft": 0.7404060549937067,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T18:26:42.426934+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26499,
+    "nreads": 22968810,
+    "nreads_in_peaks": 17006246,
+    "quality_metric_of": [
+        "ENCFF224GRF"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "ec7ba857-dc91-4de5-9fcd-70663ba79243",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "a1910705-d349-4a31-b307-9f39a8892962"
+},
+{
+    "Ft": 0.1210121810660675,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-12T20:42:24.631214+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 93654,
+    "nreads": 22165876,
+    "nreads_in_peaks": 2682341,
+    "quality_metric_of": [
+        "ENCFF899NZY"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "6487c21c-9a93-48a1-9171-82e8bc1b484c",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "a626a995-846c-4a04-9506-252d05d1e517"
+},
+{
+    "F1": 0.18979561648729218,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:44.808289+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 50052,
+    "nreads": 48965251,
+    "nreads_in_peaks": 9293390,
+    "quality_metric_of": [
+        "ENCFF908TND"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "6de20563-9a3f-45ec-be3f-1b972361bdbb",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "a8c27cdd-52d9-456e-a2f2-90ad743416f2"
+},
+{
+    "F1": 0.11929016995287915,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T02:29:58.741370+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 117571,
+    "nreads": 67246463,
+    "nreads_in_peaks": 8021842,
+    "quality_metric_of": [
+        "ENCFF327SQA",
+        "ENCFF344NKJ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "5d9ebee9-285c-4764-8b67-7ae00a4d20d7",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "ad7a7d4e-e5c2-40c1-8f8c-8e1473918592"
+},
+{
+    "F1": 0.126135421250425,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:07.192235+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 90496,
+    "nreads": 71777435,
+    "nreads_in_peaks": 9053677,
+    "quality_metric_of": [
+        "ENCFF676MHD"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "cc0857a6-687c-4c8e-925b-e23fce72f7e8",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "afe0d0fc-8953-42d6-ad82-fa698c3807f5"
+},
+{
+    "F1": 0.3109910721484753,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:26:25.390098+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 28588,
+    "nreads": 88751924,
+    "nreads_in_peaks": 27601056,
+    "quality_metric_of": [
+        "ENCFF627BUH"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "25a23581-59de-41fd-8082-674374aa25a7",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "baf9f8ae-0ba0-40dc-96d6-22da60dc7b0c"
+},
+{
+    "Ft": 0.11458491178570093,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T18:33:03.403339+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 117180,
+    "nreads": 20992345,
+    "nreads_in_peaks": 2405406,
+    "quality_metric_of": [
+        "ENCFF498MXO"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "f2c967d9-551b-4626-8f7c-90f4e5a7f97e",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "bfafe0fa-e9f5-4fe8-bd43-80c1fd86ac27"
+},
+{
+    "Ft": 0.14808079034194252,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-13T07:03:33.038090+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 124238,
+    "nreads": 24906789,
+    "nreads_in_peaks": 3688217,
+    "quality_metric_of": [
+        "ENCFF589XRR"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "38126c64-29cd-428e-af91-c550ff920f4f",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "c01b7d83-576f-407a-b579-5b2bf279ff55"
+},
+{
+    "F1": 0.06953988188866997,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T00:52:45.850048+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 36597,
+    "nreads": 52550420,
+    "nreads_in_peaks": 3654350,
+    "quality_metric_of": [
+        "ENCFF143HAZ",
+        "ENCFF374GIA"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "e288bcd1-39ca-42eb-93be-475b36f63fa7",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "c30cf373-ca64-43de-8cd6-8df1612d0715"
+},
+{
+    "Ft": 0.1203284399553498,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-16T00:54:24.624860+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 94828,
+    "nreads": 22154430,
+    "nreads_in_peaks": 2665808,
+    "quality_metric_of": [
+        "ENCFF061RYX"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "c9a1c349-93ae-46ec-b0ce-3eef229a20a2",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "c8109ca9-500e-43aa-8494-524c03f6b45f"
+},
+{
+    "Ft": 0.046261184818912504,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-06T20:58:23.113941+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 44274,
+    "nreads": 18376918,
+    "nreads_in_peaks": 850138,
+    "quality_metric_of": [
+        "ENCFF969BTZ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "9cdc6c7c-6aa1-48de-99dd-f59c7a3d4fa8",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "c8557b46-95e8-461c-84c8-0570c8adc232"
+},
+{
+    "Ft": 0.23995934962514867,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:42:36.626706+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 159350,
+    "nreads": 35959324,
+    "nreads_in_peaks": 8628776,
+    "quality_metric_of": [
+        "ENCFF327XLP"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "e3574c2a-b877-451f-b2a2-41cf8d8c8abd",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "c8848784-d10e-4bd3-bf21-903dcad30f6b"
+},
+{
+    "Ft": 0.14934388084117595,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:14:01.566561+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 122244,
+    "nreads": 24891820,
+    "nreads_in_peaks": 3717441,
+    "quality_metric_of": [
+        "ENCFF953AJA"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "8f973d29-9a2b-48ba-ad1c-dd5d1e6a8afd",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "c927668c-80c9-4398-87fe-0aea6722fe9e"
+},
+{
+    "F1": 0.19131623374086815,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:27:11.771485+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 50066,
+    "nreads": 48920893,
+    "nreads_in_peaks": 9359361,
+    "quality_metric_of": [
+        "ENCFF123USD"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "649faef7-bdf0-4aaf-88f9-53251a6025a7",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "ce59fe83-51d0-44bb-bab7-59bcbd258b01"
+},
+{
+    "F1": 0.126135421250425,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:26:16.518696+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 90496,
+    "nreads": 71777435,
+    "nreads_in_peaks": 9053677,
+    "quality_metric_of": [
+        "ENCFF459LAT"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "2229c3cc-039b-4066-81be-29a8b51ce090",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "d47d3113-8235-407c-ae9f-a36695b26ea9"
+},
+{
+    "Ft": 0.0951529311950874,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:40:40.077561+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 69476,
+    "nreads": 16548455,
+    "nreads_in_peaks": 1574634,
+    "quality_metric_of": [
+        "ENCFF598BWM"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "95243275-1cef-4ab8-a170-cf06c274811b",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "d696912a-82e2-4d1e-934b-079631c5ab3c"
+},
+{
+    "Ft": 0.7404060549937067,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T18:32:48.585572+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26499,
+    "nreads": 22968810,
+    "nreads_in_peaks": 17006246,
+    "quality_metric_of": [
+        "ENCFF404KRA"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "d8703425-af9a-44f7-8665-1d6bcc225e1e",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "d7f72bac-156d-478e-99ab-4a58537af09b"
+},
+{
+    "F1": 0.028828079311472292,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:26:25.263147+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 35545,
+    "nreads": 57584204,
+    "nreads_in_peaks": 1660042,
+    "quality_metric_of": [
+        "ENCFF779BOL"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "96b3aedf-b9cc-4cdf-8617-f452c8c7847a",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "d9b6956c-8e77-43ed-8c6b-4af7998e344e"
+},
+{
+    "F1": 0.028828079311472292,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:22:13.950201+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 35545,
+    "nreads": 57584204,
+    "nreads_in_peaks": 1660042,
+    "quality_metric_of": [
+        "ENCFF965BIY"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "04981773-c321-437c-9426-fd3882c06184",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "dbb16883-af43-4cce-bf94-76140bb470f4"
+},
+{
+    "Ft": 0.8111864393799834,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:13:58.166515+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 26448,
+    "nreads": 23504530,
+    "nreads_in_peaks": 19066556,
+    "quality_metric_of": [
+        "ENCFF294RCS"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "970c113a-2ed6-4a52-8b3c-8d085cc54d7c",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "df3f550f-e3af-443f-a1b1-afa17a11bc43"
+},
+{
+    "Ft": 0.23919269052757033,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:43:19.916908+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 163386,
+    "nreads": 35978520,
+    "nreads_in_peaks": 8605799,
+    "quality_metric_of": [
+        "ENCFF378DNO"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "9ce0e711-1e62-47de-b1fd-ca2419cf9c53",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "e0ea4cb3-1a70-4db1-9102-5c41dfcd7a37"
+},
+{
+    "F1": 0.07049958811250011,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T01:51:47.946489+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 43097,
+    "nreads": 52315256,
+    "nreads_in_peaks": 3688204,
+    "quality_metric_of": [
+        "ENCFF488YBW",
+        "ENCFF356QKI"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "7ba6f3a1-5f71-47ed-9bb4-25fc4b350d78",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "e1844627-a7f2-409b-942e-9dd782d8de9a"
+},
+{
+    "F1": 0.31121525111930753,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:27:06.673497+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 28478,
+    "nreads": 88663971,
+    "nreads_in_peaks": 27593580,
+    "quality_metric_of": [
+        "ENCFF619IKK"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "6682ca7e-e8e9-4cfb-aed0-2d1cc93f42e9",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "e7383565-b9e7-4f04-bfee-a2fff3039f2d"
+},
+{
+    "Ft": 0.0930695013560078,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-13T07:02:35.143936+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 96314,
+    "nreads": 22121554,
+    "nreads_in_peaks": 2058842,
+    "quality_metric_of": [
+        "ENCFF586IIZ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "10adbeb7-76bf-4db9-9cf9-acfed3b7cf26",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "f0e7fb9b-3f8c-460a-b999-cce308f1b227"
+},
+{
+    "Ft": 0.40280431932661676,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-07T03:52:47.879701+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 41123,
+    "nreads": 19802809,
+    "nreads_in_peaks": 7976657,
+    "quality_metric_of": [
+        "ENCFF231LCA"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "4ce2b5b1-828c-4922-bc26-5b395d221bc1",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "f5b25206-9aac-42f1-b43f-6459a49521f5"
+},
+{
+    "Ft": 0.11458491178570093,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T18:38:08.819653+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 117180,
+    "nreads": 20992345,
+    "nreads_in_peaks": 2405406,
+    "quality_metric_of": [
+        "ENCFF083GRL"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "28a036b1-3e53-4e54-ba37-035552126456",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "f707ffac-c0f1-442a-9749-25447fdaacc0"
+},
+{
+    "F1": 0.18979561648729218,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2019-09-07T05:27:11.574420+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 50052,
+    "nreads": 48965251,
+    "nreads_in_peaks": 9293390,
+    "quality_metric_of": [
+        "ENCFF359SII"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "5fddace4-b127-4bd6-a279-38757e3f24d1",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "f7ecbf9b-63ce-442c-95f4-8049a417c9db"
+},
+{
+    "F1": 0.013435229859864744,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T01:03:28.238666+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 14399,
+    "nreads": 61804004,
+    "nreads_in_peaks": 830351,
+    "quality_metric_of": [
+        "ENCFF408ZXG",
+        "ENCFF464REO"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "392a94f6-c2d6-43a6-b1c9-8248c4dc1b3a",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "f87e26c5-348d-48e6-8e34-bfe960ad83eb"
+},
+{
+    "Ft": 0.6177735669230533,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:22:42.339485+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 38284,
+    "nreads": 48617208,
+    "nreads_in_peaks": 30034426,
+    "quality_metric_of": [
+        "ENCFF644IVA"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "d75e4afb-2685-4fd8-aaa2-e7a2cd16b70f",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "f934a3ce-344e-4ef5-9e0e-9a5b12c593d5"
+},
+{
+    "Ft": 0.23995934962514867,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-11-08T01:44:40.386070+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 159350,
+    "nreads": 35959324,
+    "nreads_in_peaks": 8628776,
+    "quality_metric_of": [
+        "ENCFF823TAF"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "ab53cc41-a7b1-4d33-9c89-f928b2936507",
+    "submitted_by": "7e95dcd6-9c35-4082-9c53-09d14c5752be",
+    "uuid": "fc9b402f-a35b-4548-9b29-068aea0c2e0f"
+},
+{
+    "F1": 0.43721776951632096,
+    "aliases": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U41HG006992",
+    "date_created": "2018-06-19T00:46:26.775425+00:00",
+    "lab": "encode-processing-pipeline",
+    "npeak_overlap": 73075,
+    "nreads": 37569914,
+    "nreads_in_peaks": 16426234,
+    "quality_metric_of": [
+        "ENCFF164QBB",
+        "ENCFF678MSJ"
+    ],
+    "schema_version": "2",
+    "status": "released",
+    "step_run": "a387ac91-a4fd-452d-9370-288bf70befe3",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "fce017d3-9969-46d9-a89e-312f801b84ca"
+}
+]

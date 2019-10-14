@@ -1,0 +1,8 @@
+===== SPOT score =====
+.5842
+ 
+===== hotspot count =====
+96780
+ 
+===== peaks count =====
+101267

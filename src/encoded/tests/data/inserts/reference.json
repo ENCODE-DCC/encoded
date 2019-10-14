@@ -1,87 +1,319 @@
 [
-    {
-        "_test": "spikes",
-        "accession": "ENCSR156CIL",
-        "award": "ENCODE2",
-        "reference_type": "spike-in",
-        "description": "RNA Working Group Spike-ins Dataset",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5",
-        "date_released": "2016-01-01"
-    },
-    {
-        "_test": "spikes2",
-        "accession": "ENCSR013YHQ",
-        "award": "ENCODE2",
-        "reference_type": "spike-in",
-        "description": "RNA Working Group Spike-ins Dataset 2",
-        "lab": "barbara-wold",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed",
-        "date_released": "2016-01-01"
-    },
-    {
-        "_test": "RAMPAGE spike-ins",
-        "accession": "ENCSR704RSS",
-        "award": "U54HG007005",
-        "reference_type": "spike-in",
-        "description": "Spike-ins used in RAMPAGE experiments from CSHL",
-        "lab": "thomas-gingeras",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108",
-        "date_released": "2015-04-21"
-    },
-    {
-        "_test": "mappability",
-        "accession": "ENCSR165FBU",
-        "award": "ENCODE2",
-        "reference_type": "mappability",
-        "description": "Human Mappability Uniqueness 35mer",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "cb15de83-0e56-4428-8742-b2fbb61543d9",
-        "date_released": "2012-06-08"
-    },
-    {
-        "_test": "index",
-        "accession": "ENCSR497EUF",
-        "award": "/awards/U41HG006992",
-        "reference_type": "index",
-        "description": "Bismarck indexed reference files for use with methylation input",
-        "lab": "/labs/encode-processing-pipeline/",
-        "organism": "human",
-        "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
-        "date_released": "2013-11-18",
-        "status": "released"
-    },
-    {
-        "_test": "reference file dataset ",
-        "accession": "ENCSR001REF",
-        "award": "ENCODE2",
-        "reference_type": "index",
-        "description": "Dataset for Reference Files (including Genomes)",
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b",
-        "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
-        "date_released": "2016-01-01"
-    },
-    {
-        "_test": "elements reference",
-        "accession": "ENCSR500ELM",
-        "award": "U54HG007005",
-        "reference_type": "functional elements",
-        "description": "Elements DNA sequences",
-        "lab": "thomas-gingeras",
-        "status": "archived",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "84c2c840-4146-4c93-90cf-67a11a4fc108",
-        "date_released": "2018-04-21"
-    }
+{
+    "accession": "ENCSR884DHJ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U54HG004555",
+    "date_created": "2015-06-09T16:17:29.058828+00:00",
+    "date_released": "2015-06-30",
+    "dbxrefs": [],
+    "description": "GENCODE reference files used in ENCODE pipelines",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "jennifer-harrow",
+    "reference_type": "genome",
+    "references": [
+        "de599b25-badc-4f31-bb9c-6f257514c966",
+        "0f5fddc0-13ae-433d-b415-012f35eabaf9"
+    ],
+    "related_files": [],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "0543025a-7460-474d-a760-f439aebfba28"
+},
+{
+    "accession": "ENCSR314WMD",
+    "aliases": [
+        "encode:rna-pipeline-star-indexes"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "date_created": "2015-06-09T17:17:44.990902+00:00",
+    "date_released": "2015-06-30",
+    "dbxrefs": [],
+    "description": "STAR indexed reference files with ERCC spike-ins for use with long RNA pipeline",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "reference_type": "index",
+    "references": [],
+    "related_files": [
+        "ENCFF001RTP"
+    ],
+    "schema_version": "16",
+    "software_used": [
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "06ac66e8-2a58-4446-9363-79c427f41705"
+},
+{
+    "accession": "ENCSR156CIL",
+    "aliases": [
+        "thomas-gingeras:AmbionMix1",
+        "barbara-wold:ERCC"
+    ],
+    "alternate_accessions": [
+        "ENCSR686QUF",
+        "ENCSR399OOY"
+    ],
+    "award": "Unattributed",
+    "date_created": "2014-08-25T23:24:26.809519+00:00",
+    "date_released": "2014-01-01",
+    "dbxrefs": [],
+    "description": "Ambion mix 1 spike-ins",
+    "documents": [
+        "7ae25f97-ab0a-448b-b345-cfffd6368c90",
+        "28fef8e0-e171-450d-b66d-e3d199531cf2"
+    ],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "reference_type": "spike-in",
+    "references": [
+        "f6f6a405-e284-4e5a-93b4-524ac2000854"
+    ],
+    "related_files": [
+        "ENCFF001RTP"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
+},
+{
+    "accession": "ENCSR219BJA",
+    "aliases": [
+        "encode:rna-pipeline-rsem-indexes"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "date_created": "2015-06-15T23:02:58.748637+00:00",
+    "date_released": "2015-06-30",
+    "dbxrefs": [],
+    "description": "RSEM indexed reference files with ERCC spike-ins",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "reference_type": "index",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "software_used": [
+        "efaf0ed5-0232-4b11-be33-902e9904858f"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "1ee8e03f-f98a-4233-b878-5b392b3a571e"
+},
+{
+    "accession": "ENCSR114ZHM",
+    "aliases": [
+        "encode:chip-pipeline-bwa-indexes"
+    ],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2015-10-15T21:59:23.900970+00:00",
+    "date_released": "2015-10-31",
+    "dbxrefs": [],
+    "description": "BWA indexed reference files",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "reference_type": "index",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "software_used": [
+        "de3c16f7-be94-4b2f-a7b4-c44ba67735d7"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "29dc71da-9f46-43a2-a2a7-cd52f1517d13"
+},
+{
+    "accession": "ENCSR181ETQ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2015-11-17T19:33:02.329821+00:00",
+    "date_released": "2015-11-30",
+    "dbxrefs": [],
+    "description": "Reference files used for mapping for blacklist development",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "related_files": [
+        "ENCFF516HDY",
+        "ENCFF806TVZ"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "4bd3bbfb-ef99-45b2-a9ac-d38d298cbcb4"
+},
+{
+    "accession": "ENCSR425FOI",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "date_created": "2015-06-09T16:20:25.648823+00:00",
+    "date_released": "2015-06-30",
+    "dbxrefs": [],
+    "description": "Reference files used in the ENCODE Processing Pipeline",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "reference_type": "genome",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "7ff5712b-8143-4048-b076-25d471cb5ce6"
+},
+{
+    "accession": "ENCSR957BCD",
+    "aliases": [
+        "dnanexus:dnase-bwa-indexes-human"
+    ],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2016-09-27T21:30:16.230832+00:00",
+    "date_released": "2016-10-06",
+    "dbxrefs": [],
+    "description": "DNase bwa indices, human",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "organism": "human",
+    "reference_type": "index",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "805c37eb-f7bd-4384-87c0-32aef5b8469f"
+},
+{
+    "accession": "ENCSR704RSS",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "date_created": "2015-10-19T22:48:10.506887+00:00",
+    "date_released": "2015-05-10",
+    "dbxrefs": [],
+    "description": "Illumina PhiX sequencing control",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "notes": "This PhiX genome sequence is the same used by Illumina and differs from NC_001422.1 in RefSeq at 5 positions (Refeseq listed first): 587 (G to A), 833 (G to A), 2731 (A to G), 2793 (C to T) and 2811 (C to T).",
+    "organism": "bacteriophage-phi-x174",
+    "reference_type": "spike-in",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108"
+},
+{
+    "accession": "ENCSR497EUF",
+    "aliases": [
+        "encode:wgbs-pipeline-indexes"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "date_created": "2015-06-17T01:32:43.917186+00:00",
+    "date_released": "2017-08-03",
+    "dbxrefs": [],
+    "description": "Bismarck indexed reference files for use with methylation input",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "reference_type": "index",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "c01810e7-cd48-4291-bda0-94c6a36bbe57"
+},
+{
+    "accession": "ENCSR402QNO",
+    "aliases": [
+        "thomas-gingeras:Nist14Spikes"
+    ],
+    "alternate_accessions": [
+        "ENCSR908PCO"
+    ],
+    "award": "Unattributed",
+    "date_created": "2014-08-25T23:35:46.112033+00:00",
+    "date_released": "2014-01-01",
+    "dbxrefs": [],
+    "description": "NIST profile 14 spike-ins",
+    "documents": [
+        "75771109-b79e-43d5-9cc0-2dbf708a71f1",
+        "f96a19a6-dc66-4023-993a-f4c28af3d8e2"
+    ],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "reference_type": "spike-in",
+    "references": [],
+    "related_files": [
+        "ENCFF001RTP"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "uuid": "d912af6b-f8d1-49a0-8199-bd11b220e277"
+},
+{
+    "accession": "ENCSR999FPQ",
+    "aliases": [
+        "encode:small-rna-pipeline-indexes"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "date_created": "2015-08-04T17:31:10.323826+00:00",
+    "date_released": "2015-08-31",
+    "dbxrefs": [],
+    "description": "STAR indexed reference files with ERCC spike-ins for use with small RNA pipeline",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "reference_type": "index",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "software_used": [
+        "19f75e90-e991-4dc8-837d-8cd97ab5fb91"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "f02a08f1-40fe-40f7-993f-118a0f29a0f0"
+},
+{
+    "accession": "ENCSR792JJZ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2016-10-03T19:19:27.871919+00:00",
+    "date_released": "2016-10-06",
+    "dbxrefs": [],
+    "description": "DNase mappability references, human",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-processing-pipeline",
+    "organism": "human",
+    "reference_type": "mappability",
+    "references": [],
+    "related_files": [],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "f591a442-c7de-4046-9aca-715a1edf6efd"
+}
 ]

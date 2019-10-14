@@ -1,795 +1,2122 @@
 [
-    {
-        "_test": "shared biosample",
-        "accession": "ENCSR000AER",
-        "assay_term_name": "RAMPAGE",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
-        "lab": "thomas-gingeras",
-        "status": "released",
-        "date_submitted": "2015-01-20",
-        "date_released": "2016-01-01",
-        "internal_tags":["DREAM", "ENTEx", "ENCORE"],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
-    },
-    {
-        "_test": "shared biosample",
-        "accession": "ENCSR000AEM",
-        "assay_term_name": "RNA-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
-        "status": "released",
-        "date_submitted": "2015-02-20",
-        "supersedes": ["ENCSR000AES"],
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
-    },
-    {
-        "_test": "shared biosample",
-        "accession": "ENCSR000AES",
-        "assay_term_name": "RNA-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
-        "date_submitted": "2015-03-20",
-        "status": "archived",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
-    },
-    {
-        "_test": "control chip-seq with files",
-        "accession": "ENCSR000ADH",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002001",
-            "GEO:GSM798326",
-            "GEO:GSE32218"
-        ],
-        "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "lab": "sherman-weissman",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "Control-mouse",
-        "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
-    },
-    {
-        "_test": "refers to the control dataset",
-        "accession": "ENCSR000ADI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002004",
-            "GEO:GSM798327",
-            "GEO:GSE32218"
-        ],
-        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-       "lab": "sherman-weissman",
-        "possible_controls": [
-            "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
-        ],
-        "status": "released",
-        "date_submitted": "2015-05-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "H3K4me3-mouse",
-        "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
-    },
-    {
-        "_test": "anisogenic experiemnt",
-        "accession": "ENCSR001ADI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002004",
-            "GEO:GSM798327",
-            "GEO:GSE32218"
-        ],
-        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "lab": "sherman-weissman",
-        "possible_controls": [
-            "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
-        ],
-        "status": "released",
-        "date_submitted": "2015-06-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "H3K4me3-mouse",
-        "uuid": "2629336f-0f99-4f30-9457-b2a4834e9e69"
-    },
-    {
-        "_test": "human chip-seq",
-        "accession": "ENCSR000AHF",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH003317",
-            "GEO:GSM1010811"
-        ],
-        "description": "HAIB ChIP TAF1 in MCF-7",
-        "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
-        ],
-        "lab": "richard-myers",
-        "status": "released",
-        "date_submitted": "2015-07-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "target": "TAF1-human",
-        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
-        "submitter_comment": "The lab plant died and everyone was sad that week so it may have affected the results."
-    },
-    {
-        "_test": "methy array",
-        "accession": "ENCSR000ACY",
-        "assay_term_name": "DNA methylation profiling by array assay",
-        "award": "ENCODE2",
-        "biosample_ontology": "primary_cell_CL_1000350",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH002229",
-            "GEO:GSM999346",
-            "GEO:GSE40699"
-        ],
-        "description": "UW  SAEC",
-        "documents": [
-            "encode:Myers_Methyl450_protocol"
-        ],
-        "lab": "richard-myers",
-        "status": "released",
-        "date_submitted": "2015-08-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
-    },
-    {
-        "_test": "NTR for assay and no replicates",
-        "accession": "ENCSR000AJK",
-        "assay_term_name": "HiC",
-        "award": "U54HG006998",
-        "biosample_ontology": "cell-free_sample_NTR_0000471",
-        "description": "Irvine Hi-C GM12878",
-        "lab": "ali-mortazavi",
-        "status": "released",
-        "date_submitted": "2015-09-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "netus.lorem@risus.lobortis",
-        "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
-    },
-    {
-        "_test": "shared biosample",
-        "accession": "ENCSR000AEN",
-        "assay_term_name": "shRNA knockdown followed by RNA-seq",
-        "award": "U54HG007005",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA Evaluation K562 Long Total from Graveley",
-        "internal_tags": ["dbGaP"],
-        "lab": "brenton-graveley",
-        "status": "released",
-        "date_submitted": "2015-10-20",
-        "date_released": "2016-01-01",
-        "references": [
-            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
-            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
-        ],
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
-    },
-    {
-        "_test": "no replicates",
-        "accession": "ENCSR000AAL",
-        "assay_term_name": "RNA-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
-        "status": "released",
-        "date_submitted": "2015-11-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
-    },
-    {
-        "_test": "replicates no files",
-        "accession": "ENCSR999NOF",
-        "assay_term_name": "RNA-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
-        "status": "released",
-        "date_submitted": "2015-12-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
-    },
-    {
-        "_test": "patch users",
-        "accession": "ENCSR000ACT",
-        "assay_term_name": "DNA methylation profiling by array assay",
-        "award": "ENCODE2",
-        "biosample_ontology": "primary_cell_CL_1000350",
-        "description": "UW  SAEC",
-        "lab": "richard-myers",
-        "status": "released",
-        "date_submitted": "2015-01-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
-    },
-    {
-        "_test": "patch users",
-        "accession": "ENCSR001ACT",
-        "assay_term_name": "DNA methylation profiling by array assay",
-        "award": "ENCODE2",
-        "biosample_ontology": "primary_cell_CL_1000350",
-        "description": "UW  SAEC",
-        "lab": "richard-myers",
-        "status": "released",
-        "date_submitted": "2015-02-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25",
-        "supersedes": ["ENCSR000ACT"]
-    },
-    {
-        "_test": "patch users",
-        "accession": "ENCSR002ACT",
-        "assay_term_name": "DNA methylation profiling by array assay",
-        "award": "ENCODE2",
-        "biosample_ontology": "primary_cell_CL_1000350",
-        "description": "UW  SAEC",
-        "lab": "richard-myers",
-        "status": "released",
-        "date_submitted": "2015-03-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf",
-        "supersedes": ["ENCSR000ACT", "ENCSR001ACT"]
-    },
-    {
-        "_test": "Bind and Seq",
-        "accession": "ENCSR666EMD",
-        "assay_term_name": "RNA Bind-n-Seq",
-        "award": "ENCODE2",
-        "description": "Sample “RNA Bind-n-Seq” (RBNS) experiment against PTBP1",
-        "lab": "chris-burge",
-        "status": "released",
-        "biosample_ontology": "cell-free_sample_NTR_0000471",
-        "date_submitted": "2015-04-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474",
-        "submitter_comment": "Mercury was in retrograde and it may have affected the outcome of this experiment."
-    },
-    {
-        "_test": "DNA-me pipeline test",
-        "accession": "ENCSR765JPC",
-        "dbxrefs": [],
-        "uuid": "e998735d-9a72-453f-b947-5fb604027d01",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "award": "U54HG006998",
-        "organ_slims": [],
-        "status": "released",
-        "date_submitted": "2015-05-20",
-        "date_released": "2016-01-01",
-        "description": "HAIB Whole Genome Bisulfite Sequencing K562",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
-        "lab": "richard-myers",
-        "submitted_by": "facilisi.tristique@potenti.vivamus"
-    },
-    {
-        "_test": "ENCODE 2 pipeline ChIP-seq control",
-        "accession": "ENCSR000EYX",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2/",
-        "biosample_ontology": "cell_line_EFO_0002784",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH000625",
-            "GEO:GSM935413"
-        ],
-        "description": "Control ChIP-seq on human GM12878",
-        "lab": "michael-snyder",
-        "status": "released",
-        "date_submitted": "2015-06-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "Control-human",
-        "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78"
-    },
-    {
-        "_test": "ENCODE 2 pipeline ChIP-seq",
-        "accession": "ENCSR000DZQ",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2/",
-        "biosample_ontology": "cell_line_EFO_0002784",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH001832",
-            "GEO:GSM935375"
-        ],
-        "description": "EBF1 ChIP-seq on human GM12878 produced by the Snyder lab",
-        "lab": "michael-snyder/",
-        "possible_controls": [
-            "ENCSR000EYX"
-        ],
-        "status": "released",
-        "date_submitted": "2015-07-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "EBF1-human",
-        "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
-    },
-    {
-        "_test": "treatment control",
-        "accession": "ENCSR001CTL",
-        "assay_term_name": "5C",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "target": "/targets/Control-human",
-        "description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-08-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "e162561a-08c0-463c-93d8-c4f924584e13"
-    },
-    {
-        "_test": "treatment time series 1",
-        "accession": "ENCSR001SER",
-        "assay_term_name": "ChIP-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "target": "/targets/TCF4-human/",
-        "possible_controls": ["ENCSR001CTL"],
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-09-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919",
-        "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing."
-    },
-    {
-        "_test": "treatment time series 2",
-        "accession": "ENCSR002SER",
-        "assay_term_name": "ChIP-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "possible_controls": ["ENCSR001CTL"],
-        "target": "/targets/TCF4-human",
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-10-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
-    },
-    {
-        "_test": "treatment time series 3 missing possible_controls",
-        "accession": "ENCSR003SER",
-        "assay_term_name": "ChIP-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "target": "/targets/TCF4-human/",
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 12 hours.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-11-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
-    },
-        {
-        "_test": "treatment concentration series 1",
-        "accession": "ENCSR001CON",
-        "assay_term_name": "ChIP-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "target": "/targets/TCF4-human/",
-        "possible_controls": ["ENCSR001CTL"],
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-12-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
-    },
-    {
-        "_test": "treatment concentration series 2 in progress",
-        "accession": "ENCSR002CON",
-        "assay_term_name": "ChIP-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "possible_controls": ["ENCSR001CTL"],
-        "target": "/targets/TCF4-human",
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 80 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
-        "status": "in progress",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4c1be4ea-22ae-4880-9002-03617e3dde92"
-    },
-    {
-        "_test": "treatment concentration series 3",
-        "accession": "ENCSR003CON",
-        "assay_term_name": "ChIP-seq",
-        "award": "U54HG007004",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "target": "/targets/TCF4-human/",
-        "possible_controls": ["ENCSR001CTL"],
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 60 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-01-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "aca3295c-755b-4495-91cf-8a4c00a0db00"
-    },
-    {
-        "_test": "worm development series 1",
-        "accession": "ENCSR374GSQ",
-        "assay_term_name": "RNA-seq",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "target": "fkh-10-celegans",
-        "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-02-20",
-        "date_released": "2016-01-01",
-        "aliases": ["robert-waterston:experiment_RB884_80_1"],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "25ee48a4-d372-42a8-9366-33a8ca387daf"
-    },
-    {
-        "_test": "worm development series 2",
-        "accession": "ENCSR375GSQ",
-        "assay_term_name": "RNA-seq",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "target": "fkh-10-celegans",
-        "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_released": "2016-01-01",
-        "date_submitted": "2015-02-21",
-        "aliases": ["robert-waterston:life_stage_bug_experiment"],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "21ee48a4-d172-42a2-9306-13a8ca317daf"
-    },
-    {
-        "_test": "worm development series 2",
-        "accession": "ENCSR862BAF",
-        "assay_term_name": "RNA-seq",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "target": "fkh-10-celegans",
-        "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 680 minutes after egg bleaching.",
-        "lab": "robert-waterston",
-        "status": "released",
-        "date_submitted": "2015-03-20",
-        "date_released": "2016-01-01",
-        "aliases": ["robert-waterston:experiment_RB884_680_1"],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "8669b9e5-5b8e-4814-8625-6fbb29372b84"
-    },
-    {
-        "_test": "worm development series 3 revoked",
-        "accession": "ENCSR787DGZ",
-        "assay_term_name": "RNA-seq",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "target": "fkh-10-celegans",
-        "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 880 minutes after egg bleaching.",
-        "lab": "robert-waterston",
-        "status": "revoked",
-        "date_submitted": "2015-08-24",
-        "date_released": "2016-01-01",
-        "aliases": ["robert-waterston:experiment_RB884_880_1"],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "785f86d8-9d3e-4c29-b007-b1b615ba6076"
-    },
-    {
-        "_test": "replication timing series 1 (G1b phase)",
-        "accession": "ENCSR001REP",
-        "assay_term_name": "Repli-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Repli-seq on SK-N-SH cell line at G2 phase.",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "87958f5b-27f8-4e54-b398-d5bd5ba3e2a0"
-    },
-    {
-        "_test": "replication timing series 2 (S1 phase)",
-        "accession": "ENCSR002REP",
-        "assay_term_name": "Repli-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Repli-seq on SK-N-SH cell line at S1 phase.",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "date_submitted": "2015-05-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "fe9d124e-9ca1-488f-a1f2-2f9d389562f1"
-    },
-    {
-        "_test": "replication timing series 3 (S4 phase)",
-        "accession": "ENCSR003REP",
-        "assay_term_name": "Repli-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Repli-seq on SK-N-SH cell line at S2 phase.",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "date_submitted": "2015-06-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "8dc4b825-a5d9-4663-9f1a-cf769c1a0f8c"
-    },
-    {
-        "_test": "reference epigenome series 1: RNA-seq",
-        "accession": "ENCSR001EPI",
-        "assay_term_name": "RNA-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "RNA-seq of K562",
-        "lab": "thomas-gingeras",
-        "status": "released",
-        "date_submitted": "2015-07-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "dc7baa06-bd53-4b5c-809a-85e0c6bd23d6"
-    },
-    {
-        "_test": "reference epigenome series 2: WGBS",
-        "accession": "ENCSR002EPI",
-        "assay_term_name": "RRBS",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "WGBS of K562",
-        "lab": "richard-myers",
-        "status": "released",
-        "date_submitted": "2015-08-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4e0a5e53-fc05-4c9b-8d86-8572c8d227a2"
-    },
-    {
-        "_test": "reference epigenome series 3: H3K4me1",
-        "accession": "ENCSR003EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "H3K4me1-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-09-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "59584793-f9ad-4cb3-a6e9-e2bd6112116b"
-    },
-    {
-        "_test": "reference epigenome series 4: H3K4me3",
-        "accession": "ENCSR004EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "H3K4me3-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-10-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "b7a37424-cc23-4c28-ac0d-5dd311f993f4"
-    },
-    {
-        "_test": "reference epigenome series 5: H3K27ac",
-        "accession": "ENCSR005EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "H3K27ac-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-11-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "36bb66bc-c6d6-4fde-a0b6-b984926ca081"
-    },
-    {
-        "_test": "reference epigenome series 6: H3K36me3",
-        "accession": "ENCSR006EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "H3K36me3-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-12-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "c70c0fb9-08c5-404f-9905-11aac1069b4e"
-    },
-    {
-        "_test": "reference epigenome series 7: H3K27me3",
-        "accession": "ENCSR007EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "H3K27me3-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-01-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "0fd18fa0-eeab-48d1-b249-84eca0ea0d6f"
-    },
-    {
-        "_test": "reference epigenome series 8: H3K9me3",
-        "accession": "ENCSR008EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "H3K9me3-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-02-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "d63e3ea5-86b2-4780-9c07-becbc6c4a63f"
-    },
-    {
-        "_test": "reference epigenome series 9: control",
-        "accession": "ENCSR009EPI",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "Control-human",
-        "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "date_submitted": "2015-03-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "ce9bb310-d52d-464c-9e2d-c250ab287c7a"
-    },
-    {
-        "_test": "Paired set series 1",
-        "lab": "john-stamatoyannopoulos",
-        "assay_term_name": "DNase-seq",
-        "status": "in progress",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010",
-        "accession": "ENCSR706IDL",
-        "date_submitted": "2015-08-31",
-        "uuid": "529ea39a-58a7-4a9d-8a86-2e5da2e1e1fb",
-        "biosample_ontology": "tissue_UBERON_0001891"
-    },
-    {
-        "_test": "Paired set series 2",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "DNase-seq",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751YPU",
-        "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b2"
-    },
-    {
-        "_test": "long read RNA-seq test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "long read RNA-seq",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751ISO",
-        "uuid": "6dde71b6-555c-4bed-9bb7-7bec3771893b"
-    },
-    {
-        "_test": "STARR-seq test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "STARR-seq",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751STR",
-        "uuid": "a4460c54-aece-43d2-bf52-dbaaa9298aaa"
-    },
-    {
-        "_test": "PLAC-seq test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "PLAC-seq",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "target": "Control-human",
-        "accession": "ENCSR751STT",
-        "uuid": "03485813-0362-41f0-afd5-2bef9f5c52ef"
-    },
-    {
-        "_test": "MPRA test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "MPRA",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751STU",
-        "uuid": "e828ec77-8f74-438f-8bf7-8535ee34819e"
-    },
-    {
-        "_test": "microRNA test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "microRNA-seq",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR123MRN",
-        "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
-    },
-    {
-        "_test": "ATAC-seq test",
-        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
-        "status": "released",
-        "date_submitted": "2019-05-03",
-        "biosample_ontology": "cell_line_EFO_0002784",
-        "award": "UM1HG009442",
-        "assay_term_name": "ATAC-seq",
-        "lab": "/labs/michael-snyder/",
-        "date_released": "2019-05-09",
-        "accession": "ENCSR808QCJ",
-        "uuid": "1b85ee28-66f1-49ad-940d-ba22acf85e08"
-    }
+{
+    "accession": "ENCSR844DRI",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K36me3 in human hES-I3 cells_Mar-03-2010_68512",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K36me3 in human hES I3 TESR cells_Mar-03-2010_8784"
+    ],
+    "alternate_accessions": [
+        "ENCSR942ZXV"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:10.991734+00:00",
+    "date_released": "2013-07-31",
+    "date_submitted": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM537669",
+        "GEO:GSM537672"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR103RGM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supersedes": [],
+    "target": "H3K36me3-human",
+    "uuid": "03c52719-bea3-4aac-91ba-f8ecfd165a8b"
+},
+{
+    "accession": "ENCSR274ZQJ",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me3 in human hES-I3 cells_Mar-03-2010_27521",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me3 in human hES I3 TESR cells_Mar-03-2010_48104"
+    ],
+    "alternate_accessions": [
+        "ENCSR422WXK"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:11.713621+00:00",
+    "date_released": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM537665",
+        "GEO:GSM537626"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR103RGM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "archived",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supersedes": [],
+    "target": "H3K4me3-human",
+    "uuid": "05ba752b-54a2-4f5d-91ab-27145eafc01c"
+},
+{
+    "accession": "ENCSR000BLX",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004576",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-09-13T16:01:43.824227-08:00",
+    "date_released": "2011-07-18",
+    "date_submitted": "2011-07-18",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH001613",
+        "GEO:GSM803333"
+    ],
+    "description": "Control ChIP-seq (protocol v041610.2) on SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [
+        "ENCSR000BLQ"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "supersedes": [],
+    "target": "CTCF-human",
+    "uuid": "077c631f-c1b5-4a96-bd19-4e1d62db1a3b"
+},
+{
+    "accession": "ENCSR750DLX",
+    "aliases": [
+        "bradley-bernstein:Project Element 3458"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:46:33.475897+00:00",
+    "date_released": "2018-12-11",
+    "date_submitted": "2018-04-26",
+    "dbxrefs": [
+        "GEO:GSE136515"
+    ],
+    "documents": [
+        "0bc735f0-1418-456c-a910-77992b868036"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "097a0038-dc91-462c-95ac-b89bbf4c8dc4"
+},
+{
+    "accession": "ENCSR000COP",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG004557",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-03T22:53:36.652956+00:00",
+    "date_released": "2011-10-17",
+    "date_submitted": "2011-07-13",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH000145",
+        "GEO:GSE90221",
+        "GEO-obsolete:GSM758562"
+    ],
+    "description": "The libraries contained in this experiment come from the whole cell fraction of independent growths of foreskin fibroblast cells. They are stranded PE76 Illumina GAIIx RNA-Seq libraries from rRNA-depleted Poly-A+ RNA > 200 nucleotides in size.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f5b7857d-208e-4acc-ac4d-4c2520814fe1",
+    "supersedes": [],
+    "uuid": "0be747c4-4bf0-40b2-9c5c-d8a9277439d1"
+},
+{
+    "accession": "ENCSR224CTR",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-10-30T17:45:12.062846+00:00",
+    "date_released": "2017-12-04",
+    "date_submitted": "2017-11-07",
+    "dbxrefs": [
+        "GEO:GSE127291"
+    ],
+    "description": "whole genome bisulfite sequencing from human lung tissue",
+    "documents": [
+        "9d9cbba0-5ebe-482b-9fa3-d93a968a7045"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "2c67f476-983b-41d8-9958-7ac6cc1deb62",
+    "supersedes": [],
+    "uuid": "0ce387eb-8de0-41b0-b213-21f053f2b8b4"
+},
+{
+    "accession": "ENCSR623YMO",
+    "aliases": [
+        "bradley-bernstein:Project Element 3450"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:46:49.196455+00:00",
+    "date_released": "2018-12-11",
+    "date_submitted": "2018-04-26",
+    "dbxrefs": [
+        "GEO:GSE136506"
+    ],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR750DLX"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K9me3-human",
+    "uuid": "10ec72cf-9820-43a7-934b-a72749536e6e"
+},
+{
+    "accession": "ENCSR895IWH",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9me3 in human hES I3 TESR cells_Mar-03-2010_14417",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9me3 in human hES I3 TESR cells_Mar-03-2010_19963",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9me3 in human hES-I3 cells_Mar-03-2010_60602"
+    ],
+    "alternate_accessions": [
+        "ENCSR789HLI",
+        "ENCSR497IXP"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:13.370963+00:00",
+    "date_released": "2013-07-31",
+    "date_submitted": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM537625",
+        "GEO:GSM537664"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR103RGM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supersedes": [],
+    "target": "H3K9me3-human",
+    "uuid": "116eb622-2e77-462d-ba4c-85ffa527c6c2"
+},
+{
+    "accession": "ENCSR730FLZ",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me1 in human hES I3 TESR cells_Jul-26-2011_91396",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me1 in human hES-I3 cells_Mar-03-2010_44115"
+    ],
+    "alternate_accessions": [
+        "ENCSR485ZIC"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:11.200400+00:00",
+    "date_released": "2013-07-31",
+    "date_submitted": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM772789",
+        "GEO:GSM537668"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR103RGM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supersedes": [],
+    "target": "H3K4me1-human",
+    "uuid": "13cd30e8-a2dc-4fd2-aa5b-b7faedb4495d"
+},
+{
+    "accession": "ENCSR000CPN",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG004557",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-12-03T22:53:26.021095+00:00",
+    "date_released": "2011-10-17",
+    "date_submitted": "2011-10-17",
+    "dbxrefs": [
+        "GEO:GSE90232",
+        "GEO-obsolete:GSM765395",
+        "UCSC-ENCODE-hg19:wgEncodeEH000169"
+    ],
+    "description": "The libraries contained in this experiment come from the whole cell fraction of independent growths of cell line SK-N-SH that has been treated with retinoic acid. They are stranded PE76 Illumina GAIIx RNA-Seq libraries from rRNA-depleted Poly-A+ RNA > 200 nucleotides in size.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f5b7857d-208e-4acc-ac4d-4c2520814fe1",
+    "supersedes": [],
+    "uuid": "140beb73-a281-4be5-bbce-5d5bef24aa47"
+},
+{
+    "accession": "ENCSR000DWR",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2014-02-12T22:50:56.942536+00:00",
+    "date_released": "2011-03-17",
+    "date_submitted": "2011-03-17",
+    "dbxrefs": [
+        "GEO:GSM945250",
+        "UCSC-ENCODE-hg19:wgEncodeEH000972"
+    ],
+    "description": "Control ChIP-seq on human NHDF-neo",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 1,1 of this experiment was previously attributed to biosample ENCBS065ENC but it has since been corrected to the current biosample. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "196ca4f0-556b-40e6-a3de-b38684842c61"
+},
+{
+    "accession": "ENCSR276OPI",
+    "aliases": [
+        "bradley-bernstein:Project Element 3400"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:29:00.853159+00:00",
+    "date_released": "2019-09-11",
+    "date_submitted": "2019-04-27",
+    "dbxrefs": [],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR746QZL"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K36me3-human",
+    "uuid": "1988eb64-9696-4f4a-8829-e3e4cfbcb8b8"
+},
+{
+    "accession": "ENCSR539RDF",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG007004",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-04-01T18:20:44.950500+00:00",
+    "date_released": "2016-08-05",
+    "date_submitted": "2016-06-28",
+    "dbxrefs": [
+        "GEO:GSE88344"
+    ],
+    "description": "The libraries contained in this Experiment come from tissue sub-sections of a 37 year old male's upper lobe of left lung tissue section obtained from GTEx. They are stranded PE101 Illumina Hi-Seq RNA-Seq libraries from rRNA-depleted Total RNA < 200 nucleotides in size.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "supersedes": [],
+    "uuid": "22ac301f-7e30-4f64-9a1a-014bbd714208"
+},
+{
+    "accession": "ENCSR888OWU",
+    "aliases": [
+        "michael-snyder:ChIPss-690"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-09T02:54:28.160058+00:00",
+    "date_released": "2016-12-13",
+    "date_submitted": "2016-12-08",
+    "dbxrefs": [
+        "GEO:GSE106052"
+    ],
+    "description": "POLR2A ChIP-seq on human upper lobe of left lung",
+    "documents": [
+        "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "michael-snyder",
+    "possible_controls": [
+        "ENCSR061CNP"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "supersedes": [],
+    "target": "POLR2A-human",
+    "uuid": "36a402d6-0d3c-46b1-a38e-cfcd05603862"
+},
+{
+    "accession": "ENCSR000CRG",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG004557",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-18T17:58:11.619643+00:00",
+    "date_released": "2012-02-22",
+    "date_submitted": "2011-01-19",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH001079",
+        "GEO:GSM897077"
+    ],
+    "description": "The libraries contained in this experiment come from whole cell extracts from independent growths of foreskin fibroblast cells. They are stranded SE36 Illumina GAIIx RNA-Seq libraries from rRNA-depleted Total RNA < 200 nucleotides in size that was pre-treated with TAP prior to cloning.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f5b7857d-208e-4acc-ac4d-4c2520814fe1",
+    "supersedes": [],
+    "uuid": "44658419-49f5-4fcc-b926-f8270ad15dc4"
+},
+{
+    "accession": "ENCSR000EME",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "DNase-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-18T17:58:18.964324+00:00",
+    "date_released": "2011-05-04",
+    "date_submitted": "2011-05-04",
+    "dbxrefs": [
+        "GEO:GSM736596",
+        "UCSC-ENCODE-hg19:wgEncodeEH000487"
+    ],
+    "description": "DNase-seq on human foreskin fibroblast cell",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ccre_inputv1",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "uuid": "45f6e301-074a-4f40-bccd-65b609929f29"
+},
+{
+    "accession": "ENCSR595MTV",
+    "aliases": [
+        "bradley-bernstein:Project Element 3394"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:31:42.334414+00:00",
+    "date_released": "2019-09-11",
+    "date_submitted": "2019-04-28",
+    "dbxrefs": [],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR746QZL"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K4me1-human",
+    "uuid": "49fe96d4-66c7-42ce-b2d7-90119b8d4861"
+},
+{
+    "accession": "ENCSR453MUW",
+    "aliases": [
+        "bradley-bernstein:Project Element 3448"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:45:56.598581+00:00",
+    "date_released": "2018-12-11",
+    "dbxrefs": [
+        "GEO:GSE136491"
+    ],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR750DLX"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K27ac-human",
+    "uuid": "4a2c2512-acc9-4aac-9a49-f2a062756b08"
+},
+{
+    "accession": "ENCSR398EZJ",
+    "aliases": [
+        "richard-myers:Control-SL161427"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-01-31T16:10:28.419009+00:00",
+    "date_released": "2017-02-02",
+    "date_submitted": "2017-01-31",
+    "dbxrefs": [
+        "GEO:GSE105646"
+    ],
+    "description": "Chip-Seq on -human (fragmentation date:Mon Sep 26 2016 00:00:00 GMT-0500 (CDT)",
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "4c68c267-9c2b-4311-bb32-f0974e1f80eb"
+},
+{
+    "accession": "ENCSR000MMZ",
+    "aliases": [
+        "richard-myers:SL161434-entex"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-01-31T16:16:02.263862+00:00",
+    "date_released": "2017-06-15",
+    "date_submitted": "2017-01-31",
+    "dbxrefs": [
+        "GEO:GSE105168"
+    ],
+    "description": "Chip-Seq on upper lobe of left lung",
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [
+        "ENCSR398EZJ"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "supersedes": [],
+    "target": "EP300-human",
+    "uuid": "4f508722-e808-4697-9af2-9975b5de27d4"
+},
+{
+    "accession": "ENCSR642DSR",
+    "aliases": [
+        "bradley-bernstein:Project Element 3451"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:45:28.523717+00:00",
+    "date_released": "2018-12-11",
+    "date_submitted": "2018-04-26",
+    "dbxrefs": [
+        "GEO:GSE136508"
+    ],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR750DLX"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K36me3-human",
+    "uuid": "4fce3e20-0fc7-405e-aace-a513040799fd"
+},
+{
+    "accession": "ENCSR000EPP",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "DNase-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2014-01-16T21:45:11.235017+00:00",
+    "date_released": "2010-12-16",
+    "date_submitted": "2010-12-16",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH002457",
+        "UCSC-ENCODE-hg19:wgEncodeEH000518",
+        "GEO:GSM736546"
+    ],
+    "description": "DNase-seq and DGF on human NHDF-neo",
+    "documents": [
+        "682c3e93-7ded-4ca4-beab-e5383ad2b862",
+        "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "uuid": "5306b4d4-9910-40be-ae1e-ffc36fde80fb"
+},
+{
+    "accession": "ENCSR000DXO",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2014-02-12T22:50:54.897413+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "GEO:GSM945209",
+        "UCSC-ENCODE-hg19:wgEncodeEH000441"
+    ],
+    "description": "H3K36me3 ChIP-seq on human SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DXN"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 2,1 of this experiment was previously attributed to biosample ENCBS404ENC and replicate 1,1 of this experiment was previously attributed to biosample ENCBS404ENC but they have since been corrected to the current biosamples. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "H3K36me3-human",
+    "uuid": "54825e1f-917a-4c69-978c-11ba79203bda"
+},
+{
+    "accession": "ENCSR027FSZ",
+    "aliases": [
+        "michael-snyder:ChIPss-656"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-05T20:50:31.882791+00:00",
+    "date_released": "2016-12-08",
+    "date_submitted": "2016-12-05",
+    "dbxrefs": [
+        "GEO:GSE105250"
+    ],
+    "description": "CTCF ChIP-seq on human upper lobe of left lung",
+    "documents": [
+        "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx",
+        "ccre_inputv2"
+    ],
+    "lab": "michael-snyder",
+    "possible_controls": [
+        "ENCSR062MVC"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "supersedes": [],
+    "target": "CTCF-human",
+    "uuid": "55b32535-b654-47db-83da-17225ec6c433"
+},
+{
+    "accession": "ENCSR074WIB",
+    "aliases": [
+        "bradley-bernstein:Project Element 3393"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:32:30.864631+00:00",
+    "date_released": "2019-09-11",
+    "date_submitted": "2019-04-27",
+    "dbxrefs": [],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR746QZL"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K4me3-human",
+    "uuid": "599dba7d-9069-4b7b-980a-598f6fffba9c"
+},
+{
+    "accession": "ENCSR674VXR",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-10-30T17:46:06.749192+00:00",
+    "date_released": "2018-01-09",
+    "date_submitted": "2017-12-07",
+    "dbxrefs": [
+        "GEO:GSE127310"
+    ],
+    "description": "whole genome bisulfite sequencing from human lung tissue",
+    "documents": [
+        "9d9cbba0-5ebe-482b-9fa3-d93a968a7045"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "2c67f476-983b-41d8-9958-7ac6cc1deb62",
+    "supersedes": [],
+    "uuid": "5beadbe8-b4a4-4945-b229-da6ae847e3c1"
+},
+{
+    "accession": "ENCSR062MVC",
+    "aliases": [
+        "michael-snyder:ctl-exp_L-3148_SR-4356"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-05T20:51:09.696518+00:00",
+    "date_released": "2016-12-08",
+    "date_submitted": "2016-12-05",
+    "dbxrefs": [
+        "GEO:GSE105210"
+    ],
+    "description": "ChIP-seq on human upper lobe of left lung",
+    "documents": [
+        "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "michael-snyder",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "5d9c8e90-2db6-498b-a261-aefa1e04cdb0"
+},
+{
+    "accession": "ENCSR674IEI",
+    "aliases": [
+        "michael-snyder:ChIPss-689"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-09T02:39:37.688783+00:00",
+    "date_released": "2016-12-13",
+    "date_submitted": "2016-12-08",
+    "dbxrefs": [
+        "GEO:GSE105653"
+    ],
+    "description": "POLR2A ChIP-seq on human upper lobe of left lung",
+    "documents": [
+        "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "michael-snyder",
+    "possible_controls": [
+        "ENCSR062MVC"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "supersedes": [],
+    "target": "POLR2A-human",
+    "uuid": "6a6d4264-a845-4d7e-b5ad-a3d0ada7a33e"
+},
+{
+    "accession": "ENCSR000DQH",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-20T15:03:07.238936+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH000416",
+        "GEO:GSM945178"
+    ],
+    "description": "H3K4me3 ChIP-seq on human foreskin fibroblast cell",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ccre_inputv1",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DQE"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "target": "H3K4me3-human",
+    "uuid": "7135130f-ed3e-4842-8e6c-662c58e2245c"
+},
+{
+    "accession": "ENCSR505YFA",
+    "aliases": [
+        "bradley-bernstein:Project Element 3397"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:30:53.747582+00:00",
+    "date_released": "2019-09-11",
+    "date_submitted": "2019-04-27",
+    "dbxrefs": [],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR746QZL"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K27ac-human",
+    "uuid": "735bbe2e-16e6-49a8-ab29-64466767c6a4"
+},
+{
+    "accession": "ENCSR097ORD",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9ac in human hES-I3 cells_Mar-03-2010_32191",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9ac in human hES I3 TESR cells_Mar-03-2010_334"
+    ],
+    "alternate_accessions": [
+        "ENCSR750XWI"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:13.114644+00:00",
+    "date_released": "2013-07-31",
+    "date_submitted": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM537670",
+        "GEO:GSM537624"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR103RGM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supersedes": [],
+    "target": "H3K9ac-human",
+    "uuid": "7d055dc0-44a3-402e-8c12-a540dc92c670"
+},
+{
+    "accession": "ENCSR000DXR",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2014-02-12T23:22:28.002660+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH000422",
+        "GEO:GSM945202"
+    ],
+    "description": "H3K4me3 ChIP-seq on human SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ccre_inputv1",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DXN"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 1,1 of this experiment was previously attributed to biosample ENCBS404ENC and replicate 2,1 of this experiment was previously attributed to biosample ENCBS799ICU but they have since been corrected to the current biosamples. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "H3K4me3-human",
+    "uuid": "7d5f5de5-91ad-4d1a-af3c-bb4609ce3867"
+},
+{
+    "accession": "ENCSR313COD",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG007004",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-01-12T19:19:35.175865+00:00",
+    "date_released": "2016-02-18",
+    "date_submitted": "2016-02-10",
+    "dbxrefs": [
+        "GEO:GSE88186"
+    ],
+    "description": "The libraries contained in this Experiment come from tissue sub-sections of a 37 year old male's lung tissue section obtained from GTEx. They are stranded PE101 Illumina Hi-Seq RNA-Seq libraries from rRNA-depleted Total RNA > 200 nucleotides in size.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4",
+        "ENTEx"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "supersedes": [],
+    "uuid": "80fe6b77-92fe-40a9-a9c6-db5aa17db3f6"
+},
+{
+    "accession": "ENCSR000DQF",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-20T15:03:12.521922+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH000443",
+        "GEO:GSM945207"
+    ],
+    "description": "H3K36me3 ChIP-seq on human foreskin fibroblast cell",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DQE"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "target": "H3K36me3-human",
+    "uuid": "8302d597-67d6-4b2c-81e8-6397fbce5b80"
+},
+{
+    "accession": "ENCSR000BLQ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004576",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-09-13T16:01:00.988958-08:00",
+    "date_released": "2011-07-18",
+    "date_submitted": "2011-07-18",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH001606",
+        "GEO:GSM803526"
+    ],
+    "description": "Control ChIP-seq (protocol v041610.2) on SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [],
+    "lab": "richard-myers",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "89d7ff93-d9d5-4d63-8e4b-83d391f894d5"
+},
+{
+    "accession": "ENCSR490JVQ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "DNase-seq",
+    "award": "U54HG007010",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-28T18:59:36.231974+00:00",
+    "date_released": "2017-12-13",
+    "date_submitted": "2017-09-28",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [
+        "926174f5-d14c-4e77-bc52-5517b56daac0"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "supersedes": [],
+    "uuid": "8c7144f9-d996-4710-b8e4-71919f418344"
+},
+{
+    "accession": "ENCSR000DQG",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-20T15:03:10.131973+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "GEO:GSM945204",
+        "UCSC-ENCODE-hg19:wgEncodeEH000424"
+    ],
+    "description": "H3K27me3 ChIP-seq on human foreskin fibroblast cell",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DQE"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "target": "H3K27me3-human",
+    "uuid": "8d5fe658-6c4d-47dd-b522-8e11a2ce3271"
+},
+{
+    "accession": "ENCSR478JDR",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES-I3 cells_Mar-03-2010_71046",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES-I3 cells_Mar-03-2010_41574",
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES I3 TESR cells_Mar-03-2010_86385"
+    ],
+    "alternate_accessions": [
+        "ENCSR933UML",
+        "ENCSR399RDX"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:10.677395+00:00",
+    "date_released": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM537648",
+        "GEO:GSM537627"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "unrunnable",
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR103RGM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "revoked",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "submitter_comment": "This experiment has failed repeated attempts to remap",
+    "supersedes": [],
+    "target": "H3K27me3-human",
+    "uuid": "8f6025fe-742d-4dca-a607-09e329d58f8f"
+},
+{
+    "accession": "ENCSR469YCE",
+    "aliases": [
+        "bradley-bernstein:Project Element 3398"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:35:32.417323+00:00",
+    "date_released": "2019-09-11",
+    "date_submitted": "2019-04-27",
+    "dbxrefs": [],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR746QZL"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K27me3-human",
+    "uuid": "956a6cea-a382-41e1-964d-7ed818fbfc93"
+},
+{
+    "accession": "ENCSR238WIK",
+    "aliases": [
+        "bradley-bernstein:Project Element 3445"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:45:26.260319+00:00",
+    "date_released": "2018-12-11",
+    "date_submitted": "2018-04-26",
+    "dbxrefs": [
+        "GEO:GSE136480"
+    ],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR750DLX"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K4me1-human",
+    "uuid": "9d3ec806-3169-4682-9dbd-d9df8287ec60"
+},
+{
+    "accession": "ENCSR000EPZ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "DNase-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2014-01-17T20:40:32.610895+00:00",
+    "date_released": "2010-12-14",
+    "date_submitted": "2010-12-14",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH000485",
+        "UCSC-ENCODE-hg19:wgEncodeEH000477",
+        "GEO:GSM736578"
+    ],
+    "description": "DNase-seq and DGF on human SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ccre_inputv1",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "uuid": "9ed4a5b2-f5a1-46e2-adc2-b07bbcd3fa60"
+},
+{
+    "accession": "ENCSR179CMD",
+    "aliases": [
+        "roadmap-epigenomics:Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types_May-18-2011_7074",
+        "roadmap-epigenomics:Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types_Jun-29-2012_24530"
+    ],
+    "alternate_accessions": [
+        "ENCSR542QVH"
+    ],
+    "assay_term_name": "transcription profiling by array assay",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:09.795012+00:00",
+    "date_released": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM981282",
+        "GEO:GSM981293"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "no available pipeline",
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "archived",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "submitter_comment": "The raw data for this experiment is unavailable.",
+    "supersedes": [],
+    "uuid": "a3088b6d-525b-4e1e-a376-3dcdaf8f6f82"
+},
+{
+    "accession": "ENCSR429VWL",
+    "aliases": [
+        "bradley-bernstein:Project Element 3444"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:45:54.373382+00:00",
+    "date_released": "2018-12-11",
+    "date_submitted": "2018-04-26",
+    "dbxrefs": [
+        "GEO:GSE136490"
+    ],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR750DLX"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K4me3-human",
+    "uuid": "a9043119-5d30-48f0-92c2-d9d4ed55c9f0"
+},
+{
+    "accession": "ENCSR000DXN",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2014-02-12T23:11:30.537032+00:00",
+    "date_released": "2011-03-17",
+    "date_submitted": "2011-03-17",
+    "dbxrefs": [
+        "GEO:GSM945317",
+        "UCSC-ENCODE-hg19:wgEncodeEH000474"
+    ],
+    "description": "Control ChIP-seq on human SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 1,1 of this experiment was previously attributed to biosample ENCBS404ENC but it has since been corrected to the current biosample. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "b5c5e4fe-53e2-495e-8b6e-b962d06c7f21"
+},
+{
+    "accession": "ENCSR706OFD",
+    "aliases": [
+        "bradley-bernstein:Project Element 3449"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-05-11T18:46:28.787095+00:00",
+    "date_released": "2018-12-11",
+    "date_submitted": "2018-04-26",
+    "dbxrefs": [
+        "GEO:GSE136512"
+    ],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR750DLX"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K27me3-human",
+    "uuid": "bb6fd6e0-00b9-4b4e-af67-d3b85e41f366"
+},
+{
+    "accession": "ENCSR425RGZ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG007004",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-01-12T19:23:24.816209+00:00",
+    "date_released": "2016-02-18",
+    "date_submitted": "2016-02-10",
+    "dbxrefs": [
+        "GEO:GSE88267"
+    ],
+    "description": "The libraries contained in this Experiment come from tissue sub-sections of a 51 year old female's lung tissue section obtained from GTEx. They are stranded PE101 Illumina Hi-Seq RNA-Seq libraries from rRNA-depleted Total RNA > 200 nucleotides in size.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4",
+        "ENTEx"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "supersedes": [],
+    "uuid": "be0a0dd2-64db-4d12-9346-cb8ef8919ab3"
+},
+{
+    "accession": "ENCSR972LYL",
+    "aliases": [
+        "michael-snyder:ChIPss-658"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-05T22:18:02.299972+00:00",
+    "date_released": "2016-12-08",
+    "date_submitted": "2016-12-05",
+    "dbxrefs": [
+        "GEO:GSE105949"
+    ],
+    "description": "CTCF ChIP-seq on human upper lobe of left lung",
+    "documents": [
+        "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx",
+        "ccre_inputv2"
+    ],
+    "lab": "michael-snyder",
+    "possible_controls": [
+        "ENCSR061CNP"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "supersedes": [],
+    "target": "CTCF-human",
+    "uuid": "c5ac788a-dfd8-4d61-bd0e-9c4ad6fafb88"
+},
+{
+    "accession": "ENCSR000DXP",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2014-02-12T23:21:40.474609+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "GEO:GSM945210",
+        "UCSC-ENCODE-hg19:wgEncodeEH000440"
+    ],
+    "description": "H3K27me3 ChIP-seq on human SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DXN"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 2,1 of this experiment was previously attributed to biosample ENCBS404ENC and replicate 1,1 of this experiment was previously attributed to biosample ENCBS404ENC but they have since been corrected to the current biosamples. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "H3K27me3-human",
+    "uuid": "cc1bf268-59c0-486d-bb37-c50c430240d3"
+},
+{
+    "accession": "ENCSR961FIG",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "RNA-seq",
+    "award": "U54HG007004",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-04-01T18:22:02.655400+00:00",
+    "date_released": "2016-08-05",
+    "date_submitted": "2016-06-28",
+    "dbxrefs": [
+        "GEO:GSE88673"
+    ],
+    "description": "The libraries contained in this Experiment come from tissue sub-sections of a 51 year old female's upper lobe of left lung tissue section obtained from GTEx. They are stranded PE101 Illumina Hi-Seq RNA-Seq libraries from rRNA-depleted Total RNA < 200 nucleotides in size.",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "thomas-gingeras",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "supersedes": [],
+    "uuid": "d020b3a0-3d6b-46c5-8610-5817d76421e0"
+},
+{
+    "accession": "ENCSR103RGM",
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of WCE in human hES I3 TESR cells_Sep-15-2010_6776",
+        "roadmap-epigenomics:ChIP-Seq analysis of WCE in human hES-I3 cells_Mar-03-2010_63229"
+    ],
+    "alternate_accessions": [
+        "ENCSR014FFB"
+    ],
+    "assay_term_name": "ChIP-seq",
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-09-15T19:51:13.840108+00:00",
+    "date_released": "2013-07-31",
+    "date_submitted": "2013-07-31",
+    "dbxrefs": [
+        "GEO:GSM621386",
+        "GEO:GSM537647"
+    ],
+    "description": "",
+    "documents": [],
+    "internal_status": "release ready",
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "d071d9f0-6162-4b37-803e-b0691384ede4"
+},
+{
+    "accession": "ENCSR893MYW",
+    "aliases": [
+        "richard-myers:SL161439-entex"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-01-31T16:16:06.856595+00:00",
+    "date_released": "2017-10-31",
+    "date_submitted": "2017-01-31",
+    "dbxrefs": [
+        "GEO:GSE127610"
+    ],
+    "description": "Chip-Seq on upper lobe of left lung",
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [
+        "ENCSR703OGS"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "supersedes": [],
+    "target": "POLR2AphosphoS5-human",
+    "uuid": "d50566f3-98f7-4810-a6f2-eac06060bf08"
+},
+{
+    "accession": "ENCSR746QZL",
+    "aliases": [
+        "bradley-bernstein:Project Element 3407"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:34:15.225853+00:00",
+    "date_released": "2019-09-06",
+    "date_submitted": "2019-04-27",
+    "dbxrefs": [],
+    "documents": [
+        "c530ba5c-4343-49bc-898b-5579c287a67e"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "d807d9de-5efc-44c0-9909-e23ffafe98c1"
+},
+{
+    "accession": "ENCSR000DQI",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-20T15:03:05.100397+00:00",
+    "date_released": "2011-03-17",
+    "date_submitted": "2011-03-17",
+    "dbxrefs": [
+        "UCSC-ENCODE-hg19:wgEncodeEH000403",
+        "GEO:GSM749752"
+    ],
+    "description": "CTCF ChIP-seq on human foreskin fibroblast cell",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ccre_inputv1",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DQE"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "target": "CTCF-human",
+    "uuid": "dc57d343-e8fe-46a9-bb72-46d30cfa6041"
+},
+{
+    "accession": "ENCSR164WOF",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "DNase-seq",
+    "award": "U54HG007010",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-03-10T20:56:42.675649+00:00",
+    "date_released": "2017-10-01",
+    "date_submitted": "2017-03-13",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [
+        "926174f5-d14c-4e77-bc52-5517b56daac0"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "supersedes": [],
+    "uuid": "e02c5fcd-947f-4bca-870a-ec4353da72d6"
+},
+{
+    "accession": "ENCSR828PZH",
+    "aliases": [
+        "richard-myers:SL161438-entex"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-01-31T16:16:06.049929+00:00",
+    "date_released": "2017-06-15",
+    "date_submitted": "2017-01-31",
+    "dbxrefs": [
+        "GEO:GSE105891"
+    ],
+    "description": "Chip-Seq on upper lobe of left lung",
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [
+        "ENCSR976HZM"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "supersedes": [],
+    "target": "EP300-human",
+    "uuid": "e196b078-358b-4e83-875c-a4b13eca82c9"
+},
+{
+    "accession": "ENCSR976HZM",
+    "aliases": [
+        "richard-myers:Control-SL161431"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-01-31T16:10:32.666650+00:00",
+    "date_released": "2017-02-02",
+    "date_submitted": "2017-01-31",
+    "dbxrefs": [
+        "GEO:GSE105964"
+    ],
+    "description": "Chip-Seq on -human (fragmentation date:Mon Sep 26 2016 00:00:00 GMT-0500 (CDT)",
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "e57a7d38-e055-45ab-8e8c-f134752fe4a5"
+},
+{
+    "accession": "ENCSR000DWS",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2014-02-12T22:50:52.776491+00:00",
+    "date_released": "2011-02-11",
+    "date_submitted": "2011-02-11",
+    "dbxrefs": [
+        "GEO:GSM945251",
+        "UCSC-ENCODE-hg19:wgEncodeEH000971"
+    ],
+    "description": "H3K4me3 ChIP-seq on human NHDF-neo",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DWR"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 1,1 of this experiment was previously attributed to biosample ENCBS065ENC and replicate 2,1 of this experiment was previously attributed to biosample ENCBS065ENC but they have since been corrected to the current biosamples. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "H3K4me3-human",
+    "uuid": "eeaf1d36-f85b-4a7e-8fca-81d39b8ff08e"
+},
+{
+    "accession": "ENCSR703OGS",
+    "aliases": [
+        "richard-myers:Control-SL161432"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-01-31T16:10:33.514524+00:00",
+    "date_released": "2017-02-02",
+    "date_submitted": "2017-01-31",
+    "dbxrefs": [
+        "GEO:GSE127439"
+    ],
+    "description": "Chip-Seq on -human (fragmentation date:Mon Sep 26 2016 00:00:00 GMT-0500 (CDT)",
+    "documents": [
+        "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "ef1605ab-18db-4263-8570-2836e94e2af9"
+},
+{
+    "accession": "ENCSR000DWQ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2014-02-12T22:48:58.617416+00:00",
+    "date_released": "2012-01-17",
+    "date_submitted": "2011-06-25",
+    "dbxrefs": [
+        "GEO:GSM1022676",
+        "UCSC-ENCODE-hg19:wgEncodeEH002058"
+    ],
+    "description": "CTCF ChIP-seq on human NHDF-neo",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv5",
+        "ccre_inputv2",
+        "ccre_inputv1",
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [
+        "ENCSR000DWR"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "submitter_comment": "Replicate 1,1 of this experiment was previously attributed to biosample ENCBS065ENC and replicate 2,1 of this experiment was previously attributed to biosample ENCBS065ENC but they have since been corrected to the current biosamples. Please note that the biosample term has remain unchanged.",
+    "supersedes": [],
+    "target": "CTCF-human",
+    "uuid": "f756bc79-f3f5-47ea-aa0d-7c9a6a52df3e"
+},
+{
+    "accession": "ENCSR061CNP",
+    "aliases": [
+        "michael-snyder:ctl-exp_L-3147_SR-4359"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-12-05T22:02:00.807498+00:00",
+    "date_released": "2016-12-08",
+    "date_submitted": "2016-12-05",
+    "dbxrefs": [
+        "GEO:GSE105208"
+    ],
+    "description": "ChIP-seq on human upper lobe of left lung",
+    "documents": [
+        "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+    ],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "michael-snyder",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "f8024785-0a8c-47a7-aeaa-e3e7ed811513"
+},
+{
+    "accession": "ENCSR714FDJ",
+    "aliases": [
+        "bradley-bernstein:Project Element 3399"
+    ],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:28:45.892649+00:00",
+    "date_released": "2019-09-11",
+    "date_submitted": "2019-04-27",
+    "dbxrefs": [],
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "possible_controls": [
+        "ENCSR746QZL"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "supersedes": [],
+    "target": "H3K9me3-human",
+    "uuid": "fa2f2300-7ab8-4feb-ae45-0a230b62be1d"
+},
+{
+    "accession": "ENCSR000DQE",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-20T15:03:15.244449+00:00",
+    "date_released": "2011-03-17",
+    "date_submitted": "2011-03-17",
+    "dbxrefs": [
+        "GEO:GSM945235",
+        "UCSC-ENCODE-hg19:wgEncodeEH000453"
+    ],
+    "description": "Control ChIP-seq on human foreskin fibroblast cell",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "possible_controls": [],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "supersedes": [],
+    "target": "Control-human",
+    "uuid": "fba82a80-28fc-4510-b01d-ebb29dc4d1a5"
+},
+{
+    "accession": "ENCSR000BMA",
+    "aliases": [],
+    "alternate_accessions": [],
+    "assay_term_name": "ChIP-seq",
+    "award": "U54HG004576",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-09-13T16:01:44.749189-08:00",
+    "date_released": "2011-07-18",
+    "date_submitted": "2011-07-18",
+    "dbxrefs": [
+        "GEO:GSM803495",
+        "UCSC-ENCODE-hg19:wgEncodeEH001616"
+    ],
+    "description": "EP300 ChIP-seq (protocol v041610.2) on SK-N-SH treated with 6uM retinoic acid for 48 hours",
+    "documents": [],
+    "internal_status": "pipeline completed",
+    "internal_tags": [
+        "ENCYCLOPEDIAv4"
+    ],
+    "lab": "richard-myers",
+    "possible_controls": [
+        "ENCSR000BLQ"
+    ],
+    "references": [],
+    "related_files": [],
+    "schema_version": "28",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "supersedes": [],
+    "target": "EP300-human",
+    "uuid": "ff4c3626-2d73-4933-8288-66c4798e3b57"
+}
 ]

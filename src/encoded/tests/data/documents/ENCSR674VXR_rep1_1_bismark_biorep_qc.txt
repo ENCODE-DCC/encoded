@@ -1,0 +1,45 @@
+===== samtools flagstat =====
+1381378386 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+0 + 0 supplementary
+0 + 0 duplicates
+1381378386 + 0 mapped (100.00%:-nan%)
+1381378386 + 0 paired in sequencing
+690689193 + 0 read1
+690689193 + 0 read2
+1381378386 + 0 properly paired (100.00%:-nan%)
+1381378386 + 0 with itself and mate mapped
+0 + 0 singletons (0.00%:-nan%)
+0 + 0 with mate mapped to a different chr
+0 + 0 with mate mapped to a different chr (mapQ>=5)
+ 
+===== bismark_methylation_extractor: splitting_report =====
+ENCSR674VXR_rep1_1_bismark_biorep.bam
+
+Parameters used to extract methylation information:
+Bismark Extractor Version: v0.15.0
+Bismark result file: paired-end (SAM format)
+Output specified: comprehensive
+No overlapping methylation calls specified
+
+
+Processed 690689193 lines in total
+Total number of methylation call strings processed: 1381378386
+
+Final Cytosine Methylation Report
+=================================
+Total number of C's analysed:	24033008857
+
+Total methylated C's in CpG context:	781724084
+Total methylated C's in CHG context:	25688445
+Total methylated C's in CHH context:	87590791
+
+Total C to T conversions in CpG context:	203896924
+Total C to T conversions in CHG context:	4954371162
+Total C to T conversions in CHH context:	17979737451
+
+C methylated in CpG context:	79.3%
+C methylated in CHG context:	0.5%
+C methylated in CHH context:	0.5%
+
+

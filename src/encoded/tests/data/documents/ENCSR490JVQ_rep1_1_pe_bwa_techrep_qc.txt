@@ -1,0 +1,35 @@
+===== samtools flagstat =====
+273972354 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+0 + 0 supplementary
+0 + 0 duplicates
+269925031 + 0 mapped (98.52%:-nan%)
+273972354 + 0 paired in sequencing
+136986177 + 0 read1
+136986177 + 0 read2
+260194954 + 0 properly paired (94.97%:-nan%)
+267685026 + 0 with itself and mate mapped
+2240005 + 0 singletons (0.82%:-nan%)
+5975695 + 0 with mate mapped to a different chr
+2384343 + 0 with mate mapped to a different chr (mapQ>=5)
+ 
+===== edwBamStats =====
+alignedBy bwa
+isPaired 1
+isSortedByTarget 1
+readCount 273972354
+readBaseCount 9862996234
+mappedCount 269925031
+uniqueMappedCount 233175382
+readSizeMean 36
+readSizeStd 0.0114093
+readSizeMin 25
+readSizeMax 36
+u4mReadCount 4000000
+u4mUniquePos 3957958
+u4mUniqueRatio 0.98949
+targetSeqCount 195
+targetBaseCount 3099922541
+ 
+===== trim-adapters-illumina =====
+Total read-pairs processed: 136986177; Total read-pairs trimmed: 1217

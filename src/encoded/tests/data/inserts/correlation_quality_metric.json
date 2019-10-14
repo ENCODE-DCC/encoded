@@ -1,39 +1,222 @@
 [
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "e4b43604-edd1-4cca-801a-8bc2c31ac3d5",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "95befcc1-9f85-415a-8eb5-e0f69756f053", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "award": "/awards/U41HG007355/",
-        "Pearson correlation": 0.8643294,
-        "Items": 154784710,
-        "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome."
-    },
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "c4b33604-edd1-4cca-801a-8bc2c31ac3d5",
-        "assay_term_name": "microRNA-seq",
-        "quality_metric_of": [ "34cdfcc1-9f85-415a-8eb5-e0f12346f053", "16abfcc1-9f85-415a-8eb5-e0f12346f053" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "award": "/awards/U41HG007355/",
-        "Spearman correlation": 0.8839878512395053,
-        "Details": "Correlation of 2 replicate signal results for microRNA"
-    },
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "e4b41234-edd1-4cca-801a-8bc2c31ac3d5",
-        "assay_term_name": "long read RNA-seq",
-        "quality_metric_of": [ "34cdfcc1-9f85-415a-8eb5-e0f12346f567", "16abfcc1-9f85-415a-8eb5-e0f12346f246"],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "award": "/awards/U41HG007355/",
-        "Spearman correlation": 0.7929283720562202,
-        "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome."
-    }
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154994754,
+    "Pearson correlation": 0.9969434,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-FFbVX0j0fF4j9yjb0xVq0XVb"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_to_ENCSR000EPP_rep2_1_normalized_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T17:04:37.902886+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF861ULS",
+        "ENCFF743DKM"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "d2088393-e452-4f68-b00d-3ee8c9cf26ac",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "11a75c44-143b-40a7-ac12-4575019aa93a"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154784710,
+    "Pearson correlation": 0.9109657,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F0QKx8j0fF4fZj590J8Yzqkj"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_to_ENCSR000EME_rep2_1_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T16:16:34.826051+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF240UTR",
+        "ENCFF646MPH"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "930a1589-9324-456e-820d-01d8900111d5",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "4f9beb1e-9245-48fb-898a-693156adb86c"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154996217,
+    "Pearson correlation": 0.8482118,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F05BJK00fF4YfqZYX43J0kGK"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_to_ENCSR000EPZ_rep2_1_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:53:58.932753+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF232GMD",
+        "ENCFF118DKI"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "e03af77e-58c9-4e11-9f0c-f3c67ecb7a3d",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "709cc178-85b4-4193-85b5-b31574ef5842"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154784710,
+    "Pearson correlation": 0.8495608,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F0599P00KZ0p6bJBPJzjKjB3"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_to_ENCSR000EPZ_rep2_1_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T15:17:48.268974+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF591EBW",
+        "ENCFF514MHA"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "586d3afb-7c0a-4768-bcde-122d451ec023",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "8c8bd321-fe58-4b48-ba33-fd2543ef12d0"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154994754,
+    "Pearson correlation": 0.9914638,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F66xbF80fF4VxxK93860bz0B"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_to_ENCSR000EME_rep2_1_normalized_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:20:56.335337+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF107IJY",
+        "ENCFF708XPM"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "78cab9a9-a919-48b9-8b6a-34f591509cff",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a2055a65-4927-4a2f-aa5c-3a02c605a050"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154784524,
+    "Pearson correlation": 0.991293,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F6Xp0X80fF4YpJ3PB37kb75F"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_to_ENCSR000EME_rep2_1_normalized_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T15:02:35.012301+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF056LXB",
+        "ENCFF737YIY"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6de6417d-acb4-4953-b5f9-3dd81a89aefb",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "b33dfd08-3315-4ca3-b64a-fed9afc87805"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154784524,
+    "Pearson correlation": 0.8869028,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F74V8Vj0fF4Yb4Vk3Kx9gvzY"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_to_ENCSR000EPZ_rep2_1_normalized_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:39:25.258347+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF093ZBZ",
+        "ENCFF527ADI"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "4b387e5a-4c30-4f8b-99b9-bb65d512434d",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "b7745c96-19b2-4b2b-b1ee-6c9500ac9de6"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154784524,
+    "Pearson correlation": 0.9954134,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-FFZvvyQ0fF4bpgqV0vfBYjKF"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_to_ENCSR000EPP_rep2_1_normalized_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:49:19.988756+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF470WUI",
+        "ENCFF084JWD"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "dc2014ba-16d0-446a-97c3-6b4b047c2898",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "bbe06258-b51f-49a4-b457-5a263ffe53fd"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154996217,
+    "Pearson correlation": 0.9110552,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F0JB18j0fF4Vz1J9q5qKfpyf"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_to_ENCSR000EME_rep2_1_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T04:03:16.710736+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF737DSZ",
+        "ENCFF828OUB"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "8ff48a07-2c97-4b5b-aa75-b9e69b215458",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d913af8a-863f-49ee-b43d-7643de19868b"
+},
+{
+    "Details": "Correlation of 2 replicate signal results, with 1 item for every 20bp of mappable region in the genome.",
+    "Items": 154994754,
+    "Pearson correlation": 0.8894346,
+    "aliases": [
+        "dnanexus:qc.rep_corr.job-F72b4Y00fF4k8Xg2Gy4G7FxG"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_to_ENCSR000EPZ_rep2_1_normalized_density_corr.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:36:56.335822+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF851VBR",
+        "ENCFF400LZK"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "edd6673b-bf4a-416f-abb9-2bbff20db9bb",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ea16ea66-3797-44cb-8d7a-58536814eef8"
+}
 ]

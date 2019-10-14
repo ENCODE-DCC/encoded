@@ -1,0 +1,298 @@
+Accession Number	Description	ASH1L	EED-K-3	HIPK1-K-2	HIVEP1	MGA	MLL	NFAT5	RBPJ-3	ZMYM3-2F10-K-2
+A2RRB4 	NFAT5 protein 	0	0	0	0	0	0	0	9	0
+A2RRP1	Neuroblastoma-amplified sequence 	0	0	0	0	0	0	0	0	3
+A4D210 	Eukaryotic translation initiation factor 3 subunit 9 eta 116kDa 	2	0	0	0	0	0	0	0	0
+A5YKK6	CCR4-NOT transcription complex subunit 1 	0	8	0	0	0	0	0	0	3
+A6NHR9	Structural maintenance of chromosomes flexible hinge domain-containing protein 1 	0	8	4	0	0	0	0	0	12
+A6NKB8 	Aminopeptidase B 	0	0	0	0	0	1	0	0	0
+A7BI36 	p180/ribosome receptor 	0	0	0	1	0	0	7	0	0
+A8K2I0 	cDNA FLJ78504 highly similar to Homo sapiens keratin 6A (KRT6A) mRNA 	2	0	0	0	0	1	0	0	0
+A8K3S3 	cDNA FLJ75664 highly similar to Homo sapiens kinesin family member 2C (KIF2C) mRNA 	0	0	0	0	0	1	0	0	0
+A8K3W4 	cDNA FLJ75163 highly similar to Homo sapiens heterogeneous nuclear ribonucleoprotein U-like 1 (HNRPUL1) transcript variant 4 mRNA 	2	0	0	0	0	4	0	0	0
+A8K492 	cDNA FLJ76789 highly similar to Homo sapiens methionine-tRNA synthetase (MARS) mRNA 	11	0	0	0	0	0	0	0	0
+A8K4H1 	cDNA FLJ78268 highly similar to Homo sapiens fusion (involved in t(1216) in malignant liposarcoma) transcript variant 1 mRNA 	0	0	0	0	0	2	0	0	0
+A8K5Y7 	cDNA FLJ78655 highly similar to Homo sapiens exportin 5 (XPO5) mRNA 	2	0	0	0	2	0	0	0	0
+A8K6Q8 	cDNA FLJ75881 highly similar to Homo sapiens transferrin receptor (p90 CD71) (TFRC) mRNA 	1	0	0	0	0	0	0	0	0
+A8KA19 	cDNA FLJ75831 highly similar to Homo sapiens exportin tRNA (nuclear export receptor for tRNAs) (XPOT) mRNA 	2	0	0	0	0	0	0	0	0
+A8MXP9	Matrin-3 	1	0	0	0	0	0	0	0	0
+A9UEZ6 	BCR/ABL fusion protein isoform X3 	0	2	0	0	0	0	0	0	2
+B0QYK0 	Ewing sarcoma breakpoint region 1 	0	0	0	0	0	2	0	0	0
+B0V043 	Valine--tRNA ligase 	0	0	0	1	5	0	1	0	0
+B1A8Z4 	SMARCA4 isoform 3 	0	4	3	0	0	0	0	0	0
+B1AHC7 	X-ray repair complementing defective repair in Chinese hamster cells 6 (Ku autoantigen 70kDa) 	0	0	0	0	0	3	0	0	0
+B2R6J2 	cDNA FLJ92973 highly similar to Homo sapiens villin 2 (ezrin) (VIL2) mRNA 	0	0	0	0	0	1	0	0	0
+B2R7B5 	cDNA FLJ93365 highly similar to Homo sapiens KH domain containing RNA binding signal transduction associated 1 (KHDRBS1) mRNA 	0	0	0	1	0	0	0	0	0
+B2R8R5 	cDNA FLJ94025 highly similar to Homo sapiens tripartite motif-containing 28 (TRIM28) mRNA 	2	0	0	0	0	0	0	0	0
+B2RA03 	cDNA FLJ94640 highly similar to Homo sapiens keratin 18 (KRT18) mRNA 	1	0	0	0	0	0	0	0	0
+B2RBA6 	cDNA FLJ95407 highly similar to Homo sapiens MCM7 minichromosome maintenance deficient 7 (S. cerevisiae) (MCM7) mRNA 	7	0	0	0	0	12	0	0	0
+B2RBR9 	cDNA FLJ95650 highly similar to Homo sapiens karyopherin (importin) beta 1 (KPNB1) mRNA 	3	0	0	0	0	3	0	0	0
+B2RCJ6 	cDNA FLJ96114 highly similar to Homo sapiens bromodomain and WD repeat domain containing 2 (BRWD2) mRNA 	0	0	0	2	0	0	0	0	0
+B2RDW1	UniRef100_B2RDW1	0	0	0	1	1	0	1	0	0
+B2RDX5 	cDNA FLJ96812 highly similar to Homo sapiens threonyl-tRNA synthetase (TARS) mRNA 	0	0	0	0	0	1	0	0	0
+B2ZZ83 	Filamin B 	0	4	0	0	0	0	0	0	5
+B3KPS3 	cDNA FLJ32131 fis clone PEBLM2000267 highly similar to Tubulin alpha-ubiquitous chain 	3	0	0	0	0	1	1	0	0
+B3KT93 	cDNA FLJ37875 fis clone BRSSN2018771 highly similar to Poly(A)-binding protein 1 	0	0	0	0	0	1	0	0	0
+B3KU28 	Lon protease homolog 	3	0	0	0	0	0	0	0	0
+B3KU67 	cDNA FLJ39264 fis clone OCBBF2009603 highly similar to Staphylococcal nuclease domain-containing protein 1 	4	0	0	0	0	0	0	0	0
+B3KX72 	Heterogeneous nuclear ribonucleoprotein U 	6	0	0	0	0	3	0	0	0
+B4DER1 	Leucine--tRNA ligase cytoplasmic 	0	0	0	0	4	0	0	0	0
+B4DLW8 	cDNA FLJ59339 highly similar to Probable ATP-dependent RNA helicase DDX5 (EC 3.6.1.-) 	0	0	0	0	0	2	0	0	0
+B4DM67 	Uncharacterized protein 	1	0	0	0	0	0	0	0	0
+B4DUT7 	GMP synthase [glutamine-hydrolyzing] 	0	0	0	0	0	1	0	0	0
+B4E2Z3 	4F2 cell-surface antigen heavy chain 	2	0	0	0	0	0	0	0	0
+B4E335 	Actin cytoplasmic 1 N-terminally processed 	0	3	0	0	0	0	0	0	4
+B5BTY4 	ATP-dependent RNA helicase DDX3X 	0	0	0	0	0	7	0	0	0
+B7Z2N4 	cDNA FLJ56074 highly similar to 150 kDa oxygen-regulated protein (Orp150) 	5	0	0	0	0	0	0	0	0
+B7Z3E0 	cDNA FLJ55380 highly similar to Protein kinase C-binding protein 1 	0	0	0	2	0	0	0	0	0
+B7Z4U7 	Sec1 family domain containing 1 isoform CRA_b 	0	0	0	0	0	1	0	0	0
+B7Z4V2 	Stress-70 protein mitochondrial 	0	0	0	0	0	7	0	0	0
+B9EGQ8 	SMARCA4 protein 	0	0	0	43	1	0	1	0	0
+B9EIQ6	UniRef100_B9EIQ6	0	0	0	8	0	0	0	0	0
+C5IWV5 	Trypsinogen 	4	0	0	4	6	5	4	2	0
+C9J4C3 	DNA topoisomerase 2 	3	0	0	0	0	0	0	0	0
+E9PGR2 	Cyclin-G-associated kinase 	0	2	0	0	0	0	0	0	0
+E9PHY5 	Band 4.1-like protein 2 	0	2	0	0	0	0	0	0	0
+F8VPD4 	Dihydroorotase 	0	0	0	0	0	0	0	4	0
+G0YP42	Anti-human Langerin 2G3 lambda chain 	0	0	0	0	0	0	0	1	0
+H6VRF8 	Keratin 1 	0	0	0	0	0	0	0	10	0
+O00443	Phosphatidylinositol 4-phosphate 3-kinase C2 domain-containing subunit alpha 	0	5	0	0	0	0	0	0	0
+O14497	AT-rich interactive domain-containing protein 1A 	0	0	0	30	1	0	0	0	0
+O14980	Exportin-1 	3	0	0	0	0	0	0	0	0
+O15014	Zinc finger protein 609 	0	0	0	0	0	0	0	2	0
+O15027-2 	Isoform 2 of Protein transport protein Sec16A 	1	0	0	0	1	0	3	0	0
+O15357	Phosphatidylinositol 345-trisphosphate 5-phosphatase 2 	0	2	0	0	0	0	0	0	0
+O43707	Alpha-actinin-4 	1	0	0	0	0	0	0	0	0
+O60264	SWI/SNF-related matrix-associated actin-dependent regulator of chromatin subfamily A member 5 	0	0	0	1	0	0	0	0	0
+O60293	Zinc finger C3H1 domain-containing protein 	0	0	2	0	0	0	0	0	0
+O60610-2	Isoform 2 of Protein diaphanous homolog 1 	0	0	0	0	1	0	0	0	0
+O60732	Melanoma-associated antigen C1 	0	11	2	0	0	0	0	5	0
+O60763 	General vesicular transport factor p115 	1	0	0	0	0	0	0	0	0
+O60841	Eukaryotic translation initiation factor 5B 	0	0	0	1	0	0	0	0	0
+O75095	Multiple epidermal growth factor-like domains protein 6 	0	0	2	0	0	0	0	0	0
+O75116	Rho-associated protein kinase 2 	0	3	2	0	0	0	0	0	0
+O75153	Protein KIAA0664 	0	0	2	0	0	0	0	0	0
+O75376 	Nuclear receptor corepressor 1 	0	2	0	0	0	0	0	0	0
+O75533	Splicing factor 3B subunit 1 	0	4	5	0	0	0	0	0	0
+O75643	U5 small nuclear ribonucleoprotein 200 kDa helicase 	0	9	3	2	1	0	0	0	3
+O75694	Nuclear pore complex protein Nup155 	0	0	2	0	0	0	0	0	0
+O95239	Chromosome-associated kinesin KIF4A 	0	0	2	0	0	0	0	0	0
+O95347	Structural maintenance of chromosomes protein 2 	0	0	10	0	0	0	0	0	0
+O95487	Protein transport protein Sec24B 	0	0	2	0	0	0	0	0	0
+O95602	DNA-directed RNA polymerase I subunit RPA1 	0	4	4	0	0	0	0	0	0
+O95714	E3 ubiquitin-protein ligase HERC2 	0	0	0	2	0	0	0	0	0
+O95782 	AP-2 complex subunit alpha-1 	3	0	0	0	0	0	0	0	0
+P01860	Ig gamma-3 chain C region 	0	0	2	0	0	0	0	0	0
+P01876	Ig alpha-1 chain C region 	0	0	2	0	0	0	0	0	0
+P02768	Serum albumin 	0	0	16	0	0	0	0	0	0
+P02769	Serum albumin 	8	23	21	13	23	9	12	18	22
+P02787 	Serotransferrin 	0	0	2	0	0	0	0	0	0
+P04264	Keratin type II cytoskeletal 1 	6	0	0	4	12	15	11	0	0
+P05023	Sodium/potassium-transporting ATPase subunit alpha-1 	0	0	3	0	0	0	0	0	2
+P06748	Nucleophosmin 	0	0	0	1	0	0	0	0	0
+P07437	Tubulin beta chain 	0	0	2	0	0	0	0	0	0
+P07814	Bifunctional glutamate/proline--tRNA ligase 	24	26	20	2	16	0	14	0	15
+P07900	Heat shock protein HSP 90-alpha 	8	0	0	0	0	12	0	0	0
+P08107	Heat shock 70 kDa protein 1A/1B 	0	0	0	0	0	16	0	0	0
+P08238	Heat shock protein HSP 90-beta 	21	4	2	0	0	27	0	0	3
+P08575	Receptor-type tyrosine-protein phosphatase C 	0	4	0	0	0	0	0	0	2
+P09874	Poly [ADP-ribose] polymerase 1 	9	0	0	0	0	0	0	0	0
+P11021	78 kDa glucose-regulated protein 	0	0	0	0	0	10	0	0	0
+P11142	Heat shock cognate 71 kDa protein 	0	2	0	0	0	20	0	0	0
+P11388	DNA topoisomerase 2-alpha 	0	6	3	0	0	0	0	0	0
+P11388 	DNA topoisomerase 2-alpha 	0	0	0	1	0	0	0	0	0
+P12270	Nucleoprotein TPR 	0	3	0	0	0	0	0	0	0
+P13010	X-ray repair cross-complementing protein 5 	0	0	0	0	0	1	0	0	0
+P13639	Elongation factor 2 	4	0	0	0	0	2	0	0	0
+P13645	Keratin type I cytoskeletal 10 	0	0	0	0	0	0	0	1	0
+P13645 	Keratin type I cytoskeletal 10 	6	0	0	5	8	5	11	0	0
+P15822	Zinc finger protein 40 	0	0	0	2	0	0	0	0	0
+P16157	Ankyrin-1 	0	4	2	0	0	0	0	0	5
+P16615	Sarcoplasmic/endoplasmic reticulum calcium ATPase 2 	0	4	4	0	0	0	0	0	2
+P18583	Protein SON 	0	0	3	0	0	0	0	0	0
+P21333 	Filamin-A 	2	20	10	0	3	0	0	0	20
+P22102	Trifunctional purine biosynthetic protein adenosine-3 	2	0	0	0	0	0	0	0	0
+P22314	Ubiquitin-like modifier-activating enzyme 1 	2	0	0	0	0	0	0	0	0
+P24928	DNA-directed RNA polymerase II subunit RPB1 	0	0	0	0	0	0	0	0	4
+P26358 	DNA (cytosine-5)-methyltransferase 1 	0	0	0	6	0	0	2	0	0
+P26640	Valine--tRNA ligase 	0	2	11	0	0	0	0	0	0
+P27708	CAD protein 	0	23	6	0	0	0	0	0	21
+P27816	Microtubule-associated protein 4 	0	4	3	0	0	0	0	0	5
+P27824	Calnexin 	0	0	0	0	0	1	0	0	0
+P28340 	DNA polymerase delta catalytic subunit 	0	0	2	0	0	0	0	0	0
+P29144 	Tripeptidyl-peptidase 2 	0	0	2	0	0	0	0	0	0
+P30876	DNA-directed RNA polymerase II subunit RPB2 	0	0	2	0	0	0	0	0	0
+P31943 	Heterogeneous nuclear ribonucleoprotein H 	0	0	0	1	0	0	0	0	0
+P33991	DNA replication licensing factor MCM4 	5	0	0	0	0	0	0	0	0
+P34932	Heat shock 70 kDa protein 4 	2	0	0	0	0	0	0	0	0
+P35251	Replication factor C subunit 1 	0	0	2	0	0	0	0	0	0
+P35251 	Replication factor C subunit 1 	0	0	0	1	0	0	0	0	0
+P35527	Keratin type I cytoskeletal 9 	0	0	0	0	4	6	6	6	0
+P35579	Myosin-9 	25	21	6	6	3	0	0	0	10
+P35580	Myosin-10 	0	28	18	0	0	0	0	0	19
+P35580 	Myosin-10 	0	0	0	13	33	0	0	0	0
+P35658	Nuclear pore complex protein Nup214 	0	10	14	0	0	0	0	0	8
+P35908	Keratin type II cytoskeletal 2 epidermal 	2	0	0	2	6	0	7	1	0
+P40939	Trifunctional enzyme subunit alpha mitochondrial 	0	0	0	0	0	2	0	0	0
+P41252	Isoleucine--tRNA ligase cytoplasmic 	10	5	11	0	3	1	4	0	0
+P42356	Phosphatidylinositol 4-kinase alpha 	0	0	3	0	0	0	0	0	2
+P42704	Leucine-rich PPR motif-containing protein mitochondrial 	5	0	13	0	3	0	0	0	0
+P43243	Matrin-3 	0	0	3	0	0	0	0	0	0
+P46013	Antigen KI-67 	0	13	4	0	0	0	0	0	10
+P46940	Ras GTPase-activating-like protein IQGAP1 	0	17	16	0	0	0	0	0	8
+P49327	Fatty acid synthase 	4	24	15	1	8	0	0	0	18
+P49736	DNA replication licensing factor MCM2 	6	0	0	0	0	1	0	0	0
+P49790 	Nuclear pore complex protein Nup153 	0	8	9	0	0	0	0	0	4
+P49792	E3 SUMO-protein ligase RanBP2 	0	7	0	0	0	0	0	0	4
+P51531 	Probable global transcription activator SNF2L2 	0	0	0	4	0	0	0	0	0
+P51610	Host cell factor 1 	0	0	2	0	0	0	0	0	0
+P52272 	Heterogeneous nuclear ribonucleoprotein M 	0	0	0	0	0	8	0	0	0
+P52701	DNA mismatch repair protein Msh6 	0	8	6	0	0	0	0	0	4
+P53396 	ATP-citrate synthase 	2	0	0	0	0	0	0	0	0
+P53618	Coatomer subunit beta 	3	0	0	0	0	0	0	0	0
+P53621	Coatomer subunit alpha 	0	4	6	0	0	0	0	0	0
+P53621 	Coatomer subunit alpha 	0	0	0	4	1	0	1	0	0
+P54136	Arginine--tRNA ligase cytoplasmic 	0	0	0	0	0	1	0	0	0
+P55072	Transitional endoplasmic reticulum ATPase 	1	0	0	0	0	0	0	0	0
+P55197	Protein AF-10 	0	0	3	0	0	0	0	0	0
+P58107	Epiplakin 	0	5	32	0	7	0	0	0	16
+P62805	Histone H4 	1	0	0	0	0	0	0	0	0
+P62987 	Ubiquitin-60S ribosomal protein L40 	0	2	0	0	0	0	0	0	0
+P62988	UniRef100_P62988	1	0	0	0	0	0	0	0	0
+P68104 	Elongation factor 1-alpha 1 	0	2	0	0	0	0	0	0	0
+P68431	Histone H3.1 	1	0	0	0	0	0	0	0	0
+P78527	DNA-dependent protein kinase catalytic subunit 	0	35	23	0	0	0	0	0	28
+P78527 	DNA-dependent protein kinase catalytic subunit 	0	0	0	0	17	0	0	0	0
+Q00341	Vigilin 	0	4	3	0	0	0	0	0	0
+Q00610	Clathrin heavy chain 1 	0	16	12	0	0	0	0	0	9
+Q00610 	Clathrin heavy chain 1 	9	0	0	0	19	0	1	0	0
+Q01082	Spectrin beta chain brain 1 	0	0	0	0	0	0	0	0	3
+Q02880	DNA topoisomerase 2-beta 	0	4	0	0	0	0	0	0	0
+Q04637	Eukaryotic translation initiation factor 4 gamma 1 	0	2	0	0	0	0	0	0	0
+Q06210-2	Isoform 2 of Glucosamine--fructose-6-phosphate aminotransferase [isomerizing] 1 	0	0	0	0	0	4	0	0	0
+Q07864 	DNA polymerase epsilon catalytic subunit A 	0	5	0	0	0	0	0	0	0
+Q08211	ATP-dependent RNA helicase A 	15	3	11	21	11	0	16	0	5
+Q09666	Neuroblast differentiation-associated protein AHNAK 	0	10	3	0	0	0	0	0	3
+Q10570	Cleavage and polyadenylation specificity factor subunit 1 	0	0	0	0	0	0	0	0	2
+Q12769	Nuclear pore complex protein Nup160 	0	0	2	0	0	0	0	0	0
+Q12789 	General transcription factor 3C polypeptide 1 	0	0	0	4	0	0	0	0	0
+Q12931 	Heat shock protein 75 kDa mitochondrial 	0	0	0	0	0	8	0	0	0
+Q13085	Acetyl-CoA carboxylase 1 	0	3	0	0	0	0	0	0	2
+Q14008	Cytoskeleton-associated protein 5 	0	5	0	0	0	0	0	0	0
+Q14152	Eukaryotic translation initiation factor 3 subunit A 	4	0	0	1	0	0	1	0	0
+Q14152 	Eukaryotic translation initiation factor 3 subunit A 	0	2	0	0	0	0	0	0	0
+Q14157	Ubiquitin-associated protein 2-like 	0	2	4	0	0	0	0	0	0
+Q14202	Zinc finger MYM-type protein 3 	0	0	0	0	0	0	0	0	20
+Q14203 	Dynactin subunit 1 	0	9	3	0	0	0	0	0	0
+Q14204	Cytoplasmic dynein 1 heavy chain 1 	0	15	4	0	0	0	0	0	12
+Q14315	Filamin-C 	0	19	24	0	0	0	0	0	14
+Q14315 	Filamin-C 	3	0	0	0	0	0	0	0	0
+Q14315-2	Isoform 2 of Filamin-C 	0	0	0	0	4	0	0	0	0
+Q14566	DNA replication licensing factor MCM6 	4	0	0	0	0	0	0	0	0
+Q14671	Pumilio homolog 1 	0	0	11	0	0	0	0	0	0
+Q14683	Structural maintenance of chromosomes protein 1A 	0	10	5	1	0	0	0	0	0
+Q14690	Protein RRP5 homolog 	0	2	0	0	0	0	0	0	0
+Q14697 	Neutral alpha-glucosidase AB 	1	0	0	0	0	0	0	0	0
+Q14739	Lamin-B receptor 	0	0	0	1	0	0	0	0	0
+Q14839 	Chromodomain-helicase-DNA-binding protein 4 	0	4	0	31	1	0	0	0	4
+Q14980	Nuclear mitotic apparatus protein 1 	0	26	27	12	2	0	0	0	18
+Q14C86	GTPase-activating protein and VPS9 domain-containing protein 1 	0	4	0	0	0	0	0	0	0
+Q15058	Kinesin-like protein KIF14 	2	3	30	18	12	0	49	0	4
+Q15149	Plectin 	0	11	81	0	0	0	0	0	14
+Q15149 	Plectin 	1	0	0	0	39	0	19	0	0
+Q15154	Pericentriolar material 1 protein 	0	3	40	0	0	0	15	0	0
+Q15393	Splicing factor 3B subunit 3 	0	0	2	0	0	0	0	0	0
+Q15758	Neutral amino acid transporter B(0) 	1	0	0	0	0	2	0	0	0
+Q4LE45	UniRef100_Q4LE45	40	0	0	0	0	0	0	0	0
+Q53FG5	Minichromosome maintenance deficient protein 5 variant (Fragment) 	2	0	0	0	0	4	0	0	0
+Q53HJ4	Minichromosome maintenance protein 3 variant (Fragment) 	1	0	0	0	0	0	0	0	0
+Q5CAQ5	Tumor rejection antigen (Gp96) 1 	4	0	0	0	0	3	0	0	0
+Q5JSL3	Dedicator of cytokinesis protein 11 	0	9	0	0	0	0	0	0	5
+Q5SQL3 	Homeodomain interacting protein kinase 1 	0	0	9	0	0	0	0	0	0
+Q5SRE5	Nucleoporin NUP188 homolog 	0	5	3	0	0	0	0	0	0
+Q5T1M5	FK506-binding protein 15 	0	5	3	0	0	0	0	0	3
+Q5T4S7	E3 ubiquitin-protein ligase UBR4 	0	6	3	0	0	0	0	0	4
+Q5UIP0	Telomere-associated protein RIF1 	0	2	0	0	0	0	0	0	0
+Q5UIP0-2	Isoform 2 of Telomere-associated protein RIF1 	0	0	0	0	0	2	0	0	0
+Q5VYK3	Proteasome-associated protein ECM29 homolog 	0	9	4	0	0	0	0	0	3
+Q63HN8	E3 ubiquitin-protein ligase RNF213 	0	0	0	0	0	0	0	0	4
+Q6DSU6 	GTF2I repeat domain containing protein 1 	0	0	0	0	0	0	0	0	2
+Q6KC79	Nipped-B-like protein 	0	27	0	0	0	0	0	0	0
+Q6NUS1	PDCD6IP protein 	5	0	0	0	0	0	0	0	0
+Q6P2E9	Enhancer of mRNA-decapping protein 4 	0	5	5	0	0	0	0	0	2
+Q6P2Q9	Pre-mRNA-processing-splicing factor 8 	0	4	4	0	0	0	0	0	0
+Q6PIQ7	IGL@ protein 	1	0	0	1	1	1	1	0	0
+Q6PKG0	La-related protein 1 	0	0	2	0	0	0	0	0	0
+Q6PKG0-3	Isoform 2 of La-related protein 1 	0	0	0	1	0	0	0	0	0
+Q6URC4	Diaphanous 1 	0	12	12	0	0	0	0	0	3
+Q7L2E3 	Putative ATP-dependent RNA helicase DHX30 	0	0	0	12	0	0	0	0	0
+Q7Z6Z7	E3 ubiquitin-protein ligase HUWE1 	0	4	2	0	0	0	0	0	3
+Q86UX7 	Fermitin family homolog 3 	0	0	0	0	0	3	0	0	0
+Q86V48 	Leucine zipper protein 1 	22	0	0	0	0	0	0	0	0
+Q86VP6	Cullin-associated NEDD8-dissociated protein 1 	1	0	0	0	0	0	0	0	0
+Q86VX4 	Structural maintenance of chromosomes 3 	0	0	7	0	0	0	0	0	0
+Q8N1F7	Nuclear pore complex protein Nup93 	0	0	0	0	0	2	0	0	0
+Q8NDV7	Trinucleotide repeat-containing gene 6A protein 	0	0	5	0	0	0	0	0	0
+Q8NF50	Dedicator of cytokinesis protein 8 	0	3	2	0	0	0	0	0	2
+Q8NFD5	AT-rich interactive domain-containing protein 1B 	0	2	3	0	0	0	0	0	0
+Q8NI27	THO complex subunit 2 	0	0	2	0	0	0	0	0	0
+Q8TAQ2	SWI/SNF complex subunit SMARCC2 	0	0	4	13	0	0	1	0	0
+Q8TDM6	Disks large homolog 5 	0	7	0	0	0	0	0	0	0
+Q8TEK3	Histone-lysine N-methyltransferase H3 lysine-79 specific 	0	0	20	0	0	0	0	0	0
+Q8TEM1	Nuclear pore membrane glycoprotein 210 	0	0	0	0	0	0	4	0	2
+Q8TEQ6	Gem-associated protein 5 	0	3	3	0	0	0	0	0	0
+Q8WZ42	Titin 	0	0	0	0	0	0	0	0	2
+Q92614	Unconventional myosin-XVIIIa 	0	10	2	0	0	0	0	0	2
+Q92616	Translational activator GCN1 	2	11	0	0	0	0	0	0	11
+Q92620	Pre-mRNA-splicing factor ATP-dependent RNA helicase PRP16 	0	2	3	3	0	0	0	0	0
+Q92621	Nuclear pore complex protein Nup205 	0	7	5	0	0	0	0	0	3
+Q92804 	TATA-binding protein-associated factor 2N 	0	0	0	0	0	1	0	0	0
+Q92833	Protein Jumonji 	0	4	0	0	0	0	0	0	0
+Q92841-4	UniRef100_Q92841-4	0	0	0	0	0	3	0	0	0
+Q92878	DNA repair protein RAD50 	0	0	8	0	0	0	0	0	0
+Q92878 	DNA repair protein RAD50 	0	0	0	1	1	0	14	0	0
+Q92900	Regulator of nonsense transcripts 1 	0	0	12	0	0	0	0	0	0
+Q92900-2	Isoform 2 of Regulator of nonsense transcripts 1 	0	0	0	2	0	0	0	0	0
+Q92922	SWI/SNF complex subunit SMARCC1 	0	0	0	31	0	0	0	0	0
+Q92973	Transportin-1 	0	0	0	0	0	1	0	0	0
+Q92974 	Rho guanine nucleotide exchange factor 2 	3	0	0	0	0	0	0	0	0
+Q93008	Probable ubiquitin carboxyl-terminal hydrolase FAF-X 	0	2	0	0	0	0	0	0	4
+Q96KR1	Zinc finger RNA-binding protein 	0	0	3	0	0	0	0	0	0
+Q96PK6	RNA-binding protein 14 	0	0	0	0	0	9	0	0	0
+Q96QK1	Vacuolar protein sorting-associated protein 35 	0	0	0	0	0	1	0	0	0
+Q96RW7	Hemicentin-1 	0	0	0	0	0	0	0	0	2
+Q96SN8 	CDK5 regulatory subunit-associated protein 2 	0	0	0	0	0	0	3	0	0
+Q99700	Ataxin-2 	0	0	2	0	0	0	0	0	0
+Q99996 	A-kinase anchor protein 9 	0	0	0	0	0	0	2	0	0
+Q9BQG0	Myb-binding protein 1A 	0	3	0	0	0	0	0	0	0
+Q9BSJ8 	Extended synaptotagmin-1 	1	0	0	2	1	0	0	0	0
+Q9H2G2	STE20-like serine/threonine-protein kinase 	0	2	3	0	0	0	0	0	0
+Q9H2M9	Rab3 GTPase-activating protein non-catalytic subunit 	0	0	2	0	0	0	0	0	0
+Q9H3S7	Tyrosine-protein phosphatase non-receptor type 23 	0	4	0	0	0	0	0	0	0
+Q9H583	HEAT repeat-containing protein 1 	0	2	0	0	0	0	0	0	4
+Q9NR30	Nucleolar RNA helicase 2 	3	0	0	0	0	3	0	0	0
+Q9NSY1	BMP-2-inducible protein kinase 	1	0	0	1	0	0	1	0	0
+Q9NTJ3	Structural maintenance of chromosomes protein 4 	0	13	6	0	0	0	0	0	7
+Q9NU22	Midasin 	0	3	0	0	0	0	0	0	3
+Q9NYU2	UDP-glucose:glycoprotein glucosyltransferase 1 	0	4	0	0	0	0	0	0	4
+Q9NZB2	Constitutive coactivator of PPAR-gamma-like protein 1 	0	0	3	0	0	0	0	0	0
+Q9P2J5	Leucine--tRNA ligase cytoplasmic 	7	0	9	0	0	0	0	0	0
+Q9UBW7	Zinc finger MYM-type protein 2 	0	0	0	0	0	0	0	0	5
+Q9UKX3	Myosin-13 	0	0	2	0	0	0	0	0	0
+Q9ULM3	YEATS domain-containing protein 2 	0	0	5	0	0	0	0	0	0
+Q9UPN3	Microtubule-actin cross-linking factor 1 isoforms 1/2/3/5 	0	0	0	0	0	0	0	0	2
+Q9UPQ9	Trinucleotide repeat-containing gene 6B protein 	0	0	2	0	0	0	0	0	2
+Q9UPT8	Zinc finger CCCH domain-containing protein 4 	0	0	0	3	0	0	0	0	0
+Q9UPY3	Endoribonuclease Dicer 	0	0	0	0	2	0	0	0	2
+Q9Y490	Talin-1 	0	17	8	0	0	0	0	0	16
+Q9Y4L1	Hypoxia up-regulated protein 1 	0	0	9	0	1	0	0	0	0
+Q9Y5L0 	Transportin-3 	2	0	0	0	0	0	0	0	0
+Q9Y678	Coatomer subunit gamma-1 	2	0	0	0	0	0	0	0	0
+Q9Y6R4	Mitogen-activated protein kinase kinase kinase 4 	0	11	0	0	0	0	0	0	0
+UPI0000242D4C	Monoclonal TN1 FAB light chain 	0	0	0	0	0	0	0	1	0
+UPI000045790C (+1)	DNA-dependent protein kinase catalytic subunit (EC 2.7.11.1) (DNA-PK catalytic subunit) (DNA-PKcs) (DNPK1) (p460). 	14	0	0	0	0	0	0	0	0
+UPI000163999A	UniRef100_UPI000163999A	9	0	0	11	11	0	1	0	0
+UPI000173A15D	UniRef100_UPI000173A15D	3	0	0	0	0	0	0	0	0
+UPI000175344F	HUMANIZED KR127 FAB LIGHT CHAIN 	1	0	0	0	0	0	0	0	0
+UPI000179EC85	UniRef100_UPI000179EC85	0	0	0	0	0	0	1	0	0
+UPI00017BDB3D	FabOX108 Light Chain Fragment 	2	0	0	0	0	2	0	0	0
+UPI00017BDB42	FabOX117 Light Chain Fragment 	0	0	0	3	2	0	5	0	0

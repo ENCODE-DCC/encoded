@@ -1,28 +1,1238 @@
 [
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "5831b5d5-1199-4e01-b19c-a75d66f6d0e5",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "1050b698-f505-4ce5-96e5-6909e3a2acc7", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "SPOT2 score": 0.3045,
-        "hotspot count": 90889,
-        "peaks count": 99429
-    },
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "37b7d7f7-7bc9-41ae-a1a9-34371cd2d030",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "1050b698-f505-4ce5-96e5-6909e3a2acc7", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "SPOT1 score": 0.5875,
-        "hotspot tags": 8786208,
-        "total tags": 14953912
-    }
+{
+    "SPOT2 score": 0.1758,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F6v5jf80fF4YpP529Z11fYG6"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-22T16:51:33.614103+00:00",
+    "hotspot count": 301169,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 377042,
+    "quality_metric_of": [
+        "ENCFF186UXG",
+        "ENCFF103JWV",
+        "ENCFF263ZFE",
+        "ENCFF947GLP",
+        "ENCFF383OFC"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "955aeaba-9f87-44b7-a9f9-263b5f0413df",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "09029f43-d1c1-444e-ad7d-86aea70be573"
+},
+{
+    "SPOT2 score": 0.7148,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbVX0j0fF4j9yjb0xVq0XVV"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:54:44.965497+00:00",
+    "hotspot count": 328123,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 365201,
+    "quality_metric_of": [
+        "ENCFF868ABL",
+        "ENCFF147YCS",
+        "ENCFF674URJ",
+        "ENCFF046CXB",
+        "ENCFF627KFM"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "cca4406c-f536-4ac0-a7b1-614bdd2a2741",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0d5b3aa2-9481-4721-bc27-12cce04d50f4"
+},
+{
+    "SPOT2 score": 0.1292,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFpvk900fF4b6q6P6FQgyk13"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-14T17:55:31.049713+00:00",
+    "hotspot count": 138811,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 173894,
+    "quality_metric_of": [
+        "ENCFF774ISQ",
+        "ENCFF599SVB",
+        "ENCFF121XJN",
+        "ENCFF772ZCL",
+        "ENCFF888WWC"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "0f3bb5c8-9ba4-44c4-92d5-6e6e7f860280",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0e15373b-6e57-4323-b6ff-c048a966340f"
+},
+{
+    "SPOT1 score": 0.6557,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-FFbVX0j0fF4j9yjb0xVq0XVX"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:48:38.222225+00:00",
+    "hotspot tags": 9835734,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF732BYR"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "861af652-28f7-46b9-a07e-c92bed5f87ff",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "15b3d904-0648-453d-be51-4a7062da31d5"
+},
+{
+    "SPOT2 score": 0.1265,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F8B86VQ0fF4bQfF8PPZ7x2KX"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-11-26T01:14:40.081993+00:00",
+    "hotspot count": 139964,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 175322,
+    "quality_metric_of": [
+        "ENCFF625TEO",
+        "ENCFF725PHB",
+        "ENCFF990ZGF",
+        "ENCFF754WBV",
+        "ENCFF374STL"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6ca650f6-4cdd-4ef8-af4b-d10985193059",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "17e80086-2687-40d5-a793-85e2ff1abf9f"
+},
+{
+    "SPOT2 score": 0.5348,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F0JB18j0fF4Vz1J9q5qKfpyb"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T03:58:21.083256+00:00",
+    "hotspot count": 111727,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 116504,
+    "quality_metric_of": [
+        "ENCFF604EGJ",
+        "ENCFF815LIR",
+        "ENCFF828OUB",
+        "ENCFF622FEG",
+        "ENCFF727BFX"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "bc398b6f-1cf7-48b8-a38e-3db4bf1be8c2",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "1a70a818-2d8e-4bc3-a09a-6df6d9358e37"
+},
+{
+    "SPOT2 score": 0.58,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFpvzjQ0fF4zk8QvFqfFBZvB"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-14T18:16:26.189528+00:00",
+    "hotspot count": 94012,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 97760,
+    "quality_metric_of": [
+        "ENCFF989CMA",
+        "ENCFF371GVV",
+        "ENCFF169SUG",
+        "ENCFF799EJH",
+        "ENCFF676GPU"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "8f076053-6a70-4a0e-b42f-a68f7041dd77",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "1bafa778-3a76-417c-8ac6-21a8bcd7efd6"
+},
+{
+    "SPOT2 score": 0.4522,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F6Xp0X80fF4YpJ3PB37kb758"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:57:25.497675+00:00",
+    "hotspot count": 108214,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 112375,
+    "quality_metric_of": [
+        "ENCFF637IKI",
+        "ENCFF223XXF",
+        "ENCFF133QSF",
+        "ENCFF131IPV",
+        "ENCFF888YSA"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "7a336222-7408-4d4e-b222-339c1d974b47",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "3b2aead4-feaf-4ab7-a24c-a3a98adff5f2"
+},
+{
+    "SPOT2 score": 0.7268,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F0JB18j0fF4Vz1J9q5qKfpyV"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T03:52:03.667730+00:00",
+    "hotspot count": 97239,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 101746,
+    "quality_metric_of": [
+        "ENCFF618ULI",
+        "ENCFF514CGR",
+        "ENCFF737DSZ",
+        "ENCFF474TVT",
+        "ENCFF546DGK"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "29f56d6f-809d-493b-820f-e8b73bfe3493",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "42bd1f9d-4266-4712-a7a0-a7b919a30673"
+},
+{
+    "SPOT2 score": 0.6731,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F05BJK00fF4YfqZYX43J0kG9"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:09:27.359394+00:00",
+    "hotspot count": 147384,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 167660,
+    "quality_metric_of": [
+        "ENCFF016WAX",
+        "ENCFF527MZY",
+        "ENCFF232GMD",
+        "ENCFF630LGB",
+        "ENCFF136SFU"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a1f4ccde-b49b-4b2e-8a70-eccf7cde71ee",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "4333e602-e42c-44f9-9da3-d2335f040b25"
+},
+{
+    "SPOT1 score": 0.6432,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-FFZvvy80fF4bpgqV0vfBYjK8"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:32:28.997109+00:00",
+    "hotspot tags": 9648264,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF996VUV"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "bb9a9df1-3415-4718-b5a1-acaebe695310",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "43ed26f0-ee7d-4557-b035-0268c4257e83"
+},
+{
+    "SPOT2 score": 0.5442,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFfB6j80fF4XB9bj9FF1j23z"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:44:01.105672+00:00",
+    "hotspot count": 115130,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 120864,
+    "quality_metric_of": [
+        "ENCFF297CXM",
+        "ENCFF692MCG",
+        "ENCFF329APP",
+        "ENCFF751JHQ",
+        "ENCFF862HQY"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "ae3de152-f723-4667-b113-8ab1108f469c",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "47bda74b-3dac-4326-897f-8873fa7f3c8c"
+},
+{
+    "SPOT1 score": 0.2859,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F8B86VQ0fF4bQfF8PPZ7x2KQ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-11-26T00:48:47.021936+00:00",
+    "hotspot tags": 4288769,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF326LLN"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "8d385ce9-40a6-4761-95df-761c15adb3bc",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "4a20ac56-9178-483e-91a8-175117818c3a"
+},
+{
+    "SPOT2 score": 0.3277,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F0599P00KZ0p6bJBPJzjKjB0"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T15:11:48.691903+00:00",
+    "hotspot count": 69872,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 77648,
+    "quality_metric_of": [
+        "ENCFF251ETM",
+        "ENCFF479YVC",
+        "ENCFF514MHA",
+        "ENCFF229XVU",
+        "ENCFF096BCP"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "e8bdd5b9-051c-4307-a3e3-d3bf54a987dd",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "4e18adb0-b9bb-4ac9-abd8-0d9d4718409b"
+},
+{
+    "SPOT2 score": 0.176,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F6j4kzj0fF4X8Q3V3y2kK3By"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-12T22:32:31.979004+00:00",
+    "hotspot count": 304159,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 380805,
+    "quality_metric_of": [
+        "ENCFF930CRV",
+        "ENCFF583QKK",
+        "ENCFF157JLM",
+        "ENCFF120HTJ",
+        "ENCFF714MDJ"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "b2ff6645-f2fe-443a-9048-ef1b3df71634",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "5317ecd4-2fde-4f6e-91c4-4d0731b89186"
+},
+{
+    "SPOT2 score": 0.6663,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbX7q80fF4jvBFX6y4bf8Y2"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T14:18:00.191913+00:00",
+    "hotspot count": 142568,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 161235,
+    "quality_metric_of": [
+        "ENCFF426LRI",
+        "ENCFF146JSM",
+        "ENCFF401RUD",
+        "ENCFF307ZML",
+        "ENCFF145OJG"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "c02fa91c-0ae1-4c45-b979-349f69d74e5c",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "5be9e142-3f4f-4c23-98ec-bfaf8d2c2466"
+},
+{
+    "SPOT2 score": 0.6615,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F0599P00KZ0p6bJBPJzjKj9Z"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T15:04:57.865284+00:00",
+    "hotspot count": 146974,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 167191,
+    "quality_metric_of": [
+        "ENCFF899IXG",
+        "ENCFF986DZI",
+        "ENCFF591EBW",
+        "ENCFF289ILS",
+        "ENCFF487XJH"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "7f66e279-4718-4c5d-ba66-9150ab03ccea",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "6db7b316-0e69-4e03-9bd2-2f132fdb5972"
+},
+{
+    "SPOT2 score": 0.1758,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFpvqP00fF4YPVpY44Jp2099"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-14T17:55:41.265803+00:00",
+    "hotspot count": 301216,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 377264,
+    "quality_metric_of": [
+        "ENCFF420JHR",
+        "ENCFF318LGB",
+        "ENCFF271JAF",
+        "ENCFF365CVR",
+        "ENCFF509SIL"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "5a37100f-53cd-4f00-9044-46150a1c4e71",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "6e604a43-dd91-4f43-bf53-5743114e67e7"
+},
+{
+    "SPOT2 score": 0.5796,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F6Xp0X00fF4YpJ3PB37kb74g"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:51:50.274204+00:00",
+    "hotspot count": 94008,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 97740,
+    "quality_metric_of": [
+        "ENCFF886ZQK",
+        "ENCFF088HQY",
+        "ENCFF409JOB",
+        "ENCFF168QFP",
+        "ENCFF687MTB"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "ac7d3efe-3ef1-4e8c-99be-590bcfd2a430",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "71a1b1cb-9909-4308-b0bf-950d57ec27a1"
+},
+{
+    "SPOT2 score": 0.3286,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbX7q80fF4jvBFX6y4bf8Y3"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T14:22:38.165942+00:00",
+    "hotspot count": 68187,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 75084,
+    "quality_metric_of": [
+        "ENCFF313FZI",
+        "ENCFF900IGM",
+        "ENCFF559YAN",
+        "ENCFF238QSH",
+        "ENCFF996OKV"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a992b2bc-cfa6-47e4-aa33-b55b7d3daa90",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "75e00765-cc91-44e7-82db-e9290747b03e"
+},
+{
+    "SPOT2 score": 0.5824,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbjx5Q0fF4xx37pK3528X73"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T14:41:14.375501+00:00",
+    "hotspot count": 94298,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 98041,
+    "quality_metric_of": [
+        "ENCFF235JEG",
+        "ENCFF855TSQ",
+        "ENCFF876DOW",
+        "ENCFF631GPP",
+        "ENCFF825ZPL"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a3d2541e-42a9-48e8-b1e7-8bd39365bf40",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "7e5d1cf0-01e7-4fa5-b1cb-7297d75b11a4"
+},
+{
+    "SPOT2 score": 0.128,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbX7y80fF4j9yjb0xVq0Xpg"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T14:17:16.221192+00:00",
+    "hotspot count": 139319,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 174614,
+    "quality_metric_of": [
+        "ENCFF134ONX",
+        "ENCFF895PRA",
+        "ENCFF449XXS",
+        "ENCFF712QUC",
+        "ENCFF707QTU"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "daba79f1-5df5-4bc9-ae82-c77f193556b2",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "8666da69-45c4-4661-b336-ce2250ceb115"
+},
+{
+    "SPOT1 score": 0.6965,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-FFbVX0Q0fF4j9yjb0xVq0XVJ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:48:32.565928+00:00",
+    "hotspot tags": 10448808,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF682LAI"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "e3381511-3b7b-4f5b-9c9e-ad893680dfbd",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "87786464-9405-40a6-8463-040324c2ca1e"
+},
+{
+    "SPOT2 score": 0.3763,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F05BJK00fF4YfqZYX43J0kGJ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:47:48.671507+00:00",
+    "hotspot count": 69985,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 77813,
+    "quality_metric_of": [
+        "ENCFF443JIC",
+        "ENCFF722COO",
+        "ENCFF118DKI",
+        "ENCFF272MYY",
+        "ENCFF531USE"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "efad6cbe-7d52-4087-857e-cd753dea26d2",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "882eb819-4979-41ca-9ffd-d25e8faad26f"
+},
+{
+    "SPOT1 score": 0.439,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F6v5jf80fF4YpP529Z11fYG4"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-22T16:47:35.076934+00:00",
+    "hotspot tags": 6585338,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF022PJN"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "f5541901-0da2-4d6f-bdc0-c05d4b99668f",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "88410a90-159c-4750-be9e-28c64ee86147"
+},
+{
+    "SPOT1 score": 0.2779,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F8K41Zj0fF4b2jkV4gQ1fp2z"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-12-04T03:26:18.358111+00:00",
+    "hotspot tags": 4169435,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF985OXZ"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "7d7e2e80-a776-4f22-a2eb-a982e02f915d",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "8b5b4d72-85ee-43ce-99fd-c7fe09e98dc7"
+},
+{
+    "SPOT2 score": 0.1738,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbyYJ80fF4QYbpZ4G8gzbkF"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T15:22:47.942703+00:00",
+    "hotspot count": 302932,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 379550,
+    "quality_metric_of": [
+        "ENCFF963RVQ",
+        "ENCFF816VMQ",
+        "ENCFF791OUO",
+        "ENCFF535LVX",
+        "ENCFF790RCI"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "bc3b13df-d0b5-473f-9c25-bcbd9ef91fa9",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "9a604fb2-4be2-4be7-b021-4197ae625fdd"
+},
+{
+    "SPOT2 score": 0.6669,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFpvqg00fF4YPVpY44Jp20FZ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-14T18:16:38.507762+00:00",
+    "hotspot count": 142386,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 161064,
+    "quality_metric_of": [
+        "ENCFF929FDL",
+        "ENCFF304PRH",
+        "ENCFF098TLZ",
+        "ENCFF086UGE",
+        "ENCFF132AVK"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "ef692065-ca3a-4678-985d-fe1ce278369a",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "9d61fb31-8743-4de5-869a-b95735366c63"
+},
+{
+    "SPOT2 score": 0.3277,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F74V8Vj0fF4Yb4Vk3Kx9gvzX"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:34:41.356377+00:00",
+    "hotspot count": 68134,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 74967,
+    "quality_metric_of": [
+        "ENCFF903GIT",
+        "ENCFF809TYH",
+        "ENCFF735ZMN",
+        "ENCFF891DQH",
+        "ENCFF634FKM"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "84cf5223-db83-4d2c-ae99-736840f2cbd5",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "9e659270-dd1e-483a-b910-c5143373c988"
+},
+{
+    "SPOT2 score": 0.3287,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFpvqg80fF4YPVpY44Jp20Fb"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-14T18:21:57.089678+00:00",
+    "hotspot count": 68089,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 74967,
+    "quality_metric_of": [
+        "ENCFF446VMA",
+        "ENCFF509HYB",
+        "ENCFF649ODS",
+        "ENCFF783CBT",
+        "ENCFF089DZR"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "3cc427e4-7058-4f58-8b36-662af64ea43d",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a53e04b0-5119-4346-946d-90c49c2a511b"
+},
+{
+    "SPOT1 score": 0.4542,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F74V8Vj0fF4Yb4Vk3Kx9gvzB"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:15:06.260575+00:00",
+    "hotspot tags": 6813132,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF862WRG"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "91353038-f397-4fbd-ad6c-d3ecbf152e34",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "a923aa9b-234d-4acf-a20f-48fdd86e4af5"
+},
+{
+    "SPOT1 score": 0.4493,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F6j4kzQ0fF4X8Q3V3y2kK3Bp"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-12T22:28:57.640212+00:00",
+    "hotspot tags": 6740823,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF283BSF"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6f2ead69-a929-4641-afc1-66cf0cb03501",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "ab3022b8-bdd8-433d-8369-ed38f2695b1d"
+},
+{
+    "SPOT1 score": 0.4597,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F72b4Xj0fF4k8Xg2Gy4G7Fx9"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:19:09.181535+00:00",
+    "hotspot tags": 6896450,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF206IPN"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "70d3571f-e9bb-4959-932e-62a94043ec22",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "abe94155-2129-4cff-bcde-3cfde5e2e69f"
+},
+{
+    "SPOT1 score": 0.7305,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F66xbBj0fF4VxxK93860byz7"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:01:07.158136+00:00",
+    "hotspot tags": 10957963,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF744BIP"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "191a6d0d-f222-4d85-886c-efea8873283b",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "b352a137-7db6-4783-9138-f4d8d2d15a47"
+},
+{
+    "SPOT2 score": 0.5439,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbVX0j0fF4j9yjb0xVq0XVZ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T17:00:10.602514+00:00",
+    "hotspot count": 115276,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 120994,
+    "quality_metric_of": [
+        "ENCFF874MVJ",
+        "ENCFF921HIS",
+        "ENCFF902XQY",
+        "ENCFF940BQX",
+        "ENCFF247FJL"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "7e339a92-b1c8-4a7d-b2dd-0d2380f5934f",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "bb592323-c083-4836-819c-eaf4fa01d494"
+},
+{
+    "SPOT1 score": 0.6854,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-FFZvvy00fF4bpgqV0vfBYjK0"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:32:22.210702+00:00",
+    "hotspot tags": 10282465,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF584ZGK"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "c0460473-de3b-4584-ada2-4029c6c188e5",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "bc685133-14bb-4f6c-9744-8ccca9c054f9"
+},
+{
+    "SPOT2 score": 0.7155,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFfB6j80fF4XB9bj9FF1j23y"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:39:04.484384+00:00",
+    "hotspot count": 327437,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 364509,
+    "quality_metric_of": [
+        "ENCFF605OEL",
+        "ENCFF994BKD",
+        "ENCFF479KXR",
+        "ENCFF662CIP",
+        "ENCFF929CDY"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "67c0050a-82c7-40d1-9486-c2784c4447e8",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "c0dc615d-e4de-4c0f-94f7-e138f64ca906"
+},
+{
+    "SPOT1 score": 0.6813,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F72b4Xj0fF4k8Xg2Gy4G7Fvz"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:19:04.438974+00:00",
+    "hotspot tags": 10219750,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF823HSL"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a835beed-1891-4050-81a1-d7be4e805964",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "c4f2c39d-9ee9-48b1-bd44-2cbc53007f0d"
+},
+{
+    "SPOT2 score": 0.3716,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F66xbF80fF4VxxK93860bz08"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:15:10.533786+00:00",
+    "hotspot count": 108541,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 112704,
+    "quality_metric_of": [
+        "ENCFF643VOP",
+        "ENCFF528YLC",
+        "ENCFF592YOU",
+        "ENCFF651EKH",
+        "ENCFF360LET"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "56ca405c-58cf-4226-8344-4deeff5c4f35",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d059239c-244c-4bb4-9560-1affc21fda84"
+},
+{
+    "SPOT2 score": 0.4526,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFpvzjQ0fF4zk8QvFqfFBZvF"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-14T18:21:38.151704+00:00",
+    "hotspot count": 108215,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 112388,
+    "quality_metric_of": [
+        "ENCFF278KNG",
+        "ENCFF615DUM",
+        "ENCFF824OPX",
+        "ENCFF262ZCP",
+        "ENCFF476TSD"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "ba70304a-c923-4b95-80a3-dcaf77c3a406",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d225743a-5f26-4392-a400-07e52f5a318e"
+},
+{
+    "SPOT2 score": 0.2992,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F72b4Y00fF4k8Xg2Gy4G7FxF"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:31:55.999991+00:00",
+    "hotspot count": 68312,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 75177,
+    "quality_metric_of": [
+        "ENCFF149YXX",
+        "ENCFF493NEH",
+        "ENCFF270DVS",
+        "ENCFF601WDF",
+        "ENCFF391QOS"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "d8db13a9-2b8d-4e6b-880c-f039d3d39fd3",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d22efa03-e1c0-4371-9335-ee35c69050a4"
+},
+{
+    "SPOT2 score": 0.4544,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F0QKx8j0fF4fZj590J8Yzqkg"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T15:57:31.451347+00:00",
+    "hotspot count": 111229,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 115961,
+    "quality_metric_of": [
+        "ENCFF669EGA",
+        "ENCFF474ARN",
+        "ENCFF646MPH",
+        "ENCFF067DAN",
+        "ENCFF952PEB"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "8440750d-6292-4bfd-b5e2-b1c3c33bde50",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d7947483-1109-4de0-83e8-c594bf6c0a1f"
+},
+{
+    "SPOT1 score": 0.714,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F6Xp0Vj0fF4YpJ3PB37kb74G"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:47:27.975974+00:00",
+    "hotspot tags": 10710688,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF193MMR"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "75e99e50-f0b9-4a94-bf58-23919fafbd8c",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "d951f48f-e901-4b72-9b10-623901de5353"
+},
+{
+    "SPOT2 score": 0.1292,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F8K41Zj0fF4b2jkV4gQ1fp31"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-12-04T03:30:23.231789+00:00",
+    "hotspot count": 138790,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 173791,
+    "quality_metric_of": [
+        "ENCFF182UZQ",
+        "ENCFF109WZF",
+        "ENCFF229BEY",
+        "ENCFF179ZED",
+        "ENCFF287WHJ"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a9930e2c-c691-4aa5-9f70-8c503efc5705",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ddb2c0f5-2021-4a8e-89fe-3166f0d93557"
+},
+{
+    "SPOT2 score": 0.3265,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F66xbF00fF4VxxK93860byzq"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:07:04.689903+00:00",
+    "hotspot count": 94340,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 98065,
+    "quality_metric_of": [
+        "ENCFF384TSH",
+        "ENCFF594NUL",
+        "ENCFF465PHC",
+        "ENCFF133SIX",
+        "ENCFF696YGC"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "4e97435e-9e9d-4ea1-83fa-15f330f0b686",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "e0136b30-f05e-4dcc-be08-0fb5b4a33d88"
+},
+{
+    "SPOT2 score": 0.6553,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F74V8VQ0fF4Yb4Vk3Kx9gvz7"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:22:08.031363+00:00",
+    "hotspot count": 142771,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 161187,
+    "quality_metric_of": [
+        "ENCFF025ZBY",
+        "ENCFF254JKD",
+        "ENCFF204NZF",
+        "ENCFF276WCJ",
+        "ENCFF095QSF"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "f64eb20a-76c2-4922-a374-56b3f6a15a58",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "e6623546-fc1d-4a43-8e15-06586851046c"
+},
+{
+    "SPOT1 score": 0.57,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F6Xp0X00fF4YpJ3PB37kb74y"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:47:32.815473+00:00",
+    "hotspot tags": 8551356,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF949CIK"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "dc50e6e5-56dc-4db5-ac21-784cdcf94acb",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "ea251ddd-41b8-479a-9e92-b1a4e03a0ab9"
+},
+{
+    "SPOT1 score": 0.6771,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F74V8VQ0fF4Yb4Vk3Kx9gvz5"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:14:59.528205+00:00",
+    "hotspot tags": 10157564,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF318NIH"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6df7b805-5ddc-4517-8182-9460ef006dc9",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "ec0ad3ac-6bbc-4ca8-bcbb-3b6f21a7683f"
+},
+{
+    "SPOT1 score": 0.5788,
+    "aliases": [
+        "dnanexus:qc.hotspot1.job-F66xbF00fF4VxxK93860bz01"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:01:12.694800+00:00",
+    "hotspot tags": 8682812,
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF168SXE"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "847a81fd-36a1-45a7-ab3a-0a92a2bb03ba",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "total tags": 15000000,
+    "uuid": "ed3ad014-5a69-4e92-9eb4-2e540c628eef"
+},
+{
+    "SPOT2 score": 0.6228,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F72b4Xj0fF4k8Xg2Gy4G7Fx5"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:25:01.660427+00:00",
+    "hotspot count": 143170,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 161581,
+    "quality_metric_of": [
+        "ENCFF692TET",
+        "ENCFF606TGC",
+        "ENCFF268LES",
+        "ENCFF101NEF",
+        "ENCFF200KNG"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "967040fc-4f2c-488c-9989-bc963c5099a0",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "f197f67c-4be0-48f0-a182-a7946b6d6ba3"
+},
+{
+    "SPOT2 score": 0.5842,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-F0QKx8j0fF4fZj590J8YzqkY"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T15:43:11.116787+00:00",
+    "hotspot count": 96780,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 101267,
+    "quality_metric_of": [
+        "ENCFF738NWG",
+        "ENCFF524LIU",
+        "ENCFF240UTR",
+        "ENCFF351VLY",
+        "ENCFF693AAC"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "70456f04-1e93-4b91-bb9f-b67e50639210",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "f9210979-c26d-439c-8dfa-6387b4ff2875"
+},
+{
+    "SPOT2 score": 0.4523,
+    "aliases": [
+        "dnanexus:qc.hotspot.job-FFbjx5Q0fF4xx37pK3528X74"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_hotspots_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T14:48:32.780242+00:00",
+    "hotspot count": 108464,
+    "lab": "encode-processing-pipeline",
+    "peaks count": 112633,
+    "quality_metric_of": [
+        "ENCFF984LNC",
+        "ENCFF519XYN",
+        "ENCFF764MOY",
+        "ENCFF930NQX",
+        "ENCFF575CED"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "61d61bda-448c-4178-bff2-88c03a619d78",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "fea11489-0e5e-4519-9a84-a3f5a7dcbeed"
+}
 ]

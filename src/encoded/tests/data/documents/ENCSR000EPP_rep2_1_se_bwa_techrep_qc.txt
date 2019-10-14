@@ -1,0 +1,32 @@
+===== samtools flagstat =====
+50930061 + 0 in total (QC-passed reads + QC-failed reads)
+0 + 0 secondary
+0 + 0 supplementary
+0 + 0 duplicates
+47010395 + 0 mapped (92.30%:-nan%)
+0 + 0 paired in sequencing
+0 + 0 read1
+0 + 0 read2
+0 + 0 properly paired (-nan%:-nan%)
+0 + 0 with itself and mate mapped
+0 + 0 singletons (-nan%:-nan%)
+0 + 0 with mate mapped to a different chr
+0 + 0 with mate mapped to a different chr (mapQ>=5)
+ 
+===== edwBamStats =====
+alignedBy bwa
+isPaired 0
+isSortedByTarget 1
+readCount 50930061
+readBaseCount 1833482196
+mappedCount 47010395
+uniqueMappedCount 39504778
+readSizeMean 36
+readSizeStd 0
+readSizeMin 36
+readSizeMax 36
+u4mReadCount 4000000
+u4mUniquePos 3047406
+u4mUniqueRatio 0.761852
+targetSeqCount 25
+targetBaseCount 3095693983

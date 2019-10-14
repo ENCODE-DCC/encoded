@@ -1,438 +1,774 @@
 [
-    {
-        "title": "An integrated encyclopedia of DNA elements in the human genome",
-        "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
-        "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
-        "journal": "Nature",
-        "date_published": "2012 Sep 6",
-        "identifiers": ["PMID:22955616", "PMCID:PMC3439153"],
-        "volume": "489",
-        "issue": "7414",
-        "page": "57-74",
-        "status": "released",
-        "published_by": ["ENCODE"],
-        "categories": ["integrative analysis"],
-        "data_used": "ENCODE main paper",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
-    },
-    {
-        "status":"in progress",
-        "uuid":"baf202c2-b7af-4c43-b135-15104394daac",
-        "title":"DNase-seq: a high-resolution technique for mapping active gene regulatory elements across the genome from mammalian cells.",
-        "issue":"2",
-        "journal":"Cold Spring Harbor protocols",
-        "page":"pdb.prot5384",
-        "volume":"2010",
-        "date_published":"2010 Feb",
-        "identifiers":["PMID:20150147"],
-        "authors":"Crawford GE",
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "categories": ["data standard"]
-    },
-    {
-        "status":"in progress",
-        "uuid":"a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2",
-        "title":"The reality of pervasive transcription.",
-        "issue":"7",
-        "journal":"PLoS biology",
-        "page":"e1000625; discussion e1001102",
-        "volume":"9",
-        "date_published":"2011 Jul",
-        "identifiers":["PMID:21765801"],
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
-    },
-    {
-        "status":"in progress",
-        "uuid":"e9b33b63-3a85-47cf-9fc5-b1904c56d7ee",
-        "title":"Missing lincs in the transcriptome.",
-        "issue":"4",
-        "journal":"Nature biotechnology",
-        "page":"346-7",
-        "volume":"27",
-        "date_published":"2009 Apr",
-        "identifiers":["PMID:19352372"],
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "authors":"Gingeras T"
-    },
-    {
-        "status":"in progress",
-        "uuid":"f1d4ec0c-9c90-437e-a6e2-4688791abeea",
-        "title":"Molecular biology: RNA discrimination.",
-        "issue":"7385",
-        "journal":"Nature",
-        "page":"310-1",
-        "volume":"482",
-        "date_published":"2012 Feb 15",
-        "categories": ["basic biology"],
-        "published_by": ["ENCODE"],
-        "identifiers": ["PMID:22337043"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
-    },
-    {
-        "status":"in progress",
-        "uuid":"8c578e87-e4b1-432e-b58a-921c6933c1ea",
-        "title":"Nucleosome positioning: bringing order to the eukaryotic genome.",
-        "issue":"5",
-        "journal":"Trends in cell biology",
-        "page":"250-6",
-        "volume":"22",
-        "date_published":"2012 May",
-        "authors":"Iyer VR",
-        "identifiers": ["PMID:22421062"],
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
-    },
-    {
-        "status":"in progress",
-        "uuid":"46169636-fe8b-4823-bc73-49b6fcd6b484",
-        "title":"Cross-talk between site-specific transcription factors and DNA methylation states.",
-        "issue":"48",
-        "journal":"The Journal of biological chemistry",
-        "page":"34287-94",
-        "volume":"288",
-        "date_published":"2013 Nov 29",
-        "identifiers":["PMID:24151070"],
-        "published_by": ["ENCODE"],
-        "authors":"Blattler A, Farnham PJ",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
-    },
-    {
-        "status":"in progress",
-        "uuid":"6af11fd9-c0d3-486a-afcb-6c350d20222c",
-        "title":"Genome-wide epigenetic data facilitate understanding of disease susceptibility association studies.",
-        "issue":"37",
-        "journal":"The Journal of biological chemistry",
-        "schema_version":"1",
-        "page":"30932-40",
-        "volume":"287",
-        "date_published":"2014 Jan",
-        "identifiers":["PMID:22952232"],
-        "authors":"Hardison RC",
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "abstract":"Complex traits such as susceptibility to diseases are determined in part by variants at multiple genetic loci. Genome-wide association studies can identify these loci, but most phenotype-associated variants lie distal to protein-coding regions and are likely involved in regulating gene expression. Understanding how  these genetic variants affect complex traits depends on the ability to predict and test the function of the genomic elements harboring them. Community efforts such as the ENCODE Project provide a wealth of data about epigenetic features associated with gene regulation. These data enable the prediction of testable functions for many phenotype-associated variants. AU"
-    },
-    {
-        "abstract": "MOTIVATION: Accurate alignment of high-throughput RNA-seq data is a challenging and yet unsolved problem because of the non-contiguous transcript structure, relatively short read lengths and constantly increasing throughput of the sequencing technologies. Currently available RNA-seq aligners suffer from high mapping error rates, low mapping speed, read length limitation and mapping biases. RESULTS: To align our large (>80 billon reads) ENCODE Transcriptome RNA-seq dataset, we developed the Spliced Transcripts Alignment to a Reference (STAR) software based on a previously undescribed RNA-seq alignment algorithm that uses sequential maximum mappable seed search in uncompressed suffix arrays followed by seed clustering and stitching procedure. STAR outperforms other aligners by a factor of >50 in mapping speed, aligning to the human genome 550 million 2 x 76 bp paired-end reads per hour on a modest 12-core server, while at  the same time improving alignment sensitivity and precision. In addition to unbiased de novo detection of canonical junctions, STAR can discover non-canonical splices and chimeric (fusion) transcripts, and is also capable of mapping full-length RNA sequences. Using Roche 454 sequencing of reverse transcription polymerase chain reaction amplicons, we experimentally validated 1960 novel intergenic splice junctions with an 80-90% success rate, corroborating the high precision of the STAR mapping strategy. AVAILABILITY AND IMPLEMENTATION: STAR is implemented as a standalone C++ code. STAR is free open source software distributed under GPLv3 license and can be downloaded from http://code.google.com/p/rna-star/.",
-        "authors": "Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR",
-        "categories": [
-            "software tool"
-        ],
-        "date_published": "2013 Jan 1",
-        "issue": "1",
-        "journal": "Bioinformatics",
-        "page": "15-21",
-        "published_by": [
-            "ENCODE"
-        ],
-        "identifiers": [
-            "PMID:23104886",
-            "PMCID:PMC3530905"
-        ],
-        "status": "released",
-        "title": "STAR: ultrafast universal RNA-seq aligner.",
-        "volume": "29",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "9d43c048-c70c-42ab-895d-77a69fceb42b"
-    },
-    {
-        "abstract": "The resolution of genome-wide association studies (GWAS) is limited by the linkage disequilibrium (LD) structure of the population being studied. Selecting  the most likely causal variants within an LD block is relatively straightforward  within coding sequence, but is more difficult when all variants are intergenic. Predicting functional non-coding sequence has been recently facilitated by the availability of conservation and epigenomic information. We present HaploReg, a tool for exploring annotations of the non-coding genome among the results of published GWAS or novel sets of variants. Using LD information from the 1000 Genomes Project, linked SNPs and small indels can be visualized along with their  predicted chromatin state in nine cell types, conservation across mammals and their effect on regulatory motifs. Sets of SNPs, such as those resulting from GWAS, are analyzed for an enrichment of cell type-specific enhancers. HaploReg will be useful to researchers developing mechanistic hypotheses of the impact of  non-coding variants on clinical phenotypes and normal variation. The HaploReg database is available at http://compbio.mit.edu/HaploReg.",
-        "authors": "Ward LD, Kellis M",
-        "categories": [
-            "integrative analysis",
-            "database"
-        ],
-        "datasets": [
-            "/projects/ENCSR860CMY/",
-            "/publication_data/ENCSR727WCB/"
-        ],
-        "date_published": "2012 Jan",
-        "issue": "Database issue",
-        "journal": "Nucleic acids research",
-        "page": "D930-4",
-        "published_by": [
-            "ENCODE"
-        ],
-        "identifiers": [
-            "PMID:22064851",
-            "PMCID:PMC3245002"
-        ],
-        "supplementary_data":[
-            {
-                "url": "http://encodenets.gersteinlab.org/metatracks/",
-                "supplementary_data_type": "enhancer annotations",
-                "data_summary": "Enhancers are identified as binding active regions (BARs) outside promoter-proximal regulatory modules (PRMs) and more than 10kb away from any GENCODE genes and non-coding genes. A random forest model trained on chromatin accessibility and histone modification has been used to identify BARs, using randomly sampled TF binding regions and non-binding regions as positive and negative training sets. PRMs are identified with a similar model as that for BARs, using TF binding regions at transcription start site (TSS) as positive training set, and non-binding regions or regions far away from TSS or both as negative training sets. This model has been applied to 5 ENCODE cell lines: GM12878, K562, h1-HESC, HeLa-S3, and Hep-G2.",
-                "file_format": "BED"
-            },
-            {
-                "url": "http://funseq2.gersteinlab.org/static/data/ENCODE.annotation.gz",
-                "supplementary_data_type": "enhancer annotations",
-                "data_summary": "An update of the list in 2014 using the same methodology.",
-                "file_format": "BED"
-            },
-            {
-                "url": "http://encodenets.gersteinlab.org/metatracks",
-                "supplementary_data_type": "HOT regions",
-                "data_summary": "The ChIP-Seq signals from various experiments for transcription factors were grouped together into 100 bp bins. The co-binding of different factors were computed based on these signals. The HOT and LOT regions were defined as the top 1% of region-specific co-occurrence and the bottom 1% of non-zero degrees of region-specific co-occurrence.",
-                "file_format": "BED"
-            },
-            {
-                "url": "http://funseq2.gersteinlab.org/static/data/drm.gene.bed",
-                "supplementary_data_type": "connectivity",
-                "data_summary": "The correlation (or anti-correlation) of histone marks at a putative enhancer and the expression of nearby genes was used to determine connectivity. This list was updated in 2014 based on the 2012 methodology. First 3 columns are coordinates of DRM, 4th column is target gene, 5th column in correlation, and 6th column is correlation of histone mark (annotation of the histone mark with high correlation.",
-                "file_format": "BED"
-            }
-        ],
-        "status": "released",
-        "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",
-        "volume": "40",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "d40de6c3-7b60-4567-8282-b29f0cafc0e1"
-    },
-    {
-        "abstract": "MOTIVATION: Testing for correlations between different sets of genomic features is a fundamental task in genomics research. However, searching for overlaps between features with existing web-based methods is complicated by the massive datasets that are routinely produced with current sequencing technologies. Fast and flexible tools are therefore required to ask complex questions of these data  in an efficient manner. RESULTS: This article introduces a new software suite for the comparison, manipulation and annotation of genomic features in Browser Extensible Data (BED) and General Feature Format (GFF) format. BEDTools also supports the comparison of sequence alignments in BAM format to both BED and GFF  features. The tools are extremely efficient and allow the user to compare large datasets (e.g. next-generation sequencing data) with both public and custom genome annotation tracks. BEDTools can be combined with one another as well as with standard UNIX commands, thus facilitating routine genomics tasks as well as  pipelines that can quickly answer intricate questions of large genomic datasets.  AVAILABILITY AND IMPLEMENTATION: BEDTools was written in C++. Source code and a comprehensive user manual are freely available at http://code.google.com/p/bedtools CONTACT: aaronquinlan@gmail.com; imh4y@virginia.edu SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
-        "authors": "Quinlan AR, Hall IM",
-        "categories": [
-            "software tool"
-        ],
-        "date_created": "2014-08-01T04:33:54.912655+00:00",
-        "date_published": "2010 Mar 15",
-        "issue": "6",
-        "journal": "Bioinformatics",
-        "page": "841-2",
-        "published_by": [
-            "community"
-        ],
-        "identifiers": [
-            "PMID:20110278",
-            "PMCID:PMC2832824"
-        ],
-        "status": "released",
-        "title": "BEDTools: a flexible suite of utilities for comparing genomic features.",
-        "volume": "26",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "bdd1b360-c377-450d-969a-efc1a7e8611f"
-    },
-    {
-        "abstract": "Protein ubiquitylation has emerged as a key regulatory mechanism in DNA-damage signalling and repair pathways. We report a proteome-wide, site-specific survey of ubiquitylation changes after ultraviolet irradiation, identifying numerous upregulated and downregulated ubiquitylation sites on known components of DNA-damage signalling, as well as on proteins not previously implicated in this process. Our results uncover a critical role for PCNA-associated factor PAF15 (p15(PAF)/KIAA0101) ubiquitylation during DNA replication. During unperturbed S phase, chromatin-associated PAF15 is modified by double mono-ubiquitylation of Lys 15 and 24 templated through PCNA binding. Replication blocks trigger rapid, proteasome-dependent removal of Lys 15/24-ubiquitylated PAF15 from PCNA, facilitating bypass of replication-fork-blocking lesions by allowing recruitment of translesion DNA synthesis polymerase polη to mono-ubiquitylated PCNA at stalled replisomes. Our findings demonstrate widespread involvement of ubiquitin signalling in genotoxic-stress responses and identify a critical function for dynamic PAF15 ubiquitylation in safeguarding genome integrity when DNA replication is challenged.",
-        "authors": "Povlsen LK, Beli P, Wagner SA, Poulsen SL, Sylvestersen KB, Poulsen JW, Nielsen ML, Bekker-Jensen S, Mailand N, Choudhary C.",
-        "identifiers": [
-            "PMID:23000965"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Systems-wide analysis of ubiquitylation dynamics reveals a key role for PAF15 ubiquitylation in DNA-damage bypass.",
-        "uuid": "4cb65ec0-bd49-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "The ability to inhibit a response is an important component of normal behavioral control and is an aspect of psychopathology when diminished. Converging evidence implicates the serotonergic neurotransmitter system in response inhibition circuitry.",
-        "authors": "Stoltenberg SF, Glass JM, Chermack ST, Flynn HA, Li S, Weston ME, Burmeister M.",
-        "identifiers": [
-            "PMID:16395128"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Possible association between response inhibition and a variant in the brain-expressed tryptophan hydroxylase-2 gene.",
-        "uuid": "b163ba10-bd4a-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Chromatin immunoprecipitation (ChIP) followed by high-throughput DNA sequencing (ChIP-seq) has become a valuable and widely used approach for mapping the genomic location of transcription-factor binding and histone modifications in living cells. Despite its widespread use, there are considerable differences in how these experiments are conducted, how the results are scored and evaluated for quality, and how the data and metadata are archived for public use. These practices affect the quality and utility of any global ChIP experiment. Through our experience in performing ChIP-seq experiments, the ENCODE and modENCODE consortia have developed a set of working standards and guidelines for ChIP experiments that are updated routinely. The current guidelines address antibody validation, experimental replication, sequencing depth, data and metadata reporting, and data quality assessment. We discuss how ChIP quality, assessed in these ways, affects different uses of ChIP-seq data. All data sets used in the analysis have been deposited for public viewing and downloading at the ENCODE (http://encodeproject.org/ENCODE/) and modENCODE (http://www.modencode.org/) portals.",
-        "authors": "Landt SG, Marinov GK, Kundaje A, Kheradpour P, Pauli F, Batzoglou S, Bernstein BE, Bickel P, Brown JB, Cayting P, Chen Y, DeSalvo G, Epstein C, Fisher-Aylor KI, Euskirchen G, Gerstein M, Gertz J, Hartemink AJ, Hoffman MM, Iyer VR, Jung YL, Karmakar S, Kellis M, Kharchenko PV, Li Q, Liu T, Liu XS, Ma L, Milosavljevic A, Myers RM, Park PJ, Pazin MJ, Perry MD, Raha D, Reddy TE, Rozowsky J, Shoresh N, Sidow A, Slattery M, Stamatoyannopoulos JA, Tolstorukov MY, White KP, Xi S, Farnham PJ, Lieb JD, Wold BJ, Snyder M.",
-        "identifiers": [
-             "PMID:22955991"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia.",
-        "uuid":"06a28ab0-bd4b-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Faithful transmission of genetic material to daughter cells involves a characteristic temporal order of DNA replication, which may play a significant role in the inheritance of epigenetic states. We developed a genome-scale approach--Repli Seq--to map temporally ordered replicating DNA using massively parallel sequencing and applied it to study regional variation in human DNA replication time across multiple human cell types. The method requires as few as 8,000 cytometry-fractionated cells for a single analysis, and provides high-resolution DNA replication patterns with respect to both cell-cycle time and genomic position. We find that different cell types exhibit characteristic replication signatures that reveal striking plasticity in regional replication time patterns covering at least 50% of the human genome. We also identified autosomal regions with marked biphasic replication timing that include known regions of monoallelic expression as well as many previously uncharacterized domains. Comparison with high-resolution genome-wide profiles of DNaseI sensitivity revealed that DNA replication typically initiates within foci of accessible chromatin comprising clustered DNaseI hypersensitive sites, and that replication time is better correlated with chromatin accessibility than with gene expression. The data collectively provide a unique, genome-wide picture of the epigenetic compartmentalization of the human genome and suggest that cell-lineage specification involves extensive reprogramming of replication timing patterns.",
-        "authors": "Hansen RS, Thomas S, Sandstrom R, Canfield TK, Thurman RE, Weaver M, Dorschner MO, Gartler SM, Stamatoyannopoulos JA.",
-        "identifiers": [
-            "PMID:19966280"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Sequencing newly replicated DNA reveals widespread plasticity in human replication timing.",
-        "uuid": "99dc0be0-bddb-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Bowtie is an ultrafast, memory-efficient alignment program for aligning short DNA sequence reads to large genomes. For the human genome, Burrows-Wheeler indexing allows Bowtie to align more than 25 million reads per CPU hour with a memory footprint of approximately 1.3 gigabytes. Bowtie extends previous Burrows-Wheeler techniques with a novel quality-aware backtracking algorithm that permits mismatches. Multiple processor cores can be used simultaneously to achieve even greater alignment speeds. Bowtie is open source (http://bowtie.cbcb.umd.edu).",
-        "authors": "Langmead B, Trapnell C, Pop M, Salzberg SL.",
-        "identifiers": [
-            "PMID:19261174"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Ultrafast and memory-efficient alignment of short DNA sequences to the human genome.",
-        "uuid": "30819150-bddc-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "A method for characterizing quantum measurement devices completes the suite of 'tomography techniques', which should enable us to learn all there is to know about a given quantum-physics experiment.",
-        "authors": "Aspelmeyer M",
-        "identifiers": [
-            "doi:10.1038/nphys1170"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Quantum tomography: Measured measurement",
-        "uuid": "eedcf3b0-bddc-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "We developed a general approach that combines chromosome conformation capture carbon copy (5C) with the Integrated Modeling Platform (IMP) to generate high-resolution three-dimensional models of chromatin at the megabase scale. We applied this approach to the ENm008 domain on human chromosome 16, containing the α-globin locus, which is expressed in K562 cells and silenced in lymphoblastoid cells (GM12878). The models accurately reproduce the known looping interactions between the α-globin genes and their distal regulatory elements. Further, we find using our approach that the domain folds into a single globular conformation in GM12878 cells, whereas two globules are formed in K562 cells. The central cores of these globules are enriched for transcribed genes, whereas nontranscribed chromatin is more peripheral. We propose that globule formation represents a higher-order folding state related to clustering of transcribed genes around shared transcription machineries, as previously observed by microscopy.",
-        "authors": "Baù D, Sanyal A, Lajoie BR, Capriotti E, Byron M, Lawrence JB, Dekker J, Marti-Renom MA.",
-        "identifiers": [
-            "PMID:21131981"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title":  "The three-dimensional folding of the α-globin gene domain reveals formation of chromatin globules.",
-        "uuid": "e5e336a0-bdde-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Transcription regulation in higher eukaryotes is controlled by regulatory elements such as enhancers that are recognized by transcription factors. In many cases regulatory elements can be located at distances up to several megabases from their target genes. Recent evidence shows that long-range control of gene expression can be mediated through direct physical interactions between genes and these regulatory elements. Such looping interactions can be detected using the chromosome conformation capture (3C) methodology. Although 3C is experimentally straightforward, to draw meaningful conclusions one must carefully design 3C experiments and implement the conscientious use of controls. The general guidelines presented here should help experimental design and minimize misinterpretation of 3C experiments.",
-        "authors": "Dekker J.",
-        "identifiers": [
-            "PMID:16369547"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "The three 'C' s of chromosome conformation capture: controls, controls, controls.",
-        "uuid": "41d71990-bddf-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "We describe an approach to detect the frequency of interaction between any two genomic loci. Generation of a matrix of interaction frequencies between sites on the same or different chromosomes reveals their relative spatial disposition and provides information about the physical properties of the chromatin fiber. This methodology can be applied to the spatial organization of entire genomes in organisms from bacteria to human. Using the yeast Saccharomyces cerevisiae, we could confirm known qualitative features of chromosome organization within the nucleus and dynamic changes in that organization during meiosis. We also analyzed yeast chromosome III at the G1 stage of the cell cycle. We found that chromatin is highly flexible throughout. Furthermore, functionally distinct AT- and GC-rich domains were found to exhibit different conformations, and a population-average 3D model of chromosome III could be determined. Chromosome III emerges as a contorted ring.",
-        "authors": "Dekker J, Rippe K, Dekker M, Kleckner N.",
-        "identifiers": [
-            "PMID:11847345"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Capturing chromosome conformation.",
-        "uuid": "f646cfb0-bddf-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Genomic elements separated by large genomic distances can physically interact to mediate long-range gene regulation and other chromosomal processes. Interactions between genomic elements can be detected using the chromosome conformation capture (3C) technology. We recently developed a high-throughput adaptation of 3C, 3C-carbon copy (5C), that is used to measure networks of millions of chromatin interactions in parallel. As in 3C, cells are treated with formaldehyde to cross-link chromatin interactions. The chromatin is solubilized, digested with a restriction enzyme and ligated at low DNA concentration to promote intra-molecular ligation of cross-linked DNA fragments. Ligation products are subsequently purified to generate a 3C library. The 5C technology then employs highly multiplexed ligation-mediated amplification (LMA) to detect and amplify 3C ligation junctions. The resulting 5C library of ligated primers is analyzed using either microarray detection or ultra-high-throughput DNA sequencing. The 5C protocol described here can be completed in 13 d.",
-        "authors": "Dostie J, Dekker J.",
-        "identifiers": [
-            "PMID:17446898"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Mapping networks of physical interactions between genomic elements using 5C technology.",
-        "uuid": "30eba0f0-bde0-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Physical interactions between genetic elements located throughout the genome play important roles in gene regulation and can be identified with the Chromosome Conformation Capture (3C) methodology. 3C converts physical chromatin interactions into specific ligation products, which are quantified individually by PCR. Here we present a high-throughput 3C approach, 3C-Carbon Copy (5C), that employs microarrays or quantitative DNA sequencing using 454-technology as detection methods. We applied 5C to analyze a 400-kb region containing the human beta-globin locus and a 100-kb conserved gene desert region. We validated 5C by detection of several previously identified looping interactions in the beta-globin locus. We also identified a new looping interaction in K562 cells between the beta-globin Locus Control Region and the gamma-beta-globin intergenic region. Interestingly, this region has been implicated in the control of developmental globin gene switching. 5C should be widely applicable for large-scale mapping of cis- and trans- interaction networks of genomic elements and for the study of higher-order chromosome structure.",
-        "authors": "Dostie J, Richmond TA, Arnaout RA, Selzer RR, Lee WL, Honan TA, Rubio ED, Krumm A, Lamb J, Nusbaum C, Green RD, Dekker J.",
-        "identifiers": [
-            "PMID:16954542"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Chromosome Conformation Capture Carbon Copy (5C): a massively parallel solution for mapping interactions between genomic elements.",
-        "uuid": "83ea1e80-bde0-11e4-bb52-0800200c9a66"
-    },
-    {
-        "authors": "Lajoie BR, van Berkum NL, Sanyal A, Dekker J.",
-        "identifiers": [
-            "PMID:19789528"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "My5C: web tools for chromosome conformation capture studies.",
-        "uuid": "bbbeb8c0-bde0-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Disruptions in local chromatin structure often indicate features of biological interest such as regulatory regions. We find that sonication of cross-linked chromatin, when combined with a size-selection step and massively parallel short-read sequencing, can be used as a method (Sono-Seq) to map locations of high chromatin accessibility in promoter regions. Sono-Seq sites frequently correspond to actively transcribed promoter regions, as evidenced by their co-association with RNA Polymerase II ChIP regions, transcription start sites, histone H3 lysine 4 trimethylation (H3K4me3) marks, and CpG islands; signals over other sites, such as those bound by the CTCF insulator, are also observed. The pattern of breakage by Sono-Seq overlaps with, but is distinct from, that observed for FAIRE and DNase I hypersensitive sites. Our results demonstrate that Sono-Seq can be a useful and simple method by which to map many local alterations in chromatin structure. Furthermore, our results provide insights into the mapping of binding sites by using ChIP-Seq experiments and the value of reference samples that should be used in such experiments.",
-        "authors": "Auerbach RK, Euskirchen G, Rozowsky J, Lamarre-Vincent N, Moqtaderi Z, Lefrançois P, Struhl K, Gerstein M, Snyder M.",
-        "identifiers": [
-            "PMID:19706456"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Mapping accessible chromatin regions using Sono-Seq.",
-        "uuid": "72a4a030-bdfb-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Recent progress in mapping transcription factor (TF) binding regions can largely be credited to chromatin immunoprecipitation (ChIP) technologies. We compared strategies for mapping TF binding regions in mammalian cells using two different ChIP schemes: ChIP with DNA microarray analysis (ChIP-chip) and ChIP with DNA sequencing (ChIP-PET). We first investigated parameters central to obtaining robust ChIP-chip data sets by analyzing STAT1 targets in the ENCODE regions of the human genome, and then compared ChIP-chip to ChIP-PET. We devised methods for scoring and comparing results among various tiling arrays and examined parameters such as DNA microarray format, oligonucleotide length, hybridization conditions, and the use of competitor Cot-1 DNA. The best performance was achieved with high-density oligonucleotide arrays, oligonucleotides >/=50 bases (b), the presence of competitor Cot-1 DNA and hybridizations conducted in microfluidics stations. When target identification was evaluated as a function of array number, 80%-86% of targets were identified with three or more arrays. Comparison of ChIP-chip with ChIP-PET revealed strong agreement for the highest ranked targets with less overlap for the low ranked targets. With advantages and disadvantages unique to each approach, we found that ChIP-chip and ChIP-PET are frequently complementary in their relative abilities to detect STAT1 targets for the lower ranked targets; each method detected validated targets that were missed by the other method. The most comprehensive list of STAT1 binding regions is obtained by merging results from ChIP-chip and ChIP-sequencing. Overall, this study provides information for robust identification, scoring, and validation of TF targets using ChIP-based technologies.",
-        "authors": "Euskirchen GM, Rozowsky JS, Wei CL, Lee WH, Zhang ZD, Hartman S, Emanuelsson O, Stolc V, Weissman S, Gerstein MB, Ruan Y, Snyder M.",
-        "identifiers": [
-            "PMID:17568005"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Mapping of transcription factor binding regions in mammalian cells by ChIP: comparison of array- and sequencing-based technologies.",
-        "uuid": "341bf550-be0c-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "We have mapped the chromosomal binding site distribution of a transcription factor in human cells. The NF-kappaB family of transcription factors plays an essential role in regulating the induction of genes involved in several physiological processes, including apoptosis, immunity, and inflammation. The binding sites of the NF-kappaB family member p65 were determined by using chromatin immunoprecipitation and a genomic microarray of human chromosome 22 DNA. Sites of binding were observed along the entire chromosome in both coding and noncoding regions, with an enrichment at the 5' end of genes. Strikingly, a significant proportion of binding was seen in intronic regions, demonstrating that transcription factor binding is not restricted to promoter regions. NF-kappaB binding was also found at genes whose expression was regulated by tumor necrosis factor alpha, a known inducer of NF-kappaB-dependent gene expression, as well as adjacent to genes whose expression is not affected by tumor necrosis factor alpha. Many of these latter genes are either known to be activated by NF-kappaB under other conditions or are consistent with NF-kappaB's role in the immune and apoptotic responses. Our results suggest that binding is not restricted to promoter regions and that NF-kappaB binding occurs at a significant number of genes whose expression is not altered, thereby suggesting that binding alone is not sufficient for gene activation.",
-        "authors": "Martone R, Euskirchen G, Bertone P, Hartman S, Royce TE, Luscombe NM, Rinn JL, Nelson FK, Miller P, Gerstein M, Weissman S, Snyder M.",
-        "identifiers": [
-            "PMID:14527995"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Distribution of NF-kappaB-binding sites across human chromosome 22.",
-        "uuid": "cf890830-bdfc-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "We developed a method, ChIP-sequencing (ChIP-seq), combining chromatin immunoprecipitation (ChIP) and massively parallel sequencing to identify mammalian DNA sequences bound by transcription factors in vivo. We used ChIP-seq to map STAT1 targets in interferon-gamma (IFN-gamma)-stimulated and unstimulated human HeLa S3 cells, and compared the method's performance to ChIP-PCR and to ChIP-chip for four chromosomes. By ChIP-seq, using 15.1 and 12.9 million uniquely mapped sequence reads, and an estimated false discovery rate of less than 0.001, we identified 41,582 and 11,004 putative STAT1-binding regions in stimulated and unstimulated cells, respectively. Of the 34 loci known to contain STAT1 interferon-responsive binding sites, ChIP-seq found 24 (71%). ChIP-seq targets were enriched in sequences similar to known STAT1 binding motifs. Comparisons with two ChIP-PCR data sets suggested that ChIP-seq sensitivity was between 70% and 92% and specificity was at least 95%.",
-        "authors": "Robertson G, Hirst M, Bainbridge M, Bilenky M, Zhao Y, Zeng T, Euskirchen G, Bernier B, Varhol R, Delaney A, Thiessen N, Griffith OL, He A, Marra M, Snyder M, Jones S.",
-        "identifiers": [
-            "PMID:17558387"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Genome-wide profiles of STAT1 DNA association using chromatin immunoprecipitation and massively parallel sequencing.",
-        "uuid": "4be68100-be0c-11e4-bb52-0800200c9a66"
-    },
-    {
-        "abstract": "Chromatin immunoprecipitation (ChIP) followed by tag sequencing (ChIP-seq) using high-throughput next-generation instrumentation is fast, replacing chromatin immunoprecipitation followed by genome tiling array analysis (ChIP-chip) as the preferred approach for mapping of sites of transcription-factor binding and chromatin modification. Using two deeply sequenced data sets for human RNA polymerase II and STAT1, each with matching input-DNA controls, we describe a general scoring approach to address unique challenges in ChIP-seq data analysis. Our approach is based on the observation that sites of potential binding are strongly correlated with signal peaks in the control, likely revealing features of open chromatin. We develop a two-pass strategy called PeakSeq to compensate for this. A two-pass strategy compensates for signal caused by open chromatin, as revealed by inclusion of the controls. The first pass identifies putative binding sites and compensates for genomic variation in the 'mappability' of sequences. The second pass filters out sites not significantly enriched compared to the normalized control, computing precise enrichments and significances. Our scoring procedure enables us to optimize experimental design by estimating the depth of sequencing required for a desired level of coverage and demonstrating that more than two replicates provides only a marginal gain in information.",
-        "authors": "Rozowsky J, Euskirchen G, Auerbach RK, Zhang ZD, Gibson T, Bjornson R, Carriero N, Snyder M, Gerstein MB.",
-        "identifiers": [
-            "PMID:19122651"
-        ],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "PeakSeq enables systematic scoring of ChIP-seq experiments relative to controls.",
-        "uuid": "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
-    }
+{
+    "abstract": "BACKGROUND: The GENCODE consortium was formed to identify and map all protein-coding genes within the ENCODE regions. This was achieved by a combination of initial manual annotation by the HAVANA team, experimental validation by the GENCODE consortium and a refinement of the annotation based on these experimental results. RESULTS: The GENCODE gene features are divided into eight different categories of which only the first two (known and novel coding sequence) are confidently predicted to be protein-coding genes. 5' rapid amplification of cDNA ends (RACE) and RT-PCR were used to experimentally verify the initial annotation. Of the 420 coding loci tested, 229 RACE products have been sequenced. They supported 5' extensions of 30 loci and new splice variants in 50 loci. In addition, 46 loci without evidence for a coding sequence were validated, consisting of 31 novel and 15 putative transcripts. We assessed the comprehensiveness of the GENCODE annotation by attempting to validate all the predicted exon boundaries outside the GENCODE annotation. Out of 1,215 tested in a subset of the ENCODE regions, 14 novel exon pairs were validated, only two of them in intergenic regions. CONCLUSION: In total, 487 loci, of which 434 are coding, have been annotated as part of the GENCODE reference set available from the UCSC browser. Comparison of GENCODE annotation with RefSeq and ENSEMBL show only 40% of GENCODE exons are contained within the two sets, which is a reflection of the high number of alternative splice forms with unique exons annotated. Over 50% of coding loci have been experimentally verified by 5' RACE for EGASP and the GENCODE collaboration is continuing to refine its annotation of 1% human genome with the aid of experimental validation.",
+    "authors": "Harrow J, Denoeud F, Frankish A, Reymond A, Chen CK, Chrast J, Lagarde J, Gilbert JG, Storey R, Swarbreck D, Rossier C, Ucla C, Hubbard T, Antonarakis SE, Guigo R",
+    "award": "ENCODE",
+    "date_created": "2015-04-13T21:42:49.808340+00:00",
+    "date_published": "2006",
+    "identifiers": [
+        "PMCID:PMC1810553",
+        "doi:10.1186/gb-2006-7-s1-s4",
+        "PMID:16925838"
+    ],
+    "issue": "",
+    "journal": "Genome biology",
+    "lab": "encode-consortium",
+    "page": "S4.1-9",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "supplementary_data": [],
+    "title": "GENCODE: producing a reference annotation for ENCODE.",
+    "uuid": "0f5fddc0-13ae-433d-b415-012f35eabaf9",
+    "volume": "7 Suppl 1"
+},
+{
+    "abstract": "Development, differentiation and response to environmental stimuli are characterized by sequential changes in cellular state initiated by the de novo binding of regulated transcriptional factors to their cognate genomic sites. The mechanism whereby a given regulatory factor selects a limited number of in vivo targets from a myriad of potential genomic binding sites is undetermined. Here we show that up to 95% of de novo genomic binding by the glucocorticoid receptor, a paradigmatic ligand-activated transcription factor, is targeted to preexisting foci of accessible chromatin. Factor binding invariably potentiates chromatin accessibility. Cell-selective glucocorticoid receptor occupancy patterns appear to be comprehensively predetermined by cell-specific differences in baseline chromatin accessibility patterns, with secondary contributions from local sequence features. The results define a framework for understanding regulatory factor-genome interactions and provide a molecular basis for the tissue selectivity of steroid pharmaceuticals and other agents that intersect the living genome.",
+    "authors": "John S, Sabo PJ, Thurman RE, Sung MH, Biddie SC, Johnson TA, Hager GL, Stamatoyannopoulos JA",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:26:28.058390+00:00",
+    "date_published": "2011 Mar",
+    "identifiers": [
+        "PMID:21258342"
+    ],
+    "issue": "3",
+    "journal": "Nature genetics",
+    "lab": "encode-consortium",
+    "page": "264-8",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Chromatin accessibility pre-determines glucocorticoid receptor binding patterns.",
+    "uuid": "12ec01d0-87ab-4747-ba43-b07042b6e770",
+    "volume": "43"
+},
+{
+    "abstract": "The human reference assembly remains incomplete due to the underrepresentation of repeat-rich sequences that are found within centromeric regions and acrocentric short arms. Although these sequences are marginally represented in the assembly, they are often fully represented in whole-genome short-read datasets and contribute to inappropriate alignments and high read-depth signals that localize to a small number of assembled homologous regions. As a consequence, these regions often provide artifactual peak calls that confound hypothesis testing and large-scale genomic studies. To address this problem, we have constructed mapping targets that represent roughly 8% of the human genome generally omitted from the human reference assembly. By integrating these data into standard mapping and peak-calling pipelines we demonstrate a 10-fold reduction in signals in regions common to the blacklisted region and identify a comprehensive set of regions that exhibit mapping sensitivity with the presence of the repeat-rich targets.",
+    "authors": "Miga KH, Eisenhart C, Kent WJ",
+    "award": "Unattributed",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2016-03-25T23:19:50.101434+00:00",
+    "date_published": "2015 Nov 16",
+    "identifiers": [
+        "PMID:26163063",
+        "PMCID:PMC4787761"
+    ],
+    "issue": "20",
+    "journal": "Nucleic acids research",
+    "lab": "encode-consortium",
+    "page": "e133",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "supplementary_data": [],
+    "title": "Utilizing mapping targets of sequences underrepresented in the reference assembly to reduce false positive alignments.",
+    "uuid": "16618d27-bd15-4b3a-84b7-9da515e73e9f",
+    "volume": "43"
+},
+{
+    "abstract": "We present Model-based Analysis of ChIP-Seq data, MACS, which analyzes data generated by short read sequencers such as Solexa's Genome Analyzer. MACS empirically models the shift size of ChIP-Seq tags, and uses it to improve the spatial resolution of predicted binding sites. MACS also uses a dynamic Poisson distribution to effectively capture local biases in the genome, allowing for more robust predictions. MACS compares favorably to existing ChIP-Seq peak-finding algorithms, and is freely available.",
+    "authors": "Zhang Y, Liu T, Meyer CA, Eeckhoute J, Johnson DS, Bernstein BE, Nusbaum C, Myers RM, Brown M, Li W, Liu XS",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:28:33.614987+00:00",
+    "date_published": "2008",
+    "identifiers": [
+        "PMCID:PMC2592715",
+        "PMID:18798982"
+    ],
+    "issue": "9",
+    "journal": "Genome biology",
+    "lab": "encode-consortium",
+    "page": "R137",
+    "published_by": [
+        "modENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Model-based analysis of ChIP-Seq (MACS).",
+    "uuid": "30bd11d9-f05d-4bee-9512-c8199c8794e2",
+    "volume": "9"
+},
+{
+    "abstract": "The identification of full length transcripts entirely from short-read RNA sequencing data (RNA-seq) remains a challenge in the annotation of genomes. Here we describe an automated pipeline for genome annotation that integrates RNA-seq and gene-boundary data sets, which we call Generalized RNA Integration Tool, or GRIT. Applying GRIT to Drosophila melanogaster short-read RNA-seq, cap analysis of gene expression (CAGE) and poly(A)-site-seq data collected for the modENCODE project, we recovered the vast majority of previously annotated transcripts and doubled the total number of transcripts cataloged. We found that 20% of protein coding genes encode multiple protein-localization signals and that, in 20-d-old adult fly heads, genes with multiple polyadenylation sites are more common than genes with alternative splicing or alternative promoters. GRIT demonstrates 30% higher precision and recall than the most widely used transcript assembly tools. GRIT will facilitate the automated generation of high-quality genome annotations without the need for extensive manual annotation.",
+    "authors": "Boley N, Stoiber MH, Booth BW, Wan KH, Hoskins RA, Bickel PJ, Celniker SE, Brown JB",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2015-05-13T17:17:16.171654+00:00",
+    "date_published": "2014 Apr",
+    "identifiers": [
+        "PMID:24633242",
+        "PMCID:PMC4037530"
+    ],
+    "issue": "4",
+    "journal": "Nature biotechnology",
+    "lab": "encode-consortium",
+    "page": "341-6",
+    "published_by": [
+        "ENCODE",
+        "modENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Genome-guided transcript assembly by integrative analysis of RNA sequence data.",
+    "uuid": "4470a83b-ec50-4352-8a12-4402a2622dd6",
+    "volume": "32"
+},
+{
+    "abstract": "Model-based Analysis of ChIP-Seq (MACS) is a command-line tool designed by X. Shirley Liu and colleagues to analyze data generated by ChIP-Seq experiments in eukaryotes, especially mammals. MACS can be used to identify transcription factor binding sites and histone modification-enriched regions if the ChIP-Seq data, with or without control samples, are given. This unit describes two basic protocols that provide detailed information on how to use MACS to identify either the binding sites of a transcription factor or the enriched regions of a histone modification with broad peaks. Furthermore, the basic ideas for the MACS algorithm and its appropriate usage are discussed.",
+    "authors": "Feng J, Liu T, Zhang Y",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:25:48.679833+00:00",
+    "date_published": "2011 Jun",
+    "identifiers": [
+        "PMID:21633945",
+        "PMCID:PMC3120977"
+    ],
+    "issue": "",
+    "journal": "Current protocols in bioinformatics / editoral board, Andreas D. Baxevanis ... [et al.]",
+    "lab": "encode-consortium",
+    "page": "Unit 2.14",
+    "published_by": [
+        "modENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Using MACS to identify peaks from ChIP-Seq data.",
+    "uuid": "4c104c82-6e8a-4683-b654-5f1576743c6e",
+    "volume": "Chapter 2"
+},
+{
+    "abstract": "As the rate of sequencing increases, greater throughput is demanded from read aligners. The full-text minute index is often used to make alignment very fast and memory-efficient, but the approach is ill-suited to finding longer, gapped alignments. Bowtie 2 combines the strengths of the full-text minute index with the flexibility and speed of hardware-accelerated dynamic programming algorithms to achieve a combination of high speed, sensitivity and accuracy.",
+    "authors": "Ben Langmead Steven L Salzberg",
+    "award": "Unattributed",
+    "categories": [
+        "software tool"
+    ],
+    "datasets": [],
+    "date_created": "2016-03-29T23:11:14.111090+00:00",
+    "date_published": "2012 Mar 4",
+    "identifiers": [
+        "PMCID:PMC3322381"
+    ],
+    "issue": "4",
+    "journal": "Nat Methods.",
+    "lab": "encode-consortium",
+    "page": "357-359",
+    "published_by": [
+        "community"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "supplementary_data": [],
+    "title": "Fast gapped-read alignment with Bowtie 2",
+    "uuid": "5b64d8ad-0b79-4694-a7d2-dc13033f9504",
+    "volume": "9"
+},
+{
+    "abstract": "The reference human genome sequence set the stage for studies of genetic variation and its association with human disease, but epigenomic studies lack a similar reference. To address this need, the NIH Roadmap Epigenomics Consortium generated the largest collection so far of human epigenomes for primary cells and tissues. Here we describe the integrative analysis of 111 reference human epigenomes generated as part of the programme, profiled for histone modification patterns, DNA accessibility, DNA methylation and RNA expression. We establish global maps of regulatory elements, define regulatory modules of coordinated activity, and their likely activators and repressors. We show that disease- and trait-associated genetic variants are enriched in tissue-specific epigenomic marks, revealing biologically relevant cell types for diverse human traits, and providing a resource for interpreting the molecular basis of human disease. Our results demonstrate the central role of epigenomic information for understanding gene regulation, cellular differentiation and human disease.",
+    "authors": "Kundaje A, Meuleman W, Ernst J, Bilenky M, Yen A, Heravi-Moussavi A, Kheradpour P, Zhang Z, Wang J, Ziller MJ, Amin V, Whitaker JW, Schultz MD, Ward LD, Sarkar A, Quon G, Sandstrom RS, Eaton ML, Wu YC, Pfenning AR, Wang X, Claussnitzer M, Liu Y, Coarfa C, Harris RA, Shoresh N, Epstein CB, Gjoneska E, Leung D, Xie W, Hawkins RD, Lister R, Hong C, Gascard P, Mungall AJ, Moore R, Chuah E, Tam A, Canfield TK, Hansen RS, Kaul R, Sabo PJ, Bansal MS, Carles A, Dixon JR, Farh KH, Feizi S, Karlic R, Kim AR, Kulkarni A, Li D, Lowdon R, Elliott G, Mercer TR, Neph SJ, Onuchic V, Polak P, Rajagopal N, Ray P, Sallari RC, Siebenthall KT, Sinnott-Armstrong NA, Stevens M, Thurman RE, Wu J, Zhang B, Zhou X, Beaudet AE, Boyer LA, De Jager PL, Farnham PJ, Fisher SJ, Haussler D, Jones SJ, Li W, Marra MA, McManus MT, Sunyaev S, Thomson JA, Tlsty TD, Tsai LH, Wang W, Waterland RA, Zhang MQ, Chadwick LH, Bernstein BE, Costello JF, Ecker JR, Hirst M, Meissner A, Milosavljevic A, Ren B, Stamatoyannopoulos JA, Wang T, Kellis M",
+    "award": "ROADMAP",
+    "categories": [
+        "basic biology"
+    ],
+    "data_used": "ENCODE histone modification ChIP, DNase, TF ChIP, DNA methylation, Fig 2, 3, 4, 9, S2, S7, ex 2, ex 6, ex9",
+    "datasets": [],
+    "date_created": "2015-09-15T17:28:28.021920+00:00",
+    "date_published": "2015 Feb 19",
+    "identifiers": [
+        "PMID:25693563"
+    ],
+    "issue": "7539",
+    "journal": "Nature",
+    "lab": "roadmap-epigenomics",
+    "page": "317-30",
+    "published_by": [
+        "community"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "supplementary_data": [
+        {
+            "file_format": "other format",
+            "supplementary_data_type": "website",
+            "url": "http://www.nature.com/nature/journal/v518/n7539/full/nature14248.html"
+        }
+    ],
+    "title": "Integrative analysis of 111 reference human epigenomes.",
+    "uuid": "5efbb9d3-f6f9-46a3-be27-15f5c4f752ef",
+    "volume": "518"
+},
+{
+    "authors": "Jung LY, Kharchenko P, Wold B, Sidow A, Batzoglou S, Park P.",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:24:58.007176+00:00",
+    "identifiers": [],
+    "lab": "encode-consortium",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Assessment of ChIP-seq data quality using cross-correlation analysis. (Submitted)",
+    "uuid": "6d54a249-990c-48c1-82a8-685bb3fd3b2b"
+},
+{
+    "abstract": "The ectopic expression of telomerase in normal human cells results in an extended lifespan, indicating that telomere shortening regulates the timing of cellular senescence. As telomerase expression is a hallmark of cancer, we investigated the long-term effects of forced expression of human telomerase catalytic component (hTERT) in normal human fibroblasts. In vitro growth requirements, cell-cycle checkpoints and karyotypic stability in telomerase-expressing cells are similar to those of untransfected controls. In addition, co-expression of telomerase, the viral oncoproteins HPV16 E6/E7 (which inactivate p53 and pRB) and oncogenic HRAS does not result in growth in soft agar. Thus, although ectopic expression of telomerase in human fibroblasts is sufficient for immortalization, it does not result in changes typically associated with malignant transformation.",
+    "authors": "Morales CP, Holt SE, Ouellette M, Kaur KJ, Yan Y, Wilson KS, White MA, Wright WE, Shay JW",
+    "award": "ENCODE",
+    "date_created": "2015-03-06T19:59:13.206197+00:00",
+    "date_published": "1999 Jan",
+    "identifiers": [
+        "doi:10.1038/5063",
+        "PMID:9916803"
+    ],
+    "issue": "1",
+    "journal": "Nature genetics",
+    "lab": "encode-consortium",
+    "page": "115-8",
+    "published_by": [
+        "historical reference"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "supplementary_data": [],
+    "title": "Absence of cancer-associated changes in human fibroblasts immortalized with telomerase.",
+    "uuid": "7180f71d-f74a-48f2-b670-ebcbaffbb85a",
+    "volume": "21"
+},
+{
+    "abstract": "BACKGROUND: RNA-Seq is revolutionizing the way transcript abundances are measured. A key challenge in transcript quantification from RNA-Seq data is the handling of reads that map to multiple genes or isoforms. This issue is particularly important for quantification with de novo transcriptome assemblies in the absence of sequenced genomes, as it is difficult to determine which transcripts are isoforms of the same gene. A second significant issue is the design of RNA-Seq experiments, in terms of the number of reads, read length, and  whether reads come from one or both ends of cDNA fragments. RESULTS: We present RSEM, an user-friendly software package for quantifying gene  and isoform abundances from single-end or paired-end RNA-Seq data. RSEM outputs abundance estimates, 95% credibility intervals, and visualization files and can also simulate RNA-Seq data. In contrast to other existing tools, the software does not require a reference genome. Thus, in combination with a de novo transcriptome assembler, RSEM enables accurate transcript quantification for species without sequenced genomes. On simulated and real data sets, RSEM has superior or comparable performance to quantification methods that rely on a reference genome. Taking advantage of RSEM's ability to effectively use ambiguously-mapping reads, we show that accurate gene-level abundance estimates are best obtained with large numbers of short single-end reads. On the other hand, estimates of the relative frequencies of isoforms within single genes may be improved through the use of paired-end reads, depending on the number of possible splice forms for each gene. CONCLUSIONS: RSEM is an accurate and user-friendly software tool for quantifying  transcript abundances from RNA-Seq data. As it does not rely on the existence of  a reference genome, it is particularly useful for quantification with de novo transcriptome assemblies. In addition, RSEM has enabled valuable guidance for cost-efficient design of quantification experiments with RNA-Seq, which is currently relatively expensive.",
+    "authors": "Li B(1), Dewey CN.",
+    "award": "Unattributed",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2016-03-25T23:02:56.584251+00:00",
+    "date_published": "2011 Aug 4",
+    "identifiers": [
+        "PMID:21816040",
+        "PMCID:PMC3163565"
+    ],
+    "journal": "BMC Bioinformatics",
+    "lab": "encode-consortium",
+    "page": "323",
+    "published_by": [
+        "community"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "supplementary_data": [],
+    "title": "RSEM: accurate transcript quantification from RNA-Seq data with or without a reference genome.",
+    "uuid": "7e5ae696-ee4c-49d0-9aca-11c132138f76",
+    "volume": "12"
+},
+{
+    "abstract": "Reproducibility is essential to reliable scientific discovery in high-throughput experiments. In this work we propose a unified approach to measure the reproducibility of findings identified from replicate experiments and identify putative discoveries using reproducibility. Unlike the usual scalar measures of reproducibility, our approach creates a curve, which quantitatively assesses when the findings are no longer consistent across replicates. Our curve is fitted by a copula mixture model, from which we derive a quantitative reproducibility score, which we call the \"irreproducible discovery rate\" (IDR) analogous to the FDR. This score can be computed at each set of paired replicate ranks and permits the principled setting of thresholds both for assessing reproducibility and combining replicates. Since our approach permits an arbitrary scale for each replicate, it provides useful descriptive measures in a wide variety of situations to be explored. We study the performance of the algorithm using simulations and give a heuristic analysis of its theoretical properties. We demonstrate the effectiveness of our method in a ChIP-seq experiment.",
+    "authors": "Li Q, Brown JB, Huang H, Bickel PJ",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:24:57.836546+00:00",
+    "date_published": "2011 Oct 21",
+    "identifiers": [
+        "doi:10.1214/11-AOAS466"
+    ],
+    "issue": "3",
+    "journal": "Annals of Applied Statistics",
+    "lab": "encode-consortium",
+    "page": "1752-1779",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [
+        {
+            "file_format": "text",
+            "url": "http://projecteuclid.org/euclid.aoas/1318514284"
+        }
+    ],
+    "title": "Measuring reproducibility of high-throughput experiments",
+    "uuid": "8312fc0c-b241-4cb2-9b01-1438910550ad",
+    "volume": "5"
+},
+{
+    "abstract": "Interest in single-cell whole-transcriptome analysis is growing rapidly, especially for profiling rare or heterogeneous populations of cells. We compared commercially available single-cell RNA amplification methods with both microliter and nanoliter volumes, using sequence from bulk total RNA and multiplexed quantitative PCR as benchmarks to systematically evaluate the sensitivity and accuracy of various single-cell RNA-seq approaches. We show that single-cell RNA-seq can be used to perform accurate quantitative transcriptome measurement in individual cells with a relatively small number of sequencing reads and that sequencing large numbers of single cells can recapitulate bulk transcriptome complexity.",
+    "authors": "Wu A. R., Neff N. F., Kalisky T., Dalerba P., Treutlein B., Rothenberg M. E., et al",
+    "award": "Unattributed",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2016-04-01T19:35:46.201126+00:00",
+    "date_published": "2014 Jan",
+    "identifiers": [
+        "PMCID:PMC4022966",
+        "doi:10.1038/nmeth.2694"
+    ],
+    "issue": "1",
+    "journal": "Nat Methods.",
+    "lab": "encode-consortium",
+    "page": "41-46",
+    "published_by": [
+        "community"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "supplementary_data": [],
+    "title": "Quantitative assessment of single-cell RNA-sequencing methods",
+    "uuid": "88f78b55-bf7f-4e41-9a0d-3863d04cd5a3",
+    "volume": "11"
+},
+{
+    "abstract": "Interplays among lineage-specific nuclear proteins, chromatin modifying enzymes, and the basal transcription machinery govern cellular differentiation, but their dynamics of action and coordination with transcriptional control are not fully understood. Alterations in chromatin structure appear to establish a permissive state for gene activation at some loci, but they play an integral role in activation at other loci. To determine the predominant roles of chromatin states and factor occupancy in directing gene regulation during differentiation, we mapped chromatin accessibility, histone modifications, and nuclear factor occupancy genome-wide during mouse erythroid differentiation dependent on the master regulatory transcription factor GATA1. Notably, despite extensive changes in gene expression, the chromatin state profiles (proportions of a gene in a chromatin state dominated by activating or repressive histone modifications) and accessibility remain largely unchanged during GATA1-induced erythroid differentiation. In contrast, gene induction and repression are strongly associated with changes in patterns of transcription factor occupancy. Our results indicate that during erythroid differentiation, the broad features of chromatin states are established at the stage of lineage commitment, largely independently of GATA1. These determine permissiveness for expression, with subsequent induction or repression mediated by distinctive combinations of transcription factors.",
+    "authors": "Wu W, Cheng Y, Keller CA, Ernst J, Kumar SA, Mishra T, Morrissey C, Dorman CM, Chen KB, Drautz D, Giardine B, Shibata Y, Song L, Pimkin M, Crawford GE, Furey TS, Kellis M, Miller W, Taylor J, Schuster SC, Zhang Y, Chiaromonte F, Blobel GA, Weiss MJ, Hardison RC",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:28:25.699652+00:00",
+    "date_published": "2011 Oct",
+    "identifiers": [
+        "PMID:21795386",
+        "PMCID:PMC3202283"
+    ],
+    "issue": "10",
+    "journal": "Genome research",
+    "lab": "encode-consortium",
+    "page": "1659-71",
+    "published_by": [
+        "mouseENCODE",
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Dynamics of the epigenetic landscape during erythroid differentiation after GATA1 restoration.",
+    "uuid": "8a17005c-86ea-4da4-8740-b837851271df",
+    "volume": "21"
+},
+{
+    "abstract": "Recent progress in massively parallel sequencing platforms has enabled genome-wide characterization of DNA-associated proteins using the combination of chromatin immunoprecipitation and sequencing (ChIP-seq). Although a variety of methods exist for analysis of the established alternative ChIP microarray (ChIP-chip), few approaches have been described for processing ChIP-seq data. To fill this gap, we propose an analysis pipeline specifically designed to detect protein-binding positions with high accuracy. Using previously reported data sets for three transcription factors, we illustrate methods for improving tag alignment and correcting for background signals. We compare the sensitivity and spatial precision of three peak detection algorithms with published methods, demonstrating gains in spatial precision when an asymmetric distribution of tags on positive and negative strands is considered. We also analyze the relationship between the depth of sequencing and characteristics of the detected binding positions, and provide a method for estimating the sequencing depth necessary for a desired coverage of protein binding sites.",
+    "authors": "Kharchenko PV, Tolstorukov MY, Park PJ",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:26:33.928952+00:00",
+    "date_published": "2008 Dec",
+    "identifiers": [
+        "PMCID:PMC2597701",
+        "PMID:19029915"
+    ],
+    "issue": "12",
+    "journal": "Nature biotechnology",
+    "lab": "encode-consortium",
+    "page": "1351-9",
+    "published_by": [
+        "modENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Design and analysis of ChIP-seq experiments for DNA-binding proteins.",
+    "uuid": "8a6e0ea0-6b0e-4fdc-885e-297c19cd75aa",
+    "volume": "26"
+},
+{
+    "abstract": "MOTIVATION: Accurate alignment of high-throughput RNA-seq data is a challenging and yet unsolved problem because of the non-contiguous transcript structure, relatively short read lengths and constantly increasing throughput of the sequencing technologies. Currently available RNA-seq aligners suffer from high mapping error rates, low mapping speed, read length limitation and mapping biases. RESULTS: To align our large (>80 billon reads) ENCODE Transcriptome RNA-seq dataset, we developed the Spliced Transcripts Alignment to a Reference (STAR) software based on a previously undescribed RNA-seq alignment algorithm that uses sequential maximum mappable seed search in uncompressed suffix arrays followed by seed clustering and stitching procedure. STAR outperforms other aligners by a factor of >50 in mapping speed, aligning to the human genome 550 million 2 x 76 bp paired-end reads per hour on a modest 12-core server, while at the same time improving alignment sensitivity and precision. In addition to unbiased de novo detection of canonical junctions, STAR can discover non-canonical splices and chimeric (fusion) transcripts, and is also capable of mapping full-length RNA sequences. Using Roche 454 sequencing of reverse transcription polymerase chain reaction amplicons, we experimentally validated 1960 novel intergenic splice junctions with an 80-90% success rate, corroborating the high precision of the STAR mapping strategy. AVAILABILITY AND IMPLEMENTATION: STAR is implemented as a standalone C++ code. STAR is free open source software distributed under GPLv3 license and can be downloaded from http://code.google.com/p/rna-star/.",
+    "authors": "Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:25:39.150037+00:00",
+    "date_published": "2013 Jan 1",
+    "identifiers": [
+        "PMCID:PMC3530905",
+        "PMID:23104886"
+    ],
+    "issue": "1",
+    "journal": "Bioinformatics (Oxford, England)",
+    "lab": "encode-consortium",
+    "page": "15-21",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "STAR: ultrafast universal RNA-seq aligner.",
+    "uuid": "9d43c048-c70c-42ab-895d-77a69fceb42b",
+    "volume": "29"
+},
+{
+    "abstract": "High-throughput complementary DNA sequencing (RNA-Seq) is a powerful tool for whole-transcriptome analysis, supplying information about a transcript's expression level and structure. However, it is difficult to determine the polarity of transcripts, and therefore identify which strand is transcribed. Here, we present a simple cDNA sequencing protocol that preserves information about a transcript's direction. Using Saccharomyces cerevisiae and mouse brain transcriptomes as models, we demonstrate that knowing the transcript's orientation allows more accurate determination of the structure and expression of genes. It also helps to identify new genes and enables studying promoter-associated and antisense transcription. The transcriptional landscapes we obtained are available online.",
+    "authors": "Parkhomchuk D, Borodina T, Amstislavskiy V, Banaru M, Hallen L, Krobitsch S, Lehrach H, Soldatov A",
+    "award": "ENCODE",
+    "date_created": "2015-03-06T19:58:34.515780+00:00",
+    "date_published": "2009 Oct",
+    "identifiers": [
+        "doi:10.1093/nar/gkp596",
+        "PMCID:PMC2764448",
+        "PMID:19620212"
+    ],
+    "issue": "18",
+    "journal": "Nucleic acids research",
+    "lab": "encode-consortium",
+    "page": "e123",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "supplementary_data": [],
+    "title": "Transcriptome analysis by strand-specific sequencing of complementary DNA.",
+    "uuid": "a66aada1-0a84-4ba6-9f00-06758cf7390a",
+    "volume": "37"
+},
+{
+    "abstract": "Continuous cell lines, SK-N-SH and SK-N-MC, were established in cell culture from human metastatic neuro blastoma tissue and maintained in vitro for 1 to 2 years. SK-N-SH comprises two morphologically distinctive cell types, a small spiny cell and a large epithelioid cell. SKN-MC is composed of small fibroblast-like cells with scant cytoplasm. In monolayer culture both cell lines form dis oriented growth patterns and reach high saturation den sities. Population-doubling times were 44 and 32 hr for SK-N-SH and SK-N-MC, respectively. Inoculum levels of IO7cells of both lines produced tumors confirmed by histopathological examination, at frequencies of 30 to 40% in cheek pouches of conditioned Syrian hamsters. SK-N-SH cells are characterized by high dopamine-/3-hydroxylase activity while SK-N-MC cells have no detectable activity. However, for SK-N-MC but not SK-N-SH, the presence of intracellular catecholamine was indicated by formaldehydeinduced fluorescence. The lines are near-diploid with sev eral chromosomal markers; SK-N-MC cells contain doub\\e-minute chromosomes. Growth, biochemical, and cytogenetic properties confirmed that the lines comprise malignant cells of neurogenic origin.",
+    "authors": "Biedler JL, Helson L, Spengler BA",
+    "award": "U24HG009397",
+    "categories": [
+        "basic biology"
+    ],
+    "date_created": "2017-05-05T18:20:44.822165+00:00",
+    "date_published": "1973 November",
+    "identifiers": [
+        "PMID:4748425"
+    ],
+    "issue": "11",
+    "journal": "Cancer Research",
+    "lab": "j-michael-cherry",
+    "page": "2643-52",
+    "published_by": [
+        "historical reference"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "supplementary_data": [],
+    "title": "Morphology and growth, tumorigenicity, and cytogenetics of human neuroblastoma cells in continuous culture.",
+    "uuid": "aa642733-7a0d-44f9-a1b0-465cd833f879",
+    "volume": "33"
+},
+{
+    "abstract": "MOTIVATION: Testing for correlations between different sets of genomic features is a fundamental task in genomics research. However, searching for overlaps between features with existing web-based methods is complicated by the massive datasets that are routinely produced with current sequencing technologies. Fast and flexible tools are therefore required to ask complex questions of these data in an efficient manner. RESULTS: This article introduces a new software suite for the comparison, manipulation and annotation of genomic features in Browser Extensible Data (BED) and General Feature Format (GFF) format. BEDTools also supports the comparison of sequence alignments in BAM format to both BED and GFF features. The tools are extremely efficient and allow the user to compare large datasets (e.g. next-generation sequencing data) with both public and custom genome annotation tracks. BEDTools can be combined with one another as well as with standard UNIX commands, thus facilitating routine genomics tasks as well as pipelines that can quickly answer intricate questions of large genomic datasets. AVAILABILITY AND IMPLEMENTATION: BEDTools was written in C++. Source code and a comprehensive user manual are freely available at http://code.google.com/p/bedtools CONTACT: aaronquinlan@gmail.com; imh4y@virginia.edu SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
+    "authors": "Quinlan AR, Hall IM",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:27:28.318685+00:00",
+    "date_published": "2010 Mar 15",
+    "identifiers": [
+        "PMID:20110278",
+        "PMCID:PMC2832824"
+    ],
+    "issue": "6",
+    "journal": "Bioinformatics (Oxford, England)",
+    "lab": "encode-consortium",
+    "page": "841-2",
+    "published_by": [
+        "community"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "BEDTools: a flexible suite of utilities for comparing genomic features.",
+    "uuid": "bdd1b360-c377-450d-969a-efc1a7e8611f",
+    "volume": "26"
+},
+{
+    "abstract": "MOTIVATION: A new protocol for sequencing the messenger RNA in a cell, known as RNA-Seq, generates millions of short sequence fragments in a single run. These fragments, or 'reads', can be used to measure levels of gene expression and to identify novel splice variants of genes. However, current software for aligning RNA-Seq data to a genome relies on known splice junctions and cannot identify novel ones. TopHat is an efficient read-mapping algorithm designed to align reads from an RNA-Seq experiment to a reference genome without relying on known splice sites. RESULTS: We mapped the RNA-Seq reads from a recent mammalian RNA-Seq experiment and recovered more than 72% of the splice junctions reported by the annotation-based software from that study, along with nearly 20,000 previously unreported junctions. The TopHat pipeline is much faster than previous systems, mapping nearly 2.2 million reads per CPU hour, which is sufficient to process an entire RNA-Seq experiment in less than a day on a standard desktop computer. We describe several challenges unique to ab initio splice site discovery from RNA-Seq reads that will require further algorithm development. AVAILABILITY: TopHat is free, open-source software available from http://tophat.cbcb.umd.edu. SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
+    "authors": "Trapnell C, Pachter L, Salzberg SL",
+    "award": "ENCODE",
+    "date_created": "2015-04-14T18:27:38.121113+00:00",
+    "date_published": "2009 May 1",
+    "identifiers": [
+        "doi:10.1093/bioinformatics/btp120",
+        "PMID:19289445",
+        "PMCID:PMC2672628"
+    ],
+    "issue": "9",
+    "journal": "Bioinformatics (Oxford, England)",
+    "lab": "encode-consortium",
+    "page": "1105-11",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "supplementary_data": [],
+    "title": "TopHat: discovering splice junctions with RNA-Seq.",
+    "uuid": "cf8fee96-605e-4e62-a8fc-212384a3b324",
+    "volume": "25"
+},
+{
+    "authors": "Kundaje A, Li Q, Brown J, Rozowsky J, Harmanci A, Wilder S, Gerstein M, Dunham I, Birney E, Batzoglou S et al.",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:24:57.663652+00:00",
+    "identifiers": [],
+    "lab": "encode-consortium",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Reproducibility measures for automatic threshold selection and quality control in ChIP-seq datasets. (In Preparation)",
+    "uuid": "d4d9c83f-d3ee-4955-bf72-88eb47512159"
+},
+{
+    "abstract": "The large and growing number of genome-wide datasets highlights the need for high-performance feature analysis and data comparison methods, in addition to efficient data storage and retrieval techniques. We introduce BEDOPS, a software suite for common genomic analysis tasks which offers improved flexibility, scalability and execution time characteristics over previously published packages. The suite includes a utility to compress large inputs into a lossless format that can provide greater space savings and faster data extractions than alternatives. AVAILABILITY: http://code.google.com/p/bedops/ includes binaries, source and documentation.",
+    "authors": "Neph S, Kuehn MS, Reynolds AP, Haugen E, Thurman RE, Johnson AK, Rynes E, Maurano MT, Vierstra J, Thomas S, Sandstrom R, Humbert R, Stamatoyannopoulos JA",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:27:11.394157+00:00",
+    "date_published": "2012 Jul 15",
+    "identifiers": [
+        "PMID:22576172",
+        "PMCID:PMC3389768"
+    ],
+    "issue": "14",
+    "journal": "Bioinformatics (Oxford, England)",
+    "lab": "encode-consortium",
+    "page": "1919-20",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "BEDOPS: high-performance genomic feature operations.",
+    "uuid": "d5345f96-bca8-452d-ab1e-240ef7713e89",
+    "volume": "28"
+},
+{
+    "abstract": "The GENCODE Consortium aims to identify all gene features in the human genome using a combination of computational analysis, manual annotation, and experimental validation. Since the first public release of this annotation data set, few new protein-coding loci have been added, yet the number of alternative splicing transcripts annotated has steadily increased. The GENCODE 7 release contains 20,687 protein-coding and 9640 long noncoding RNA loci and has 33,977 coding transcripts not represented in UCSC genes and RefSeq. It also has the most comprehensive annotation of long noncoding RNA (lncRNA) loci publicly available with the predominant transcript form consisting of two exons. We have examined the completeness of the transcript annotation and found that 35% of transcriptional start sites are supported by CAGE clusters and 62% of protein-coding genes have annotated polyA sites. Over one-third of GENCODE protein-coding genes are supported by peptide hits derived from mass spectrometry spectra submitted to Peptide Atlas. New models derived from the Illumina Body Map 2.0 RNA-seq data identify 3689 new loci not currently in GENCODE, of which 3127 consist of two exon models indicating that they are possibly unannotated long noncoding loci. GENCODE 7 is publicly available from gencodegenes.org and via the Ensembl and UCSC Genome Browsers.",
+    "authors": "Harrow J, Frankish A, Gonzalez JM, Tapanari E, Diekhans M, Kokocinski F, Aken BL, Barrell D, Zadissa A, Searle S, Barnes I, Bignell A, Boychenko V, Hunt T, Kay M, Mukherjee G, Rajan J, Despacio-Reyes G, Saunders G, Steward C, Harte R, Lin M, Howald C, Tanzer A, Derrien T, Chrast J, Walters N, Balasubramanian S, Pei B, Tress M, Rodriguez JM, Ezkurdia I, van Baren J, Brent M, Haussler D, Kellis M, Valencia A, Reymond A, Gerstein M, Guigo R, Hubbard TJ",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:26:14.568605+00:00",
+    "date_published": "2012 Sep",
+    "identifiers": [
+        "PMID:22955987",
+        "PMCID:PMC3431492"
+    ],
+    "issue": "9",
+    "journal": "Genome research",
+    "lab": "encode-consortium",
+    "page": "1760-74",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [
+        {
+            "data_summary": "This resource provides annotated GENCODE TSS. The TSS is provided by merge of manual annotation done by Sanger HAVANA group and automatically generated human gene annotation from the Ensembl.",
+            "file_format": "GTF",
+            "supplementary_data_type": "promoter regions",
+            "url": "http://www.gencodegenes.org"
+        }
+    ],
+    "title": "GENCODE: the reference human genome annotation for The ENCODE Project.",
+    "uuid": "de599b25-badc-4f31-bb9c-6f257514c966",
+    "volume": "22"
+},
+{
+    "abstract": "MOTIVATION: The enormous amount of short reads generated by the new DNA sequencing technologies call for the development of fast and accurate read alignment programs. A first generation of hash table-based methods has been developed, including MAQ, which is accurate, feature rich and fast enough to align short reads from a single individual. However, MAQ does not support gapped alignment for single-end reads, which makes it unsuitable for alignment of longer reads where indels may occur frequently. The speed of MAQ is also a concern when the alignment is scaled up to the resequencing of hundreds of individuals. RESULTS: We implemented Burrows-Wheeler Alignment tool (BWA), a new read alignment package that is based on backward search with Burrows-Wheeler Transform (BWT), to efficiently align short sequencing reads against a large reference sequence such as the human genome, allowing mismatches and gaps. BWA supports both base space reads, e.g. from Illumina sequencing machines, and color space reads from AB SOLiD machines. Evaluations on both simulated and real data suggest that BWA is approximately 10-20x faster than MAQ, while achieving similar accuracy. In addition, BWA outputs alignment in the new standard SAM (Sequence Alignment/Map) format. Variant calling and other downstream analyses after the alignment can be achieved with the open source SAMtools software package. AVAILABILITY: http://maq.sourceforge.net.",
+    "authors": "Li H, Durbin R",
+    "award": "ENCODE",
+    "date_created": "2015-04-13T21:43:01.031006+00:00",
+    "date_published": "2009 Jul 15",
+    "identifiers": [
+        "PMCID:PMC2705234",
+        "doi:10.1093/bioinformatics/btp324",
+        "PMID:19451168"
+    ],
+    "issue": "14",
+    "journal": "Bioinformatics (Oxford, England)",
+    "lab": "encode-consortium",
+    "page": "1754-60",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "supplementary_data": [],
+    "title": "Fast and accurate short read alignment with Burrows-Wheeler transform.",
+    "uuid": "e20c4884-62b4-4e55-a853-b8d3ff8740b0",
+    "volume": "25"
+},
+{
+    "abstract": "ChIP-seq has become the primary method for identifying in vivo protein-DNA interactions on a genome-wide scale, with nearly 800 publications involving the technique appearing in PubMed as of December 2012. Individually and in aggregate, these data are an important and information-rich resource. However, uncertainties about data quality confound their use by the wider research community. Recently, the Encyclopedia of DNA Elements (ENCODE) project developed and applied metrics to objectively measure ChIP-seq data quality. The ENCODE quality analysis was useful for flagging datasets for closer inspection, eliminating or replacing poor data, and for driving changes in experimental pipelines. There had been no similarly systematic quality analysis of the large and disparate body of published ChIP-seq profiles. Here, we report a uniform analysis of vertebrate transcription factor ChIP-seq datasets in the Gene Expression Omnibus (GEO) repository as of April 1, 2012. The majority (55%) of datasets scored as being highly successful, but a substantial minority (20%) were of apparently poor quality, and another approximately 25% were of intermediate quality. We discuss how different uses of ChIP-seq data are affected by specific aspects of data quality, and we highlight exceptional instances for which the metric values should not be taken at face value. Unexpectedly, we discovered that a significant subset of control datasets (i.e., no immunoprecipitation and mock immunoprecipitation samples) display an enrichment structure similar to successful ChIP-seq data. This can, in turn, affect peak calling and data interpretation. Published datasets identified here as high-quality comprise a large group that users can draw on for large-scale integrated analysis. In the future, ChIP-seq quality assessment similar to that used here could guide experimentalists at early stages in a study, provide useful input in the publication process, and be used to stratify ChIP-seq data for different community-wide uses.",
+    "authors": "Marinov GK, Kundaje A, Park PJ, Wold BJ",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:26:57.048447+00:00",
+    "date_published": "2014 Feb",
+    "identifiers": [
+        "PMCID:PMC3931556",
+        "PMID:24347632"
+    ],
+    "issue": "2",
+    "journal": "G3 (Bethesda, Md.)",
+    "lab": "encode-consortium",
+    "page": "209-23",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Large-scale quality analysis of published ChIP-seq data.",
+    "uuid": "f291aded-5b34-4238-9611-eedc4e1ef6f5",
+    "volume": "4"
+},
+{
+    "abstract": "Bowtie is an ultrafast, memory-efficient alignment program for aligning short DNA sequence reads to large genomes. For the human genome, Burrows-Wheeler indexing allows Bowtie to align more than 25 million reads per CPU hour with a memory footprint of approximately 1.3 gigabytes. Bowtie extends previous Burrows-Wheeler techniques with a novel quality-aware backtracking algorithm that permits mismatches. Multiple processor cores can be used simultaneously to achieve even greater alignment speeds. Bowtie is open source (http://bowtie.cbcb.umd.edu).",
+    "authors": "Langmead B, Trapnell C, Pop M, Salzberg SL",
+    "award": "ENCODE",
+    "categories": [
+        "software tool"
+    ],
+    "date_created": "2014-08-13T01:26:41.948432+00:00",
+    "date_published": "2009",
+    "identifiers": [
+        "PMCID:PMC2690996",
+        "PMID:19261174"
+    ],
+    "issue": "3",
+    "journal": "Genome biology",
+    "lab": "encode-consortium",
+    "page": "R25",
+    "published_by": [
+        "community"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Ultrafast and memory-efficient alignment of short DNA sequences to the human genome.",
+    "uuid": "f298803f-39e8-45d2-9aeb-8409864da84a",
+    "volume": "10"
+},
+{
+    "abstract": "The transcriptomes of eukaryotic cells are incredibly complex. Individual non-coding RNAs dwarf the number of protein-coding genes, and include classes that are well understood as well as classes for which the nature, extent and functional roles are obscure. Deep sequencing of small RNAs (<200 nucleotides) from human HeLa and HepG2 cells revealed a remarkable breadth of species. These arose both from within annotated genes and from unannotated intergenic regions. Overall, small RNAs tended to align with CAGE (cap-analysis of gene expression) tags, which mark the 5' ends of capped, long RNA transcripts. Many small RNAs, including the previously described promoter-associated small RNAs, appeared to possess cap structures. Members of an extensive class of both small RNAs and CAGE tags were distributed across internal exons of annotated protein coding and non-coding genes, sometimes crossing exon-exon junctions. Here we show that processing of mature mRNAs through an as yet unknown mechanism may generate complex populations of both long and short RNAs whose apparently capped 5' ends coincide. Supplying synthetic promoter-associated small RNAs corresponding to the c-MYC transcriptional start site reduced MYC messenger RNA abundance. The studies presented here expand the catalogue of cellular small RNAs and demonstrate a biological impact for at least one class of non-canonical small RNAs.",
+    "authors": "",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:25:00.299274+00:00",
+    "date_published": "2009 Feb 19",
+    "identifiers": [
+        "PMID:19169241",
+        "PMCID:PMC2719882"
+    ],
+    "issue": "7232",
+    "journal": "Nature",
+    "lab": "encode-consortium",
+    "page": "1028-32",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Post-transcriptional processing generates a diversity of 5'-modified long and short RNAs.",
+    "uuid": "f44eae07-c940-437f-b3ba-111462d51f83",
+    "volume": "457"
+},
+{
+    "abstract": "High-throughput sequencing of cDNA (RNA-seq) is a widely deployed transcriptome profiling and annotation technique, but questions about the performance of different protocols and platforms remain. We used a newly developed pool of 96 synthetic RNAs with various lengths, and GC content covering a 2(20) concentration range as spike-in controls to measure sensitivity, accuracy, and biases in RNA-seq experiments as well as to derive standard curves for quantifying the abundance of transcripts. We observed linearity between read density and RNA input over the entire detection range and excellent agreement between replicates, but we observed significantly larger imprecision than expected under pure Poisson sampling errors. We use the control RNAs to directly measure reproducible protocol-dependent biases due to GC content and transcript length as well as stereotypic heterogeneity in coverage across transcripts correlated with position relative to RNA termini and priming sequence bias. These effects lead to biased quantification for short transcripts and individual exons, which is a serious problem for measurements of isoform abundances, but that can partially be corrected using appropriate models of bias. By using the control RNAs, we derive limits for the discovery and detection of rare transcripts in RNA-seq experiments. By using data collected as part of the model organism and human Encyclopedia of DNA Elements projects (ENCODE and modENCODE), we demonstrate that external RNA controls are a useful resource for evaluating sensitivity and accuracy of RNA-seq experiments for transcriptome discovery and quantification. These quality metrics facilitate comparable analysis across different samples, protocols, and platforms.",
+    "authors": "Jiang L, Schlesinger F, Davis CA, Zhang Y, Li R, Salit M, Gingeras TR, Oliver B",
+    "award": "ENCODE",
+    "categories": [
+        "production"
+    ],
+    "date_created": "2014-08-13T01:26:26.780249+00:00",
+    "date_published": "2011 Sep",
+    "identifiers": [
+        "PMCID:PMC3166838",
+        "PMID:21816910"
+    ],
+    "issue": "9",
+    "journal": "Genome research",
+    "lab": "encode-consortium",
+    "page": "1543-51",
+    "published_by": [
+        "ENCODE"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "supplementary_data": [],
+    "title": "Synthetic spike-in standards for RNA-seq experiments.",
+    "uuid": "f6f6a405-e284-4e5a-93b4-524ac2000854",
+    "volume": "21"
+}
 ]

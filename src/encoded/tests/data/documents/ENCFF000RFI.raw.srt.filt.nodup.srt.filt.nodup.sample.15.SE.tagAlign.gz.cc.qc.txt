@@ -1,0 +1,1 @@
+ENCFF000RFI.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz	9896815	105	0.268922161437071	40	0.1823822	1500	0.1057913	2.542006	2.1299	2

@@ -1,0 +1,1 @@
+ENCFF660TEM-crop.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz	7017732	110	0.089474277593483	35	0.08952706	1500	0.08763268	1.021015	0.9721354	0

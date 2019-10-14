@@ -1,29 +1,70 @@
 [
-    {
-        "uuid": "67b7d0be-f0a2-43c7-9ad3-ea4f9255340e",
-        "award":"U41HG006992",
-        "lab":"j-michael-cherry",
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "quality_metric_of": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3", "e6addc7e-0320-4e11-8351-69e9b9cc08dc" ],
-        "Sequences analysed in total": 410211284,
-        "Mapping efficiency": "78.70%",
-        "C methylated in CpG context": "62.00%",
-        "C methylated in CHG context": "0.40%",
-        "C methylated in CHH context": "0.40%",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing"
-    },
-    {
-        "uuid": "c912ad14-b35f-4c02-941f-7cd9cc884de9",
-        "status": "released",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "step_run": "eeb7cd3f-a10f-4405-99b6-58a00e3a3bf0",
-        "lambda Sequences analysed in total": 410211284,
-        "lambda Mapping efficiency": "0.60%",
-        "lambda C methylated in CpG context": "0.30%",
-        "lambda C methylated in CHG context": "0.40%",
-        "lambda C methylated in CHH context": "0.40%",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing"
-    }
+{
+    "C methylated in CHG context": "0.5%",
+    "C methylated in CHH context": "0.5%",
+    "C methylated in CpG context": "79.5%",
+    "Mapping efficiency": "76.9%",
+    "Sequences analysed in total": 1381378386,
+    "aliases": [
+        "dnanexus:qc.biorep_bismark_map.job-F96vxx00fF4kxKZG0v1vZq9X"
+    ],
+    "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+    "attachment": "ENCSR674VXR_rep1_1_bismark_biorep_map_report.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-01-08T22:44:04.760094+00:00",
+    "lab": "encode-processing-pipeline",
+    "lambda C methylated in CHG context": "0.4%",
+    "lambda C methylated in CHH context": "0.4%",
+    "lambda C methylated in CpG context": "0.4%",
+    "lambda Mapping efficiency": "1.2%",
+    "lambda Sequences analysed in total": 1381378386,
+    "quality_metric_of": [
+        "ENCFF311XOU",
+        "ENCFF267XIO",
+        "ENCFF172KZQ",
+        "ENCFF631AKE",
+        "ENCFF164RFU",
+        "ENCFF733EFJ",
+        "ENCFF936JAC"
+    ],
+    "schema_version": "9",
+    "status": "released",
+    "step_run": "e437156e-de8a-40a3-b106-61d96e75def0",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "392f2650-1a62-4796-b75b-5b6b33cc3caf"
+},
+{
+    "C methylated in CHG context": "0.5%",
+    "C methylated in CHH context": "0.5%",
+    "C methylated in CpG context": "81.0%",
+    "Mapping efficiency": "80.1%",
+    "Sequences analysed in total": 1471964646,
+    "aliases": [
+        "dnanexus:qc.biorep_bismark_map.job-F8Kkv9j0fF4xzX3K3fVXjP5g"
+    ],
+    "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+    "attachment": "ENCSR224CTR_rep1_1_bismark_biorep_map_report.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-12-14T22:46:45.916942+00:00",
+    "lab": "encode-processing-pipeline",
+    "lambda C methylated in CHG context": "0.4%",
+    "lambda C methylated in CHH context": "0.4%",
+    "lambda C methylated in CpG context": "0.4%",
+    "lambda Mapping efficiency": "0.3%",
+    "lambda Sequences analysed in total": 1471964646,
+    "quality_metric_of": [
+        "ENCFF894SZK",
+        "ENCFF150FCJ",
+        "ENCFF529WFP",
+        "ENCFF081CNO",
+        "ENCFF431XEX",
+        "ENCFF842MHJ",
+        "ENCFF724LUJ"
+    ],
+    "schema_version": "9",
+    "status": "released",
+    "step_run": "4cb33875-dc97-44fa-86f1-072c26fe541c",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "b4344b52-158a-40ff-aac0-2c6e65ae8c4e"
+}
 ]

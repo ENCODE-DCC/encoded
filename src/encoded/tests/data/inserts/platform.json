@@ -1,146 +1,135 @@
 [
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:454_GS_FLX",
-            "GEO:GPL14603",
-            "GEO:GPL16815"
-        ],
-        "term_id": "OBI:0000702",
-        "term_name": "Roche 454 Genome Sequencer FLX",
-        "url": "http://454.com/products/gs-flx-system/",
-        "uuid": "616db2ff-a1c3-4c4f-b0de-9ea11c825b82"
-    },
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:AB_SOLiD_3.5",
-            "GEO:GPL9442"
-        ],
-        "term_id": "OBI:0000696",
-        "term_name": "Applied Biosystems SOLiD System 3 Plus",
-        "url": "http://www3.appliedbiosystems.com/cms/groups/mcb_marketing/documents/generaldocuments/cms_072050.pdf",
-        "uuid": "da150a82-63cd-4471-ba3e-ffe7ca96bcda"
-    },
-    {
-        "dbxrefs": [
-            "GEO:GPL13190"
-        ],
-        "notes": "registering with OBI",
-        "term_id": "OBI:0002011",
-        "term_name": "NimbleGen Human 2.1M Whole-Genome CGH Tiling Array v2.0",
-        "url": "http://www.roche-applied-science.com/proddata/gpip/3_35_1_2_1_18.html",
-        "uuid": "700d6a4b-12da-401b-8cd3-d6675c1f22e4"
-    },
-    {
-        "dbxrefs": [
-            "GEO:GPL14965"
-        ],
-        "term_id": "OBI:0002010",
-        "term_name": "NimbleGen Human 3x720k Whole Genome CGH Tiling Array",
-        "url": "http://www.roche-applied-science.com/proddata/gpip/3_35_1_2_1_10.html",
-        "uuid": "e6230c01-4e11-4e0c-b821-d05b0d33dd92"
-    },
-    {
-        "dbxrefs": [
-            "GEO:GPL10989"
-        ],
-        "term_id": "OBI:0002009",
-        "term_name": "NimbleGen Mouse 3x720k Whole Genome CGH Tiling Array",
-        "url": "http://www.roche-applied-science.com/proddata/gpip/3_35_1_2_1_23.html",
-        "uuid": "43efa2fa-f23f-4692-b76a-f3b02ff42d74"
-    },
-    {
-        "dbxrefs": [
-            "GEO:GPL9156"
-        ],
-        "term_id": "OBI:0002008",
-        "term_name": "NimbleGen Mouse 385K Whole Genome Tiling Array",
-        "url": "http://www.nimblegen.com/support/dna-microarray-support.html",
-        "uuid": "6633c117-6bc1-4c0e-be26-a3aa4d500a7d"
-    },
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Illumina_GA2",
-            "GEO:GPL9115"
-        ],
-        "term_id": "OBI:0000703",
-        "term_name": "Illumina Genome Analyzer II",
-        "url": "http://www.illumina.com",
-        "uuid": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b"
-    },
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Illumina_GA2e",
-            "GEO:GPL9115"
-        ],
-        "term_id": "OBI:0002027",
-        "term_name": "Illumina Genome Analyzer IIe",
-        "url": "http://www.illumina.com/documents/products/datasheets/datasheet_genome_analyzer_IIe.pdf",
-        "uuid": "025b43fc-ff16-4dfb-8ec8-b7b9c79380a2"
-    },
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Illumina_GA2x",
-            "GEO:GPL10999",
-            "GEO:GPL9250"
-        ],
-        "term_id": "OBI:0002000",
-        "term_name": "Illumina Genome Analyzer IIx",
-        "url": "http://www.illumina.com/documents/products/datasheets/datasheet_genome_analyzerIIx.pdf",
-        "uuid": "7efe9ddc-bbe6-457d-bc98-f8bac2478bda"
-    },
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Illumina_HiSeq_2000",
-            "GEO:GPL11154",
-            "GEO:GPL13112"
-        ],
-        "term_id": "OBI:0002001",
-        "term_name": "Illumina HiSeq 2000",
-        "url": "http://www.illumina.com/documents/products/datasheets/datasheet_hiseq2000.pdf",
-        "uuid": "03a96eaf-75da-44e2-b4f6-e349e8c3655e"
-    },
-    {
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Methyl450",
-            "GEO:GPL13534"
-        ],
-        "term_id": "OBI:0002004",
-        "term_name": "Illumina Infinium Human Methylation 450 Bead Array",
-        "url": "http://www.illumina.com/documents/products/datasheets/datasheet_humanmethylation450.pdf",
-        "uuid": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8"
-    },
-    {
-        "aliases": [
-            "encode:HiSeq2500"
-        ],
-        "dbxrefs": [
-            "GEO:GPL16791",
-            "GEO:GPL17021"
-        ],
-        "status": "released",
-        "term_id": "OBI:0002002",
-        "term_name": "HiSeq 2500",
-        "url": "http://res.illumina.com/documents/products/datasheets/datasheet_hiseq2500.pdf",
-        "uuid": "171f8a03-650b-4f7f-9c2f-0970348ee95f"
-    },
-    {
-        "url": "http://www.illumina.com/documents/products/datasheets/datasheet_miseq.pdf",
-        "term_name": "MiSeq",
-        "status": "released",
-        "aliases": ["encode:MiSeq"],
-        "uuid": "bab144b6-97b5-4dfb-b307-ff2997b73550",
-        "dbxrefs": [
-            "GEO:GPL15520",
-            "GEO:GPL16417"
-        ],
-        "term_id": "OBI:0002003"
-    },
-    {
-        "aliases": ["encode:PacBioRSII"],
-        "status": "released",
-        "term_id": "OBI:0002012",
-        "term_name": "Pacific Biosciences RS II",
-        "url": "http://www.pacb.com/products-and-services/pacbio-systems/rsii/",
-        "uuid": "c7564b38-ab4f-4c42-a401-3de48689a998"
-    }
+{
+    "aliases": [
+        "encode:Illumina_HiSeq_2000",
+        "encode:HiSeq2000"
+    ],
+    "date_created": "2013-11-14T22:17:00.135861+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:Illumina_HiSeq_2000"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "term_id": "OBI:0002001",
+    "term_name": "Illumina HiSeq 2000",
+    "url": "http://www.illumina.com/documents/products/datasheets/datasheet_hiseq2000.pdf",
+    "uuid": "03a96eaf-75da-44e2-b4f6-e349e8c3655e"
+},
+{
+    "aliases": [
+        "encode:HiSeq2500"
+    ],
+    "date_created": "2014-01-16T23:00:39.869373+00:00",
+    "dbxrefs": [],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "term_id": "OBI:0002002",
+    "term_name": "Illumina HiSeq 2500",
+    "url": "https://www.illumina.com/content/dam/illumina-marketing/documents/products/datasheets/datasheet_hiseq2500.pdf",
+    "uuid": "171f8a03-650b-4f7f-9c2f-0970348ee95f"
+},
+{
+    "aliases": [
+        "encode:NextSeq500"
+    ],
+    "date_created": "2014-09-09T22:52:30.378817+00:00",
+    "dbxrefs": [],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "term_id": "OBI:0002021",
+    "term_name": "Illumina NextSeq 500",
+    "uuid": "4f98e005-b191-417c-b66c-2e9b593a12a8"
+},
+{
+    "aliases": [
+        "encode:HiSeq4000"
+    ],
+    "date_created": "2015-12-14T22:10:07.941975+00:00",
+    "dbxrefs": [],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "term_id": "OBI:0002049",
+    "term_name": "Illumina HiSeq 4000",
+    "url": "http://www.illumina.com/content/dam/illumina-marketing/documents/products/datasheets/hiseq-3000-4000-specification-sheet-770-2014-057.pdf",
+    "uuid": "6bf2f062-a8f9-4758-bf77-7864b6fc3dd7"
+},
+{
+    "aliases": [
+        "encode:Illumina_GA2x",
+        "encode:GAIIx"
+    ],
+    "date_created": "2013-11-14T22:17:00.269234+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:Illumina_GA2x"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "ff7b77e7-bb55-4307-b665-814c9f1e65fb",
+    "term_id": "OBI:0002000",
+    "term_name": "Illumina Genome Analyzer IIx",
+    "url": "http://www.illumina.com/documents/products/datasheets/datasheet_genome_analyzerIIx.pdf",
+    "uuid": "7efe9ddc-bbe6-457d-bc98-f8bac2478bda"
+},
+{
+    "aliases": [
+        "encode:Illumina_GA2",
+        "encode:GAII"
+    ],
+    "date_created": "2014-02-20T00:04:58.879941+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:Illumina_GA2"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "term_id": "OBI:0000703",
+    "term_name": "Illumina Genome Analyzer II",
+    "url": "http://www.illumina.com",
+    "uuid": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b"
+},
+{
+    "aliases": [
+        "encode:GA"
+    ],
+    "date_created": "2017-04-06T21:56:33.162379+00:00",
+    "dbxrefs": [],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "term_id": "NTR:0004974",
+    "term_name": "Illumina Genome Analyzer",
+    "uuid": "a5b1b772-a2e7-41ee-bb87-6182c3c98ba4"
+},
+{
+    "aliases": [
+        "encode:HiSeqX10"
+    ],
+    "date_created": "2015-08-27T23:41:11.791224+00:00",
+    "dbxrefs": [],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "term_id": "OBI:0002129",
+    "term_name": "Illumina HiSeq X Ten",
+    "url": "http://www.illumina.com/systems/hiseq-x-sequencing-system/system.html",
+    "uuid": "a80dcbba-400b-4155-bf8a-8ad3b413fa2b"
+},
+{
+    "aliases": [
+        "encode:GAI"
+    ],
+    "date_created": "2015-05-29T19:17:28.990433+00:00",
+    "dbxrefs": [],
+    "schema_version": "7",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "term_id": "NTR:0001064",
+    "term_name": "Illumina Genome Analyzer I",
+    "url": "http://www.illumina.com",
+    "uuid": "b7f61ed3-38bd-42cc-accc-fa2ddbe43306"
+}
 ]

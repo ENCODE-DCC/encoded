@@ -1,186 +1,3051 @@
 [
-    {
-        "description": "Abcam",
-        "name": "abcam",
-        "status": "released",
-        "title": "Abcam",
-        "url": "http://www.abcam.com",
-        "uuid": "b40f24ee-8803-4937-9223-1df3a6bf3cd9"
-    },
-    {
-        "description": "American Type Culture Collection (ATCC)",
-        "name": "atcc",
-        "status": "released",
-        "title": "ATCC",
-        "url": "http://www.atcc.org/",
-        "uuid": "eadabaf1-d5b6-4b48-8847-e86461f12101"
-    },
-    {
-        "description": "Aviva Systems Biology",
-        "name": "aviva",
-        "status": "released",
-        "title": "Aviva",
-        "url": "http://www.avivasysbio.com",
-        "uuid": "fa701215-07e6-4ffe-a8f4-20356d66f3e0"
-    },
-    {
-        "description": "Barbara Wold at California Institute of Technology",
-        "name": "barbara-wold",
-        "status": "released",
-        "title": "Barbara Wold",
-        "url": "http://woldlab.caltech.edu/",
-        "uuid": "82fc89e4-81a0-42af-b30e-fb5943b97b31"
-    },
-    {
-        "description": "Coriell Institute for Medical Research",
-        "name": "coriell",
-        "status": "released",
-        "title": "Coriell",
-        "url": "http://www.coriell.org/",
-        "uuid": "409d724e-067e-4744-8d5b-c8f806136d80"
-    },
-    {
-        "description": "Covance",
-        "name": "covance",
-        "status": "released",
-        "title": "Covance",
-        "url": "https://store.crpinc.com",
-        "uuid": "d53c77c6-0300-421e-8884-42aca9d53e78"
-    },
-    {
-        "description": "Dana Levasseur at University of Iowa",
-        "name": "dana-levasseur",
-        "status": "released",
-        "title": "Dana Levasseur",
-        "url": "http://www.int-med.uiowa.edu/Divisions/Immunology/Directory/DanaLevasseur.html",
-        "uuid": "b3e069d1-ea98-4b05-a3bb-46f44024392c"
-    },
-    {
-        "description": "ENCODE Project",
-        "name": "encode",
-        "status": "released",
-        "title": "ENCODE",
-        "url": "http://encodeproject.org",
-        "uuid": "be960dc7-1912-4ff5-8b1a-a7e2e1b2533e"
-    },
-    {
-        "description": "Gregory Crawford at Duke University",
-        "name": "gregory-crawford",
-        "status": "released",
-        "title": "Gregory Crawford",
-        "url": "http://www.genome.duke.edu/labs/crawford/",
-        "uuid": "6bf39a01-cb18-407c-b984-05fc83d7d73b"
-    },
-    {
-        "description": "Health Protection Agency Culture Collections",
-        "name": "ecacc",
-        "status": "released",
-        "title": "ECACC",
-        "url": "http://www.hpacultures.org.uk",
-        "uuid": "e5262635-e4c8-4cf7-bfab-ad7e8959f648"
-    },
-    {
-        "description": "John Stamatoyannopoulos at University of Washington",
-        "name": "john-stamatoyannopoulos",
-        "status": "released",
-        "title": "John Stamatoyannopoulos",
-        "url": "http://www.gs.washington.edu/faculty/stamj.htm",
-        "uuid": "cbf9ba55-2e91-4718-808b-28aa219980d1"
-    },
-    {
-        "description": "Kevin White at University of Chicago",
-        "name": "kevin-white",
-        "status": "released",
-        "title": "Kevin White",
-        "url": "http://www.genes.uchicago.edu/white.html",
-        "uuid": "f060244e-1d31-4633-ae4a-b06d21a90568"
-    },
-    {
-        "description": "Len Pennacchio at Joint Genome Institute",
-        "name": "len-pennacchio",
-        "status": "released",
-        "title": "Len Pennacchio",
-        "url": "http://www.jgi.doe.gov/whoweare/pennacchio.html",
-        "uuid": "30091cf1-cdd9-4f2f-b1d7-bf709b8afa49"
-    },
-    {
-        "description": "Lonza Group Ltd.",
-        "name": "lonza",
-        "status": "released",
-        "title": "Lonza",
-        "url": "http://www.lonza.com/",
-        "uuid": "f00336ec-6bf3-48fe-8898-2a017f50b948"
-    },
-    {
-        "description": "Michael Bender at Fred Hutchinson Cancer Research Center",
-        "name": "michael-bender",
-        "status": "released",
-        "title": "Michael Bender",
-        "url": "http://www.seattlechildrens.org/medical-staff/michael-a-bender/",
-        "uuid": "d83a9d9a-70e7-4469-b96d-abcc379e4eaf"
-    },
-    {
-        "description": "Michael Snyder at Stanford University",
-        "name": "michael-snyder",
-        "status": "released",
-        "title": "Michael Snyder",
-        "url": "http://snyderlab.stanford.edu",
-        "uuid": "45be6f13-5346-4952-ad74-141540384381"
-    },
-    {
-        "description": "Millipore",
-        "name": "millipore",
-        "status": "released",
-        "title": "Millipore",
-        "url": "http://www.millipore.com",
-        "uuid": "ede69357-7024-440e-979a-cdc926c69bff"
-    },
-    {
-        "description": "National Disease Research Interchange (NDRI)",
-        "name": "ndri",
-        "status": "released",
-        "title": "NDRI",
-        "url": "http://ndriresource.org/",
-        "uuid": "0dba62cd-803d-40a3-b5eb-8cd23a54da68"
-    },
-    {
-        "description": "Peggy Farnham at University of Southern California",
-        "name": "peggy-farnham",
-        "status": "released",
-        "title": "Peggy Farnham",
-        "url": "http://pibbs.usc.edu/faculty/profile/?fid=205",
-        "uuid": "1fd2cfd5-95f3-4731-a839-033a06b4a2dd"
-    },
-    {
-        "description": "PromoCell GmbH",
-        "name": "promocell",
-        "status": "released",
-        "title": "PromoCell",
-        "url": "http://www.promocell.com",
-        "uuid": "b8e804f7-04f2-4042-8aca-eeeb12bdc6f1"
-    },
-    {
-        "description": "Santa Cruz Biotechnology",
-        "name": "santa-cruz-biotech",
-        "status": "released",
-        "title": "Santa Cruz Biotech",
-        "url": "http://www.scbt.com",
-        "uuid": "017b0807-3dfa-4f9c-a632-81a57c873350"
-    },
-    {
-        "description": "Sherman Weissman at Yale University",
-        "name": "sherman-weissman",
-        "status": "released",
-        "title": "Sherman Weissman",
-        "url": "http://bbs.yale.edu/people/sherman_weissman.profile",
-        "uuid": "62d2ba10-75a2-42eb-895c-a213fe9b59df"
-    },
-    {
-        "description": "Sigma-Aldrich",
-        "name": "sigma",
-        "status": "released",
-        "title": "Sigma",
-        "url": "http://www.sigmaaldrich.com",
-        "uuid": "f13c90dd-1b51-439a-8d78-ca033c6aef23"
-    }
+{
+    "aliases": [],
+    "description": "Jun Liu at Cornell University",
+    "name": "jun-liu",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jun Liu",
+    "url": "http://bmcb.cornell.edu/faculty/liu.html",
+    "uuid": "00222924-23c4-4d14-b416-c00593c58316"
+},
+{
+    "aliases": [],
+    "description": "ViroMed Laboratories",
+    "name": "viromed",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ViroMed Laboratories",
+    "url": "http://www.viromed.com/",
+    "uuid": "0065aad6-8ba1-4caf-b7c6-bcca1ee57f67"
+},
+{
+    "aliases": [],
+    "description": "Rajinder Kaul at University of Washington",
+    "name": "rajinder-kaul",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Rajinder Kaul",
+    "url": "http://depts.washington.edu/medgen/faculty/Rajinder_Kaul.shtml",
+    "uuid": "0076f6c8-df76-4f17-a0fa-ff452eb2b7e2"
+},
+{
+    "aliases": [],
+    "description": "BresaGen, Inc",
+    "name": "bresagen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "BresaGen",
+    "url": "http://www.bresagen.com.au/",
+    "uuid": "00bd30aa-7d4a-4877-91ff-849f043415c5"
+},
+{
+    "aliases": [],
+    "description": "Santa Cruz Biotechnology",
+    "name": "santa-cruz-biotech",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Santa Cruz Biotech",
+    "url": "http://www.scbt.com",
+    "uuid": "017b0807-3dfa-4f9c-a632-81a57c873350"
+},
+{
+    "aliases": [],
+    "description": "OriGene Technologies",
+    "name": "origene",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Origene",
+    "url": "http://www.origene.com/",
+    "uuid": "01b839ec-c1e6-4655-b4ce-020fc947b748"
+},
+{
+    "aliases": [],
+    "description": "Brian Oliver at NIH",
+    "name": "brian-oliver",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Brian Oliver",
+    "url": "http://www.niddk.nih.gov/about-niddk/staff-directory/intramural/brian-oliver/pages/research-summary.aspx",
+    "uuid": "026ab0fc-680b-4267-84ac-454cbf9e2850"
+},
+{
+    "aliases": [],
+    "description": "Thermo Fisher Scientific Inc.",
+    "name": "thermo-fisher",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thermo Fisher",
+    "url": "http://www.thermofisher.com/global/en/home.asp",
+    "uuid": "02fb3217-6216-45ff-8248-0a7e3f903c28"
+},
+{
+    "aliases": [],
+    "name": "li-gan",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "Li Gan",
+    "url": "https://gladstone.org/our-science/people/li-gan",
+    "uuid": "03016306-1108-4149-a3e4-58069a522ed4"
+},
+{
+    "aliases": [],
+    "name": "masato-kanemaki",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "Dr. Masato Kanemaki",
+    "url": "https://www.nig.ac.jp/nig/research/interviews/faculty-interviews/masato-kanemaki",
+    "uuid": "046f642b-cd57-4351-953a-98430e0ec73b"
+},
+{
+    "aliases": [],
+    "description": "Thom Kaufman at Indiana University",
+    "name": "thom-kaufman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thom Kaufman",
+    "url": "http://www.bio.indiana.edu/faculty/directory/profile.php?person=kaufman",
+    "uuid": "04cc9dfa-5372-4b42-85d8-d989eb726c1a"
+},
+{
+    "aliases": [],
+    "description": "Evan Rosen at Beth Israel Deaconess Medical Center",
+    "name": "evan-rosen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Evan Rosen",
+    "url": "http://www.bidmc.org/Research/Departments/Medicine/Divisions/Endocrinology/Laboratories/RosenLab/Members/EvanRosen.aspx",
+    "uuid": "05ebab3f-8c68-48bc-b990-2681ac4b3d52"
+},
+{
+    "aliases": [],
+    "description": "iPS Cell Core Facility at Harvard University",
+    "name": "harvard-ipsc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Harvard iPSC",
+    "url": "http://www.hsci.harvard.edu/research/ips-core-facility",
+    "uuid": "0677d544-adcb-40dd-9dce-9df7f1fbded5"
+},
+{
+    "aliases": [],
+    "description": "PlasmID Repository at Harvard Medical School",
+    "name": "plasmid-repository",
+    "schema_version": "6",
+    "status": "released",
+    "title": "PlasmID Repository",
+    "url": "https://plasmid.med.harvard.edu/PLASMID/Home.xhtml",
+    "uuid": "08c27ef3-00b2-417e-b472-fa0852826a24"
+},
+{
+    "aliases": [],
+    "description": "Thomas Gingeras at Cold Spring Harbor Laboratory",
+    "name": "thomas-gingeras",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thomas Gingeras",
+    "url": "http://gingeraslab.cshl.edu/",
+    "uuid": "08d0ddd1-56cf-45b3-8933-6d254076916a"
+},
+{
+    "aliases": [],
+    "description": "UNC CF Center Tissue Procurement and Cell Culture Core",
+    "name": "unc-cf-center",
+    "schema_version": "6",
+    "status": "released",
+    "title": "UNC CF Center",
+    "url": "https://www.med.unc.edu/cfpulmcenter/core-facilities/tc",
+    "uuid": "09f6f15d-babd-4fcd-a80d-6084796cfb39"
+},
+{
+    "aliases": [],
+    "description": "Nuria Paricio at University of Valencia",
+    "name": "nuria-paricio",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Nuria Paricio",
+    "url": "http://www.uv.es/~gmd/equipo/equipo_ingles.html",
+    "uuid": "0a8a4224-1fae-4970-86ef-bf0e6d5c639a"
+},
+{
+    "aliases": [],
+    "description": "Everest Biotech",
+    "name": "everest-biotech",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Everest Biotech",
+    "url": "http://everestbiotech.com/",
+    "uuid": "0ad024fb-309b-4a13-a2e2-e83a01145f3c"
+},
+{
+    "aliases": [],
+    "description": "Cellular Dynamics International",
+    "name": "cellular-dynamics",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Cellular Dynamics",
+    "url": "http://www.cellulardynamics.com/",
+    "uuid": "0bed61fe-1b60-11e3-bfbe-14109fe2b29d"
+},
+{
+    "aliases": [],
+    "description": "Thea Tlsty at UCSF",
+    "name": "thea-tlsty",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thea Tlsty",
+    "url": "http://labmed.ucsf.edu/about/faculty/pathology-ttlsty.html",
+    "uuid": "0c4b4c72-1002-46bc-90c7-c6375af25c2b"
+},
+{
+    "aliases": [],
+    "name": "maria-ciofani",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "Maria Ciofani",
+    "url": "https://immunology.duke.edu/people/maria-ciofani-phd",
+    "uuid": "0c90e030-b80f-4303-b746-3bbac387e5ef"
+},
+{
+    "aliases": [],
+    "description": "Thomas Reh at University of Washington Deptartment of Biological Structure",
+    "name": "thomas-reh",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thomas Reh",
+    "url": "http://faculty.washington.edu/tomreh/",
+    "uuid": "0cda5a1d-ebc3-4aca-bd57-51fc09da9229"
+},
+{
+    "aliases": [],
+    "description": "Josh Chenoweth at National Institute of Neurological Disorders and Stroke (NINDS)",
+    "name": "josh-chenoweth",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Josh Chenoweth",
+    "url": "http://www.ninds.nih.gov/",
+    "uuid": "0d95fe43-a4b3-4081-b9ed-e7564fb428cf"
+},
+{
+    "aliases": [],
+    "description": "National Disease Research Interchange (NDRI)",
+    "name": "ndri",
+    "schema_version": "6",
+    "status": "released",
+    "title": "NDRI",
+    "url": "http://ndriresource.org/",
+    "uuid": "0dba62cd-803d-40a3-b5eb-8cd23a54da68"
+},
+{
+    "aliases": [],
+    "description": "Sarah Elgin at Washington University St Louis",
+    "name": "sarah-elgin",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Sarah Elgin",
+    "url": "http://www.biology.wustl.edu/faculty/elgin/",
+    "uuid": "0e875c75-028a-44c1-bce1-9a268e6235de"
+},
+{
+    "aliases": [],
+    "description": "Jonathan Weissman at University of San Francisco",
+    "name": "jonathan-weissman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jonathan Weissman",
+    "url": "http://weissmanlab.ucsf.edu/",
+    "uuid": "1095b075-fdaf-4435-a7e2-066c1278d15a"
+},
+{
+    "aliases": [
+        "erez-lieberman:source"
+    ],
+    "description": "The Center for Genome Architecture",
+    "name": "erez-lieberman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Erez Lieberman",
+    "url": "http://www.aidenlab.org/",
+    "uuid": "1255ddca-fb36-4820-9f9e-10a144106c45"
+},
+{
+    "aliases": [],
+    "description": "Active Motif",
+    "name": "active-motif",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Active Motif",
+    "url": "http://www.activemotif.com",
+    "uuid": "12cdc4fc-4506-4c2e-ad62-38810c12d45f"
+},
+{
+    "aliases": [],
+    "description": "Mutant Mouse Regional Resource Centers",
+    "name": "mmrrc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "MMRRC",
+    "url": "http://www.mmrrc.org/catalog/cellLineSDS.php?mmrrc_id=15890",
+    "uuid": "14688859-aaba-458d-a410-d538f44c01da"
+},
+{
+    "aliases": [],
+    "description": "Beverly Torok-Storb at Fred Hutchison Cancer Research Center",
+    "name": "beverly-torok-storb",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Beverly Torok-Storb",
+    "url": "http://cceh.fhcrc.org/",
+    "uuid": "15fa3aa7-3533-4aaa-8bde-1d0e1f5ddbc1"
+},
+{
+    "aliases": [],
+    "description": "David Gilbert at Florida State University",
+    "name": "david-gilbert",
+    "schema_version": "6",
+    "status": "released",
+    "title": "David Gilbert",
+    "url": "http://gilbertlab.bio.fsu.edu/",
+    "uuid": "163f28e4-5fb1-492c-a52e-d1f4d6d64299"
+},
+{
+    "aliases": [],
+    "description": "Donald Sens at University of North Dakota",
+    "name": "donald-sens",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Donald Sens",
+    "url": "http://www.med.und.edu/pathology/faculty-staff/donald-sens.cfm",
+    "uuid": "16d81cd1-c845-468d-ac10-b9a4b1ce01c4"
+},
+{
+    "aliases": [],
+    "description": "Paul Tesar at Case Western University",
+    "name": "paul-tesar",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Paul Tesar",
+    "url": "http://genetics.case.edu/page.php?page_id=5&LN=Tesar&FN=Paul",
+    "uuid": "181d537e-7607-4413-9f28-763afd27489d"
+},
+{
+    "aliases": [],
+    "description": "Paul Khavari's lab at Stanford University",
+    "name": "paul-khavari",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Paul Khavari",
+    "url": "http://khavarilab.stanford.edu/#the-khavari-lab",
+    "uuid": "19bcb094-c89b-4389-a949-c24cc60faf67"
+},
+{
+    "aliases": [],
+    "description": "Hugo Bellen at Baylor College of Medicine",
+    "name": "hugo-bellen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Hugo Bellen",
+    "url": "http://flypush.imgen.bcm.tmc.edu/lab/index.html",
+    "uuid": "19f104a6-1ada-4d14-acd3-a735881eb8d4"
+},
+{
+    "aliases": [],
+    "description": "WiCell Research Institute",
+    "name": "wicell",
+    "schema_version": "6",
+    "status": "released",
+    "title": "WiCell",
+    "url": "http://www.wicell.org/",
+    "uuid": "1a05e291-8ad0-4938-93b7-25012e23f2be"
+},
+{
+    "aliases": [],
+    "description": "Lurdes Queimado at University of Oklahoma",
+    "name": "lurdes-queimado",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Lurdes Queimado",
+    "url": "http://www.oumedicine.com/orl/academic-information/research/lurdes-queimado-m-d-ph-d-",
+    "uuid": "1a97a86b-0c28-4185-95fb-6a99f2ce85b4"
+},
+{
+    "aliases": [],
+    "description": "Cathy Savage-Dunn at City University of New York",
+    "name": "cathy-savage-dunn",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Cathy Savage-Dunn",
+    "url": "http://biology.qc.cuny.edu/people/faculty/cathy-savage-dunn/",
+    "uuid": "1a9f7ea6-23f4-40af-95fc-fa21583eb8ce"
+},
+{
+    "aliases": [],
+    "description": "Alan Mackay-Sim at Griffith University",
+    "name": "alan-mackay-sim",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Alan Mackay-Sim",
+    "url": "http://www.griffith.edu.au/professional-page/professor-alan-mackay-sim",
+    "uuid": "1aa3b771-515f-4370-bf5b-70a699045ba5"
+},
+{
+    "aliases": [],
+    "description": "Epitomics",
+    "name": "epitomics",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Epitomics",
+    "url": "http://www.epitomics.com",
+    "uuid": "1c8572e5-9952-4e46-b6be-d46b1d928293"
+},
+{
+    "aliases": [],
+    "description": "Stephen Hauschka at University of Washington",
+    "name": "stephen-hauschka",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stephen Hauschka",
+    "url": "http://depts.washington.edu/biowww/pages/faculty-Hauschka.shtml",
+    "uuid": "1c98c558-546e-4831-8081-c701228a2996"
+},
+{
+    "aliases": [],
+    "description": "David Anderson at Protein Expression Center",
+    "name": "david-anderson",
+    "schema_version": "6",
+    "status": "released",
+    "title": "David Anderson",
+    "url": "http://www.cns.caltech.edu/people/faculty/anderson.html",
+    "uuid": "1ca41cd5-80dc-4614-91f1-10b0c6f17c5d"
+},
+{
+    "aliases": [],
+    "description": "Yardena Samuels at National Human Genome Research Institute",
+    "name": "yardena-samuels",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Yardena Samuels",
+    "url": "http://irp.nih.gov/pi/yardena-samuels",
+    "uuid": "1ce04151-7102-4cfd-9f8e-ba714cff0295"
+},
+{
+    "aliases": [],
+    "description": "BACPAC Resources Center at the Children's Hospital Oakland Research Institute",
+    "name": "bacpac",
+    "schema_version": "6",
+    "status": "released",
+    "title": "BACPAC",
+    "url": "http://bacpac.chori.org/home.htm",
+    "uuid": "1ce0b959-45eb-4126-81a5-a2483661b07c"
+},
+{
+    "aliases": [],
+    "description": "Pamela Geyer at University of Iowa",
+    "name": "pamela-geyer",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Pamela Geyer",
+    "url": "http://www.medicine.uiowa.edu/biochem/labs/geyer/",
+    "uuid": "1db9c3de-3c93-40a5-a527-f63a9f70d149"
+},
+{
+    "aliases": [],
+    "description": "Hiroshi Kimura at Osaka University",
+    "name": "hiroshi-kimura",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Hiroshi Kimura",
+    "url": "http://www.fbs.osaka-u.ac.jp/labs/hiraoka/index.html",
+    "uuid": "1e45e93b-2c06-497d-8803-52f96b30eda7"
+},
+{
+    "aliases": [],
+    "description": "Peggy Farnham at University of Southern California",
+    "name": "peggy-farnham",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Peggy Farnham",
+    "url": "http://pibbs.usc.edu/faculty/profile/?fid=205",
+    "uuid": "1fd2cfd5-95f3-4731-a839-033a06b4a2dd"
+},
+{
+    "aliases": [],
+    "description": "Stephen Smale at University of California, Los Angeles",
+    "name": "stephen-smale",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stephen Smale",
+    "url": "http://people.healthsciences.ucla.edu/institution/personnel?personnel_id=45693",
+    "uuid": "20a0d0d3-fd1a-4030-9df3-ddb24c4e6bb0"
+},
+{
+    "aliases": [],
+    "description": "Miguel Ramalho-Santos at University of California, San Francisco",
+    "name": "miguel-ramalho-santos",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Miguel Ramalho-Santos",
+    "url": "http://santoslab.ucsf.edu/lab_site/Home.html",
+    "uuid": "2338a535-f9d9-4e91-a3ba-41bf1d891433"
+},
+{
+    "aliases": [],
+    "description": "Shin Lin at Washington University",
+    "name": "shin-lin",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Shin Lin",
+    "url": "http://depts.washington.edu/iscrm/research/faculty/shin-lin",
+    "uuid": "280b04ba-bbe4-45be-bfdb-5f02481a1ccf"
+},
+{
+    "aliases": [],
+    "description": "Birth Defect Research Laboratory",
+    "name": "bdrl",
+    "schema_version": "6",
+    "status": "released",
+    "title": "BDRL",
+    "uuid": "29209a90-f26d-4982-b78a-0fe91357f594"
+},
+{
+    "aliases": [],
+    "description": "Francesca Palladino at \u00c9cole normale sup\u00e9rieure de Lyon",
+    "name": "francesca-palladino",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Francesca Palladino",
+    "url": "http://www.ens-lyon.fr/LBMC/EpiDev/index.php/en/",
+    "uuid": "293bffbb-e3f3-45a9-80db-e38405a46881"
+},
+{
+    "aliases": [],
+    "description": "Emery Bresnick at University of Wisconsin, Madison",
+    "name": "emery-bresnick",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Emery Bresnick",
+    "url": "http://stemcells.wisc.edu/node/101",
+    "uuid": "2b165001-234d-478c-8c12-49f8fd092590"
+},
+{
+    "aliases": [],
+    "description": "Mattias Mannervik at Stockholm University",
+    "name": "mattias-mannervik",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Mattias Mannervik",
+    "url": "http://www.su.se/cmlink/2.6681/research/research-groups/mattias-mannervik",
+    "uuid": "2ba64bb6-6216-4884-af31-93af5680c875"
+},
+{
+    "aliases": [],
+    "description": "David Hafler of Yale School of Medicine",
+    "name": "david-hafler",
+    "schema_version": "6",
+    "status": "released",
+    "title": "David Hafler",
+    "url": "https://medicine.yale.edu/lab/hafler/",
+    "uuid": "2eaf9cae-952f-4d91-aaca-5c18b3c25715"
+},
+{
+    "aliases": [],
+    "description": "GenetiVision",
+    "name": "genetivision",
+    "schema_version": "6",
+    "status": "released",
+    "title": "GenetiVision",
+    "url": "http://www.genetivision.com/",
+    "uuid": "2ecf1c62-15c9-4e4d-8628-0787c8ed800f"
+},
+{
+    "aliases": [],
+    "description": "Pacific Immunology",
+    "name": "pacific-immunology",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Pacific Immunology",
+    "url": "https://www.pacificimmunology.com/",
+    "uuid": "2f9cac97-8744-49d5-9d47-421dc9b3ce05"
+},
+{
+    "aliases": [],
+    "description": "Len Pennacchio at Joint Genome Institute",
+    "name": "len-pennacchio",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Len Pennacchio",
+    "url": "http://www.jgi.doe.gov/whoweare/pennacchio.html",
+    "uuid": "30091cf1-cdd9-4f2f-b1d7-bf709b8afa49"
+},
+{
+    "aliases": [],
+    "description": "Vicatye, Inc.",
+    "name": "viacyte",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ViaCyte",
+    "url": "http://viacyte.com/",
+    "uuid": "31fad502-6fed-49cc-ae7b-3adc470acc97"
+},
+{
+    "aliases": [],
+    "description": "AxioMx",
+    "name": "axiomx",
+    "schema_version": "6",
+    "status": "released",
+    "title": "AxioMx",
+    "url": "http://www.axiomxinc.com/",
+    "uuid": "31fbf06c-5f9f-4474-b0b2-fa65cad403ca"
+},
+{
+    "aliases": [],
+    "description": "Laszlo Tora at Institut de G\u00e9n\u00e9tique et de Biologie Mol\u00e9culaire et Cellulaire",
+    "name": "laszlo-tora",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Laszlo Tora",
+    "url": "http://www.igbmc.fr/Tora/",
+    "uuid": "324a4867-d17c-404f-a571-ea80fa297214"
+},
+{
+    "aliases": [],
+    "description": "GeneTex",
+    "name": "genetex",
+    "schema_version": "6",
+    "status": "released",
+    "title": "GeneTex",
+    "url": "http://www.genetex.com",
+    "uuid": "32a667d7-383e-4ad3-bf0c-31ec58add114"
+},
+{
+    "aliases": [],
+    "description": "Genhong Cheng Lab at University of California, Los Angeles",
+    "name": "genhong-cheng",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Genhong Cheng",
+    "url": "http://www.mimg.ucla.edu/faculty/cheng/",
+    "uuid": "3358460f-4179-49a3-9be7-e490507dd8bc"
+},
+{
+    "aliases": [],
+    "description": "ArunA Biomedical",
+    "name": "aruna-biomedical",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ArunA Biomedical",
+    "url": "http://www.arunabiomedical.com/",
+    "uuid": "347f0422-e539-44fa-ba8e-b4e32a3cc255"
+},
+{
+    "aliases": [],
+    "description": "Joseph Bonventre of Harvard Medical School",
+    "name": "joseph-bonventre",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Joseph Bonventre",
+    "url": "http://bonventrelab.bwh.harvard.edu/",
+    "uuid": "352b162d-1819-452f-9332-96d3f8fc0c6d"
+},
+{
+    "aliases": [],
+    "description": "Carl Wu at HHMI Janelia Farm Research Campus",
+    "name": "carl-wu",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Carl Wu",
+    "url": "http://www.janelia.org/lab/wu-lab",
+    "uuid": "36a99696-5f4a-4c19-9553-548da29d6772"
+},
+{
+    "aliases": [],
+    "description": "Abgent",
+    "name": "abgent",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Abgent",
+    "url": "http://www.abgent.com/",
+    "uuid": "37b79c49-3327-4ce9-9edf-6172215f05da"
+},
+{
+    "aliases": [],
+    "description": "United States Biological",
+    "name": "usbio",
+    "schema_version": "6",
+    "status": "released",
+    "title": "USBio",
+    "url": "https://www.usbio.net/",
+    "uuid": "396b00fa-0c11-40fd-a323-69b73eae72e2"
+},
+{
+    "aliases": [],
+    "description": "Victor V. Lobanenkov at National Institute of Allergy and Infectious Diseases",
+    "name": "victor-lobanenkov",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Victor Lobanenkov",
+    "url": "http://irp.nih.gov/pi/victor-lobanenkov",
+    "uuid": "3ae6a5fe-b2be-4d13-a1f0-b42dd3ef9d19"
+},
+{
+    "aliases": [],
+    "description": "The Caenorhabditis Genetics Center at the University of Minnesota",
+    "name": "cgc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "CGC",
+    "url": "http://www.cbs.umn.edu/research/resources/cgc",
+    "uuid": "3b8b9674-a378-4c92-aa22-0da945b13b2b"
+},
+{
+    "aliases": [],
+    "description": "Proteintech",
+    "name": "proteintech",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Proteintech",
+    "url": "http://www.ptglab.com",
+    "uuid": "3ccf4d28-70fd-43fc-92a6-c5e9d09acd09"
+},
+{
+    "aliases": [],
+    "description": "Drosophila Genomics Resource Center",
+    "name": "dgrc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Drosophila Genomics Resource Center",
+    "url": "https://dgrc.cgb.indiana.edu/",
+    "uuid": "3d88243d-f6c2-43c3-8cc4-124761b6a927"
+},
+{
+    "aliases": [],
+    "description": "Stephen Crews at University of North Carolina Chapel Hill",
+    "name": "stephen-crews",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stephen Crews",
+    "url": "http://www.unc.edu/~crews/SteveC.html",
+    "uuid": "3f57b50d-5edc-4ee7-820c-59e27cd977f0"
+},
+{
+    "aliases": [],
+    "description": "Karen Schulze and Hugo Bellen at Baylor College of Medicine",
+    "name": "karen-schulze-and-hugo-bellen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Karen Schulze and Hugo Bellen",
+    "url": "http://flypush.imgen.bcm.tmc.edu/lab/index.html",
+    "uuid": "3f64b80a-2a4f-41c2-ac76-e0f137ec18f5"
+},
+{
+    "aliases": [],
+    "description": "Cell Signaling Technology",
+    "name": "cell-signaling",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Cell Signaling",
+    "url": "http://www.cellsignal.com",
+    "uuid": "3f9abe41-7a7c-46b5-886b-5aeeeb435004"
+},
+{
+    "aliases": [],
+    "description": "Claude Desplan at New York University",
+    "name": "claude-desplan",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Claude Desplan",
+    "url": "http://www.nyu.edu/projects/desplan/",
+    "uuid": "3febf718-a718-452b-a747-77afc675b95e"
+},
+{
+    "aliases": [],
+    "description": "BD Biosciences",
+    "name": "bd-biosciences",
+    "schema_version": "6",
+    "status": "released",
+    "title": "BD Biosciences",
+    "url": "http://www.bdbiosciences.com",
+    "uuid": "409ad2e5-845f-4203-9440-0a55298828a9"
+},
+{
+    "aliases": [],
+    "description": "Coriell Institute for Medical Research",
+    "name": "coriell",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Coriell",
+    "url": "http://www.coriell.org/",
+    "uuid": "409d724e-067e-4744-8d5b-c8f806136d80"
+},
+{
+    "aliases": [],
+    "description": "Leibniz Institute DSMZ",
+    "name": "dsmz",
+    "schema_version": "6",
+    "status": "released",
+    "title": "DSMZ",
+    "url": "http://www.dsmz.de/",
+    "uuid": "415dda4e-123c-414c-a870-c88717be4c07"
+},
+{
+    "aliases": [],
+    "name": "leslie-myatt",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "Leslie Myatt",
+    "url": "https://www.ohsu.edu/people/leslie-myatt/AFE06DF4EFA7B58A4CF7E8D0B4D8C8D7",
+    "uuid": "41e98cf7-de88-4020-b55b-c7606a73f2d4"
+},
+{
+    "aliases": [],
+    "description": "Novartis and Kevin White at University of Chicago",
+    "name": "novartis-and-kevin-white",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Novartis and Kevin White",
+    "url": "http://www.us.novartis.com/",
+    "uuid": "424acd06-e02c-4cf8-8d93-d199ebd5a55c"
+},
+{
+    "aliases": [],
+    "description": "Peter\u00a0Cherbas at Indiana University",
+    "name": "peter-cherbas",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Peter Cherbas",
+    "url": "http://www.bio.indiana.edu/faculty/directory/profile.php?person=cherbas",
+    "uuid": "4388ba30-2112-4940-b23c-b007cf537e2c"
+},
+{
+    "aliases": [],
+    "description": "Keith Ligon at Harvard",
+    "name": "keith-ligon",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Keith Ligon",
+    "url": "http://www.dfhcc.harvard.edu/membership/profile/member/582/0/",
+    "uuid": "44b3da12-cbe3-4ce1-a7f4-f3b7c1bffe0f"
+},
+{
+    "aliases": [],
+    "description": "Joanna Wysocka at Stanford University",
+    "name": "joanna-wysocka",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Joanna Wysocka",
+    "url": "http://stemcellphd.stanford.edu/faculty/joanna-wysocka.html",
+    "uuid": "44cd1fae-9334-4fb6-87a8-f4f80a046360"
+},
+{
+    "aliases": [],
+    "description": "Michael Snyder at Stanford University",
+    "name": "michael-snyder",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Michael Snyder",
+    "url": "http://snyderlab.stanford.edu",
+    "uuid": "45be6f13-5346-4952-ad74-141540384381"
+},
+{
+    "aliases": [],
+    "description": "Bethyl Laboratories",
+    "name": "bethyl-labs",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Bethyl Labs",
+    "url": "http://www.bethyl.com",
+    "uuid": "46b0b03b-4076-4d22-99ea-1b3a71bdb750"
+},
+{
+    "aliases": [],
+    "description": "Kirsten Hagstrom at University of Massachusetts",
+    "name": "kirsten-hagstrom",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kirsten Hagstrom",
+    "url": "http://wheatoncollege.edu/faculty/profiles/kristen-hagstrom/",
+    "uuid": "4861ee82-1af8-4f45-afa6-b415a39d8d19"
+},
+{
+    "aliases": [],
+    "description": "Dharmacon",
+    "name": "dharmacon",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Dharmacon",
+    "url": "http://dharmacon.gelifesciences.com/",
+    "uuid": "48f85a29-7fe6-49b2-b23f-6e6511ffbf8d"
+},
+{
+    "aliases": [],
+    "description": "Ian Glass at Congenital Defects Lab, University of Washington",
+    "name": "ian-glass",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ian Glass",
+    "url": "http://depts.washington.edu/genediv/directory/iglass",
+    "uuid": "49646103-09e0-4a65-8c7e-5b7b4e5ad17d"
+},
+{
+    "aliases": [],
+    "description": "Tirtha Das and Ross Cagan at Icahn School of Medicine at Mount Sinai",
+    "name": "tirtha-das-and-ross-cagan",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Tirtha Das and Ross Cagan",
+    "url": "http://drb.mssm.edu/labs/cagan.html",
+    "uuid": "4a67d7c1-e01b-45c3-ba99-ccda00297a47"
+},
+{
+    "aliases": [],
+    "description": "National Institute of Child Health and Human Development (NICHD)",
+    "name": "nichd",
+    "schema_version": "6",
+    "status": "released",
+    "title": "NICHD",
+    "url": "http://www.nichd.nih.gov/Pages/index.aspx",
+    "uuid": "4aa3ebbf-79b9-4cac-85d3-f22a621cf906"
+},
+{
+    "aliases": [],
+    "description": "Roberto Mantovani at Universita degli Studi di Milano",
+    "name": "roberto-mantovani",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Roberto Mantovani",
+    "url": "http://www.unimi.it/chiedove/schedaPersonaXML.jsp?matricola=12736",
+    "uuid": "4c47ebef-05a7-4ef8-be47-cb7e57c3a34a"
+},
+{
+    "aliases": [],
+    "description": "Haruhiko Siomi at Kyoto University",
+    "name": "haruhiko-siomi",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Haruhiko Siomi",
+    "url": "http://www.siomilab.med.keio.ac.jp/",
+    "uuid": "4c925fff-ed78-4f9b-bafb-852396e92442"
+},
+{
+    "aliases": [],
+    "description": "Drosophila Species Stock Center at UCSD",
+    "name": "dssc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Drosophila Species Stock Center",
+    "url": "https://stockcenter.ucsd.edu/info/welcome.php",
+    "uuid": "4cd012f1-6366-4210-a921-50e8ec607e2f"
+},
+{
+    "aliases": [],
+    "description": "Michael Bender and Rachel Byron at Fred Hutchinson Cancer Research Center",
+    "name": "michael-bender-and-rachel-byron",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Michael Bender and Rachel Byron",
+    "url": "http://www.seattlechildrens.org/medical-staff/michael-a-bender/",
+    "uuid": "4ce04db5-4b04-42d7-b723-e8e9e798f1d2"
+},
+{
+    "aliases": [],
+    "name": "job-dekker",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Job Dekker",
+    "uuid": "4f7db020-b1e8-4ab7-8750-b4e350d8c1fc"
+},
+{
+    "aliases": [],
+    "description": "Southeast Stem Cell Consortium",
+    "name": "sescc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "SESCC",
+    "url": "http://www.sestemcells.uga.edu/index.html",
+    "uuid": "50f7e0ee-1341-43ee-bf69-04acd59b74fe"
+},
+{
+    "aliases": [
+        "encode:allcells"
+    ],
+    "name": "allcells",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "AllCells",
+    "url": "https://www.allcells.com/",
+    "uuid": "51a284dc-f141-4be5-ab9e-bf9e6765ba3a"
+},
+{
+    "aliases": [],
+    "description": "Jean-Antoine Lepseant at Inistitute Jacques Monod",
+    "name": "jean-antoine-lepesant",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jean-Antoine Lepseant",
+    "url": "http://www.academie-sciences.fr/academie/membre/Lepesant_JA.htm",
+    "uuid": "51c4a459-8f9b-465b-92a2-fad54d19b798"
+},
+{
+    "aliases": [],
+    "description": "Maria Roubelakis at Biomedical Research Foundation Academy of Athens (BRFAA)",
+    "name": "maria-roubelakis",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Maria Roubelakis",
+    "url": "http://www.bioacademy.gr/",
+    "uuid": "52d2ef9f-d392-4743-9a51-f27580ca57d8"
+},
+{
+    "aliases": [],
+    "description": "Charles Graham at Queen's University",
+    "name": "charles-graham",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Charles Graham",
+    "url": "http://meds.queensu.ca/faculty/charles_graham",
+    "uuid": "53fd3e45-9b48-425c-bbfd-38257cec0ac3"
+},
+{
+    "aliases": [],
+    "description": "Christine Disteche at University of Washington",
+    "name": "christine-disteche",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Christine Disteche",
+    "url": "http://depts.washington.edu/chdd/iddrc/res_aff/disteche.html",
+    "uuid": "5485ddc0-fec8-4a18-a62b-109d83268c9d"
+},
+{
+    "aliases": [],
+    "description": "Bing Ren at University of California, San Diego",
+    "name": "bing-ren",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Bing Ren",
+    "url": "http://bioinformatics-renlab.ucsd.edu/rentrac/",
+    "uuid": "54c4c43c-523d-4287-981d-cdb0d523674f"
+},
+{
+    "aliases": [],
+    "description": "Novartis",
+    "name": "novartis",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Novartis",
+    "url": "http://www.us.novartis.com/",
+    "uuid": "554e62d2-2076-4aee-a596-0db5748a27eb"
+},
+{
+    "aliases": [],
+    "description": "Aviva Systems Biology and Kevin White at University of Chicago",
+    "name": "aviva-and-kevin-white",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Aviva Systems Biology and Kevin White",
+    "url": "http://www.avivasysbio.com/",
+    "uuid": "5787618a-c144-4ca1-8723-afcf74de89ec"
+},
+{
+    "aliases": [],
+    "description": "ABclonal Technology",
+    "name": "abclonal",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ABclonal",
+    "url": "http://www.abclonal.com/",
+    "uuid": "58420213-99e9-436e-841a-23de2adf7727"
+},
+{
+    "aliases": [],
+    "description": "The RNAi Consortium",
+    "name": "trc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "The RNAi Consortium",
+    "url": "http://www.broadinstitute.org/rnai/public/",
+    "uuid": "586aca9d-4bec-47ab-b0bb-f9ad21a9fb5f"
+},
+{
+    "aliases": [],
+    "description": "Susan Celniker at Lawrence Berkeley National Laboratory",
+    "name": "susan-celniker",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Susan Celniker",
+    "url": "http://www2.lbl.gov/lsd/People_&_Organization/Scientific_Staff_Directory/Celniker_Lab.html",
+    "uuid": "5bb3447a-2be2-4bf3-80c0-89c71e48e807"
+},
+{
+    "aliases": [],
+    "description": "Igore Zhimulev at Russian Academy of Sciences and Harald Saumweber at Humboldt University Berlin",
+    "name": "igor-zhimulev-and-harald-saumweber",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Harald Saumweber",
+    "url": "http://www2.hu-berlin.de/biologie/cytogen/",
+    "uuid": "5c117e56-1912-47ea-b329-2227bdd73f22"
+},
+{
+    "aliases": [],
+    "description": "Alex Meissner at Harvard University",
+    "name": "alex-meissner",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Alex Meissner",
+    "url": "http://www.hsci.harvard.edu/people/alex-meissner-phd",
+    "uuid": "5cd3b837-1444-4743-b191-952f99f08476"
+},
+{
+    "aliases": [],
+    "description": "Wako Chemicals",
+    "name": "wako",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Wako Chemicals",
+    "url": "http://www.wakousa.com/",
+    "uuid": "5d3500e2-dd24-4363-9e9a-8a97df2749de"
+},
+{
+    "aliases": [],
+    "description": "Timothy Hughes at University of Toronto",
+    "name": "timothy-hughes",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Timothy Hughes",
+    "url": "http://hugheslab.med.utoronto.ca/",
+    "uuid": "5d81682e-ff53-48c6-bdc3-a6c595c3de9e"
+},
+{
+    "aliases": [],
+    "description": "Gordon Hager at the National Institutes of Health",
+    "name": "gordon-hager",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Gordon Hager",
+    "url": "http://ccr.cancer.gov/staff/staff.asp?profileid=5817",
+    "uuid": "5df0e109-b002-4443-b322-0a8ce6f5d880"
+},
+{
+    "aliases": [],
+    "description": "Scott Hawley at Stowers Institute",
+    "name": "scott-hawley",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Scott Hawley",
+    "url": "http://www.stowers.org/faculty/hawley-lab",
+    "uuid": "5f651da9-ed28-4940-b8c1-0f1bb4b3a98e"
+},
+{
+    "aliases": [],
+    "description": "Provides tissues for the Snyder lab project in concert with Shin Lin.",
+    "name": "yiing-lin",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Yiing Lin, MD, PhD",
+    "url": "http://transplantsurg.wustl.edu/en/Faculty/LinYiing",
+    "uuid": "5f87f4bd-364b-4766-a690-db6b63a9419e"
+},
+{
+    "aliases": [],
+    "description": "Lake Placid Biologicals",
+    "name": "lpbio",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Lake Placid Biologicals",
+    "url": "https://www.activemotif.com",
+    "uuid": "5fb7858c-211c-4097-b786-9a999c967b67"
+},
+{
+    "aliases": [],
+    "description": "Yoichi Shinkai at RIKEN",
+    "name": "yoichi-shinkai",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Yoichi Shinkai",
+    "url": "http://www.asi.riken.jp/en/laboratories/chieflabs/cml/",
+    "uuid": "604321f2-18ee-4ad3-9050-ad5bd0319b43"
+},
+{
+    "aliases": [],
+    "description": "Marek Bartkuhn at University of Giessen",
+    "name": "marek-bartkuhn",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Marek Bartkuhn",
+    "url": "http://www.uni-giessen.de/cms/fbz/fb08/trr81/staff/bartkuhn",
+    "uuid": "60e9fbdd-230c-466d-8b3f-afd61c46cf4b"
+},
+{
+    "aliases": [],
+    "description": "Diagenode",
+    "name": "diagenode",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Diagenode",
+    "url": "http://www.diagenode.com",
+    "uuid": "62792cde-3ad0-44f5-8fe0-1685de76d586"
+},
+{
+    "aliases": [],
+    "description": "Sherman Weissman at Yale University",
+    "name": "sherman-weissman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Sherman Weissman",
+    "url": "http://bbs.yale.edu/people/sherman_weissman.profile",
+    "uuid": "62d2ba10-75a2-42eb-895c-a213fe9b59df"
+},
+{
+    "aliases": [],
+    "description": "Andrew Dingwall at Loyola University Chicago",
+    "name": "andrew-dingwall",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Andrew Dingwall",
+    "url": "http://www.stritch.luc.edu/oncology_institute/content/dingwall-lab",
+    "uuid": "64517a81-7e62-4e97-bc8e-6f75e33fdd41"
+},
+{
+    "aliases": [],
+    "description": "Michael Chou, Department of Genetics Harvard Medical Schoo",
+    "name": "george-church",
+    "schema_version": "6",
+    "status": "released",
+    "title": "George Church",
+    "uuid": "65c3fe9a-4ed3-4280-a9d2-c709ae92e5d4"
+},
+{
+    "aliases": [],
+    "description": "Joseph Costello at UCSF",
+    "name": "joseph-costello",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Joseph Costello",
+    "url": "http://neurosurgery.ucsf.edu/index.php/about_us_faculty_costello.html",
+    "uuid": "664731a9-25d9-4873-85d7-90aacbd0e28b"
+},
+{
+    "aliases": [],
+    "description": "Ellen Gelfand, Sr. Project Manager  PM Operations Lead  GTEx  DepMap, Broad Institute",
+    "name": "ellen-gelfand",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ellen Gelfand",
+    "uuid": "678ff190-f63e-4c24-92aa-a5e7ef77af97"
+},
+{
+    "aliases": [],
+    "description": "Victor Corces at Emory University",
+    "name": "victor-corces",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Victor Corces",
+    "url": "http://www.biology.emory.edu/research/Corces/",
+    "uuid": "67d295d9-1982-4144-a44e-3ec62ce879de"
+},
+{
+    "aliases": [],
+    "description": "Takemi Ohtsuki at Kawasaki Medical University",
+    "name": "takemi-ohtsuki",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Takemi Ohtsuki",
+    "url": "https://www.kawasaki-m.ac.jp/med/en/",
+    "uuid": "67d88d8a-49f6-40c3-af20-c34d94d0c3d1"
+},
+{
+    "aliases": [],
+    "description": "James Thomson at Morgridge Institute, University of Wisconsin",
+    "name": "james-thomson",
+    "schema_version": "6",
+    "status": "released",
+    "title": "James Thomson",
+    "url": "http://discovery.wisc.edu/home/morgridge/about-morgridge/leadership/james-thomson/",
+    "uuid": "68b05171-2ca7-47ff-a72e-f4c2abdd9c6b"
+},
+{
+    "aliases": [],
+    "description": "Callaini Guiliano at University of Siena",
+    "name": "callaini-giuliano",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Callaini Guiliano",
+    "url": "http://www.dbe.unisi.it/index.php?option=com_content&view=article&id=50&Itemid=75&lang=en",
+    "uuid": "6a353f1a-9ec9-4bbd-9149-dea6abda9288"
+},
+{
+    "aliases": [],
+    "description": "Ambion",
+    "name": "ambion",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ambion",
+    "url": "http://www.lifetechnologies.com/us/en/home/brands/ambion.html",
+    "uuid": "6b1f9afe-ac7c-4710-b58a-024ea6655435"
+},
+{
+    "aliases": [],
+    "description": "Gregory Crawford at Duke University",
+    "name": "gregory-crawford",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Gregory Crawford",
+    "url": "http://www.genome.duke.edu/labs/crawford/",
+    "uuid": "6bf39a01-cb18-407c-b984-05fc83d7d73b"
+},
+{
+    "aliases": [],
+    "name": "bruce-conklin",
+    "notes": "Source of WTC11 cell line for Yin Shen lab (UCSF)",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "bruce-conklin",
+    "url": "https://labs.gladstone.org/conklin/",
+    "uuid": "6c4f96de-4a60-455d-9767-9592a38abfb9"
+},
+{
+    "aliases": [],
+    "description": "Giacomo Cavalli at Institute de Genetique Humaine",
+    "name": "giacomo-cavalli",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Giacomo Cavalli",
+    "url": "http://www.igh.cnrs.fr/equip/cavalli/link.pageAenglish.html",
+    "uuid": "6ce77064-73d8-4a4a-b29d-b8f0ada3a278"
+},
+{
+    "aliases": [],
+    "description": "Axxora",
+    "name": "axxora",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Axxora",
+    "url": "http://www.axxora.com/",
+    "uuid": "6e1d7810-a68f-4b90-b7c8-b5a756e51182"
+},
+{
+    "aliases": [],
+    "description": "Julie Ahringer at University of Cambridge",
+    "name": "julie-ahringer",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Julie Ahringer",
+    "url": "http://www.gurdon.cam.ac.uk/~ahringerlab/",
+    "uuid": "6e4c4283-3431-4f1d-89cc-dc39a838fba3"
+},
+{
+    "aliases": [],
+    "description": "Francis Stewart at Dresden University of Technology",
+    "name": "francis-stewart",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Francis Stewart",
+    "url": "http://www.biotec.tu-dresden.de/research/stewart/group-page.html",
+    "uuid": "705d66b1-8360-4146-b5cc-81c918b5503a"
+},
+{
+    "aliases": [],
+    "description": "Susan Strome at University of California Santa Cruz",
+    "name": "susan-strome",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Susan Strome",
+    "url": "http://bio.research.ucsc.edu/people/strome/Site1/Home.html",
+    "uuid": "720ddc7b-3d98-49d3-9567-c5daded261e4"
+},
+{
+    "aliases": [],
+    "description": "Erika Bach at New York University",
+    "name": "erika-bach",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Erika Bach",
+    "url": "http://bachlab.med.nyu.edu/",
+    "uuid": "74192a80-2a82-40ad-b33e-c43530a0f92d"
+},
+{
+    "aliases": [],
+    "description": "Max Reuter at University College London",
+    "name": "max-reuter",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Max Reuter",
+    "url": "http://www.homepages.ucl.ac.uk/~ucbtmre/Labsite/Home.html",
+    "uuid": "74b3284f-28bc-4bb2-b73d-59a8e76f374a"
+},
+{
+    "aliases": [],
+    "description": "Calvin Cotton at Case Western Reserve University",
+    "name": "calvin-cotton",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Calvin Cotton",
+    "url": "http://cf.case.edu/Cotton.html",
+    "uuid": "76940600-a19b-4db5-a1f6-8ecb0c3d6c22"
+},
+{
+    "aliases": [],
+    "description": "Jennifer Brown at Harvard Medical School and Dana-Farber Cancer Institute",
+    "name": "jennifer-brown",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jennifer Brown",
+    "url": "http://www.dfhcc.harvard.edu/membership/profile/member/669/0/",
+    "uuid": "76ae5e13-0d15-4da2-9cb9-f48ac1f24824"
+},
+{
+    "aliases": [],
+    "description": "William Kelly at Emory University",
+    "name": "william-kelly",
+    "schema_version": "6",
+    "status": "released",
+    "title": "William Kelly",
+    "url": "http://www.biology.emory.edu/research/Kelly/",
+    "uuid": "7707c354-3987-4fd5-9a8f-552dd70bfd6a"
+},
+{
+    "aliases": [],
+    "description": "Addgene - Plasmid Repository",
+    "name": "addgene",
+    "schema_version": "6",
+    "status": "released",
+    "title": "addgene",
+    "url": "https://www.addgene.org",
+    "uuid": "772e1037-ff48-4027-8574-31adcea07bd4"
+},
+{
+    "aliases": [],
+    "description": "Rush University Medical Center",
+    "name": "rush-university",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Rush University",
+    "url": "http://www.rush.edu/",
+    "uuid": "77586409-75eb-4638-91f1-947a0504748c"
+},
+{
+    "aliases": [],
+    "description": "Steven Young at University of North Carolina",
+    "name": "steven-young",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Steven Young",
+    "url": "http://findadoc.unchealthcare.org/directory/profile.asp?dbase=main&setsize=5&pict_id=0002115",
+    "uuid": "784b6dd0-ce45-4ed9-b9a1-05c0b894d786"
+},
+{
+    "aliases": [],
+    "description": "Amy Murtha at Duke University",
+    "name": "amy-murtha",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Amy Murtha",
+    "url": "http://obgyn.duke.edu/faculty/details/0097193",
+    "uuid": "78dc37da-bcb8-43b6-900e-8e59d6664abc"
+},
+{
+    "aliases": [],
+    "description": "Licia Selleri at Weill Cornell Medical College",
+    "name": "licia-selleri",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Licia Selleri",
+    "url": "http://www.cornellcelldevbiology.org/selleri/",
+    "uuid": "7a6fe01a-e2ec-4055-b345-c7e2e4abb4d4"
+},
+{
+    "aliases": [],
+    "description": "Huabing Li and Vincenzo Pirrotta at Rutgers University",
+    "name": "huabing-li-and-vincenzo-pirrotta",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Huabing Li and Vincenzo Pirrotta",
+    "url": "http://molbiosci.rutgers.edu/faculty/pirrotta.html",
+    "uuid": "7aaa150f-7186-4c35-9155-a3667cdf9cb6"
+},
+{
+    "aliases": [],
+    "description": "University of Connecticut Health Center",
+    "name": "brenton-graveley",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Brenton Graveley",
+    "url": "http://graveleylab.cam.uchc.edu/Graveley/",
+    "uuid": "7b18ba2e-644e-4573-9589-92cb4c0b5b75"
+},
+{
+    "aliases": [],
+    "description": "Chordoma Research Foundation",
+    "name": "chordoma",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Chordoma",
+    "url": "http://www.chordomafoundation.org/research/",
+    "uuid": "7c45736d-5871-40ee-bbd0-870a25c66967"
+},
+{
+    "aliases": [],
+    "description": "Bioss Inc",
+    "name": "bioss",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Bioss",
+    "url": "https://www.biossusa.com/",
+    "uuid": "7e535f87-e283-4530-bea8-3c00d9c0fc6c"
+},
+{
+    "aliases": [],
+    "description": "Kathleen Price Bryan Brain Bank (KPBBB)",
+    "name": "kpbbb",
+    "schema_version": "6",
+    "status": "released",
+    "title": "KPBBB",
+    "url": "https://adrc.mc.duke.edu/index.php/research/brain-bank",
+    "uuid": "7e966041-5dbe-46a7-ae5e-188ce13928f6"
+},
+{
+    "aliases": [],
+    "description": "Paul Schedl, Jason Blanton and Greg Shanower at Princeton University",
+    "name": "paul-schedl-and-jason-blanton-and-greg-shanower",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Paul Schedl, Jason Blanton and Greg Shanowe",
+    "url": "http://www.molbio1.princeton.edu/labs/schedl/",
+    "uuid": "7ec349d6-d6f3-487a-82ee-40bfe769b7d1"
+},
+{
+    "aliases": [],
+    "description": "Anthony Schwacha at University of Pittsburgh",
+    "name": "anthony-schwacha",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Anthony Schwacha",
+    "url": "http://www.biology.pitt.edu/person/anthony-schwacha",
+    "uuid": "7f8c68a6-dd75-4f35-a713-12191e3e33fe"
+},
+{
+    "aliases": [],
+    "description": "Pedro Caballero-Campo at UCSF",
+    "name": "pedro-caballero-campo",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Pedro Caballero-Campo",
+    "url": "http://directory.ucsf.edu/people_detail.jsp?FNO=Pedro.Caballero-Campo@ucsf.edu&retLink=1&school_code=all&last_name=&first_name=&offset=0",
+    "uuid": "7fc3381e-6fc8-4cb3-ad6a-19a38361782c"
+},
+{
+    "aliases": [],
+    "description": "Jeffrey Engelman at Massachusetts General Hospital",
+    "name": "jeffrey-engelman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jeffrey Engelman",
+    "url": "http://www.massgeneral.org/research/researchlab.aspx?id=1169",
+    "uuid": "8026177f-9f48-4f66-a02d-06df17cf0aab"
+},
+{
+    "aliases": [],
+    "name": "rafael-casellas",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Rafael Casellas lab, NIH",
+    "uuid": "8180687e-470f-41cb-9eb3-aaff5c25109d"
+},
+{
+    "aliases": [],
+    "description": "Invitrogen",
+    "name": "invitrogen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Invitrogen",
+    "url": "http://www.lifetechnologies.com/us/en/home/brands/invitrogen.html",
+    "uuid": "82ec85f6-1aa6-11e3-b157-14109fe2b29d"
+},
+{
+    "aliases": [],
+    "description": "Barbara Wold at California Institute of Technology",
+    "name": "barbara-wold",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Barbara Wold",
+    "url": "http://woldlab.caltech.edu/",
+    "uuid": "82fc89e4-81a0-42af-b30e-fb5943b97b31"
+},
+{
+    "aliases": [],
+    "description": "Haplogen Genomics",
+    "name": "haplogen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Haplogen Genomics",
+    "url": "http://www.haplogen.com/",
+    "uuid": "8394e61f-368e-4d50-8862-abf32ff1c43b"
+},
+{
+    "aliases": [],
+    "description": "Valerie Reinke at Yale University",
+    "name": "valerie-reinke",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Valerie Reinke",
+    "url": "http://medicine.yale.edu/lab/reinke/index.aspx",
+    "uuid": "84481424-bd3d-4ec6-9129-5ee60b64125c"
+},
+{
+    "aliases": [],
+    "description": "Stephen Dalton at UGA",
+    "name": "stephen-dalton",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stephen Dalton",
+    "url": "http://www.daltonlab.uga.edu/",
+    "uuid": "8525e1a2-b4d7-4fe6-8a1e-9f9d0536bb2f"
+},
+{
+    "aliases": [],
+    "description": "The CCSB Human ORFeome Collection",
+    "name": "human-orfeome",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Human ORFeome",
+    "url": "http://horfdb.dfci.harvard.edu/index.php?page=home",
+    "uuid": "8547f9d7-2a32-4ffd-a498-e63e72339fe9"
+},
+{
+    "aliases": [],
+    "description": "Robert Waterston at University of Washington",
+    "name": "robert-waterston",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Robert Waterston",
+    "url": "http://waterston.gs.washington.edu/",
+    "uuid": "8550bcd0-4a23-4322-a39b-a87889b0a787"
+},
+{
+    "aliases": [],
+    "description": "Mark Groudine at Fred Hutch",
+    "name": "mark-groudine",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Mark Groudine",
+    "url": "https://www.fredhutch.org/en/labs/profiles/groudine-mark.html",
+    "uuid": "858382a5-8bfe-450c-b508-1a93d76a22a7"
+},
+{
+    "aliases": [],
+    "description": "BioChain Institute Inc",
+    "name": "biochain",
+    "schema_version": "6",
+    "status": "released",
+    "title": "BioChain",
+    "url": "http://www.biochain.com",
+    "uuid": "8599bb19-6c08-4610-9ebf-125c5346461e"
+},
+{
+    "aliases": [],
+    "description": "Robert Horvitz at Massachusetts Institute of Technology",
+    "name": "robert-horvitz",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Robert Horvitz",
+    "url": "http://web.mit.edu/horvitz/www/horvitzlab.html",
+    "uuid": "86b264d9-f6a7-432f-a6c5-9aeba0ff7c4c"
+},
+{
+    "aliases": [],
+    "description": "Thomas Johnson Lab at the University of Colorado",
+    "name": "thomas-johnson",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thomas Johnson, University of Colorado",
+    "url": "http://ibgwww.colorado.edu/tj-lab/",
+    "uuid": "87bab7fd-96f4-4eb8-9b28-93d661fdb336"
+},
+{
+    "aliases": [],
+    "description": "Albert La Spada at UCSD",
+    "name": "albert-la-spada",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Albert La Spada",
+    "url": "http://laspadalab.ucsd.edu/Pages/default.aspx",
+    "uuid": "88e3c5c0-a872-40c9-9582-6536643bb2c0"
+},
+{
+    "aliases": [],
+    "description": "Ken Cadigan at University of Michigan",
+    "name": "ken-cadigan",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ken Cadigan",
+    "url": "http://labs.mcdb.lsa.umich.edu/labs/cadigan/",
+    "uuid": "89665892-d3a0-42e9-81f9-6d6802ec5c56"
+},
+{
+    "aliases": [],
+    "description": "Novus Biologicals",
+    "name": "novus",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Novus",
+    "url": "http://www.novusbio.com",
+    "uuid": "8a39872a-a242-4c6e-9d00-eee2f099a6aa"
+},
+{
+    "aliases": [],
+    "description": "Arno Greenleaf at Duke University",
+    "name": "arno-greenleaf",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Arno Greenleaf",
+    "url": "http://www.biochem.duke.edu/modules/biochem_greenleaf_lab/index.php?id=1",
+    "uuid": "8ab62943-83e8-48a9-a651-ceabbf3adb75"
+},
+{
+    "aliases": [],
+    "description": "Carol Ware at University of Washington Department of Comparative Medicine",
+    "name": "carol-ware",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Carol Ware",
+    "url": "http://depts.washington.edu/compmed/directory/faculty/ware.htm",
+    "uuid": "8b704af0-63f5-48d7-9003-fd0f41be1e22"
+},
+{
+    "aliases": [],
+    "description": "Islet Cell Resource Center",
+    "name": "icrc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ICRC",
+    "url": "http://icr.coh.org/",
+    "uuid": "8bb12105-6c97-4c75-8d52-7fab78b0b030"
+},
+{
+    "aliases": [],
+    "description": "Jussi Taipale at Karolinska Institutet",
+    "name": "jussi-taipale",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jussi Taipale",
+    "url": "http://www.bionut.ki.se/taipale/",
+    "uuid": "8bc5d398-5d15-43bb-a717-92b5ae251a50"
+},
+{
+    "aliases": [],
+    "description": "Alexander Hoffmann Laboratory at University of California at Los Angeles",
+    "name": "alexander-hoffmann",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Alexander Hoffmann",
+    "url": "http://www.signalingsystems.ucla.edu/alexander-hoffmann/",
+    "uuid": "8ca92a9d-b249-4dd1-856d-e1e17394980c"
+},
+{
+    "aliases": [],
+    "description": "Cayman Chemical",
+    "name": "cayman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Cayman",
+    "url": "http://www.caymanchem.com",
+    "uuid": "8d5a7d60-7265-41f8-b540-e09530200cd3"
+},
+{
+    "aliases": [],
+    "description": "Steven Henikoff at Fred Hutchinson Cancer Research Center",
+    "name": "steven-henikoff",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Steven Henikoff",
+    "url": "http://research.fhcrc.org/henikoff/en.html",
+    "uuid": "8d64b828-40a4-407d-934e-199c7b0cb91b"
+},
+{
+    "aliases": [],
+    "description": "Christina Leslie Laboratory at Memorial Sloan-Kettering Cancer Center",
+    "name": "christina-leslie",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Christina Leslie",
+    "url": "https://www.mskcc.org/research-areas/labs/christina-leslie",
+    "uuid": "8e235421-5279-401b-aaea-c2c3f78e79c0"
+},
+{
+    "aliases": [],
+    "description": "LifeSpan BioSciences, Inc",
+    "name": "lsbio",
+    "schema_version": "6",
+    "status": "released",
+    "title": "LSBio",
+    "url": "https://www.lsbio.com/",
+    "uuid": "8e8cd39e-c55e-40e3-b6ba-5e782c26c1d2"
+},
+{
+    "aliases": [],
+    "description": "Source BioScience LifeSciences",
+    "name": "source-bioscience",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Source BioScience LifeSciences",
+    "url": "http://www.lifesciences.sourcebioscience.com/",
+    "uuid": "8ec2e35d-b7fb-4c07-aa0f-7ea9dfb174fb"
+},
+{
+    "aliases": [],
+    "description": "Darrell Bigner at Duke University",
+    "name": "darrell-bigner",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Darrell Bigner",
+    "url": "http://www.cancer.duke.edu/btc/modules/facultystaff1/index.php?id=85",
+    "uuid": "8efd6008-46b6-454d-a43c-167ce9e0b6db"
+},
+{
+    "aliases": [],
+    "description": "Carl Mann at Commissariat \u00e0 l'\u00e9nergie atomique et aux \u00e9nergies alternatives",
+    "name": "carl-mann",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Carl Mann",
+    "url": "http://www-dsv.cea.fr/en/institutes/institute-of-biology-and-technology-saclay-ibitec-s/units/integrative-biology-and-molecular-genetics-sbigem/oxidative-stress-and-cancer-lsoc/genome-stability-c.-mann",
+    "uuid": "92b67cd2-a6fd-4de9-9c7a-0beb1df1308a"
+},
+{
+    "aliases": [],
+    "description": "Tom Williams and Sean Carroll at University of Wisconson at Madison",
+    "name": "tom-williams-and-sean-carroll",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Tom Williams and Sean Carroll",
+    "url": "http://carroll.molbio.wisc.edu/",
+    "uuid": "93d13f2b-8dfa-41c7-8917-43a691d1007d"
+},
+{
+    "aliases": [],
+    "description": "Jianhong Wu and Tao-shih Hsieh at Duke University",
+    "name": "jianhong-wu-and-tao-shi-hsieh",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jianhong Wu and Tao Shi Hsieh",
+    "url": "http://www.biochem.duke.edu/modules/biochem_hsieh_lab/index.php?id=5",
+    "uuid": "93d85aab-4efe-4803-b35d-7b89154bbd2e"
+},
+{
+    "aliases": [],
+    "description": "Ravi Jhaveri at University of North Carolina",
+    "name": "ravi-jhaveri",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ravi Jhaveri",
+    "url": "http://findadoc.unchealthcare.org/directory/profile.asp?dbase=main&setsize=10&last=Jhaveri&pict_id=1893383",
+    "uuid": "946b9bd5-c96b-48fa-b24f-f5716686cecc"
+},
+{
+    "aliases": [],
+    "description": "Rainer Renkawitz at University of Giessen",
+    "name": "rainer-renkawitz",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Rainer Renkawitz",
+    "url": "http://www.uni-giessen.de/cms/fbz/fb08/Inst/biochem/international-networks/gradu/partners/renkawitz",
+    "uuid": "948474b0-8d8e-42e1-83f1-aa1904b686bd"
+},
+{
+    "aliases": [],
+    "description": "Donna Arndt-Jovin at Max Planck Institute for Biophysical Chemistry",
+    "name": "donna-arndt-jovin",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Donna Arndt-Jovin",
+    "url": "http://www3.mpibpc.mpg.de/groups/jovin/index.php/ResearchGroups/CellBiologyDonnaArndt-Jovin/",
+    "uuid": "94e6b747-775b-4e33-a796-40d06e4559e5"
+},
+{
+    "aliases": [],
+    "description": "Stuart Schreiber at Broad Institute CTD2 Center",
+    "name": "stuart-schreiber",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stuart Schreiber",
+    "url": "http://www.broadinstitute.org/scientific-community/science/programs/csoft/chemical-biology/project-cancer-dependencies-%E2%80%93-ctd2/canc",
+    "uuid": "96136976-bba5-4eb9-9db0-211b7f63534a"
+},
+{
+    "aliases": [],
+    "description": "Melanie Ehrlich and Koji Tsumagari at Tulane University",
+    "name": "melanie-ehrlich-and-koji-tsumagari",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Melanie Ehrlich and Koji Tsumagari",
+    "url": "http://tulane.edu/som/hayward-genetics/faculty/melanie-ehrlich.cfm",
+    "uuid": "96fa1d49-003a-4aa0-b2e5-040eb523dc25"
+},
+{
+    "aliases": [],
+    "description": "Jack Greenblatt at University of Toronto",
+    "name": "jack-greenblatt",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jack Greenblatt",
+    "url": "http://sites.utoronto.ca/greenblattlab/index.htm",
+    "uuid": "9719fdae-1258-4301-a038-faa89fea2469"
+},
+{
+    "aliases": [],
+    "description": "Shinya Yamanaka at University of California, San Francisco",
+    "name": "shinya-yamanaka",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Shinya Yamanaka",
+    "url": "http://gladstoneinstitutes.org/scientist/yamanaka",
+    "uuid": "97ef5e10-d532-4682-8507-1aa10e02b7a2"
+},
+{
+    "aliases": [],
+    "description": "Mark Minden at Ontario Cancer Institute",
+    "name": "mark-minden",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Mark Minden",
+    "url": "http://www.uhnresearch.ca/researchers/profile.php?lookup=4159",
+    "uuid": "980f2051-1c94-4efd-807d-32ae7c67dfb1"
+},
+{
+    "aliases": [],
+    "description": "Steve Choi at Duke University",
+    "name": "steve-choi",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Steve Choi",
+    "url": "http://gastroenterology.medicine.duke.edu/faculty/details/0278358",
+    "uuid": "9918eabb-96d1-416d-9578-48decac61882"
+},
+{
+    "aliases": [],
+    "description": "Marella deBruijn at The Weatherall Institute of Molecular Medicine",
+    "name": "marella-debruijn",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Marella deBruijn",
+    "url": "http://www.imm.ox.ac.uk/wimm-research/molhaem/marella-de-bruijn",
+    "uuid": "9b0703e9-9f65-4d46-82cd-ca7bf6cedee3"
+},
+{
+    "aliases": [],
+    "description": "Woodring Wright at University of Texas Southwestern",
+    "name": "woodring-wright",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Woodring Wright",
+    "url": "http://profiles.utsouthwestern.edu/profile/18156/woodring-wright.html",
+    "uuid": "9e0e4cdd-8a74-4bbf-afaa-ead6809423d3"
+},
+{
+    "aliases": [],
+    "description": "Paola Arlotta of Harvard Med/Stanley Center",
+    "name": "paola-arlotta",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Paola Arlotta",
+    "url": "https://hscrb.harvard.edu/res-fl-arlotta",
+    "uuid": "a27f4d42-fac3-49e8-b060-9da0359963dd"
+},
+{
+    "aliases": [],
+    "description": "Michael Mannstadt at Massachusetts General Hospital",
+    "name": "michael-mannstadt",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Michael Mannstadt",
+    "url": "http://www.massgeneral.org/cancer/doctors/doctor.aspx?ID=17826",
+    "uuid": "a3062fb6-b5f0-4b72-b3e1-406a32a4dfb3"
+},
+{
+    "aliases": [],
+    "description": "The GTEx Project",
+    "name": "gtex",
+    "schema_version": "6",
+    "status": "released",
+    "title": "GTEx",
+    "url": "http://www.gtexportal.org/home/",
+    "uuid": "a45baee3-d841-4319-bc38-0782b343c98a"
+},
+{
+    "aliases": [],
+    "description": "Jerrold M. Olefsky Lab at University of California, San Diego",
+    "name": "jerrold-olefsky",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jerrold Olefsky",
+    "url": "http://endocrinology.ucsd.edu/Faculty/olefsky.html",
+    "uuid": "a4fdd11a-f37c-4592-b5f4-e3006ad655fa"
+},
+{
+    "aliases": [],
+    "description": "Pat Navas",
+    "name": "pat-navas",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Pat Navas",
+    "uuid": "a5630878-cf88-4fb8-9180-1edd2bcce866"
+},
+{
+    "aliases": [],
+    "description": "Dmitry Fyodorov at Albert Einstein College of Medicine",
+    "name": "dmitry-fyodorov",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Dmitry Fyodorov",
+    "url": "http://www.einstein.yu.edu/faculty/9626/dmitry-fyodorov/",
+    "uuid": "a5a597ee-50ab-428e-9a60-7c4831e5bdf0"
+},
+{
+    "aliases": [],
+    "description": "Cystic Fibrosis Center at Stanford University (CFC)",
+    "name": "stanford-cfc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stanford CFC",
+    "url": "http://cfcenter.stanford.edu/",
+    "uuid": "a6861162-0544-4d13-9f30-939eff65191f"
+},
+{
+    "aliases": [],
+    "description": "James Kadonaga at University of California San Diego",
+    "name": "james-kadonaga",
+    "schema_version": "6",
+    "status": "released",
+    "title": "James Kadonaga",
+    "url": "http://biology.ucsd.edu/faculty/kadonaga.html",
+    "uuid": "a988db5d-c9d2-4f7b-a2ce-2e5854fe1edb"
+},
+{
+    "aliases": [],
+    "description": "Transgenic Core and Embryonic Stem Cell at University of California, San Diego",
+    "name": "tcesc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "TCESC",
+    "url": "http://cancer.ucsd.edu/research-training/shared-resources/transgenic-core/Pages/default.aspx",
+    "uuid": "a9ac2187-c8aa-40dd-a92f-afd779b86de4"
+},
+{
+    "aliases": [
+        "bradley-bernstein:max_planck_institute"
+    ],
+    "description": "Source of Neutrophils for Bradley Bernstein lab",
+    "name": "max-planck",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Max Planck Institute",
+    "uuid": "a9f2c835-2d70-4327-b795-348202ad0d3e"
+},
+{
+    "aliases": [],
+    "description": "Kenneth Irvine at Rutgers University",
+    "name": "kenneth-irvine",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kenneth Irvine",
+    "url": "http://www.waksman.rutgers.edu/irvine/home",
+    "uuid": "aaf7a2d5-25e4-44f6-85df-bd26d8c7fa6e"
+},
+{
+    "aliases": [],
+    "description": "David Herrmann at Rochester University",
+    "name": "david-herrmann",
+    "schema_version": "6",
+    "status": "released",
+    "title": "David Herrmann",
+    "url": "http://rarediseasesnetwork.epi.usf.edu/INC/centers/rochester.htm",
+    "uuid": "acaf2c71-fa74-44b1-89c0-4b958f03355a"
+},
+{
+    "aliases": [],
+    "description": "Illumina",
+    "name": "illumina",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Illumina",
+    "url": "http://www.illumina.com/",
+    "uuid": "acf1a2db-b12e-40b5-8089-181dd27aadc5"
+},
+{
+    "aliases": [],
+    "description": "Charles River Laboratories",
+    "name": "crl",
+    "schema_version": "6",
+    "status": "released",
+    "title": "CRL",
+    "url": "http://www.criver.com",
+    "uuid": "ad5316ea-8808-4f2f-bc7c-97931330d790"
+},
+{
+    "aliases": [],
+    "description": "Richard Mann at Columbia University",
+    "name": "richard-mann",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Richard Mann",
+    "url": "http://themannlab.org",
+    "uuid": "aeee8795-e283-4b76-b4b9-755a6eef249b"
+},
+{
+    "aliases": [],
+    "description": "Eric Bouhassira at Albert Einstein College of Medicine",
+    "name": "eric-bouhassira",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Eric Bouhassira",
+    "url": "http://www.einstein.yu.edu/faculty/4981/eric-bouhassira/",
+    "uuid": "b1ad9266-590a-4bb6-985b-7b399b5acaf3"
+},
+{
+    "aliases": [],
+    "description": "Medimabs",
+    "name": "medimabs",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Medimabs",
+    "url": "https://www.medimabs.com/",
+    "uuid": "b1d7a421-12ae-4403-969c-381ea6a77444"
+},
+{
+    "aliases": [],
+    "description": "David Randolph at University of Alabama",
+    "name": "david-randolph",
+    "schema_version": "6",
+    "status": "released",
+    "title": "David Randolph",
+    "url": "http://138.26.61.118/depts/MEB/SOMResearchFaculty/currentfacultydata.asp?ID=DRDRDR",
+    "uuid": "b313c480-f947-4c2f-81ff-f4260d9fd8c1"
+},
+{
+    "aliases": [],
+    "description": "Dana Levasseur at University of Iowa",
+    "name": "dana-levasseur",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Dana Levasseur",
+    "url": "http://www.int-med.uiowa.edu/Divisions/Immunology/Directory/DanaLevasseur.html",
+    "uuid": "b3e069d1-ea98-4b05-a3bb-46f44024392c"
+},
+{
+    "aliases": [],
+    "description": "Abcam",
+    "name": "abcam",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Abcam",
+    "url": "http://www.abcam.com",
+    "uuid": "b40f24ee-8803-4937-9223-1df3a6bf3cd9"
+},
+{
+    "aliases": [],
+    "description": "Ari Melnick at Cornell University",
+    "name": "ari-melnick",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ari Melnick",
+    "url": "http://melnicklaboratory.med.cornell.edu/people/arimelnick.php",
+    "uuid": "b7879406-2d94-4dc3-9e3a-4e72a55410dc"
+},
+{
+    "aliases": [],
+    "description": "Eurogentec",
+    "name": "eurogentec",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Eurogentec",
+    "url": "http://www.eurogentec.com/eu-home.html",
+    "uuid": "b8887426-1cef-41a8-8ef8-404dc5f108fc"
+},
+{
+    "aliases": [],
+    "description": "PromoCell GmbH",
+    "name": "promocell",
+    "schema_version": "6",
+    "status": "released",
+    "title": "PromoCell",
+    "url": "http://www.promocell.com",
+    "uuid": "b8e804f7-04f2-4042-8aca-eeeb12bdc6f1"
+},
+{
+    "aliases": [],
+    "description": "Norbert Perrimon at Harvard University",
+    "name": "norbert-perrimon",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Norbert Perrimon",
+    "url": "http://genepath.med.harvard.edu/~perrimon/",
+    "uuid": "b9357484-b4db-4182-8f53-04a239e55f1e"
+},
+{
+    "aliases": [],
+    "description": "Vincenzo Pirrotta at Rutgers University",
+    "name": "vincenzo-pirrotta",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Vincenzo Pirrotta",
+    "url": "http://molbiosci.rutgers.edu/faculty/pirrotta.html",
+    "uuid": "b9d50ce0-4d00-4d48-bfb5-b2d870844958"
+},
+{
+    "aliases": [],
+    "description": "Arshad Desai at University of California San Diego",
+    "name": "arshad-desai",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Arshad Desai",
+    "url": "http://cmm.ucsd.edu/odlabweb/sites/",
+    "uuid": "ba51cd02-5557-4704-810d-f7590a58e4dc"
+},
+{
+    "aliases": [],
+    "description": "Rockland Immunochemicals",
+    "name": "rockland",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Rockland",
+    "url": "http://rockland-inc.com",
+    "uuid": "bace8f5e-b342-47c5-9733-8970381e7c00"
+},
+{
+    "aliases": [],
+    "description": "Unknown Source",
+    "name": "unknown",
+    "notes": "formerly encode",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Unknown Source",
+    "uuid": "be960dc7-1912-4ff5-8b1a-a7e2e1b2533e"
+},
+{
+    "aliases": [
+        "barbara-wold:GEMS_Caltech"
+    ],
+    "description": "Source for Transgenic Mice at Caltech",
+    "name": "gems-caltech",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Genetically Engineered Mouse Services, California Institute of Technology",
+    "url": "https://gems.caltech.edu/",
+    "uuid": "bf91f96c-fa92-40f1-9873-939d27156b10"
+},
+{
+    "aliases": [],
+    "description": "Personal Genome Project",
+    "name": "pgp",
+    "schema_version": "6",
+    "status": "released",
+    "title": "PGP",
+    "url": "http://www.personalgenomes.org/",
+    "uuid": "c189e8d8-bb5b-422b-97ee-a86fdab31b82"
+},
+{
+    "aliases": [],
+    "description": "CDI Laboratories",
+    "name": "cdi",
+    "schema_version": "6",
+    "status": "released",
+    "title": "CDI",
+    "url": "http://www.cdi-lab.com",
+    "uuid": "c1b2e97d-9237-4f92-ad61-ff7a81a75ea1"
+},
+{
+    "aliases": [],
+    "description": "David Bodine at National Human Genome Research Institute",
+    "name": "david-bodine",
+    "schema_version": "6",
+    "status": "released",
+    "title": "David Bodine",
+    "url": "http://www.genome.gov/10000336",
+    "uuid": "c2469383-4d0f-4e22-a545-b73738191343"
+},
+{
+    "aliases": [],
+    "description": "Alla Grishok at Columbia University",
+    "name": "alla-grishok",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Alla Grishok",
+    "url": "http://biochemistry.hs.columbia.edu/faculty/grishok.html",
+    "uuid": "c2ad1716-1e1f-42fd-b69f-9643699ae62b"
+},
+{
+    "aliases": [],
+    "description": "Hyung Don Ryoo at New York University",
+    "name": "hyung-don-ryoo",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Hyung Don Ryoo",
+    "url": "http://www.med.nyu.edu/biosketch/ryooh01",
+    "uuid": "c4b87735-4b5b-41ca-9a7b-eac8257c1a12"
+},
+{
+    "aliases": [],
+    "description": "John Reinitz at University of Chicago",
+    "name": "john-reinitz",
+    "schema_version": "6",
+    "status": "released",
+    "title": "John Reinitz",
+    "url": "http://flyex.uchicago.edu/newlab/index.shtml",
+    "uuid": "c4cb93ed-1276-4aec-a269-07f284fda637"
+},
+{
+    "aliases": [],
+    "description": "Agilent",
+    "name": "agilent",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Agilent",
+    "url": "http://www.home.agilent.com",
+    "uuid": "c932c51b-bf89-4dcd-808f-a14f49aa5006"
+},
+{
+    "aliases": [],
+    "description": "This project is aimed to collect nematode bioresources available to researchers so that studies using the nematode are promoted.",
+    "name": "national-bioresource-project",
+    "schema_version": "6",
+    "status": "released",
+    "title": "National Bioresource Project",
+    "url": "http://shigen.nig.ac.jp/c.elegans/index.jsp",
+    "uuid": "cace6a9d-e2b9-4cb3-843a-130e741b7899"
+},
+{
+    "aliases": [],
+    "description": "Roche",
+    "name": "roche",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Roche",
+    "url": "http://www.roche.com",
+    "uuid": "cc26052c-7daa-420f-ba9b-e11edba34a47"
+},
+{
+    "aliases": [],
+    "description": "Gary Karpen at Lawrence Berkeley National Laboratory",
+    "name": "gary-karpen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Gary Karpen",
+    "url": "http://www2.lbl.gov/lsd/People_&_Organization/Scientific_Staff_Directory/Karpen_Lab.html",
+    "uuid": "cd0f4116-3afe-4a10-98fd-370b51144376"
+},
+{
+    "aliases": [],
+    "description": "Kevin Eggan and Ralda Nehme are collaborators with The Stanley Center at The Broad Institute",
+    "name": "ralda-nehme",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kevin Eggan and Ralda Nehme",
+    "url": "https://www.egganlab.com/collaborators/",
+    "uuid": "cd5e86fc-6d81-45f4-8165-c8286b047c17"
+},
+{
+    "aliases": [
+        "barbara-wold:UMaryland-BTBank"
+    ],
+    "description": "The Eunice Kennedy Shriver NICHD Brain and Tissue Bank for Developmental Disorders at the University of Maryland",
+    "name": "nichd-btb",
+    "notes": "Publications derived from the use of tissue supplied by the Bank will include the statement: Human tissue was obtained from the NICHD Brain and Tissue Bank for Developmental Disorders at the University of Maryland, Baltimore, MD, contract HHSN275200900011C, Ref. No. N01-HD-9-0011.",
+    "schema_version": "6",
+    "status": "released",
+    "title": "NICHD BTB",
+    "url": "http://medschool.umaryland.edu/btbank/",
+    "uuid": "cda8c608-fcf1-4edd-b340-02cf46f808ce"
+},
+{
+    "aliases": [],
+    "description": "Jefferey Marks at Duke University",
+    "name": "jefferey-marks",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jefferey Marks",
+    "url": "http://surgery.duke.edu/faculty/details/0098991",
+    "uuid": "ce2db491-e17e-4fde-b4a2-912d531c9ccc"
+},
+{
+    "aliases": [],
+    "description": "John Stamatoyannopoulos at University of Washington",
+    "name": "john-stamatoyannopoulos",
+    "schema_version": "6",
+    "status": "released",
+    "title": "John Stamatoyannopoulos",
+    "url": "http://www.gs.washington.edu/faculty/stamj.htm",
+    "uuid": "ce4d93b5-d677-42d2-882b-5bf1e96a7f2a"
+},
+{
+    "aliases": [],
+    "description": "Jennifer Condon-Jeyasuria at The University of Pittsburgh",
+    "name": "jennifer-condon-jeyasuria",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jennifer Condon-Jeyasuria",
+    "url": "http://www.cbp.pitt.edu/faculty/condon-jeyasuria.html",
+    "uuid": "ce534578-1b2a-11e3-9acd-14109fe2b29d"
+},
+{
+    "aliases": [],
+    "description": "Ulrich Laemmli at University of Geneva",
+    "name": "ulrich-laemmli",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ulrich Laemmli",
+    "url": "http://www.molbio.unige.ch/fra/research_groups/laemmli/lab",
+    "uuid": "ce6597ef-0e3c-4dac-a2c8-ea497d65e61e"
+},
+{
+    "aliases": [],
+    "description": "Susan Fisher at UCSF",
+    "name": "susan-fisher",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Susan Fisher",
+    "url": "http://fisherlab.ucsf.edu/",
+    "uuid": "cfb43a67-fefb-4b60-9441-5484cb0d6021"
+},
+{
+    "aliases": [],
+    "description": "Yang Shi at Harvard University",
+    "name": "yang-shi",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Yang Shi",
+    "url": "http://cellbio.med.harvard.edu/faculty/shi",
+    "uuid": "d0955680-7357-44cb-b38c-e022243ce600"
+},
+{
+    "aliases": [],
+    "description": "Russell Ryan at Massachusetts General Hospital",
+    "name": "russell-ryan",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Russell Ryan",
+    "url": "https://csb.mgh.harvard.edu/information/people_directories",
+    "uuid": "d0f0f028-36e7-4658-b21d-f830a2b396e8"
+},
+{
+    "aliases": [],
+    "name": "pardis-sabeti",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "Pardis Sabeti",
+    "url": "http://sabetilab.org",
+    "uuid": "d4abf7ba-a6b1-4f8b-b184-583c273fb736"
+},
+{
+    "aliases": [],
+    "description": "Covance",
+    "name": "covance",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Covance",
+    "url": "http://www.biolegend.com/covance_integration",
+    "uuid": "d53c77c6-0300-421e-8884-42aca9d53e78"
+},
+{
+    "aliases": [],
+    "description": "Taconic Farms, Inc",
+    "name": "taconic",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Taconic",
+    "url": "http://www.taconic.com",
+    "uuid": "d6dd96cd-20cd-463a-a482-fdde01f35a15"
+},
+{
+    "aliases": [],
+    "description": "Ming-Sound Tsao at Ontario Cancer Institute",
+    "name": "ming-sound-tsao",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Ming-Sound Tsao",
+    "url": "http://www.uhnres.utoronto.ca/researchers/profile.php?lookup=6118",
+    "uuid": "d6fb453d-1e1a-4552-84bc-f6ece0210e98"
+},
+{
+    "aliases": [],
+    "description": "Paul Yaswen at University of California, Berkeley",
+    "name": "paul-yaswen",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Paul Yaswen",
+    "url": "http://stemcellcenter.berkeley.edu/PIs/yaswen.html",
+    "uuid": "d7b8d8a7-4abf-4d68-ad16-0fba096fd341"
+},
+{
+    "aliases": [],
+    "description": "Michael Bender at Fred Hutchinson Cancer Research Center",
+    "name": "michael-bender",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Michael Bender",
+    "url": "http://www.seattlechildrens.org/medical-staff/michael-a-bender/",
+    "uuid": "d83a9d9a-70e7-4469-b96d-abcc379e4eaf"
+},
+{
+    "aliases": [],
+    "description": "Florence Maschat at Institute de Genomique Fonctionelle",
+    "name": "florence-maschat",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Florence Maschat",
+    "url": "http://www.igh.cnrs.fr/equip/WebFM/index.html",
+    "uuid": "d8ae2948-c7ad-40b3-9ea1-f6edb7438aa9"
+},
+{
+    "aliases": [],
+    "description": "A. Thomas Look at Dana-Farber Cancer Institute",
+    "name": "a-thomas-look",
+    "schema_version": "6",
+    "status": "released",
+    "title": "A. Thomas Look",
+    "url": "http://researchers.dana-farber.org/directory/profile.asp?pict_id=0000129",
+    "uuid": "d93f7f72-517e-41c5-8607-bfc994bc40fa"
+},
+{
+    "aliases": [],
+    "description": "Recombinant Antibody Network",
+    "name": "ran",
+    "schema_version": "6",
+    "status": "released",
+    "title": "RAN",
+    "url": "http://recombinant-antibodies.org/",
+    "uuid": "da36b765-1ffe-40f9-bc9d-1954a3aafd31"
+},
+{
+    "aliases": [],
+    "description": "Zen Bioscience",
+    "name": "zen-bioscience",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Zen Bioscience",
+    "url": "http://www.zen-bioscience.com/new/",
+    "uuid": "da7c0bcd-316a-443a-89a3-3d21178df2b7"
+},
+{
+    "aliases": [],
+    "description": "Richard Myers at the HudsonAlpha Institute for Biotechnology",
+    "name": "richard-myers",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Richard Myers",
+    "uuid": "db12505e-fd2b-40bc-9dad-bd9a09707647"
+},
+{
+    "aliases": [],
+    "description": "Asterand, Inc",
+    "name": "asterand",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Asterand",
+    "url": "http://www.asterand.com/Asterand/",
+    "uuid": "dc50289a-579f-45c9-926e-843ba67807f2"
+},
+{
+    "aliases": [],
+    "description": "Robert Paulson at Pennsylvania State University",
+    "name": "robert-paulson",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Robert Paulson",
+    "url": "http://vbs.psu.edu/research/labs/paulson",
+    "uuid": "dcc29973-d1d9-42d4-8c4f-d3e63c59380a"
+},
+{
+    "aliases": [],
+    "description": "Kevin Struhl at Harvard University",
+    "name": "kevin-struhl",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kevin Struhl",
+    "url": "https://struhl.med.harvard.edu/",
+    "uuid": "dd05ba13-b5ca-4bc1-826e-5d116105015f"
+},
+{
+    "aliases": [],
+    "description": "Assay Biotechnology",
+    "name": "assay-biotech",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Assay Biotech",
+    "url": "http://www.assaybiotechnology.com/",
+    "uuid": "dd54a197-4352-478d-9120-f22189521f8d"
+},
+{
+    "aliases": [],
+    "description": "Thomas Jenuwein at Max Planck Institute of Immunobiology and Epigenetics",
+    "name": "thomas-jenuwein",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thomas Jenuwein",
+    "url": "http://www1.ie-freiburg.mpg.de/jenuwein",
+    "uuid": "df0655df-bfc6-45ba-9ea8-74e26f3559e6"
+},
+{
+    "aliases": [],
+    "description": "",
+    "name": "leidos",
+    "schema_version": "6",
+    "status": "released",
+    "title": "LEIDOS",
+    "url": "https://www.leidos.com/",
+    "uuid": "df428c62-917f-4773-aabd-a78b369ec5a0"
+},
+{
+    "aliases": [],
+    "description": "ScienCell Research Laboratories",
+    "name": "sciencell",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ScienCell",
+    "url": "http://www.sciencellonline.com/",
+    "uuid": "df860130-1f7e-4c0d-8329-57cdf1e64b24"
+},
+{
+    "aliases": [],
+    "description": "R&D Systems",
+    "name": "rd-systems",
+    "schema_version": "6",
+    "status": "released",
+    "title": "RD Systems",
+    "url": "http://www.rndsystems.com",
+    "uuid": "e15bab28-d1e0-4242-a4ec-498c39643819"
+},
+{
+    "aliases": [],
+    "description": "MBL International",
+    "name": "mbli",
+    "schema_version": "6",
+    "status": "released",
+    "title": "MBLI",
+    "url": "http://www.mblintl.com/",
+    "uuid": "e1634b25-6161-4723-9c70-76dc9eb0aa8b"
+},
+{
+    "aliases": [],
+    "description": "Robert White at Beatson Institute for Cancer Research",
+    "name": "robert-white",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Robert White",
+    "url": "http://www.beatson.gla.ac.uk/",
+    "uuid": "e1823da7-72c3-427a-804b-4ab4978c321a"
+},
+{
+    "aliases": [],
+    "description": "Guangshuo Ou at Center for Life Sciences",
+    "name": "guangshuo-ou",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Guangshuo Ou",
+    "url": "http://www.cls.edu.cn/english/PrincipalInvestigator/pi/index2187.shtml",
+    "uuid": "e1ca53c1-e815-495d-bdbe-3ad35dc0b4fc"
+},
+{
+    "aliases": [],
+    "description": "",
+    "name": "jackson-labs",
+    "schema_version": "6",
+    "status": "released",
+    "title": "The Jackson Laboratory",
+    "url": "http://www.jax.org/index.html",
+    "uuid": "e2f552ae-ecd9-400f-8cab-3c9b90440378"
+},
+{
+    "aliases": [],
+    "description": "Austin Smith at University of Cambridge",
+    "name": "austin-smith",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Austin Smith",
+    "url": "http://www.bioc.cam.ac.uk/uto/smitha",
+    "uuid": "e34dbfae-7170-4486-92d0-f640587276e8"
+},
+{
+    "aliases": [],
+    "description": "Andrew Z. Fire laboratory at Stanford",
+    "name": "andrew-fire",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Andrew Z. Fire",
+    "uuid": "e369d487-1f75-407d-ae62-8b1a3e010014"
+},
+{
+    "aliases": [],
+    "name": "rene-maehr",
+    "schema_version": "6",
+    "status": "in progress",
+    "title": "Ren\u00e9 Maehr",
+    "url": "http://maehrlab.net/",
+    "uuid": "e36fce4f-5db4-4385-97d7-185330dc5f9b"
+},
+{
+    "aliases": [],
+    "name": "andrea-tenner",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Andrea Tenner",
+    "url": "https://tennerlab.bio.uci.edu/",
+    "uuid": "e3f7c91e-8b2a-4e84-94b8-3a4b6c33f361"
+},
+{
+    "aliases": [],
+    "description": "Health Protection Agency Culture Collections",
+    "name": "ecacc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ECACC",
+    "url": "http://www.hpacultures.org.uk",
+    "uuid": "e5262635-e4c8-4cf7-bfab-ad7e8959f648"
+},
+{
+    "aliases": [],
+    "description": "Mitchell Weiss at University of Pennsylvania",
+    "name": "mitchell-weiss",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Mitchell Weiss",
+    "url": "http://www.med.upenn.edu/apps/faculty/index.php/g20000320/p14904",
+    "uuid": "e6697e69-9c1b-4ff1-bf64-3bcb9eee107c"
+},
+{
+    "aliases": [],
+    "description": "Arthur Weiss at UCSF",
+    "name": "arthur-weiss",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Arthur Weiss",
+    "url": "http://sabre.ucsf.edu/executive/arthur_weiss.html",
+    "uuid": "e6c18fdd-36e1-405b-af88-5240700106f6"
+},
+{
+    "aliases": [],
+    "description": "Jan Larsson at Ume\u00e5 University",
+    "name": "jan-larsson",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jan Larsson",
+    "url": "http://www.molbiol.umu.se/english/research/researchers/jan-larsson/",
+    "uuid": "e6ffbc60-57ba-44d4-889f-40be0c1fc1c0"
+},
+{
+    "aliases": [],
+    "name": "kyoko-yokomori",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kyoko Yokomori",
+    "uuid": "e8ddb8df-1de5-4fb7-ba3f-ece6129d2f78"
+},
+{
+    "aliases": [],
+    "description": "ZenBio",
+    "name": "zenbio",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ZenBio",
+    "url": "http://www.zen-bio.com",
+    "uuid": "e9e4d626-85bd-46fc-9c50-14579bfd6053"
+},
+{
+    "aliases": [],
+    "description": "Stephen Bell at Massachusetts Institute of Technology",
+    "name": "stephen-bell",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Stephen Bell",
+    "url": "https://biology.mit.edu/people/stephen_bell",
+    "uuid": "eac7d82d-2296-475e-a479-830f37beefe6"
+},
+{
+    "aliases": [],
+    "description": "American Type Culture Collection (ATCC)",
+    "name": "atcc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ATCC",
+    "url": "http://www.atcc.org/",
+    "uuid": "eadabaf1-d5b6-4b48-8847-e86461f12101"
+},
+{
+    "aliases": [],
+    "description": "Progeria Research Foundation",
+    "name": "progeria-research",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Progeria Research",
+    "url": "http://www.progeriaresearch.org",
+    "uuid": "eb9c6b10-9eca-4dab-8bf0-8fe7e484a80c"
+},
+{
+    "aliases": [],
+    "description": "Donald Moerman at the BC Cancer Agency (C. elegans fosmid clone library)",
+    "name": "donald-moerman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Donald Moerman",
+    "url": "http://elegans.bcgsc.ca/",
+    "uuid": "ebe6cf51-b383-487e-95e1-4bb2719e9ac7"
+},
+{
+    "aliases": [],
+    "description": "EMD Millipore",
+    "name": "millipore",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Millipore",
+    "url": "http://www.emdmillipore.com",
+    "uuid": "ede69357-7024-440e-979a-cdc926c69bff"
+},
+{
+    "aliases": [],
+    "description": "Shelly Heimfeld at Fred Hutchison Cancer Research Center",
+    "name": "shelly-heimfeld",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Shelly Heimfeld",
+    "url": "https://labs.fhcrc.org/heimfeld/index.html",
+    "uuid": "ee9ba3e3-4eab-4aee-a7d9-42fb61df5311"
+},
+{
+    "aliases": [],
+    "description": "Lonza Group Ltd.",
+    "name": "lonza",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Lonza",
+    "url": "http://www.lonza.com/",
+    "uuid": "f00336ec-6bf3-48fe-8898-2a017f50b948"
+},
+{
+    "aliases": [],
+    "description": "Kevin White at University of Chicago",
+    "name": "kevin-white",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kevin White",
+    "url": "http://www.genes.uchicago.edu/white.html",
+    "uuid": "f060244e-1d31-4633-ae4a-b06d21a90568"
+},
+{
+    "aliases": [],
+    "description": "Sigma-Aldrich",
+    "name": "sigma",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Sigma",
+    "url": "http://www.sigmaaldrich.com",
+    "uuid": "f13c90dd-1b51-439a-8d78-ca033c6aef23"
+},
+{
+    "aliases": [],
+    "description": "Bloomington Drosophila Stock Center at Indiana University",
+    "name": "bdsc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Bloomington Drosophila Stock Center at Indiana University",
+    "url": "http://flystocks.bio.indiana.edu/",
+    "uuid": "f164bab2-dc82-421b-93a0-d26ae8540d5b"
+},
+{
+    "aliases": [],
+    "description": "Abnova",
+    "name": "abnova",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Abnova",
+    "url": "http://www.abnova.com",
+    "uuid": "f21c8da9-4f9a-41bb-b815-30fad0fa5a93"
+},
+{
+    "aliases": [],
+    "description": "National Centre for Adult Stem Cell Research (NCASCR), Griffith University",
+    "name": "ncascr",
+    "schema_version": "6",
+    "status": "released",
+    "title": "NCASCR",
+    "url": "http://www.griffith.edu.au/science-aviation/national-centre-adult-stem-cell-research",
+    "uuid": "f34fdfe5-af40-464f-945b-fbb9476ae5a2"
+},
+{
+    "aliases": [],
+    "description": "Anthony Hyman at Max Planck Institute of Molecular Cell Biology and Genetics",
+    "name": "anthony-hyman",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Anthony Hyman",
+    "url": "http://hymanlab.mpi-cbg.de/hyman_lab/",
+    "uuid": "f5da2a2a-a312-4718-a827-60dc479e4a0a"
+},
+{
+    "aliases": [],
+    "description": "Thomas Montine at University of Washington Deptartmen of Pathology",
+    "name": "thomas-montine",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Thomas Montine",
+    "url": "http://www.pathology.washington.edu/faculty/montine",
+    "uuid": "f6deff94-8245-4401-9e5f-9abfa1e82271"
+},
+{
+    "aliases": [],
+    "description": "",
+    "name": "manuel-garber",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Manuel Garber",
+    "uuid": "f834f8cd-8f92-4e58-a25b-9edb240d460a"
+},
+{
+    "aliases": [],
+    "description": "Kristin Ardlie, Broad Institute Genomics Platform",
+    "name": "kristin-ardlie",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Kristin Ardlie",
+    "uuid": "f85ecd67-abf2-4a26-89c8-53a7273c8b0c"
+},
+{
+    "aliases": [],
+    "description": "Gerd Blobel at University of Pennsylvania",
+    "name": "gerd-blobel",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Gerd Blobel",
+    "url": "http://www.med.upenn.edu/apps/faculty/index.php/p1105",
+    "uuid": "f8c266c5-4fca-4c6c-a558-6e7deacb2b61"
+},
+{
+    "aliases": [],
+    "description": "SDIX, LLC",
+    "name": "sdix",
+    "schema_version": "6",
+    "status": "released",
+    "title": "SDIX, LLC",
+    "url": "http://www.sdix.com/",
+    "uuid": "f8d9f798-16c2-465a-8e6a-fb794811c0a7"
+},
+{
+    "aliases": [],
+    "description": "Todd Golub at Broad Institute CCLE",
+    "name": "todd-golub",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Todd Golub",
+    "url": "http://www.broadinstitute.org/ccle/home",
+    "uuid": "f903f256-ddd9-4ff8-b30e-71e99a018a12"
+},
+{
+    "aliases": [
+        "encode:horizon"
+    ],
+    "name": "horizon",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Horizon",
+    "url": "https://www.horizondiscovery.com/",
+    "uuid": "f924b267-5020-4810-9179-7d28254a4fe3"
+},
+{
+    "aliases": [],
+    "description": "Arthur Skoultchi at Albert Einstein College of Medicine",
+    "name": "arthur-skoultchi",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Arthur Skoultchi",
+    "url": "http://www.einstein.yu.edu/faculty/4683/arthur-skoultchi/",
+    "uuid": "fa173c30-cf42-4a70-81d7-0734c577e820"
+},
+{
+    "aliases": [],
+    "description": "Aviva Systems Biology",
+    "name": "aviva",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Aviva",
+    "url": "http://www.avivasysbio.com",
+    "uuid": "fa701215-07e6-4ffe-a8f4-20356d66f3e0"
+},
+{
+    "aliases": [],
+    "description": "Eric Lai at Memorial Sloan Kettering Cancer Center",
+    "name": "eric-lai",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Eric Lai",
+    "url": "https://www.mskcc.org/research-areas/labs/eric-lai",
+    "uuid": "fb1460af-e225-4387-b663-e2d4aac3e6b9"
+},
+{
+    "aliases": [],
+    "description": "Jan Brinchmann at Rikshospitalet University Hospital",
+    "name": "jan-brinchmann",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Jan Brinchmann",
+    "url": "http://www.med.uio.no/imb/english/people/aca/ebrinch/",
+    "uuid": "fc804f1e-63b9-44a9-b440-315dd8105bbd"
+},
+{
+    "aliases": [],
+    "description": "Bradley Bernstein at The Eli and Edythe L. Broad Institute of Harvard and MIT",
+    "name": "bradley-bernstein",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Bradley Bernstein",
+    "url": "https://csb.mgh.harvard.edu/bradley_bernstein",
+    "uuid": "fc8d410a-1aa8-11e3-bf97-14109fe2b29d"
+},
+{
+    "aliases": [],
+    "description": "James Engel at University of Michigan",
+    "name": "james-engel",
+    "schema_version": "6",
+    "status": "released",
+    "title": "James Engel",
+    "url": "http://www.med.umich.edu/cdb/people/engel.html",
+    "uuid": "fd53a65a-330e-4b0c-b71c-fbe1c1f0571a"
+},
+{
+    "aliases": [],
+    "description": "BioLegend",
+    "name": "biolegend",
+    "schema_version": "6",
+    "status": "released",
+    "title": "BioLegend",
+    "url": "http://www.biolegend.com/",
+    "uuid": "feabbb1f-2df8-4fe7-ab70-0a31afa01710"
+},
+{
+    "aliases": [],
+    "description": "North Carolina Tissue Consortium (NCTC)",
+    "name": "nctc",
+    "schema_version": "6",
+    "status": "released",
+    "title": "NCTC",
+    "url": "http://www.ecu.edu/cs-dhs/med/NcTissueConsortium.cfm",
+    "uuid": "fedf7f64-7914-4f9e-b6a7-be8439081e71"
+},
+{
+    "aliases": [],
+    "description": "Huntington Willard at Duke University",
+    "name": "huntington-willard",
+    "schema_version": "6",
+    "status": "released",
+    "title": "Huntington Willard",
+    "url": "http://www.genome.duke.edu/directory/faculty/willard/",
+    "uuid": "ff41908e-1a96-11e3-aaa5-14109fe2b29d"
+},
+{
+    "aliases": [],
+    "description": "ReproCELL",
+    "name": "repocell",
+    "schema_version": "6",
+    "status": "released",
+    "title": "ReproCELL",
+    "url": "https://www.reprocell.com",
+    "uuid": "ffa366f2-3f9b-4f39-908c-91123fcd7388"
+}
 ]

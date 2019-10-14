@@ -1,39 +1,626 @@
 [
-    {
-        "status": "in progress",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "e97dae31-6250-4cbd-a534-3f0244480f95",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "9558830f-154f-449f-814b-fd3435417edf" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "sample size": 15000000,
-        "paired-end": true,
-        "read length": 36,
-        "NRF": 0.851224,
-        "PBC1": 0.881151,
-        "PBC2": 9.486023,
-        "NSC": 1.962623,
-        "RSC": 1.04969
-    },
-    {
-        "status": "in progress",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "e97dae31-6250-2cbd-a534-3f0244180f95",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "9558830f-154f-449f-814b-fd3435417edf" ],
-        "cross_correlation_plot": "CH17_pBACGK1.1n.png",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "sample size": 15000000,
-        "paired-end": true,
-        "read length": 46,
-        "NRF": 0.851224,
-        "PBC1": 0.881151,
-        "PBC2": 9.486023,
-        "NSC": 1.962623,
-        "RSC": 1.04969
-    }
-
+{
+    "NRF": 0.875153,
+    "NSC": 2.515758,
+    "PBC1": 0.929124,
+    "PBC2": 20.231845,
+    "RSC": 1.582164,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F72b4Xj0fF4k8Xg2Gy4G7Fx9"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:19:10.633602+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF206IPN"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "70d3571f-e9bb-4959-932e-62a94043ec22",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0639a744-f3b4-4c74-9cc0-eb260f5373d9"
+},
+{
+    "NRF": 0.682599,
+    "NSC": 7.260339,
+    "PBC1": 0.845347,
+    "PBC2": 10.669262,
+    "RSC": 1.605943,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F72b4Xj0fF4k8Xg2Gy4G7Fvz"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:19:05.641204+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF823HSL"
+    ],
+    "read length": 27,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a835beed-1891-4050-81a1-d7be4e805964",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0c11fafa-eb1d-40d2-88c6-b23dbe170337"
+},
+{
+    "NRF": 0.785675,
+    "NSC": 5.040372,
+    "PBC1": 0.864965,
+    "PBC2": 10.375428,
+    "RSC": 1.014696,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-FFbVX0Q0fF4j9yjb0xVq0XVJ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:48:33.927114+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF682LAI"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "e3381511-3b7b-4f5b-9c9e-ad893680dfbd",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0d84517e-5e1f-4b65-acac-3cb2d1ab3e9a"
+},
+{
+    "NRF": 0.684388,
+    "NSC": 7.174829,
+    "PBC1": 0.846408,
+    "PBC2": 10.747872,
+    "RSC": 1.601552,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F05BJK00fF4YfqZYX43J0kG8"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:07:49.736918+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF127SLN"
+    ],
+    "read length": 27,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "01101233-cade-449b-951f-da83958fb3c6",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "1da994c2-84e8-4006-803a-f324429bcbe6"
+},
+{
+    "NRF": 0.803187,
+    "NSC": 4.556906,
+    "PBC1": 0.882762,
+    "PBC2": 12.052615,
+    "RSC": 1.024274,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-FFZvvy80fF4bpgqV0vfBYjK8"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:32:30.972913+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF996VUV"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "bb9a9df1-3415-4718-b5a1-acaebe695310",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "29fb07db-93a2-40d1-934e-fa340c555b38"
+},
+{
+    "NRF": 0.740135,
+    "NSC": 5.21937,
+    "PBC1": 0.845178,
+    "PBC2": 9.004034,
+    "RSC": 1.24338,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F6Xp0Vj0fF4YpJ3PB37kb74G"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:47:29.144928+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF193MMR"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "75e99e50-f0b9-4a94-bf58-23919fafbd8c",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "3023180e-d6d5-4f4d-9de9-4530780881a9"
+},
+{
+    "NRF": 0.870314,
+    "NSC": 2.519337,
+    "PBC1": 0.928661,
+    "PBC2": 20.214468,
+    "RSC": 1.577543,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F74V8Vj0fF4Yb4Vk3Kx9gvzB"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:15:08.404887+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF862WRG"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "91353038-f397-4fbd-ad6c-d3ecbf152e34",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "31c18629-d2ae-4fc6-9d4a-4a00a9d80000"
+},
+{
+    "NRF": 0.842333,
+    "NSC": 3.377683,
+    "PBC1": 0.899665,
+    "PBC2": 13.768093,
+    "RSC": 1.139849,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F0JB18j0fF4Vz1J9q5qKfpyZ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T03:50:39.997590+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF215EZE"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "1beadbb4-6d92-4788-80f1-8b59add149ad",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "36467c54-e5cd-43e3-909c-000056a43bd1"
+},
+{
+    "NRF": 0.681938,
+    "NSC": 7.177782,
+    "PBC1": 0.845675,
+    "PBC2": 10.705395,
+    "RSC": 1.599916,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F0599Kj0KZ0p6bJBPJzjKj9V"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T15:03:09.071296+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF393YTN"
+    ],
+    "read length": 27,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a95b3f45-0c10-4f3f-8d84-26a9d59ac99f",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "539152e2-b8a1-4e09-9054-2d9fee18d25f"
+},
+{
+    "NRF": 0.940149,
+    "NSC": 1.163856,
+    "PBC1": 0.941427,
+    "PBC2": 17.270307,
+    "RSC": 1.21105,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F8B86VQ0fF4bQfF8PPZ7x2KQ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-11-26T00:48:48.775827+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": true,
+    "quality_metric_of": [
+        "ENCFF326LLN"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "8d385ce9-40a6-4761-95df-761c15adb3bc",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "53eb962d-9b88-4727-ad10-d0006206628d"
+},
+{
+    "NRF": 0.876911,
+    "NSC": 2.493391,
+    "PBC1": 0.930002,
+    "PBC2": 20.461311,
+    "RSC": 1.592065,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F05BJK00fF4YfqZYX43J0kGG"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:07:57.416013+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF738JMU"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "2597d318-8fff-48f0-b843-70af640fbe67",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "5e56f0c0-d0db-4a87-a5d3-fb1601b6c071"
+},
+{
+    "NRF": 0.93689,
+    "NSC": 1.176974,
+    "PBC1": 0.940985,
+    "PBC2": 17.283986,
+    "RSC": 1.18561,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F8K41Zj0fF4b2jkV4gQ1fp2z"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-12-04T03:26:19.737571+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": true,
+    "quality_metric_of": [
+        "ENCFF985OXZ"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "7d7e2e80-a776-4f22-a2eb-a982e02f915d",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "5e8a51fe-00fe-4514-95d4-a261bbed9409"
+},
+{
+    "NRF": 0.680034,
+    "NSC": 7.213609,
+    "PBC1": 0.844715,
+    "PBC2": 10.641512,
+    "RSC": 1.59552,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F74V8VQ0fF4Yb4Vk3Kx9gvz5"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:15:01.137910+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF318NIH"
+    ],
+    "read length": 27,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6df7b805-5ddc-4517-8182-9460ef006dc9",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "721b4d35-190d-480f-b983-5e1d21b0106b"
+},
+{
+    "NRF": 0.835857,
+    "NSC": 3.366425,
+    "PBC1": 0.89895,
+    "PBC2": 13.706885,
+    "RSC": 1.132095,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F0QKx8j0fF4fZj590J8Yzqkf"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T15:41:56.768164+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF711FYT"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "215ed565-c25e-48bd-8d10-77c58ff21def",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "72aac358-b0f8-45fe-8e1f-2d35208788fe"
+},
+{
+    "NRF": 0.834805,
+    "NSC": 3.395838,
+    "PBC1": 0.898156,
+    "PBC2": 13.612504,
+    "RSC": 1.135925,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F6Xp0X00fF4YpJ3PB37kb74y"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:47:34.052713+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF949CIK"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "dc50e6e5-56dc-4db5-ac21-784cdcf94acb",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "74af7d1a-35bc-4142-aa43-94511e1cbe39"
+},
+{
+    "NRF": 0.847101,
+    "NSC": 1.110202,
+    "PBC1": 0.845021,
+    "PBC2": 6.355228,
+    "RSC": 1.412919,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F6j4kzQ0fF4X8Q3V3y2kK3Bp"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-12T22:28:59.026930+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": true,
+    "quality_metric_of": [
+        "ENCFF283BSF"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6f2ead69-a929-4641-afc1-66cf0cb03501",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "9c91fcbd-f38b-45db-98ac-9c95b6695112"
+},
+{
+    "NRF": 0.745997,
+    "NSC": 5.226186,
+    "PBC1": 0.845748,
+    "PBC2": 9.024941,
+    "RSC": 1.247171,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F0JB18j0fF4Vz1J9q5qKfpyQ"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T03:50:29.931196+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF390MNH"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "e085fa4b-f1aa-4350-820b-efc8ca78b9ab",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a3f1ce56-1014-4508-8872-051cdfb5a755"
+},
+{
+    "NRF": 0.740994,
+    "NSC": 5.202853,
+    "PBC1": 0.845762,
+    "PBC2": 9.038439,
+    "RSC": 1.242534,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F0QKx8j0fF4fZj590J8YzqkX"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T15:41:50.094683+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF562JJK"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "6756d936-8514-49c5-a9fc-eba573d8a98f",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a86e2f70-7cae-471b-8a10-e933617fd3fe"
+},
+{
+    "NRF": 0.776365,
+    "NSC": 5.023838,
+    "PBC1": 0.864813,
+    "PBC2": 10.387884,
+    "RSC": 1.014842,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-FFZvvy00fF4bpgqV0vfBYjK0"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:32:24.487405+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF584ZGK"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "c0460473-de3b-4584-ada2-4029c6c188e5",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "aa1d57ae-818f-4f4b-a81c-a2011ed5a5b0"
+},
+{
+    "NRF": 0.841027,
+    "NSC": 3.403953,
+    "PBC1": 0.898856,
+    "PBC2": 13.652332,
+    "RSC": 1.140479,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F66xbF00fF4VxxK93860bz01"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:01:13.905457+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF168SXE"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "847a81fd-36a1-45a7-ab3a-0a92a2bb03ba",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ba1a15d4-85e6-434f-bab2-55358f074c27"
+},
+{
+    "NRF": 0.844998,
+    "NSC": 1.132637,
+    "PBC1": 0.844763,
+    "PBC2": 6.364855,
+    "RSC": 1.28061,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F6v5jf80fF4YpP529Z11fYG4"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-22T16:47:36.683396+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": true,
+    "quality_metric_of": [
+        "ENCFF022PJN"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "f5541901-0da2-4d6f-bdc0-c05d4b99668f",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ccc18ac3-5ae9-41d9-bf9b-79fab84d8912"
+},
+{
+    "NRF": 0.745113,
+    "NSC": 5.240519,
+    "PBC1": 0.845338,
+    "PBC2": 9.009124,
+    "RSC": 1.24993,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F66xbBj0fF4VxxK93860byz7"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:01:08.439308+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF744BIP"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "191a6d0d-f222-4d85-886c-efea8873283b",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d26e2146-1967-485c-89cf-c1743a207d9d"
+},
+{
+    "NRF": 0.813832,
+    "NSC": 4.560028,
+    "PBC1": 0.882993,
+    "PBC2": 12.03788,
+    "RSC": 1.025369,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-FFbVX0j0fF4j9yjb0xVq0XVX"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:48:40.100430+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF732BYR"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "861af652-28f7-46b9-a07e-c92bed5f87ff",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "f7298ae8-5414-456b-86c7-1507b346c51a"
+},
+{
+    "NRF": 0.871618,
+    "NSC": 2.499137,
+    "PBC1": 0.929404,
+    "PBC2": 20.411043,
+    "RSC": 1.572025,
+    "aliases": [
+        "dnanexus:qc.pbc_spp.job-F0599P00KZ0p6bJBPJzjKj9x"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_15000000_sample_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T15:03:13.276992+00:00",
+    "lab": "encode-processing-pipeline",
+    "paired-end": false,
+    "quality_metric_of": [
+        "ENCFF414DFK"
+    ],
+    "read length": 36,
+    "sample size": 15000000,
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "a2c86e7d-0837-4118-8373-8f3ebe4b5c57",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ffd928f2-c6c7-4fc3-926c-029d3e8a4b01"
+}
 ]

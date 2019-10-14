@@ -1,182 +1,513 @@
-
 [
-     {
-        "accession": "ENCPL001MQC",
-        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
-        "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
-        "title": "WGBS Methlyation Pipeline - QC",
-        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
-        "analysis_steps": [
-            "wgbs-lambda-qc-step-v-1"
-        ],
-        "lab": "joe-ecker",
-        "award": "U54HG006997",
-        "status": "released"
-    },
-    {
-        "accession": "ENCPL000MEG",
-        "pipeline_version": 1,
-        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
-        "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
-        "title": "WGBS Methlyation Pipeline - Genome Conversion",
-        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
-        "references": [
-            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
-            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
-        ],
-        "analysis_steps": [
-            "prep-bismark-step-v-1"
-        ],
-        "lab": "joe-ecker",
-        "award": "U54HG006997",
-        "status": "released"
-    },
-    {
-        "accession": "ENCPL002BIS",
-        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
-        "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
-        "title": "WGBS Methlyation Pipeline",
-        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
-        "analysis_steps": [
-            "mott-trim-align-bismark-step-v-1",
-            "extract-bismark-step-v-1"
-        ],
-        "lab": "joe-ecker",
-        "award": "U54HG006997",
-        "status": "released"
-    },
-    {
-        "accession": "ENCPL003RNA",
-        "assay_term_names": ["RNA-seq"],
-        "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
-        "title": "long-rna-seq-pipeline-pe",
-        "award": "U54HG007004",
-        "lab": "thomas-gingeras",
-        "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline",
-        "analysis_steps": [
-            "prep-star-step-v-1",
-            "prep-tophat-step-v-1",
-            "prep-rsem-step-v-1",
-            "align-star-step-v-1",
-            "align-tophat-step-v-1",
-            "quant-rsem-step-v-1",
-            "bam-to-bigwig-tophat-step-v-1",
-            "bam-to-bigwig-star-step-v-1"
-        ],
-        "status": "released"
-    },
-    {
-        "accession": "ENCPL001GRV",
-        "assay_term_names": ["RNA-seq"],
-        "analysis_steps": [
-            "alignment-test-step-v-1",
-            "signal-test-step-v-1"
-        ],
-        "documents": [
-            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
-        ],
-        "status": "released",
-        "title": "Graveley RNA-seq Analysis",
-        "lab": "brenton-graveley",
-        "award": "U54HG007005",
-        "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
-    },
-    {
-        "accession": "ENCPL001CRG",
-        "assay_term_names": ["RNA-seq"],
-        "analysis_steps": [
-            "alignment-test-step-v-2",
-            "quantification-test-step-v-1",
-            "idr-test-step-v-1"
-        ],
-        "documents": [
-            "roderic-guigo:GeneQuantificationPipeline"
-        ],
-        "status": "released",
-        "award": "U54HG007004",
-        "lab": "thomas-gingeras",
-        "title": "Gene Quantification Pipeline",
-        "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66"
-    },
-    {
-        "accession": "ENCPL001ENC",
-        "assay_term_names": ["ChIP-seq"],
-        "analysis_steps": [
-            "encode-2-step-v-1",
-            "idr-test-step-v-2"
-        ],
-        "documents": [
-            "encode:ENCODE2_ChIP_seq_pipeline_diagram",
-            "encode:ENCODE2ChIP-seqpipelinespecifications"
-        ],
-        "status": "released",
-        "title": "ENCODE2 ChIP-seq pipeline",
-        "award": "U54HG007004",
-        "lab": "thomas-gingeras",
-        "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8"
-    },
-    {
-        "accession": "ENCPL001CLP",
-        "assay_term_names": ["eCLIP"],
-        "analysis_steps": [
-            "alignment-test-step-v-3",
-            "peak-calling-test-step-v-1"
-        ],
-        "documents": [
-             "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
-        ],
-        "status": "released",
-        "lab": "brenton-graveley",
-        "award": "U54HG007005",
-        "title": "iCLIP-seq Analysis Pipeline",
-        "uuid": "21934150-5e2f-11e4-9803-0800200c9a66"
-    },
-    {
-        "accession": "ENCPL001FVD",
-        "assay_term_names": ["RNA-seq", "eCLIP"],
-        "analysis_steps": [
-            "fastqc-step-v-1"
-        ],
-        "status": "released",
-        "lab": "brenton-graveley",
-        "award": "U54HG007005",
-        "title": "ENCODE File Validation",
-        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66"
-    },
-    {
-        "accession": "ENCPL001ISO",
-        "assay_term_names": ["long read RNA-seq"],
-        "analysis_steps": [
-            "fastqc-step-v-1"
-        ],
-        "status": "released",
-        "lab": "brenton-graveley",
-        "award": "U54HG007005",
-        "title": "Long read RNA-seq pipeline",
-        "uuid": "fd603a65-7641-4e4d-b7df-fadbc4f38da6"
-    },
-    {
-        "accession": "ENCPL001STR",
-        "assay_term_names": ["STARR-seq"],
-        "analysis_steps": [
-            "fastqc-step-v-1"
-        ],
-        "status": "released",
-        "lab": "brenton-graveley",
-        "award": "U54HG007005",
-        "title": "Test STARR-seq pipeline",
-        "uuid": "5fe3fdf6-5b1a-4aca-8116-ded7acf13037"
-    },
-    {
-        "accession": "ENCPL001MRN",
-        "assay_term_names": ["microRNA-seq"],
-        "analysis_steps": [
-            "align-star-step-v-1"
-        ],
-        "status": "released",
-        "title": "microRNA-seq pipeline",
-        "lab": "brenton-graveley",
-        "award": "U54HG007005",
-        "uuid": "cd340a00-50aa-11e4-916c-0800200c9a66"
-    }
+{
+    "accession": "ENCPL201DNS",
+    "aliases": [
+        "dnanexus:dnase-pipeline-se-v-2"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "dnase-index-bwa-step-v-1",
+        "dnase-rep-corr-se-step-v-2"
+    ],
+    "assay_term_names": [
+        "DNase-seq",
+        "genetic modification followed by DNase-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2017-08-08T21:56:38.291212+00:00",
+    "description": "ENCODE Uniform Processing Pipeline of DNase-seq Hypersensitive Sites for single-end reads (DCC version 2). This pipeline inputs gzipped DNA-sequencing reads in the form of fastqs and a genome index. These fastqs come from technical replicates that are processed with bwa to generate unfiltered and filtered alignments (bam format). The filtered alignments, combined with a DNase mappability reference. More information could be found on the attached document or https://www.encodeproject.org/dnase-seq/.",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "DNase-HS pipeline single-end - Version 2",
+    "uuid": "01a994c4-72f3-43b5-9401-f6da45fb460c"
+},
+{
+    "accession": "ENCPL002DNS",
+    "aliases": [
+        "dnanexus:dnase-pipeline-pe-v-1"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "dnase-index-bwa-step-v-1"    ],
+    "assay_term_names": [
+        "DNase-seq",
+        "genetic modification followed by DNase-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T23:53:00.506787+00:00",
+    "description": "ENCODE Uniform Processing Pipeline of DNase-seq Hypersensitive Sites for paired-end reads (DCC version 1). This pipeline inputs gzipped DNA-sequencing reads in the form of fastqs and a genome index. These fastqs come from technical replicates that are processed with bwa to generate unfiltered and filtered alignments (bam format). The filtered alignments, combined with a DNase mappability reference. More information could be found on the attached document or https://www.encodeproject.org/dnase-seq/.",
+    "documents": [
+        "03e5b535-dcdf-4d5e-8ffc-fa7bef88b34b"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases",
+    "status": "archived",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "DNase-HS pipeline (paired-end)",
+    "uuid": "0f619381-7b80-487f-920d-d9466b9cbc18"
+},
+{
+    "accession": "ENCPL337CSA",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "small-rna-repcorr-qc-step-v-1",
+        "small-rna-star-stranded-signal-step-v-1"
+    ],
+    "assay_term_names": [
+        "RNA-seq",
+        "microRNA-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-07-30T00:25:28.075420+00:00",
+    "description": "ENCODE DAC/DCC run pipeline for small RNA-seq taking single-ended fastq input and producing stranded signals. If your libraries are generated from rRNA-depleted total RNA libraries that are size-selected to be shorter than approximately 200 nucleotides. References used for this pipeline are listed in the pipeline overview document.",
+    "documents": [
+        "4187c88d-f516-4c21-9d31-7831fe339ba6"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/tree/master/dnanexus/small-rna",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Small RNA-seq single-end pipeline",
+    "uuid": "2ec98268-bba7-4872-8c88-7d55c242b28e"
+},
+{
+    "accession": "ENCPL220NBH",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "bwa-indexing-step-v-1",
+        "bwa-alignment-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "U41HG006992",
+    "date_created": "2017-03-09T18:29:33.666735+00:00",
+    "description": "ENCODE defined analysis pipeline for ChIP-seq read mapping",
+    "documents": [
+        "6f6351d4-9310-4a3b-a3c2-70ecac47b28b"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "title": "ChIP-seq read mapping",
+    "uuid": "4168b003-a56e-452c-b550-1c9eaa9a1895"
+},
+{
+    "accession": "ENCPL516QGE",
+    "aliases": [
+        "encode:pool-and-subsample-pipeline"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "bwa-indexing-step-v-1",
+        "bwa-raw-alignment-step-v-1",
+        "alignment-pooling-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-08-25T19:53:38.381846+00:00",
+    "description": "",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/weng-lab/encyclopedia_v3",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "title": "Pool and subsample alignments",
+    "uuid": "507aa5ba-f119-4bd2-a0f5-83bf2271ebd7"
+},
+{
+    "accession": "ENCPL002LPE",
+    "aliases": [],
+    "alternate_accessions": [
+        "ENCPL086BPC"
+    ],
+    "analysis_steps": [
+      
+        "lrna-pe-star-signal-step-v-1",
+        "lrna-repcorr-qc-pe-step-v-1"
+    ],
+    "assay_term_names": [
+        "RNA-seq",
+        "siRNA knockdown followed by RNA-seq",
+        "shRNA knockdown followed by RNA-seq",
+        "CRISPR genome editing followed by RNA-seq",
+        "CRISPRi followed by RNA-seq",
+        "PAS-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-04-10T18:33:41.941895+00:00",
+    "description": "ENCODE pipeline for paired-ended and stranded long RNA-seq data. RNA libraries generated from mRNAs (poly-A(+)), rRNA-depleted total RNA, or poly-A(-) populations that are size-selected to be longer than approximately 200 bp may be run through this pipeline. More information regarding references used for this pipeline and exogenous RNA spike-in controls are described in the pipelines overview document.",
+    "documents": [
+        "6354169f-86f6-4b59-8322-141005ea44eb"
+    ],
+    "lab": "encode-processing-pipeline",
+    "notes": "This is a change in STAR version for memory issue, it's output is equivalent to version 1",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "RNA-seq of long RNAs (paired-end, stranded)",
+    "uuid": "6950bf0d-4e58-40b9-9e0b-288468e8f689"
+},
+{
+    "accession": "ENCPL122WIM",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+       
+        "rampage-star-signal-step-v-1"
+    ],
+    "assay_term_names": [
+        "RAMPAGE",
+        "CAGE"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-06-02T20:57:48.071603+00:00",
+    "description": "ENCODE pipeline for paired-ended RAMPAGE or CAGE data. The pipeline can be used for libraries generated using rRNA-depleted total RNA, >200bp in size. The pipeline inputs paired-end, gzipped, RNA-sequencing reads (fastqs) and a STAR genome index tar.gz file and produces a bam file of aligned reads.",
+    "documents": [
+        "3006c3aa-f1a5-4b16-9a78-c0a57aeb30ec"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/tree/master/dnanexus/rampage",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "RAMPAGE or CAGE (paired-end)",
+    "uuid": "73c68c14-fd0e-4b5c-8414-2e630ab2c909"
+},
+{
+    "accession": "ENCPL794WCG",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "lrna-index-star-step-v-1",
+        
+        "shrna-rna-seq-miso-splicing-quantification-step-v-1",
+        "shrna-rna-seq-cuffdiff-expression-quantification-step-v-1"
+    ],
+    "assay_term_names": [
+        "shRNA knockdown followed by RNA-seq",
+        "CRISPR genome editing followed by RNA-seq"
+    ],
+    "award": "U54HG007005",
+    "date_created": "2016-08-04T19:13:27.738195+00:00",
+    "description": "",
+    "documents": [],
+    "lab": "brenton-graveley",
+    "references": [],
+    "schema_version": "10",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "title": "Graveley shRNA-seq",
+    "uuid": "99eeb060-7d0f-4d8e-a77d-ef4432bfcdc7"
+},
+{
+    "accession": "ENCPL841HGV",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+      
+        "histone-unreplicated-partition-concordance-peaks-to-bigbed-step-v-1",
+        "histone-unreplicated-peaks-to-bigbed-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "U41HG006992",
+    "date_created": "2017-03-21T00:14:25.286050+00:00",
+    "description": "ENCODE analysis pipeline for unreplicated histone ChIP-seq. The pipeline takes as inputs both ChIP-seq reads (from paired-end or single-end libraries) and a set of reference fastas found at https://www.encodeproject.org/data-standards/reference-sequences/. The reference used depends on the assembly.",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/chip-seq-pipeline",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "title": "Histone ChIP-seq (unreplicated)",
+    "uuid": "a3a4d844-823e-4662-ad74-52ed3d057b0d"
+},
+{
+    "accession": "ENCPL210QWH",
+    "aliases": [
+        "dnanexus:dme-se-pipeline"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+      
+        "dme-extract-se-step-v-1",
+        "dme-rep-corr-se-step-v-1"
+    ],
+    "assay_term_names": [
+        "whole-genome shotgun bisulfite sequencing"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-01-09T00:27:15.909306+00:00",
+    "description": "ENCODE DAC/DCC run pipeline for WGBS taking in single-end fastqs and producing CpG, CHG and CHH methylation results. This pipeline inputs gzipped DNA-sequencing reads (fastqs) and a Bismark-transformed, Bowtie-indexed genome in a tar.gz archive file. More information at https://www.encodeproject.org/wgbs/.",
+    "documents": [
+        "964e2676-d0be-4b5d-aeec-f4f02310b221"
+    ],
+    "lab": "encode-processing-pipeline",
+    "notes": "This is version 2 of the WGBS pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "WGBS single-end pipeline",
+    "uuid": "b14ee8fb-b5e8-43ff-a0a2-3c7be00fd463"
+},
+{
+    "accession": "ENCPL001DNS",
+    "aliases": [
+        "dnanexus:dnase-pipeline-se-v-1"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+       
+        "dnase-rep-corr-se-step-v-1"
+    ],
+    "assay_term_names": [
+        "DNase-seq",
+        "genetic modification followed by DNase-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-05-25T00:03:16.493248+00:00",
+    "description": "ENCODE Uniform Processing Pipeline of DNase-seq Hypersensitive Sites for single-end reads (DCC version 1). This pipeline inputs gzipped DNA-sequencing reads in the form of fastqs and a genome index. These fastqs come from technical replicates that are processed with bwa to generate unfiltered and filtered alignments (bam format). The filtered alignments, combined with a DNase mappability reference. More information could be found on the attached document or https://www.encodeproject.org/dnase-seq/.",
+    "documents": [
+        "03e5b535-dcdf-4d5e-8ffc-fa7bef88b34b"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases",
+    "status": "archived",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "DNase-HS pipeline (single-end)",
+    "uuid": "b517ab0c-1f61-447c-9775-465b7036bebd"
+},
+{
+    "accession": "ENCPL450MUC",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        "bwa-indexing-step-v-1",
+        "bwa-raw-alignment-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-11-17T20:31:14.174872+00:00",
+    "description": "",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "title": "Raw mapping with no filtration",
+    "uuid": "b78509bd-ab3c-439a-a76c-34e7156daee8"
+},
+{
+    "accession": "ENCPL002LSE",
+    "aliases": [],
+    "alternate_accessions": [
+        "ENCPL739VZK"
+    ],
+    "analysis_steps": [
+       
+        "lrna-index-star-step-v-1",
+        "lrna-repcorr-qc-se-step-v-1"
+    ],
+    "assay_term_names": [
+        "RNA-seq",
+        "single cell isolation followed by RNA-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-04-10T18:45:20.764509+00:00",
+    "description": "Pipeline for single-ended unstranded data long RNA-seq data as developed by the ENCODE RNA Working Group. RNA libraries generated from mRNAs (poly-A(+)), rRNA-depleted total RNA, or poly-A(-) populations that are size-selected to be longer than approximately 200 bp may be run through this pipeline. More information regarding uniform pipeline restrictions, references used for this pipeline, and exogenous RNA spike-in controls are described in the pipelines overview document.",
+    "documents": [
+        "6354169f-86f6-4b59-8322-141005ea44eb"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "RNA-seq of long RNAs (single-end, unstranded)",
+    "uuid": "b9f561d0-913a-49c2-9611-f551782650cc"
+},
+{
+    "accession": "ENCPL138KID",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+       
+        "tf-idr-peaks-to-bigbed-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-10-28T21:43:04.192637+00:00",
+    "description": "",
+    "documents": [
+        "7009beb8-340b-4e71-b9db-53bb020c7fe2"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/chip-seq-pipeline",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "title": "Transcription factor ChIP-seq",
+    "uuid": "d7d8ed09-5caa-47bc-8548-430edcbdbcaa"
+},
+{
+    "accession": "ENCPL493SGC",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+        
+        "tf-unreplicated-idr-peaks-to-bigbed-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2017-03-21T00:14:32.126175+00:00",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/chip-seq-pipeline",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "title": "Transcription factor ChIP-seq (unreplicated)",
+    "uuid": "de0d77d8-e53b-431a-9897-41f2c5b2a4a8"
+},
+{
+    "accession": "ENCPL985BLO",
+    "aliases": [
+        "dnanexus:dme-pe-pipeline"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+       
+        "dme-rep-corr-pe-step-v-1"
+    ],
+    "assay_term_names": [
+        "whole-genome shotgun bisulfite sequencing"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-01-08T22:53:43.138172+00:00",
+    "description": "ENCODE DAC/DCC run pipeline for WGBS taking in paired-end fastqs and producing CpG, CHG and CHH methylation results. This pipeline inputs gzipped DNA-sequencing reads (fastqs) and a Bismark-transformed, Bowtie-indexed genome in a tar.gz archive file. More information at https://www.encodeproject.org/wgbs/.",
+    "documents": [
+        "964e2676-d0be-4b5d-aeec-f4f02310b221"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "WGBS paired-end pipeline",
+    "uuid": "f089e916-502f-4328-a645-77aabe11bc3b"
+},
+{
+    "accession": "ENCPL202DNS",
+    "aliases": [
+        "dnanexus:dnase-pipeline-pe-v-2"
+    ],
+    "alternate_accessions": [],
+    "analysis_steps": [
+      
+        "dnase-rep-corr-pe-step-v-2"
+    ],
+    "assay_term_names": [
+        "DNase-seq",
+        "genetic modification followed by DNase-seq"
+    ],
+    "award": "ENCODE",
+    "date_created": "2017-08-08T21:50:18.184704+00:00",
+    "description": "ENCODE Uniform Processing Pipeline of DNase-seq Hypersensitive Sites for paired-end reads (DCC version 2). This pipeline inputs gzipped DNA-sequencing reads in the form of fastqs and a genome index. These fastqs come from technical replicates that are processed with bwa to generate unfiltered and filtered alignments (bam format). The filtered alignments, combined with a DNase mappability reference. More information could be found on the attached document or https://www.encodeproject.org/dnase-seq/.",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "DNase-HS pipeline paired-end - Version 2",
+    "uuid": "f9440db0-6396-4a64-aab6-b7f4c1fd245f"
+},
+{
+    "accession": "ENCPL272XAE",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+       
+        "histone-peaks-to-bigbed-step-v-1"
+    ],
+    "assay_term_names": [
+        "ChIP-seq"
+    ],
+    "award": "U41HG006992",
+    "date_created": "2015-06-24T04:34:39.408984+00:00",
+    "description": "ENCODE defined analysis pipeline for histone ChIP-seq. The pipeline takes as inputs both ChIP-seq reads (from paired-end stranded or single-end unstranded libraries) and a set of reference fastas found at https://www.encodeproject.org/data-standards/reference-sequences/. The reference used depends on the assembly.",
+    "documents": [
+        "7009beb8-340b-4e71-b9db-53bb020c7fe2"
+    ],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "source_url": "https://github.com/ENCODE-DCC/chip-seq-pipeline",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "title": "Histone ChIP-seq",
+    "uuid": "fcb5eec9-5246-4b61-a473-978c38f50889"
+},
+{
+    "accession": "ENCPL936TND",
+    "aliases": [],
+    "alternate_accessions": [],
+    "analysis_steps": [
+       
+        "wgbs-bismark-quantification-step-v-1"
+    ],
+    "assay_term_names": [
+        "whole-genome shotgun bisulfite sequencing"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-06-26T23:00:07.911144+00:00",
+    "description": "ENCODE DAC/DCC run pipeline for WGBS taking in single ended fastqs and producing three result files",
+    "documents": [],
+    "lab": "encode-processing-pipeline",
+    "references": [],
+    "schema_version": "10",
+    "status": "archived",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "WGBS single-end pipeline",
+    "uuid": "fe6ec8cb-51d0-489e-8960-9e4107c63913"
+}
 ]

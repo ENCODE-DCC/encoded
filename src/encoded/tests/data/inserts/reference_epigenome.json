@@ -1,24 +1,193 @@
 [
-	{
-        "_test": "reference epigenome",
-        "accession": "ENCSR300EPI",
-        "award": "ENCODE2",
-        "description": "Reference epigenome of the K562 cell line.",
-        "lab": "bradley-bernstein",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "related_datasets": [
-            "/experiments/ENCSR001EPI",
-            "/experiments/ENCSR002EPI",
-            "/experiments/ENCSR003EPI",
-            "/experiments/ENCSR004EPI",
-            "/experiments/ENCSR005EPI",
-            "/experiments/ENCSR006EPI",
-            "/experiments/ENCSR007EPI",
-            "/experiments/ENCSR008EPI",
-            "/experiments/ENCSR009EPI"
-        ],
-        "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7",
-        "date_released": "2016-01-01"
-    }
+{
+    "accession": "ENCSR867OGI",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2019-10-08T04:35:12.160379+00:00",
+    "date_released": "2019-10-08",
+    "dbxrefs": [],
+    "description": "Reference epigenome for human upper lobe of left lung (37 year old male)",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-consortium",
+    "references": [],
+    "related_datasets": [
+        "ENCSR469YCE",
+        "ENCSR276OPI",
+        "ENCSR595MTV",
+        "ENCSR074WIB",
+        "ENCSR505YFA",
+        "ENCSR714FDJ",
+        "ENCSR027FSZ",
+        "ENCSR674IEI",
+        "ENCSR828PZH",
+        "ENCSR224CTR",
+        "ENCSR313COD",
+        "ENCSR539RDF",
+        "ENCSR164WOF",
+        "ENCSR746QZL"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+    "supersedes": [],
+    "uuid": "0eeff92f-57d1-46b4-b59f-89a04107c54a"
+},
+{
+    "accession": "ENCSR747ULU",
+    "aliases": [
+        "roadmap-epigenomics:E001"
+    ],
+    "alternate_accessions": [],
+    "award": "U01DA025956",
+    "date_created": "2016-01-21T23:34:45.220216+00:00",
+    "date_released": "2013-07-31",
+    "dbxrefs": [
+        "IHEC:IHECRE00001000.1"
+    ],
+    "description": "REMC Epigenome (Class 4) for ES-I3 Cells using donors/samples:60;31436;35589;35592;35593;35594;40338;40339;40340;40585;40586;42133",
+    "documents": [],
+    "internal_tags": [
+        "ccre_inputv1"
+    ],
+    "lab": "anshul-kundaje",
+    "notes": "donor 60 = ENCBS401QZO..  all donors are missing RNAseq, bisulfiteseq.  H3K9ac- (35593= ENCBS412HHB. 40340=ENCBS593HOC)",
+    "references": [
+        "5efbb9d3-f6f9-46a3-be27-15f5c4f752ef"
+    ],
+    "related_datasets": [
+        "ENCSR179CMD",
+        "ENCSR844DRI",
+        "ENCSR103RGM",
+        "ENCSR730FLZ",
+        "ENCSR097ORD",
+        "ENCSR274ZQJ",
+        "ENCSR895IWH",
+        "ENCSR478JDR"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "supersedes": [],
+    "uuid": "3467ca73-3514-4b2d-bb4f-0ab650853819"
+},
+{
+    "accession": "ENCSR865DMB",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2017-06-23T18:20:51.775505+00:00",
+    "date_released": "2018-07-13",
+    "dbxrefs": [],
+    "description": "Reference epigenome for human BJ cell line",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-consortium",
+    "references": [],
+    "related_datasets": [
+        "ENCSR000DQG",
+        "ENCSR000COP",
+        "ENCSR000DQE",
+        "ENCSR000DQF",
+        "ENCSR000DQH",
+        "ENCSR000EME",
+        "ENCSR000CRG",
+        "ENCSR000DQI"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "supersedes": [],
+    "uuid": "38671b6b-4acc-4b26-b411-a043c1f90675"
+},
+{
+    "accession": "ENCSR571AGY",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2018-05-26T00:22:26.092270+00:00",
+    "date_released": "2018-07-13",
+    "dbxrefs": [],
+    "description": "Reference epigenome for human foreskin fibroblast",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-consortium",
+    "references": [],
+    "related_datasets": [
+        "ENCSR000DWS",
+        "ENCSR000EPP",
+        "ENCSR000DWQ",
+        "ENCSR000DWR"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "supersedes": [],
+    "uuid": "4151c0eb-bed8-4dd9-afe4-6526bd593646"
+},
+{
+    "accession": "ENCSR191PVZ",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2018-05-26T00:22:22.844755+00:00",
+    "date_released": "2018-12-21",
+    "dbxrefs": [],
+    "description": "Reference epigenome for human upper lobe of left lung (51 year old female)",
+    "documents": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "encode-consortium",
+    "references": [],
+    "related_datasets": [
+        "ENCSR706OFD",
+        "ENCSR893MYW",
+        "ENCSR972LYL",
+        "ENCSR425RGZ",
+        "ENCSR961FIG",
+        "ENCSR398EZJ",
+        "ENCSR453MUW",
+        "ENCSR642DSR",
+        "ENCSR429VWL",
+        "ENCSR623YMO",
+        "ENCSR061CNP"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "supersedes": [],
+    "uuid": "48f39a57-2425-4668-a515-9e3b10de80f7"
+},
+{
+    "accession": "ENCSR192FFL",
+    "aliases": [],
+    "alternate_accessions": [],
+    "award": "U41HG006992",
+    "date_created": "2017-06-23T15:00:06.671163+00:00",
+    "date_released": "2018-07-13",
+    "dbxrefs": [],
+    "description": "Reference epigenome for human SK-N-SH cell line (treated with all-trans-retinoic acid)",
+    "documents": [],
+    "internal_tags": [],
+    "lab": "encode-consortium",
+    "references": [],
+    "related_datasets": [
+        "ENCSR000BLQ",
+        "ENCSR000BLX",
+        "ENCSR000BMA",
+        "ENCSR000DXN",
+        "ENCSR000DXP",
+        "ENCSR000DXO",
+        "ENCSR000DXR",
+        "ENCSR000CPN",
+        "ENCSR000EPZ"
+    ],
+    "schema_version": "16",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "supersedes": [],
+    "uuid": "cd5d6d1d-19d1-40aa-946a-797fcae2efe0"
+}
 ]

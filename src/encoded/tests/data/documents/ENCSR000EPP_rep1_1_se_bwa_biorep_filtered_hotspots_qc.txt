@@ -1,0 +1,11 @@
+===== SPOT score =====
+.7155
+ 
+===== hotspot count =====
+327437
+ 
+===== peaks count =====
+364509
+ 
+===== allcalls count =====
+77823295

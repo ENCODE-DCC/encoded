@@ -648,13 +648,16 @@ PHASE1_PIPELINES = {
         remove_keys('related_datasets'),
     ],
     'file': [
-        remove_keys('derived_from', 'controlled_by', 'supersedes')
+        remove_keys('derived_from', 'controlled_by', 'supersedes', 'file_format_specifications', 'matching_md5sum')
     ],
     'analysis_step': [
         remove_keys('parents')
     ],
     'treatment': [
         remove_keys('biosamples_used')
+    ],
+    'pipeline': [
+        remove_keys('standards_page')
     ]
 }
 
@@ -734,13 +737,16 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('datasets'),
     ],
     'file': [
-        skip_rows_missing_all_keys('derived_from', 'controlled_by', 'supersedes')
+        skip_rows_missing_all_keys('derived_from', 'controlled_by', 'supersedes', 'file_format_specifications', 'matching_md5sum')
     ],
     'analysis_step': [
         skip_rows_missing_all_keys('parents')
     ],
     'treatment': [
         skip_rows_missing_all_keys('biosamples_used')
+    ],
+    'pipeline': [
+        skip_rows_missing_all_keys('standards_page')
     ]
 }
 

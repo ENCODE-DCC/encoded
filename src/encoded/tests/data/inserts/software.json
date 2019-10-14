@@ -1,296 +1,2036 @@
 [
-    {
-        "name": "star",
-        "title": "STAR",
-        "description": "STAR (Spliced Transcript Alignment to a Reference) aligns short and long RNA-seq reads to a reference genome using uncompressed suffix arrays.",
-        "software_type": ["aligner"],
-        "purpose": ["RNA-seq"],
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "source_url": "https://github.com/alexdobin/STAR/releases",
-        "references": ["9d43c048-c70c-42ab-895d-77a69fceb42b"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "0afb6080-1c08-11e4-8c21-0800200c9a66"
-    },
-    {
-        "name": "haploreg",
-        "title": "HaloReg",
-        "description": "Explores annotations of the noncoding genome at variants on haplotype blocks, such as candidate regulatory SNPs at disease-associated loci. Under Set Options tab, set Browse ENCODE button to \"on\" and select an LD threshold and reference population. Under Build Query Tab, enter a SNP (rsXXXXX), a set of SNPs, a genomic region, or select a GWAS from the drop down menu. HaploReg returns SNPs in LD with query SNPs, their frequency in 4 populations from 1000 Genomes Phase1, and also tells you what evidence ENCODE has found for regulatory protein binding (mouse over to see the protein names), chromatin structure (mouse over to see the cell types with DNase hypersensitivity), the chromatin state of the region (the chromatin state can predict an enhancer or promoter), and putative transcription factor binding motifs that are altered by the variant. Clicking on the SNP name hyperlink reveals further details, including cell type metadata and the mechanism of disruption/creation of TF binding regulatory motifs (showing the PWM matched and its alignment to the local sequence context). SNPs are also intersected with cross-species conserved elements, chromatin states from the Roadmap Epigenomics Consortium, and lead eQTLs from the GTEx Project browser.",
-        "software_type": ["database", "variant annotation"],
-        "purpose": ["community resource"],
-        "source_url": "http://www.broadinstitute.org/mammals/haploreg/haploreg.php",
-        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "uuid": "30ca86a0-1c09-11e4-8c21-0800200c9a66"
-
-    },
-    {
-        "name": "bedtools",
-        "title": "BEDtools",
-        "description": "Collectively, the bedtools utilities are a swiss-army knife of tools for a wide-range of genomics analysis tasks. The most widely-used tools enable genome arithmetics: that is, set theory on the genome. For example, bedtools allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, and VCF.",
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "source_url": "http://code.google.com/p/bedtools/",
-        "references": ["bdd1b360-c377-450d-969a-efc1a7e8611f"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "2adffad0-1c0a-11e4-8c21-0800200c9a66"
-    },
-    {
-        "name": "tophat",
-        "title": "TopHat",
-        "description": "Fast splice junction mapper for RNA-Seq reads. It aligns RNA-Seq reads to mammalian-sized genomes using the ultra high-throughput short read aligner Bowtie, and then analyzes the mapping results to identify splice junctions between exons.",
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "http://ccb.jhu.edu/software/tophat/downloads/",
-        "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
-    },
-    {
-        "name": "bedgraphtobigwig",
-        "title": "bedGraphToBigWig",
-        "description": "Convert bedGraph to bigWig file",
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
-        "uuid": "e6bf4810-50ac-11e4-916c-0800200c9a66"
-    },
-    {
-        "name": "rsem",
-        "title": "RSEM",
-        "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data.",
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "http://deweylab.biostat.wisc.edu/rsem/",
-        "uuid": "151bcaa2-8ffc-4429-b013-ab96a7d359e9"
-    },
-    {
-        "name": "bismark",
-        "title": "Bismark",
-        "description": "A tool to map bisulfite converted sequence reads and determine cytosine methylation states",
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/",
-        "uuid": "196f6fb8-33d1-4cf3-b2f0-834f3f7e07d8"
-    },
-    {
-        "name": "flux",
-        "title": "Flux Capacitor",
-        "description": "The exonic structure of two spliceforms.",
-        "software_type": ["transcript identification"],
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "http://sammeth.net/confluence/display/FLUX/Home",
-        "uuid": "9d85a5b0-5af0-11e4-8ed6-0800200c9a66"
-    },
-    {
-        "name": "npidr",
-        "title": "npIDR",
-        "description": "It essentially takes a pooled sample of all replicas and computes (a) the frequency of seeing count=x; (b) the frequency of seeing count=x given that in *ALL* other replicas the count is equal to zero",
-        "software_type": ["quality metric"],
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "https://github.com/pervouchine/npIDR",
-        "uuid": "dd9e0890-5af0-11e4-8ed6-0800200c9a66"
-    },
-    {
-        "name": "bowtie",
-        "title": "Bowtie",
-        "used_by": ["ENCODE"],
-        "status": "released",
-        "source_url": "",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "15889957-1025-493a-819d-e985bf326445",
-        "description": "Bowtie is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).",
-        "software_type": ["aligner"],
-        "source_url": "https://github.com/BenLangmead/bowtie",
-        "url": "http://bowtie-bio.sourceforge.net/index.shtml",
-        "uuid": "d254a874-e832-41ef-ac15-2124aaa15d05"
-    },
-    {
-        "name": "bwa",
-        "title": "BWA",
-        "description": "BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.",
-        "software_type": ["aligner"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "http://sourceforge.net/projects/bio-bwa/files/",
-        "url": "http://bio-bwa.sourceforge.net/",
-        "uuid": "37a517fc-1f47-4fd4-864b-a5f37f6347d8"
-    },
-    {
-        "name": "bwa_wrapper",
-        "title":  "BWA wrapper",
-        "description": "Wrapper to run bwa.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "https://github.com/",
-        "url": "https://www.encodedcc.org",
-        "uuid": "be774ca3-92f5-4492-87b7-81984adde0fb"
-    },
-    {
-        "name": "idr",
-        "title": "IDR",
-        "description": "Measures consistency between replicates in high-throughput experiments.",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "https://sites.google.com/site/anshulkundaje/projects/idr",
-        "uuid": "08dbba16-769e-45e2-97cc-30237f0d19fa"
-    },
-    {
-        "name": "makepseudoreplicates",
-        "title": "Makepseudoreplicates",
-        "description": "Generate psuedoreplicates for self-consistency tests.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "name": "make_pseudoreplicates",
-        "uuid": "f819726b-364e-4194-b71b-8c95f46e8c3c"
-    },
-    {
-        "name": "phantompeakqualtools",
-        "title": "Phantompeakqualtools",
-        "description": "This package computes quick but highly informative enrichment and quality measures for ChIP-seq/DNase-seq/FAIRE-seq/MNase-seq data. It can also be used to obtain robust estimates of the predominant fragment length or characteristic tag shift values in these assays.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "https://code.google.com/p/phantompeakqualtools/source/checkout",
-        "url": "https://code.google.com/p/phantompeakqualtools/",
-        "uuid": "7729040c-1754-4ae2-b4e6-245007e2755c"
-    },
-    {
-        "name": "picard",
-        "title": "Picard",
-        "description": "A set of tools (in Java) for working with next generation sequencing data in the BAM format.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "source_url": "https://github.com/broadinstitute/picard",
-        "url": "http://broadinstitute.github.io/picard/",
-        "uuid": "baf75b1a-6b0b-4c84-b2a1-d52b11119ddd"
-    },
-    {
-        "name": "samtools",
-        "title": "Samtools",
-        "description": "",
-        "used_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "description": "Samtools is a suite of programs for interacting with high-throughput sequencing data.",
-        "software_type": ["other"],
-        "source_url": "http://sourceforge.net/projects/samtools/files/samtools/",
-        "url": "http://www.htslib.org/",
-        "uuid": "ce18defa-8989-4067-9ac7-2f13734223da"
-    },
-    {
-        "name": "mott-trim.py",
-        "title": "Mott Trimmer",
-        "description": "Mott-Trimmer for WGBS reads",
-        "used_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
-        "uuid": "9c537e83-cf5e-4e80-8027-746f31785c99"
-    },
-    {
-        "name": "cxrepo-bed.py",
-        "title": "WGBS output processor",
-        "description": "Convert a Bismark CX_report file to bed-like files",
-        "used_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
-        "uuid": "32f72d98-bf4d-4408-b448-a0b4168ed320"
-    },
-    {
-        "name": "spp",
-        "title": "SPP",
-        "description": "A ChIP-seq peak calling algorithm, implemented as an R package, that accounts for the offset in forward-strand and reverse-strand reads to improve resolution, compares enrichment in signal to background or control experiments, and can also estimate whether the available number of reads is sufficient to achieve saturation, meaning that additional reads would not allow identification of additional peaks.",
-        "software_type": ["peak caller"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "http://compbio.med.harvard.edu/Supplements/ChIP-seq/",
-        "uuid": "5f18b63e-629a-4963-9897-a67f95e62082"
-    },
-    {
-        "name": "wiggler",
-        "title": "Wiggler",
-        "description": "Creates a consolidated genome-wide signal file using various tag-shift and smoothing parameters as well as various normalization schemes." ,
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "https://code.google.com/p/align2rawsignal/",
-        "source_url": "https://code.google.com/p/align2rawsignal/source/checkout",
-        "uuid": "d758a3c4-16f1-4d6f-b905-2703a90633df"
-    },
-    {
-        "name": "hotspot",
-        "title": "Hotspot",
-        "description": "A program for identifying regions of local enrichment of short-read sequence tags mapped to the genome using a binomial distribution model.",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "http://www.uwencode.org/proj/hotspot/",
-        "uuid":  "4219a456-d064-49ac-9383-93c0021e73e0"
-    },
-    {
-        "name": "clipper",
-        "title": "CLIPper",
-        "description": "A tool to detect CLIP-seq peaks.",
-        "software_type": ["peak caller", "quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "https://github.com/YeoLab/clipper/wiki/CLIPper-Home",
-        "source_url": "https://github.com/YeoLab/clipper",
-        "uuid": "56c6dc47-0692-493b-8983-ef80ea28d2fd"
-    },
-    {
-        "name": "fastqc",
-        "title": "FastQC",
-        "description": "A quality control tool for high throughput sequence data.",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/",
-        "uuid":  "40d96460-a590-11e4-bcd8-0800200c9a66"
-    },
-    {
-        "name": "mad_cc_lrna",
-        "title": "MAD and CC",
-        "description": "MAD and correlation calculation for RNA-seq quantifiications",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline.git",
-        "uuid":  "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
-    },
-    {
-        "award": "U41HG006992",
-        "description": "Converts dbGaP-protected raw data in sra format to fastq format.",
-        "lab": "j-michael-cherry",
-        "name": "dbgap_sra_to_fastq",
-        "status": "released",
-        "title": "dbGaP SRA to fastq",
-        "uuid": "ae06530b-b0fe-4da6-aa27-dd407842190e"
-    }
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:58:02.821013+00:00",
+    "description": "Aligns single-end reads by STAR for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-align-star-se",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-align-star-se",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "013d675d-c8ea-473d-bb70-d4dfa9cf75cf"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:53:43.253926+00:00",
+    "description": "Indexing of reference genome by STAR for small-RNA-seq ECODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "srna-index-star",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "srna-index-star",
+    "uuid": "0404edc2-2ce9-4ece-96f8-8de7032db0aa"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T01:05:12.191700+00:00",
+    "description": "Extracts DNA-methylation from WGBS paired-end alignments for ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-extract-pe",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-extract-pe",
+    "uuid": "0708c5c4-8b87-4961-b53e-63d76599acb2"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2017-07-29T03:35:19.380733+00:00",
+    "description": "Evaluates a sample of paired or single-end aligned and filtered reads for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-qc-bam",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "title": "dnase-qc-bam",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "0b3617e9-9bed-421f-a9c7-8720e78b9497"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-18T01:10:01.762666+00:00",
+    "description": "bedToBigBed takes a standard bed file or a non-standard bed file with associated .as file to create a compressed bigBed version.  Description of Big Binary Indexed (BBI) files and visualization of next-generation sequencing experiment results explained by W.J. Kent, PMCID: PMC2922891.",
+    "lab": "encode-consortium",
+    "name": "bedToBigBed",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "bedToBigBed",
+    "url": "http://genome.ucsc.edu/goldenpath/help/bigBed.html",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "1431a1b1-a52e-4170-92b7-dfbd4bb5b8fe"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:11:17.646519+00:00",
+    "description": "Signal generation for small-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "srna-signals",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "srna-signals",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "14922c32-9f4e-4d75-aea9-6f2c44ea34fd"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:48:58.503051+00:00",
+    "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data.  RSEM has enabled valuable guidance for cost-efficient design of quantification experiments with RNA-Seq, which is currently relatively expensive.",
+    "lab": "encode-consortium",
+    "name": "rsem",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [
+        "7e5ae696-ee4c-49d0-9aca-11c132138f76"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "transcript identification"
+    ],
+    "source_url": "http://deweylab.biostat.wisc.edu/rsem/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "RSEM",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "151bcaa2-8ffc-4429-b013-ab96a7d359e9"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "bug_tracker_url": "https://github.com/marcelm/cutadapt/issues",
+    "date_created": "2016-01-08T20:56:40.441207+00:00",
+    "description": "Cutadapt finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads.",
+    "lab": "encode-consortium",
+    "name": "cutadapt",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://pypi.python.org/pypi/cutadapt",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "cutadapt",
+    "url": "https://cutadapt.readthedocs.org/",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "1520d573-61a9-4867-ace9-bf0139d6ea14"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:51:05.972701+00:00",
+    "description": "A tool to map bisulfite converted sequence reads and determine cytosine methylation states.  The output produced by Bismark discriminates between cytosines in CpG, CHG and CHH context and enables bench scientists to visualize and interpret their methylation data soon after the sequencing run is completed (PMID: 21493656).",
+    "lab": "encode-consortium",
+    "name": "bismark",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Bismark",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "196f6fb8-33d1-4cf3-b2f0-834f3f7e07d8"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:03:26.368314+00:00",
+    "description": "Aligns single-end reads by STAR for small-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "srna-align",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "srna-align",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "2b5ed6f1-a41a-4847-b99a-9e42e2a313b2"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:56:18.531510+00:00",
+    "description": "Convert a Bismark CX_report file to bed-like files",
+    "lab": "encode-consortium",
+    "name": "cxrepo-bed.py",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "WGBS output processor",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "32f72d98-bf4d-4408-b448-a0b4168ed320"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:46:51.230780+00:00",
+    "description": "Indexing of reference genome by RSEM for long-RNA-seq ECODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-index-rsem",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-index-rsem",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "333b2643-d96d-4bde-b588-318cc975cf9c"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-09-02T19:33:09.586677+00:00",
+    "description": "The binary bigWig format can be converted to the text based wig or bedGraph formats using this utility.",
+    "lab": "encode-consortium",
+    "name": "bigwigtowig",
+    "purpose": [
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "bigWigToWig",
+    "url": "http://genome.ucsc.edu/goldenpath/help/bigWig.html",
+    "uuid": "347dcaf3-3ba1-4230-8eb7-797d1bd18b1b"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:48:40.518095+00:00",
+    "description": "Indexing of reference genome by STAR for long-RNA-seq ECODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-index-star",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-index-star",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "37051c42-8eba-4eaa-9863-36fa11153bea"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:35:56.411340+00:00",
+    "description": "BWA is a software package for mapping low-divergent sequences based on a Burrows-Wheeler index against a large reference genome, such as the human genome.  Publications for the short read alignment component is found at PMID: 19451168, while PMID: 20080505 outlines the algorithm to align sequences >200bp up to 1Mb.",
+    "lab": "encode-consortium",
+    "name": "bwa",
+    "purpose": [
+        "DNase-seq",
+        "ChIP-seq"
+    ],
+    "references": [
+        "e20c4884-62b4-4e55-a853-b8d3ff8740b0"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "http://bio-bwa.sourceforge.net/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "BWA",
+    "url": "http://bio-bwa.sourceforge.net/",
+    "uuid": "37a517fc-1f47-4fd4-864b-a5f37f6347d8"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-23T22:14:35.617595+00:00",
+    "description": "Hotspot2 replaces the previous long running hotspot package.",
+    "lab": "john-stamatoyannopoulos",
+    "name": "hotspot2",
+    "notes": "This github is now public.",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "https://github.com/Altius/hotspot2",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "hotspot2",
+    "url": "https://github.com/Altius/hotspot2",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "3b8640a3-2ce8-4847-aa23-8e791bb57589"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:20.733039+00:00",
+    "description": "Bowtie is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).",
+    "lab": "encode-consortium",
+    "name": "bowtie",
+    "purpose": [
+        "RNA-seq",
+        "ChIP-seq"
+    ],
+    "references": [
+        "f298803f-39e8-45d2-9aeb-8409864da84a",
+        "5b64d8ad-0b79-4694-a7d2-dc13033f9504"
+    ],
+    "schema_version": "6",
+    "source_url": "http://bowtie-bio.sourceforge.net/index.shtml",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "Bowtie",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "3bacc29b-9d3f-437e-ab57-3851790a4e94"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-23T22:53:38.359353+00:00",
+    "description": "This program will trim adapters from pair-end sequencing tags produced using the Illumina(c) platform.",
+    "lab": "encode-consortium",
+    "name": "trim-adapters-illumina",
+    "notes": "Needed by DNase.",
+    "purpose": [
+        "DNase-seq",
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering"
+    ],
+    "source_url": "https://bitbucket.org/jvierstra/bio-tools/downloads",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "trim-adapters-illumina",
+    "url": "https://bitbucket.org/jvierstra/bio-tools/src/6fe54fa5a3d9b5c930ee77e8ccd757b347c86ac1/apps/trim-adapters-illumina/?at=master",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "3dce5d51-827b-4478-94b3-8c6277078efa"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-08-18T17:36:08.010398+00:00",
+    "description": "Calculates the Median Absolute Deviation (MAD) and correlation of two gene quantifications from replicate RNA-seq experiments.  A measure of reproducibility, inversely correlated with data quality.",
+    "lab": "encode-consortium",
+    "name": "mad",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [
+        "88f78b55-bf7f-4e41-9a0d-3863d04cd5a3"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.1.1",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "Median Absolute Deviation",
+    "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/master/dnanexus/mad-qc/resources/usr/bin/MAD.R",
+    "uuid": "46061eb9-e267-46c3-91a8-0f094565a1c2"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:24:36.197261+00:00",
+    "description": "Mean Absolute Deviation (MAD) and correlation calculated from two replicates for small-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "srna-mad-qc",
+    "purpose": [
+        "RNA-seq",
+        "data QC"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "srna-mad-qc",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "47b2b233-2d41-4657-b9b6-336fb46fcd26"
+},
+{
+    "aliases": [
+        "encode:miso"
+    ],
+    "award": "U54HG007005",
+    "date_created": "2018-07-25T16:17:31.063923+00:00",
+    "description": "MISO (Mixture of Isoforms) is a probabilistic framework that quantitates the expression level of alternatively spliced genes from RNA-Seq data, and identifies differentially regulated isoforms or exons across samples",
+    "lab": "brenton-graveley",
+    "name": "miso",
+    "purpose": [
+        "shRNA knockdown followed by RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quantification"
+    ],
+    "source_url": "https://github.com/yarden/MISO",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "title": "Miso",
+    "url": "http://genes.mit.edu/burgelab/miso/software.html",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "48751116-349c-4f6a-a053-01665047f03a"
+},
+{
+    "aliases": [
+        "dnanexus:dme-align-se-parallel-v-1"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:41:41.569830+00:00",
+    "description": "Alignment by bowtie1 for single-end WGBS (dna-methylation) experiments for ENCODE uniform processing pipeline",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-align-se",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-align-se-parallel",
+    "uuid": "4cb9d06b-8f86-4468-8e2f-0df284b0e641"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:11:20.537456+00:00",
+    "description": "Repository for Uniform processing of DNase Hypersensitivity (DNaseHS) and Digital Genomic Footprinting (DGF) though pipelines as implemented by the ENCODE DCC.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase_pipeline",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "DNase Pipeline",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "4efd5742-f99e-4e28-b03e-e76fc952407d"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2017-01-24T05:18:40.910273+00:00",
+    "description": "Signal generation for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-signals",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "title": "lrna-signals",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "4f93b183-9552-4108-b285-88e1c44d9a17"
+},
+{
+    "aliases": [
+        "encode:rmats"
+    ],
+    "award": "U54HG007005",
+    "date_created": "2018-07-25T16:17:30.959035+00:00",
+    "description": "MATS is a computational tool to detect differential alternative splicing events from RNA-Seq data.",
+    "lab": "brenton-graveley",
+    "name": "rmats",
+    "purpose": [
+        "shRNA knockdown followed by RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quantification"
+    ],
+    "source_url": "http://rnaseq-mats.sourceforge.net/download.html",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "title": "rMATs",
+    "url": "http://rnaseq-mats.sourceforge.net/",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "511c92a5-e43d-4ad8-8993-4028b9f78d25"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:07:53.911140+00:00",
+    "description": "Signal generation from stranded alignments for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-signals-stranded",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-signals-stranded",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "516c6e47-152a-4c53-b580-6d3efc844eed"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-21T00:21:31.875788+00:00",
+    "description": "Collect some basic characterization statistics of a BAM file.",
+    "lab": "encode-consortium",
+    "name": "edwBamStats",
+    "purpose": [
+        "data QC"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/kentUtils",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "edwBamStats",
+    "url": "https://github.com/ENCODE-DCC/kentUtils",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "51cfe3a7-4389-4c65-b318-7777373e63e6"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2017-07-29T03:35:19.929051+00:00",
+    "description": "Python module warapping htslib C-API and samtools for accessing sam formatted alignment files",
+    "lab": "encode-consortium",
+    "name": "pysam",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "title": "Pysam",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "553b7576-892e-4f31-ac49-f9a6aa7df0b3"
+},
+{
+    "aliases": [],
+    "award": "U01HG004695",
+    "date_created": "2015-05-18T19:34:09.255219+00:00",
+    "description": "Generalized RNA Integration Tool: Transcript prediction utilizing RNA-seq and gene boundary information.",
+    "lab": "anshul-kundaje",
+    "name": "grit",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [
+        "4470a83b-ec50-4352-8a12-4402a2622dd6"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "https://github.com/nboley/grit",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "GRIT",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "5591cc16-26ef-4783-abd9-0f0ce988982e"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:15:59.056779+00:00",
+    "description": "Quantification of annotation results by RSEM for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-quantification",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "transcript identification"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-quantification",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "588a4466-135b-4bae-96db-7dbc1937cdfe"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-09-02T19:42:34.722624+00:00",
+    "description": "Calculates correlation between two replicate DNase signals.",
+    "lab": "john-stamatoyannopoulos",
+    "name": "chromcor",
+    "notes": "This script was developed at the Stam lab but resides in the DCC pipeline github",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-rep-corr/resources/usr/bin/chromCor.Rscript",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "chromCor.Rscript",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "594a3f04-cb97-40ae-a65b-f01ac87665fe"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:09:26.375791+00:00",
+    "description": "Signal generation from unstranded alignments for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-signals-unstranded",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-signals-unstranded",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "5ad27e23-9dfb-43c3-a60b-cc538564192f"
+},
+{
+    "aliases": [
+        "encode:cuffdiff"
+    ],
+    "award": "U54HG007005",
+    "date_created": "2018-07-25T16:17:31.180169+00:00",
+    "description": "Cuffdiff can be used to find significant changes in transcript expression, splicing, and promoter use.",
+    "lab": "brenton-graveley",
+    "name": "cuffdiff",
+    "purpose": [
+        "shRNA knockdown followed by RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quantification"
+    ],
+    "source_url": "http://cole-trapnell-lab.github.io/cufflinks/install/",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "title": "Cuffdiff",
+    "url": "http://cole-trapnell-lab.github.io/cufflinks/cuffdiff/",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "601339b8-0a8f-47cb-b320-9ea5c8a4e995"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:56:56.115690+00:00",
+    "description": "Correlates two WGBS replicate CpG methylation results for ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-rep-corr",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-rep-corr",
+    "uuid": "61f8424c-7a69-42d5-b92d-60742c37be02"
+},
+{
+    "aliases": [
+        "encode:overlap_peaks"
+    ],
+    "award": "ENCODE",
+    "date_created": "2015-06-23T22:20:17.989102+00:00",
+    "description": "overlap_peaks.py is a method to select overlapping peaks among replicates and psuedo-replicates",
+    "lab": "encode-processing-pipeline",
+    "name": "overlap_peaks",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/tf_chipseq/tree/master/dnanexus/overlap_peaks",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "overlap_peaks.py",
+    "url": "https://github.com/ENCODE-DCC/tf_chipseq/tree/master/dnanexus/overlap_peaks",
+    "uuid": "620dfb1a-149f-46d9-b9e1-15bd5ed6f8d9"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:18:05.727640+00:00",
+    "description": "Peak calling by GRIT for Rampage ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "rampage-peaks",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "rampage-peaks",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "6a1e377a-e5da-44df-a22b-77d50d3484b6"
+},
+{
+    "aliases": [
+        "dnanexus:bedmethyl_corr.py"
+    ],
+    "award": "ENCODE",
+    "date_created": "2016-01-26T00:44:21.817514+00:00",
+    "description": "Calculates spearman correlation of 2 replicate bedmethyl files of CpG methylation.",
+    "lab": "encode-consortium",
+    "name": "bedmethyl_corr.py",
+    "notes": "Based upon code sample sent by Junko Tsuji",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/master/dnanexus/dme-rep-corr/resources/usr/bin/bedmethyl_corr.py",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "CpG methylation correlation",
+    "uuid": "6c1df09a-11fd-4f75-bdc2-2307cebb7b5d"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2017-07-29T03:35:19.656590+00:00",
+    "description": "Generates normalized density signal from aligned and filtered reads for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-density",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "title": "dnase-density",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "6cd5d9f9-1aa2-4a68-abea-0028724532d6"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-08T20:48:24.009120+00:00",
+    "description": "Trim Galore! is a wrapper script to automate quality and adapter trimming as well as quality control, with some added functionality to remove biased methylation positions for RRBS sequence files (for directional, non-directional (or paired-end) sequencing).",
+    "lab": "encode-consortium",
+    "name": "trim_galore",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering"
+    ],
+    "source_url": "http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "Trim Galore",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "7178b9ae-ae2c-4071-adc9-bde971c022dc"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:42:46.275465+00:00",
+    "description": "Merges and filters single-end aligned reads for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-filter-se",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-filter-se/resources/usr/bin/dnase_filter_se.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-filter-se",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "7293f2e9-9d75-4783-ab16-6a9a1483eba7"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-27T20:07:18.512161+00:00",
+    "description": "This is the git repository for all DNA methylation (WGBS) uniform pipeline code dun on dnanexus by the ENCODE DCC.",
+    "lab": "encode-processing-pipeline",
+    "name": "dna-me-pipeline",
+    "notes": "This pipeline is AKA: \"WGBS\", \"dme\", \"dna-me\", \"meth\", \"meth-pipe\" and perhaps a couple more short and sweet epitaphs",
+    "purpose": [],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "DNA-me pipeline",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "744cb777-9810-4d9f-953c-f559398ad6a5"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:46:38.424763+00:00",
+    "description": "Fast splice junction mapper for RNA-Seq reads. It aligns RNA-Seq reads to mammalian-sized genomes using the ultra high-throughput short read aligner Bowtie, and then analyzes the mapping results to identify splice junctions between exons.",
+    "lab": "encode-consortium",
+    "name": "tophat",
+    "purpose": [
+        "RNA-seq",
+        "ChIP-seq"
+    ],
+    "references": [
+        "cf8fee96-605e-4e62-a8fc-212384a3b324"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "http://ccb.jhu.edu/software/tophat/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "TopHat",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:45:47.991183+00:00",
+    "description": "Evaluates a sample of paired or single-end aligned and filtered reads for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-eval-bam",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-eval-bam/resources/usr/bin/dnase_eval_bam.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-eval-bam",
+    "uuid": "7c548837-a26c-4208-a240-f948b1745c64"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:29:39.537683+00:00",
+    "description": "Indexes reference (and lambda) genomes using bismark and bowtie1, creating an archive file need for WGBS dna-methylation mapping for the ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-index-bismark",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-index-bismark",
+    "uuid": "7d27358e-f84a-440a-adba-771c5b448ca3"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-03-12T03:45:36.889407+00:00",
+    "description": "tophat_bam_xsA_tag_fix.pl was written by x wei to allow the use of tophat 2.0.8 in the ENCODE pipelines.  It reads a bam file generated from paired-ended fastqs by tophat 2.0.8 and corrects the XS:A:+ or XS:A:- tags showing read strandedness.",
+    "lab": "encode-consortium",
+    "name": "tophat_bam_xsA_tag_fix.pl",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/xweigit/xweiEncodeScripts/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Tophat BAM Repair",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "7d7e5bf5-b5a9-495f-bc51-e46f31947aca"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:01:15.246524+00:00",
+    "description": "Aligns single-end reads by TopHat for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-align-tophat-se",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-align-tophat-se",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "7db4e1d1-ce2d-44dd-8fea-eabb6e55346c"
+},
+{
+    "aliases": [],
+    "award": "U54HG007005",
+    "date_created": "2016-08-04T18:48:39.731095+00:00",
+    "description": "Creates a wiggle file from an alignment (bam) file.",
+    "lab": "brenton-graveley",
+    "name": "makewigglefromBAM-NH",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "http://graveleylab.cam.uchc.edu/WebData/xwei/tgchome/script/Marinov_Georgi/V5_09192013/makewigglefromBAM-NH.py",
+    "status": "in progress",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "title": "makewigglefromBAM-NH",
+    "uuid": "854836a6-91e9-48a5-914e-4d666dbae33d"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T01:02:34.936519+00:00",
+    "description": "Alignment by bowtie2 for paired-end WGBS (dna-methylation) experiments for ENCODE uniform processing pipeline",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-align-pe",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-align-pe",
+    "uuid": "85a5974d-7cc3-484d-8fc6-ed0c9db6aafb"
+},
+{
+    "aliases": [
+        "encode:deseq"
+    ],
+    "award": "U54HG007005",
+    "date_created": "2018-07-25T16:17:30.854578+00:00",
+    "description": "DESeq is an R package to analyse count data from high-throughput sequencing assays such as RNA-Seq and test for differential expression.",
+    "lab": "brenton-graveley",
+    "name": "deseq",
+    "purpose": [
+        "shRNA knockdown followed by RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quantification"
+    ],
+    "source_url": "https://bioconductor.org/packages/release/bioc/html/DESeq.html",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "title": "DESeq",
+    "url": "http://www-huber.embl.de/users/anders/DESeq/",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "8852b6be-cac1-4f84-94de-701c3298ccd2"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-09T16:26:04.154964+00:00",
+    "description": "Convert bedGraph to bigWig file.  Description of Big Binary Indexed (BBI) files and visualization of next-generation sequencing experiment results explained by W.J. Kent, PMCID: PMC2922891",
+    "lab": "encode-consortium",
+    "name": "bedgraphtobigwig",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/kentUtils",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "bedGraphToBigWig",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "904cb1b7-b4bd-4eac-a339-50b7b9e7414b"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:45:59.493335+00:00",
+    "description": "Extracts DNA-methylation from WGBS single-end alignments for ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-extract-se",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-extract-se",
+    "uuid": "90e7149b-0c95-40ba-a3e6-0e8ed6302c97"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:18:16.815921+00:00",
+    "description": "Aligns paired-end reads by BWA for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-align-bwa-pe",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-align-bwa-pe/resources/usr/bin/dnase_align_bwa_pe.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-align-bwa-pe",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "94087b88-6b9e-4573-9b5d-23766dfd99e5"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-23T23:02:35.068601+00:00",
+    "description": "A very efficient implemenation of the the Maximal Overlap Discrete Wavelet Tranform (MODWT). See D. B. Percival and A. T. Walden (2000), Wavelet Methods for Time Series Analysis. Cambridge, England: Cambridge University Press. This is not the usual discrete wavelet transform found in, for example, gsl but an extended set of algorithms designed to overcome some problems with the usual discrete wavelet transform.",
+    "lab": "john-stamatoyannopoulos",
+    "name": "modwt",
+    "purpose": [
+        "DNase-seq",
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/StamLab/modwt",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "modwt",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "9771797f-1e32-4fca-a129-4f0c54eaa686"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-12-07T21:59:25.746320+00:00",
+    "description": "Bowtie 2 is an ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences. It is particularly good at aligning reads of about 50 up to 100s or 1,000s of characters, and particularly good at aligning to relatively long (e.g. mammalian) genomes. Bowtie 2 indexes the genome with an FM Index to keep its memory footprint small: for the human genome, its memory footprint is typically around 3.2 GB. Bowtie 2 supports gapped, local, and paired-end alignment modes.",
+    "lab": "encode-consortium",
+    "name": "bowtie2",
+    "purpose": [
+        "ChIP-seq",
+        "RNA-seq"
+    ],
+    "references": [
+        "5b64d8ad-0b79-4694-a7d2-dc13033f9504"
+    ],
+    "schema_version": "6",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "title": "Bowtie 2",
+    "url": "http://bowtie-bio.sourceforge.net/bowtie2/index.shtml",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "9a935746-3c3f-46d7-8b0a-415c2b0cecd0"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:43:02.719819+00:00",
+    "description": "Repository of all RNA-seq (long-, small-, and rampage) ENCODE Uniform processing pipelines.",
+    "lab": "encode-processing-pipeline",
+    "name": "rna-pipelines",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "RNA pipelines",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "9c33fc8b-e358-4178-8658-1814c331a772"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-18T01:04:21.099867+00:00",
+    "description": "Mott-Trimmer for WGBS reads",
+    "lab": "encode-consortium",
+    "name": "mott-trim.py",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Mott Trimmer",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "9c537e83-cf5e-4e80-8027-746f31785c99"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:05:22.533363+00:00",
+    "description": "Aligns paired-end reads by STAR for Rampage ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "rampage-align",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "rampage-align",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "a19f68c3-519e-476a-bdd3-c24bccb40bf0"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-03-12T03:38:11.738396+00:00",
+    "description": "Concat-fastqs is an applet available for DNA-nexus to concatenate a set of fastqs that should be merged for analysis.",
+    "lab": "encode-consortium",
+    "name": "concat-fastqs",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/tree/master/dnanexus/concat-fastqs",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Concat-fastq",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "aa869c4b-0e20-4832-8c75-5524c9e5d744"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "bug_tracker_url": "http://groups.google.com/group/macs-announcement",
+    "date_created": "2014-08-13T01:30:14.690368+00:00",
+    "description": "A widely-used, fast, robust ChIP-seq peak-finding algorithm that accounts for the offset in forward-strand and reverse-strand reads to improve resolution and uses a dynamic Poisson distribution to effectively capture local biases in the genome.  MACS 1.4 was used in the ENCODE 2 uniform peak calling pipeline.",
+    "lab": "encode-consortium",
+    "name": "macs",
+    "purpose": [
+        "ChIP-seq"
+    ],
+    "references": [
+        "4c104c82-6e8a-4683-b654-5f1576743c6e",
+        "30bd11d9-f05d-4bee-9512-c8199c8794e2"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "http://liulab.dfci.harvard.edu/MACS/",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "MACS",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "ab3eee7d-a025-4c3a-873b-b2c5562ebdc7"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:49:55.931801+00:00",
+    "description": "Converts WGBS Bismark context report to bed and bigBed file formats for ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-cx-to-bed",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-cx-to-bed",
+    "uuid": "ab922e73-f59d-48ed-9bec-3e2616084c3b"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:16.309178+00:00",
+    "description": "Identifies regions of local enrichment, including peaks, in genomic short-read sequence data. Uses the binomial distribution with a local background model to automatically correct for broad-scale regional differences in tag levels.  It is applicable to a wide variety of epigenetic profiling assays, including ChIP-seq and DNase-seq.  Hotspot forms the basis of the SPOT data quality metric.",
+    "lab": "encode-consortium",
+    "name": "hotspot",
+    "purpose": [
+        "DNase-seq",
+        "ChIP-seq"
+    ],
+    "references": [
+        "12ec01d0-87ab-4747-ba43-b07042b6e770",
+        "16618d27-bd15-4b3a-84b7-9da515e73e9f"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "http://www.uwencode.org/software/hotspot",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "Hotspot",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "ace98c68-abb1-466f-8c99-da095f097831"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:14.893029+00:00",
+    "description": "STAR (Spliced Transcript Alignment to a Reference) aligns short and long RNA-seq reads to a reference genome using uncompressed suffix arrays.",
+    "lab": "encode-consortium",
+    "name": "star",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [
+        "9d43c048-c70c-42ab-895d-77a69fceb42b"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/alexdobin/STAR/releases",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "STAR",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "adb49a18-c66d-4bbe-9cab-bea6fd12f8a3"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:37:32.349764+00:00",
+    "description": "Aligns single-end reads by BWA for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-align-bwa-se",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-align-bwa-se/resources/usr/bin/dnase_align_bwa_se.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-align-bwa-se",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "b0809cc9-dd50-4cbe-b1aa-09c0e01c246c"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:40:32.839129+00:00",
+    "description": "Merges and filters paired-end aligned reads for quality and UMI duplicates for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-filter-pe",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-filter-pe/resources/usr/bin/dnase_filter_pe.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-filter-pe",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "b30e8728-4951-42fa-8992-9f3144a249f8"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:52:56.611384+00:00",
+    "description": "A set of tools (in Java) for working with next generation high-throughput sequencing (HTS) data in the BAM format.  Picard is implemented using the HTSJDK Java library HTSJDK, supporting accessing of common file formats, such as SAM and VCF, used for high-throughput sequencing data.  Currenty no published paper for Picard software.",
+    "lab": "encode-consortium",
+    "name": "picard",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering",
+        "other"
+    ],
+    "source_url": "https://github.com/broadinstitute/picard",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Picard",
+    "url": "http://broadinstitute.github.io/picard/",
+    "uuid": "baf75b1a-6b0b-4c84-b2a1-d52b11119ddd"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:16.750466+00:00",
+    "description": "Measures consistency between replicates in high-throughput experiments.  Also uses reproducibility in score rankings between peaks in each replicate to determine an optimal cutoff for significance.  The core IDR R package can be downloaded from the IDR download page: http://cran.r-project.org/web/packages/idr/index.html",
+    "lab": "encode-consortium",
+    "name": "idr",
+    "purpose": [
+        "data QC",
+        "ChIP-seq",
+        "DNase-seq",
+        "RNA-seq"
+    ],
+    "references": [
+        "d4d9c83f-d3ee-4955-bf72-88eb47512159",
+        "8312fc0c-b241-4cb2-9b01-1438910550ad"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric",
+        "filtering"
+    ],
+    "source_url": "https://sites.google.com/site/anshulkundaje/projects/idr",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "Irreproducible Discovery Rate (IDR)",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "bd493748-5623-41f7-8867-3e090a0e8c58"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:20:33.457827+00:00",
+    "description": "Irreproducible Discovery Rate (IDR) calculation from two replicates for Rampage ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "rampage-idr",
+    "purpose": [
+        "RNA-seq",
+        "data QC"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "rampage-idr",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "be622634-b351-4800-a984-773cd375f38a"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:18.703612+00:00",
+    "description": "Performs common genomic analysis tasks and offers improved flexibility, scalability and execution time characteristics over previously published packages. The suite includes a utility to compress large inputs into a lossless format that can provide greater space savings and faster data extractions than alternatives.",
+    "lab": "encode-consortium",
+    "name": "bedops",
+    "references": [
+        "d5345f96-bca8-452d-ab1e-240ef7713e89"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/bedops/bedops",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "BEDOPS",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "c4ef59d5-7062-4b8a-afff-be43a106cf4a"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T20:04:48.657638+00:00",
+    "description": "Indexes the reference genome by BWA, and processes mappability and blacklist for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-index-bwa",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-index-bwa/resources/usr/bin/dnase_index_bwa.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-index-bwa",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "c836beb6-925c-485b-9859-b24007d3e151"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:56:34.583185+00:00",
+    "description": "Aligns paired-end reads by STAR for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-align-star-pe",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-align-star-pe",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "c9e8b517-4ae0-43cd-bf63-86ad060e583b"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-08-18T18:52:28.905386+00:00",
+    "description": "The bigWig format is for display of dense, continuous data that will be displayed in the Genome Browser as a graph. BigWig files are created initially from wiggle (wig) type files, using the program wigToBigWig. The resulting bigWig files are in an indexed binary format. The main advantage of the bigWig files is that only the portions of the files needed to display a particular region are transferred to UCSC, so for large data sets bigWig is considerably faster than regular wiggle files.",
+    "lab": "encode-consortium",
+    "name": "wigtobigwig",
+    "purpose": [
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "title": "wigToBigWig",
+    "url": "http://genome.ucsc.edu/goldenpath/help/bigWig.html",
+    "uuid": "cb728d01-16bc-49ea-901b-dca99898fb12"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2015-02-12T21:54:17.918472+00:00",
+    "description": "Samtools is a suite of programs for interacting with high-throughput sequencing data.  SAMtools implements various utilities for post-processing alignments in the SAM format, such as indexing, variant caller and alignment viewer, and thus provides universal tools for processing read alignments (PMID:19505943).",
+    "lab": "encode-consortium",
+    "name": "samtools",
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "http://sourceforge.net/projects/samtools/files/samtools/",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "title": "Samtools",
+    "url": "http://www.htslib.org/",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "ce18defa-8989-4067-9ac7-2f13734223da"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T20:01:55.442319+00:00",
+    "description": "Calculated correlation beteen two replicate signals for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-rep_corr",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-rep_corr/resources/usr/bin/dnase_rep_corr.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-rep-corr",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "d13bd36a-e5e9-4eb5-913c-1b377a3b611a"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-23T22:23:46.183548+00:00",
+    "description": "Several basic utility functions including: moving (rolling, running) window statistic functions, read/write for GIF and ENVI binary files, fast calculation of AUC, LogitBoost classifier, base64 encoder/decoder, round-off-error-free sum and cumsum, etc.",
+    "lab": "encode-consortium",
+    "name": "caTools",
+    "notes": "Installed from CRAN repository",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/cran/caTools",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "caTools",
+    "url": "https://cran.r-project.org/web/packages/caTools/index.html",
+    "uuid": "d4ee88f7-9469-4ebd-a4ce-59fbfee3e47e"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:59:41.717793+00:00",
+    "description": "Aligns paired-end reads by TopHat for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-align-tophat-pe",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "aligner"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-align-tophat-pe",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "d5f01cd5-12f8-4e57-bbd0-545001ade315"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-23T22:43:52.358877+00:00",
+    "description": "The snow package provides support for simple parallel computing on a network of workstations using R.  A master R process calls makeCluster to start a cluster of worker processes; the master process then uses functions such as clusterCall and clusterApply to execute R code on the worker processes and collect and return the results on the master. This framework supports many forms of \"embarrassingly parallel\" computations.",
+    "lab": "encode-awg",
+    "name": "snow",
+    "notes": "Used for DNase bam evaluation for phantompeaktools run_spp.R.  Installed from http://cran.cnr.berkeley.edu/",
+    "purpose": [
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/cran/snow/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "snow",
+    "url": "https://github.com/cran/snow",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "d7fb7f43-ac74-4911-80dd-17605446b787"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-23T22:08:23.488878+00:00",
+    "description": "This is a focused collection of makefiles and scripts to for analysis on Illumina sample data. While this probably can't be directly used by someone not in our lab, it might be a useful reference for others.",
+    "lab": "john-stamatoyannopoulos",
+    "name": "stampipes",
+    "notes": "We use several tools from this repository for DNase processing.",
+    "purpose": [
+        "DNase-seq",
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "StamPipes",
+    "url": "https://github.com/StamLab/stampipes",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "d84e6fef-d7bd-49df-bb6a-88bef3edb354"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:13:06.148271+00:00",
+    "description": "Signal generation for Rampage ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "rampage-signals",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "rampage-signals",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "daa8376c-23b3-4297-915d-2508b20fcd4b"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-24T19:59:17.817485+00:00",
+    "description": "Calls hotspots and peaks on filtered alignments by hotspot2 for DNase ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dnase-call-hotspots",
+    "purpose": [
+        "DNase-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-call-hotspots/resources/usr/bin/dnase_hotspot.sh",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dnase-call-hotspots",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "db7aa780-5419-4c6f-af69-7aabf6f8b4a4"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:18.335561+00:00",
+    "description": "Used to generate three quality metrics: NSC, RSC, and PBC.  The NSC (Normalized strand cross-correlation) and RSC (relative strand cross-correlation) metrics use cross-correlation of stranded read density profiles to measure enrichment independently of peak calling. The PBC (PCR bottleneck coefficient) is an approximate measure of library complexity. PBC is the ratio of (non-redundant, uniquely mappable reads)/(uniquely mappable reads).",
+    "lab": "encode-consortium",
+    "name": "phantompeakqualtools",
+    "purpose": [
+        "data QC",
+        "ChIP-seq",
+        "DNase-seq",
+        "RNA-seq"
+    ],
+    "references": [
+        "6d54a249-990c-48c1-82a8-685bb3fd3b2b",
+        "f291aded-5b34-4238-9611-eedc4e1ef6f5"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric",
+        "filtering"
+    ],
+    "source_url": "http://code.google.com/p/phantompeakqualtools/",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "Phantompeakqualtools",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "dcf9781d-1038-47c8-9943-e285c7a6c785"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:13.985607+00:00",
+    "description": "A ChIP-seq peak calling algorithm, implemented as an R package, that accounts for the offset in forward-strand and reverse-strand reads to improve resolution, compares enrichment in signal to background or control experiments, and can also estimate whether the available number of reads is sufficient to achieve saturation, meaning that additional reads would not allow identification of additional peaks. SPP will be used in the ENCODE 3 uniform peak calling pipeline.",
+    "lab": "encode-consortium",
+    "name": "spp",
+    "purpose": [
+        "ChIP-seq",
+        "DNase-seq"
+    ],
+    "references": [
+        "8a6e0ea0-6b0e-4fdc-885e-297c19cd75aa"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "peak caller"
+    ],
+    "source_url": "http://compbio.med.harvard.edu/Supplements/ChIP-seq/",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "SPP",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "e0c8602f-bd34-49cf-ae0a-e85f13e82470"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T19:51:50.346653+00:00",
+    "description": "Indexing of reference genome by TopHat for long-RNA-seq ECODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-index-tophat",
+    "purpose": [
+        "RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-index-tophat",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "e2ecfd1d-92f2-4966-b5b1-f1ceebbd9309"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2014-08-13T01:30:20.545705+00:00",
+    "description": "Collectively, the bedtools utilities are a swiss-army knife of tools for a wide-range of genomics analysis tasks. The most widely-used tools enable genome arithmetics: that is, set theory on the genome. For example, bedtools allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, and VCF.",
+    "lab": "encode-consortium",
+    "name": "bedtools",
+    "notes": "Previously hosted at https://code.google.com/p/bedtools/",
+    "purpose": [
+        "ChIP-seq",
+        "DNase-seq"
+    ],
+    "references": [
+        "bdd1b360-c377-450d-969a-efc1a7e8611f"
+    ],
+    "schema_version": "6",
+    "software_type": [
+        "file format conversion"
+    ],
+    "source_url": "https://github.com/arq5x/bedtools",
+    "status": "released",
+    "submitted_by": "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+    "title": "BEDTools",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "e43bdb79-c746-4c40-815a-6cc27f3688a8"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:22:48.328826+00:00",
+    "description": "Mean Absolute Deviation (MAD) and correlation calculated from two replicates for long-RNA-seq ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "lrna-mad-qc",
+    "purpose": [
+        "RNA-seq",
+        "data QC"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "lrna-mad-qc",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "e4914d6e-528d-475c-9b75-f28a7fc336f9"
+},
+{
+    "aliases": [
+        "encode:sva"
+    ],
+    "award": "U54HG007005",
+    "date_created": "2018-07-26T19:55:52.485152+00:00",
+    "description": "The sva package in Bioconductor contains functions for removing batch effects and other unwanted variation in high-throughput experiment.",
+    "lab": "brenton-graveley",
+    "name": "sva",
+    "purpose": [
+        "shRNA knockdown followed by RNA-seq"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "other"
+    ],
+    "source_url": "https://bioconductor.org/packages/release/bioc/html/sva.html",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "title": "Surrogate Variable Analysis",
+    "url": "http://jtleek.com/genstats/inst/doc/02_13_batch-effects.html",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "e6d20a64-6679-40fd-be0a-06d8a1619e92"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:59:23.309123+00:00",
+    "description": "Indexes reference (and lambda) genomes using bismark and bowtie2, creating an archive file need for WGBS dna-methylation mapping of the ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-index-bismark-bowtie2",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-index-bismark-bowtie2",
+    "uuid": "ec79c96b-8173-4c2e-a02a-7fece7cfeb67"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T00:53:39.273645+00:00",
+    "description": "Converts WGBS Bismark generated bedGraphs to bigWig format signal files for ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "dme-bg-to-signal",
+    "references": [],
+    "schema_version": "6",
+    "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "dme-bg-to-signal",
+    "uuid": "fb9c83ac-dfc0-484a-8566-3138a4d93c6c"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-01-28T20:26:30.426265+00:00",
+    "description": "Mean Absolute Deviation (MAD) and correlation calculated from two replicates for Rampage ENCODE uniform processing pipeline.",
+    "lab": "encode-processing-pipeline",
+    "name": "rampage-mad-qc",
+    "purpose": [
+        "RNA-seq",
+        "data QC"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "quality metric"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "rampage-mad-qc",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "fca22163-3304-4b3a-8c6d-95d235a8fd43"
+},
+{
+    "aliases": [],
+    "award": "ENCODE",
+    "date_created": "2016-05-21T00:25:48.019601+00:00",
+    "description": "Remove reads from a BAM file based on a number of criteria",
+    "lab": "encode-consortium",
+    "name": "edwBamFilter",
+    "purpose": [
+        "community resource"
+    ],
+    "references": [],
+    "schema_version": "6",
+    "software_type": [
+        "filtering"
+    ],
+    "source_url": "https://github.com/ENCODE-DCC/kentUtils",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "title": "edwBamFilter",
+    "url": "https://github.com/ENCODE-DCC/kentUtils",
+    "used_by": [
+        "ENCODE"
+    ],
+    "uuid": "fd019400-2bf1-4bc5-89ad-9ad2880b0c3f"
+}
 ]

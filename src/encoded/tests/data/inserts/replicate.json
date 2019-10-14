@@ -1,680 +1,1460 @@
 [
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000ACY",
-        "library": "9a230485-0062-4590-be42-6ea7c4258941",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 1,
-        "uuid": "6e85c807-684a-46e3-b4b9-1f7990e85720"
-    },
-    {
-        "antibody": "ENCAB000AOF",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000ADH",
-        "library": "835e166d-0253-41ce-add2-de67429a3612",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "cc236116-825a-465f-ae0c-5ab21f01a6b3"
-    },
-    {
-        "antibody": "ENCAB000AOF",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000ADH",
-        "library": "835e166d-0253-41ce-add2-de67429a3612",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 2,
-        "uuid": "d990fa42-09e9-4b24-b5f9-44efbdbf4363"
-    },
-    {
-        "antibody": "ENCAB000AUU",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000ADI",
-        "library": "88760932-54b6-46fe-951d-fc80e89a0d77",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f"
-    },
-    {
-        "antibody": "ENCAB000AUU",
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000ADI",
-        "library": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "358104a1-e809-43ad-b043-7161c08633f5"
-    },
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR001ADI",
-        "library": "7126310d-93c5-40af-988c-edb532fe6e7f",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "1d404385-21a6-443c-8a10-1ea69f524662"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR001ADI",
-        "library": "35c0e686-00a2-4b24-8b8f-1bcf3379824b",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "fcd40126-a6ba-43aa-a2d7-98fdad21f834"
-    },
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000AEM",
-        "library": "7013e140-dc14-4893-b0b1-0d7bb293730c",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "technical_replicate_number": 1,
-        "uuid": "30a3e114-139a-4297-9287-4f23d2754c25"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AEM",
-        "library": "f0a7aa18-6bb9-441a-b1aa-d6a385608407",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "technical_replicate_number": 1,
-        "uuid": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb"
-    },
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000AEN",
-        "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
-        "notes": "Has read length",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "technical_replicate_number": 1,
-        "uuid": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AEN",
-        "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
-        "notes": "Has read length",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "technical_replicate_number": 1,
-        "uuid": "e3abd889-053d-44a9-a1f7-90b06bb6d73f"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AER",
-        "library": "e4824882-0ad8-4009-a169-44d5955800af",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "technical_replicate_number": 1,
-        "uuid": "4d66b3a4-d09e-4e2c-8708-10b572bfeb6b"
-    },
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000AER",
-        "library": "181a11eb-68b9-43b3-9430-a5253a75e8f5",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "technical_replicate_number": 1,
-        "uuid": "c8af0291-f21a-40d6-91fb-eaf62d22e4da"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AES",
-        "library": "ee512537-05f0-4ac4-a9e6-718aea48f565",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "technical_replicate_number": 1,
-        "uuid": "66db2e64-f956-4f54-ad87-74f6311bfb85"
-    },
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000AES",
-        "library": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "technical_replicate_number": 1,
-        "uuid": "ec1ed4db-de5f-481b-a686-261bda0319cb"
-    },
-    {
-        "antibody": "ENCAB000ALM",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000AHF",
-        "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 1,
-        "uuid": "5f9376f9-2ee5-4455-caf2-194ca40441ae"
-    },
-    {
-        "antibody": "ENCAB000ALM",
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AHF",
-        "library": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 1,
-        "uuid": "f0837446-2d57-4096-bb2a-de6645177396"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AJK",
-        "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
-        "submitted_by": "netus.lorem@risus.lobortis",
-        "technical_replicate_number": 2,
-        "uuid": "380dc621-8574-498e-a133-9fc162464007"
-    },
-    {
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000AJK",
-        "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
-        "submitted_by": "netus.lorem@risus.lobortis",
-        "technical_replicate_number": 1,
-        "uuid": "f07d37ee-316e-4a5d-a282-91cd2304fe19"
-    },
-    {
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000AJK",
-        "library": "88760932-54b6-46fe-951d-fc80e89a0d77",
-        "submitted_by": "netus.lorem@risus.lobortis",
-        "technical_replicate_number": 1,
-        "uuid": "369cb03a-a428-47e7-ba56-88945afda41c"
-    },
-    {
-        "_test": "test - no files",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR999NOF",
-        "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
-        "notes": "Has read length",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "technical_replicate_number": 1,
-        "uuid": "5a168a4c-51de-4b37-88c8-72bed2fb789d"
-    },
-    {
-        "_test": "test - no files",
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR999NOF",
-        "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
-        "notes": "Has read length",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "technical_replicate_number": 1,
-        "uuid": "2d467098-8e47-4fd4-953d-b7cf5f57740b"
-    },
-    {
-        "_test": "test - no files",
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR999NOF",
-        "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
-        "notes": "Has read length",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "technical_replicate_number": 2,
-        "uuid": "468a1824-a452-4a94-82cb-04f2ee99e59b"
-    },
-    {
-        "_test": "test - user patch file",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000ACT",
-        "library": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 1,
-        "uuid": "6049cceb-3703-47d8-be52-0747fb6680aa"
-    },
-    {
-        "_test": "test - user patch file",
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000ACT",
-        "library": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 1,
-        "uuid": "57978a32-ecb3-4921-898f-d25cda26fc11"
-    },
-    {
-        "_test": "RBNS protein concentrations part 1",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR666EMD",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 1,
-        "rbns_protein_concentration": 5,
-        "rbns_protein_concentration_units":"nM",
-        "uuid": "fb67aa50-6e7a-4cac-a8e6-09e73b4d3432"
-    },
-    {
-        "_test": "RBNS protein concentrations part 2",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR666EMD",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "technical_replicate_number": 2,
-        "rbns_protein_concentration": 20,
-        "rbns_protein_concentration_units":"nM",
-        "uuid": "2743cbc5-dc25-4fe4-8808-47df3e632339"
-    },
-    {
-        "_test": "DNA-me pipeline test",
-        "status": "in progress",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "biological_replicate_number": 1,
-        "uuid": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
-        "technical_replicate_number": 1,
-        "library": "ENCLB742NWU",
-        "experiment": "/experiments/ENCSR765JPC/",
-        "aliases": []
-    },
-    {
-        "_test": "ENCODE 2 pipeline test control",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000EYX",
-        "library": "ENCLB723GTS",
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "2a4fd72c-72ab-445f-a50a-12a9f97a6d8f"
-    },
-    {
-        "_test": "ENCODE 2 pipeline test rep 1",
-        "antibody": "ENCAB000AFX",
-        "biological_replicate_number": 1,
-        "experiment": "ENCSR000DZQ",
-        "library": "ENCLB209APR",
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "3e2a2c90-91fb-40f6-82db-d2bf2f2a914e"
-    },
-    {
-        "_test": "ENCODE 2 pipeline test rep 2",
-        "antibody": "ENCAB000AFX",
-        "biological_replicate_number": 2,
-        "experiment": "ENCSR000DZQ",
-        "library": "ENCLB209APS",
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "technical_replicate_number": 1,
-        "uuid": "befa63a2-a597-4521-8dec-8acce5d2af01"
-    },
-    {
-        "_test": "Paired set 1 rep 1",
-        "experiment": "ENCSR706IDL",
-        "biological_replicate_number": 1,
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "technical_replicate_number": 1,
-        "library": "ENCLB376WDO",
-        "status": "released",
-        "uuid": "e383d84a-3f86-453b-836f-2565de891e8c",
-        "aliases": [
-            "john-stamatoyannopoulos:ENCSR706IDL-1-1"
-        ]
-    },
-    {
-        "_test": "Paired set 2 rep 1",
-        "uuid": "952fc6c6-f155-47e8-ab0f-d44d48880d11",
-        "experiment": "ENCSR751YPU",
-        "library": "ENCLB033CJI",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "aliases": [
-            "john-stamatoyannopoulos:ENCSR751YPU-1-1"
-        ],
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
-    },
-    {
-        "_test": "organism development series 1 rep 1",
-        "aliases": [
-            "robert-waterston:replicate_RB884_80_1_1"
-        ],
-        "library": "ENCLB857STI",
-        "experiment": "/experiments/ENCSR374GSQ/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "uuid": "c97bc58c-0a16-4b5f-b4b3-d84813cfea0b",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
-    },
-    {
-        "_test": "organism development series 2 rep 33",
-        "aliases": [
-            "robert-waterston:replicate_life stage bug"
-        ],
-        "library": "ENCLB857STI",
-        "experiment": "/experiments/ENCSR375GSQ/",
-        "technical_replicate_number": 33,
-        "biological_replicate_number": 33,
-        "status": "deleted",
-        "uuid": "c21bc58c-0a11-4b1f-b4b3-d84113cfea0b",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
-    },
-    {
-        "_test": "organism development series 2 rep 1",
-        "aliases": [
-            "robert-waterston:replicate_RB884_680_1_1"
-        ],
-        "library": "ENCLB332ELH",
-        "experiment": "/experiments/ENCSR862BAF/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "uuid": "ece9d1cd-6243-4156-bf41-d79f1b93fb86",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
-    },
-    {
-        "_test": "organism development series 3 rep 1",
-        "aliases": [
-            "robert-waterston:MT13544_880_1_rep1"
-        ],
-        "library": "ENCLB595GWE",
-        "experiment": "/experiments/ENCSR787DGZ/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "aliases": ["robert-waterston:replicate_RB884_880_1_1"],
-        "uuid": "925d5bac-e428-4603-a09e-0987bb884be5",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
-    },
-    {
-        "_test": "treatment time series 1 rep 1",
-        "experiment": "/experiments/ENCSR001SER/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001SER",
-        "uuid": "43700156-5bc7-4084-97fa-2653ddd14bf7"
-    },
-    {
-        "_test": "treatment time series 2 rep 1",
-        "experiment": "/experiments/ENCSR002SER/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB002SER",
-        "uuid": "982b0033-204d-484d-adde-8b141356871b"
-    },
-        {
-        "_test": "treatment time series 3 rep 1",
-        "experiment": "/experiments/ENCSR003SER/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB003SER",
-        "uuid": "e26ef779-bcc2-4878-b8f6-43b69d921a62"
-    },
-        {
-        "_test": "treatment concentration series 1 rep 1",
-        "experiment": "/experiments/ENCSR001CON/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001CON",
-        "uuid": "13f603e5-5bfd-4cd4-a352-83d6f7155bea"
-    },
-    {
-        "_test": "treatment concentration series 2 rep 1",
-        "experiment": "/experiments/ENCSR002CON/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB002CON",
-        "uuid": "60ee5509-882c-4617-bc5a-81143d3f5fae"
-    },
-        {
-        "_test": "treatment concentration series 3 rep 1",
-        "experiment": "/experiments/ENCSR003CON/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB003CON",
-        "uuid": "5cc02cd5-1e4f-499f-a448-7ef6b7bda29e"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 RNA-seq",
-        "experiment": "/experiments/ENCSR001EPI/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001EPI",
-        "uuid": "2cc2e28e-8821-4236-b9df-ef69cd9a9ea4"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 WGBS",
-        "experiment": "/experiments/ENCSR002EPI/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB002EPI",
-        "uuid": "9883e919-1651-40ea-a505-068733d63aa4"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 H3K4me1",
-        "experiment": "/experiments/ENCSR003EPI/",
-        "antibody": "ENCAB000AUU",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB003EPI",
-        "uuid": "e0558c7e-add5-46ae-acef-b96a0e2e9535"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 H3K4me3",
-        "experiment": "/experiments/ENCSR004EPI/",
-        "antibody": "ENCAB000AUU",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB004EPI",
-        "uuid": "1be45e03-da0e-4a69-934e-1eb2dd39b214"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 H3K27ac",
-        "experiment": "/experiments/ENCSR005EPI/",
-        "antibody": "ENCAB000AUU",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB005EPI",
-        "uuid": "a02299d7-d2a2-4a79-9f7f-9e9e2becadc8"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 H3K36me3",
-        "experiment": "/experiments/ENCSR006EPI/",
-        "antibody": "ENCAB000AUU",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB006EPI",
-        "uuid": "531ebe66-0160-4f9e-aca7-d071322eb5d7"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 H3K27me3",
-        "experiment": "/experiments/ENCSR007EPI/",
-        "antibody": "ENCAB000AUU",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB007EPI",
-        "uuid": "d04fd880-c5a9-4d01-b475-395676abf28d"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 H3K9me3",
-        "experiment": "/experiments/ENCSR008EPI/",
-        "antibody": "ENCAB000AUU",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB008EPI",
-        "uuid": "ae1d1892-8826-4a04-ae40-86dd3516393d"
-    },
-    {
-        "_test": "reference epigenome series 1 rep 1 control",
-        "antibody": "ENCAB000AUU",
-        "experiment": "/experiments/ENCSR009EPI/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB009EPI",
-        "uuid": "5fb43a3c-1fef-42ac-93a3-69b5afd14a7f"
-    },
-    {
-        "_test": "replication timing series 1 rep 1",
-        "antibody": "ENCAB000AUU",
-        "experiment": "/experiments/ENCSR001REP/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001REP",
-        "uuid": "72246397-64e5-4151-8159-25219f4127ac"
-    },
-    {
-        "_test": "replication timing series 2 rep 1",
-        "antibody": "ENCAB000AUU",
-        "experiment": "/experiments/ENCSR002REP/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB002REP",
-        "uuid": "fd7a0ee5-61db-4ae3-9421-b25455c62cb9"
-    },
-    {
-        "_test": "replication timing series 3 rep 1",
-        "antibody": "ENCAB000AUU",
-        "experiment": "/experiments/ENCSR003REP/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB003REP",
-        "uuid": "6b481766-5b86-45af-b40b-e1e3eded9f6f"
-    },
-    {
-        "_test": "replication timing series 3 rep 2",
-        "antibody": "ENCAB000AUU",
-        "experiment": "/experiments/ENCSR003REP/",
-        "technical_replicate_number": 2,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB003REP",
-        "uuid": "3ed9da01-3ca5-4102-89d9-4933fa49f7e4"
-    },
-    {
-        "_test": "replication for RCC",
-        "experiment": "/experiments/ENCSR000AAL/",
-        "technical_replicate_number": 1,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB000RCC",
-        "uuid": "2911ca44-d783-4d76-9d22-f9a4d0a8b5de"
-    },
-    {
-        "_test": "replication for RCC",
-        "experiment": "/experiments/ENCSR000AAL/",
-        "technical_replicate_number": 2,
-        "biological_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001RCC",
-        "uuid": "d52a3aaf-5fa7-4bea-ac08-a5e70c6e7dbd"
-    },
-    {
-        "_test": "replication for idat",
-        "experiment": "/experiments/ENCSR000AAL/",
-        "biological_replicate_number": 2,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB000DAT",
-        "uuid": "0f427e79-556e-4125-8102-f6723471807e"
-    },
-    {
-        "_test": "rep1 for microRNA",
-        "experiment": "/experiments/ENCSR123MRN/",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB000DAT",
-        "uuid": "1d217e79-556e-4125-8102-f6723471807e"
-    },
-    {
-        "_test": "rep2 for microRNA",
-        "experiment": "/experiments/ENCSR123MRN/",
-        "biological_replicate_number": 2,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB000DAT",
-        "uuid": "1d217e79-556e-4125-8102-f1234471807e"
-    },
-    {
-        "_test": "replicate for long read RNA-seq",
-        "experiment": "/experiments/ENCSR751ISO/",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB723GTS",
-        "uuid": "3b427e79-556e-4125-8102-f6723471807e"
-    },
-    {
-        "_test": "second replicate for long read RNA-seq",
-        "experiment": "/experiments/ENCSR751ISO/",
-        "biological_replicate_number": 2,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB723GTS",
-        "uuid": "1415a44a-f28e-4ffb-9bc8-188385ecb4d5"
-    },
-    {
-        "_test": "replicate for CRISPR screen",
-        "experiment": "ENCSR759STU",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB009ACL",
-        "uuid": "df1f66d6-70ef-11e9-a923-1681be663d3e"
-    },
-    {
-        "_test": "replicate for pooled clone sequencing",
-        "experiment": "ENCSR051STU",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001ACL",
-        "uuid": "df1f6992-70ef-11e9-a923-1681be663d3e"
-    },
-    {
-        "_test": "replicate for MRPA",
-        "experiment": "ENCSR222MPR",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001MPR",
-        "uuid": "df1f6993-11ef-12e9-a913-1684be663d3e"
-    },
-    {
-        "_test": "replicate for MRPA",
-        "experiment": "ENCSR722STR",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 3,
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "library": "ENCLB001MPR",
-        "uuid": "df1f6993-10ef-12e9-a913-1684be663d3e"
-    },
-    {
-        "_test": "ATAC-seq rep1",
-        "experiment": "ENCSR808QCJ",
-        "biological_replicate_number": 1,
-        "technical_replicate_number": 1,
-        "status": "released",
-        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
-        "library": "ENCLB209APR",
-        "uuid": "0311d1e6-a141-4be4-a165-6abc6d320f05"
-    }
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9022"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:41:30.548461+00:00",
+    "experiment": "ENCSR750DLX",
+    "library": "ENCLB451EVE",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "017aa08d-a266-46c5-96df-a0b74f55db29"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AFP",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:13.116027+00:00",
+    "experiment": "ENCSR000DWQ",
+    "library": "ENCLB372NFI",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "02660200-f6c3-4961-9a4d-71c84e0b3137"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-03T21:11:24.736631+00:00",
+    "experiment": "ENCSR000CPN",
+    "library": "ENCLB555AOG",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "055359be-deea-4265-a9fe-52d7d6d1e463"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:17.542407+00:00",
+    "experiment": "ENCSR000DXN",
+    "library": "ENCLB851IFS",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "06bf275a-bb9c-4c9f-8248-56acd0e34816"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9031"
+    ],
+    "antibody": "ENCAB140BWE",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:35:27.673485+00:00",
+    "experiment": "ENCSR429VWL",
+    "library": "ENCLB122HWS",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "0a22d621-e6d0-4460-b672-5aa67e07cfa8"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-09-13T23:37:55.598841-08:00",
+    "experiment": "ENCSR000EPZ",
+    "library": "ENCLB586ZZZ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "0e73eab9-0954-47fd-9fbb-22d038bf8e35"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:INPUT_p_CE_AM_101309_HG-U133_Plus_2_A03_513980_Jun-29-2012_44615_run"
+    ],
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:18:20.434122+00:00",
+    "experiment": "ENCSR179CMD",
+    "library": "ENCLB117KMB",
+    "schema_version": "9",
+    "status": "archived",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "1322b502-e7a4-405c-8065-171bc8e67fdf"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9048"
+    ],
+    "antibody": "ENCAB369JSU",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:36:42.596540+00:00",
+    "experiment": "ENCSR623YMO",
+    "library": "ENCLB246HWG",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "13f3edca-d08a-4b07-bd7a-afdb85180aab"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9797"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:28:24.660514+00:00",
+    "experiment": "ENCSR746QZL",
+    "library": "ENCLB426QBH",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "19eeb31d-e69d-4a97-bf8f-124488ece2df"
+},
+{
+    "aliases": [
+        "richard-myers:SL161438-rep"
+    ],
+    "antibody": "ENCAB284TTY",
+    "biological_replicate_number": 1,
+    "date_created": "2017-01-31T16:35:48.174532+00:00",
+    "experiment": "ENCSR828PZH",
+    "library": "ENCLB275HIS",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "technical_replicate_number": 1,
+    "uuid": "1e67b95e-2ce1-42e7-a46c-3bb8e516c813"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.090625_SL-XAT_0001_FC30DRPAAXX.1_Mar-03-2010_89833_run"
+    ],
+    "antibody": "ENCAB000ANK",
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:31:29.043969+00:00",
+    "experiment": "ENCSR097ORD",
+    "library": "ENCLB928NWB",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "231ecead-ce1a-4b77-b3af-490e4bf3f1ca"
+},
+{
+    "aliases": [
+        "michael-snyder:L-3148-1_ENCSR062MVC"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2016-12-05T20:51:13.226744+00:00",
+    "experiment": "ENCSR062MVC",
+    "library": "ENCLB121WFX",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "technical_replicate_number": 1,
+    "uuid": "2501245e-6e41-4b21-9d14-a324523f4ce6"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ARB",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:13.308363+00:00",
+    "experiment": "ENCSR000DWS",
+    "library": "ENCLB645GYL",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "2617acf0-8611-478b-ad56-07046e3e5e88"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9798"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:23:06.465321+00:00",
+    "experiment": "ENCSR746QZL",
+    "library": "ENCLB472FJF",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "28faf7fb-0ced-4bdc-ad2d-fffad2c3b207"
+},
+{
+    "aliases": [
+        "michael-snyder:L-3147-1_ENCSR061CNP"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2016-12-05T22:02:04.103022+00:00",
+    "experiment": "ENCSR061CNP",
+    "library": "ENCLB317XDG",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "technical_replicate_number": 1,
+    "uuid": "2b0631ec-11e1-45b9-8d80-71368931db4b"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9028"
+    ],
+    "antibody": "ENCAB036YAO",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:37:49.141312+00:00",
+    "experiment": "ENCSR706OFD",
+    "library": "ENCLB934BAS",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "2fef44eb-6153-4a1d-bab4-60d6a1b7c11d"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9042"
+    ],
+    "antibody": "ENCAB557LLB",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:41:23.371727+00:00",
+    "experiment": "ENCSR453MUW",
+    "library": "ENCLB514ZGR",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "307dab00-9543-475d-8308-2f2097b2efad"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9804"
+    ],
+    "antibody": "ENCAB845ARK",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:29:04.995002+00:00",
+    "experiment": "ENCSR595MTV",
+    "library": "ENCLB801ROU",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "320200a9-5bc7-407c-bd6f-143f8a19ea1b"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9026"
+    ],
+    "antibody": "ENCAB000ADU",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:29:03.510191+00:00",
+    "experiment": "ENCSR642DSR",
+    "library": "ENCLB468DDW",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "3228a410-b70b-4294-93cf-f7404e19b544"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2017-10-30T17:54:34.712762+00:00",
+    "experiment": "ENCSR674VXR",
+    "library": "ENCLB271HNF",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "ca6e2de3-a6bd-4fce-8b6d-52ef41e7c0c5",
+    "technical_replicate_number": 1,
+    "uuid": "3253efd4-895b-49d9-9692-e6c42f180a4a"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2016-04-01T18:21:00.014014+00:00",
+    "experiment": "ENCSR539RDF",
+    "library": "ENCLB483BRP",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "34107286-f206-4d01-8066-c8f647be817a"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AJM",
+    "biological_replicate_number": 1,
+    "date_created": "2013-10-17T20:43:22.953559-08:00",
+    "experiment": "ENCSR000BMA",
+    "library": "ENCLB559JXN",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "technical_replicate_number": 1,
+    "uuid": "364b8cfd-bacd-440a-ab04-a7e58c5918c9"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2017-10-30T17:54:08.975529+00:00",
+    "experiment": "ENCSR224CTR",
+    "library": "ENCLB937HGI",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "ca6e2de3-a6bd-4fce-8b6d-52ef41e7c0c5",
+    "technical_replicate_number": 1,
+    "uuid": "38d1e60d-7345-4686-8d8f-c517458f67dd"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2016-04-01T18:22:15.781987+00:00",
+    "experiment": "ENCSR961FIG",
+    "library": "ENCLB072XZS",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "405a3565-5255-4fc7-be99-f93cec22615b"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-09-13T23:37:13.734088-08:00",
+    "experiment": "ENCSR000EME",
+    "library": "ENCLB417ZZZ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "4071f4e6-5571-4016-a1e7-bba0beb95a8f"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:06:36.973498+00:00",
+    "experiment": "ENCSR000DQE",
+    "library": "ENCLB695NME",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "43372407-d322-41fc-b80d-c0c090aeb3ce"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-10-09T15:48:52.428323-08:00",
+    "experiment": "ENCSR000CRG",
+    "library": "ENCLB555AQQ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "47e350ec-3bb7-48d4-a47c-81ae8aba9a25"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AQW",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:06:37.060045+00:00",
+    "experiment": "ENCSR000DQF",
+    "library": "ENCLB757TOM",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "4afffde4-163f-4b31-81cb-455f45e3cf50"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9029"
+    ],
+    "antibody": "ENCAB845ARK",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:41:14.510976+00:00",
+    "experiment": "ENCSR238WIK",
+    "library": "ENCLB062BUN",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "4e7d9298-5c67-4141-9358-d8352d93b645"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-03T22:24:56.547340+00:00",
+    "experiment": "ENCSR000CPN",
+    "library": "ENCLB555ARW",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "50c9a312-5d0e-4c63-af6d-ef38fd78945d"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AJM",
+    "biological_replicate_number": 2,
+    "date_created": "2013-10-17T20:43:23.089356-08:00",
+    "experiment": "ENCSR000BMA",
+    "library": "ENCLB559JXO",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "technical_replicate_number": 1,
+    "uuid": "5aa2e18d-25ed-4ada-abfe-41e3c27d6167"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-03T21:20:33.667553+00:00",
+    "experiment": "ENCSR000COP",
+    "library": "ENCLB555ANH",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "5c46487f-9fae-4534-8a10-1e7a01a2acd6"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ARB",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:06:36.657730+00:00",
+    "experiment": "ENCSR000DQH",
+    "library": "ENCLB278KKN",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "5e398ecb-5e2a-4d3b-9731-a033de3a02fd"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AQW",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:17.860613+00:00",
+    "experiment": "ENCSR000DXO",
+    "library": "ENCLB516JKG",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "6800edf2-8243-4de4-818c-d4c9fafc8fbe"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-03T22:26:01.879132+00:00",
+    "experiment": "ENCSR000COP",
+    "library": "ENCLB555ANG",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "6feb2243-0639-43d3-aa29-6c8c43e7502d"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:INPUT_p_CE_AM_101309_HG-U133_Plus_2_A02_514114_May-18-2011_48745_run"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:18:22.710484+00:00",
+    "experiment": "ENCSR179CMD",
+    "library": "ENCLB862DKJ",
+    "schema_version": "9",
+    "status": "archived",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "70471a9d-37b1-4114-b994-6e79caf88f9b"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.091210_SL-XAU_0010_FC42NF9AAXX.2_Mar-03-2010_46451_run"
+    ],
+    "antibody": "ENCAB000APU",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:31:53.307027+00:00",
+    "experiment": "ENCSR895IWH",
+    "library": "ENCLB985LFV",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "733fac1f-35ac-48ca-a235-a4e6a0a11d8b"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9046"
+    ],
+    "antibody": "ENCAB845ARK",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:31:48.452621+00:00",
+    "experiment": "ENCSR238WIK",
+    "library": "ENCLB800GUF",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "797c7a53-fc21-4967-a135-092cd4d4da3b"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:6255WAAXX.5_Sep-15-2010_99513_run"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:35:53.329856+00:00",
+    "experiment": "ENCSR103RGM",
+    "library": "ENCLB974YKJ",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "7a72af9c-5d6f-4f1f-9f6d-a67b99e7ff71"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.091210_SL-XAU_0010_FC42NF9AAXX.1_Mar-03-2010_15626_run"
+    ],
+    "antibody": "ENCAB000ASN",
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:25:32.891316+00:00",
+    "experiment": "ENCSR844DRI",
+    "library": "ENCLB623MTB",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "7b0aaba5-6772-4d0b-908f-e4df89629371"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.100106_SL-XAY_0009_FC42MNCAAXX.5_Mar-03-2010_61629_run"
+    ],
+    "antibody": "ENCAB000ASN",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:25:33.150049+00:00",
+    "experiment": "ENCSR844DRI",
+    "library": "ENCLB956ZAA",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "7b34a6af-0f13-4f76-870a-214cd0fd3c75"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ANB",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:06:37.294190+00:00",
+    "experiment": "ENCSR000DQG",
+    "library": "ENCLB463UWX",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "817fc947-1535-4e5a-ad34-8468df944af2"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AFP",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:06:37.398761+00:00",
+    "experiment": "ENCSR000DQI",
+    "library": "ENCLB029LBI",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "833c41e4-0e4e-4546-8aeb-8ab47f3c95aa"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9801"
+    ],
+    "antibody": "ENCAB036YAO",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:27:14.127123+00:00",
+    "experiment": "ENCSR469YCE",
+    "library": "ENCLB406YUK",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "8446d46d-884d-4d12-8f1b-93afd9d66e5a"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AXU",
+    "biological_replicate_number": 2,
+    "date_created": "2013-10-17T20:42:16.895436-08:00",
+    "experiment": "ENCSR000BLX",
+    "library": "ENCLB559JHW",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "technical_replicate_number": 1,
+    "uuid": "86880064-c063-4632-8261-79a2f1361b4d"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ARB",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:17.642871+00:00",
+    "experiment": "ENCSR000DXR",
+    "library": "ENCLB273DOY",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "87858037-0032-4caa-a314-d458c9aa1bdf"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9107"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:34:21.900854+00:00",
+    "experiment": "ENCSR750DLX",
+    "library": "ENCLB393BYZ",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "89188bac-5d2c-4f49-9a18-7aaf52bd45d9"
+},
+{
+    "aliases": [
+        "richard-myers:SL161427-rep"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2017-01-31T17:20:38.101044+00:00",
+    "experiment": "ENCSR398EZJ",
+    "library": "ENCLB221SSF",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "technical_replicate_number": 1,
+    "uuid": "8a30b23e-0270-497b-953a-0e96487f2c98"
+},
+{
+    "aliases": [
+        "michael-snyder:L-3152-1_ENCSR027FSZ"
+    ],
+    "antibody": "ENCAB830JLB",
+    "biological_replicate_number": 1,
+    "date_created": "2016-12-05T21:09:13.934260+00:00",
+    "experiment": "ENCSR027FSZ",
+    "library": "ENCLB718UZC",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "technical_replicate_number": 1,
+    "uuid": "8c7ca297-118f-4471-8d53-02b60391af38"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.090227_SL-XBC_0002_FC314MFAAXX.3_Mar-03-2010_22400_run"
+    ],
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:35:53.502855+00:00",
+    "experiment": "ENCSR103RGM",
+    "library": "ENCLB714SLK",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "8e3c67d2-fa5b-4b9b-a3a0-07c6d7d4563b"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 2,
+    "date_created": "2013-10-09T15:48:57.392486-08:00",
+    "experiment": "ENCSR000CRG",
+    "library": "ENCLB555ASW",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "8f359b06-c79c-4cc5-bb9c-5998c957db77"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ARB",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:06:36.866579+00:00",
+    "experiment": "ENCSR000DQH",
+    "library": "ENCLB895ROR",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "95e89c9c-b9fc-4de8-9c54-210b34ee3c80"
+},
+{
+    "aliases": [
+        "richard-myers:SL161434-rep"
+    ],
+    "antibody": "ENCAB284TTY",
+    "biological_replicate_number": 1,
+    "date_created": "2017-01-31T16:35:44.487268+00:00",
+    "experiment": "ENCSR000MMZ",
+    "library": "ENCLB094EOT",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "technical_replicate_number": 1,
+    "uuid": "99d37c47-65a1-461e-a450-1fd168995764"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9809"
+    ],
+    "antibody": "ENCAB140BWE",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:23:51.804631+00:00",
+    "experiment": "ENCSR074WIB",
+    "library": "ENCLB733UNX",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "9a9222e2-e135-46db-a74e-03898914cc0b"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.090227_SL-XBC_0002_FC314MFAAXX.8_Mar-03-2010_13067_run"
+    ],
+    "antibody": "ENCAB000ANB",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:25:03.978596+00:00",
+    "experiment": "ENCSR478JDR",
+    "library": "ENCLB846REQ",
+    "schema_version": "9",
+    "status": "revoked",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 2,
+    "uuid": "9d7c3a53-afbd-486f-929c-b5b21d38674d"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ARB",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:07:18.182037+00:00",
+    "experiment": "ENCSR000DXR",
+    "library": "ENCLB693GEX",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "9dafffdd-0ae4-4076-addf-4c1e6de40e1f"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.100106_SL-XAY_0009_FC42MNCAAXX.3_Mar-03-2010_63590_run"
+    ],
+    "antibody": "ENCAB000ADW",
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:26:00.616238+00:00",
+    "experiment": "ENCSR730FLZ",
+    "library": "ENCLB881QWX",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "a1a25474-4f23-47c5-8ceb-28086c0fd628"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2016-01-12T19:23:45.541361+00:00",
+    "experiment": "ENCSR425RGZ",
+    "library": "ENCLB308EJA",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "a1d3dfd9-078a-4340-a90a-f0394019acec"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 2,
+    "date_created": "2013-09-13T23:37:13.546973-08:00",
+    "experiment": "ENCSR000EME",
+    "library": "ENCLB416ZZZ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "a53694ab-1111-4e2a-abed-08a8bbaf8000"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9811"
+    ],
+    "antibody": "ENCAB036YAO",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:32:13.994588+00:00",
+    "experiment": "ENCSR469YCE",
+    "library": "ENCLB992YNP",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "a738fbbf-acdc-4d9a-b0af-4519b0150464"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ARB",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:07:13.414605+00:00",
+    "experiment": "ENCSR000DWS",
+    "library": "ENCLB748FBL",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "a997b7f8-fef5-4cef-8549-4eb650c0bdc1"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9803"
+    ],
+    "antibody": "ENCAB140BWE",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:27:00.568607+00:00",
+    "experiment": "ENCSR074WIB",
+    "library": "ENCLB200JLW",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "aa9338f1-0a50-46d2-90c8-a7e1cf447b46"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AFP",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:07:13.523005+00:00",
+    "experiment": "ENCSR000DWQ",
+    "library": "ENCLB761GCS",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "b2b18fbb-d11d-4702-a2a4-e2a41501e1c3"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9799"
+    ],
+    "antibody": "ENCAB000AQN",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:26:46.280356+00:00",
+    "experiment": "ENCSR505YFA",
+    "library": "ENCLB896PTB",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "b3575812-dbcb-46e8-84cb-8130fb421f2e"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.091022_SL-XAU_0001_FC42M0GAAXX.1_Mar-03-2010_63906_run"
+    ],
+    "antibody": "ENCAB000APU",
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:31:54.542007+00:00",
+    "experiment": "ENCSR895IWH",
+    "library": "ENCLB282KGI",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "b54f1ddc-c120-428e-ad61-e53c7a654a92"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 2,
+    "date_created": "2013-09-13T23:37:55.411068-08:00",
+    "experiment": "ENCSR000EPZ",
+    "library": "ENCLB585ZZZ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "b84a7cd2-69d0-4375-a3a8-b186ec9a9e4e"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9806"
+    ],
+    "antibody": "ENCAB845ARK",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:28:02.178077+00:00",
+    "experiment": "ENCSR595MTV",
+    "library": "ENCLB648KAF",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "baab1c98-a93a-408b-9995-08eed055aea6"
+},
+{
+    "aliases": [
+        "richard-myers:SL161432-rep"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2017-01-31T17:20:42.326597+00:00",
+    "experiment": "ENCSR703OGS",
+    "library": "ENCLB680AKS",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "technical_replicate_number": 1,
+    "uuid": "bb52549d-30fa-4268-9c8c-7bfee261a046"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9025"
+    ],
+    "antibody": "ENCAB557LLB",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:30:56.676784+00:00",
+    "experiment": "ENCSR453MUW",
+    "library": "ENCLB585VMC",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "bd5e7005-8652-43f6-ae08-95ef2a47da35"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9800"
+    ],
+    "antibody": "ENCAB000ADU",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:27:48.375277+00:00",
+    "experiment": "ENCSR276OPI",
+    "library": "ENCLB177PSJ",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "bfb4889b-4696-4899-9d83-05a375e90e97"
+},
+{
+    "aliases": [
+        "john-stamatoyannopoulos:ENCSR164WOF-1-1"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2017-03-12T20:45:22.720549+00:00",
+    "experiment": "ENCSR164WOF",
+    "library": "ENCLB048EBD",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "technical_replicate_number": 1,
+    "uuid": "bfb49b6e-2797-4c1c-b0ba-ac8ee350493b"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-09-13T23:37:50.963713-08:00",
+    "experiment": "ENCSR000EPP",
+    "library": "ENCLB566ZZZ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "c37210f8-a640-425b-a35f-2d785dd70e01"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.090620_SL-XAU_0026_FC30DUMAAXX.8_Mar-03-2010_96970_run"
+    ],
+    "antibody": "ENCAB000ASB",
+    "biological_replicate_number": 3,
+    "date_created": "2015-09-30T01:25:03.715965+00:00",
+    "experiment": "ENCSR478JDR",
+    "library": "ENCLB761ZUC",
+    "schema_version": "9",
+    "status": "revoked",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "c5e45350-e394-4d63-91b2-7447815e452c"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2016-01-12T19:21:59.029760+00:00",
+    "experiment": "ENCSR313COD",
+    "library": "ENCLB381WRT",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "technical_replicate_number": 1,
+    "uuid": "cb649787-33a4-4c23-8a62-558443341af3"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.100106_SL-XAY_0009_FC42MNCAAXX.2_Mar-03-2010_78272_run"
+    ],
+    "antibody": "ENCAB000ASB",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:25:04.191281+00:00",
+    "experiment": "ENCSR478JDR",
+    "library": "ENCLB655TXG",
+    "schema_version": "9",
+    "status": "revoked",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "cbb7a522-d5d6-422f-89cb-390c1b26051c"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9802"
+    ],
+    "antibody": "ENCAB369JSU",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:27:33.048848+00:00",
+    "experiment": "ENCSR714FDJ",
+    "library": "ENCLB333EAZ",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "ccfea860-54e0-4603-84ee-d74713c2f72e"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.090620_SL-XAU_0026_FC30DUMAAXX.5_Mar-03-2010_1625_run"
+    ],
+    "antibody": "ENCAB000ASG",
+    "biological_replicate_number": 2,
+    "date_created": "2015-09-30T01:31:08.556168+00:00",
+    "experiment": "ENCSR274ZQJ",
+    "library": "ENCLB373XQT",
+    "schema_version": "9",
+    "status": "archived",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "cd90d1eb-0fd4-4239-97de-9308abcfc93b"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AQW",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:07:17.751917+00:00",
+    "experiment": "ENCSR000DXO",
+    "library": "ENCLB013JHL",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "cdbbac56-b030-4590-b65d-3e1898641025"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.100106_SL-XAY_0009_FC42MNCAAXX.6_Mar-03-2010_76470_run"
+    ],
+    "antibody": "ENCAB000ANK",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:31:29.219489+00:00",
+    "experiment": "ENCSR097ORD",
+    "library": "ENCLB037NNG",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "d0918a5f-f559-4ce3-83e1-748daa796060"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9032"
+    ],
+    "antibody": "ENCAB369JSU",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:42:06.637960+00:00",
+    "experiment": "ENCSR623YMO",
+    "library": "ENCLB504ULQ",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "d0e1be44-7b06-4b78-b80e-7ea26b9bfdb3"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9808"
+    ],
+    "antibody": "ENCAB000ADU",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:33:10.409619+00:00",
+    "experiment": "ENCSR276OPI",
+    "library": "ENCLB934ZCF",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "d1cabce5-8c66-418d-b6a4-18487cd4e3bc"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:13.631975+00:00",
+    "experiment": "ENCSR000DWR",
+    "library": "ENCLB741ROH",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "d2f6cd5d-1f70-4719-a8c7-0f970019d904"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ANB",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:07:17.965947+00:00",
+    "experiment": "ENCSR000DXP",
+    "library": "ENCLB620VEG",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "d317f419-a1a9-4c27-bc44-7ee5c8f8290b"
+},
+{
+    "aliases": [
+        "richard-myers:SL161431-rep"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2017-01-31T17:20:41.609670+00:00",
+    "experiment": "ENCSR976HZM",
+    "library": "ENCLB348TAL",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "technical_replicate_number": 1,
+    "uuid": "d58f378c-f4b1-47ea-bc2e-fd34b633bfc0"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AQW",
+    "biological_replicate_number": 1,
+    "date_created": "2013-12-20T00:06:37.180840+00:00",
+    "experiment": "ENCSR000DQF",
+    "library": "ENCLB603TXU",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "d61e29cd-0232-4a61-8f0a-065bb80021d1"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AFP",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:06:36.553089+00:00",
+    "experiment": "ENCSR000DQI",
+    "library": "ENCLB669WNO",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "d9a7938b-8555-4171-802f-1d0c932b4fc0"
+},
+{
+    "aliases": [
+        "richard-myers:SL161439-rep"
+    ],
+    "antibody": "ENCAB000AOD",
+    "biological_replicate_number": 1,
+    "date_created": "2017-01-31T16:35:49.015615+00:00",
+    "experiment": "ENCSR893MYW",
+    "library": "ENCLB228MFG",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "technical_replicate_number": 1,
+    "uuid": "df706eff-a6e1-4e35-b827-03f1a514ccc5"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9045"
+    ],
+    "antibody": "ENCAB036YAO",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:41:03.616169+00:00",
+    "experiment": "ENCSR706OFD",
+    "library": "ENCLB392GVP",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "e6dd3331-d453-42dc-a10c-5a07d92e49e4"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 1,
+    "date_created": "2013-10-17T20:43:46.695326-08:00",
+    "experiment": "ENCSR000BLQ",
+    "library": "ENCLB559KDJ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "technical_replicate_number": 1,
+    "uuid": "e7a3b2d8-e526-45a0-a285-d73e6e0f2f73"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9047"
+    ],
+    "antibody": "ENCAB140BWE",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:32:37.829879+00:00",
+    "experiment": "ENCSR429VWL",
+    "library": "ENCLB263TZE",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "e7bccef5-14b3-4d7b-8bd4-28d835cc762f"
+},
+{
+    "aliases": [
+        "michael-snyder:L-3204-1_ENCSR888OWU"
+    ],
+    "antibody": "ENCAB871WRG",
+    "biological_replicate_number": 1,
+    "date_created": "2016-12-09T02:54:34.148700+00:00",
+    "experiment": "ENCSR888OWU",
+    "library": "ENCLB175MYB",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "technical_replicate_number": 1,
+    "uuid": "e90dea93-847c-47f4-8483-29d3672501f8"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:61E93AAXX.6_Jul-26-2011_13325_run"
+    ],
+    "antibody": "ENCAB000APS",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:26:00.381400+00:00",
+    "experiment": "ENCSR730FLZ",
+    "library": "ENCLB508EIZ",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "e95ba113-dff4-43ec-9e58-41209234db86"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9807"
+    ],
+    "antibody": "ENCAB000AQN",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:31:45.368884+00:00",
+    "experiment": "ENCSR505YFA",
+    "library": "ENCLB068TJN",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "ea0fb418-72d8-45dc-a377-d180d6803979"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ANB",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:06:36.446020+00:00",
+    "experiment": "ENCSR000DQG",
+    "library": "ENCLB926WTX",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "ec9adf86-7046-4b1d-9a07-e621579e2c95"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9043"
+    ],
+    "antibody": "ENCAB000ADU",
+    "biological_replicate_number": 1,
+    "date_created": "2018-04-26T17:35:57.998393+00:00",
+    "experiment": "ENCSR642DSR",
+    "library": "ENCLB692ITP",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 1,
+    "uuid": "eddfaa21-f158-4fef-a993-3bd568febcaa"
+},
+{
+    "aliases": [
+        "michael-snyder:L-3151-1_ENCSR972LYL"
+    ],
+    "antibody": "ENCAB830JLB",
+    "biological_replicate_number": 1,
+    "date_created": "2016-12-05T22:18:08.601627+00:00",
+    "experiment": "ENCSR972LYL",
+    "library": "ENCLB618CIA",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "technical_replicate_number": 1,
+    "uuid": "f0711182-a1e1-4dc3-9dba-db6589058ce7"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Rep_DNA_Lib 9810"
+    ],
+    "antibody": "ENCAB369JSU",
+    "biological_replicate_number": 1,
+    "date_created": "2019-04-27T23:32:41.369818+00:00",
+    "experiment": "ENCSR714FDJ",
+    "library": "ENCLB251XQG",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "technical_replicate_number": 2,
+    "uuid": "f16f5b5c-de73-4780-9790-460b9cebafb3"
+},
+{
+    "aliases": [
+        "michael-snyder:L-3205-1_ENCSR674IEI"
+    ],
+    "antibody": "ENCAB871WRG",
+    "biological_replicate_number": 1,
+    "date_created": "2016-12-09T02:39:43.722927+00:00",
+    "experiment": "ENCSR674IEI",
+    "library": "ENCLB012ULW",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "technical_replicate_number": 1,
+    "uuid": "f286a613-f1ca-4809-8901-682c2ea7f03a"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:BI.091022_SL-XAU_0001_FC42M0GAAXX.2_Mar-03-2010_49148_run"
+    ],
+    "antibody": "ENCAB000BLE",
+    "biological_replicate_number": 1,
+    "date_created": "2015-09-30T01:31:08.817288+00:00",
+    "experiment": "ENCSR274ZQJ",
+    "library": "ENCLB107YDG",
+    "schema_version": "9",
+    "status": "archived",
+    "submitted_by": "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+    "technical_replicate_number": 1,
+    "uuid": "f6706146-3792-4239-b268-b83b37e286ce"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000AXU",
+    "biological_replicate_number": 1,
+    "date_created": "2013-10-17T20:42:17.034727-08:00",
+    "experiment": "ENCSR000BLX",
+    "library": "ENCLB559JHX",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "df9f3c8e-b819-4885-8f16-08f6ef0001e8",
+    "technical_replicate_number": 1,
+    "uuid": "f8a783df-59ed-4a11-bdce-a081580da6ec"
+},
+{
+    "aliases": [],
+    "biological_replicate_number": 2,
+    "date_created": "2013-09-13T23:37:50.769945-08:00",
+    "experiment": "ENCSR000EPP",
+    "library": "ENCLB565ZZZ",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "f9455e56-b77f-4f49-895c-415cd4517abc"
+},
+{
+    "aliases": [
+        "john-stamatoyannopoulos:ENCSR490JVQ-1-1"
+    ],
+    "biological_replicate_number": 1,
+    "date_created": "2017-09-28T17:14:37.752885+00:00",
+    "experiment": "ENCSR490JVQ",
+    "library": "ENCLB739NYD",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "technical_replicate_number": 1,
+    "uuid": "fcdf891c-d0a8-49a2-9fca-ceacc6daf6ad"
+},
+{
+    "aliases": [],
+    "antibody": "ENCAB000ANB",
+    "biological_replicate_number": 2,
+    "date_created": "2013-12-20T00:07:18.067812+00:00",
+    "experiment": "ENCSR000DXP",
+    "library": "ENCLB023YVU",
+    "notes": "{}",
+    "schema_version": "9",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "technical_replicate_number": 1,
+    "uuid": "fd4f97cf-c033-4e01-add7-25a3aed8e2c9"
+}
 ]

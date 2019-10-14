@@ -1,0 +1,17 @@
+Estimated expression levels from RSEM as a tsv file. The columns are as follows:
+
+column 1: gene_id - gene name of the gene the transcript belongs to (parent gene). If no gene information is provided, gene_id and transcript_id is the same.
+column 2: transcript_id(s) - transcript name of this transcript
+column 3: length - the transcript's sequence length (poly(A) tail is not counted)
+column 4: effective_length - the length containing only the positions that can generate a valid fragment
+column 5: expected_count - the sum of the posterior probability of each read comes from this transcript over all reads
+column 6: TPM - transcripts per million, a measure of relative measure of transcript abundance
+column 7: FPKM - fragments per kilobase of transcript per million mapped reads, another relative measure of transcript abundance
+column 8: posterior_mean_count - posterior mean estimate calcualted by RSEM's Gibbs sampler
+column 9: posterior_standard_deviation_of_count - posterior standard deviation of counts
+column 10: pme_TPM - posterior mean estimate of TPM
+column 11: pme_FPKM - posterior mean estimate of FPKM
+column 12: TPM_ci_lower_bound - lower bound of 95% credibility interval for TPM values
+column 13: TPM_ci_upper_bound - upper bound of 95% credibility interval for TPM values
+column 14: FPKM_ci_lower_bound - lower bound of 95% credibility interval for FPKM values
+column 15: FPKM_ci_upper_bound - upper bound of 95% credibility interval for FPKM values

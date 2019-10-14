@@ -1,16 +1,140 @@
 [
-    {
-        "status": "released",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "d0bc520f-1421-4993-9451-89f274afaa71",
-        "assay_term_name": "RNA-seq",
-        "quality_metric_of": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3", "e6addc7e-0320-4e11-8351-69e9b9cc08dc" ],
-        "attachment": "generic_from_mad_plot.png",
-        "MAD of log ratios": 1.377,
-        "Pearson correlation": 0.630935,
-        "SD of log ratios": 1.974,
-        "Spearman correlation": 0.6782071
-    }
+{
+    "MAD of log ratios": 0.788,
+    "Pearson correlation": 0.9460182,
+    "SD of log ratios": 0.7,
+    "Spearman correlation": 0.9364413,
+    "aliases": [
+        "dnanexus:qc.MAD.R.job-Bxy0gYj0J6ZG34q4FvG439q0"
+    ],
+    "assay_term_name": "RNA-seq",
+    "attachment": "ENCSR000COP_rep1-2_1_rsem_mad_plot.png",
+    "award": "U41HG006992",
+    "date_created": "2016-07-07T20:09:17.907065+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF800TGS",
+        "ENCFF839MWS"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "cb58864e-6e64-4b0c-b6ab-50ec20ea699e",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "19d69ad9-3f71-43c2-ac17-61dd71b0c9c5"
+},
+{
+    "MAD of log ratios": 2.066,
+    "Pearson correlation": 0.8047904,
+    "SD of log ratios": 2,
+    "Spearman correlation": 0.7375149,
+    "aliases": [
+        "dnanexus:qc.MAD.R.job-F2gQyFj0QGxKvxky8BfpjQ6k"
+    ],
+    "assay_term_name": "RNA-seq",
+    "attachment": "ENCSR000CRG_rep1-2_1_srna_star_quant_mad_plot.png",
+    "award": "U41HG006992",
+    "date_created": "2017-02-23T23:07:41.485504+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF165IMA",
+        "ENCFF643EJK"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "a98f14b8-a05a-4c76-bcff-5c821904a32b",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "23de6439-761f-4637-9815-a40f44a39df8"
+},
+{
+    "MAD of log ratios": 0.421,
+    "Pearson correlation": 0.9779492,
+    "SD of log ratios": 0.425,
+    "Spearman correlation": 0.9771111,
+    "aliases": [
+        "dnanexus:qc.MAD.R.job-Bxy0gYQ0J6Z5KB65YjFVX6fg"
+    ],
+    "assay_term_name": "RNA-seq",
+    "attachment": "ENCSR000CPN_rep1-2_1_rsem_mad_plot.png",
+    "award": "U41HG006992",
+    "date_created": "2016-07-07T20:29:30.391543+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF211NJT",
+        "ENCFF598SBS"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "10f4143f-35fd-46c3-adb4-bb573e7c8964",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "6d6d755f-e9c9-4260-96ca-3f065ec19558"
+},
+{
+    "MAD of log ratios": 0.421,
+    "Pearson correlation": 0.977451,
+    "SD of log ratios": 0.429,
+    "Spearman correlation": 0.9767847,
+    "aliases": [
+        "dnanexus:qc.MAD.R.job-BzyYKJ00QGx6KQ5z5xyZv91q"
+    ],
+    "assay_term_name": "RNA-seq",
+    "attachment": "ENCSR000CPN_rep1-2_1_rsem_mad_plot.png",
+    "award": "U41HG006992",
+    "date_created": "2016-10-13T19:45:15.605898+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF809ACX",
+        "ENCFF811XLE"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "d83551da-a697-4e61-aa85-803d9a90b1e4",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "8c640731-d89c-43ef-8d68-1a6ae15535d2"
+},
+{
+    "MAD of log ratios": 0.789,
+    "Pearson correlation": 0.9453155,
+    "SD of log ratios": 0.704,
+    "Spearman correlation": 0.9364695,
+    "aliases": [
+        "dnanexus:qc.MAD.R.job-BzyYKGj0QGxB7j0v71yxv2QB"
+    ],
+    "assay_term_name": "RNA-seq",
+    "attachment": "ENCSR000COP_rep1-2_1_rsem_mad_plot.png",
+    "award": "U41HG006992",
+    "date_created": "2016-10-13T19:44:18.616102+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF322LVK",
+        "ENCFF836HXE"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "219f5c20-f77a-4077-90c9-248a77d73ae5",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "a21c02e5-d1a6-4cfb-99f5-7c8ea655b77c"
+},
+{
+    "MAD of log ratios": 1.138,
+    "Pearson correlation": 0.8366824,
+    "SD of log ratios": 1.222,
+    "Spearman correlation": 0.7930296,
+    "aliases": [
+        "dnanexus:qc.MAD.R.job-F2f81fj09vkyK72F4vXpQbkK"
+    ],
+    "assay_term_name": "RNA-seq",
+    "attachment": "ENCSR000CRG_rep1-2_1_srna_star_quant_mad_plot.png",
+    "award": "U41HG006992",
+    "date_created": "2017-02-22T20:48:59.625467+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF362GNC",
+        "ENCFF255TLL"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "8f01f63c-2b28-4408-8dd5-f487b613ff28",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "ac4be82d-d7fa-47e6-b2a5-55756d7c1c8a"
+}
 ]

@@ -1,0 +1,89 @@
+===== bismark reference =====
+Bismark report for: ENCSR224CTR_rep1_1_reads1_trimmed.fq and ENCSR224CTR_rep1_1_reads2_trimmed.fq (version: v0.15.0)
+Bismark was run with Bowtie 2 against the bisulfite genome of /home/dnanexus/input/ with the specified options: -q -N 1 -L 28 --score-min L,0,-0.2 --ignore-quals --no-mixed --no-discordant --minins 0 --maxins 500
+Option '--directional' specified (default mode): alignments to complementary strands (CTOT, CTOB) were ignored (i.e. not performed)
+
+Final Alignment report
+======================
+Sequence pairs analysed in total:	919153077
+Number of paired-end alignments with a unique best hit:	735982969
+Mapping efficiency:	80.1% 
+Sequence pairs with no alignments under any condition:	143566130
+Sequence pairs did not map uniquely:	39603978
+Sequence pairs which were discarded because genomic sequence could not be extracted:	646
+
+Number of sequence pairs with unique best (first) alignment came from the bowtie output:
+CT/GA/CT:	368114127	((converted) top strand)
+GA/CT/CT:	0	(complementary to (converted) top strand)
+GA/CT/GA:	0	(complementary to (converted) bottom strand)
+CT/GA/GA:	367868196	((converted) bottom strand)
+
+Number of alignments to (merely theoretical) complementary strands being rejected in total:	0
+
+Final Cytosine Methylation Report
+=================================
+Total number of C's analysed:	34976897977
+
+Total methylated C's in CpG context:	1178152611
+Total methylated C's in CHG context:	38722765
+Total methylated C's in CHH context:	135514362
+Total methylated C's in Unknown context:	55
+
+
+Total unmethylated C's in CpG context:	276448499
+Total unmethylated C's in CHG context:	7135929469
+Total unmethylated C's in CHH context:	26212130271
+Total unmethylated C's in Unknown context:	3950
+
+
+C methylated in CpG context:	81.0%
+C methylated in CHG context:	0.5%
+C methylated in CHH context:	0.5%
+C methylated in unknown context (CN or CHN):	1.4%
+
+
+ 
+===== bismark lambda =====
+Bismark report for: ENCSR224CTR_rep1_1_reads1_trimmed.fq and ENCSR224CTR_rep1_1_reads2_trimmed.fq (version: v0.15.0)
+Bismark was run with Bowtie 2 against the bisulfite genome of /home/dnanexus/input/lambda/ with the specified options: -q -N 1 -L 28 --score-min L,0,-0.2 --ignore-quals --no-mixed --no-discordant --minins 0 --maxins 500
+Option '--directional' specified (default mode): alignments to complementary strands (CTOT, CTOB) were ignored (i.e. not performed)
+
+Final Alignment report
+======================
+Sequence pairs analysed in total:	919153077
+Number of paired-end alignments with a unique best hit:	2310752
+Mapping efficiency:	0.3% 
+Sequence pairs with no alignments under any condition:	916842324
+Sequence pairs did not map uniquely:	1
+Sequence pairs which were discarded because genomic sequence could not be extracted:	15064
+
+Number of sequence pairs with unique best (first) alignment came from the bowtie output:
+CT/GA/CT:	1088597	((converted) top strand)
+GA/CT/CT:	0	(complementary to (converted) top strand)
+GA/CT/GA:	0	(complementary to (converted) bottom strand)
+CT/GA/GA:	1207091	((converted) bottom strand)
+
+Number of alignments to (merely theoretical) complementary strands being rejected in total:	0
+
+Final Cytosine Methylation Report
+=================================
+Total number of C's analysed:	135421648
+
+Total methylated C's in CpG context:	120074
+Total methylated C's in CHG context:	140570
+Total methylated C's in CHH context:	321430
+Total methylated C's in Unknown context:	0
+
+
+Total unmethylated C's in CpG context:	30436081
+Total unmethylated C's in CHG context:	32321055
+Total unmethylated C's in CHH context:	72082438
+Total unmethylated C's in Unknown context:	0
+
+
+C methylated in CpG context:	0.4%
+C methylated in CHG context:	0.4%
+C methylated in CHH context:	0.4%
+Can't determine percentage of methylated Cs in unknown context (CN or CHN) if value was 0
+
+

@@ -1,180 +1,3157 @@
 [
-    {
-        "software": "tophat",
-        "version": "2.0.8",
-        "status": "released",
-        "uuid": "8369c9b0-50ad-11e4-916c-0800200c9a66",
-        "download_checksum": "ec29164105d44a5b4ac5bd73e1d1918a",
-        "downloaded_url": "http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.8.Linux_x86_64.tar.gz"
-    },
-    {
-        "software": "2adffad0-1c0a-11e4-8c21-0800200c9a66",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "8eacefa0-50ad-11e4-916c-0800200c9a66"
-    },
-    {
-        "software": "e6bf4810-50ac-11e4-916c-0800200c9a66",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "956620a0-50ad-11e4-916c-0800200c9a66"
-    },
-    {
-        "software": "star",
-        "uuid": "834e3145-b752-4486-a613-c0c625262051",
-        "status": "released",
-        "version": "2.4.0d",
-        "download_checksum": "fc3df4ae49108c7837cae85925e0819a65eddc73",
-        "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.0d"
-    },
-    {
-        "software": "rsem",
-        "uuid": "08a31dbd-e957-4004-bf0c-8506388d9fed",
-        "status": "released",
-        "version": "1.2.15",
-        "download_checksum": "92b24279a3ecc72946e7e7c23149ad0d181f373a",
-        "downloaded_url": "https://github.com/bli25wisc/RSEM/releases/tag/v1.2.15"
-    },
-    {
-        "software": "bismark",
-        "uuid": "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
-        "status": "released",
-        "version": "0.10.0",
-        "download_checksum": "c27647bd3608a1f7414400055c5ac52a",
-        "downloaded_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.10.0.tar.gz"
-    },
-    {
-        "software": "bowtie",
-        "uuid": "1b071b08-ef76-4a69-8f96-22408e2b380a",
-        "status": "released",
-        "version": "1.0.1",
-        "download_checksum": "5ea908ac950b879f66039aa7ffd5ae36",
-        "downloaded_url": "http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.0.1/bowtie-1.0.1-linux-x86_64.zip/download"
-    },
-    {
-        "software": "bowtie",
-        "uuid": "9c51ea8f-ac73-4a25-8783-d31bce2d5aac",
-        "status": "released",
-        "version": "2.1.0",
-        "download_checksum": "c00c168f8825382896cee967e191d71b",
-        "downloaded_url": "http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.1.0/bowtie2-2.1.0-linux-x86_64.zip/download"
-    },
-    {
-        "software": "samtools",
-        "uuid": "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
-        "status": "released",
-        "version": "0.1.19",
-        "download_checksum": "1229dc88487a49b03e69a5c0aa2f8a1e",
-        "downloaded_url": "https://github.com/samtools/samtools/archive/0.1.19.tar.gz"
-    },
-    {
-        "software": "samtools",
-        "uuid": "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
-        "status": "released",
-        "version": "0.1.17",
-        "download_checksum": "ff338e1ef446511bcf42cf0da508bd8b",
-        "downloaded_url": "https://github.com/samtools/samtools/archive/0.1.17.tar.gz"
-    },
-    {
-        "software": "mott-trim.py",
-        "uuid": "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
-        "status": "released",
-        "version": "0.1",
-        "download_checksum": "b1717422b864e71c6e47250f1d09abcf",
-        "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/mott-trim.py"
-    },
-    {
-        "software": "cxrepo-bed.py",
-        "uuid": "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c",
-        "status": "released",
-        "version": "0.1",
-        "download_checksum": "b7f4563ab5b7a4a9874fa927ccce26ea",
-        "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/cxrepo-bed.py"
-    },
-    {
-        "software": "9d85a5b0-5af0-11e4-8ed6-0800200c9a66",
-        "version": "1.6.1",
-        "downloaded_url": "http://sammeth.net/artifactory/barna/barna/barna.capacitor/1.6.1/flux-capacitor-1.6.1.tgz",
-        "status": "released",
-        "uuid": "d84714c0-5af2-11e4-8ed6-0800200c9a66"
-    },
-    {
-        "software": "dd9e0890-5af0-11e4-8ed6-0800200c9a66",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "d2cde860-5af3-11e4-8ed6-0800200c9a66"
-    },
-    {
-        "software":  "baf75b1a-6b0b-4c84-b2a1-d52b11119ddd",
-        "version":  "1.110",
-        "status": "released",
-        "uuid": "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"
-    },
-    {
-        "software": "7729040c-1754-4ae2-b4e6-245007e2755c",
-        "version":  "v1.1",
-        "status":  "released",
-        "uuid":  "fe17b174-32f9-4e88-9618-57e8973d8868"
-    },
-    {
-        "software": "d758a3c4-16f1-4d6f-b905-2703a90633df",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "09d27175-9479-4684-b055-19491bbfd14f"
-    },
-    {
-        "software":  "f819726b-364e-4194-b71b-8c95f46e8c3c",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "fa8af638-925c-4f94-8972-3d2f4f8b0c21"
-    },
-    {
-        "software": "5f18b63e-629a-4963-9897-a67f95e62082",
-        "version": "1.10.1",
-        "status": "released",
-        "downloaded_url": "https://code.google.com/p/phantompeakqualtools/source/browse/trunk/spp_1.10.1.tar.gz",
-        "uuid": "beb915d5-157c-48d2-9867-7d2bbf8917fe"
-    },
-    {
-        "software":  "08dbba16-769e-45e2-97cc-30237f0d19fa",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "195de123-3300-4485-a862-d301ff35fc4e"
-    },
-    {
-        "software":  "4219a456-d064-49ac-9383-93c0021e73e0",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "d0c7d890-3446-41b5-82f0-388347f7e8dd"
-    },
-    {
-        "software": "0afb6080-1c08-11e4-8c21-0800200c9a66",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "7b939da7-32ae-44ac-86f3-a584d8a4a555"
-    },
-    {
-        "software": "56c6dc47-0692-493b-8983-ef80ea28d2fd",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "0a2cde6c-61c5-407b-aab7-7cc4847d5a37"
-    },
-    {
-        "software": "40d96460-a590-11e4-bcd8-0800200c9a66",
-        "version": "v0.11.2",
-        "status": "released",
-        "uuid": "225b2920-a594-11e4-bcd8-0800200c9a66"
-    },
-    {
-        "software": "9337d94e-9f02-42a5-a0c0-43ea760cfccc",
-        "version": "v0.0.1",
-        "status": "released",
-        "uuid": "a87e214a-c07d-4df2-8a30-3eebd8b607ee"
-    },
-    {
-        "software": "ae06530b-b0fe-4da6-aa27-dd407842190e",
-        "version": "unknown",
-        "status": "released",
-        "uuid": "9277b2c0-271a-43e2-88a7-346796c6b776"
-    }
+{
+    "aliases": [
+        "encode:bedtools 2.16.2"
+    ],
+    "date_created": "2016-03-15T20:23:59.756190+00:00",
+    "download_checksum": "0038f918e316f4ee5a5d7bd65e895234",
+    "downloaded_url": "https://github.com/arq5x/bedtools/archive/v2.16.2.tar.gz",
+    "schema_version": "4",
+    "software": "bedtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "0062f99c-54c1-49be-bc45-b37271616422",
+    "version": "2.16.2"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_pipeline-1.1.0"
+    ],
+    "date_created": "2016-10-10T18:23:38.835587+00:00",
+    "download_checksum": "f2336cc00864480266517540a411e456",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases/tag/v1.1.0",
+    "schema_version": "4",
+    "software": "dnase_pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "00f848df-8bd1-427e-978c-deaba0a53fbc",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:spp 1.11.1"
+    ],
+    "date_created": "2015-02-24T16:46:23.321994+00:00",
+    "downloaded_url": "https://code.google.com/p/phantompeakqualtools/",
+    "schema_version": "4",
+    "software": "spp",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "021b7765-014b-48b5-8258-436c8f378e3c",
+    "version": "1.11.1"
+},
+{
+    "aliases": [
+        "dnanexus:bedops-2.4.33"
+    ],
+    "date_created": "2018-04-27T15:15:53.994702+00:00",
+    "download_checksum": "113fec80db731b5259fb83bd322fd11e",
+    "downloaded_url": "https://github.com/bedops/bedops/archive/v2.4.33.tar.gz",
+    "schema_version": "4",
+    "software": "bedops",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "04722aec-60b5-4dee-b705-5761bbd3711d",
+    "version": "2.4.33"
+},
+{
+    "aliases": [
+        "encode:cxrepo-bed 0.2"
+    ],
+    "date_created": "2015-02-13T19:48:24.363780+00:00",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/",
+    "schema_version": "4",
+    "software": "cxrepo-bed.py",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "049ad3f4-5d0a-4b22-8d59-d183519e504e",
+    "version": "0.2"
+},
+{
+    "aliases": [
+        "encode:cutadapt 1.9.1"
+    ],
+    "date_created": "2016-01-08T20:59:20.908433+00:00",
+    "download_checksum": "cc2e4d3da46a0d88b4ababe065d0021a",
+    "downloaded_url": "https://pypi.python.org/packages/source/c/cutadapt/cutadapt-1.9.1.tar.gz",
+    "schema_version": "4",
+    "software": "cutadapt",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "06dc46e3-5089-4f78-a331-fdebd95f83dd",
+    "version": "1.9.1"
+},
+{
+    "aliases": [
+        "encode:rsem 1.2.15"
+    ],
+    "date_created": "2015-02-13T18:33:49.943587+00:00",
+    "download_checksum": "92b24279a3ecc72946e7e7c23149ad0d181f373a",
+    "downloaded_url": "https://github.com/bli25wisc/RSEM/releases/tag/v1.2.15",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "08a31dbd-e957-4004-bf0c-8506388d9fed",
+    "version": "1.2.15"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_hotspot-v2.1"
+    ],
+    "date_created": "2018-04-23T13:44:31.324412+00:00",
+    "download_checksum": "5f18474af41bdcc1bfc385faa6b97109",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.1.2/dnanexus/dnase-call-hotspots/resources/usr/bin/dnase_hotspot.sh",
+    "schema_version": "4",
+    "software": "dnase-call-hotspots",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0924a255-1d23-4c05-8eed-c6a46efe60b8",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "dnanexus:edwBamStats-v2"
+    ],
+    "date_created": "2016-05-23T22:02:16.251916+00:00",
+    "download_checksum": "d8376c5d52a161f2267346ed3dc94b5dce74c2f9",
+    "downloaded_url": "https://github.com/ENCODE-DCC/kentUtils/tree/v302.1.0/src/hg/encode3/encodeDataWarehouse/utils/edwBamStats",
+    "schema_version": "4",
+    "software": "edwBamStats",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "0a7fc766-19ab-41e1-b55e-ac64044c9b6f",
+    "version": "v2"
+},
+{
+    "aliases": [
+        "encode:star 2.4.0k"
+    ],
+    "date_created": "2015-04-09T16:14:24.674502+00:00",
+    "download_checksum": "6d6613d231652219a7744b0a52f2fb1fe0235a67",
+    "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.0k",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+    "version": "2.4.0k"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:22:53.911201+00:00",
+    "download_checksum": "e126174684ccc2499be94615487c68b9",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/bam-to-bigwig-unstranded/resources/usr/bin/lrna_bam_to_unstranded_signals.sh",
+    "schema_version": "4",
+    "software": "lrna-signals-unstranded",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "0cd00a28-02ce-4387-834e-016a3a2188cf",
+    "version": "2.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:13:54.481421+00:00",
+    "download_checksum": "4af522b2f5cec401604ee91ce55ebddf",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/prep-rsem/src/prep-rsem.sh",
+    "schema_version": "4",
+    "software": "lrna-index-rsem",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "0d5bf725-a452-4844-a4ce-bcc01b6d55c6",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_density-v1.0"
+    ],
+    "date_created": "2017-07-29T03:37:48.279060+00:00",
+    "download_checksum": "dd79be4d509c73339be06fec6adca2f1",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-density/resources/usr/bin/dnase_density.sh",
+    "schema_version": "4",
+    "software": "dnase-density",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "0eb99398-41ef-4ac8-adda-254c7633ea9e",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:52:40.125407+00:00",
+    "download_checksum": "04b322e94dfa282009c931f2aa65781c",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/rampage/rampage-peaks/src/rampage-peaks.sh",
+    "schema_version": "4",
+    "software": "rampage-peaks",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "0f02ee5b-f179-40db-9036-66335e57fb49",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:picard-v2.14"
+    ],
+    "date_created": "2018-10-25T17:17:19.905378+00:00",
+    "download_checksum": "d2c645d5204ff4d971f7cb7283ce90db",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/2.14.0",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "0fbc9f1d-70dd-45ab-963d-e659218fcf25",
+    "version": "2.14"
+},
+{
+    "aliases": [
+        "encode:macs2"
+    ],
+    "date_created": "2015-10-16T01:12:34.378707+00:00",
+    "downloaded_url": "https://github.com/taoliu/MACS/tree/2015.4.20",
+    "schema_version": "4",
+    "software": "macs",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "12342c09-ec5b-458b-8b6b-13ce9f11f1e7",
+    "version": "2.1.0"
+},
+{
+    "aliases": [
+        "encode:bowtie 2.2.5"
+    ],
+    "date_created": "2016-11-01T22:20:15.937704+00:00",
+    "download_checksum": "3f6c156fd713f55b418f034aa22f5d0a",
+    "downloaded_url": "https://github.com/BenLangmead/bowtie2/archive/v2.2.5.tar.gz",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "12c34690-5edd-4da8-a3bc-0790b0d38e14",
+    "version": "2.2.5"
+},
+{
+    "aliases": [
+        "dnanexus:trim-adapters-illumina-0.1"
+    ],
+    "date_created": "2016-05-23T23:52:44.896225+00:00",
+    "download_checksum": "d81f41dff7e956aa1ba8163e2a2a5764",
+    "downloaded_url": "https://bitbucket.org/jvierstra/bio-tools/src/6fe54fa5a3d9b5c930ee77e8ccd757b347c86ac1/apps/trim-adapters-illumina/?at=master",
+    "schema_version": "4",
+    "software": "trim-adapters-illumina",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "1332ec1a-25df-40b7-8e30-879715de73cd",
+    "version": "0.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:28:52.009628+00:00",
+    "download_checksum": "57514b1218444e7cdd6a4e88f4dbc3cb",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/small-rna/small-rna-signals/resources/usr/bin/srna_signals.sh",
+    "schema_version": "4",
+    "software": "srna-signals",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "13af44fb-974b-4fd6-8c09-f3a07f521ebc",
+    "version": "1.2"
+},
+{
+    "aliases": [],
+    "date_created": "2017-06-27T03:42:14.714951+00:00",
+    "downloaded_url": "https://github.com/arq5x/bedtools2/releases/tag/v2.26.0",
+    "schema_version": "4",
+    "software": "bedtools",
+    "status": "in progress",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "13e61050-fe4f-4002-9ae0-8d1adcf81a04",
+    "version": "2.26.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:49:00.609187+00:00",
+    "download_checksum": "9da0153cb4c28c1fa2769a10bf780241",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/rampage/rampage-align-pe/src/rampage-align-pe.sh",
+    "schema_version": "4",
+    "software": "rampage-align",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "1418921f-6fc6-411a-8485-bde145b97a1f",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bedToBigBed 2.6"
+    ],
+    "date_created": "2015-02-19T19:19:37.771038+00:00",
+    "download_checksum": "5b9b69b5d01fa8cc43e61bb58df537f1",
+    "downloaded_url": "https://github.com/ENCODE-DCC/kentUtils/blob/v302.1.0/bin/linux.x86_64/bedToBigBed",
+    "schema_version": "4",
+    "software": "bedToBigBed",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "143e5445-7f10-48fe-9455-5f1a777773ca",
+    "version": "2.6"
+},
+{
+    "aliases": [
+        "encode:idr 2.0.2"
+    ],
+    "date_created": "2015-10-28T21:41:48.422130+00:00",
+    "downloaded_url": "https://github.com/nboley/idr/archive/2.0.2.zip",
+    "schema_version": "4",
+    "software": "idr",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "14b46941-7c68-48e3-bce7-6bbda5a57621",
+    "version": "2.0.2"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:47:48.444638+00:00",
+    "download_checksum": "e6c9202158356823f16d013e95b6b999",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/small-rna/small-rna-mad-qc/src/small-rna-mad-qc.py",
+    "schema_version": "4",
+    "software": "srna-mad-qc",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "158c461b-f7ce-4826-8188-923597cab75b",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-pipelines-2-1"
+    ],
+    "date_created": "2018-04-27T15:15:52.080989+00:00",
+    "download_checksum": "9e7d1f347410a38a2d6c496c18543f2a",
+    "schema_version": "4",
+    "software": "dnase_pipeline",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "15f65aef-29e2-49cd-bb0a-0beb98421021",
+    "version": "2.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:37:49.360372+00:00",
+    "download_checksum": "fd296f18c963d3fc64c2a0dbe84ac863",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.1.0/dnanexus/dme-index-bismark/src/dme-index-bismark.sh",
+    "notes": "dna-me-pipeline version 2.0.1 and 2.1.0, dme-index-bismark version 2.0.0",
+    "schema_version": "4",
+    "software": "dme-index-bismark",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "18ba0259-2f54-4a92-8281-4982ddfa553d",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:star 2.4.0g1"
+    ],
+    "date_created": "2015-02-13T19:55:57.073651+00:00",
+    "download_checksum": "84e29848902b4d55e7fc8db497eff817",
+    "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.0g1",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "195baf07-de0a-460d-9686-59d82bd75e50",
+    "version": "2.4.0g1"
+},
+{
+    "aliases": [
+        "encode:star 2.4.2a"
+    ],
+    "date_created": "2015-07-30T16:07:14.669734+00:00",
+    "download_checksum": "ff38b7836c132bcd91ca2cd3a23e10d59efc5382",
+    "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.2a",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "19f75e90-e991-4dc8-837d-8cd97ab5fb91",
+    "version": "2.4.2a"
+},
+{
+    "aliases": [
+        "dnanexus:rna-pipelines-2-3-3"
+    ],
+    "date_created": "2016-12-16T04:45:16.400748+00:00",
+    "download_checksum": "af2ddd0288a363f053c97fe3b23c6470",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.3.3",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "1a865658-b1e4-4344-9c1b-0ce24f3eab0e",
+    "version": "2.3.3"
+},
+{
+    "aliases": [
+        "encode:bowtie 1.0.1"
+    ],
+    "date_created": "2015-02-13T18:36:29.037177+00:00",
+    "download_checksum": "5ea908ac950b879f66039aa7ffd5ae36",
+    "downloaded_url": "http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.0.1/bowtie-1.0.1-linux-x86_64.zip/download",
+    "schema_version": "4",
+    "software": "bowtie",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "1b071b08-ef76-4a69-8f96-22408e2b380a",
+    "version": "1.0.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:26:23.770424+00:00",
+    "download_checksum": "6adf47b854fa5a0afe5eec70c974bc51",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/small-rna/small-rna-prep-star/resources/usr/bin/srna_index.sh",
+    "schema_version": "4",
+    "software": "srna-index-star",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "1bcae66e-7d74-478a-9617-a9817195595d",
+    "version": "2.1"
+},
+{
+    "aliases": [],
+    "date_created": "2015-10-23T22:04:00.275725+00:00",
+    "download_checksum": "c2fa5dfc031f33a74dc1a5c897b01e6d492ed433",
+    "downloaded_url": "https://github.com/deweylab/RSEM/releases/tag/v1.2.23",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "1be77f15-196e-4301-b27a-56053e398cfe",
+    "version": "1.2.23"
+},
+{
+    "aliases": [
+        "encode:macs 2.1.1.20160309"
+    ],
+    "date_created": "2016-11-01T22:31:45.629724+00:00",
+    "download_checksum": "1cc2fab44b232992060c7ab592bf43fa",
+    "downloaded_url": "https://pypi.python.org/packages/9f/99/a8ac96b357f6b0a6f559fe0f5a81bcae12b98579551620ce07c5183aee2c/MACS2-2.1.1.20160309.tar.gz",
+    "schema_version": "4",
+    "software": "macs",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "1c1265da-7599-4208-aec6-807d7b9b9b07",
+    "version": "2.1.1.20160309"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T21:18:37.881443+00:00",
+    "download_checksum": "672aa5d8789e3483438debb71b75e25e",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.2.1",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+    "version": "2.2.1"
+},
+{
+    "aliases": [
+        "encode:hotspot v1r4.0.0"
+    ],
+    "date_created": "2015-11-04T21:19:24.646911+00:00",
+    "downloaded_url": "http://www.uwencode.org/software/hotspot",
+    "schema_version": "4",
+    "software": "hotspot",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "uuid": "1def4328-6852-44fe-af34-6f00e1b3cc97",
+    "version": "version 1 release 4.0.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:35:23.865245+00:00",
+    "download_checksum": "d27ebf1a3eb4f6a86a754cbc0584417b",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/rampage/rampage-mad-qc/resources/usr/bin/MAD.R",
+    "schema_version": "4",
+    "software": "rampage-mad-qc",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "20b8e929-e806-437b-9673-47ad35099709",
+    "version": "1.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T18:57:56.527709+00:00",
+    "download_checksum": "478fbff1754d44a5c68063954f8c9865",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/tag/v1.0",
+    "schema_version": "4",
+    "software": "dna-me-pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2190319c-c493-4d91-a6f1-d4f108cf592f",
+    "version": "1.0.0"
+},
+{
+    "aliases": [
+        "encode:phantompeakqualtools_1.2"
+    ],
+    "date_created": "2019-03-07T18:36:28.395949+00:00",
+    "download_checksum": "9923b7232dc1b3a43526da4c44c6e81c",
+    "downloaded_url": "https://github.com/kundajelab/phantompeakqualtools/releases/tag/1.2",
+    "schema_version": "4",
+    "software": "phantompeakqualtools",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "22379c5f-b5a2-4bd9-ab3e-3b76843ea814",
+    "version": "1.2"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:49:44.267065+00:00",
+    "download_checksum": "ad898baa6142e3dc0e7b50bd924681a6",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.1.0/dnanexus/dme-rep-corr/resources/usr/bin/dname_bed_corr.sh",
+    "notes": "dna-me-pipeline version 2.0.1 and 2.1.0, dme-rep-corr version 1.0.0",
+    "schema_version": "4",
+    "software": "dme-rep-corr",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "22bb4738-1203-4f3e-847c-c10f9036d404",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-dnanexus-2-0"
+    ],
+    "date_created": "2017-07-29T03:37:44.595661+00:00",
+    "download_checksum": "fe5d11c724b2cce796a408882f7ddf56",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases/tag/v2.0",
+    "schema_version": "4",
+    "software": "dnase_pipeline",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "26196988-1574-4451-ae0b-f001f4172f5c",
+    "version": "2.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T21:48:54.461282+00:00",
+    "download_checksum": "29780b0fc93de822da99783ef25d8560",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.1.0/dnanexus/dme-bg-to-signal/resources/usr/bin/dname_bg_to_signal.sh",
+    "notes": "dna-me-pipeline version 2.0.1 and 2.1.0, dme-bg-to-signal version 1.0.1",
+    "schema_version": "4",
+    "software": "dme-bg-to-signal",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "27e32a33-13b2-40d9-8eba-603e4f6ec2ac",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:lrna-quantification-1-4"
+    ],
+    "date_created": "2017-01-24T05:33:56.548296+00:00",
+    "download_checksum": "71a80dd7ea99e63881df160bb8d3a78d",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.4/dnanexus/quant-rsem/resources/usr/bin/lrna_rsem_quantification.sh",
+    "schema_version": "4",
+    "software": "lrna-quantification",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "28702932-97a1-4c56-87d6-fc4e636b90bc",
+    "version": "1.4"
+},
+{
+    "aliases": [
+        "encode:trim_galore_0.4.1"
+    ],
+    "date_created": "2016-01-08T20:50:42.093466+00:00",
+    "download_checksum": "75e70271681084968eb0deb5835e86e9",
+    "downloaded_url": "http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/trim_galore_v0.4.1.zip",
+    "schema_version": "4",
+    "software": "trim_galore",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2a23caec-231c-4e82-a9b9-d2b7f891da96",
+    "version": "0.4.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:29:55.923582+00:00",
+    "download_checksum": "3e12c7ed237a55b4394b9165b98f3bf8",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/small-rna/small-rna-mad-qc/resources/usr/bin/srna_mad_qc.sh",
+    "schema_version": "4",
+    "software": "srna-mad-qc",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2ab529d1-11df-4b12-a649-7e57a8182828",
+    "version": "1.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:23:59.527198+00:00",
+    "download_checksum": "0818d83b5968dad179fbcbfa858a72be",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/quant-rsem/resources/usr/bin/lrna_rsem_quantification.sh",
+    "schema_version": "4",
+    "software": "lrna-quantification",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2ae8bc25-b113-4fbb-bcb7-23a0c15dd332",
+    "version": "1.2"
+},
+{
+    "aliases": [
+        "alexander-urban:picard_v1.52"
+    ],
+    "date_created": "2019-02-22T00:08:27.906159+00:00",
+    "download_checksum": "5eb518338b661b9e1afb5390e794f462",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/1.52",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "2b4fc768-9192-4858-b004-f9d0c3b5e534",
+    "version": "1.52"
+},
+{
+    "aliases": [
+        "encode:bedtools 2.17.0"
+    ],
+    "date_created": "2015-08-18T18:21:36.422618+00:00",
+    "download_checksum": "5e4507c54355a4a38c6d3e7497a2836a123c6655",
+    "downloaded_url": "https://github.com/arq5x/bedtools/releases/tag/v2.17.0",
+    "schema_version": "4",
+    "software": "bedtools",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "2cc07124-16be-4333-8943-4bce96059af3",
+    "version": "2.17.0"
+},
+{
+    "aliases": [
+        "encode:samtools 1.0"
+    ],
+    "date_created": "2015-02-14T01:03:07.437152+00:00",
+    "downloaded_url": "https://github.com/samtools/samtools/archive/1.0.tar.gz",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "2f4d48db-d4ec-4e9e-8c22-9fc5ee6c49ac",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:16:36.701276+00:00",
+    "download_checksum": "e6862914f4f9c4e970de43ec0bdc55f2",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/prep-tophat/src/prep-tophat.sh",
+    "schema_version": "4",
+    "software": "lrna-index-tophat",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "34b738d1-3a23-4ca8-8057-9c342650fcd1",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:32:08.953543+00:00",
+    "download_checksum": "202816ffb5d1a1f9b0b1dfff55f6163b",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/rampage/rampage-signals/resources/usr/bin/rampage_signal.sh",
+    "schema_version": "4",
+    "software": "rampage-signals",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "34be7c05-0dd4-45fc-989b-1ddfe583c9fe",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:picard_v1.129"
+    ],
+    "date_created": "2016-03-08T16:24:09.800122+00:00",
+    "download_checksum": "9ce0c9c162fe39c67655d4732b0f898b",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/1.129",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "34e7993a-0dff-49dc-8203-ad314cb3f692",
+    "version": "1.129"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-filter-pe-1.0.2"
+    ],
+    "date_created": "2016-05-24T20:18:59.530022+00:00",
+    "download_checksum": "e5ec28b6d7350c7928a4bd0af18477f0",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-filter-pe/resources/usr/bin/dnase_filter_pe.sh",
+    "schema_version": "4",
+    "software": "dnase-filter-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "36d02fb0-a184-472f-b228-4e0cf0a44890",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:picard 1.92"
+    ],
+    "date_created": "2015-10-16T00:59:23.906691+00:00",
+    "download_checksum": "2ed8d7d4521cbb3d958dceb22efafd46",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/1.92",
+    "notes": "Currently installed by dxapp.json from \"url\": \"https://github.com/broadinstitute/picard.git\", \"tag\": \"1.92\"",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "37969002-2985-4d2c-9d1d-2f7160d80019",
+    "version": "1.92"
+},
+{
+    "aliases": [
+        "encode:idr 2.0.0"
+    ],
+    "date_created": "2015-05-18T20:24:11.372247+00:00",
+    "download_checksum": "3b8d781596f475044a484d0e46e8b4bb44c44712",
+    "downloaded_url": "https://github.com/nboley/idr/archive/2.0.0.tar.gz",
+    "schema_version": "4",
+    "software": "idr",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "3a4bfb4d-b655-430d-a27e-011c1cdbd174",
+    "version": "2.0.0"
+},
+{
+    "aliases": [
+        "encode:bismark 0.15.0"
+    ],
+    "date_created": "2016-01-08T20:33:05.565130+00:00",
+    "download_checksum": "253420378865c7b00f858b033203f6ba",
+    "downloaded_url": "https://github.com/FelixKrueger/Bismark/archive/v0.15.0.tar.gz",
+    "schema_version": "4",
+    "software": "bismark",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+    "version": "0.15.0"
+},
+{
+    "aliases": [],
+    "date_created": "2015-11-04T21:23:20.686303+00:00",
+    "download_checksum": "d44cdb51745f5e8075c826430a39d8a61f1dd832",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/1.119",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "uuid": "3ad2356f-dc51-4b5e-9498-ab3382f018f4",
+    "version": "1.119"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_hotspot-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:47.058500+00:00",
+    "download_checksum": "41cb52fef75e9b787213fc80ad7882e3",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-call-hotspots/resources/usr/bin/dnase_hotspot.sh",
+    "schema_version": "4",
+    "software": "dnase-call-hotspots",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "3b8fab89-87a2-47c8-bb3f-8f6bcbbc510f",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-signals-1-2"
+    ],
+    "date_created": "2017-02-15T04:45:59.519253+00:00",
+    "download_checksum": "3ddf6c137cefc5b79936fcffe62cf63f",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.5/dnanexus/rampage/rampage-signals/resources/usr/bin/rampage_signal.sh",
+    "schema_version": "4",
+    "software": "rampage-signals",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "3c5a941e-6710-4e80-bd03-37e0dd0a4d18",
+    "version": "1.2"
+},
+{
+    "aliases": [
+        "encode:mad unversioned"
+    ],
+    "date_created": "2015-08-18T17:49:59.136832+00:00",
+    "download_checksum": "f205976f48f28a032260e68004f29c271be661d4",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/mad-qc/resources/usr/bin/MAD.R",
+    "schema_version": "4",
+    "software": "mad",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "3d0b6815-ba9f-4655-be55-5cbbf7884991",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:lrna-quantification-1-3"
+    ],
+    "date_created": "2016-12-16T04:45:19.046920+00:00",
+    "download_checksum": "9a42a0e5897fc7055b12b17d00b18cc1",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.3/dnanexus/quant-rsem/resources/usr/bin/lrna_rsem_quantification.sh",
+    "schema_version": "4",
+    "software": "lrna-quantification",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "40932f00-d41d-4f5e-8025-95f3c22ee913",
+    "version": "1.3"
+},
+{
+    "aliases": [
+        "dnanexus:hotspot2-1.0"
+    ],
+    "date_created": "2016-05-23T23:58:03.241286+00:00",
+    "download_checksum": "5df25202509ccf06d43f5465183d68a3",
+    "downloaded_url": "https://github.com/Altius/hotspot2/releases/tag/v1.0",
+    "notes": "First ENCODE specific release.",
+    "schema_version": "4",
+    "software": "hotspot2",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "41d6d306-72bc-4991-866f-dcfd87eebf25",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-04-19T00:00:42.639076+00:00",
+    "download_checksum": "173755a6fb6d7aba375ad76ccba0be43",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.1/dnanexus/rampage/rampage-peaks/resources/usr/bin/rampage_peaks.sh",
+    "schema_version": "4",
+    "software": "rampage-peaks",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "431d37a3-8deb-4c73-920b-73a5bab9b291",
+    "version": "2.2"
+},
+{
+    "aliases": [
+        "dnanexus:dme-align-se-parallel-1-0"
+    ],
+    "date_created": "2016-01-27T20:41:49.332321+00:00",
+    "download_checksum": "cc44566322d959741b5f94380f1df543",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.1.0/dnanexus/dme-align-se-parallel/src/dme-align-se-parallel.py",
+    "notes": "dna-me-pipeline version 2.1.0, dme-align-se-parallel",
+    "schema_version": "4",
+    "software": "dme-align-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "45a578b9-89da-4bf6-9b0b-6d6564607143",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:catools-1.17.1"
+    ],
+    "date_created": "2016-05-23T23:47:27.875350+00:00",
+    "download_checksum": "5c872bbc78b177b306f36709deb44498",
+    "downloaded_url": "https://github.com/cran/caTools/releases/tag/1.17.1",
+    "notes": "Installed from http://cran.cnr.berkeley.edu/src/contrib/caTools_1.17.1.tar.gz",
+    "schema_version": "4",
+    "software": "caTools",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "45e6294c-1b61-4441-b433-f937efae223e",
+    "version": "1.17.1"
+},
+{
+    "aliases": [
+        "dnanexus:pysam-0.9.0"
+    ],
+    "date_created": "2017-07-29T03:37:49.774323+00:00",
+    "download_checksum": "66913000ff50817bdcf56dfd3a52396f",
+    "downloaded_url": "https://pypi.python.org/pypi/pysam/0.9.0",
+    "schema_version": "4",
+    "software": "pysam",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "474d20a5-34dc-4923-b30c-df01fc6c98e4",
+    "version": "0.9.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-se-1.0.1"
+    ],
+    "date_created": "2016-05-24T20:15:21.748848+00:00",
+    "download_checksum": "545e5bb8d8989f8d3dc7f4ea7a92b117",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-align-bwa-se/resources/usr/bin/dnase_align_bwa_se.sh",
+    "schema_version": "4",
+    "software": "dnase-align-bwa-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "483573b3-19fa-4dbb-90cb-65e96b9b1d8b",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:41:57.075081+00:00",
+    "download_checksum": "3f8b290c2387c9d17c737d1f69b73277",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/mad-qc/src/mad-qc.py",
+    "schema_version": "4",
+    "software": "lrna-mad-qc",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "48cbd18a-5364-470d-95e7-540e5aeb99eb",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-se-1.1"
+    ],
+    "date_created": "2016-10-10T18:40:20.356346+00:00",
+    "download_checksum": "cf7fa0f25408db89b4075a446507f447",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.1.0/dnanexus/dnase-align-bwa-se/resources/usr/bin/dnase_align_bwa_se.sh",
+    "schema_version": "4",
+    "software": "dnase-align-bwa-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "492d5380-b22f-435a-bded-496d8e73687b",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:stampipes-2017-04-28"
+    ],
+    "date_created": "2017-07-29T03:37:44.107643+00:00",
+    "download_checksum": "46ef4cdd923acc871441a042d90684e0",
+    "downloaded_url": "https://github.com/StamLab/stampipes/releases/tag/encode-release-apr28-2017",
+    "schema_version": "4",
+    "software": "stampipes",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "497e485b-18fc-48d4-8715-ee51c6809293",
+    "version": "2017-04-28"
+},
+{
+    "aliases": [
+        "encode:deseq-1.28"
+    ],
+    "date_created": "2018-07-25T16:17:44.620524+00:00",
+    "schema_version": "4",
+    "software": "deseq",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "4988d4de-8f4d-476c-9a48-4d5a211e8053",
+    "version": "1.28"
+},
+{
+    "aliases": [
+        "encode:samtools 0.1.19-96b5f2294a"
+    ],
+    "date_created": "2015-02-14T01:08:32.075875+00:00",
+    "download_checksum": "8df2116a71ab4c012680ed3cab683170",
+    "downloaded_url": "https://github.com/samtools/samtools/archive/0.1.19.tar.gz",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "4c911ae3-9007-4777-9680-2c526ab8fdbb",
+    "version": "0.1.19-96b5f2294a"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:16:37.574289+00:00",
+    "download_checksum": "f1695ee80c783c61c7aebe4c2673b465",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/align-star-pe/src/align-star-pe.sh",
+    "schema_version": "4",
+    "software": "lrna-align-star-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "4ddc54ac-45fa-40d2-bd4e-82ad010ce0ca",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:macs 2.1.0.20150420"
+    ],
+    "date_created": "2016-04-07T17:04:32.355854+00:00",
+    "download_checksum": "36fd8bc74cb4cff7e1d1d9b80b23a445",
+    "downloaded_url": "https://github.com/taoliu/MACS/archive/2015.4.20.tar.gz",
+    "schema_version": "4",
+    "software": "macs",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "4e64fac3-776f-402c-a470-744f8514f39f",
+    "version": "2.1.0.20150420"
+},
+{
+    "aliases": [
+        "encode:miso-0.52"
+    ],
+    "date_created": "2018-07-25T16:17:45.354730+00:00",
+    "download_checksum": "ff0938bfe081baae79fa9aa1354f2b768558cb766ab290b94dd440ee64ef1097",
+    "downloaded_url": "https://pypi.org/project/misopy/0.5.2/",
+    "schema_version": "4",
+    "software": "miso",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "5054113d-30f2-4389-b218-192e3f2dedda",
+    "version": "0.52"
+},
+{
+    "aliases": [
+        "dnanexus:snow-0.4-1"
+    ],
+    "date_created": "2016-05-23T23:50:11.680214+00:00",
+    "download_checksum": "e7026cd177278a4188268dafade22af7",
+    "downloaded_url": "https://github.com/cran/snow/releases/tag/0.4-1",
+    "notes": "Installed from http://cran.cnr.berkeley.edu/src/contrib/snow_0.4-1.tar.gz",
+    "schema_version": "4",
+    "software": "snow",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "506d7276-0ccf-422f-b8f6-222de51dd72a",
+    "version": "0.4-1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:18:45.469025+00:00",
+    "download_checksum": "0e342e01f53cdc25af052319a8fa0651",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/align-star-se/resources/usr/bin/lrna_align_star_se.sh",
+    "schema_version": "4",
+    "software": "lrna-align-star-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "5136c713-d4ed-42df-8771-28fff370b354",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "dnanexus:dme-pipeline-2-1-0"
+    ],
+    "date_created": "2016-12-06T20:15:11.192996+00:00",
+    "download_checksum": "f81591be36d932a0cec56edad794eb9b",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/tree/v2.1.0",
+    "schema_version": "4",
+    "software": "dna-me-pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "52510c31-279e-404d-9eed-fa34e95ac0a2",
+    "version": "2.1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-pipelines-2-0"
+    ],
+    "date_created": "2017-08-06T17:36:46.635977+00:00",
+    "download_checksum": "fe5d11c724b2cce796a408882f7ddf56",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases/tag/v2.0",
+    "schema_version": "4",
+    "software": "dnase_pipeline",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:rsem 1.2.7"
+    ],
+    "date_created": "2016-01-12T23:55:06.776989+00:00",
+    "download_checksum": "2cd6caf7939cc9d22296627e28149eeb",
+    "downloaded_url": "https://github.com/deweylab/RSEM/archive/v1.2.7.tar.gz",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "53932186-69c6-4338-82c1-74653bee6007",
+    "version": "1.2.7"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:27:34.506780+00:00",
+    "download_checksum": "4f95b1767e5c41239f610ed32b3e7d66",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/small-rna/small-rna-align/resources/usr/bin/srna_align.sh",
+    "schema_version": "4",
+    "software": "srna-align",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "54058ee5-975e-4e29-a87e-0d0b128af0bb",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "encode:bedtobigbed v369"
+    ],
+    "date_created": "2019-05-21T22:22:11.679587+00:00",
+    "downloaded_url": "http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64.v369/",
+    "schema_version": "4",
+    "software": "bedToBigBed",
+    "status": "released",
+    "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
+    "uuid": "55771f3c-384b-4cd0-aa5b-7420d3f72676",
+    "version": "369"
+},
+{
+    "aliases": [
+        "encode:macs1.4.0"
+    ],
+    "date_created": "2016-10-21T23:25:55.981702+00:00",
+    "download_checksum": "35146e447732d22459843d1fe32aaf6a",
+    "downloaded_url": "https://github.com/taoliu/MACS/archive/v1.4.0.tar.gz",
+    "schema_version": "4",
+    "software": "macs",
+    "status": "in progress",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "5900819c-32f0-4f8d-80d6-976dd224723e",
+    "version": "1.4.0"
+},
+{
+    "aliases": [
+        "dnanexus:picard-v2.8.1"
+    ],
+    "date_created": "2017-07-29T03:37:43.605690+00:00",
+    "download_checksum": "d3f5fb0c02f0f2230018801315a33982",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/2.8.1",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "5f2c9789-d184-4a10-a572-6cb2ff3a5ed0",
+    "version": "2.8.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T21:45:00.302275+00:00",
+    "download_checksum": "615d50a1d2cc268f2129815bd980eade",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.1.0/dnanexus/dme-cx-to-bed/resources/usr/bin/dname_cx_to_bed.sh",
+    "notes": "dna-me-pipeline version 2.0.1 and 2.1.0, dme-cx-to-bed version 1.0.1",
+    "schema_version": "4",
+    "software": "dme-cx-to-bed",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "6236039a-969d-4057-a178-05954cb39be9",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:picard 1.130"
+    ],
+    "date_created": "2016-06-09T15:38:03.054389+00:00",
+    "download_checksum": "fb8034701042c3a0489fad54ee0f0667",
+    "downloaded_url": "https://github.com/broadinstitute/picard/archive/1.130.tar.gz",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "62620171-90e2-471c-88cf-21732179a1ee",
+    "version": "v.1.130"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:50:05.312201+00:00",
+    "download_checksum": "21ed37ebb02d1117efe2435cad80dcd6",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/rampage/rampage-signals/src/rampage-signals.sh",
+    "schema_version": "4",
+    "software": "rampage-signals",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "635e0f74-2ff5-4858-9403-db1207965e4b",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_hotspot-v2.1.4"
+    ],
+    "date_created": "2018-04-27T15:15:56.004227+00:00",
+    "schema_version": "4",
+    "software": "dnase-call-hotspots",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "6404ec33-b22d-4be4-aef8-9da581b085ce",
+    "version": "2.1.4"
+},
+{
+    "aliases": [
+        "encode:bedtools 2.25.0"
+    ],
+    "date_created": "2016-03-16T19:27:37.688735+00:00",
+    "download_checksum": "1a87d311a4edeb9da39742c6d5186715",
+    "downloaded_url": "https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz",
+    "schema_version": "4",
+    "software": "bedtools",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "6404f5d1-636c-407f-8742-55d89a990993",
+    "version": "2.25.0"
+},
+{
+    "aliases": [
+        "encode:overlap_peaks 1.0"
+    ],
+    "date_created": "2015-06-23T22:20:28.375873+00:00",
+    "downloaded_url": "https://github.com/ENCODE-DCC/tf_chipseq/tree/master/dnanexus/overlap_peaks",
+    "schema_version": "4",
+    "software": "overlap_peaks",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "64b2d05e-3347-4edd-b0a9-efbf1a259fbd",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bowtie 2.2.6"
+    ],
+    "date_created": "2016-12-07T21:32:28.581220+00:00",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "in progress",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "6584bfb8-8dcd-4f46-b098-55eebc85a369",
+    "version": "2.2.6"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:34:16.052560+00:00",
+    "download_checksum": "153a14aeab298acf1d4e9ab4d34a803c",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/rampage/rampage-idr/resources/usr/bin/rampage_idr.sh",
+    "schema_version": "4",
+    "software": "rampage-idr",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "6717c8b9-cc43-4563-8110-430671d2ff40",
+    "version": "1.2"
+},
+{
+    "aliases": [
+        "ali-mortazavi:cutadapt-microrna-seq"
+    ],
+    "date_created": "2017-01-11T00:03:03.446134+00:00",
+    "download_checksum": "ec216d055a4910da6628d9180c283fb9",
+    "downloaded_url": "https://pypi.python.org/pypi/cutadapt/1.7.1",
+    "schema_version": "4",
+    "software": "cutadapt",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "697f881b-c16a-40fc-93a9-60fdf0cbef2b",
+    "version": "1.7.1"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-filter-se-1.0.2"
+    ],
+    "date_created": "2016-05-24T20:20:47.028425+00:00",
+    "download_checksum": "47bc65ef80e61fd379632c0a7624cc9d",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-filter-se/resources/usr/bin/dnase_filter_se.sh",
+    "schema_version": "4",
+    "software": "dnase-filter-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "6b440aab-6f06-47ee-8c20-00bb23330ea8",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:samtools 1.3"
+    ],
+    "date_created": "2016-04-06T05:32:57.415606+00:00",
+    "download_checksum": "0af510b1a3e888c57367f8edf4890f73020128d2",
+    "downloaded_url": "https://sourceforge.net/projects/samtools/files/samtools/1.3/",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "6b5dd7cf-aa67-457c-9a79-64818e3cc5ff",
+    "version": "1.3"
+},
+{
+    "aliases": [
+        "encode:bedmethyl_corr.py-v-1"
+    ],
+    "date_created": "2016-01-26T01:00:55.065048+00:00",
+    "download_checksum": "65ddccf1403cc499de94efd9a8ef2b0f",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/master/dnanexus/dme-rep-corr/resources/usr/bin/bedmethyl_corr.py",
+    "schema_version": "4",
+    "software": "bedmethyl_corr.py",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "6d6842c3-ef1f-4307-9fad-1b72b006b887",
+    "version": "v1"
+},
+{
+    "aliases": [
+        "encode:macs2_2.1.1"
+    ],
+    "date_created": "2019-03-07T18:39:44.642781+00:00",
+    "download_checksum": "1cc2fab44b232992060c7ab592bf43fa",
+    "downloaded_url": "https://pypi.org/project/MACS2/2.1.1.20160309/#files",
+    "schema_version": "4",
+    "software": "macs",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "700bf164-a6de-4fc9-8d69-a2b812385afb",
+    "version": "2.1.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:31:02.566814+00:00",
+    "download_checksum": "b2c8ab2adf9a26ec21cb32d987028f18",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/rampage/rampage-align-pe/resources/usr/bin/rampage_align_star.sh",
+    "schema_version": "4",
+    "software": "rampage-align",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "708ecef9-e38a-410a-b1e3-001338f5bb17",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:star_v_2_5_1_b"
+    ],
+    "date_created": "2016-01-20T20:45:16.541995+00:00",
+    "download_checksum": "4bff1086765377f4b1706c31769367b7",
+    "downloaded_url": "https://github.com/alexdobin/STAR/archive/2.5.1b.tar.gz",
+    "notes": "Using bin/Linux_x86_64_static/STAR executable",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "70a085ad-194e-4de0-838c-7af257680f54",
+    "version": "2.5.1b"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:37:46.126318+00:00",
+    "download_checksum": "883d501d65393530e20383e89823b8a1",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/bam-to-bigwig-unstranded/src/bam-to-bigwig-unstranded.sh",
+    "schema_version": "4",
+    "software": "lrna-signals-unstranded",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "72520bb4-4592-4137-9a8c-f9d5d04ff63b",
+    "version": "v1.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_qc_bam-v1.0"
+    ],
+    "date_created": "2017-07-29T03:37:47.531318+00:00",
+    "download_checksum": "e2f51ce704654d4f0c41aee43605a827",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-qc-bam/resources/usr/bin/dnase_qc_bam.sh",
+    "schema_version": "4",
+    "software": "dnase-qc-bam",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "7728afef-3f3f-4870-b872-29b9a1f53223",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:33:10.802895+00:00",
+    "download_checksum": "07d2e9f4b2dfaad21b1405f97379a298",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/rampage/rampage-peaks/resources/usr/bin/rampage_peaks.sh",
+    "schema_version": "4",
+    "software": "rampage-peaks",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "79437adb-5a31-42b6-a617-bb63e2b6700b",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "encode:picard 1.119"
+    ],
+    "date_created": "2015-11-04T21:30:32.344088+00:00",
+    "download_checksum": "d44cdb51745f5e8075c826430a39d8a61f1dd832",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/1.119",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "uuid": "797e6012-5a6c-4dcc-ae9d-df45f0a19686",
+    "version": "1.119"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:53:41.915501+00:00",
+    "download_checksum": "5242245cb4006a5554aa30cf13567cc5",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/rampage/rampage-idr/src/rampage-idr.sh",
+    "schema_version": "4",
+    "software": "rampage-idr",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "7b0b2626-7ccc-4520-b3c8-2d5791070fe5",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:grit 2.0.3"
+    ],
+    "date_created": "2015-05-18T20:14:31.234864+00:00",
+    "download_checksum": "527dadcfb7c6212532e84ff4740e01aa744f35e5",
+    "downloaded_url": "https://github.com/nboley/grit/archive/2.0.3.tar.gz",
+    "schema_version": "4",
+    "software": "grit",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "7b2cc20c-53aa-4035-93a3-722eabb082a0",
+    "version": "2.0.3"
+},
+{
+    "aliases": [],
+    "date_created": "2016-04-18T23:56:59.049199+00:00",
+    "download_checksum": "7fdbe861d31c4fb688e0fa06b486125e",
+    "downloaded_url": "https://github.com/nboley/grit/archive/2.0.5.tar.gz",
+    "schema_version": "4",
+    "software": "grit",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "7c0c9ab4-7c39-47b3-a0fd-beeda755a9f4",
+    "version": "2.0.5"
+},
+{
+    "aliases": [
+        "encode:picard 1.128"
+    ],
+    "date_created": "2016-04-06T05:32:59.748183+00:00",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/1.128/",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "7df968e0-9d30-47c0-9ec9-0e1a7f64566d",
+    "version": "1.128"
+},
+{
+    "aliases": [
+        "encode:overlap_peaks atac 1.3.0"
+    ],
+    "date_created": "2019-05-21T05:19:52.276454+00:00",
+    "download_checksum": "7384031d1e47c46c38e2d51b7776f2af",
+    "downloaded_url": "https://github.com/ENCODE-DCC/atac-seq-pipeline/blob/master/src/encode_naive_overlap.py",
+    "schema_version": "4",
+    "software": "overlap_peaks",
+    "status": "in progress",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "7e3ee587-f88d-404f-aabe-d44d6e6c99a4",
+    "version": "ATAC v1.3.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-09-01T22:12:40.355031+00:00",
+    "download_checksum": "52f519ce18ef0d9737422ee40e18048b",
+    "downloaded_url": "https://github.com/bedops/bedops/releases/tag/v2.4.19",
+    "schema_version": "4",
+    "software": "bedops",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+    "version": "2.4.19"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-se-1-2"
+    ],
+    "date_created": "2017-02-15T04:45:59.039925+00:00",
+    "download_checksum": "19fbb430ae5a02fafa2f1c34955eafeb",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.2/dnanexus/dnase-align-bwa-se/resources/usr/bin/dnase_align_bwa_se.sh",
+    "schema_version": "4",
+    "software": "dnase-align-bwa-se",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "7fe06753-7d26-4621-8d61-1b2f472289b1",
+    "version": "1.2"
+},
+{
+    "aliases": [
+        "encode:idr October 2010"
+    ],
+    "date_created": "2015-08-18T19:29:17.866811+00:00",
+    "downloaded_url": "https://sites.google.com/site/anshulkundaje/projects/idr",
+    "notes": "Under \"Code for IDR Analysis\"",
+    "schema_version": "4",
+    "software": "idr",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "7fe855cf-255b-4950-aef9-10b066254240",
+    "version": "October 2010"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_index_bwa-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:45.070969+00:00",
+    "download_checksum": "75737463319744c888b7426a3c28c268",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-index-bwa/resources/usr/bin/dnase_index_bwa.sh",
+    "schema_version": "4",
+    "software": "dnase-index-bwa",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "80198fc1-3da8-4838-9f72-54a22004257d",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:tophat 2.0.13"
+    ],
+    "date_created": "2016-01-13T01:13:30.330018+00:00",
+    "download_checksum": "af0e1a34b667df56f78597138f45e661",
+    "downloaded_url": "http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.13.Linux_x86_64.tar.gz",
+    "schema_version": "4",
+    "software": "tophat",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "8192eb05-76bd-4e26-a29f-a559aab344e0",
+    "version": "2.0.13"
+},
+{
+    "aliases": [
+        "encode:concat-fastqs 1.0.2"
+    ],
+    "date_created": "2015-03-12T04:22:04.505702+00:00",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/tree/master/dnanexus/concat-fastqs",
+    "schema_version": "4",
+    "software": "concat-fastqs",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "826a39b4-f6ec-42ac-9f59-e776dde233be",
+    "version": "1.0.2"
+},
+{
+    "aliases": [
+        "encode:star 2.4.0d"
+    ],
+    "date_created": "2015-02-13T18:31:00.678217+00:00",
+    "download_checksum": "fc3df4ae49108c7837cae85925e0819a65eddc73",
+    "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.0d",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "834e3145-b752-4486-a613-c0c625262051",
+    "version": "2.4.0d"
+},
+{
+    "aliases": [
+        "encode:tophat 2.0.8"
+    ],
+    "date_created": "2015-02-13T18:28:51.767374+00:00",
+    "download_checksum": "ec29164105d44a5b4ac5bd73e1d1918a",
+    "downloaded_url": "http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.8.Linux_x86_64.tar.gz",
+    "schema_version": "4",
+    "software": "tophat",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "8369c9b0-50ad-11e4-916c-0800200c9a66",
+    "version": "2.0.8"
+},
+{
+    "aliases": [
+        "encode:bwa-v0.7.12"
+    ],
+    "date_created": "2018-12-20T16:54:29.102033+00:00",
+    "download_checksum": "e24a587baaad411d5da89516ad7a261a",
+    "downloaded_url": "https://github.com/lh3/bwa/archive/0.7.12.tar.gz",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "85010760-a946-4f22-a6aa-6f94cc32e528",
+    "version": "0.7.12"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_filter_se-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:46.074234+00:00",
+    "download_checksum": "68a8e63dad97614ded70bc4a4e67d9b9",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-filter-se/resources/usr/bin/dnase_filter_se.sh",
+    "schema_version": "4",
+    "software": "dnase-filter-se",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "857f24b0-edb7-4219-ab69-6fcd8291a67e",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:bedtobigbed v287"
+    ],
+    "date_created": "2016-07-28T18:42:52.632460+00:00",
+    "downloaded_url": "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64.v287/",
+    "schema_version": "4",
+    "software": "bedToBigBed",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "8605897a-3732-42a1-9ad9-bb916f383fcb",
+    "version": "V287"
+},
+{
+    "aliases": [],
+    "date_created": "2017-04-04T21:56:49.532881+00:00",
+    "downloaded_url": "https://github.com/bedops/bedops/archive/v2.4.26.tar.gz",
+    "schema_version": "4",
+    "software": "bedops",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "uuid": "88275189-c2de-4a7b-8af1-18ce8b0ec28e",
+    "version": "2.4.26"
+},
+{
+    "aliases": [
+        "encode:phantompeakqualtools 1.1",
+        "dnanexus:ccQualityControl.v.1.1"
+    ],
+    "date_created": "2015-10-16T01:06:56.970496+00:00",
+    "download_checksum": "66cfe40711edb914cd0fd69778a54e37",
+    "downloaded_url": "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/phantompeakqualtools/ccQualityControl.v.1.1.tar.gz",
+    "notes": "ccQualityControl.v.1.1 IS phantompeakqualtools 2.0 (as determined by 'grep Version phantompeakqualtools/README.txt')",
+    "schema_version": "4",
+    "software": "phantompeakqualtools",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:rsem 1.2.19"
+    ],
+    "date_created": "2015-02-13T20:05:29.897378+00:00",
+    "download_checksum": "69667ee47337617847dc97da2765fd08",
+    "downloaded_url": "https://github.com/bli25wisc/RSEM/releases/tag/v1.2.19",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "893ce943-f35b-4e1b-bf03-cf843ba84c4b",
+    "version": "1.2.19"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:21:44.931327+00:00",
+    "download_checksum": "bc5636d9e52e6d3fcddb3500c0e43ed4",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/bam-to-bigwig-stranded/src/bam-to-bigwig-stranded.sh",
+    "schema_version": "4",
+    "software": "lrna-signals-stranded",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "89fe2fbc-e032-4333-8b3f-ede07a6c3b17",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:rna-pipelines-2-3-5"
+    ],
+    "date_created": "2017-02-15T04:45:59.273209+00:00",
+    "download_checksum": "9d018758f312bd18b782c5986cffa016",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.3.5",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "8ab99e79-71b0-4f0e-b4cd-d44339f35054",
+    "version": "2.3.5"
+},
+{
+    "aliases": [
+        "dnanexus:bedops-2.4.18"
+    ],
+    "date_created": "2016-05-20T23:56:16.734601+00:00",
+    "download_checksum": "fa1146153d77b6adf65b1b07e305ab08",
+    "downloaded_url": "https://github.com/bedops/bedops/releases/tag/v2.4.18",
+    "schema_version": "4",
+    "software": "bedops",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "8b0e7b53-4b2f-4bf7-8916-474349f2a77b",
+    "version": "2.4.18"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:52:46.569189+00:00",
+    "download_checksum": "d6e000219e3ac0b02f99320c87873414",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.0.1/dnanexus/dme-index-bismark-bowtie2/src/dme-index-bismark-bowtie2.sh",
+    "notes": "dna-me-pipeline version 2.0.1, dme-index-bismark-bowtie2 version 2.0.0",
+    "schema_version": "4",
+    "software": "dme-index-bismark-bowtie2",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "8c6a1e36-ebd2-40a6-a6da-f80a87998ea0",
+    "version": "2.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:54:56.476136+00:00",
+    "download_checksum": "f179553b00701018842883eb6e25b11a",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/rampage/rampage-mad-qc/src/rampage-mad-qc.py",
+    "schema_version": "4",
+    "software": "rampage-mad-qc",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "8eb25e3e-3f1b-4135-ad3f-8ea321442396",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:44:15.209003+00:00",
+    "download_checksum": "3ac087b3a8805b278849fdfc2e54e3a4",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.1.0/dnanexus/dme-extract-se/resources/usr/bin/dname_extract_se.sh",
+    "notes": "dna-me-pipeline version 2.0.1 and 2.1.0, dme-extract-se version 2.0.4",
+    "schema_version": "4",
+    "software": "dme-extract-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "8fca23e5-9484-4d83-af59-8f3e0ee11849",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:picard 1.131"
+    ],
+    "date_created": "2016-01-13T01:21:38.887333+00:00",
+    "download_checksum": "1459a8699e706d1c3e09c9eb72bcbfd2",
+    "downloaded_url": "https://github.com/broadinstitute/picard/archive/1.131.tar.gz",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "8fdae858-164e-4408-82ab-c6e8d2fdeba4",
+    "version": "1.131"
+},
+{
+    "aliases": [
+        "encode:picard 1.140"
+    ],
+    "date_created": "2016-11-01T23:05:16.524641+00:00",
+    "download_checksum": "a51a640a5c9453504524c2392b4444bf",
+    "downloaded_url": "https://github.com/broadinstitute/picard/archive/1.140.tar.gz",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "in progress",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "906aecb3-3faa-4059-85e0-df8ebe498434",
+    "version": "1.140"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_pipeline-1.0.1"
+    ],
+    "date_created": "2016-05-24T20:08:28.293110+00:00",
+    "download_checksum": "08ac05ada43e296efc30886ee604ec52",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases/tag/v1.0.1",
+    "schema_version": "4",
+    "software": "dnase_pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "90cd7e4d-81b0-4119-9436-05c9333b733b",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:cxrepo-bed 0.1"
+    ],
+    "date_created": "2015-02-13T18:47:40.886682+00:00",
+    "download_checksum": "b7f4563ab5b7a4a9874fa927ccce26ea",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/cxrepo-bed.py",
+    "schema_version": "4",
+    "software": "cxrepo-bed.py",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c",
+    "version": "0.1"
+},
+{
+    "aliases": [
+        "dnanexus:chromCor.Rscript-unversioned-8bef80b1"
+    ],
+    "date_created": "2016-09-02T19:55:18.859500+00:00",
+    "download_checksum": "8bef80b1f94c7e512e69bdaecd2fb61f",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/master/dnanexus/dnase-rep-corr/resources/usr/bin/chromCor.Rscript",
+    "schema_version": "4",
+    "software": "chromcor",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "91932b32-4c56-4ee8-bb6b-28ea1e8a7ef5",
+    "version": "unversioned"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:17:49.678829+00:00",
+    "download_checksum": "b871fd00f5c7aed9faa3ea05bbc23fe6",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/align-star-se/src/align-star-se.sh",
+    "schema_version": "4",
+    "software": "lrna-align-star-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "921c011b-a5f8-4770-824a-bf7eb1095630",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-index-bwa-1.1"
+    ],
+    "date_created": "2016-10-10T18:33:56.629838+00:00",
+    "download_checksum": "8641d1f88d51d9f31b81c1d99d640a6f",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.1.0/dnanexus/dnase-index-bwa/resources/usr/bin/dnase_index_bwa.sh",
+    "schema_version": "4",
+    "software": "dnase-index-bwa",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "92b94172-8316-4519-b609-c56ec5373c70",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-1.0.0"
+    ],
+    "date_created": "2016-05-24T20:29:03.189867+00:00",
+    "download_checksum": "e97c3c9f11b0d91c57bc91f6fed9d688",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-call-hotspots/resources/usr/bin/dnase_hotspot.sh",
+    "schema_version": "4",
+    "software": "dnase-call-hotspots",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "972f4d7f-38b3-4b82-ba62-e4da9a2cde88",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-03-08T16:27:28.792718+00:00",
+    "download_checksum": "42cf57a5f110e06aa666aed58e0c3064",
+    "downloaded_url": "https://github.com/arq5x/bedtools2/releases/tag/v2.21.0",
+    "schema_version": "4",
+    "software": "bedtools",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "97914185-dc92-436a-a729-e9b82610d92e",
+    "version": "2.21.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-index-bwa-1.0.0"
+    ],
+    "date_created": "2016-05-24T20:32:50.013502+00:00",
+    "download_checksum": "3717fcc9553a0346fe79ed204452244d",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-index-bwa/resources/usr/bin/dnase_index_bwa.sh",
+    "schema_version": "4",
+    "software": "dnase-index-bwa",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "996c4b67-95a9-4116-9fdc-c490995f68da",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bowtie 2.1.0"
+    ],
+    "date_created": "2015-02-13T18:37:27.353654+00:00",
+    "download_checksum": "c00c168f8825382896cee967e191d71b",
+    "downloaded_url": "http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.1.0/bowtie2-2.1.0-linux-x86_64.zip/download",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "9c51ea8f-ac73-4a25-8783-d31bce2d5aac",
+    "version": "2.1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-08-04T18:58:53.857964+00:00",
+    "downloaded_url": "http://graveleylab.cam.uchc.edu/WebData/xwei/tgchome/script/Marinov_Georgi/V5_09192013/makewigglefromBAM-NH.py",
+    "schema_version": "4",
+    "software": "makewigglefromBAM-NH",
+    "status": "in progress",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "9d43af0a-be56-4392-9424-9aecedb76a01"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:13:33.007196+00:00",
+    "download_checksum": "313bf8b30378ce1cb842825496e8663d",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/prep-star/src/prep-star.sh",
+    "schema_version": "4",
+    "software": "lrna-index-star",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "9e120d67-98e6-41a9-b46e-7230661c8131",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T19:05:57.888720+00:00",
+    "download_checksum": "edb4c6174e3cafc7bef1b8dee2061d15",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.1.1",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+    "version": "2.1.1"
+},
+{
+    "aliases": [
+        "encode:mott-trim 0.1"
+    ],
+    "date_created": "2015-02-18T01:04:45.267996+00:00",
+    "download_checksum": "b1717422b864e71c6e47250f1d09abcf",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/mott-trim.py",
+    "schema_version": "4",
+    "software": "mott-trim.py",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
+    "version": "0.1"
+},
+{
+    "aliases": [],
+    "date_created": "2017-06-27T03:42:18.096449+00:00",
+    "downloaded_url": "https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.9/",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a8abe783-46a9-46cd-b5fb-23ebf39b6f71",
+    "version": "2.2.9"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:32:42.161444+00:00",
+    "download_checksum": "13b7cdae61f2b42d355e84904f657b8c",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/releases/tag/v2.0.1",
+    "notes": "Release for 2.0 pipeline",
+    "schema_version": "4",
+    "software": "dna-me-pipeline",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "a8e1b6ac-a343-4fd4-b1a5-95707dbf8d93",
+    "version": "2.0.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T20:09:57.191243+00:00",
+    "download_checksum": "6549ebea0a84af9cebc202ec11aa16d7",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v1.1",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "a96510bb-854a-4344-9d5c-d42f49ded21a",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:bismark_0.14.4"
+    ],
+    "date_created": "2018-11-29T21:32:43.541448+00:00",
+    "download_checksum": "2d790a2630bb31cc3f148090c345aa12",
+    "downloaded_url": "https://github.com/FelixKrueger/Bismark/releases?after=0.16.1",
+    "schema_version": "4",
+    "software": "bismark",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "aa257bed-5c9c-454f-b36c-565acf4ff482",
+    "version": "0.14.4"
+},
+{
+    "aliases": [],
+    "date_created": "2017-06-27T03:42:16.071794+00:00",
+    "downloaded_url": "https://github.com/samtools/samtools/releases/tag/1.3.1",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "aba3a24e-9348-4134-afe8-f19cdf22ee11",
+    "version": "1.3.1"
+},
+{
+    "aliases": [
+        "encode:wigtobigwig 4"
+    ],
+    "date_created": "2015-08-18T18:54:03.949276+00:00",
+    "downloaded_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
+    "notes": "After navigating to the link for the version, choose the correct operating system and then the correct software.",
+    "schema_version": "4",
+    "software": "wigtobigwig",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "ad0d99b7-c9f9-4b59-9515-4b64314e837c",
+    "version": "4"
+},
+{
+    "aliases": [
+        "dnanexus:modwt-1.0"
+    ],
+    "date_created": "2016-05-24T00:00:38.361655+00:00",
+    "download_checksum": "f5f8040993289a822af75f8a81168eeb",
+    "downloaded_url": "https://github.com/StamLab/modwt/releases/tag/1.0",
+    "schema_version": "4",
+    "software": "modwt",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:15:20.437637+00:00",
+    "download_checksum": "92df73425c6caf5910d7e143f3a68b33",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/prep-star/resources/usr/bin/lrna_index_star.sh",
+    "schema_version": "4",
+    "software": "lrna-index-star",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "ae73844a-2ec4-4fc2-8300-7c6d647fa53f",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "encode:bowtie 0.12.9"
+    ],
+    "date_created": "2016-04-07T17:00:20.860214+00:00",
+    "download_checksum": "3120f57a849ab885e928800c591764f8",
+    "downloaded_url": "https://sourceforge.net/projects/bowtie-bio/files/bowtie/0.12.9/bowtie-0.12.9-src.zip/download",
+    "schema_version": "4",
+    "software": "bowtie",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "aecca21a-1611-469b-b224-8ceba753a8bf",
+    "version": "0.12.9"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:40:29.523495+00:00",
+    "download_checksum": "2c04d40013e9bef4c5b78c167785ff47",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/quant-rsem/src/quant-rsem.sh",
+    "schema_version": "4",
+    "software": "lrna-quantification",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b1bd95e0-b8c6-4669-9441-2ec61b7c41b2",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bowtie 2.2.4"
+    ],
+    "date_created": "2016-03-08T16:20:56.155045+00:00",
+    "download_checksum": "d31294875092e76ebb061eadc7998582",
+    "downloaded_url": "https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.4/",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "b38b963c-dbe8-4de7-a2dc-ee2c593a67c6",
+    "version": "2.2.4"
+},
+{
+    "aliases": [
+        "kevin-white:modified-idr-Aug-2015"
+    ],
+    "date_created": "2015-08-28T21:20:20.821158+00:00",
+    "notes": "Modified by Kevin White's lab to produce various signal tracks in wiggle format from the replicates and from the pooled replicates using the alignments.",
+    "schema_version": "4",
+    "software": "idr",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "b4682da5-8c2f-44d0-b931-0590a0bf3737",
+    "version": "Kevin White lab modified, August 2015"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-eval-bam-1.0.1"
+    ],
+    "date_created": "2016-05-24T20:25:09.113397+00:00",
+    "download_checksum": "bfa6df1c200ffad88e916a0bcacb010a",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-eval-bam/resources/usr/bin/dnase_eval_bam.sh",
+    "schema_version": "4",
+    "software": "dnase-eval-bam",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b4be96a3-59d0-4ae0-84d6-6ac36c0e7315",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:rna-pipelines-2-3-4"
+    ],
+    "date_created": "2017-01-24T05:32:39.799087+00:00",
+    "download_checksum": "12c48643ff294c54f695c7b840be51b5",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/tree/v2.3.4",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+    "version": "2.3.4"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:20:34.347236+00:00",
+    "download_checksum": "57390332c71473487bf2389114a302ce",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/bam-to-bigwig-stranded/src/bam-to-bigwig-stranded.sh",
+    "schema_version": "4",
+    "software": "lrna-signals-stranded",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b5561e7a-cf86-457f-a3cf-9a2104daeaba",
+    "version": "2.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:58:12.963474+00:00",
+    "download_checksum": "5bd42eccc48f4a5418cc31e6e03a30ae",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.0.1/dnanexus/dme-extract-pe/resources/usr/bin/dname_extract_pe.sh",
+    "notes": "dna-me-pipeline version 2.0.1, dme-extract-pe version 2.0.4",
+    "schema_version": "4",
+    "software": "dme-extract-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b66034b8-dd23-462e-b8d7-6acc6e8e9301",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-pe-1.1"
+    ],
+    "date_created": "2016-10-10T18:36:38.703152+00:00",
+    "download_checksum": "8641d1f88d51d9f31b81c1d99d640a6f",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.1.0/dnanexus/dnase-align-bwa-pe/resources/usr/bin/dnase_align_bwa_pe.sh",
+    "schema_version": "4",
+    "software": "dnase-align-bwa-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b6684de5-2a85-436d-a529-ae4b124f1170",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-rep-corr-1.0.0"
+    ],
+    "date_created": "2016-05-24T20:30:53.903970+00:00",
+    "download_checksum": "6163eca7a77a821ca8498315ab9290fb",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-rep-corr/resources/usr/bin/dnase_rep_corr.sh",
+    "schema_version": "4",
+    "software": "dnase-rep_corr",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b6a62a18-4c94-4d0f-9b07-b7c9e393ff47",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:hotspot2-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:43.109033+00:00",
+    "download_checksum": "2274d02eab810f2178fc683c27b7f4b5",
+    "downloaded_url": "https://github.com/Altius/hotspot2/releases/tag/v2.0",
+    "schema_version": "4",
+    "software": "hotspot2",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "b6f22abb-408b-41c5-87b8-9c60ecd73e9f",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "dnanexus:srna-align-2-2"
+    ],
+    "date_created": "2016-12-16T04:45:21.306132+00:00",
+    "download_checksum": "3ca9bcc72ab01683b1c36025dcca606b",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.3/dnanexus/small-rna/small-rna-align/resources/usr/bin/srna_align.sh",
+    "schema_version": "4",
+    "software": "srna-align",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "b7483a89-4212-49c1-924f-0dc26e4bdbea",
+    "version": "2.2"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T19:05:14.816403+00:00",
+    "download_checksum": "861fe213ab87ab067b16f1d33e822930",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v1.0/dnanexus/index/src/index.sh",
+    "notes": "Part of 1.0 version of the pipeline.",
+    "schema_version": "4",
+    "software": "dme-index-bismark",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b7601b49-b2a5-4854-af6a-c73ac025f96d",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bwa-v.0.7.5"
+    ],
+    "date_created": "2018-12-20T18:47:28.640344+00:00",
+    "download_checksum": "275b2dde1e65433d001ac22c1e3ce810",
+    "downloaded_url": "https://github.com/lh3/bwa/archive/0.7.5.tar.gz",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "b85286f2-34ea-4c92-ac14-02eaac5da565",
+    "version": "0.7.5"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:46:31.393985+00:00",
+    "download_checksum": "a33e91254c7714fde7573a6335040c29",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/small-rna/small-rna-signals/src/small-rna-signals.sh",
+    "schema_version": "4",
+    "software": "srna-signals",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b988130d-174b-4669-88af-1ad524f831c1",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:bwa 0.7.13"
+    ],
+    "date_created": "2016-12-01T00:52:25.334420+00:00",
+    "download_checksum": "f094f609438511766c434178a3635ab4",
+    "downloaded_url": "https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.13.tar.bz2/download",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "in progress",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "ba333483-df65-4f48-b210-6fdc9572c1de",
+    "version": "0.7.13"
+},
+{
+    "aliases": [
+        "encode:samtools 0.1.19-44428cd"
+    ],
+    "date_created": "2015-02-14T01:07:25.853922+00:00",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "ba604a77-9683-4f88-b733-6a14d17e5c1d",
+    "version": "0.1.19-44428cd"
+},
+{
+    "aliases": [
+        "encode:cutadapt 1.8"
+    ],
+    "date_created": "2016-04-06T05:32:54.405028+00:00",
+    "download_checksum": "60c775f183302cbd45e3b5f3a9078a65963ee8bb",
+    "downloaded_url": "https://github.com/marcelm/cutadapt/releases/tag/v1.8",
+    "schema_version": "4",
+    "software": "cutadapt",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "bb5928d1-8153-4fe4-99e5-e8389dfa5e02",
+    "version": "1.8.dev0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_align_bwa_pe-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:45.563611+00:00",
+    "download_checksum": "1ef340c319d27bdd749f661aad7d068a",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-align-bwa-pe/resources/usr/bin/dnase_align_bwa_pe.sh",
+    "schema_version": "4",
+    "software": "dnase-align-bwa-pe",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "bba73513-0e09-4169-a4dd-1a2361b3e126",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:bwa 0.7.12",
+        "dnanexus:bwa-0.7.12-r1039"
+    ],
+    "date_created": "2015-11-04T21:12:23.769694+00:00",
+    "download_checksum": "075704634146ec8cc7543c0dee8960e7",
+    "downloaded_url": "http://sourceforge.net/projects/bio-bwa/files/",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "uuid": "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+    "version": "0.7.12-r1039"
+},
+{
+    "aliases": [
+        "encode:mad-v-1-1"
+    ],
+    "date_created": "2015-10-05T18:49:54.384922+00:00",
+    "download_checksum": "0f72dc104cf55359b73dc8bc38871d2a1e48f981",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.0/dnanexus/rampage/rampage-mad-qc/resources/usr/bin/MAD.R",
+    "schema_version": "4",
+    "software": "mad",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "bdc4db80-a0b1-4344-be11-15a946f016d6",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:spp 1.10.1"
+    ],
+    "date_created": "2015-02-13T19:30:35.303694+00:00",
+    "download_checksum": "5735d6fbec745f3e634ae9ddad20d0bd",
+    "downloaded_url": "https://code.google.com/p/phantompeakqualtools/source/browse/trunk/spp_1.10.1.tar.gz",
+    "schema_version": "4",
+    "software": "spp",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "beb915d5-157c-48d2-9867-7d2bbf8917fe",
+    "version": "1.10.1"
+},
+{
+    "aliases": [
+        "encode:samtools 0.1.18"
+    ],
+    "date_created": "2016-03-15T18:58:54.810747+00:00",
+    "download_checksum": "71dab132e21c0766f0de84c2371a9157",
+    "downloaded_url": "https://sourceforge.net/projects/samtools/files/samtools/0.1.18/",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "bebd8903-70cc-44a8-bd5e-42414431e685",
+    "version": "0.1.18"
+},
+{
+    "aliases": [
+        "encode:sva-3.28.0"
+    ],
+    "date_created": "2018-07-26T19:55:55.751522+00:00",
+    "downloaded_url": "https://bioconductor.org/packages/release/bioc/src/contrib/sva_3.28.0.tar.gz",
+    "schema_version": "4",
+    "software": "sva",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "bfe1f2c6-cbd9-4227-b4a7-300bb17f3915",
+    "version": "3.28.0"
+},
+{
+    "aliases": [
+        "encode:picard 1.110"
+    ],
+    "date_created": "2015-02-13T19:23:02.948775+00:00",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f",
+    "version": "1.110"
+},
+{
+    "aliases": [
+        "encode:picard_2.10.6"
+    ],
+    "date_created": "2019-03-07T18:35:34.696300+00:00",
+    "download_checksum": "7e9837b6c938a9ede66e313cb58c7369",
+    "downloaded_url": "https://github.com/broadinstitute/picard/releases/tag/2.10.6",
+    "schema_version": "4",
+    "software": "picard",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "c2d8f4fb-b4a0-4b6d-96d7-acd92f6a0d04",
+    "version": "2.10.6"
+},
+{
+    "aliases": [
+        "encode:bedToBigBed_2.7"
+    ],
+    "date_created": "2017-10-16T23:51:39.743669+00:00",
+    "schema_version": "4",
+    "software": "bedToBigBed",
+    "status": "in progress",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "c2e7bed4-7017-44c8-875f-283ec968f937",
+    "version": "2.7"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-pe-1.0.1"
+    ],
+    "date_created": "2016-05-24T20:12:41.593747+00:00",
+    "download_checksum": "aced86eab91eb33316ff5034edccb8b3",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v1.0.1/dnanexus/dnase-align-bwa-pe/resources/usr/bin/dnase_align_bwa_pe.sh",
+    "schema_version": "4",
+    "software": "dnase-align-bwa-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c40bc465-1088-4012-8902-055f2555529b",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "dnanexus:bwa-0.7.3a-r367"
+    ],
+    "date_created": "2016-05-21T00:04:15.758518+00:00",
+    "download_checksum": "e540086a014b2e0af38d0d6995d9d765",
+    "downloaded_url": "https://github.com/lh3/bwa/releases/tag/0.7.3a",
+    "notes": "Using this version was necessary since more recent versions fail on an assert on some fastqs containing truncated or invalid reads.",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c5c9e884-6d42-4ec2-bdb9-d73870ceddee",
+    "version": "0.7.3a-r367"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:15:04.564280+00:00",
+    "download_checksum": "4b2318564cdcefa29a823b31a7aff8c5",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/align-star-pe/src/align-star-pe.sh",
+    "schema_version": "4",
+    "software": "lrna-align-star-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c652a1ff-1c88-493c-a236-65475dbcae15",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "dnanexus:lrna-signals-2-2"
+    ],
+    "date_created": "2017-01-24T05:33:24.474985+00:00",
+    "download_checksum": "de0cdb93da6549297e27a3db103f3e7f",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.4/dnanexus/bam-to-bigwig/resources/usr/bin/lrna_bam_to_signals.sh",
+    "schema_version": "4",
+    "software": "lrna-signals",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "c6cef3f5-f4fa-4572-a1b2-50579a2fbcee",
+    "version": "2.2"
+},
+{
+    "aliases": [
+        "encode:bwa 0.7.8"
+    ],
+    "date_created": "2015-08-18T17:55:21.636497+00:00",
+    "download_checksum": "cb63f7865b4b043c11ecf5082724d52576ee784e",
+    "downloaded_url": "http://sourceforge.net/projects/bio-bwa/files/",
+    "notes": "Was originally specified as version 0.7.8-r455",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "c707737d-71cf-488e-8430-03621e7de06c",
+    "version": "0.7.8"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:43:28.604995+00:00",
+    "download_checksum": "2e27c332e0035fc9d7cddb7cfce49f59",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/small-rna/small-rna-prep-star/src/small-rna-prep-star.sh",
+    "schema_version": "4",
+    "software": "srna-index-star",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c8717f85-5992-4b96-b1cb-abfd07a11728",
+    "version": "2.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:25:22.309283+00:00",
+    "download_checksum": "45702f1556769080b0f113f6a0e15d34",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/mad-qc/resources/usr/bin/MAD.R",
+    "schema_version": "4",
+    "software": "lrna-mad-qc",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c8954952-12cb-4caa-83bd-62028bb01c34",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:bigWigToWig-unversioned-a25af844"
+    ],
+    "date_created": "2016-09-02T19:52:15.598089+00:00",
+    "download_checksum": "a25af844704a0f8cd36ccd4997c835b3",
+    "downloaded_url": "https://github.com/ENCODE-DCC/kentUtils/blob/v302.1.0/bin/linux.x86_64/bigWigToWig",
+    "schema_version": "4",
+    "software": "bigwigtowig",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "ca939113-a8ea-4431-a19c-8d960e2f4b06",
+    "version": "unversioned"
+},
+{
+    "aliases": [
+        "dnanexus:hotspot2-v2.1.1"
+    ],
+    "date_created": "2018-04-23T13:44:31.078629+00:00",
+    "download_checksum": "6f1ffa5ce665c3f64eea6a2e6f886462",
+    "downloaded_url": "https://github.com/Altius/hotspot2/releases/tag/v2.1.1",
+    "schema_version": "4",
+    "software": "hotspot2",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "cb38bd8b-465a-4c8f-9e5a-c4cbbecc053c",
+    "version": "2.1.1"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:21:54.262662+00:00",
+    "download_checksum": "a4a874061ff92118214dacca59324977",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/bam-to-bigwig-stranded/resources/usr/bin/lrna_bam_to_stranded_signals.sh",
+    "schema_version": "4",
+    "software": "lrna-signals-stranded",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "ce8b23cd-8edf-44bc-bd2f-4fcfb2d90a45",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "encode:bismark 0.10.0"
+    ],
+    "date_created": "2015-02-13T18:35:01.875033+00:00",
+    "download_checksum": "c27647bd3608a1f7414400055c5ac52a",
+    "downloaded_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/bismark_v0.10.0.tar.gz",
+    "schema_version": "4",
+    "software": "bismark",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
+    "version": "0.10.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:22:55.727483+00:00",
+    "download_checksum": "2cf7c06907763217266965230f771429",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/bam-to-bigwig-unstranded/src/bam-to-bigwig-unstranded.sh",
+    "schema_version": "4",
+    "software": "lrna-signals-unstranded",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "d27099ef-6f53-422e-a273-3331ca4e7234",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:rsem 1.2.28"
+    ],
+    "date_created": "2016-04-13T23:26:31.798329+00:00",
+    "download_checksum": "a589c7b8f3fdb59ec4bb33aa27b44dd3",
+    "downloaded_url": "https://github.com/deweylab/RSEM/archive/v1.2.28.tar.gz",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "d371a8e0-ed98-4af1-98b8-6e49268d6c56",
+    "version": "1.2.28"
+},
+{
+    "aliases": [
+        "encode:samtools 0.1.19"
+    ],
+    "date_created": "2015-02-13T18:39:13.964443+00:00",
+    "download_checksum": "1229dc88487a49b03e69a5c0aa2f8a1e",
+    "downloaded_url": "https://github.com/samtools/samtools/archive/0.1.19.tar.gz",
+    "notes": "Was also specified as version 0.1.19-44428cd",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
+    "version": "0.1.19"
+},
+{
+    "aliases": [
+        "dnanexus:cutadapt-1.12"
+    ],
+    "date_created": "2017-07-29T03:37:49.241832+00:00",
+    "download_checksum": "27039acb5ae6259f82abfcff186bee7a",
+    "downloaded_url": "https://pypi.python.org/pypi/cutadapt/1.12",
+    "schema_version": "4",
+    "software": "cutadapt",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "d45d0827-cc45-4c6a-ba88-9e1ca8fc8195",
+    "version": "1.12"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_filter_pe-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:46.557883+00:00",
+    "download_checksum": "c6e15feb71abc3be7d968fb3479d87cc",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-filter-pe/resources/usr/bin/dnase_filter_pe.sh",
+    "schema_version": "4",
+    "software": "dnase-filter-pe",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "d4dacdc4-957f-4bd3-9b3a-7d37228384f3",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-pipelines-1-2"
+    ],
+    "date_created": "2017-02-15T04:45:58.795152+00:00",
+    "download_checksum": "cfe7509ec4de9f67cdad5a78834b8f59",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/releases/tag/v1.2",
+    "schema_version": "4",
+    "software": "dnase_pipeline",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "d5b868c3-aae8-414c-abe2-2c0f16f972c7",
+    "version": "1.2"
+},
+{
+    "aliases": [
+        "encode:spp 1.14"
+    ],
+    "date_created": "2016-10-18T04:41:33.714800+00:00",
+    "download_checksum": "4de207d570999170c1bf45bcba8c6d2d",
+    "downloaded_url": "https://github.com/hms-dbmi/spp/archive/1.14.zip",
+    "schema_version": "4",
+    "software": "spp",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "d7608aac-8fc1-49ef-ba54-72c79aa57061",
+    "version": "1.14"
+},
+{
+    "aliases": [
+        "encode:bowtie 1.0.0"
+    ],
+    "date_created": "2016-03-07T20:55:34.765156+00:00",
+    "download_checksum": "5384451abd93c2c4c7843c706155ae11",
+    "downloaded_url": "https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.0.0/",
+    "schema_version": "4",
+    "software": "bowtie",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "d8f1e671-c547-4c51-8f21-025b3939b4e9",
+    "version": "1.0.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-04-19T00:08:10.231485+00:00",
+    "download_checksum": "03972117811fe24b487a19fe1ec73235",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.3.1",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "d99945f8-2a3a-47ed-a393-83c3d72bcb72",
+    "version": "2.3.1"
+},
+{
+    "aliases": [
+        "encode:bowtie 2.2.3"
+    ],
+    "date_created": "2016-01-12T23:46:55.537188+00:00",
+    "download_checksum": "2b78ae76e3feb5df2e0dff7ec1a97a3c",
+    "downloaded_url": "http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip/download",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "da7c531b-26f1-40a5-aa1a-5ed4f99e4d90",
+    "version": "2.2.3"
+},
+{
+    "aliases": [
+        "dnanexus:edwBamFilter-v2"
+    ],
+    "date_created": "2016-05-23T21:52:21.916884+00:00",
+    "download_checksum": "7ed4c442e79b192a767eeda3c81f3d9e",
+    "downloaded_url": "https://github.com/ENCODE-DCC/kentUtils/tree/v302.1.0/src/hg/encode3/encodeDataWarehouse/utils/edwBamFilter",
+    "schema_version": "4",
+    "software": "edwBamFilter",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "da9f5c78-644e-4101-a423-ca619ef230bc",
+    "version": "v2"
+},
+{
+    "aliases": [
+        "encode:samtools 1.2"
+    ],
+    "date_created": "2015-11-04T21:16:21.854932+00:00",
+    "download_checksum": "2748356ef392c0694ca1142de37cf2aa",
+    "downloaded_url": "http://sourceforge.net/projects/samtools/files/samtools/1.2/",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "uuid": "db773727-4185-4f43-8ec9-1671fc9c5d02",
+    "version": "1.2"
+},
+{
+    "aliases": [
+        "encode:tophat-bam-repair 1.0"
+    ],
+    "date_created": "2015-03-12T03:56:30.115854+00:00",
+    "download_checksum": "8341fc6ed3c13a2428ce0e76450e8938",
+    "downloaded_url": "https://github.com/xweigit/xweiEncodeScripts/archive/v1.0.tar.gz",
+    "schema_version": "4",
+    "software": "tophat_bam_xsA_tag_fix.pl",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "dbb04904-5760-425f-bd77-2d97f3371095",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:star-v2.5.2b"
+    ],
+    "date_created": "2018-10-25T17:22:20.839784+00:00",
+    "download_checksum": "95e413796749fa7fc5becb14c6166f31",
+    "downloaded_url": "https://github.com/alexdobin/STAR/archive/2.5.2b.tar.gz",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "dd2d092b-61f7-491e-a127-5099a6a32d9b",
+    "version": "2.5.2b"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:19:22.415057+00:00",
+    "download_checksum": "d74191f9d537fdc36390a9ee2f59fb5c",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/align-star-se/src/align-star-se.sh",
+    "schema_version": "4",
+    "software": "lrna-align-star-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "dded7161-e7d6-490a-baf3-22c4d30e34f0",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bwa 0.7.10"
+    ],
+    "date_created": "2015-02-14T01:15:48.047203+00:00",
+    "downloaded_url": "http://sourceforge.net/projects/bio-bwa/files/",
+    "schema_version": "4",
+    "software": "bwa",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "de3c16f7-be94-4b2f-a7b4-c44ba67735d7",
+    "version": "0.7.10"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:20:47.185188+00:00",
+    "download_checksum": "813184fd52f5933b889bcf80ab71544c",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/align-tophat-se/src/align-tophat-se.sh",
+    "schema_version": "4",
+    "software": "lrna-align-tophat-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "de63960e-de62-4fa8-a86c-9b35b64da444",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:star 2.4.0i"
+    ],
+    "date_created": "2016-03-25T18:03:30.391701+00:00",
+    "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.0i",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "de76db97-c034-4113-9053-74be4af14b1e",
+    "version": "2.4.0i"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:51:20.121313+00:00",
+    "download_checksum": "79c643133ec3616395e79b3ff17ba6e7",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/rampage/rampage-peaks/src/rampage-peaks.sh",
+    "schema_version": "4",
+    "software": "rampage-peaks",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "df0069ac-1c10-46b9-b48d-98b6a7e6e2f1",
+    "version": "2.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:11:46.750862+00:00",
+    "download_checksum": "e62a73e92260cb16e5b639cbe4b9efed",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/prep-star/src/prep-star.sh",
+    "schema_version": "4",
+    "software": "lrna-index-star",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "dfdcca84-4221-4a7b-a017-628b4cca723f",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:star 2.4.0h"
+    ],
+    "date_created": "2015-02-13T20:07:09.794412+00:00",
+    "download_checksum": "70f0f835996a4610c20075ec8d02fe7a",
+    "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.4.0h",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "e038206f-d791-4744-9ee5-7d22bd1f39ee",
+    "version": "2.4.0h"
+},
+{
+    "aliases": [
+        "encode:tophat 2.0.14"
+    ],
+    "date_created": "2016-04-13T23:23:57.113737+00:00",
+    "download_checksum": "2e759c014ac8271db8d14269a3cd220d",
+    "downloaded_url": "http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.14.Linux_x86_64.tar.gz",
+    "schema_version": "4",
+    "software": "tophat",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "e0b84993-c714-41a5-bdca-7f6f6abf6736",
+    "version": "2.0.14"
+},
+{
+    "aliases": [
+        "encode:spp 1.0"
+    ],
+    "date_created": "2015-08-21T17:19:29.820140+00:00",
+    "downloaded_url": "http://compbio.med.harvard.edu/Supplements/ChIP-seq/spp_1.0.tar.gz",
+    "schema_version": "4",
+    "software": "spp",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "e1ed8453-f332-49c8-b8c0-bb33c1494da4",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T20:55:52.755951+00:00",
+    "download_checksum": "0e2ea60c483030315773dd1b28a21fa2",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/releases/tag/v2.3.0",
+    "schema_version": "4",
+    "software": "rna-pipelines",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "e3258c4b-318a-45a7-b950-6536985bfdf2",
+    "version": "2.3.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:39:12.482146+00:00",
+    "download_checksum": "a92bd732f014fe9ca0fef047e20f7c37",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.2.1/dnanexus/quant-rsem/src/quant-rsem.sh",
+    "schema_version": "4",
+    "software": "lrna-quantification",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "e49cc9f5-150c-4be2-ab07-a46fe1799ad3",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:hotspot1-v4.1.1"
+    ],
+    "date_created": "2017-07-29T03:37:42.627400+00:00",
+    "download_checksum": "2a89974f032fbb6cd75639375f2b9147",
+    "downloaded_url": "https://github.com/StamLab/hotspot/releases/tag/v4.1.1",
+    "schema_version": "4",
+    "software": "hotspot",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "e4fe030e-d2d2-47bd-824b-d9a17a9e19c4",
+    "version": "4.1.1"
+},
+{
+    "aliases": [
+        "encode:rmats-3.21b"
+    ],
+    "date_created": "2018-07-25T16:17:45.132619+00:00",
+    "schema_version": "4",
+    "software": "rmats",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "e5253a47-71e6-49e8-b380-ee8b432411c2",
+    "version": "3.21b"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-29T22:45:14.816999+00:00",
+    "download_checksum": "96afd05f7df12333ef5d09ab277b132b",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.1.1/dnanexus/small-rna/small-rna-align/src/small-rna-align.sh",
+    "schema_version": "4",
+    "software": "srna-align",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "e5f7ca62-955c-40ad-bc17-363857c3156f",
+    "version": "2.0"
+},
+{
+    "aliases": [
+        "encode:tophat 2.0.9"
+    ],
+    "date_created": "2016-01-13T00:03:42.260034+00:00",
+    "download_checksum": "ac8b5b74ec1c9ade7c0e46ce0a954f3f",
+    "downloaded_url": "http://ccb.jhu.edu/software/tophat/downloads/tophat-2.0.9.Linux_x86_64.tar.gz",
+    "schema_version": "4",
+    "software": "tophat",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "e667c559-6532-498d-a2e1-44b9a0fff5ed",
+    "version": "2.0.9"
+},
+{
+    "aliases": [],
+    "date_created": "2018-09-05T22:19:51.400230+00:00",
+    "schema_version": "4",
+    "software": "star",
+    "status": "in progress",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "e7a3ccb9-f3e3-405e-9ee5-7ae53ece93e8",
+    "version": "2.6.0c"
+},
+{
+    "aliases": [
+        "encode:bowtie 2.2.1"
+    ],
+    "date_created": "2016-10-21T23:15:23.672831+00:00",
+    "download_checksum": "3d733972557416f7b8eda702a3d56567",
+    "downloaded_url": "https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.1/bowtie2-2.2.1-linux-x86_64.zip/download",
+    "schema_version": "4",
+    "software": "bowtie2",
+    "status": "in progress",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "e7dc5254-5485-44ca-afc0-0677413cde47",
+    "version": "2.2.1"
+},
+{
+    "aliases": [
+        "encode:grit 2.0.4"
+    ],
+    "date_created": "2015-06-02T21:58:57.265581+00:00",
+    "download_checksum": "e092d33fec56a0880961c24c5d3213adad662c88",
+    "downloaded_url": "https://github.com/nboley/grit/releases/tag/2.0.4",
+    "schema_version": "4",
+    "software": "grit",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "e9344871-db09-4612-bf57-54c8143f76bb",
+    "version": "2.0.4"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-27T20:56:12.980085+00:00",
+    "download_checksum": "2eb544698e959bd7ad7f05a2f73193c8",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v2.0.1/dnanexus/dme-align-pe/resources/usr/bin/dname_align_pe.sh",
+    "notes": "dna-me-pipeline version 2.0.1, dme-align-pe version 1.1.2",
+    "schema_version": "4",
+    "software": "dme-align-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "eeec34df-b644-4ea5-9559-07e3842df3d6",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:samtools 1.9"
+    ],
+    "date_created": "2019-06-06T20:57:11.142628+00:00",
+    "downloaded_url": "https://github.com/samtools/samtools/releases/tag/1.9",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "ef27c5aa-7ffc-4ba2-836f-6b857918f72d",
+    "version": "1.9"
+},
+{
+    "aliases": [],
+    "date_created": "2019-05-30T22:44:42.827280+00:00",
+    "download_checksum": "2e20daf7e8f96b43762f4c6f056dce8b",
+    "downloaded_url": "https://github.com/deweylab/RSEM/archive/v1.2.31.zip",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "7e944358-625c-426c-975c-7d875e22f753",
+    "uuid": "ef826860-2063-4bab-9e0c-4ad3c5ae6941",
+    "version": "1.2.31"
+},
+{
+    "aliases": [
+        "encode:rsem 1.2.18"
+    ],
+    "date_created": "2015-03-12T17:26:31.284130+00:00",
+    "download_checksum": "6b58658abdf56025f3042eff0066af5b",
+    "downloaded_url": "https://github.com/bli25wisc/RSEM/releases/tag/v1.2.18",
+    "schema_version": "4",
+    "software": "rsem",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "efaf0ed5-0232-4b11-be33-902e9904858f",
+    "version": "1.2.18"
+},
+{
+    "aliases": [
+        "encode:macs 2.1.0.20151222"
+    ],
+    "date_created": "2016-06-09T17:52:40.907558+00:00",
+    "download_checksum": "fac0ba7aa45313077fc6ba3846babb3b",
+    "downloaded_url": "https://pypi.python.org/packages/c7/95/17a3caa3c71ebee26c5153086c1d1693f7ffe94f7cca0f44d309d277ca02/MACS2-2.1.0.20151222.tar.gz",
+    "schema_version": "4",
+    "software": "macs",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "f06f8ba6-cf38-4da7-8906-80358e67c1e1",
+    "version": "2.1.0.20151222"
+},
+{
+    "aliases": [
+        "encode:cut_adapt_1.1"
+    ],
+    "date_created": "2018-11-29T21:23:40.342786+00:00",
+    "download_checksum": "ec6ea6a51190bb5fd0e391dbe6c531bc",
+    "downloaded_url": "https://pypi.org/project/cutadapt/1.1/",
+    "schema_version": "4",
+    "software": "cutadapt",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "f0e164d8-b55b-4015-98a3-b8a48c11d115",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "dnanexus:dnase_rep_corr-v2.0"
+    ],
+    "date_created": "2017-07-29T03:37:48.767226+00:00",
+    "download_checksum": "6163eca7a77a821ca8498315ab9290fb",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dnase_pipeline/blob/v2.0/dnanexus/dnase-rep-corr/resources/usr/bin/dnase_rep_corr.sh",
+    "schema_version": "4",
+    "software": "dnase-rep_corr",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "f16f6bff-9407-4314-badc-c2032596561d",
+    "version": "1.1"
+},
+{
+    "aliases": [
+        "encode:samtools 0.1.17"
+    ],
+    "date_created": "2015-02-13T18:40:02.519421+00:00",
+    "download_checksum": "ff338e1ef446511bcf42cf0da508bd8b",
+    "downloaded_url": "https://github.com/samtools/samtools/archive/0.1.17.tar.gz",
+    "schema_version": "4",
+    "software": "samtools",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
+    "version": "0.1.17"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:17:39.393216+00:00",
+    "download_checksum": "56637889e57bb722ae666ed05c44c266",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v2.3.0/dnanexus/align-star-pe/resources/usr/bin/lrna_align_star_pe.sh",
+    "schema_version": "4",
+    "software": "lrna-align-star-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "f41c5d8a-43b5-4e4e-a253-2eb5ddf95de9",
+    "version": "2.1"
+},
+{
+    "aliases": [
+        "encode:star 2.4.1a"
+    ],
+    "date_created": "2016-03-16T19:25:01.700015+00:00",
+    "download_checksum": "eb63e228dc8fc5e32fd76b37e49490b5",
+    "downloaded_url": "https://github.com/alexdobin/STAR/archive/STAR_2.4.1a.tar.gz",
+    "schema_version": "4",
+    "software": "star",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "f533aae8-827c-4dfe-bfe3-81143728bad8",
+    "version": "2.4.1a"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T22:19:47.327855+00:00",
+    "download_checksum": "b25fd0cfdbd00d1d083eb09cc1b8a724",
+    "downloaded_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline/blob/v1.1/dnanexus/align-tophat-pe/src/align-tophat-pe.sh",
+    "schema_version": "4",
+    "software": "lrna-align-tophat-pe",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "f697b72f-22bd-413a-bd4c-ab0e63509473",
+    "version": "1.0"
+},
+{
+    "aliases": [],
+    "date_created": "2016-01-28T19:03:02.884139+00:00",
+    "download_checksum": "eb50eec2e384dfbcf08a2ade1a9d83eb",
+    "downloaded_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/v1.0/dnanexus/map-se/src/map.sh",
+    "notes": "Part of 1.0 version of the pipeline.",
+    "schema_version": "4",
+    "software": "dme-align-se",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "f8f1c898-776c-444d-b4e6-af7e81b5ab95",
+    "version": "1.0"
+},
+{
+    "aliases": [
+        "encode:bedgraphtobigwig 4"
+    ],
+    "date_created": "2015-02-13T16:12:16.673800+00:00",
+    "download_checksum": "c20443ee1d095089e79facdfbc214a89",
+    "downloaded_url": "https://github.com/ENCODE-DCC/kentUtils/blob/v302.1.0/bin/linux.x86_64/bedGraphToBigWig",
+    "schema_version": "4",
+    "software": "bedgraphtobigwig",
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+    "version": "4"
+},
+{
+    "aliases": [
+        "encode:idr_2.0.4.2"
+    ],
+    "date_created": "2019-03-07T18:42:55.955925+00:00",
+    "download_checksum": "3e827d17b8aedcf9dfcd3039eec688dd",
+    "downloaded_url": "https://github.com/kundajelab/idr/releases/tag/2.0.4.2",
+    "schema_version": "4",
+    "software": "idr",
+    "status": "in progress",
+    "submitted_by": "6667a92a-d202-493a-8c7d-7a56d1380356",
+    "uuid": "fabc37f2-612c-4fb1-b975-63fd2545cb9a",
+    "version": "2.0.4.2"
+},
+{
+    "aliases": [
+        "encode:cuffdiff-2.2"
+    ],
+    "date_created": "2018-07-25T16:17:45.473383+00:00",
+    "downloaded_url": "http://cole-trapnell-lab.github.io/cufflinks/releases/v2.2.0/",
+    "schema_version": "4",
+    "software": "cuffdiff",
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "fef18ef7-7747-4406-8bda-742b863372bd",
+    "version": "2.2"
+},
+{
+    "aliases": [
+        "dnanexus:stampipes-encode-release"
+    ],
+    "date_created": "2016-05-24T00:05:30.380047+00:00",
+    "download_checksum": "45ccfeb4081c39a6bf93ef70133ad0b2",
+    "downloaded_url": "https://github.com/StamLab/stampipes/releases/tag/encode-release",
+    "notes": "First ENCODE specific release",
+    "schema_version": "4",
+    "software": "stampipes",
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "ff50d1a1-54d4-4e12-9f00-652d15995ed1",
+    "version": "encode-release"
+},
+{
+    "aliases": [
+        "encode:spp 1.13"
+    ],
+    "date_created": "2016-06-09T15:50:40.358685+00:00",
+    "download_checksum": "bdea5fbf5fbd09243f7ddd6cf8a062c8",
+    "downloaded_url": "https://github.com/hms-dbmi/spp/archive/1.13.tar.gz",
+    "schema_version": "4",
+    "software": "spp",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "uuid": "ffb5a817-e963-4694-9aae-cd89a832e1a1",
+    "version": "1.13"
+}
 ]

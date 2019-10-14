@@ -1,0 +1,1 @@
+ExperimentID:  Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types||Fri Jun 29 12:02:48 -0500 2012||24530

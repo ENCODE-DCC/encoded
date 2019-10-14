@@ -1,0 +1,6 @@
+Initial parameter values: [0.10 1.00 0.20 0.50]
+Final parameter values: [2.30 0.74 0.97 0.37]
+Number of reported peaks - 105246/105246 (100.0%)
+
+Number of peaks passing IDR cutoff of 0.05 - 39581/105246 (37.6%)
+

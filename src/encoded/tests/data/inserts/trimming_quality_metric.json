@@ -1,16 +1,82 @@
 [
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "56def00a-6488-4b3b-a606-3bbd829a7116",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "1050b698-f505-4ce5-96e5-6909e3a2acc7", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "PE read-pairs processed": 27705275,
-        "PE read-pairs trimmed": 8909459,
-        "SE reads processed": 0,
-        "SE reads trimmed": 0
-    }
+{
+    "PE read-pairs processed": 136986177,
+    "PE read-pairs trimmed": 1217,
+    "aliases": [
+        "dnanexus:qc.trim_illumina.job-F8K41ZQ0fF4b2jkV4gQ1fp2x"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_techrep_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-12-04T03:17:36.295397+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF199PLI"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "86535f6a-7818-4903-947a-26744c9df4c6",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "1ecdab1d-e1d7-404f-8062-cd886f89a663"
+},
+{
+    "PE read-pairs processed": 136986177,
+    "PE read-pairs trimmed": 1217,
+    "aliases": [
+        "dnanexus:qc.trim_illumina.job-F8B86V80fF4bQfF8PPZ7x2KK"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_techrep_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-11-26T00:33:47.957033+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF315XVC"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "ccfde5ba-e880-4816-a282-4d51d737b236",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "30710979-291a-428b-b7ee-9edb68fe082b"
+},
+{
+    "PE read-pairs processed": 153804959,
+    "PE read-pairs trimmed": 792,
+    "aliases": [
+        "dnanexus:qc.trim_illumina.job-F6j4kzQ0fF4X8Q3V3y2kK3BV"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_techrep_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-12T22:21:18.803228+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF628FMV"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "2bde2444-ff24-4e6d-9710-64735c429af7",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "72e1c31a-11a3-46f9-9c2d-c65aa554e73d"
+},
+{
+    "PE read-pairs processed": 153804959,
+    "PE read-pairs trimmed": 792,
+    "aliases": [
+        "dnanexus:qc.trim_illumina.job-F6v5jf80fF4YpP529Z11fYG2"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_techrep_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-22T16:39:38.983587+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF619WFG"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "step_run": "bee54580-af7a-41b2-9b33-44ff90cb01fd",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "d2eafb86-30ac-4332-bb48-66884807f5df"
+}
 ]

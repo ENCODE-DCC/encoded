@@ -1,194 +1,2566 @@
 [
-    {
-        "analysis_step": "alignment-test-step-v-1",
-        "software_versions": ["8369c9b0-50ad-11e4-916c-0800200c9a66"],
-        "uuid": "ab7ec880-50ab-11e4-916c-0800200c9a66",
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "signal-test-step-v-1",
-        "software_versions": [
-            "8eacefa0-50ad-11e4-916c-0800200c9a66",
-            "956620a0-50ad-11e4-916c-0800200c9a66"
-        ],
-        "uuid": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
-        "minor_version": 1
-    },
-    {
-        "analysis_step": "alignment-test-step-v-2",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "uuid": "54ae7770-5ae8-11e4-8ed6-0800200c9a66",
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "quantification-test-step-v-1",
-        "software_versions": ["d84714c0-5af2-11e4-8ed6-0800200c9a66"],
-        "uuid": "1e418e10-5ae9-11e4-8ed6-0800200c9a66",
-        "minor_version": 2
-    },
-    {
-        "analysis_step": "idr-test-step-v-1",
-        "software_versions": ["d2cde860-5af3-11e4-8ed6-0800200c9a66"],
-        "uuid": "27c011e0-5aef-11e4-8ed6-0800200c9a66",
-        "minor_version": 1
-    },
-    {
-        "analysis_step": "encode-2-step-v-1",
-        "software_versions": [
-            "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
-            "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f",
-            "fe17b174-32f9-4e88-9618-57e8973d8868",
-            "09d27175-9479-4684-b055-19491bbfd14f",
-            "956620a0-50ad-11e4-916c-0800200c9a66",
-            "fa8af638-925c-4f94-8972-3d2f4f8b0c21",
-            "beb915d5-157c-48d2-9867-7d2bbf8917fe",
-            "d0c7d890-3446-41b5-82f0-388347f7e8dd"
-        ],
-        "uuid": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "idr-test-step-v-2",
-        "software_versions": [
-            "195de123-3300-4485-a862-d301ff35fc4e"
-        ],
-        "uuid":  "11440ed3-1228-4430-aa5a-54cd408ff105",
-        "minor_version": 2
-    },
-    {
-        "analysis_step": "alignment-test-step-v-3",
-        "software_versions": [
-            "7b939da7-32ae-44ac-86f3-a584d8a4a555"
-        ],
-        "uuid": "2dd0f890-b287-4147-84ad-edd6d3612772",
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "peak-calling-test-step-v-1",
-        "software_versions": [
-            "0a2cde6c-61c5-407b-aab7-7cc4847d5a37"
-        ],
-        "uuid": "8abc2031-9aab-46a3-b3a0-d800ae44656e",
-        "minor_version": 1
-    },
-    {
-        "analysis_step": "prep-bismark-step-v-1",
-        "uuid": "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
-        "software_versions": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
-        "minor_version": 3
-    },
-    {
-        "analysis_step": "mott-trim-align-bismark-step-v-1",
-        "uuid": "36a667fe-e98c-402d-babf-88a9d39df5ff",
-        "software_versions": [
-            "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
-            "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
-            "1b071b08-ef76-4a69-8f96-22408e2b380a"
-        ],
-        "minor_version": 2
-    },
-    {
-        "analysis_step": "extract-bismark-step-v-1",
-        "uuid": "aa598eaa-eda4-4fb3-b313-072f95de58a4",
-        "software_versions": [
-            "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
-            "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
-            "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
-        ],
-        "minor_version": 1
-    },
-    {
-        "analysis_step": "prep-star-step-v-1",
-        "uuid": "36b3b2da-0691-49b1-9ff9-d22ea7da07c6",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "prep-tophat-step-v-1",
-        "uuid": "3d3c36c4-17dd-4112-b77d-a7f64833d5db",
-        "software_versions": [
-            "8369c9b0-50ad-11e4-916c-0800200c9a66",
-            "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
-            "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
-        ],
-        "minor_version": 2
-    },
-    {
-        "analysis_step": "prep-rsem-step-v-1",
-        "uuid": "c0f339bb-e681-40af-b98b-5b4c12aa61ba",
-        "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"],
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "align-star-step-v-1",
-        "uuid": "5cdff4b0-9b37-4fb1-a93e-664742dbe505",
-        "software_versions": [
-            "834e3145-b752-4486-a613-c0c625262051",
-            "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f"
-        ],
-        "minor_version": 1
-    },
-    {
-        "analysis_step": "quant-rsem-step-v-1",
-        "uuid": "7505ced9-3584-4146-84a1-7c5695cb8cf4",
-        "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"],
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "align-tophat-step-v-1",
-        "uuid": "dcdb54a7-3b13-4ac6-b36e-0e0669367350",
-        "software_versions": [
-            "8369c9b0-50ad-11e4-916c-0800200c9a66",
-            "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
-            "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
-        ],
-        "minor_version": 2
-    },
-    {
-        "analysis_step": "bam-to-bigwig-tophat-step-v-1",
-        "uuid": "b9d7eea7-8546-41f4-80e3-0fbee31fba8b",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "bam-to-bigwig-star-step-v-1",
-        "uuid": "5b5bc4ed-1c35-4d74-ace2-76609df36846",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "minor_version": 1
-    },
-    {
-        "analysis_step": "fastqc-step-v-1",
-        "uuid": "9c0120e0-a594-11e4-bcd8-0800200c9a66",
-        "software_versions": [
-            "225b2920-a594-11e4-bcd8-0800200c9a66"
-        ],
-        "minor_version": 0
-    },
-    {
-        "uuid": "78a19d0d-cfff-418a-9549-6aed3d492e6f",
-        "analysis_step": "mad-cc-lrna-step-v-1",
-        "software_versions": [
-            "a87e214a-c07d-4df2-8a30-3eebd8b607ee"
-        ],
-        "minor_version": 2
-    },
-    {
-        "uuid": "4c4042c6-27b0-42c5-b608-9061005e32ab",
-        "analysis_step": "wgbs-lambda-qc-step-v-1",
-        "software_versions": [
-            "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
-            "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
-            "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
-        ],
-        "minor_version": 0
-    },
-    {
-        "analysis_step": "dbgap-sra-to-fastq-step-v-1/",
-        "minor_version": 1,
-        "software_versions": [
-            "9277b2c0-271a-43e2-88a7-346796c6b776"
-        ],
-        "status": "released",
-        "uuid": "b75af1ff-b3ab-443f-a134-2b00cd318cd9"
-    }
+{
+    "aliases": [
+        "dnanexus:dnase-qc-bam-alt-v-1-0"
+    ],
+    "analysis_step": "dnase-qc-bam-se-step-v-1",
+    "date_created": "2017-08-06T17:37:03.189779+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "7728afef-3f3f-4870-b872-29b9a1f53223",
+        "e4fe030e-d2d2-47bd-824b-d9a17a9e19c4",
+        "da9f5c78-644e-4101-a423-ca619ef230bc",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "45e6294c-1b61-4441-b433-f937efae223e",
+        "506d7276-0ccf-422f-b8f6-222de51dd72a",
+        "beb915d5-157c-48d2-9867-7d2bbf8917fe",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "00186cd1-d1b3-4c67-b2ed-7c647c291598"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-alt-v-2-1"
+    ],
+    "analysis_step": "dnase-call-hotspots-se-step-v-2",
+    "date_created": "2018-04-23T13:48:03.872906+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "15f65aef-29e2-49cd-bb0a-0beb98421021",
+        "0924a255-1d23-4c05-8eed-c6a46efe60b8",
+        "cb38bd8b-465a-4c8f-9e5a-c4cbbecc053c",
+        "04722aec-60b5-4dee-b705-5761bbd3711d",
+        "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "019e4941-c3e5-4187-9c0e-a6995c68a5c7"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-mad-qc-v-1-0"
+    ],
+    "analysis_step": "small-rna-repcorr-qc-step-v-1",
+    "date_created": "2015-08-18T18:00:58.965390+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "158c461b-f7ce-4826-8188-923597cab75b",
+        "3d0b6815-ba9f-4655-be55-5cbbf7884991"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "02fbc339-ee35-410a-895c-2d7f0b5036a2"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-signals-v-1-2"
+    ],
+    "analysis_step": "rampage-star-signal-step-v-1",
+    "date_created": "2017-02-15T04:58:18.158435+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "8ab99e79-71b0-4f0e-b4cd-d44339f35054",
+        "3c5a941e-6710-4e80-bd03-37e0dd0a4d18",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "03a09dad-254a-471e-9097-cf4087e115c6"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-stranded-v-1-0",
+        "encode:lrna-pe-star-stranded-signal-step-v-1"
+    ],
+    "analysis_step": "lrna-pe-star-signal-step-v-1",
+    "date_created": "2015-03-12T17:11:07.820725+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "89fe2fbc-e032-4333-8b3f-ede07a6c3b17",
+        "e038206f-d791-4744-9ee5-7d22bd1f39ee",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "03bdc0f3-e2db-4a30-a2b1-1e9bf96d05cd"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-align-v-2-2"
+    ],
+    "analysis_step": "small-rna-se-star-alignment-step-v-1",
+    "date_created": "2016-12-16T04:51:17.289663+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "1a865658-b1e4-4344-9c1b-0ce24f3eab0e",
+        "b7483a89-4212-49c1-924f-0dc26e4bdbea",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "0421e929-eee5-4b45-be77-fcc3a877d42e"
+},
+{
+    "aliases": [
+        "dnanexus:align-tophat-pe-v-1-0",
+        "encode:lrna-pe-tophat-alignment-step-v-1"
+    ],
+    "analysis_step": "lrna-pe-tophat-alignment-step-v-1",
+    "date_created": "2015-03-11T23:22:09.396893+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "f697b72f-22bd-413a-bd4c-ab0e63509473",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "8369c9b0-50ad-11e4-916c-0800200c9a66",
+        "9c51ea8f-ac73-4a25-8783-d31bce2d5aac",
+        "dbb04904-5760-425f-bd77-2d97f3371095"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "0441a4e9-ef11-4f14-bbc7-0d80d62e3d96"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-se-v-2-2"
+    ],
+    "analysis_step": "lrna-se-star-signal-step-v-1",
+    "date_created": "2017-01-26T07:22:35.132423+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+        "c6cef3f5-f4fa-4572-a1b2-50579a2fbcee",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "050403d6-9711-4867-a393-217ff28c6842"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-stranded-tophat-v-2-0",
+        "encode:lrna-pe-star-stranded-signals-for-tophat-step-v-2-0"
+    ],
+    "analysis_step": "lrna-pe-star-signals-for-tophat-step-v-1",
+    "date_created": "2015-04-10T18:18:59.538691+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "b5561e7a-cf86-457f-a3cf-9a2104daeaba",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "06739511-6ee5-4d83-a992-1fc5296cdef2"
+},
+{
+    "aliases": [
+        "encode:histone-overlap-peaks-step-v-1.2"
+    ],
+    "analysis_step": "histone-overlap-peaks-step-v-1",
+    "date_created": "2016-10-18T04:31:04.710903+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "64b2d05e-3347-4edd-b0a9-efbf1a259fbd"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "06a53965-b1b1-4d2c-999f-189c10716096"
+},
+{
+    "aliases": [
+        "brenton-graveley:shrna-rna-seq-deseq-quantification-step-v-1-0"
+    ],
+    "analysis_step": "shrna-rna-seq-deseq-expression-quantification-step-v-1",
+    "date_created": "2018-07-25T16:18:10.734373+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "4988d4de-8f4d-476c-9a48-4d5a211e8053"
+    ],
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "094e9095-36c6-49ab-bb0c-b88596f708c1"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-alt-v-1-0",
+        "encode:lrna-se-rsem-quantification-step-v-1"
+    ],
+    "analysis_step": "lrna-se-rsem-quantification-step-v-1",
+    "date_created": "2015-03-12T17:15:58.714356+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "b1bd95e0-b8c6-4669-9441-2ec61b7c41b2",
+        "893ce943-f35b-4e1b-bf03-cf843ba84c4b"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "0b329a6e-274d-410a-9f34-358324b66629"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-density-v-1-0"
+    ],
+    "analysis_step": "dnase-density-pe-step-v-1",
+    "date_created": "2017-08-06T17:37:03.629613+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "0eb99398-41ef-4ac8-adda-254c7633ea9e",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "0bf51493-4a30-4e10-a90a-f4495616487b"
+},
+{
+    "aliases": [
+        "encode:lrna-pe-star-stranded-signals-for-tophat-step-v-1",
+        "dnanexus:bam-to-bigwig-stranded-tophat-v-1-0"
+    ],
+    "analysis_step": "lrna-pe-star-signals-for-tophat-step-v-1",
+    "date_created": "2015-04-10T18:18:59.538691+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "89fe2fbc-e032-4333-8b3f-ede07a6c3b17",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+        "e038206f-d791-4744-9ee5-7d22bd1f39ee"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "0d28373f-2ea1-42fc-a23c-7cd8b3643d10"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-pe-v-1-0"
+    ],
+    "analysis_step": "dnase-align-bwa-pe-step-v-1",
+    "date_created": "2016-05-24T22:54:42.583171+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "c40bc465-1088-4012-8902-055f2555529b",
+        "1332ec1a-25df-40b7-8e30-879715de73cd",
+        "ff50d1a1-54d4-4e12-9f00-652d15995ed1",
+        "c5c9e884-6d42-4ec2-bdb9-d73870ceddee",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "12655447-e4b4-4d2c-aad2-8c09bd0bec4e"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-v-1-4"
+    ],
+    "analysis_step": "lrna-pe-rsem-quantification-step-v-1",
+    "date_created": "2017-01-24T05:39:29.893679+00:00",
+    "minor_version": 4,
+    "schema_version": "4",
+    "software_versions": [
+        "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+        "28702932-97a1-4c56-87d6-fc4e636b90bc",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "1509b567-5e80-41b9-93ca-f9fac21ddffe"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-mad-qc-v-1-0"
+    ],
+    "analysis_step": "rampage-repcorr-qc-step-v-1",
+    "date_created": "2015-10-05T18:41:10.962689+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "8eb25e3e-3f1b-4135-ad3f-8ea321442396",
+        "bdc4db80-a0b1-4344-be11-15a946f016d6"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "15b22d4b-39b2-41c3-bce5-5c3994c75d1e"
+},
+{
+    "aliases": [
+        "dnanexus:dme-index-bismark-v-1-1",
+        "dnanexus:dme-index-bismark-v-2-0"
+    ],
+    "analysis_step": "dme-index-bismark-bowtie1-step-v-1",
+    "date_created": "2016-01-09T01:04:54.791683+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "52510c31-279e-404d-9eed-fa34e95ac0a2",
+        "18ba0259-2f54-4a92-8281-4982ddfa553d",
+        "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+        "1b071b08-ef76-4a69-8f96-22408e2b380a"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "178d5453-8106-4d01-92ac-52ec28114f3b"
+},
+{
+    "aliases": [
+        "encode:rampage-grit-peak-calling-step-v-2-0",
+        "dnanexus:rampage-peaks-v-2-0"
+    ],
+    "analysis_step": "rampage-grit-peak-calling-step-v-1",
+    "date_created": "2015-06-02T22:10:57.179462+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "df0069ac-1c10-46b9-b48d-98b6a7e6e2f1",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb",
+        "e9344871-db09-4612-bf57-54c8143f76bb",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "1c8b0084-3068-410b-8289-da0bbaf325c5"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-pe-v-1-1"
+    ],
+    "analysis_step": "dnase-align-bwa-pe-step-v-1",
+    "date_created": "2016-10-10T18:57:34.968980+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "00f848df-8bd1-427e-978c-deaba0a53fbc",
+        "b6684de5-2a85-436d-a529-ae4b124f1170",
+        "1332ec1a-25df-40b7-8e30-879715de73cd",
+        "ff50d1a1-54d4-4e12-9f00-652d15995ed1",
+        "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "220d80a9-4485-4aec-b61a-00c1fcf51a63"
+},
+{
+    "aliases": [
+        "encode:rampage-grit-peak-calling-step-v-1",
+        "dnanexus:rampage-peaks-v-1-0"
+    ],
+    "analysis_step": "rampage-grit-peak-calling-step-v-1",
+    "date_created": "2015-05-27T16:46:30.846918+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "0f02ee5b-f179-40db-9036-66335e57fb49",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb",
+        "7b2cc20c-53aa-4035-93a3-722eabb082a0"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "23fa5e80-99c1-4d34-bc45-1c2fd7bd8191"
+},
+{
+    "aliases": [
+        "encode:rampage-star-signal-step-v-1",
+        "dnanexus:rampage-signals-v-1-0"
+    ],
+    "analysis_step": "rampage-star-signal-step-v-1",
+    "date_created": "2015-05-27T16:33:25.615695+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "635e0f74-2ff5-4858-9403-db1207965e4b",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "242b8d32-69ff-4921-9ddc-ac9cf0ada3c3"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-alt-v-1-3"
+    ],
+    "analysis_step": "lrna-se-rsem-quantification-step-v-1",
+    "date_created": "2016-12-16T04:51:16.666091+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "1a865658-b1e4-4344-9c1b-0ce24f3eab0e",
+        "40932f00-d41d-4f5e-8025-95f3c22ee913",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "257de6d3-11fb-42e2-934c-a70d952e1fdf"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-align-pe-v-1-1"
+    ],
+    "analysis_step": "rampage-pe-alignment-step-v-1",
+    "date_created": "2016-01-21T02:09:42.754952+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "708ecef9-e38a-410a-b1e3-001338f5bb17",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "27236636-4838-470b-9ca4-9ff15df14648"
+},
+{
+    "aliases": [
+        "dnanexus:align-star-se-v-2-1"
+    ],
+    "analysis_step": "lrna-se-star-alignment-step-v-1",
+    "date_created": "2016-01-21T01:03:53.446916+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "5136c713-d4ed-42df-8771-28fff370b354",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "28b779a5-fd1b-40c7-bbbc-46f2286523e0"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-unreplicated-peaks-to-bigbed-step-v-1",
+    "date_created": "2017-03-21T00:14:25.198418+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "2b8daae2-cdf6-41b1-bcd5-6ce99b0970d2"
+},
+{
+    "aliases": [
+        "dnanexus:align-star-pe-v-2-1"
+    ],
+    "analysis_step": "lrna-pe-star-alignment-step-v-1",
+    "date_created": "2016-01-21T00:58:03.077622+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "f41c5d8a-43b5-4e4e-a253-2eb5ddf95de9",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2b906b3d-fc30-421a-8100-5ef2a8620b2c"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-v-1-0"
+    ],
+    "analysis_step": "dnase-call-hotspots-pe-step-v-1",
+    "date_created": "2016-05-24T23:08:19.189539+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "972f4d7f-38b3-4b82-ba62-e4da9a2cde88",
+        "41d6d306-72bc-4991-866f-dcfd87eebf25",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "143e5445-7f10-48fe-9455-5f1a777773ca",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2bf10fba-3b81-487f-8d09-dbf25f0a769c"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-rep-corr-alt-v-1-0"
+    ],
+    "analysis_step": "dnase-rep-corr-se-step-v-1",
+    "date_created": "2016-05-24T23:35:33.331015+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "b6a62a18-4c94-4d0f-9b07-b7c9e393ff47",
+        "ca939113-a8ea-4431-a19c-8d960e2f4b06",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "91932b32-4c56-4ee8-bb6b-28ea1e8a7ef5"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "2c7ead4e-539a-418d-a1d6-1ca62cf8218a"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-index-bwa-v-2-0"
+    ],
+    "analysis_step": "dnase-index-bwa-step-v-2",
+    "date_created": "2017-08-06T17:36:58.689518+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "80198fc1-3da8-4838-9f72-54a22004257d",
+        "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+        "b6f22abb-408b-41c5-87b8-9c60ecd73e9f",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "2ded420e-d069-444e-a67c-027790169f10"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-filter-pe-v-2-0"
+    ],
+    "analysis_step": "dnase-filter-pe-step-v-2",
+    "date_created": "2017-08-06T17:37:01.104290+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "d4dacdc4-957f-4bd3-9b3a-7d37228384f3",
+        "497e485b-18fc-48d4-8715-ee51c6809293",
+        "5f2c9789-d184-4a10-a572-6cb2ff3a5ed0",
+        "474d20a5-34dc-4923-b30c-df01fc6c98e4",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "30a99da8-57a6-42c1-8833-2f333aa98a25"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-idr-peaks-to-bigbed-step-v-1",
+    "date_created": "2015-10-28T21:42:49.467762+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "30b7cd3c-55fd-42c2-8175-19bc98d58752"
+},
+{
+    "aliases": [],
+    "analysis_step": "dme-index-bismark-bowtie1-step-v-1",
+    "date_created": "2015-06-26T22:53:17.275823+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "2190319c-c493-4d91-a6f1-d4f108cf592f",
+        "b7601b49-b2a5-4854-af6a-c73ac025f96d",
+        "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
+        "1b071b08-ef76-4a69-8f96-22408e2b380a"
+    ],
+    "status": "in progress",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "32e9932b-8af1-4460-b826-d8b47f090b57"
+},
+{
+    "aliases": [
+        "brenton-graveley:shRNA-sig-v1"
+    ],
+    "analysis_step": "shrna-rna-seq-signal-step-v-1",
+    "date_created": "2016-04-07T21:54:14.246917+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "ad0d99b7-c9f9-4b59-9515-4b64314e837c",
+        "9d43af0a-be56-4392-9424-9aecedb76a01"
+    ],
+    "status": "in progress",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "33321a16-34cc-432f-ae7b-02c8430f33bb"
+},
+{
+    "aliases": [
+        "brenton-graveley:shrna-rna-seq-norm-rmats-quantification-step-v-1-0"
+    ],
+    "analysis_step": "shrna-rna-seq-norm-rmats-splicing-quantification-step-v-1",
+    "date_created": "2018-07-26T19:56:03.984993+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "e5253a47-71e6-49e8-b380-ee8b432411c2",
+        "bfe1f2c6-cbd9-4227-b4a7-300bb17f3915"
+    ],
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "35196107-1d91-487c-b2aa-2ca565498db6"
+},
+{
+    "aliases": [
+        "encode:bwa-raw-alignment-step-v-1.2"
+    ],
+    "analysis_step": "bwa-raw-alignment-step-v-1",
+    "date_created": "2016-10-07T04:02:36.789484+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "de3c16f7-be94-4b2f-a7b4-c44ba67735d7",
+        "2f4d48db-d4ec-4e9e-8c22-9fc5ee6c49ac",
+        "37969002-2985-4d2c-9d1d-2f7160d80019",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "d7608aac-8fc1-49ef-ba54-72c79aa57061"
+    ],
+    "status": "in progress",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "353a6f3b-999c-4f01-84ce-5de9e83dab22"
+},
+{
+    "aliases": [
+        "brenton-graveley:shRNA-map-v1"
+    ],
+    "analysis_step": "shrna-rna-seq-map-step-v-1",
+    "date_created": "2016-04-07T21:54:18.074313+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "8369c9b0-50ad-11e4-916c-0800200c9a66",
+        "9c51ea8f-ac73-4a25-8783-d31bce2d5aac",
+        "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
+        "dbb04904-5760-425f-bd77-2d97f3371095"
+    ],
+    "status": "in progress",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "35654c0b-1e65-49f0-a581-e7885b0a8aba"
+},
+{
+    "aliases": [
+        "brenton-graveley:shrna-rna-seq-norm-deseq-quantification-step-v-1-0"
+    ],
+    "analysis_step": "shrna-rna-seq-norm-deseq-expression-quantification-step-v-1",
+    "date_created": "2018-07-26T19:56:03.889753+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "4988d4de-8f4d-476c-9a48-4d5a211e8053",
+        "bfe1f2c6-cbd9-4227-b4a7-300bb17f3915"
+    ],
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "3605dbd9-49a7-4c78-9ad3-87ae577812f6"
+},
+{
+    "aliases": [
+        "encode:tf-macs2-signal-calling-step-v-1.2"
+    ],
+    "analysis_step": "tf-macs2-signal-calling-step-v-1",
+    "date_created": "2016-10-18T04:34:35.859422+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "12342c09-ec5b-458b-8b6b-13ce9f11f1e7"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "37284851-f58c-4c4e-898d-0b595699cd20"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-prep-star-v-2-1"
+    ],
+    "analysis_step": "small-rna-star-indexing-step-v-1",
+    "date_created": "2016-01-20T22:55:31.389138+00:00",
+    "minor_version": 1,
+    "notes": "This is version 2.1 of small-rna-pre-star, AKA index-star-small-rna.",
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "1bcae66e-7d74-478a-9617-a9817195595d",
+        "70a085ad-194e-4de0-838c-7af257680f54"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "392945ea-3d72-4eeb-8aa5-930dacde2578"
+},
+{
+    "aliases": [
+        "dnanexus:dme-rep-corr-v-1-0"
+    ],
+    "analysis_step": "dme-rep-corr-pe-step-v-1",
+    "date_created": "2016-01-26T01:20:15.385984+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a8e1b6ac-a343-4fd4-b1a5-95707dbf8d93",
+        "22bb4738-1203-4f3e-847c-c10f9036d404",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "6d6842c3-ef1f-4307-9fad-1b72b006b887"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "40049002-f6d8-4066-91d4-00364ccdde1e"
+},
+{
+    "aliases": [
+        "john-stamatoyannopoulos:ENCODE2-DGF"
+    ],
+    "analysis_step": "encode2-dgf-analysis-step-v-1",
+    "date_created": "2016-06-30T19:20:58.047740+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "1def4328-6852-44fe-af34-6f00e1b3cc97"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "41a22840-04c3-4d4f-863d-bf269e6136c5"
+},
+{
+    "aliases": [
+        "encode:lrna-pe-star-stranded-signal-step-v-2-0",
+        "dnanexus:bam-to-bigwig-stranded-v-2-0"
+    ],
+    "analysis_step": "lrna-pe-star-signal-step-v-1",
+    "date_created": "2015-04-10T18:18:59.538691+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "b5561e7a-cf86-457f-a3cf-9a2104daeaba",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "431bf9e5-8405-4a7b-9468-c4690d65eb60"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-alt-v-2-0"
+    ],
+    "analysis_step": "dnase-call-hotspots-se-step-v-2",
+    "date_created": "2017-08-06T17:37:02.314454+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "3b8fab89-87a2-47c8-bb3f-8f6bcbbc510f",
+        "b6f22abb-408b-41c5-87b8-9c60ecd73e9f",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "43e8d562-19bf-4f0b-a06d-e284317de49e"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-v-1-0",
+        "encode:lrna-pe-rsem-quantification-v-1"
+    ],
+    "analysis_step": "lrna-pe-rsem-quantification-step-v-1",
+    "date_created": "2015-07-10T23:51:31.333585+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "b1bd95e0-b8c6-4669-9441-2ec61b7c41b2",
+        "893ce943-f35b-4e1b-bf03-cf843ba84c4b"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "46e58b53-c709-4084-a3fe-54f373ecb95c"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-unreplicated-spp-peak-calling-step-v-1",
+    "date_created": "2017-03-21T00:14:31.268396+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "d7608aac-8fc1-49ef-ba54-72c79aa57061"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "48d55aea-f922-4102-b93e-a57c4af26f6c"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-density-alt-v-1-0"
+    ],
+    "analysis_step": "dnase-density-se-step-v-1",
+    "date_created": "2017-08-06T17:37:03.995850+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "0eb99398-41ef-4ac8-adda-254c7633ea9e",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "4ad3bcd6-a71b-4619-adf8-d8097aeb8196"
+},
+{
+    "aliases": [
+        "dnanexus:prep-rsem-v-1-0"
+    ],
+    "analysis_step": "lrna-index-rsem-step-v-1",
+    "date_created": "2015-03-11T23:19:30.075402+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "0d5bf725-a452-4844-a4ce-bcc01b6d55c6",
+        "efaf0ed5-0232-4b11-be33-902e9904858f"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "4c526d26-be0b-408d-8ce0-1129c6278ea4"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-idr-v-1-2"
+    ],
+    "analysis_step": "rampage-idr-step-v-1",
+    "date_created": "2016-01-21T02:20:54.374260+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "6717c8b9-cc43-4563-8110-430671d2ff40",
+        "3a4bfb4d-b655-430d-a27e-011c1cdbd174",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "4d1a3482-6fda-42e1-9205-46213aaf00ad"
+},
+{
+    "aliases": [
+        "dnanexus:mad-qc-v-1-1"
+    ],
+    "analysis_step": "lrna-repcorr-qc-pe-step-v-1",
+    "date_created": "2016-01-21T01:25:36.492727+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "c8954952-12cb-4caa-83bd-62028bb01c34",
+        "3d0b6815-ba9f-4655-be55-5cbbf7884991"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "4f3a464f-15c1-4528-8754-9b9b80d49a76"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-peaks-to-bigbed-step-v-1",
+    "date_created": "2015-10-28T21:42:49.234825+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "511ba3d7-4b15-49a8-901e-c7516f3312c5"
+},
+{
+    "aliases": [
+        "encode:lrna-pe-star-alignment-step-v-2-0",
+        "dnanexus:align-star-pe-v-2-0"
+    ],
+    "analysis_step": "lrna-pe-star-alignment-step-v-1",
+    "date_created": "2015-04-10T18:12:08.658117+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "c652a1ff-1c88-493c-a236-65475dbcae15",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "51350802-ad1b-4b97-8e52-2d9deea1cd9d"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-filter-se-v-1-0"
+    ],
+    "analysis_step": "dnase-filter-se-step-v-1",
+    "date_created": "2016-05-24T23:24:05.546086+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "6b440aab-6f06-47ee-8c20-00bb23330ea8",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "53523510-51cd-4439-835c-98a0770b91f2"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-se-tophat-v-2-2"
+    ],
+    "analysis_step": "lrna-se-star-signals-for-tophat-step-v-1",
+    "date_created": "2017-01-26T07:22:35.537861+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+        "c6cef3f5-f4fa-4572-a1b2-50579a2fbcee",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "5432f02b-4735-4bfd-b589-c1be7273608a"
+},
+{
+    "aliases": [
+        "dnanexus:prep-star-v-1-1"
+    ],
+    "analysis_step": "lrna-index-star-step-v-1",
+    "date_created": "2015-03-11T23:01:08.388304+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "9e120d67-98e6-41a9-b46e-7230661c8131",
+        "195baf07-de0a-460d-9686-59d82bd75e50"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "55f455e9-098d-41f6-a1cd-3cefcf80a1df"
+},
+{
+    "aliases": [],
+    "analysis_step": "bwa-indexing-step-v-1",
+    "date_created": "2015-06-24T04:10:10.118724+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "de3c16f7-be94-4b2f-a7b4-c44ba67735d7"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "58894736-6c6b-430a-ac19-4f86cede236a"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-overlap-peaks-step-v-1",
+    "date_created": "2015-06-24T04:20:08.019655+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "64b2d05e-3347-4edd-b0a9-efbf1a259fbd"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "5907a64c-1a1c-4662-a429-5aa6c1f77bea"
+},
+{
+    "aliases": [
+        "encode:lrna-se-star-alignment-step-v-2-0",
+        "dnanexus:align-star-se-v-2-0"
+    ],
+    "analysis_step": "lrna-se-star-alignment-step-v-1",
+    "date_created": "2015-04-10T18:16:45.607004+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "921c011b-a5f8-4770-824a-bf7eb1095630",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "5a37620c-c9c4-4efb-aed9-4d5b2d803734"
+},
+{
+    "aliases": [
+        "dnanexus:align-tophat-se-v-1-0",
+        "encode:lrna-se-tophat-alignment-step-v-1"
+    ],
+    "analysis_step": "lrna-se-tophat-alignment-step-v-1",
+    "date_created": "2015-03-12T03:26:24.933978+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "de63960e-de62-4fa8-a86c-9b35b64da444",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "8369c9b0-50ad-11e4-916c-0800200c9a66",
+        "9c51ea8f-ac73-4a25-8783-d31bce2d5aac",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "5b7129e4-12b1-47f1-b806-3459f631e044"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-unstranded-v-2-1"
+    ],
+    "analysis_step": "lrna-se-star-signal-step-v-1",
+    "date_created": "2016-01-21T01:15:01.764953+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "0cd00a28-02ce-4387-834e-016a3a2188cf",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "5b77d517-ec45-4344-a337-e12e3966014f"
+},
+{
+    "aliases": [
+        "dnanexus:mad-qc-alt-v-1-1"
+    ],
+    "analysis_step": "lrna-repcorr-qc-se-step-v-1",
+    "date_created": "2016-01-21T01:28:12.746573+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "c8954952-12cb-4caa-83bd-62028bb01c34",
+        "3d0b6815-ba9f-4655-be55-5cbbf7884991"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "5c636e02-9102-4f35-9365-cd5fd30cd146"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-unreplicated-peak-calling-step-v-1",
+    "date_created": "2017-03-21T00:14:24.876475+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "12342c09-ec5b-458b-8b6b-13ce9f11f1e7",
+        "2cc07124-16be-4333-8943-4bce96059af3"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "5f9d0122-9974-4750-a8ff-1dad98485c28"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-index-bwa-v-1-1"
+    ],
+    "analysis_step": "dnase-index-bwa-step-v-1",
+    "date_created": "2016-10-10T18:54:15.325032+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "00f848df-8bd1-427e-978c-deaba0a53fbc",
+        "92b94172-8316-4519-b609-c56ec5373c70",
+        "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+        "41d6d306-72bc-4991-866f-dcfd87eebf25",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "62bad3cb-baab-43b2-a7c8-66c6acf3f762"
+},
+{
+    "aliases": [
+        "encode:tf-spp-peak-calling-step-v-1.2"
+    ],
+    "analysis_step": "tf-spp-peak-calling-step-v-1",
+    "date_created": "2016-10-18T04:36:53.223945+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "d7608aac-8fc1-49ef-ba54-72c79aa57061"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "63326924-00a7-414f-ba7d-923c0f25da92"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-unstranded-tophat-v-2-1"
+    ],
+    "analysis_step": "lrna-se-star-signals-for-tophat-step-v-1",
+    "date_created": "2016-01-21T01:18:30.975753+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "0cd00a28-02ce-4387-834e-016a3a2188cf",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "645fb598-1ab4-43a5-af1f-3ab89001a677"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-se-v-1-1"
+    ],
+    "analysis_step": "dnase-align-bwa-se-step-v-1",
+    "date_created": "2016-10-10T19:01:55.483953+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "00f848df-8bd1-427e-978c-deaba0a53fbc",
+        "492d5380-b22f-435a-bded-496d8e73687b",
+        "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "64aa2f7a-3857-4ce8-95da-a2114b24ea1a"
+},
+{
+    "aliases": [
+        "dnanexus:dme-extract-pe-v-2-0",
+        "dnanexus:dme-cx-to-bed-v-1-0",
+        "dnanexus:dme-bg-to-signal-v-1-0"
+    ],
+    "analysis_step": "dme-extract-pe-step-v-1",
+    "date_created": "2016-01-09T00:11:21.533803+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a8e1b6ac-a343-4fd4-b1a5-95707dbf8d93",
+        "b66034b8-dd23-462e-b8d7-6acc6e8e9301",
+        "6236039a-969d-4057-a178-05954cb39be9",
+        "27e32a33-13b2-40d9-8eba-603e4f6ec2ac",
+        "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "049ad3f4-5d0a-4b22-8d59-d183519e504e",
+        "143e5445-7f10-48fe-9455-5f1a777773ca",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "64f150d4-88cc-4fc0-92c7-64511092f59a"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-stranded-v-2-1"
+    ],
+    "analysis_step": "lrna-pe-star-signal-step-v-1",
+    "date_created": "2016-01-21T01:09:05.844670+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "ce8b23cd-8edf-44bc-bd2f-4fcfb2d90a45",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "67478ca2-22a3-4ace-a258-e63a1b503b2e"
+},
+{
+    "aliases": [
+        "encode:histone-peak-calling-step-v-1.2"
+    ],
+    "analysis_step": "histone-peak-calling-step-v-1",
+    "date_created": "2016-10-07T04:07:17.551379+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "12342c09-ec5b-458b-8b6b-13ce9f11f1e7",
+        "2cc07124-16be-4333-8943-4bce96059af3"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "6ef1d1f5-b075-4178-bad8-bc1b8319f680"
+},
+{
+    "aliases": [
+        "dnanexus:dme-rep-corr-alt-v-1-0"
+    ],
+    "analysis_step": "dme-rep-corr-se-step-v-1",
+    "date_created": "2016-01-26T01:22:25.270209+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "52510c31-279e-404d-9eed-fa34e95ac0a2",
+        "22bb4738-1203-4f3e-847c-c10f9036d404",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "6d6842c3-ef1f-4307-9fad-1b72b006b887"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "74807aed-4003-49ac-9182-7f3cf6614545"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-unstranded-tophat-v-1-0",
+        "encode:lrna-se-star-unstranded-signals-for-tophat-step-v-1"
+    ],
+    "analysis_step": "lrna-se-star-signals-for-tophat-step-v-1",
+    "date_created": "2015-04-10T18:18:59.538691+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "72520bb4-4592-4137-9a8c-f9d5d04ff63b",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+        "e038206f-d791-4744-9ee5-7d22bd1f39ee"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "7483723b-a48a-4ca2-9564-fb8ebedf2e18"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-mad-qc-v-1-1"
+    ],
+    "analysis_step": "rampage-repcorr-qc-step-v-1",
+    "date_created": "2016-01-21T01:31:09.239102+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "20b8e929-e806-437b-9673-47ad35099709",
+        "bdc4db80-a0b1-4344-be11-15a946f016d6"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "7a5e394d-126b-4ff5-b65c-ce2f3ca2ad6a"
+},
+{
+    "aliases": [],
+    "analysis_step": "alignment-pooling-step-v-1",
+    "date_created": "2016-09-30T20:29:11.075802+00:00",
+    "minor_version": 0,
+    "notes": "samtools 0.1.19-96b5f2294a was used to generate samtools-flagstats-quality-metrics on subsampled BAM files",
+    "schema_version": "4",
+    "software_versions": [
+        "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "in progress",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "uuid": "7acc9898-21cc-402b-8e75-1eba0ca7f2b7"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-align-v-2-0",
+        "encode:small-rna-se-star-alignment-step-v-1"
+    ],
+    "analysis_step": "small-rna-se-star-alignment-step-v-1",
+    "date_created": "2015-07-15T16:47:13.630192+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "e5f7ca62-955c-40ad-bc17-363857c3156f",
+        "19f75e90-e991-4dc8-837d-8cd97ab5fb91"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "7c211ab1-5c92-4f37-b015-5c7e30eb6cdb"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-prep-star-v-2-0",
+        "encode:small-rna-star-indexing-step-v-1"
+    ],
+    "analysis_step": "small-rna-star-indexing-step-v-1",
+    "date_created": "2015-07-15T16:45:02.206816+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "c8717f85-5992-4b96-b1cb-abfd07a11728",
+        "19f75e90-e991-4dc8-837d-8cd97ab5fb91"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "7fde5f17-d84c-4b7d-90f8-3a800cab4c3d"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-index-bwa-v-1-0"
+    ],
+    "analysis_step": "dnase-index-bwa-step-v-1",
+    "date_created": "2016-05-24T22:50:29.491219+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "996c4b67-95a9-4116-9fdc-c490995f68da",
+        "c5c9e884-6d42-4ec2-bdb9-d73870ceddee",
+        "41d6d306-72bc-4991-866f-dcfd87eebf25",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "7ff725e4-3bcb-457b-a1b0-7b1c1f0508de"
+},
+{
+    "aliases": [
+        "dnanexus:dme-index-bismark-bowtie2-v-1-1",
+        "dnanexus:dme-index-bismark-bowtie2-v-2-0"
+    ],
+    "analysis_step": "dme-index-bismark-bowtie2-step-v-1",
+    "date_created": "2016-01-08T23:51:00.712111+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a8e1b6ac-a343-4fd4-b1a5-95707dbf8d93",
+        "8c6a1e36-ebd2-40a6-a6da-f80a87998ea0",
+        "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+        "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "80290ad7-a067-4ff5-8a2b-371c307fabf5"
+},
+{
+    "aliases": [
+        "dnanexus:dme-align-se-parallel-v-1-0"
+    ],
+    "analysis_step": "dme-align-se-step-v-1",
+    "date_created": "2016-01-09T01:11:04.915714+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "52510c31-279e-404d-9eed-fa34e95ac0a2",
+        "45a578b9-89da-4bf6-9b0b-6d6564607143",
+        "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
+        "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+        "1b071b08-ef76-4a69-8f96-22408e2b380a",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "805c8036-0658-4439-a0e7-0b73abc101d6"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-idr-v-1-1",
+        "encode:rampage-idr-step-v-1"
+    ],
+    "analysis_step": "rampage-idr-step-v-1",
+    "date_created": "2015-06-02T21:13:43.519719+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "7b0b2626-7ccc-4520-b3c8-2d5791070fe5",
+        "3a4bfb4d-b655-430d-a27e-011c1cdbd174",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "8156f150-a3c4-4894-b39e-407641424d89"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-spp-peak-calling-step-v-1",
+    "date_created": "2015-10-28T21:42:48.723672+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "021b7765-014b-48b5-8258-436c8f378e3c",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "8250c103-b2a7-4ac7-842c-65e2ef651fd6"
+},
+{
+    "aliases": [
+        "dnanexus:prep-star-v-2-1"
+    ],
+    "analysis_step": "lrna-index-star-step-v-1",
+    "date_created": "2016-01-20T22:40:34.373954+00:00",
+    "minor_version": 2,
+    "notes": "This is the 1.1 version of long-RNA-seq STAR index generation.",
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "ae73844a-2ec4-4fc2-8300-7c6d647fa53f",
+        "70a085ad-194e-4de0-838c-7af257680f54"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "833dcebb-c59e-41dd-a5f5-4e831c6966bf"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-qc-bam-v-1-0"
+    ],
+    "analysis_step": "dnase-qc-bam-pe-step-v-1",
+    "date_created": "2017-08-06T17:37:02.733775+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "7728afef-3f3f-4870-b872-29b9a1f53223",
+        "e4fe030e-d2d2-47bd-824b-d9a17a9e19c4",
+        "da9f5c78-644e-4101-a423-ca619ef230bc",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "45e6294c-1b61-4441-b433-f937efae223e",
+        "506d7276-0ccf-422f-b8f6-222de51dd72a",
+        "beb915d5-157c-48d2-9867-7d2bbf8917fe",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "87342247-f277-48df-8e3a-39134c984d16"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-align-v-2-1"
+    ],
+    "analysis_step": "small-rna-se-star-alignment-step-v-1",
+    "date_created": "2016-01-21T02:00:02.550897+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "54058ee5-975e-4e29-a87e-0d0b128af0bb",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "8d10d933-eaaf-43ce-a63f-bd7c64f6a964"
+},
+{
+    "aliases": [
+        "brenton-graveley:shrna-rna-seq-miso-quantification-step-v-1-0"
+    ],
+    "analysis_step": "shrna-rna-seq-miso-splicing-quantification-step-v-1",
+    "date_created": "2018-07-25T16:18:10.921296+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "5054113d-30f2-4389-b218-192e3f2dedda"
+    ],
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "8f869dda-2a6c-4b20-8b0a-5bc119673248"
+},
+{
+    "aliases": [
+        "dnanexus:mad-qc-alt-v-1-0"
+    ],
+    "analysis_step": "lrna-repcorr-qc-se-step-v-1",
+    "date_created": "2015-08-18T17:54:31.758591+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "48cbd18a-5364-470d-95e7-540e5aeb99eb",
+        "3d0b6815-ba9f-4655-be55-5cbbf7884991"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "985d04d4-3da0-40eb-a272-9b2548c47ea1"
+},
+{
+    "aliases": [
+        "encode:lrna-pe-rsem-quantification-v-1-1",
+        "dnanexus:quant-rsem-v-1-1"
+    ],
+    "analysis_step": "lrna-pe-rsem-quantification-step-v-1",
+    "date_created": "2015-10-23T22:17:22.160423+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "e49cc9f5-150c-4be2-ab07-a46fe1799ad3",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "994c5308-94e5-45c3-a319-83a29e62538b"
+},
+{
+    "aliases": [
+        "dnanexus:prep-tophat-v-1-0"
+    ],
+    "analysis_step": "lrna-index-tophat-step-v-1",
+    "date_created": "2015-03-11T23:11:28.994087+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "34b738d1-3a23-4ca8-8057-9c342650fcd1",
+        "8369c9b0-50ad-11e4-916c-0800200c9a66",
+        "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "9b5eb908-25db-4c1e-a620-3d6283223cd9"
+},
+{
+    "aliases": [
+        "dnanexus:prep-star-v-2-0"
+    ],
+    "analysis_step": "lrna-index-star-step-v-1",
+    "date_created": "2015-04-10T18:11:15.170197+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "dfdcca84-4221-4a7b-a017-628b4cca723f",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "9fd646fa-1c74-4962-b2c3-debd9a836db1"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-se-v-1-2"
+    ],
+    "analysis_step": "dnase-align-bwa-se-step-v-1",
+    "date_created": "2017-02-15T04:58:17.912815+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "d5b868c3-aae8-414c-abe2-2c0f16f972c7",
+        "7fe06753-7d26-4621-8d61-1b2f472289b1",
+        "d45d0827-cc45-4c6a-ba88-9e1ca8fc8195",
+        "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "a09056d0-8ce8-4acb-99b2-1a32a27bf286"
+},
+{
+    "aliases": [
+        "encode:mott-trim-align-bismark-v-1-0"
+    ],
+    "analysis_step": "dme-align-se-step-v-1",
+    "date_created": "2015-06-26T22:53:27.430762+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "2190319c-c493-4d91-a6f1-d4f108cf592f",
+        "f8f1c898-776c-444d-b4e6-af7e81b5ab95",
+        "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
+        "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
+        "1b071b08-ef76-4a69-8f96-22408e2b380a",
+        "ba604a77-9683-4f88-b733-6a14d17e5c1d"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "a0fe494a-78d6-4f46-b185-88d349b64cb9"
+},
+{
+    "aliases": [
+        "encode:small-rna-star-stranded-signal-step-v-1",
+        "dnanexus:small-rna-signals-v-1-1"
+    ],
+    "analysis_step": "small-rna-star-stranded-signal-step-v-1",
+    "date_created": "2015-07-15T16:56:52.612115+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "b988130d-174b-4669-88af-1ad524f831c1",
+        "19f75e90-e991-4dc8-837d-8cd97ab5fb91",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "a1849597-ad74-46a6-8915-246ecbbf6c7b"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-signals-v-1-1"
+    ],
+    "analysis_step": "rampage-star-signal-step-v-1",
+    "date_created": "2016-01-21T02:12:57.665550+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "34be7c05-0dd4-45fc-989b-1ddfe583c9fe",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "a1861723-5ce7-491b-bc32-ba23eee6dfba"
+},
+{
+    "aliases": [
+        "dnanexus:dme-extract-se-v-2-0",
+        "dnanexus:dme-cx-to-bed-alt-v-1-0",
+        "dnanexus:dme-bg-to-signal-alt-v-1-0"
+    ],
+    "analysis_step": "dme-extract-se-step-v-1",
+    "date_created": "2016-01-09T01:19:03.659136+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "52510c31-279e-404d-9eed-fa34e95ac0a2",
+        "8fca23e5-9484-4d83-af59-8f3e0ee11849",
+        "6236039a-969d-4057-a178-05954cb39be9",
+        "27e32a33-13b2-40d9-8eba-603e4f6ec2ac",
+        "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "049ad3f4-5d0a-4b22-8d59-d183519e504e",
+        "143e5445-7f10-48fe-9455-5f1a777773ca",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "a319ea0c-f919-4aec-ade8-8323e2b9ab03"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-rep-corr-alt-v-2-0"
+    ],
+    "analysis_step": "dnase-rep-corr-se-step-v-2",
+    "date_created": "2017-08-06T17:37:04.840781+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "f16f6bff-9407-4314-badc-c2032596561d",
+        "ca939113-a8ea-4431-a19c-8d960e2f4b06",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "91932b32-4c56-4ee8-bb6b-28ea1e8a7ef5"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a42bb4a6-0486-4d3a-bbf1-6763e173142f"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-filter-se-v-2-0"
+    ],
+    "analysis_step": "dnase-filter-se-step-v-2",
+    "date_created": "2017-08-06T17:37:01.544306+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "857f24b0-edb7-4219-ab69-6fcd8291a67e",
+        "5f2c9789-d184-4a10-a572-6cb2ff3a5ed0",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a4ac45f5-7b3a-4301-868c-9ecba8030f0f"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-pe-v-2-0"
+    ],
+    "analysis_step": "dnase-align-bwa-pe-step-v-2",
+    "date_created": "2017-08-06T17:36:59.114784+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "bba73513-0e09-4169-a4dd-1a2361b3e126",
+        "1332ec1a-25df-40b7-8e30-879715de73cd",
+        "497e485b-18fc-48d4-8715-ee51c6809293",
+        "bbaad0ce-90db-4a19-937a-7c171b05ed4b",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a60f32fe-a209-4434-8136-6ffe1ba92668"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-peaks-to-bigbed-step-v-1",
+    "date_created": "2015-07-10T23:42:51.122536+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "a7d5cbf0-c9f8-446a-9db8-a50b443e6628"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-stranded-tophat-v-2-1"
+    ],
+    "analysis_step": "lrna-pe-star-signals-for-tophat-step-v-1",
+    "date_created": "2016-01-21T01:21:47.373078+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "ce8b23cd-8edf-44bc-bd2f-4fcfb2d90a45",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "a8cce25a-86ee-4470-b444-e486f5cf1d77"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-v-1-3"
+    ],
+    "analysis_step": "lrna-pe-rsem-quantification-step-v-1",
+    "date_created": "2016-12-16T04:51:16.026163+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "1a865658-b1e4-4344-9c1b-0ce24f3eab0e",
+        "40932f00-d41d-4f5e-8025-95f3c22ee913",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "aab56d93-f3a0-4325-b234-2cc29c223609"
+},
+{
+    "aliases": [
+        "brenton-graveley:shrna-rna-seq-cuffdiff-quantification-step-v-1-0"
+    ],
+    "analysis_step": "shrna-rna-seq-cuffdiff-expression-quantification-step-v-1",
+    "date_created": "2018-07-25T16:18:11.016543+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "fef18ef7-7747-4406-8bda-742b863372bd"
+    ],
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "ab5e3d00-eea4-4c9e-a859-f80fc42aa546"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-unreplicated-peaks-to-bigbed-step-v-1",
+    "date_created": "2017-03-21T00:14:31.894950+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "abcc5287-39ae-456a-b587-3af3fc202e00"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-unreplicated-idr-step-v-1",
+    "date_created": "2017-03-21T00:14:31.359299+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "14b46941-7c68-48e3-bce7-6bbda5a57621"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "abd4401d-96aa-4c37-894d-8e0fee9273ec"
+},
+{
+    "aliases": [
+        "encode:wgbs-methylation-to-bigbed-conversion-step-v-1"
+    ],
+    "analysis_step": "wgbs-methylation-to-bigbed-conversion-step-v-1",
+    "date_created": "2015-06-24T04:27:51.479396+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "in progress",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "ace29588-6af4-40f3-98d9-b24afd811963"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-idr-step-v-1",
+    "date_created": "2015-10-28T21:42:48.974340+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "14b46941-7c68-48e3-bce7-6bbda5a57621"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "ad55c9a7-76f4-483d-9feb-ff47c067c523"
+},
+{
+    "aliases": [
+        "dnanexus:dme-align-pe-v-1-1"
+    ],
+    "analysis_step": "dme-align-pe-step-v-1",
+    "date_created": "2016-01-08T23:59:45.465339+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a8e1b6ac-a343-4fd4-b1a5-95707dbf8d93",
+        "eeec34df-b644-4ea5-9559-07e3842df3d6",
+        "2a23caec-231c-4e82-a9b9-d2b7f891da96",
+        "06dc46e3-5089-4f78-a331-fdebd95f83dd",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "3ab05286-7b34-49e0-ad4b-d757a76ff732",
+        "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "adf46b14-e214-4f66-8fb3-bb01aeae7d45"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-alt-v-1-1",
+        "encode:lrna-se-rsem-quantification-step-v-1-1"
+    ],
+    "analysis_step": "lrna-se-rsem-quantification-step-v-1",
+    "date_created": "2015-10-23T22:13:15.684941+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "e49cc9f5-150c-4be2-ab07-a46fe1799ad3",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b34d526f-b4af-45a5-9b1a-7ffc35eb6bab"
+},
+{
+    "aliases": [
+        "john-stamatoyannopoulos:ENCODE2-DNASE"
+    ],
+    "analysis_step": "encode2-dnase-analysis-step-v-1",
+    "date_created": "2016-06-30T19:24:03.967797+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "1def4328-6852-44fe-af34-6f00e1b3cc97"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "b3645abb-3ce8-4e53-9952-6797446762f7"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-replicated-peaks-to-bigbed-step-v-1",
+    "date_created": "2015-07-10T23:42:28.277054+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "b67cd935-d665-4ba7-bf34-17273db5451e"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-peaks-v-2-2"
+    ],
+    "analysis_step": "rampage-grit-peak-calling-step-v-1",
+    "date_created": "2016-04-19T00:15:26.699075+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "d99945f8-2a3a-47ed-a393-83c3d72bcb72",
+        "431d37a3-8deb-4c73-920b-73a5bab9b291",
+        "7c0c9ab4-7c39-47b3-a0fd-beeda755a9f4",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "b85ee24e-aa77-43d0-9896-a0eec3801720"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-v-2-2"
+    ],
+    "analysis_step": "lrna-pe-star-signal-step-v-1",
+    "date_created": "2017-01-25T17:11:46.483639+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+        "c6cef3f5-f4fa-4572-a1b2-50579a2fbcee",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "b8ba2515-c839-40a3-940b-5e9c4b4092bf"
+},
+{
+    "aliases": [],
+    "analysis_step": "bwa-raw-alignment-step-v-1",
+    "date_created": "2015-11-17T20:30:58.128334+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "de3c16f7-be94-4b2f-a7b4-c44ba67735d7",
+        "2f4d48db-d4ec-4e9e-8c22-9fc5ee6c49ac",
+        "37969002-2985-4d2c-9d1d-2f7160d80019",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "b9e5856e-b6bb-4e5c-8564-3e6c79ec9b14"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-peak-calling-step-v-1",
+    "date_created": "2015-06-24T04:16:44.380084+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "12342c09-ec5b-458b-8b6b-13ce9f11f1e7",
+        "2cc07124-16be-4333-8943-4bce96059af3"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "ba41eaf0-db75-44b6-8045-11c0d84d2a5b"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-filter-pe-v-1-0"
+    ],
+    "analysis_step": "dnase-filter-pe-step-v-1",
+    "date_created": "2016-05-24T22:59:06.096017+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "36d02fb0-a184-472f-b228-4e0cf0a44890",
+        "ff50d1a1-54d4-4e12-9f00-652d15995ed1",
+        "37969002-2985-4d2c-9d1d-2f7160d80019",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "bb286d2d-33c1-4900-b90f-20c71a1d62b6"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-alt-v-1-0"
+    ],
+    "analysis_step": "dnase-call-hotspots-se-step-v-1",
+    "date_created": "2016-05-24T23:32:40.083926+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "972f4d7f-38b3-4b82-ba62-e4da9a2cde88",
+        "41d6d306-72bc-4991-866f-dcfd87eebf25",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "143e5445-7f10-48fe-9455-5f1a777773ca",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "bca3028a-da40-4679-a3c8-85f06cedbc2b"
+},
+{
+    "aliases": [
+        "dnanexus:align-star-pe-v-1-0",
+        "encode:lrna-pe-star-alignment-step-v-1"
+    ],
+    "analysis_step": "lrna-pe-star-alignment-step-v-1",
+    "date_created": "2015-03-12T04:27:42.368923+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "4ddc54ac-45fa-40d2-bd4e-82ad010ce0ca",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "e038206f-d791-4744-9ee5-7d22bd1f39ee",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "bca8058e-706c-4148-b792-66c31083fd90"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-alt-v-1-4"
+    ],
+    "analysis_step": "lrna-se-rsem-quantification-step-v-1",
+    "date_created": "2017-01-24T05:36:10.755553+00:00",
+    "minor_version": 4,
+    "schema_version": "4",
+    "software_versions": [
+        "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+        "28702932-97a1-4c56-87d6-fc4e636b90bc",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "c1d51433-5a32-4c6b-a39d-7f16e1e27a7f"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-alt-v-1-2"
+    ],
+    "analysis_step": "lrna-se-rsem-quantification-step-v-1",
+    "date_created": "2016-01-21T01:45:01.088686+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "2ae8bc25-b113-4fbb-bcb7-23a0c15dd332",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c66e35fb-3f30-4799-8d5b-d7d03264306e"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-signals-v-1-2"
+    ],
+    "analysis_step": "small-rna-star-stranded-signal-step-v-1",
+    "date_created": "2016-01-21T02:04:55.069283+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "13af44fb-974b-4fd6-8c09-f3a07f521ebc",
+        "70a085ad-194e-4de0-838c-7af257680f54",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "c7149481-b415-4491-a113-e98360da3d83"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-tophat-v-2-2"
+    ],
+    "analysis_step": "lrna-pe-star-signals-for-tophat-step-v-1",
+    "date_created": "2017-01-26T07:22:35.967704+00:00",
+    "minor_version": 3,
+    "schema_version": "4",
+    "software_versions": [
+        "b547315e-f5a9-4290-b29a-fbc9cfd810dc",
+        "c6cef3f5-f4fa-4572-a1b2-50579a2fbcee",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "uuid": "c8679e5f-dba5-4a47-9da1-ef48344e4024"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-v-2-1"
+    ],
+    "analysis_step": "dnase-call-hotspots-pe-step-v-2",
+    "date_created": "2018-04-23T13:48:04.446975+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "15f65aef-29e2-49cd-bb0a-0beb98421021",
+        "0924a255-1d23-4c05-8eed-c6a46efe60b8",
+        "cb38bd8b-465a-4c8f-9e5a-c4cbbecc053c",
+        "04722aec-60b5-4dee-b705-5761bbd3711d",
+        "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "c9ec0459-1bb3-4703-9c4a-61a67c9e409d"
+},
+{
+    "aliases": [
+        "brenton-graveley:shrna-rna-seq-rmats-quantification-step-v-1-0"
+    ],
+    "analysis_step": "shrna-rna-seq-rmats-splicing-quantification-step-v-1",
+    "date_created": "2018-07-25T16:18:10.833916+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "e5253a47-71e6-49e8-b380-ee8b432411c2"
+    ],
+    "status": "released",
+    "submitted_by": "599e4901-78bf-422f-b65d-f3443c6a6450",
+    "uuid": "cb73d5ec-c1fa-4065-9520-ea3c1ca7c409"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-eval-bam-v-1-0"
+    ],
+    "analysis_step": "dnase-eval-bam-pe-step-v-1",
+    "date_created": "2016-05-24T23:03:52.302871+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "b4be96a3-59d0-4ae0-84d6-6ac36c0e7315",
+        "da9f5c78-644e-4101-a423-ca619ef230bc",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "45e6294c-1b61-4441-b433-f937efae223e",
+        "506d7276-0ccf-422f-b8f6-222de51dd72a",
+        "beb915d5-157c-48d2-9867-7d2bbf8917fe",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "cdd02b25-af49-45e2-b140-d67648d6407d"
+},
+{
+    "aliases": [],
+    "analysis_step": "bwa-alignment-step-v-1",
+    "date_created": "2015-06-24T04:10:17.022631+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "de3c16f7-be94-4b2f-a7b4-c44ba67735d7",
+        "2f4d48db-d4ec-4e9e-8c22-9fc5ee6c49ac",
+        "37969002-2985-4d2c-9d1d-2f7160d80019",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "ced7264f-9206-4838-99ea-3badb3fb124c"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-rep-corr-v-1-0"
+    ],
+    "analysis_step": "dnase-rep-corr-pe-step-v-1",
+    "date_created": "2016-05-24T23:11:04.723457+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "b6a62a18-4c94-4d0f-9b07-b7c9e393ff47",
+        "ca939113-a8ea-4431-a19c-8d960e2f4b06",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "91932b32-4c56-4ee8-bb6b-28ea1e8a7ef5"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "d1e662d7-8c56-45b3-9f45-cac6eff941ea"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-macs2-signal-calling-step-v-1",
+    "date_created": "2015-10-30T22:14:24.530399+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "12342c09-ec5b-458b-8b6b-13ce9f11f1e7"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "d2619376-aeb4-4fe4-9374-785133195864"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-peaks-v-2-1"
+    ],
+    "analysis_step": "rampage-grit-peak-calling-step-v-1",
+    "date_created": "2016-01-21T02:17:03.345974+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "79437adb-5a31-42b6-a617-bb63e2b6700b",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb",
+        "e9344871-db09-4612-bf57-54c8143f76bb",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "d29be267-43b3-468c-8b5a-bad2153125ea"
+},
+{
+    "aliases": [
+        "dnanexus:small-rna-mad-qc-v-1-1"
+    ],
+    "analysis_step": "small-rna-repcorr-qc-step-v-1",
+    "date_created": "2016-01-21T01:38:36.786501+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "2ab529d1-11df-4b12-a649-7e57a8182828",
+        "3d0b6815-ba9f-4655-be55-5cbbf7884991"
+    ],
+    "status": "in progress",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "d4ce1493-392e-491e-89bc-4c01c71f5328"
+},
+{
+    "aliases": [
+        "dnanexus:quant-rsem-v-1-2"
+    ],
+    "analysis_step": "lrna-pe-rsem-quantification-step-v-1",
+    "date_created": "2016-01-21T01:42:45.479150+00:00",
+    "minor_version": 2,
+    "schema_version": "4",
+    "software_versions": [
+        "e3258c4b-318a-45a7-b950-6536985bfdf2",
+        "2ae8bc25-b113-4fbb-bcb7-23a0c15dd332",
+        "1be77f15-196e-4301-b27a-56053e398cfe"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "d8dcbe0f-1387-4279-ac0d-c28fa2d5c086"
+},
+{
+    "aliases": [],
+    "analysis_step": "wgbs-bismark-quantification-step-v-1",
+    "date_created": "2015-06-26T22:53:47.272716+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "049ad3f4-5d0a-4b22-8d59-d183519e504e",
+        "a86c9d15-deaf-4abd-8bce-bfa6595d70bb"
+    ],
+    "status": "in progress",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "d9ed047b-342b-4ae8-8c51-5972be744f34"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-unreplicated-partition-concordance-peaks-to-bigbed-step-v-1",
+    "date_created": "2017-03-21T00:14:25.109475+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "db3b685c-8462-49b8-a29c-5f6b180a9294"
+},
+{
+    "aliases": [
+        "encode:bwa-alignment-step-v-1.2"
+    ],
+    "analysis_step": "bwa-alignment-step-v-1",
+    "date_created": "2016-10-07T02:06:41.028946+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "de3c16f7-be94-4b2f-a7b4-c44ba67735d7",
+        "2f4d48db-d4ec-4e9e-8c22-9fc5ee6c49ac",
+        "37969002-2985-4d2c-9d1d-2f7160d80019",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "d7608aac-8fc1-49ef-ba54-72c79aa57061"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "dc6dac54-0a5f-4356-815c-975c4b052249"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-unstranded-v-2-0",
+        "encode:lrna-se-star-unstranded-signal-step-v-2-0"
+    ],
+    "analysis_step": "lrna-se-star-signal-step-v-1",
+    "date_created": "2015-04-10T18:20:28.564357+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "d27099ef-6f53-422e-a273-3331ca4e7234",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "de730186-321b-47f0-b633-82a365557fcc"
+},
+{
+    "aliases": [
+        "dnanexus:align-star-se-v-1-0",
+        "encode:lrna-se-star-alignment-step-v-1"
+    ],
+    "analysis_step": "lrna-se-star-alignment-step-v-1",
+    "date_created": "2015-03-12T04:26:09.382071+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "dded7161-e7d6-490a-baf3-22c4d30e34f0",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "e038206f-d791-4744-9ee5-7d22bd1f39ee",
+        "4c911ae3-9007-4777-9680-2c526ab8fdbb"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "dee6d607-619a-4db4-8cf1-c0fa61f24dca"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-call-hotspots-v-2-0"
+    ],
+    "analysis_step": "dnase-call-hotspots-pe-step-v-2",
+    "date_created": "2017-08-06T17:37:01.930135+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "3b8fab89-87a2-47c8-bb3f-8f6bcbbc510f",
+        "b6f22abb-408b-41c5-87b8-9c60ecd73e9f",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "ad5eb436-4bb4-4747-89f9-67b8c32d9c19",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "e01b5294-54d2-4f4c-a035-1cae5b46059e"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-unstranded-tophat-v-2-0",
+        "encode:lrna-se-star-unstranded-signals-for-tophat-step-v-2-0"
+    ],
+    "analysis_step": "lrna-se-star-signals-for-tophat-step-v-1",
+    "date_created": "2015-04-10T18:18:59.538691+00:00",
+    "minor_version": 1,
+    "schema_version": "4",
+    "software_versions": [
+        "1cdc4183-87cd-4df4-bb09-86ca4a47764a",
+        "d27099ef-6f53-422e-a273-3331ca4e7234",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "e111d336-f1be-42b6-aa5f-d48974c83c84"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-unreplicated-macs2-signal-calling-step-v-1",
+    "date_created": "2017-03-21T00:14:32.009556+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "12342c09-ec5b-458b-8b6b-13ce9f11f1e7"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "e2902ced-8567-4b82-aa6a-99ff5bbcc916"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-rep-corr-v-2-0"
+    ],
+    "analysis_step": "dnase-rep-corr-pe-step-v-2",
+    "date_created": "2017-08-06T17:37:04.406890+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "529ef6f6-06da-45a1-ab86-796f0dd6d8b3",
+        "f16f6bff-9407-4314-badc-c2032596561d",
+        "ca939113-a8ea-4431-a19c-8d960e2f4b06",
+        "7faffe8c-a71a-4c18-b1d4-1686338bc79b",
+        "91932b32-4c56-4ee8-bb6b-28ea1e8a7ef5"
+    ],
+    "status": "released",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "e53c42dc-f28a-42ae-9179-a5ff4860a019"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-align-bwa-se-v-1-0"
+    ],
+    "analysis_step": "dnase-align-bwa-se-step-v-1",
+    "date_created": "2016-05-24T23:18:19.113148+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "483573b3-19fa-4dbb-90cb-65e96b9b1d8b",
+        "c5c9e884-6d42-4ec2-bdb9-d73870ceddee",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "e9f1cf41-8225-4f33-bbd6-93a68e8c8961"
+},
+{
+    "aliases": [
+        "dnanexus:bam-to-bigwig-unstranded-v-1-0",
+        "encode:lrna-se-star-unstranded-signal-step-v-1"
+    ],
+    "analysis_step": "lrna-se-star-signal-step-v-1",
+    "date_created": "2015-03-12T17:12:53.671714+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a96510bb-854a-4344-9d5c-d42f49ded21a",
+        "72520bb4-4592-4137-9a8c-f9d5d04ff63b",
+        "e038206f-d791-4744-9ee5-7d22bd1f39ee",
+        "fa03d911-5b7c-40b6-9649-9086aa4b1597"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "eb3ac3ab-073b-450f-a217-c20ec0e76e73"
+},
+{
+    "aliases": [
+        "dnanexus:mad-qc-v-1-0"
+    ],
+    "analysis_step": "lrna-repcorr-qc-pe-step-v-1",
+    "date_created": "2015-08-18T17:58:18.024687+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "48cbd18a-5364-470d-95e7-540e5aeb99eb",
+        "3d0b6815-ba9f-4655-be55-5cbbf7884991"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "eb9d12c8-23b1-428e-82d4-1aa272a4fdd3"
+},
+{
+    "aliases": [
+        "dnanexus:dnase-eval-bam-alt-v-1-0"
+    ],
+    "analysis_step": "dnase-eval-bam-se-step-v-1",
+    "date_created": "2016-05-24T23:28:46.514013+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "90cd7e4d-81b0-4119-9436-05c9333b733b",
+        "b4be96a3-59d0-4ae0-84d6-6ac36c0e7315",
+        "da9f5c78-644e-4101-a423-ca619ef230bc",
+        "db773727-4185-4f43-8ec9-1671fc9c5d02",
+        "45e6294c-1b61-4441-b433-f937efae223e",
+        "506d7276-0ccf-422f-b8f6-222de51dd72a",
+        "beb915d5-157c-48d2-9867-7d2bbf8917fe",
+        "88756cca-1e79-4086-92ad-5f15ebb1fd5a",
+        "2cc07124-16be-4333-8943-4bce96059af3",
+        "0a7fc766-19ab-41e1-b55e-ac64044c9b6f"
+    ],
+    "status": "released",
+    "submitted_by": "a00d89e0-a488-4adf-9738-25149afc4087",
+    "uuid": "f7ec212d-5fac-4cb4-b4f7-42c25ab15f4e"
+},
+{
+    "aliases": [
+        "dnanexus:rampage-align-pe-v-1-0",
+        "encode:rampage-pe-alignment-step-v-1"
+    ],
+    "analysis_step": "rampage-pe-alignment-step-v-1",
+    "date_created": "2015-05-27T16:33:16.249593+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "a28c6736-ed23-426d-9b67-f9051a61bcb5",
+        "1418921f-6fc6-411a-8485-bde145b97a1f",
+        "826a39b4-f6ec-42ac-9f59-e776dde233be",
+        "0bfb7a0a-afc7-4453-b735-ee878f23e7a9"
+    ],
+    "status": "released",
+    "submitted_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+    "uuid": "f9a92249-2baf-4ee6-9358-8808acb1d344"
+},
+{
+    "aliases": [],
+    "analysis_step": "tf-unreplicated-idr-peaks-to-bigbed-step-v-1",
+    "date_created": "2017-03-21T00:14:31.444896+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "143e5445-7f10-48fe-9455-5f1a777773ca"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "fa044b11-91ff-4320-a212-5f98f9f7e165"
+},
+{
+    "aliases": [],
+    "analysis_step": "histone-unreplicated-partition-concordance-step-v-1",
+    "date_created": "2017-03-21T00:14:24.976559+00:00",
+    "minor_version": 0,
+    "schema_version": "4",
+    "software_versions": [
+        "64b2d05e-3347-4edd-b0a9-efbf1a259fbd"
+    ],
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "uuid": "fb4a04ac-a13c-4a6f-86b0-f4781e7e2232"
+}
 ]

@@ -1,0 +1,64 @@
+===== edwBamStats =====
+alignedBy bwa
+isPaired 0
+isSortedByTarget 1
+readCount 15000000
+readBaseCount 540000000
+mappedCount 15000000
+uniqueMappedCount 15000000
+readSizeMean 36
+readSizeStd 0
+readSizeMin 36
+readSizeMax 36
+u4mReadCount 4000000
+u4mUniquePos 3802166
+u4mUniqueRatio 0.950542
+targetSeqCount 195
+targetBaseCount 3099922541
+ 
+===== phantompeaktools spp =====
+################
+ChIP data: ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample.tagAlign.gz 
+Control data: NA 
+strandshift(min): -500 
+strandshift(step): 5 
+strandshift(max) 1500 
+user-defined peak shift NA 
+exclusion(min): -500 
+exclusion(max): -1 
+num parallel nodes: NA 
+FDR threshold: 0.01 
+NumPeaks Threshold: NA 
+Output Directory: . 
+narrowPeak output file name: NA 
+regionPeak output file name: NA 
+Rdata filename: NA 
+plot pdf filename: NA 
+result filename: ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample_spp.txt 
+Overwrite files?: TRUE
+
+Decompressing ChIP file
+Reading ChIP tagAlign/BAM file ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample.tagAlign.gz 
+opened /tmp/RtmpBcrZkP/ENCSR000EME_rep2_1_se_bwa_biorep_filtered_15000000_sample.tagAlign638340a16983
+done. read 15000000 fragments
+ChIP data read length 36 
+[1] TRUE
+Calculating peak characteristics
+Minimum cross-correlation value 0.1009736 
+Minimum cross-correlation shift 1500 
+Top 3 cross-correlation values 0.343709443577863 
+Top 3 estimates for fragment length 70 
+Window half size 260 
+Phantom peak location 45 
+Phantom peak Correlation 0.3138103 
+Normalized Strand cross-correlation coefficient (NSC) 3.403953 
+Relative Strand cross-correlation Coefficient (RSC) 1.140479 
+Phantom Peak Quality Tag 1 
+ 
+===== bedtools pbc  =====
+Sampled Reads	Distinct Locations Mapped	Single-read Locations	Multi-read Locations	NRF (Non-Redundant Fraction)=Distinct Locations/Sample Reads	PBC1=Single-read Locations/Distinct Locations	PBC2=Single-read Locations/Multi-read Locations
+15000000	12615398	11339422	830585	0.841027	0.898856	13.652332
+ 
+===== HotSpot1 =====
+  total tags  hotspot tags    SPOT
+    15000000       8682812  0.5788

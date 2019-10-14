@@ -1,478 +1,2305 @@
 [
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101126",
-            "GeneID:23394",
-            "HGNC:ADNP1",
-            "UniProtKB:Q9H2P0"
-        ],
-        "genes": ["23394"],
-        "label": "ADNP",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
-    },
-    {
-        "label": "Control",
-        "target_organism": "mouse",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
-    },
-    {
-        "label": "mouse-IgG-control",
-        "target_organism": "human",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "2e19e501-8f32-4205-8469-2fb593a30595"
-    },
-    {
-        "label": "mouse-IgG-control",
-        "target_organism": "mouse",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "6fcd4ef8-9a84-4951-958a-828c41a5ffb0"
-    },
-    {
-        "label": "Control",
-        "target_organism": "human",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000102974",
-            "GeneID:10664",
-            "UniProtKB:P49711"
-        ],
-        "genes": ["10664"],
-        "label": "CTCF",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000154832",
-            "GeneID:30827",
-            "HGNC:CFP1",
-            "HGNC:CGBP",
-            "HGNC:SPP1",
-            "HGNC:PCCX1",
-            "HGNC:PHF18",
-            "HGNC:hCGBP",
-            "HGNC:ZCGPC1",
-            "HGNC:HsT2645",
-            "HGNC:2410002I16Rik",
-            "HGNC:5830420C16Rik",
-            "UniProtKB:Q9P0U4"
-        ],
-        "genes": ["30827"],
-        "label": "CXXC1",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101412",
-            "GeneID:1869",
-            "HGNC:RBBP3",
-            "HGNC:RBP3",
-            "UniProtKB:Q01094"
-        ],
-        "genes": ["1869"],
-        "label": "E2F1",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "b39e16c2-b1d7-4690-b92c-e7006e5a8332"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101412",
-            "GeneID:1869",
-            "HGNC:RBBP3",
-            "HGNC:RBP3",
-            "UniProtKB:Q01094"
-        ],
-        "genes": ["1869"],
-        "modifications": [{
+{
+    "aliases": [],
+    "dbxref": [
+             "GeneID:3772518"
+    ],
+    "genes": [
+         "3772198",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K27me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "01bcac7b-2902-4153-b31b-a38f0e8f7211"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex"
+    ],
+    "label": "POLR2AphosphoS5",
+    "modifications": [
+        {
+            "amino_acid_code": "S",
+            "modification": "Phosphorylation",
+            "position": 5
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "077519e3-5b82-4a31-a5cf-719338cd8ce7"
+},
+{
+    "aliases": [],
+    "dbxref": [
+            "WormBase:his-49",
+        "GeneID:184113",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K27ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "08fcd376-0f9e-4623-8333-7cc25ced59bc"
+},
+{
+    "aliases": [],
+    "dbxref": [
+          "GeneID:3772198",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+              "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K79me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "0c0d47a5-28a6-424f-b0c8-80c89dff2765"
+},
+{
+    "aliases": [],
+    "dbxref": [
+          "FlyBase:His3",
+        "GeneID:3772198",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+          "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K9acS10ph",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        },
+        {
+            "amino_acid_code": "S",
+            "modification": "Phosphorylation",
+            "position": 10
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "0f586bec-e356-4e74-8d3b-39feb7e6d2d5"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K23ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 23
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "1050238d-fc5a-4778-9046-5105157ec86e"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "14173a5f-799e-4dae-b155-a142c5b6b566"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex"
+    ],
+    "label": "POLR2AphosphoS2",
+    "modifications": [
+        {
+            "amino_acid_code": "S",
+            "modification": "Phosphorylation",
+            "position": 2
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "14c70301-3751-4f4c-a7ce-c84ccc555edd"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+         "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K9acS10ph",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        },
+        {
+            "amino_acid_code": "S",
+            "modification": "Phosphorylation",
+            "position": 10
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "1644b703-2835-44cd-93ec-bc514edaf84d"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K4me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "1aa5391a-01f1-4983-bdb6-d93db5f53334"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+       
+        "GeneID:3772198",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+     
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K9me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "1b4e458f-15ed-40c3-9dd1-1d6ae332f882"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex"
+    ],
+    "label": "POLR2AphosphoS7",
+    "modifications": [
+        {
+            "amino_acid_code": "S",
+            "modification": "Phosphorylation",
+            "position": 7
+        }
+    ],
+    "schema_version": "11",
+    "status": "in progress",
+    "uuid": "21151f2c-40e4-4fe6-815b-fb59d2419dda"
+},
+{
+    "aliases": [],
+    "dbxref": [
+         "UniProtKB:P84228",
+        "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+         "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "22d70759-9f8e-448b-8ce1-34b46840a8aa"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "UniProtKB:B2RWS6",
+        "GeneID:328572",
+        "MGI:1276116"
+    ],
+    "genes": [
+        "328572"
+    ],
+    "investigated_as": [
+        "transcription factor"
+    ],
+    "label": "EP300",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "26d3a5aa-d981-49fa-9d7b-0a6147e4d288"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "260423",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "32048733-94ec-46fa-a1ae-02f5f5214991"
+},
+{
+    "aliases": [],
+    "dbxref": [
+       
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+       
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "3730e221-5625-4ce1-87b7-1e5bee47ae53"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:KIAA0078",
+        "GeneID:5885",
+        "HGNC:hHR21",
+        "HGNC:SCC1",
+        "ENSEMBL:ENSG00000164754",
+        "UniProtKB:O60216"
+    ],
+    "genes": [
+        "5885"
+    ],
+    "investigated_as": [
+        "cohesin",
+        "recombinant protein"
+    ],
+    "label": "eGFP-RAD21",
+    "modifications": [
+        {
             "modification": "eGFP",
-            "position": 1,
-            "amino_acid_code": "A"
-        }],
-        "label": "eGFP-E2F1",
-        "status": "released",
-        "investigated_as": ["transcription factor", "recombinant protein"],
-        "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101412",
-            "GeneID:1869",
-            "HGNC:RBBP3",
-            "HGNC:RBP3",
-            "UniProtKB:Q01094"
-        ],
-        "genes": ["1869"],
-        "modifications": [{
-            "modification": "HA",
-            "position": 1,
-            "amino_acid_code": "A"
-        }],
-        "label": "HA-E2F1",
-        "status": "released",
-        "investigated_as": ["transcription factor", "recombinant protein"],
-        "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
-    },
-    {
-        "dbxref": [
-            "UniProtKB:P84228"
-        ],
-        "genes": ["15077"],
-        "label": "H3K4me3",
-        "status": "released",
-        "investigated_as": ["histone"],
-        "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
-    },
-    {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "genes": ["126961"],
-        "label": "H3K9ac",
-        "status": "released",
-        "investigated_as": ["histone"],
-        "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
-    },
-    {
-        "dbxref": [
-            "UniProtKB:P84228"
-        ],
-        "investigated_as": ["histone"],
-        "genes": ["15077"],
-        "label": "H3K9ac",
-        "status": "released",
-        "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000135486",
-            "GeneID:3178",
-            "HGNC:HNRPA1",
-            "HGNC:hnRNPA1",
-            "HGNC:hnRNP-A1",
-            "UniProtKB:P09651"
-        ],
-        "genes": ["3178"],
-        "label": "HNRNPA1",
-        "status": "released",
-        "investigated_as": ["RNA binding protein"],
-        "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000147133",
-            "GeneID:6872",
-            "HGNC:TAF2A",
-            "HGNC:BA2R",
-            "HGNC:CCG1",
-            "HGNC:CCGS",
-            "HGNC:DYT3",
-            "HGNC:NSCL2",
-            "HGNC:TAFII250",
-            "HGNC:KAT4",
-            "HGNC:DYT3/TAF1",
-            "UniProtKB:P21675"
-        ],
-        "genes": ["6872"],
-        "label": "TAF1",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "993bd05d-a6bd-4718-b51b-abe99f14f8c3"
-    },
-    {
-        "dbxref": [
-            "ENSEMBL:ENSG00000196628",
-            "GeneID:6925",
-            "HGNC:E2-2",
-            "HGNC:ITF2",
-            "HGNC:PTHS",
-            "HGNC:SEF2",
-            "HGNC:ITF-2",
-            "HGNC:SEF-2",
-            "HGNC:TCF-4",
-            "HGNC:SEF2-1",
-            "HGNC:SEF2-1A",
-            "HGNC:SEF2-1B",
-            "HGNC:bHLHb19",
-            "UniProtKB:P15884"
-        ],
-        "genes": ["6925"],
-        "label": "TCF4",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "f26cc43c-884a-4aea-9b26-b3517ef6748d"
-    },
-    {
-        "_test": "non-ascii",
-        "dbxref": [
-            "GeneID:7025",
-            "HGNC:EAR3",
-            "HGNC:EAR-3",
-            "HGNC:NR2F2",
-            "HGNC:SVP44",
-            "HGNC:ERBAL3",
-            "HGNC:TFCOUP1",
-            "HGNC:COUP-TFI",
-            "HGNC:TCFCOUP1"
-        ],
-        "genes": ["7025"],
-        "label": "NR2F1\u00c2",
-        "status": "released",
-        "investigated_as": ["transcription factor"],
-        "uuid": "618b2122-2a97-44a8-bd6a-f473c1363dd2"
-    },
-    {
-        "uuid": "714c9ca5-63a1-48e3-9603-5b867dbc0c7f",
-        "label": "mes-4",
-        "dbxref": [
-            "WormBase:WBGene00003222",
-            "WormBase:Y2H9A.1",
-            "UniProtKB:Q9NH52"
-        ],
-        "genes": ["179824"],
-        "investigated_as": ["transcription factor"],
-        "status": "released"
-    },
-    {
-        "uuid": "79cbe489-930b-410e-8cc2-783e4c37d9f5",
-        "label": "3XFLAG-pab-1",
-        "dbxref": [
-            "WormBase:WBGene00003902",
-            "WormBase:Y106G6H.2",
-            "UniProtKB:Q7K797",
-            "UniProtKB:Q9U302",
-            "UniProtKB:Q7K798"
-        ],
-        "genes": ["172920"],
-        "modifications": [{
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "3a8c412a-0f61-4eb5-8a3a-264db30480ef"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "UniProtKB:P49711",
+        "GeneID:10664",
+        "ENSEMBL:ENSG00000102974"
+    ],
+    "genes": [
+        "10664"
+    ],
+    "investigated_as": [
+        "recombinant protein",
+        "transcription factor"
+    ],
+    "label": "eGFP-CTCF",
+    "modifications": [
+        {
+            "modification": "eGFP",
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "3dbb8efc-accc-4d72-b583-7db6315c362f"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+       
+        "GeneID:246024"
+    ],
+    "genes": [
+       "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "3f449c7d-bd70-481c-8893-55981b2cddd3"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+        "WormBase:his-17",
+        "GeneID:177628",
+        "GeneID:180074",
+        "WormBase:his-32",
+         "GeneID:246024"
+    ],
+    "genes": [
+          "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3S10ph",
+    "modifications": [
+        {
+            "amino_acid_code": "S",
+            "modification": "Phosphorylation",
+            "position": 10
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "3fb92833-8f90-4c74-87b1-ef8a70837761"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+       
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K79me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "4137e028-fbcf-4334-8c87-f3d921b68a8e"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "47278add-f254-4cb6-9b36-026aeca04802"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+       
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+       
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "49dd07ea-5b55-414c-bab0-b117b586f85a"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K79me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "4af047f2-cd06-4758-8446-27297de01e28"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+  
+        "GeneID:246024"
+    ],
+    "genes": [
+        
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K27me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "4ec56b6f-f0fb-4fda-9367-507a16fbf906"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772163",
+       
+        "GeneID:3772518"
+    ],
+    "genes": [
+       
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K4me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "5e51137f-71b2-49d9-87ce-a4a68074099e"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        
+        "GeneID:184113",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+       
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K36ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "672fbd6d-9003-42c4-b88c-82e7daf178ef"
+},
+{
+    "aliases": [],
+    "dbxref": [
+       
+        "GeneID:246024"
+    ],
+    "genes": [
+        
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "6847d42d-f2f2-4316-9df4-12f511fe35e7"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex",
+        "recombinant protein"
+    ],
+    "label": "eGFP-POLR2A",
+    "modifications": [
+        {
+            "modification": "eGFP",
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "6873fc19-b881-473c-a0ff-278135ba5fc8"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        
+        "GeneID:319148"
+    ],
+    "genes": [
+        
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K27ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "6d25d67e-6ba3-4150-ad46-98b77ebce946"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        
+        "GeneID:246024"
+    ],
+    "genes": [
+       
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K79me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "6efda346-c51b-45b8-af51-760bbebb393e"
+},
+{
+    "aliases": [],
+    "dbxref": [
+       
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K79me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "74470614-b3a5-4bfc-871a-32b9dc55bb1b"
+},
+{
+    "aliases": [],
+    "dbxref": [
+       
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K79me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "761296be-a6c4-43be-b702-221401e5cce5"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+       
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K79me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "7a3b3aab-fb03-4274-9dfd-bcea06172f43"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex"
+    ],
+    "label": "POLR2AphosphoT4",
+    "modifications": [
+        {
+            "amino_acid_code": "T",
+            "modification": "Phosphorylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "in progress",
+    "uuid": "7ec1a981-2e14-46d0-b2c4-849ac4359d66"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "ENSEMBL:ENSG00000102974",
+        "GeneID:10664",
+        "HGNC:13723",
+        "UniProtKB:P49711"
+    ],
+    "genes": [
+        "10664"
+    ],
+    "investigated_as": [
+        "transcription factor"
+    ],
+    "label": "CTCF",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
+},
+{
+    "aliases": [],
+    "dbxref": [
+
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K36me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "84487b44-fb6c-46c5-a0b1-293b80545d94"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        
+        "GeneID:246024"
+    ],
+    "genes": [
+   
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K9me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "84e39ae9-5755-4987-963e-0551dd4da885"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K9ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:319149",
+       "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "319149",
+        "319150",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K36me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "86108f5d-fe24-4e4a-a259-de6e86184d40"
+},
+{
+    "aliases": [],
+    "dbxref": [
+ 
+        "GeneID:246024"
+    ],
+    "genes": [
+     
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K36me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "875453be-90cd-4da3-9b43-cd6933c8cff3"
+},
+{
+    "aliases": [],
+    "dbxref": [],
+    "investigated_as": [
+        "control"
+    ],
+    "label": "Control",
+    "schema_version": "11",
+    "status": "released",
+    "target_organism": "human",
+    "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:KIAA0078",
+        "GeneID:5885",
+        "HGNC:hHR21",
+        "HGNC:SCC1",
+        "ENSEMBL:ENSG00000164754",
+        "UniProtKB:O60216"
+    ],
+    "genes": [
+        "5885"
+    ],
+    "investigated_as": [
+        "cohesin"
+    ],
+    "label": "RAD21",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "909133b9-786c-424e-b081-0fe540bda118"
+},
+{
+    "aliases": [],
+    "dbxref": [
+       
+        "GeneID:246024"
+    ],
+    "genes": [
+    
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K23ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 23
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "9149aeb2-b747-4ff4-812c-7d96cda1d1cf"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K9ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "9783fa7d-80eb-4dcf-b6d8-aee5189217e1"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K27ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "9e6c7ada-61ef-49e2-b7d5-c59733e67e7b"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K27me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "9fdbd27b-4118-4851-b566-87d77d467d79"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3771792",
+        "GeneID:3771959",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K27me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "a0b96e89-f963-4a39-830a-3d016295cc79"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772198",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K36me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "a19652bb-2f93-42fe-9d79-8903b8c97143"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:319149",
+        "MGI:2448355",
+        "GeneID:319150",
+        "GeneID:97114",
+        "GeneID:15077",
+        "GeneID:319151",
+        "UniProtKB:P84228",
+        "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "319149",
+        "319150",
+        "97114",
+        "15077",
+        "319151",
+        "260423",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K27me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "a1b236fc-38d5-4af5-a140-ede8bb6327c8"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K27ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "a47092ec-35ab-447c-aae3-c59c621cf094"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+        "WormBase:his-17",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K36me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "afa96b1d-2b6a-40b6-9be3-a93d6715f846"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K18ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 18
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "b01c1309-c1d4-487a-95b3-c2c8bb14952e"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772198",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "b5be1d51-88bb-4deb-811d-4b82627e39fb"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+       "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K36me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "b7f85e20-3114-4d84-a9af-ea77c07ff102"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+         "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K79me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "bc472e4a-2ad3-483e-b059-391d150c0bff"
+},
+{
+    "aliases": [
+        "michael-snyder:TS-2018"
+    ],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex"
+    ],
+    "label": "POLR2A",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "be79f3d1-4f34-42b3-a5b7-c42823169543"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+     "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "bf144aa3-2918-4c53-a059-829e5187feea"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3771792",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K9ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "c115e37b-f6b2-4a22-9a9d-21e32e4e2605"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:KIAA0078",
+        "GeneID:5885",
+        "HGNC:hHR21",
+        "HGNC:SCC1",
+        "ENSEMBL:ENSG00000164754",
+        "UniProtKB:O60216"
+    ],
+    "genes": [
+        "5885"
+    ],
+    "investigated_as": [
+        "cohesin",
+        "recombinant protein"
+    ],
+    "label": "3xFLAG-RAD21",
+    "modifications": [
+        {
             "modification": "3xFLAG",
-            "position": 1,
-            "amino_acid_code": "E"
-        }],
-        "investigated_as": ["transcription factor", "recombinant protein"],
-        "status": "released"
-    },
-    {
-        "uuid": "d7e8b30a-5fde-4201-a287-be53814abca7",
-        "label": "eGFP",
-        "target_organism": "avictoria",
-        "investigated_as": ["tag"],
-        "status": "released"
-    },
-    {
-        "_test": "synthetic target",
-        "uuid": "f2d60a72-7b9c-422a-a80e-9493640c1d58",
-        "label": "FLAG",
-        "investigated_as": ["synthetic tag"],
-        "status": "released"
-    },
-    {
-        "uuid": "77d56f5a-e445-4f2c-83ac-65e00ce50ac1",
-        "label": "HA",
-        "target_organism": "influenza",
-        "investigated_as": ["tag"],
-        "status": "released"
-    },
-    {
-        "dbxref": [
-           "ENSEMBL:ENSG00000164330",
-            "GeneID:1879",
-            "HGNC:EBF",
-            "HGNC:OLF1",
-            "UniProtKB:Q9UH73"
-        ],
-        "genes": ["1879"],
-        "investigated_as": [
-            "transcription factor"
-        ],
-        "label": "EBF1",
-        "status": "released",
-        "uuid": "1fe12114-b9df-4626-a29f-78f3130eb5d2"
-    },
-    {
-        "uuid": "753b99f8-d764-4dea-96de-cf9c6f6ecede",
-        "label": "cad",
-        "genes": ["35341"],
-        "investigated_as": ["transcription factor"],
-        "status": "released"
-    },
-    {
-        "uuid": "bb5fc7cf-5909-4bf8-92d2-557477ce8646",
-        "label": "fkh-10",
-        "dbxref": [
-            "WormBase:WBGene00001442",
-            "WormBase:C25A1.2",
-            "UniProtKB:O17593"
-        ],
-        "genes": ["182874"],
-        "investigated_as": ["transcription factor"],
-        "status": "released"
-    },
-    {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "genes": ["126961"],
-        "investigated_as": [
-            "histone"
-        ],
-        "label": "H3K4me3",
-        "status": "released",
-        "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
-    },
-    {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "genes": ["126961"],
-        "investigated_as": [
-            "histone"
-        ],
-        "label": "H3K4me3-alt",
-        "status": "released",
-        "uuid": "0831cecb-eed8-4535-b529-46da66e459ac"
-    },
-    {
-        "label": "H3K27ac",
-        "investigated_as": [
-            "histone"
-        ],
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "status": "released",
-        "genes": ["126961"],
-        "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
-    },
-    {
-        "label": "H3K36me3",
-        "investigated_as": [
-            "histone"
-        ],
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72",
-        "genes": ["126961"],
-        "status": "released"
-    },
-    {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "genes": ["126961"],
-        "label": "H3K27me3",
-        "status": "released",
-        "investigated_as": [
-            "histone"
-        ],
-        "uuid": "9fdbd27b-4118-4851-b566-87d77d467d79"
-    },
-    {
-        "uuid": "14173a5f-799e-4dae-b155-a142c5b6b566",
-        "label": "H3K9me3",
-        "genes": ["126961"],
-        "investigated_as": [
-            "histone"
-        ],
-        "status": "released",
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ]
-    },
-    {
-        "uuid": "1aa5391a-01f1-4983-bdb6-d93db5f53334",
-        "label": "H3K4me1",
-        "genes": ["126961"],
-        "investigated_as": [
-            "histone"
-        ],
-        "status": "released",
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ]
-    },
-    {
-        "uuid": "452c5ea6-5880-499d-b8bb-392790fd2b89",
-        "status": "released",
-        "dbxref": [
-            "GeneID:8335",
-            "GeneID:3012",
-            "UniProtKB:P04908"
-        ],
-        "genes": [
-            "8335",
-            "3012"
-        ],
-        "label": "H2AK5ac",
-        "investigated_as": [
-            "histone"
-        ]
-    },
-    {
-        "uuid": "e6d8b23f-f6ca-4d77-adab-03ba81b7742a",
-        "genes": ["79068"],
-        "investigated_as": [
-            "RNA binding protein"
-        ],
-        "label": "FTO",
-        "dbxref": [
-            "ENSEMBL:ENSG00000140718",
-            "HGNC:24678",
-            "HGNC:ALKBH9",
-            "HGNC:KIAA1752",
-            "HGNC:MGC5149",
-            "GeneID:79068",
-            "UniProtKB:Q9C0B1"
-        ],
-        "status": "released"
-    },
-    {
-        "uuid": "670a9892-e1b6-4c31-a79f-7db1919b07f9",
-        "aliases": [],
-        "dbxref": [
-            "FlyBase:CG43860",
-            "FlyBase:FBtr0332562",
-            "FlyBase:FBtr0332558",
-            "FlyBase:CG43860-RA",
-            "FlyBase:FBtr0332557",
-            "UniProtKB:Q9W1P8",
-            "FlyBase:CG43860-RB",
-            "FlyBase:FBtr0332560",
-            "FlyBase:CG43860-RF",
-            "FlyBase:ab-RA",
-            "FlyBase:ab-RD",
-            "RefSeq:NM_079098",
-            "FlyBase:ab-RF",
-            "FlyBase:abrupt",
-            "FlyBase:FBgn0264442",
-            "FlyBase:ab-RB",
-            "FlyBase:CG43860-RD"
-        ],
-        "genes": ["34560"],
-        "modifications": [{
-            "modification": "eGFP",
-            "position": 1,
-            "amino_acid_code": "T"
-        }],
-        "investigated_as": [
-            "recombinant protein",
-            "transcription factor"
-        ],
-        "label": "eGFP-ab",
-        "status": "released"
-    }
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "c2da5a2f-bd80-4e5d-9b06-69b0f41be997"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:RPB1",
+        "UniProtKB:P24928",
+        "GeneID:5430",
+        "HGNC:POLRA",
+        "ENSEMBL:ENSG00000181222",
+        "HGNC:POLR2"
+    ],
+    "genes": [
+        "5430"
+    ],
+    "investigated_as": [
+        "RNA polymerase complex"
+    ],
+    "label": "POLR2AphosphoY1",
+    "modifications": [
+        {
+            "amino_acid_code": "Y",
+            "modification": "Phosphorylation",
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "in progress",
+    "uuid": "c564ccf9-bf8d-4521-bca5-f0acd5eaf7e0"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:3373",
+        "HGNC:p300",
+        "HGNC:KAT3B",
+        "GeneID:2033",
+        "ENSEMBL:ENSG00000100393",
+        "UniProtKB:Q09472"
+    ],
+    "genes": [
+        "2033"
+    ],
+    "investigated_as": [
+        "transcription factor",
+        "recombinant protein"
+    ],
+    "label": "3xFLAG-EP300",
+    "modifications": [
+        {
+            "modification": "3xFLAG",
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "c772884e-27d4-4c58-b903-b196a29213dd"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K18ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 18
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "c8bb8de3-80e8-4f76-adc4-1db0a61bf6ba"
+},
+
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "d1dc9300-c6bc-48ea-81a1-df7823111176"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+        "WormBase:his-17",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K27me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "d3fb07b7-75b9-426d-9a9f-61d32fec6ca3"
+},
+{
+    "aliases": [
+        "michael-snyder:TS-2075"
+    ],
+    "dbxref": [
+        "ENSEMBL:ENSG00000100393",
+        "GeneID:2033",
+        "HGNC:3373",
+        "HGNC:KAT3B",
+        "HGNC:p300",
+        "UniProtKB:Q09472"
+    ],
+    "genes": [
+        "2033"
+    ],
+    "investigated_as": [
+        "transcription factor"
+    ],
+    "label": "EP300",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "db4d4773-8bc7-4d58-bd04-fa0595ec2bf3"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "177628",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K36me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "dbb12a8a-b240-44d0-839b-5ff39c552d7d"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "184113",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "dc2a9b76-823d-496f-8516-f00e270ec8e5"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+        "WormBase:his-17",
+        "GeneID:177628",
+        "GeneID:180074",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K79me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 79
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "e15b89d6-5a8f-41af-bfeb-b4affa5f472c"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "HGNC:13723",
+        "GeneID:10664",
+        "ENSEMBL:ENSG00000102974",
+        "UniProtKB:P49711"
+    ],
+    "genes": [
+        "10664"
+    ],
+    "investigated_as": [
+        "transcription factor",
+        "recombinant protein"
+    ],
+    "label": "3xFLAG-CTCF",
+    "modifications": [
+        {
+            "modification": "3xFLAG",
+            "position": 1
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "e168a3d7-c6d7-4e17-9e83-072b16550f29"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "177628",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "e45395d8-292a-4156-a85c-dfb81260c0fd"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:319149",
+        "MGI:2448355",
+        "GeneID:319150",
+        "GeneID:97114",
+        "GeneID:15077",
+        "GeneID:319151",
+        "UniProtKB:P84228",
+        "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "319149",
+        "319150",
+        "97114",
+        "15077",
+        "319151",
+        "260423",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        },
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 14
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "e7a546d3-eaa1-49f7-956d-58019fcabba2"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K36me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 36
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:319149",
+        "MGI:2448355",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "319149",
+        "319150",
+        "97114",
+        "15077",
+        "319151",
+        "260423",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K4me3",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Trimethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+        "WormBase:his-17",
+        "GeneID:177628",
+        "WormBase:his-42",
+        "GeneID:246024"
+    ],
+    "genes": [
+        "175030",
+        "177628",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K14ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 14
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "ee8091d5-3d70-48fe-bd76-9bc1450f29e0"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:333932",
+        "GeneID:653604",
+        "GeneID:126961",
+        "UniProtKB:Q71DI3"
+    ],
+    "genes": [
+        "333932",
+        "653604",
+        "126961"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K9me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "f1e8ebfa-f3f0-4b04-bf88-a35df13a7eee"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:3772552",
+        "GeneID:3771792",
+        "GeneID:3771959",
+        "FlyBase:His3",
+        "GeneID:3772198",
+        "GeneID:3772517",
+        "GeneID:3772518"
+    ],
+    "genes": [
+        "3772552",
+        "3771792",
+        "3771959",
+        "3772370",
+        "3772149",
+        "3772517",
+        "3772518"
+    ],
+    "investigated_as": [
+        "histone"
+    ],
+    "label": "H3K27me2",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Dimethylation",
+            "position": 27
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "f22be0d6-5a52-43a9-87ad-54c66173f365"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:319149",
+        "MGI:2448355",
+        "GeneID:319150",
+        "GeneID:97114",
+        "GeneID:15077",
+        "GeneID:319151",
+        "UniProtKB:P84228",
+        "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "319149",
+        "319150",
+        "97114",
+        "15077",
+        "319151",
+        "260423",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K4me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "f24f7c5e-ff07-4a8d-8f7d-695667606ce3"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "WormBase:his-25",
+        "GeneID:175030",
+        "WormBase:his-17",
+        "GeneID:177628",
+        "GeneID:180074",
+        "WormBase:his-32",
+        "WormBase:T10C6.13"
+    ],
+    "genes": [
+        "175030",
+        "246024"
+    ],
+    "investigated_as": [
+        "histone",
+        "broad histone mark"
+    ],
+    "label": "H3K4me1",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Monomethylation",
+            "position": 4
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "f8aaec94-788a-4be1-b14c-0ef28a8962fd"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "UniProtKB:P49711",
+        "GeneID:10664",
+        "ENSEMBL:ENSG00000102974",
+        "HGNC:KIAA0078",
+        "GeneID:5885",
+        "HGNC:hHR21",
+        "HGNC:SCC1",
+        "ENSEMBL:ENSG00000164754",
+        "UniProtKB:O60216"
+    ],
+    "genes": [
+        "10664",
+        "5885"
+    ],
+    "investigated_as": [
+        "cohesin",
+        "transcription factor"
+    ],
+    "label": "CTCF+RAD21",
+    "notes": "This is a combination target object, targeting both CTCF and RAD21 together.",
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "f8bbc0e0-39e3-478a-82fc-b4c04ac16b83"
+},
+{
+    "aliases": [],
+    "dbxref": [
+        "GeneID:319149",
+        "MGI:2448355",
+        "GeneID:319150",
+        "GeneID:97114",
+        "GeneID:15077",
+        "GeneID:319151",
+        "UniProtKB:P84228",
+        "GeneID:260423",
+        "GeneID:319154",
+        "GeneID:319148"
+    ],
+    "genes": [
+        "319149",
+        "319150",
+        "97114",
+        "15077",
+        "319151",
+        "260423",
+        "319154",
+        "319148"
+    ],
+    "investigated_as": [
+        "histone",
+        "narrow histone mark"
+    ],
+    "label": "H3K9ac",
+    "modifications": [
+        {
+            "amino_acid_code": "K",
+            "modification": "Acetylation",
+            "position": 9
+        }
+    ],
+    "schema_version": "11",
+    "status": "released",
+    "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
+}
 ]

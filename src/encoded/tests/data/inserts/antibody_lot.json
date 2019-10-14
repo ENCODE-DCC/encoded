@@ -1,400 +1,784 @@
 [
-    {
-        "_test": "untagged target and unknown lot",
-        "accession": "ENCAB000AFU",
-        "antigen_description": "E2F1(KH20 and KH95) Epitope for KH20 has been mapped to amino acids 1-89; KH95 to amino acids 342-386.",
-        "award": "ENCODE2",
-        "clonality": "monoclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:E2F1"
-        ],
-        "host_organism": "mouse",
-        "lab": "michael-snyder",
-        "lot_id": "unknown",
-        "product_id": "05-379",
-        "source": "millipore",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "url": "http://www.millipore.com/catalogue/item/05-379#",
-        "uuid": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
-        "targets": ["/targets/E2F1-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "several variations of different lots, aliases, alternate accessions",
-        "accession": "ENCAB000ASG",
-        "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
-        "award": "ROADMAP",
-        "clonality": "polyclonal",
-        "host_organism": "rabbit",
-        "lab": "roadmap-epigenomics",
-        "lot_id": "R0903B0054",
-        "product_id": "07-473",
-        "purifications": [
-            "affinity"
-        ],
-        "source": "millipore",
-        "submitted_by": "felis.senectus@hymenaeos.nibh",
-        "url": "http://www.millipore.com/catalogue/item/07-473",
-        "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9",
-        "targets": ["/targets/H3K4me3-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "has alternate_accesion",
-        "accession": "ENCAB000AUU",
-        "alternate_accessions": [
-            "ENCAB000ATG"
-        ],
-        "award": "ENCODE2",
-        "clonality": "polyclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:H3K4me3"
-        ],
-        "host_organism": "rabbit",
-        "lab": "michael-snyder",
-        "lot_id": "JBC1888194",
-        "product_id": "07-473",
-        "source": "millipore",
-        "submitted_by": "fames.at@per.varius",
-        "url": "http://www.millipore.com/catalogue/item/07-473",
-        "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
-        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-alt-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "multiple lot aliases and accessions",
-        "accession": "ENCAB000ANU",
-        "alternate_accessions": [
-            "ENCAB000ASE",
-            "ENCAB000ASF",
-            "ENCAB000AUQ"
-        ],
-        "award": "U54HG006991",
-        "clonality": "polyclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:H3K4me3"
-        ],
-        "host_organism": "rabbit",
-        "lab": "bradley-bernstein",
-        "lot_id": "DAM1623866",
-        "lot_id_alias": [
-            "DAM1644057",
-            "DAM1817678",
-            "DAM1619901",
-            "DAM1731494"
-        ],
-        "product_id": "07-473",
-        "source": "millipore",
-        "submitted_by": "sit.nascetur@accumsan.quis",
-        "url": "http://www.millipore.com/catalogue/item/07-473",
-        "uuid": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
-        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-mouse"],
-        "status": "released"
-    },
-    {
-        "_test": "multiple alternate accesions and lot alias",
-        "accession": "ENCAB000ANK",
-        "alternate_accessions": [
-            "ENCAB000AOW",
-            "ENCAB000AOV"
-        ],
-        "antigen_description": "Synthetic peptide: ARTKQTARAcKSTG-C conjugated to KLH, corresponding to amino acids 1-12 of Human Histone H3.",
-        "award": "ENCODE2",
-        "clonality": "polyclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:H3K9ac"
-        ],
-        "host_organism": "rabbit",
-        "isotype": "IgG",
-        "lab": "bradley-bernstein",
-        "lot_id": "455103",
-        "lot_id_alias": [
-            "550799"
-        ],
-        "product_id": "ab4441",
-        "purifications": [
-            "affinity"
-        ],
-        "source": "abcam",
-        "submitted_by": "hymenaeos.blandit@sit.dictum",
-        "url": "http://www.abcam.com/index.html?datasheet=4441",
-        "uuid": "f211c027-6613-4998-8cf0-90e9041ad254",
-        "targets": ["/targets/H3K9ac-human", "/targets/H3K9ac-mouse"],
-        "status": "released"
-    },
-    {
-        "_test": "refer to same target",
-        "accession": "ENCAB000AUZ",
-        "antigen_sequence": "MSKSESPKEPEQLRKLFIGGLSFETTDESLRSHFEQWGTLTDCVVMRDPN",
-        "award": "U54HG007005",
-        "clonality": "polyclonal",
-        "host_organism": "rabbit",
-        "isotype": "IgG",
-        "lab": "xiang-dong-fu",
-        "lot_id": "QC9473-091124",
-        "product_id": "ARP40383_T100",
-        "source": "aviva",
-        "submitted_by": "parturient.ut@et.ve",
-        "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-n-terminal-region-arp40383-t100.html",
-        "uuid": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
-        "targets": ["/targets/HNRNPA1-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "refer to same target and lab self-fail",
-        "accession": "ENCAB000AVA",
-        "antigen_sequence": "NQSSNFGPMKGGNFGGRSSGPYGGGGQYFAKPRNQGGYGGSSSSSSYGSG",
-        "award": "U54HG007005",
-        "clonality": "polyclonal",
-        "host_organism": "rabbit",
-        "isotype": "IgG",
-        "lab": "xiang-dong-fu",
-        "lot_id": "QC9474",
-        "notes": "This was a self fail.",
-        "product_id": "ARP40384_T100",
-        "source": "aviva",
-        "submitted_by": "parturient.ut@et.ve",
-        "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-c-terminal-region-arp40384-t100.html",
-        "uuid": "81d1f148-323c-4420-a05e-62427394fd6b",
-        "targets": ["/targets/HNRNPA1-human"],
-        "status": "released"
-    },
-    {
-        "_test": "control",
-        "accession": "ENCAB000AOF",
-        "aliases": [
-            "j-michael-cherry:Control"
-        ],
-        "antigen_description": "Anti-mouse",
-        "award": "ENCODE2",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:IgG-Yale"
-        ],
-        "host_organism": "mouse",
-        "lab": "michael-snyder",
-        "lot_id": "unknown",
-        "product_id": "IgG-Yale",
-        "source": "santa-cruz-biotech",
-        "submitted_by": "fames.at@per.varius",
-        "uuid": "9a69a3d2-655f-49ca-a3b3-48d70ad4a9e1",
-        "targets": ["/targets/mouse-IgG-control-human", "/targets/mouse-IgG-control-mouse"],
-        "status": "in progress"
-    },
-    {
-        "_test": "tagged target",
-        "accession": "ENCAB000ASV",
-        "antigen_description": "Clone 16B12 was raised against the twelve amino acid peptide CYPYDVPDYASL. This second-generation HA antibody is an excellent substitute for the 12CA5 monoclonal antibody. The HA.11 antibody recognizes the influenza hemagglutinin epitope (YPYDVPDYA) which has been used extensively as a general epitope tag in expression vectors. The extreme specificity of the antibody allows unambiguous identification and quantitative analysis of the tagged protein. The HA.11 antibody recognizes HA epitopes located in the middle of protein sequences as well as at the N- or C-terminus.",
-        "antigen_sequence": "CYPYDVPDYASL",
-        "award": "ENCODE2",
-        "clonality": "monoclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:HA-E2F1"
-        ],
-        "host_organism": "mouse",
-        "lab": "michael-snyder",
-        "lot_id": "unknown",
-        "product_id": "MMS-101P",
-        "source": "covance",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "url": "https://store.crpinc.com/datasheet.aspx?catalogno=MMS-101P",
-        "uuid": "981a4b17-65b6-4535-9515-786ecbfeaed8",
-        "targets": ["/targets/HA-influenza"],
-        "status": "released"
-    },
-    {
-        "_test": "frowny gel",
-        "accession": "ENCAB000ADQ",
-        "antigen_description": "Peptide region of the protein sequence according to NP_055408",
-        "award": "U54HG006998",
-        "clonality": "polyclonal",
-        "host_organism": "rabbit",
-        "lab": "richard-myers",
-        "lot_id": "QC12000",
-        "product_id": "SAB2103447",
-        "source": "sigma",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/sab2103447?lang=en&region=US",
-        "uuid": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
-        "targets": ["/targets/CXXC1-human"],
-        "status": "released"
-    },
-    {
-        "_test": "refer to same target",
-        "accession": "ENCAB000AXP",
-        "award": "U54HG007005",
-        "clonality": "monoclonal",
-        "host_organism": "mouse",
-        "isotype": "IgG2a",
-        "lab": "xiang-dong-fu",
-        "lot_id": "E1011",
-        "product_id": "SC-32301",
-        "source": "santa-cruz-biotech",
-        "submitted_by": "parturient.ut@et.ve",
-        "url": "http://www.scbt.jp/datasheet-32301-hnrnp-a1-4b10-antibody.html",
-        "uuid": "c8001233-050d-4dab-bf73-f47133b2e2a3",
-        "targets": ["/targets/HNRNPA1-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "ENCODE2 dbxref with special characters",
-        "accession": "ENCAB000AFR",
-        "antigen_description": "Epitope mapping at the N-terminus of CTCF of human origin.",
-        "award": "ENCODE2",
-        "clonality": "polyclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CTCF_(SC-5916)"
-        ],
-        "host_organism": "goat",
-        "isotype": "IgG",
-        "lab": "richard-myers",
-        "lot_id": "K0902",
-        "product_id": "sc-5916",
-        "source": "santa-cruz-biotech",
-        "submitted_by": "maecenas.curabitur@nibh.phasellus",
-        "url": "http://www.scbt.com/datasheet-5916-ctcf-n-17-antibody.html",
-        "uuid": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3",
-        "targets": ["/targets/CTCF-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "has lot aliases",
-        "accession": "ENCAB000ALM",
-        "award": "ENCODE2",
-        "clonality": "monoclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:TAF1"
-        ],
-        "host_organism": "mouse",
-        "lab": "richard-myers",
-        "lot_id": "K0905",
-        "lot_id_alias": [
-            "F2706",
-            "G2909"
-        ],
-        "product_id": "sc-735",
-        "source": "santa-cruz-biotech",
-        "submitted_by": "maecenas.curabitur@nibh.phasellus",
-        "url": "http://www.scbt.com/product.php?datasheet=735",
-        "uuid": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
-        "targets": ["/targets/TAF1-human"],
-        "status": "released"
-    },
-    {
-        "_test": "has tsv validation",
-        "accession": "ENCAB000ACQ",
-        "antigen_description": "TCF4 (NP_005019, a.a. 1-366) full length recombinant protein with GST tag.",
-        "award": "U54HG006998",
-        "clonality": "monoclonal",
-        "host_organism": "mouse",
-        "isotype": "IgG1\u03ba",
-        "lab": "richard-myers",
-        "lot_id": "12262-1F6",
-        "product_id": "WH0006925M2",
-        "source": "sigma",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/wh0006925m2?lang=en&region=US",
-        "uuid": "907ced83-e4bb-4d77-8d97-e969db915533",
-        "targets": ["/targets/TCF4-human"],
-        "status": "in progress"
-    },
-    {
-        "_test": "anti-GFP antibody to test tags",
-        "accession": "ENCAB728YTO",
-        "antigen_description": "Antisera raised against a peptide from the GFP protein. Produced commercially for the modENCODE Project by K. White's group and Millipore.",
-        "antigen_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTLTYGVQCFSRYPDHMKRHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
-        "award": "U54HG006996",
-        "lab": "kevin-white",
-        "clonality": "polyclonal",
-        "product_id": "goat-anti-GFP-UC",
-        "source": "kevin-white",
-        "lot_id": "unknown",
-        "aliases": [
-            "kevin-white:GFP NewGoat UofC",
-            "kevin-white:GoatV-anti-GFP"
-        ],
-        "purifications": [
-            "affinity"
-        ],
-        "host_organism": "goat",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
-        "targets": ["/targets/eGFP-avictoria"],
-        "status": "in progress"
-    },
-    {
-        "accession": "ENCAB000AFX",
-        "antigen_description": "Raised against a.a. 1-300 mapping at the N-terminus of EBF of human origin.",
-        "award": "ENCODE2",
-        "clonality": "monoclonal",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:EBF1_(SC-137065)"
-        ],
-        "host_organism": "mouse",
-        "isotype": "IgG",
-        "lab": "richard-myers",
-        "lot_id": "J0505",
-        "product_id": "sc-137065",
-        "source": "santa-cruz-biotech",
-        "status": "released",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "targets": [
-            "/targets/EBF1-human"
-        ],
-        "url": "http://www.scbt.com/datasheet-137065-ebf-c-8-antibody.html",
-        "uuid": "d48d93fe-5909-4a8a-b78f-2f7aad159dfc"
-    },
-    {
-        "_test": "synthetic tag",
-        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f3165?lang=en&region=US",
-        "award": "U54HG006998",
-        "dbxrefs": ["AR:AB_259529"],
-        "lab": "richard-myers",
-        "antigen_sequence": "DYKDDDDK",
-        "targets": ["FLAG-synthetic_tag"],
-        "product_id": "F3165",
-        "clonality": "monoclonal",
-        "purifications": ["Protein A/G"],
-        "status": "released",
-        "host_organism": "mouse",
-        "isotype": "IgG1",
-        "antigen_description": "An mouse monoclonal antibody to FLAG obtained from SIGMA; used to ChIP MES-4::GFP::3XFLAG",
-        "lot_id": "065K6236",
-        "source": "sigma",
-        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
-        "accession": "ENCAB694YJM",
-        "uuid": "272e1aa6-a5a4-4e07-bcbe-38e529fe3a87"
-    },
-    {
-        "_test": "synthetic tag with 2nd characterization",
-        "status": "released",
-        "lab": "/labs/richard-myers/",
-        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f1804?lang=en&region=US",
-        "dbxrefs": ["AR:AB_262044"],
-        "lot_id": "SLBK1346V",
-        "accession": "ENCAB697XQW",
-        "award": "U54HG006998",
-        "host_organism": "/organisms/mouse/",
-        "isotype": "IgG1",
-        "purifications": ["affinity"],
-        "antigen_description": "Recognizes the FLAG peptide sequence: DYKDDDDK",
-        "source": "/sources/sigma/",
-        "product_id": "F1804",
-        "targets": ["/targets/FLAG-synthetic_tag/"],
-        "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
-        "clonality": "monoclonal",
-        "uuid": "534171de-26f6-4363-8a1e-a353357daea9"
-    },
-    {
-        "_test": "ENCODE4 antibody",
-        "accession": "ENCAB264EPV",
-        "award": "UM1HG009442",
-        "lab": "kevin-white",
-        "product_id": "rabbit-anti-GFP-UC",
-        "source": "kevin-white",
-        "lot_id": "unknown",
-        "host_organism": "rabbit",
-        "uuid": "d19e14dd-4ae9-4439-9825-0ccb53578562",
-        "targets": ["/targets/eGFP-avictoria"],
-        "status": "in progress"
-    }
+{
+    "accession": "ENCAB000AOD",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "clone 4H8",
+    "award": "U54HG004576",
+    "clonality": "monoclonal",
+    "date_created": "2013-09-13T13:23:29.625490-08:00",
+    "dbxrefs": [
+        "AR:AB_304868",
+        "UCSC-ENCODE-cv:Pol2-4H8"
+    ],
+    "host_organism": "mouse",
+    "lab": "richard-myers",
+    "lot_id": "648628",
+    "lot_id_alias": [
+        "647708"
+    ],
+    "product_id": "ab5408",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "a62cfec5-57a0-45ab-b943-8ca0e0057bb6",
+    "targets": [
+        "POLR2AphosphoS5-human"
+    ],
+    "url": "http://www.abcam.com/RNA-polymerase-II-CTD-repeat-YSPTSPS-antibody-4H8-ChIP-Grade-ab5408.html",
+    "uuid": "0ebc712f-48d0-4ff0-9065-3baf05155a58"
+},
+{
+    "accession": "ENCAB284TTY",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "epitope mapping at the C-terminus of p300 of human origin",
+    "award": "U54HG006998",
+    "clonality": "polyclonal",
+    "date_created": "2016-10-31T03:00:37.363563+00:00",
+    "dbxrefs": [
+        "AR:AB_2231120"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "richard-myers",
+    "lot_id": "H3115",
+    "lot_id_alias": [],
+    "product_id": "sc-585",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "santa-cruz-biotech",
+    "status": "released",
+    "submitted_by": "28bb3427-86e6-480a-be97-922c8b489f6a",
+    "targets": [
+        "EP300-human"
+    ],
+    "url": "https://www.scbt.com/scbt/product/p300-antibody-c-20",
+    "uuid": "229a059a-b146-4dea-9360-eaf39a3e7e59"
+},
+{
+    "accession": "ENCAB000APU",
+    "aliases": [
+        "bradley-bernstein:PchAb 122-V"
+    ],
+    "alternate_accessions": [
+        "ENCAB000ANW"
+    ],
+    "antigen_description": "Synthetic peptide conjugated to KLH derived from within residues 1 - 100 of Human Histone H3, tri methylated at K9.",
+    "award": "U54HG004570",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:31.266824-08:00",
+    "dbxrefs": [
+        "AR:AB_306848",
+        "UCSC-ENCODE-cv:H3K9me3"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "bradley-bernstein",
+    "lot_id": "484088",
+    "lot_id_alias": [],
+    "product_id": "ab8898",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "aa57ecb5-3d0e-4b1f-9608-665785270ad7",
+    "targets": [
+        "H3K9me3-mouse",
+        "H3K9me3-human"
+    ],
+    "url": "http://www.abcam.com/histone-h3-tri-methyl-k9-antibody-chip-grade-ab8898.html",
+    "uuid": "29f7165d-fd77-41bc-a6ab-d660fb8807aa"
+},
+{
+    "accession": "ENCAB000APS",
+    "aliases": [
+        "bradley-bernstein:PchAb 346",
+        "bradley-bernstein:PchAb 86-V"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "Synthetic peptide conjugated to KLH derived from within residues 1 - 100 of Human Histone H3, mono methylated at K4.",
+    "award": "U54HG006991",
+    "clonality": "polyclonal",
+    "date_created": "2014-02-05T07:20:12.440209+00:00",
+    "dbxrefs": [
+        "AR:AB_306847"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "bradley-bernstein",
+    "lot_id": "659352",
+    "lot_id_alias": [],
+    "product_id": "ab8895",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "targets": [
+        "H3K4me1-human"
+    ],
+    "url": "http://www.abcam.com/index.html?datasheet=8895",
+    "uuid": "397f7c5f-8aef-4c4a-805a-d6ce81ff866f"
+},
+{
+    "accession": "ENCAB140BWE",
+    "aliases": [
+        "bradley-bernstein:PchAb 1360"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "clonality": "monoclonal",
+    "date_created": "2017-12-06T21:08:41.675624+00:00",
+    "dbxrefs": [],
+    "host_organism": "rabbit",
+    "lab": "bradley-bernstein",
+    "lot_id": "9",
+    "lot_id_alias": [],
+    "product_id": "9751BC",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "cell-signaling",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "targets": [
+        "H3K4me3-human"
+    ],
+    "url": "http://www.cellsignal.com/products/9751.html",
+    "uuid": "46aeb66a-d983-4b6f-ae1c-6aaa86960eff"
+},
+{
+    "accession": "ENCAB557LLB",
+    "aliases": [
+        "alexander-hoffmann:39133-39134",
+        "bradley-bernstein:PchAb 1310"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "This Histone H3 acetyl Lys27 antibody was raised against a peptide including acetyl-lysine 27 of histone H3.",
+    "award": "U01HG007910",
+    "clonality": "polyclonal",
+    "date_created": "2016-09-28T00:27:23.856029+00:00",
+    "dbxrefs": [],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "manuel-garber",
+    "lot_id": "31814008",
+    "lot_id_alias": [],
+    "product_id": "39133",
+    "purifications": [
+        "Protein A"
+    ],
+    "schema_version": "9",
+    "source": "active-motif",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "targets": [
+        "H3K27ac-human"
+    ],
+    "url": "http://www.activemotif.com/catalog/details/39133/histone-h3-acetyl-lys27-antibody-pab",
+    "uuid": "570c0a30-7715-460f-ae8f-e7e601867cbc"
+},
+{
+    "accession": "ENCAB000ASN",
+    "aliases": [],
+    "alternate_accessions": [
+        "ENCAB000AQA"
+    ],
+    "antigen_description": "Synthetic peptide conjugated to KLH derived from within residues 1 - 100 of Human Histone H3, tri methylated at K36.",
+    "award": "RC2HG005573",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:32.358895-08:00",
+    "dbxrefs": [
+        "AR:AB_306966",
+        "UCSC-ENCODE-cv:H3K36me3"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "ross-hardison",
+    "lot_id": "136353",
+    "lot_id_alias": [
+        "826245",
+        "GR5418-1",
+        "947454"
+    ],
+    "product_id": "ab9050",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "0a61ce48-e33d-48bf-8b6b-b085b722b467",
+    "targets": [
+        "H3K36me3-mouse",
+        "H3K36me3-human"
+    ],
+    "url": "http://www.abcam.com/index.html?datasheet=9050",
+    "uuid": "5d20dba5-97db-478b-ad0d-5af5361d0a40"
+},
+{
+    "accession": "ENCAB830JLB",
+    "aliases": [
+        "michael-snyder:AS-1647"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "KLH-conjugated, synthetic peptide corresponding to amino acids 659-675 (C-TNQPKQNQPTAIIQVED) of human CCCTC-binding factor (CTCF) with a N-terminal cysteine added for conjugation purposes.",
+    "award": "U54HG006996",
+    "clonality": "polyclonal",
+    "date_created": "2016-04-04T18:18:33.630685+00:00",
+    "dbxrefs": [
+        "AR:AB_441965"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "serum",
+    "lab": "michael-snyder",
+    "lot_id": "2599305",
+    "lot_id_alias": [],
+    "product_id": "07-729",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "targets": [
+        "CTCF-human"
+    ],
+    "url": "http://www.emdmillipore.com/US/en/product/Anti-CTCF-Antibody,MM_NF-07-729",
+    "uuid": "654541bd-77de-40fc-b60d-bdee8efabd39"
+},
+{
+    "accession": "ENCAB369JSU",
+    "aliases": [
+        "bradley-bernstein:PchAb 1259"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "",
+    "award": "U54HG006991",
+    "clonality": "polyclonal",
+    "date_created": "2015-03-04T20:22:38.068120+00:00",
+    "dbxrefs": [
+        "AR:AB_306848"
+    ],
+    "host_organism": "rabbit",
+    "lab": "bradley-bernstein",
+    "lot_id": "GR131093-3",
+    "lot_id_alias": [],
+    "product_id": "ab8898",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "targets": [
+        "H3K9me3-human"
+    ],
+    "uuid": "6c4dc420-5a34-4a94-a8a4-05b318ac6bcd"
+},
+{
+    "accession": "ENCAB000ANB",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "KLH-conjugated, synthetic 2X-branched peptide containing the sequence ...AR(me3K)SAP... in which me3K corresponds to trimethyl-lysine at residue 27 of human histone H3.",
+    "award": "U54HG004570",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:23.341273-08:00",
+    "dbxrefs": [
+        "AR:AB_310624",
+        "UCSC-ENCODE-cv:H3K27me3"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "bradley-bernstein",
+    "lot_id": "DAM1387952",
+    "lot_id_alias": [],
+    "product_id": "07-449",
+    "purifications": [
+        "Protein A"
+    ],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "aa57ecb5-3d0e-4b1f-9608-665785270ad7",
+    "targets": [
+        "H3K27me3-human",
+        "H3K27me3-dmelanogaster",
+        "H3K27me3-celegans",
+        "H3K27me3-mouse"
+    ],
+    "url": "http://www.millipore.com/catalogue/item/07-449",
+    "uuid": "7057faa2-9f24-4a93-9676-21fe4df08fc3"
+},
+{
+    "accession": "ENCAB000AFP",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "",
+    "award": "U54HG004592",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:19.266340-08:00",
+    "dbxrefs": [
+        "AR:AB_2086794",
+        "UCSC-ENCODE-cv:CTCF_(2899)"
+    ],
+    "host_organism": "rabbit",
+    "lab": "john-stamatoyannopoulos",
+    "lot_id": "unknown",
+    "lot_id_alias": [],
+    "product_id": "2899",
+    "purifications": [
+        "Protein A/G"
+    ],
+    "schema_version": "9",
+    "source": "cell-signaling",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "targets": [
+        "CTCF-human"
+    ],
+    "url": "http://www.cellsignal.com/products/2899.html",
+    "uuid": "7ce2c645-b3cf-4fb9-8fac-07a70d84e114"
+},
+{
+    "accession": "ENCAB871WRG",
+    "aliases": [
+        "michael-snyder:AS-1649"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "",
+    "award": "U54HG006996",
+    "clonality": "monoclonal",
+    "date_created": "2016-04-04T18:18:39.125446+00:00",
+    "dbxrefs": [
+        "AR:AB_2565318"
+    ],
+    "host_organism": "mouse",
+    "isotype": "IgG2a",
+    "lab": "michael-snyder",
+    "lot_id": "B200433",
+    "lot_id_alias": [],
+    "notes": "This antibody was previously Convance cat# MMS-126R. http://www.biolegend.com/anti-rna-polymerase-ii-antibody-11145.html",
+    "product_id": "920102",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "biolegend",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "targets": [
+        "POLR2A-human"
+    ],
+    "url": "http://www.biolegend.com/anti-rna-polymerase-ii-antibody-11145.html",
+    "uuid": "7e96475e-706f-4936-ad12-02c70be04a5c"
+},
+{
+    "accession": "ENCAB000AJM",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "",
+    "award": "U54HG004576",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:24:06.104835-08:00",
+    "dbxrefs": [
+        "AR:AB_2231120",
+        "UCSC-ENCODE-cv:p300"
+    ],
+    "host_organism": "rabbit",
+    "lab": "richard-myers",
+    "lot_id": "D0411",
+    "lot_id_alias": [],
+    "product_id": "sc-585",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "santa-cruz-biotech",
+    "status": "released",
+    "submitted_by": "a62cfec5-57a0-45ab-b943-8ca0e0057bb6",
+    "targets": [
+        "EP300-mouse",
+        "EP300-human"
+    ],
+    "url": "http://www.scbt.com/product.php?datasheet=585",
+    "uuid": "93cfa295-8981-479e-8a07-6d0a21881389"
+},
+{
+    "accession": "ENCAB000ASB",
+    "aliases": [
+        "bradley-bernstein:PchAb 67-V"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "KLH-conjugated, synthetic 2X-branched peptide containing the sequence \u2026AR(me3K)SAP\u2026 in which me3K corresponds to trimethyl-lysine at residue 27 of human histone H3.",
+    "award": "ROADMAP",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:22.966030-08:00",
+    "dbxrefs": [
+        "AR:AB_310624"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "roadmap-epigenomics",
+    "lot_id": "DAM1514011",
+    "lot_id_alias": [],
+    "product_id": "07-449",
+    "purifications": [
+        "Protein A"
+    ],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "0d48e8c4-5954-4bf5-8c75-1e386eb27e31",
+    "targets": [
+        "H3K27me3-human"
+    ],
+    "url": "http://www.millipore.com/catalogue/item/07-449",
+    "uuid": "a78aa970-24f8-4ad1-ace0-2c5e255a624a"
+},
+{
+    "accession": "ENCAB000ADU",
+    "aliases": [
+        "bradley-bernstein:PchAb 78-V"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "Synthetic peptide conjugated to KLH derived from within residues 1 - 100 of Human Histone H3, tri methylated at K36.",
+    "award": "U54HG004570",
+    "clonality": "polyclonal",
+    "date_created": "2014-02-06T16:45:21.384879+00:00",
+    "dbxrefs": [
+        "AR:AB_306966",
+        "UCSC-ENCODE-cv:H3K36me3"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "bradley-bernstein",
+    "lot_id": "499302",
+    "lot_id_alias": [],
+    "product_id": "ab9050",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "aa57ecb5-3d0e-4b1f-9608-665785270ad7",
+    "targets": [
+        "H3K36me3-human"
+    ],
+    "url": "http://www.abcam.com/index.html?datasheet=9050",
+    "uuid": "aaf41cfe-56fa-4f40-8eac-a081903ed379"
+},
+{
+    "accession": "ENCAB000AXU",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "Raised against KLH-conjugated, synthetic peptide corresponding to amino acids 659-675 ( C-TNQPKQNQPTAIIQVED) of human CCCTC-binding factor (CTCF) with a N-terminal cysteine added for cunjugation purposes",
+    "antigen_sequence": "C-TNQPKQNQPTAIIQVED",
+    "award": "U54HG004576",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:24.003189-08:00",
+    "dbxrefs": [
+        "AR:AB_441965"
+    ],
+    "host_organism": "rabbit",
+    "lab": "richard-myers",
+    "lot_id": "DAM1745366",
+    "lot_id_alias": [],
+    "product_id": "07-729",
+    "purifications": [
+        "crude"
+    ],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "a62cfec5-57a0-45ab-b943-8ca0e0057bb6",
+    "targets": [
+        "CTCF-human"
+    ],
+    "url": "http://www.millipore.com/catalogue/item/07-729",
+    "uuid": "b0971e19-bb75-45c1-8ff0-ddb7f5450544"
+},
+{
+    "accession": "ENCAB000ADW",
+    "aliases": [
+        "bradley-bernstein:PchAb 85-V"
+    ],
+    "alternate_accessions": [
+        "ENCAB000APQ"
+    ],
+    "antigen_description": "Synthetic peptide conjugated to KLH derived from within residues 1 - 100 of Human Histone H3, mono methylated at K4.",
+    "award": "U54HG004570",
+    "clonality": "polyclonal",
+    "date_created": "2014-02-06T16:45:23.315792+00:00",
+    "dbxrefs": [
+        "AR:AB_306847",
+        "UCSC-ENCODE-cv:H3K4me1"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "bradley-bernstein",
+    "lot_id": "383111",
+    "lot_id_alias": [],
+    "product_id": "ab8895",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "aa57ecb5-3d0e-4b1f-9608-665785270ad7",
+    "targets": [
+        "H3K4me1-human",
+        "H3K4me1-mouse"
+    ],
+    "url": "http://www.abcam.com/index.html?datasheet=8895",
+    "uuid": "c4731044-95dc-4edd-9cdc-e676eb6cb71e"
+},
+{
+    "accession": "ENCAB036YAO",
+    "aliases": [
+        "bradley-bernstein:PchAb 848"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "",
+    "award": "U54HG006991",
+    "clonality": "polyclonal",
+    "date_created": "2015-02-20T02:43:06.811342+00:00",
+    "dbxrefs": [
+        "AR:AB_310624"
+    ],
+    "host_organism": "rabbit",
+    "lab": "bradley-bernstein",
+    "lot_id": "2120130",
+    "lot_id_alias": [],
+    "product_id": "07-449",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "targets": [
+        "H3K27me3-human"
+    ],
+    "url": "http://www.millipore.com/catalogue/item/07-449",
+    "uuid": "cde18edb-de4b-4be1-8c25-fb0322b03b27"
+},
+{
+    "accession": "ENCAB000ARB",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "Monoclonal antibody is produced by immunizing animals with a synthetic peptide corresponding to the amino terminus of histone H3 in which Lys4 is tri-methylated.",
+    "award": "ROADMAP",
+    "clonality": "monoclonal",
+    "date_created": "2013-09-13T13:23:19.801968-08:00",
+    "dbxrefs": [
+        "AR:AB_2616028"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "roadmap-epigenomics",
+    "lot_id": "002",
+    "lot_id_alias": [],
+    "product_id": "9751",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "cell-signaling",
+    "status": "released",
+    "submitted_by": "0d48e8c4-5954-4bf5-8c75-1e386eb27e31",
+    "targets": [
+        "H3K4me3-human"
+    ],
+    "url": "http://www.cellsignal.com/products/9751.html",
+    "uuid": "dc5e9b6b-6629-43cb-b782-f9c8e0b6d60f"
+},
+{
+    "accession": "ENCAB000AQW",
+    "aliases": [],
+    "alternate_accessions": [],
+    "antigen_description": "This Histone H3 trimethyl Lys36 antibody was raised against a peptide containing trimethyl Lys36 of human histone H3.",
+    "award": "ROADMAP",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:21.160644-08:00",
+    "dbxrefs": [
+        "AR:AB_2615073"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "roadmap-epigenomics",
+    "lot_id": "16111001",
+    "lot_id_alias": [],
+    "product_id": "61101",
+    "purifications": [
+        "Protein A"
+    ],
+    "schema_version": "9",
+    "source": "active-motif",
+    "status": "released",
+    "submitted_by": "0d48e8c4-5954-4bf5-8c75-1e386eb27e31",
+    "targets": [
+        "H3K36me3-human"
+    ],
+    "url": "http://www.activemotif.com/catalog/details/61101/histone-h3-trimethyl-lys36-antibody-pab",
+    "uuid": "e7d11b61-0ee1-4c6f-9e4f-6c1ccd77e01b"
+},
+{
+    "accession": "ENCAB845ARK",
+    "aliases": [
+        "bradley-bernstein:PchAb 1382"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "clonality": "polyclonal",
+    "date_created": "2017-12-05T23:49:16.269372+00:00",
+    "dbxrefs": [
+        "AR:AB_2561054"
+    ],
+    "host_organism": "rabbit",
+    "lab": "bradley-bernstein",
+    "lot_id": "A1657-D",
+    "lot_id_alias": [],
+    "product_id": "C15410037-50",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "diagenode",
+    "status": "released",
+    "submitted_by": "9bb19b7d-842d-4a77-ba9a-79a2e7473970",
+    "targets": [
+        "H3K4me1-human"
+    ],
+    "url": "https://www.diagenode.com/en/p/h3k4me1-polyclonal-antibody-classic-50-ug-18-ul#",
+    "uuid": "eaa68525-9f68-4c81-97f5-70b342b28dc8"
+},
+{
+    "accession": "ENCAB000ASG",
+    "aliases": [
+        "bradley-bernstein:PchAb 103-V"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
+    "award": "ROADMAP",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:23.448682-08:00",
+    "dbxrefs": [
+        "AR:AB_1977252"
+    ],
+    "host_organism": "rabbit",
+    "lab": "roadmap-epigenomics",
+    "lot_id": "R0903B0054",
+    "lot_id_alias": [],
+    "product_id": "07-473",
+    "purifications": [
+        "affinity"
+    ],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "0d48e8c4-5954-4bf5-8c75-1e386eb27e31",
+    "targets": [
+        "H3K4me3-human"
+    ],
+    "url": "http://www.millipore.com/catalogue/item/07-473",
+    "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9"
+},
+{
+    "accession": "ENCAB000ANK",
+    "aliases": [
+        "bradley-bernstein:PchAb 116-V"
+    ],
+    "alternate_accessions": [
+        "ENCAB000AOW",
+        "ENCAB000AOV"
+    ],
+    "antigen_description": "Synthetic peptide: ARTKQTARAcKSTG-C conjugated to KLH, corresponding to amino acids 1-12 of Human Histone H3.",
+    "award": "U54HG004570",
+    "clonality": "polyclonal",
+    "date_created": "2014-02-06T16:45:20.211176+00:00",
+    "dbxrefs": [
+        "AR:AB_2118292",
+        "UCSC-ENCODE-cv:H3K9ac"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "bradley-bernstein",
+    "lot_id": "455103",
+    "lot_id_alias": [
+        "550799"
+    ],
+    "product_id": "ab4441",
+    "purifications": [
+        "Protein A"
+    ],
+    "schema_version": "9",
+    "source": "abcam",
+    "status": "released",
+    "submitted_by": "aa57ecb5-3d0e-4b1f-9608-665785270ad7",
+    "targets": [
+        "H3K9ac-human"
+    ],
+    "url": "http://www.abcam.com/index.html?datasheet=4441",
+    "uuid": "f211c027-6613-4998-8cf0-90e9041ad254"
+},
+{
+    "accession": "ENCAB000AQN",
+    "aliases": [
+        "bradley-bernstein:PchAb 205"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "This Histone H3 acetyl Lys27 antibody was raised against a peptide including acetyl-lysine 27 of histone H3.",
+    "award": "ROADMAP",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T13:23:20.297286-08:00",
+    "dbxrefs": [
+        "AR:AB_2561016"
+    ],
+    "host_organism": "rabbit",
+    "isotype": "IgG",
+    "lab": "roadmap-epigenomics",
+    "lot_id": "31610003",
+    "lot_id_alias": [],
+    "product_id": "39133",
+    "purifications": [
+        "Protein A"
+    ],
+    "schema_version": "9",
+    "source": "active-motif",
+    "status": "released",
+    "submitted_by": "0d48e8c4-5954-4bf5-8c75-1e386eb27e31",
+    "targets": [
+        "H3K27ac-human"
+    ],
+    "url": "http://www.activemotif.com/catalog/details/39133/histone-h3-acetyl-lys27-antibody-pab",
+    "uuid": "f8868d27-35e6-4b50-8f63-08b7369dcb27"
+},
+{
+    "accession": "ENCAB000BLE",
+    "aliases": [
+        "bradley-bernstein:PchAb 99-V"
+    ],
+    "alternate_accessions": [],
+    "antigen_description": "",
+    "award": "U54HG006991",
+    "clonality": "polyclonal",
+    "date_created": "2013-09-13T16:21:42.300137-08:00",
+    "dbxrefs": [
+        "AR:AB_1977252"
+    ],
+    "host_organism": "rabbit",
+    "lab": "bradley-bernstein",
+    "lot_id": "DAM1623866",
+    "lot_id_alias": [],
+    "product_id": "07-473",
+    "purifications": [],
+    "schema_version": "9",
+    "source": "millipore",
+    "status": "released",
+    "submitted_by": "f74511d2-d30a-44d9-8e54-79104353e7af",
+    "targets": [
+        "H3K4me3-human"
+    ],
+    "url": "http://www.millipore.com/catalogue/item/07-473",
+    "uuid": "fb062f84-1113-11e3-ab50-14109fe2b29d"
+}
 ]

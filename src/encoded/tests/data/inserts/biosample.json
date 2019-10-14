@@ -1,959 +1,1652 @@
 [
-    {
-        "_test": "has references",
-        "accession": "ENCBS000AAA",
-        "aliases": [
-            "richard-myers:MCF-7 rep 3",
-            "rob-spitale:biosample 1",
-            "andrew-fire:biosample 1"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "culture_harvest_date": "2012-04-10",
-        "culture_start_date": "2012-03-16",
-        "description": "mammary gland, adenocarcinoma",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
-        "host": "ENCBS356AAA",
-        "lab": "richard-myers",
-        "submitter_comment": "(PMID: 4357757)",
-        "organism": "human",
-        "references": [
-            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
-            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
-        ],
-        "passage_number": 5,
-        "product_id": "HTB-22",
-        "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
-        ],
-        "source": "atcc",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
-        "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999"
-    },
-    {
-        "_test": "pooled biosample",
-        "accession": "ENCBS356AAA",
-        "award": "ENCODE2",
-        "biosample_ontology": "tissue_UBERON_0000006",
-        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:PanIsletD"
-        ],
-        "lab": "gregory-crawford",
-        "organism": "human",
-        
-        "pooled_from": [
-            "ENCBS492ENC",
-            "ENCBS493ENC"
-        ],
-        "documents": [
-            "encode:PanIsletD_Crawford_protocol"
-        ],
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
-    },
-    {
-        "accession": "ENCBS001AAA",
-        "aliases": [
-            "richard-myers:MCF-7 rep 4"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "culture_harvest_date": "2012-04-10",
-        "culture_start_date": "2012-03-16",
-        "description": "mammary gland, adenocarcinoma",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
-        "lab": "richard-myers",
-        "submitter_comment": "(PMID: 4357757)",
-        "organism": "human",
-        "passage_number": 5,
-        "product_id": "HTB-22",
-        "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
-        ],
-        "source": "atcc",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
-        "uuid": "2ec6f642-95fc-4f3a-a7b7-a2d3c5abe426"
-    },
-    {
-        "_test": "mouse with different start amounts",
-        "accession": "ENCBS024AAA",
-        "award": "U54HG006997",
-        "biosample_ontology": "tissue_UBERON_0012314",
-        "date_obtained": "2013-01-31",
-        "description": "Craniofacial E14.5 one tube",
-        "donor": "ENCDO242AAA",
-        "lab": "len-pennacchio",
-        "model_organism_age": "14.5",
-        "model_organism_age_units": "day",
-        "model_organism_health_status": "Healthy",
-        "mouse_life_stage": "embryonic",
-        "model_organism_sex": "mixed",
-        "submitter_comment": "C57BL/6 mice from Taconic Farms, Inc and Charles River Lab interbred.  Tissue extracted from 34 embryos. 1 vial collected.",
-        "organism": "mouse",
-        "source": "len-pennacchio",
-        "starting_amount": 0.6365,
-        "starting_amount_units": "g",
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "670715c5-9247-42ed-a94e-5b7198be75e0"
-    },
-    {
-        "_test": "ENCODE2 dbxref with special characters",
-        "accession": "ENCBS026ENC",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "primary_cell_NTR_0000031",
-        "description": "liver fraction CD117+,CD71+,TER119-",
-        "donor": "ENCDO012AAA",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:EPC_(CD117+_CD71+_TER119-)",
-            "UCSC-ENCODE-cv:EPCPPM",
-            "UCSC-ENCODE-cv:EPC (CD117+ CD71+ TER119-)"
-        ],
-        "lab": "john-stamatoyannopoulos",
-        "model_organism_age": "14.5",
-        "model_organism_age_units": "day",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "embryonic",
-        "model_organism_sex": "male",
-        "organism": "mouse",
-        "documents": [
-            "encode:EPC_Stam_protocol"
-        ],
-        "source": "michael-bender",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "9d192023-d78e-4f24-8e58-33b5f379faba"
-    },
-    {
-        "accession": "ENCBS039ENC",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:K562"
-        ],
-        "lab": "encode2-project",
-        "organism": "human",
-        "product_id": "CCL-243",
-        "documents": [
-            "encode:K562_protocol"
-        ],
-        "source": "atcc",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
-        "uuid": "60dff9b7-875a-47e3-8283-a855ebe1775a"
-    },
-    {
-        "accession": "ENCBS044ENC",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "description": "B-cell lymphoma (GM12878 analog)",
-        "donor": "ENCDO000MUS",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CH12"
-        ],
-        "lab": "sherman-weissman",
-        "model_organism_age": "unknown",
-        "model_organism_age_units": "day",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "unknown",
-        "model_organism_sex": "unknown",
-        "organism": "mouse",
-        "source": "sherman-weissman",
-        "submitted_by": "semper.habitant@ut.venenatis",
-        "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f"
-    },
-    {
-        "accession": "ENCBS044ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "description": "B-cell lymphoma (GM12878 analog)",
-        "donor": "ENCDO000MUS",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CH12"
-        ],
-        "lab": "sherman-weissman",
-        "model_organism_age": "2",
-        "model_organism_age_units": "month",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "adult",
-        "model_organism_sex": "male",
-        "organism": "mouse",
-        "source": "sherman-weissman",
-        "submitted_by": "semper.habitant@ut.venenatis",
-        "uuid": "c5ce6328-9e59-4309-a61c-020bc1c5720a"
-    },
-    {
-        "accession": "ENCBS045ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "description": "B-cell lymphoma (GM12878 analog)",
-        "donor": "ENCDO001MUS",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CH12"
-        ],
-        "lab": "sherman-weissman",
-        "model_organism_age": "2",
-        "model_organism_age_units": "month",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "adult",
-        "model_organism_sex": "female",
-        "organism": "mouse",
-        "source": "sherman-weissman",
-        "submitted_by": "semper.habitant@ut.venenatis",
-        "uuid": "33a7dece-2b83-43fe-b670-23c63174334b"
-    },
-    {
-        "_test": "derived from and has dates",
-        "accession": "ENCBS057AAA",
-        "award": "U54HG006996",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "genetic_modifications": [
-            "8163d8c9-15c5-4583-8b43-0e21422297a0",
-            "ef12855f-5d3e-4da5-8684-3a594c60505a"
-        ],
-        "culture_harvest_date": "2012-12-19",
-        "originated_from": "ENCBS039ENC",
-        "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:K562"
-        ],
-        "lab": "kevin-white",
-        "organism": "human",
-        "source": "kevin-white",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
-    },
-    {
-        "_test": "lab aliases and shared by multiple experiments",
-        "accession": "ENCBS087RNA",
-        "aliases": [
-            "thomas-gingeras:K562-1"
-        ],
-        "award": "U54HG007005",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "culture_harvest_date": "2013-03-06",
-        "culture_start_date": "2013-02-28",
-        "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 1.",
-        "donor": "ENCDO000HUM",
-        "lab": "brenton-graveley",
-        "lot_id": "59300853",
-        "submitter_comment": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
-        "organism": "human",
-        "passage_number": 5,
-        "product_id": "CCL-243",
-        "source": "atcc",
-        "starting_amount": 100000.0,
-        "starting_amount_units": "cells/ml",
-        "submitted_by": "mus.mi@porttitor.molestie",
-        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
-        "uuid": "2ee883ef-b0dd-4305-a69b-d881de132795"
-    },
-    {
-        "accession": "ENCBS088RNA",
-        "aliases": [
-            "thomas-gingeras:K562-2"
-        ],
-        "award": "U54HG007005",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "culture_harvest_date": "2013-03-06",
-        "culture_start_date": "2013-02-28",
-        "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 2.",
-        "donor": "ENCDO000HUM",
-        "lab": "brenton-graveley",
-        "lot_id": "59300853",
-        "submitter_comment": "K562 cell line replicate 2 used inENCODE3 RNA-seq evaluation",
-        "organism": "human",
-        "passage_number": 5,
-        "product_id": "CCL-243",
-        "source": "atcc",
-        "starting_amount": 100000.0,
-        "starting_amount_units": "cells/ml",
-        "submitted_by": "mus.mi@porttitor.molestie",
-        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
-        "uuid": "87b7bb1b-8924-4320-9f48-67bda4d03b82"
-    },
-    {
-        "_test": "alternate accession and RNAi",
-        "accession": "ENCBS094ENC",
-        "alternate_accessions": [
-            "ENCBS238AAA"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "product_id": "86012803",
-        "documents": [
-            "encode:MCF-7_Crawford_growth_protocol"
-        ],
-        "genetic_modifications": ["ef12855f-5d3e-4da5-8684-3a594c60505a"],
-        "source": "ecacc",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.hpacultures.org.uk/products/celllines/generalcell/detail.jsp?refId=86012803&collection=ecacc_gc",
-        "uuid": "ddefc862-0107-4478-9398-acbe76b90f36"
-    },
-    {
-        "_test": "treatment construct and refers to same document with multiple types",
-        "accession": "ENCBS107ENC",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "genetic_modifications": [
-            "2f33a486-e3d9-4633-8682-a363b48ba67d"
-        ],
-        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
-        "lab": "peggy-farnham",
-        "organism": "human",
-        "product_id": "HTB-22",
-        "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
-        ],
-        "source": "atcc",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "treatments": [
-            "2e33a097-412c-4646-87f9-858dfaaa7c06"
-        ],
-        "post_treatment_time": "5",
-        "post_treatment_time_units": "day",
-        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
-        "uuid": "57437af2-9aef-4b38-a238-4afa3361df6b"
-    },
-    {
-        "accession": "ENCBS124ENC",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "cell_line_EFO_0001098",
-        "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury",
-        "donor": "ENCDO000MUS",
-        "lab": "barbara-wold",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "unknown",
-        "model_organism_sex": "unknown",
-        "organism": "mouse",
-        "documents": [
-            "encode:C2C12_Wold_growth_protocol"
-        ],
-        "source": "barbara-wold",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "5ef752ad-bc6e-4a08-abca-f6b76b188e95"
-    },
-    {
-        "_test": "mouse derived from",
-        "accession": "ENCBS128ENC",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "in_vitro_differentiated_cells_NTR_0000022",
-        "originated_from": "ENCBS124ENC",
-        "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
-        "donor": "ENCDO000MUS",
-        "lab": "barbara-wold",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "unknown",
-        "model_organism_sex": "unknown",
-        "organism": "mouse",
-        "documents": [
-            "encode:C2C12_Wold_differentiation_protocol"
-        ],
-        "source": "barbara-wold",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "02377f5f-30a1-4577-bb21-4e6add9d3d6e"
-    },
-    {
-        "accession": "ENCBS175ENC",
-        "award": "ENCODE2-Mouse",
-        "biosample_ontology": "primary_cell_CL_0002322",
-        "description": "Undifferentiated mouse embryonic stem cells",
-        "donor": "ENCDO015AAA",
-        "lab": "john-stamatoyannopoulos",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "embryonic",
-        "organism": "mouse",
-        "documents": [
-            "encode:ZhBTc4_Stam_protocol"
-        ],
-        "source": "dana-levasseur",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "treatments": [
-            "3280b708-0f05-40fa-bff2-54e2b6505c13"
-        ],
-        "uuid": "26df3a6b-ad35-4ea9-954f-08ecf41bb3ad"
-    },
-    {
-        "_test": "has phase",
-        "accession": "ENCBS181AAA",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002783",
-        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project, CEPH/Utah, treatment: Epstein-Barr Virus transformed",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:GM06990"
-        ],
-        "lab": "john-stamatoyannopoulos",
-        "organism": "human",
-        "phase": "S4",
-        "product_id": "GM06990",
-        "documents": [
-            "encode:Stam_15_protocols"
-        ],
-        "source": "coriell",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM06990&PgId=166",
-        "uuid": "9c246ad4-713a-48dc-ad65-d0400c26a140"
-    },
-    {
-        "accession": "ENCBS417ENC",
-        "award": "ENCODE2",
-        "biosample_ontology": "primary_cell_CL_1000350",
-        "description": "small airway epithelial cells",
-        "donor": "ENCDO106AAA",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:SAEC"
-        ],
-        "lab": "john-stamatoyannopoulos",
-        "organism": "human",
-        "product_id": "CC-2547",
-        "documents": [
-            "encode:SAEC_Stam_protocol"
-        ],
-        "source": "lonza",
-        "submitted_by": "facilisis.venenatis@mauris.mauris",
-        "url": "http://www.lonza.com/",
-        "uuid": "d0e58076-e61d-49dc-a0e1-3422645e50f8"
-    },
-    {
-        "_test": "has subcellular location",
-        "accession": "ENCBS450ENC",
-        "aliases": [
-            "thomas-gingeras:088N"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:A549"
-        ],
-        "lab": "thomas-gingeras",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "subcellular_fraction_term_name": "nucleus",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "12d82da3-6ee1-4919-9026-4ebdd8079ba1"
-    },
-    {
-        "accession": "ENCBS492ENC",
-        "award": "ENCODE2",
-        "biosample_ontology": "tissue_UBERON_0000006",
-        "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
-        "donor": "ENCDO275AAA",
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "e62102b0-7452-4fb7-9932-d799366e1f5a"
-    },
-    {
-        "accession": "ENCBS493ENC",
-        "award": "ENCODE2",
-        "biosample_ontology": "tissue_UBERON_0000006",
-        "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
-        "donor": "ENCDO276AAA",
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "718d142d-7677-4c09-bfb5-39214a9f85a9"
-    },
-    {
-        "_test": "donor has alternate_accesion",
-        "accession": "ENCBS000RNA",
-        "aliases": [
-            "thomas-gingeras:140WC"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "primary_cell_CL_0002539",
-        "description": "Normal Human Aortic Smooth Muscle Cells (HAoSMC)",
-        "donor": "ENCDO017AAA",
-        "lab": "thomas-gingeras",
-        "lot_id": "8121902.2P",
-        "submitter_comment": "Purchased as total RNA",
-        "organism": "human",
-        "passage_number": 2,
-        "product_id": "C-14053",
-        "documents": [
-            "axel-visel:HAoSMC_PC_8121902.2P_certificate_of_analysis",
-            "encode:HAoSMC_PC_8121902.2P_general_protocol"
-        ],
-        "source": "promocell",
-        "starting_amount": 600000.0,
-        "starting_amount_units": "cells",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "url": "http://www.promocell.com/nc/products/human-primary-cells/smooth-muscle-cells/human-aortic-smooth-muscle-cells-haosmc",
-        "uuid": "c305924f-1058-47bb-af42-259bad767853"
-    },
-    {
-        "_test": "has multiple documents and ENCODE2 dbxref",
-        "accession": "ENCBS044RNA",
-        "aliases": [
-            "thomas-gingeras:097WC"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "tissue_UBERON_0000948",
-        "date_obtained": "2012-12-01",
-        "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
-        "donor": "ENCDO058AAA",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Heart_STL003"
-        ],
-
-        "lab": "thomas-gingeras",
-        "organism": "human",
-        "documents": [
-            "encode:Heart_STL003_excision_protocol",
-            "encode:Heart_STL003_general_protocol"
-        ],
-        "source": "michael-snyder",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
-    },
-    {
-        "_test": "has mouse life stage and depleted in term name and id",
-        "accession": "ENCBS000MUS",
-        "award": "U54HG006997",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "Headless mouse embryos",
-        "donor": "ENCDO015AAA",
-        "lab": "kevin-white",
-        "organism": "mouse",
-        "source": "len-pennacchio",
-        "mouse_life_stage": "embryonic",
-        "model_organism_age": "14.5",
-        "model_organism_age_units": "day",
-        "model_organism_sex": "mixed",
-        "depleted_in_term_name": ["head"],
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "45cf28e8-c017-42a6-a0bf-726f633c13e1"
-    },
-    {
-        "_test": "has fly life stage and model organism age",
-        "accession": "ENCBS000FLY",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "Whole fly embryos, 10-12 hour",
-        "donor": "ENCDO180XXX",
-        "lab": "kevin-white",
-        "organism": "dmelanogaster",
-        "source": "kevin-white",
-        "fly_life_stage": "embryonic",
-        "model_organism_age": "12-14",
-        "model_organism_age_units": "hour",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "b05b8275-cc8d-44db-b3a3-e5661f4ce800"
-    },
-    {
-        "_test": "has fly synchronization stage and time",
-        "accession": "ENCBS001FLY",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "White prepupae + 5 hours",
-        "donor": "ENCDO101XXX",
-        "lab": "kevin-white",
-        "organism": "dmelanogaster",
-        "source": "kevin-white",
-        "fly_synchronization_stage": "white prepupa",
-        "post_synchronization_time": "5",
-        "post_synchronization_time_units": "hour",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "de2ba32c-6ad6-4f5f-bdc4-e690f91feb77"
-    },
-    {
-        "_test": "has worm life stage and worm_anatomy ontology term",
-        "accession": "ENCBS000WRM",
-        "award": "U41HG007355",
-        "biosample_ontology": "in_vitro_differentiated_cells_NTR_0005842",
-        "description": "Young adult worms",
-        "donor": "ENCDO183YYY",
-        "lab": "kevin-white",
-        "organism": "celegans",
-        "source": "kevin-white",
-        "worm_life_stage": "young adult",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "f56da869-75c4-4541-a366-a15c14a72948"
-    },
-    {
-        "_test": "has worm synchronization stage and time",
-        "accession": "ENCBS001WRM",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "Starved L1 worms + 3 hours",
-        "donor": "ENCDO976AYR",
-        "lab": "kevin-white",
-        "organism": "celegans",
-        "source": "kevin-white",
-        "worm_synchronization_stage": "L1 larva starved after bleaching",
-        "post_synchronization_time": "3",
-        "post_synchronization_time_units": "hour",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "52905f01-6316-457b-8c18-ee9e7697180a"
-    },
-    {
-        "_test": "embryonic stem cell",
-        "accession": "ENCBS987RNP",
-        "aliases": [
-            "encode:H9-cells"
-        ],
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_NTR_0000838",
-        "date_obtained": "2012-12-01",
-        "description": "embryonic stem cell (hESC) H9",
-        "donor": "ENCDO568ESC",
-        "lab": "thomas-gingeras",
-        "organism": "human",
-        "documents": [],
-        "source": "michael-snyder",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
-    },
-    {
-        "accession": "ENCBS630AAA",
-        "award": "ENCODE2",
-        "biosample_ontology": "cell_line_EFO_0002784",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:GM12878"
-        ],
-        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project - CEPH/Utah - European Caucasion, Epstein-Barr Virus",
-        "donor": "ENCDO000AAK",
-        "lab": "michael-snyder",
-        "organism": "human",
-        "product_id": "GM12878",
-        "source": "coriell",
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
-        "uuid": "d8ca0867-13cd-40df-9de0-29f9da53d935"
-    },
-    {
-        "_test": "Paired set 1 biosample",
-        "organism": "human",
-        "status": "released",
-        "award": "U54HG007010",
-        "lab": "john-stamatoyannopoulos",
-        "donor": "ENCDO017AAA",
-        "aliases": [
-            "john-stamatoyannopoulos:23429"
-        ],
-        "accession": "ENCBS278TPS",
-        "source": "peggy-farnham",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "31db042c-9844-467d-a725-ba3a4d007039"
-    },
-    {
-        "_test": "Paired set 2 biosample",
-        "organism": "human",
-        "status": "released",
-        "award": "U54HG007010",
-        "lab": "john-stamatoyannopoulos",
-        "donor": "ENCDO058AAA",
-        "aliases": [
-            "john-stamatoyannopoulos:29043C"
-        ],
-        "accession": "ENCBS804RUL",
-        "source": "peggy-farnham",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "9213cd74-b065-4f36-8346-800fe10f56ff"
-    },
-    {
-        "_test": "organism development series 1 - has worm synchronization stage and time",
-        "accession": "ENCBS757XTA",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "embryos + 80 min after egg bleaching",
-        "donor": "ENCDO604LIQ",
-        "lab": "robert-waterston",
-        "organism": "celegans",
-        "source": "kevin-white",
-        "worm_synchronization_stage": "egg bleaching",
-        "post_synchronization_time": "80",
-        "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample_RB884_80_1"],
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "96233c08-6eb1-4cd6-a0f3-2dc43dd2d1b1",
-        "status": "released"
-    },
-    {
-        "_test": "organism development series 2 - has worm synchronization stage and time",
-        "accession": "ENCBS201ZPO",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "embryos + 480 min after egg bleaching",
-        "donor": "ENCDO604LIQ",
-        "lab": "robert-waterston",
-        "organism": "celegans",
-        "source": "kevin-white",
-        "worm_synchronization_stage": "egg bleaching",
-        "post_synchronization_time": "480",
-        "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample_RB884_680_1"],
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "ac5a990a-aaf7-4270-8080-cc15bf1676da",
-        "status": "released"
-    },
-    {
-        "_test": "organism development series 3 - has worm synchronization stage and time",
-        "accession": "ENCBS598ADI",
-        "award": "U41HG007355",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "description": "embryos + 880 min after egg bleaching",
-        "donor": "ENCDO604LIQ",
-        "lab": "robert-waterston",
-        "organism": "celegans",
-        "source": "kevin-white",
-        "worm_synchronization_stage": "egg bleaching",
-        "post_synchronization_time": "880",
-        "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample_RB884_880_1"],
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "3510713d-3a33-4db9-8582-9173b8dcdb06",
-        "status": "revoked"
-    },
-    {
-        "_test": "treatment time series 1 biosample",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS001SER",
-        "treatments": ["robert-waterston:100mM_dex_8hr"],
-        "uuid": "3a159987-d2de-4afa-8bb9-8fae69a51e47"
-    },
-    {
-        "_test": "treatment time series 2 biosample",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS002SER",
-        "treatments": ["robert-waterston:100mM_dex_10hr"],
-        "uuid": "11f2177b-de6c-492b-9cac-d75e25bc6798"
-    },
-    {
-        "_test": "treatment time series 3 biosample",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS003SER",
-        "treatments": ["robert-waterston:100mM_dex_12hr"],
-        "uuid": "9012a97f-2b01-4e52-8c80-ae6ccce2a686"
-    },
-    {
-        "_test": "treatment concentration series 2 biosample",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS002CON",
-        "treatments": ["robert-waterston:80mM_dex_8hr"],
-        "uuid": "8e638c43-cdb4-4dd7-b96f-3648b550ea77"
-    },
-    {
-        "_test": "treatment time series 3 biosample",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS003CON",
-        "treatments": ["robert-waterston:60mM_dex_8hr"],
-        "uuid": "d3da3e40-d934-4fa2-b1c5-888994837524"
-    },
-     {
-        "_test": "reference epigenome series 1 biosample",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "lot_id": "58483235",
-        "organism": "human",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS001EPI",
-        "treatments": ["robert-waterston:60mM_dex_8hr"],
-        "uuid": "006d62aa-eade-4908-80a2-d42f481d2a32"
-    },
-    {
-        "_test": "replication timing series 1 biosample (G1b phase)",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "organism": "human",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS001REP",
-        "phase": "G1b",
-        "uuid": "c75fdcad-0841-404d-a7c2-fd51485e5f1b"
-    },
-    {
-        "_test": "replication timing series 2 biosample (S1 phase)",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "organism": "human",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS002REP",
-        "phase": "S1",
-        "uuid": "8a140550-7b90-4839-89cc-1b9a1651fde4"
-    },
-    {
-        "_test": "replication timing series 3 biosample (S4 phase)",
-        "award": "U41HG007355",
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
-        "donor": "ENCDO000HUM",
-        "lab": "robert-waterston",
-        "organism": "human",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS003REP",
-        "phase": "S4",
-        "uuid": "e8402526-b042-4b9e-89d7-0d3471e19765"
-    },
-    {
-        "_test": "cellosaurus",
-        "accession": "ENCBS535BWO",
-        "aliases": ["michael-snyder:B-272"],
-        "award": "/awards/U54HG006996/",
-        "dbxrefs": ["Cellosaurus:CVCL_0395"],
-        "biosample_ontology": "cell_line_EFO_0002071",
-        "culture_harvest_date": "2012-04-26",
-        "donor": "/human-donors/ENCDO000HUM",
-        "lab": "/labs/michael-snyder",
-        "organism": "/organisms/human/",
-        "product_id": "CRL-1740",
-        "source": "/sources/atcc",
-        "status": "in progress",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
-        "uuid": "db677ae5-d3a2-449d-8f93-0c07e1eaa0f1"
-    },
-    {
-        "_test": "_genetic_modification",
-        "accession": "ENCBS000GEN",
-        "aliases": ["encode:genetic-modification-1"],
-        "award": "/awards/U54HG006996/",
-        "biosample_ontology": "whole_organisms_UBERON_0000468",
-        "donor": "/mouse-donors/ENCDO242AAA/",
-        "lab": "/labs/michael-snyder",
-        "documents": [
-            "encode:EPC_Stam_protocol"
-        ],
-        "organism": "/organisms/mouse/",
-        "source": "/sources/atcc",
-        "product_id": "CRL-1740",
-        "status": "released",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
-        "uuid": "9e9f3352-ed7f-426e-961f-3b43feed715b",
-        "genetic_modifications": [
-            "encode:modification-test-1",
-            "encode:modification-test-2",
-            "ef12855f-5d3e-4da5-8684-3a594c60505a",
-            "2f33a486-e3d9-4633-8682-a363b48ba67d",
-            "b9264c83-2222-4678-a82f-4915af941fa4"
-        ]
-    },
-    {
-        "accession": "ENCBS175SCS",
-        "award": "UM1HG009390",
-        "biosample_ontology": "single_cell_CL_0002322",
-        "description": "Undifferentiated mouse embryonic stem single cell",
-        "donor": "ENCDO015AAA",
-        "lab": "john-stamatoyannopoulos",
-        "model_organism_health_status": "unknown",
-        "mouse_life_stage": "embryonic",
-        "organism": "mouse",
-        "source": "dana-levasseur",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "66df3a6b-ad36-4ea9-954f-06ecf41bb6ad"
-    },
-    {
-        "accession": "ENCBS222SCS",
-        "award": "UM1HG009390",
-        "biosample_ontology": "organoid_NTR_0002319",
-        "description": "Brain organoid",
-        "lab": "john-stamatoyannopoulos",
-        "organism": "human",
-        "post_differentiation_time": 80,
-        "post_differentiation_time_units": "hour",
-        "source": "dana-levasseur",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "66df3a6b-1234-4ea9-954f-06ecf41bb6ad"
-    },
-    {
-        "accession": "ENCBS888RUL",
-        "award": "UM1HG009390",
-        "biosample_ontology": "cell_line_EFO_0009747",
-        "description": "WTC11 cell line",
-        "donor": "ENCDO000HUM",
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "source": "dana-levasseur",
-        "status": "released",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
-        "uuid": "693c82ee-70f1-11e9-a923-1681be663d3e"
-    }
+{
+    "accession": "ENCBS753AAA",
+    "aliases": [
+        "thomas-gingeras:037WC"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-03T20:53:08.421976+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ",
+        "GEO:SAMN06044738"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "organism": "human",
+    "references": [],
+    "schema_version": "24",
+    "source": "john-stamatoyannopoulos",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "uuid": "0005c583-3a2b-4d13-aa1f-f565b8835f24"
+},
+{
+    "accession": "ENCBS360NWY",
+    "aliases": [
+        "gtex:ENC-1JKYN-185",
+        "gtex:ENC-1JKYN-184",
+        "gtex:ENC-1JKYN-186",
+        "gtex:ENC-1JKYN-181",
+        "gtex:ENC-1JKYN-188",
+        "gtex:ENC-1JKYN-187",
+        "gtex:ENC-1JKYN-179",
+        "gtex:ENC-1JKYN-189",
+        "gtex:ENC-1JKYN-182",
+        "gtex:ENC-1JKYN-183",
+        "gtex:ENC-1JKYN-180",
+        "gtex:ENC-1JKYN-178",
+        "gtex:ENC-1JKYN-177"
+    ],
+    "alternate_accessions": [
+        "ENCBS857WRI"
+    ],
+    "award": "ENCODE",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2015-04-21T22:38:35.963520+00:00",
+    "date_obtained": "2015-02-10",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [
+        "3cede565-25cc-4d1a-86fd-3cb2bc10fca1",
+        "a3ee0bcf-48e3-4173-a23e-28a370090f00",
+        "c530ba5c-4343-49bc-898b-5579c287a67e",
+        "859814a6-ac96-4aab-8a76-aa1086949b71"
+    ],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "encode-consortium",
+    "organism": "human",
+    "references": [],
+    "schema_version": "24",
+    "source": "leidos",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "submitter_comment": "This record models an entire tissue from one donor.  Individual aliquots of this tissue should be accessioned separately and linked to this record via their part_of property.",
+    "treatments": [],
+    "uuid": "0d224669-31ef-4f38-b64e-faf1fc16b617"
+},
+{
+    "accession": "ENCBS057COO",
+    "aliases": [
+        "roadmap-epigenomics:42133",
+        "roadmap-epigenomics:BioSam_42133",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_18517"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:23.345724+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 45,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2220",
+    "uuid": "0d437b34-17d0-48d9-9415-4d3a4c6c6ea8"
+},
+{
+    "accession": "ENCBS711XVO",
+    "aliases": [
+        "thomas-gingeras:411",
+        "gtex:ENC-1LVAN-128-SM-A4SSR"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2015-12-02T19:43:36.058117+00:00",
+    "dbxrefs": [
+        "GEO:SAMN05897476"
+    ],
+    "description": "Lung tissue obtained from GTEx for the Gingeras lab to conduct RNA-Seq assays on.",
+    "documents": [],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "thomas-gingeras",
+    "lot_id": "ENC-1LVAN-128-SM-A4SSR",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "0eb6ce60-80dc-40a9-b30a-fff13af40a37"
+},
+{
+    "accession": "ENCBS943JOF",
+    "aliases": [
+        "bradley-bernstein:BioSam 2754",
+        "gtex:ENC-1JKYN-186-SM-A8CNH"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2019-04-27T23:23:01.849655+00:00",
+    "date_obtained": "2015-01-01",
+    "dbxrefs": [],
+    "description": "EnTEX: Lung",
+    "documents": [],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "nih_institutional_certification": "NIC00022",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "0fa6d312-9678-4b23-989b-7be95f007ea0"
+},
+{
+    "accession": "ENCBS074ENC",
+    "aliases": [
+        "john-stamatoyannopoulos:DS10081"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-03T20:53:03.017398+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [
+        "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+    ],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CRL-2522",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "url": "http://www.atcc.org/en/Products/All/CRL-2522.aspx",
+    "uuid": "11d9e76c-e453-4ed2-a019-b24c4b6d1f55"
+},
+{
+    "accession": "ENCBS606NNZ",
+    "aliases": [
+        "john-stamatoyannopoulos:29hao4"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2016-07-18T19:07:51.972060+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [
+        "f704939d-1784-4856-9abd-434ca9336feb"
+    ],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=HTB-11&Template=cellBiology",
+    "uuid": "16b0f107-05c2-4e04-b376-eb1337fcb9e2"
+},
+{
+    "accession": "ENCBS593HOC",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_40340",
+        "roadmap-epigenomics:40340",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_26658"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:23.850238+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2259",
+    "uuid": "1891eb27-c2f7-4b06-b585-7706e8ee9240"
+},
+{
+    "accession": "ENCBS615IJU",
+    "aliases": [
+        "john-stamatoyannopoulos:1hao4"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2016-07-18T19:07:36.770919+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [
+        "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+    ],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CRL-2522",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "url": "http://www.atcc.org/en/Products/All/CRL-2522.aspx",
+    "uuid": "19092cd4-e691-4144-a8a9-2edc40448c70"
+},
+{
+    "accession": "ENCBS623YOK",
+    "aliases": [
+        "gtex:ENC-1JKYN-180-SM-ACCR9-child_1",
+        "richard-myers:mendenhall-gtex96"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-07-25T16:06:36.888967+00:00",
+    "dbxrefs": [
+        "GEO:SAMN07791105"
+    ],
+    "description": "",
+    "documents": [
+        "a3ee0bcf-48e3-4173-a23e-28a370090f00",
+        "c530ba5c-4343-49bc-898b-5579c287a67e"
+    ],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "198f0cda-ba5f-4849-8a1f-bfdb2d4218da"
+},
+{
+    "accession": "ENCBS412HHB",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_35593",
+        "roadmap-epigenomics:35593",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_99117"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:24.012556+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 45,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2265",
+    "uuid": "2078fc33-3938-4d0e-8db1-23035844170d"
+},
+{
+    "accession": "ENCBS224XQX",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_59",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-19-2010_44199"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-07-31T21:49:38.325922+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "treatments": [],
+    "uuid": "22646f20-e280-49c3-9d5a-a3215ce5d080"
+},
+{
+    "accession": "ENCBS754AAA",
+    "aliases": [
+        "thomas-gingeras:038WC"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004557",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-03T20:53:05.680669+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ",
+        "GEO:SAMN06044739"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "organism": "human",
+    "references": [],
+    "schema_version": "24",
+    "source": "john-stamatoyannopoulos",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "uuid": "2ab9ff30-c593-4d92-9686-041204d2b5a2"
+},
+{
+    "accession": "ENCBS939RMD",
+    "aliases": [
+        "bradley-bernstein:BioSam 2864",
+        "gtex:ENC-1LVAN-135-SM-A9HG6"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009390",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2018-04-26T17:28:56.830841+00:00",
+    "date_obtained": "2015-01-01",
+    "dbxrefs": [
+        "GEO:SAMN12641508"
+    ],
+    "description": "EnTEX: Lung",
+    "documents": [],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "bradley-bernstein",
+    "nih_institutional_certification": "NIC00022",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "treatments": [],
+    "uuid": "320bd22d-1573-43fa-811c-b912aa314c46"
+},
+{
+    "accession": "ENCBS268NCC",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_42134",
+        "roadmap-epigenomics:42134",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_8189"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:22.181397+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 45,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2136",
+    "uuid": "3575c51a-dcf3-4023-8c08-f717ee57f212"
+},
+{
+    "accession": "ENCBS718MJZ",
+    "aliases": [
+        "john-stamatoyannopoulos:29hao2"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2016-07-18T19:08:00.166162+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [
+        "f704939d-1784-4856-9abd-434ca9336feb"
+    ],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=HTB-11&Template=cellBiology",
+    "uuid": "359abffc-1537-43a0-8aa0-230bf52bc53c"
+},
+{
+    "accession": "ENCBS799ICU",
+    "aliases": [
+        "john-stamatoyannopoulos:DS8476"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-12-06T21:15:24.052046+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [
+        "f704939d-1784-4856-9abd-434ca9336feb"
+    ],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=HTB-11&Template=cellBiology",
+    "uuid": "360b281c-b0a7-4192-9c48-7b6fb2616e09"
+},
+{
+    "accession": "ENCBS628EGC",
+    "aliases": [
+        "john-stamatoyannopoulos:1hao3"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2016-07-18T19:07:36.604944+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [
+        "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+    ],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CRL-2522",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "url": "http://www.atcc.org/en/Products/All/CRL-2522.aspx",
+    "uuid": "36d11af5-638b-4909-8438-1ad9dff5ee9e"
+},
+{
+    "accession": "ENCBS599JGY",
+    "aliases": [
+        "roadmap-epigenomics:40339",
+        "roadmap-epigenomics:BioSam_40339",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_11516"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:24.176181+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2274",
+    "uuid": "3cdd0c43-c6f4-4cb1-a12f-f0ecec2332c4"
+},
+{
+    "accession": "ENCBS271PJP",
+    "aliases": [
+        "john-stamatoyannopoulos:11292"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2016-07-18T19:07:34.444117+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:NHDF-neo"
+    ],
+    "description": "neonatal dermal fibroblasts",
+    "documents": [
+        "84365d93-1efd-4e0a-8fe6-43af5fcaff73"
+    ],
+    "donor": "ENCDO191CQJ",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CC-2509",
+    "references": [],
+    "schema_version": "24",
+    "source": "lonza",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://www.lonza.com/products-services/bio-research/primary-and-stem-cells/human-cells-and-media/fibroblasts-and-media/human-dermal-fibroblasts.aspx",
+    "uuid": "3daabedf-522b-4d76-a569-ca28aea04c6d"
+},
+{
+    "accession": "ENCBS312JDV",
+    "aliases": [
+        "roadmap-epigenomics:40586",
+        "roadmap-epigenomics:BioSam_40586",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_96788"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:22.505418+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2163",
+    "uuid": "48410dfb-13a9-4472-af57-48912c695436"
+},
+{
+    "accession": "ENCBS065ENC",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11923"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2013-12-12T05:52:07.847420+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:NHDF-neo"
+    ],
+    "description": "neonatal dermal fibroblasts",
+    "documents": [
+        "84365d93-1efd-4e0a-8fe6-43af5fcaff73"
+    ],
+    "donor": "ENCDO191CQJ",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CC-2509",
+    "references": [],
+    "schema_version": "24",
+    "source": "lonza",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "treatments": [],
+    "url": "http://www.lonza.com/products-services/bio-research/primary-and-stem-cells/human-cells-and-media/fibroblasts-and-media/human-dermal-fibroblasts.aspx",
+    "uuid": "5e35f427-5c3f-4fae-ab8a-676ee8e2120e"
+},
+{
+    "accession": "ENCBS397VQB",
+    "aliases": [
+        "gtex:ENC-1LVAN-133",
+        "gtex:ENC-1LVAN-136",
+        "gtex:ENC-1LVAN-140",
+        "gtex:ENC-1LVAN-138",
+        "gtex:ENC-1LVAN-137",
+        "gtex:ENC-1LVAN-128",
+        "gtex:ENC-1LVAN-130",
+        "gtex:ENC-1LVAN-132",
+        "gtex:ENC-1LVAN-131",
+        "gtex:ENC-1LVAN-134",
+        "gtex:ENC-1LVAN-139",
+        "gtex:ENC-1LVAN-129",
+        "gtex:ENC-1LVAN-135"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2015-02-14T00:32:22.107291+00:00",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [
+        "3cede565-25cc-4d1a-86fd-3cb2bc10fca1",
+        "f8b74c7e-cf6f-47be-9589-d693effd4258",
+        "40ac95fd-dcb1-4172-9163-a32fdde3a101"
+    ],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "encode-consortium",
+    "organism": "human",
+    "references": [],
+    "schema_version": "24",
+    "source": "leidos",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "submitter_comment": "This record models an entire tissue from one donor.  Individual aliquots of this tissue should be accessioned separately and linked to this record via their part_of property.",
+    "treatments": [],
+    "uuid": "6529108f-1ba8-4743-8880-ad56437ce2b4"
+},
+{
+    "accession": "ENCBS911DVL",
+    "aliases": [
+        "john-stamatoyannopoulos:DS10018"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2013-12-03T20:53:03.017398+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [
+        "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+    ],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CRL-2522",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "url": "http://www.atcc.org/en/Products/All/CRL-2522.aspx",
+    "uuid": "6642d368-3b7c-45e5-b573-c392f3b0f7e6"
+},
+{
+    "accession": "ENCBS682JTI",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_40585",
+        "roadmap-epigenomics:40585",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_34122"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:22.674989+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2169",
+    "uuid": "6f5e6887-bab0-4453-b394-8f74b93901cd"
+},
+{
+    "accession": "ENCBS488ZLU",
+    "aliases": [
+        "john-stamatoyannopoulos:1hao1"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2016-07-18T19:07:36.220138+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [
+        "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+    ],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CRL-2522",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "url": "http://www.atcc.org/en/Products/All/CRL-2522.aspx",
+    "uuid": "7110dd3f-c69b-401d-a549-74e01b0b7bf0"
+},
+{
+    "accession": "ENCBS172JMM",
+    "aliases": [
+        "john-stamatoyannopoulos:29hao3"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2016-07-18T19:07:51.797571+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [
+        "f704939d-1784-4856-9abd-434ca9336feb"
+    ],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=HTB-11&Template=cellBiology",
+    "uuid": "720611ef-e256-4d74-80f5-002553dbc307"
+},
+{
+    "accession": "ENCBS401QZO",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_60",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-19-2010_96722"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:21.685810+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 45,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2350",
+    "uuid": "77d998e8-6585-4408-ae4f-f64e560b16be"
+},
+{
+    "accession": "ENCBS811OSD",
+    "aliases": [
+        "roadmap-epigenomics:31436",
+        "roadmap-epigenomics:BioSam_31436",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_50626"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:22.008594+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2133",
+    "uuid": "7ec1bd34-bf0d-49d2-8ff0-b8df733043cb"
+},
+{
+    "accession": "ENCBS974IWX",
+    "aliases": [
+        "john-stamatoyannopoulos:DS47899A",
+        "gtex:ENC-1JKYN-183-SM-A62AR"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007010",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-03-12T06:47:15.969064+00:00",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "treatments": [],
+    "uuid": "809f863c-8c59-4f21-a045-fc058cc28963"
+},
+{
+    "accession": "ENCBS482XWK",
+    "aliases": [
+        "gtex:ENC-1JKYN-180-SM-ACCR9-child_2"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-10-30T17:18:54.879823+00:00",
+    "dbxrefs": [
+        "GEO:SAMN10987066"
+    ],
+    "documents": [],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "2c67f476-983b-41d8-9958-7ac6cc1deb62",
+    "treatments": [],
+    "uuid": "8851aea5-3d2c-4588-9204-b82d0ec354e7"
+},
+{
+    "accession": "ENCBS404ENC",
+    "aliases": [
+        "john-stamatoyannopoulos:DS8482"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-12-06T21:15:24.052046+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [
+        "f704939d-1784-4856-9abd-434ca9336feb"
+    ],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "073079fd-d589-4663-9fd4-3d488208d075",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=HTB-11&Template=cellBiology",
+    "uuid": "98417274-ce81-4628-8bfa-4a1429873756"
+},
+{
+    "accession": "ENCBS367ENC",
+    "aliases": [
+        "thomas-gingeras:020WC"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-12-06T21:15:23.624822+00:00",
+    "dbxrefs": [
+        "GEO:SAMN06044593",
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/products/all/HTB-11.aspx",
+    "uuid": "a2281cca-c07d-4ffe-af1c-84d976403446"
+},
+{
+    "accession": "ENCBS693PNC",
+    "aliases": [
+        "john-stamatoyannopoulos:1hao2"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0002779",
+    "date_created": "2016-07-18T19:07:36.416925+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:BJ"
+    ],
+    "description": "skin fibroblast, The line was established from skin taken from normal foreskin. - ATCC. (PMID: 9916803)",
+    "documents": [
+        "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+    ],
+    "donor": "ENCDO000AAG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CRL-2522",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "submitter_comment": "As of August 22nd, 2016, metadata has been corrected for this biosample. Previously, the BJ cell line was incorrectly labelled as an immortalized cell line. BJ is, instead, a primary cell line established from foreskin fibroblast and the metadata has been updated accordingly.",
+    "treatments": [],
+    "url": "http://www.atcc.org/en/Products/All/CRL-2522.aspx",
+    "uuid": "a465f384-6782-42ce-8742-6e42366bf0f8"
+},
+{
+    "accession": "ENCBS366ENC",
+    "aliases": [
+        "thomas-gingeras:019WC"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2013-12-06T21:15:23.188161+00:00",
+    "dbxrefs": [
+        "GEO:SAMN06044592",
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "thomas-gingeras",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/products/all/HTB-11.aspx",
+    "uuid": "ac276aa5-6821-48c3-a0fe-ed4deb780335"
+},
+{
+    "accession": "ENCBS533SYQ",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_31442",
+        "roadmap-epigenomics:31442",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_75228"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:23.013434+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2187",
+    "uuid": "ad835e2a-bb67-4f96-955c-88d120e6e171"
+},
+{
+    "accession": "ENCBS748WVA",
+    "aliases": [
+        "john-stamatoyannopoulos:11286"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2016-07-18T19:07:34.263902+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:NHDF-neo"
+    ],
+    "description": "neonatal dermal fibroblasts",
+    "documents": [
+        "84365d93-1efd-4e0a-8fe6-43af5fcaff73"
+    ],
+    "donor": "ENCDO191CQJ",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CC-2509",
+    "references": [],
+    "schema_version": "24",
+    "source": "lonza",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://www.lonza.com/products-services/bio-research/primary-and-stem-cells/human-cells-and-media/fibroblasts-and-media/human-dermal-fibroblasts.aspx",
+    "uuid": "b8121ade-9a57-457c-9d5c-c5559698f91b"
+},
+{
+    "accession": "ENCBS767VYD",
+    "aliases": [
+        "john-stamatoyannopoulos:29hao1"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "cell_line_EFO_0003072",
+    "date_created": "2016-07-18T19:07:51.622236+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:SK-N-SH_RA"
+    ],
+    "description": "neuroblastoma cell line, treatment: differentiated with retinoic acid, (Biedler, et al. Morphology and Growth, Tumorigenicity, and Cytogenetics of Human Neuroblastoma Cells in Continuous Culture. Cancer Research 33, 2643-2652, November 1973.)",
+    "documents": [
+        "f704939d-1784-4856-9abd-434ca9336feb"
+    ],
+    "donor": "ENCDO000ABD",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "HTB-11",
+    "references": [],
+    "schema_version": "24",
+    "source": "atcc",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [
+        "94182c8c-05e5-4d9d-97e8-3f0e83c26d27"
+    ],
+    "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=HTB-11&Template=cellBiology",
+    "uuid": "ba5a7d93-f850-48d7-9d46-f25f0429b800"
+},
+{
+    "accession": "ENCBS366CZY",
+    "aliases": [
+        "gtex:ENC-1JKYN-187-SM-IP2FF"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009444",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2019-05-09T00:24:08.648844+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "nih_institutional_certification": "NIC00019",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "in progress",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "treatments": [],
+    "uuid": "bccac592-7270-4056-910c-24bd4c97637a"
+},
+{
+    "accession": "ENCBS457HEW",
+    "aliases": [
+        "john-stamatoyannopoulos:47911B",
+        "gtex:ENC-1LVAN-134-SM-A62FN"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007010",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-09-28T06:01:33.245018+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "treatments": [],
+    "uuid": "cdeecc13-893b-401d-853d-042558dc3953"
+},
+{
+    "accession": "ENCBS969ZES",
+    "aliases": [
+        "gtex:ENC-1JKYN-179-SM-ACCR8",
+        "richard-myers:mendenhall-gtex95"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-07-25T16:06:36.657911+00:00",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [
+        "a3ee0bcf-48e3-4173-a23e-28a370090f00",
+        "c530ba5c-4343-49bc-898b-5579c287a67e"
+    ],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "cf7362a1-739b-421e-b5ca-9189630b7a93"
+},
+{
+    "accession": "ENCBS320PNF",
+    "aliases": [
+        "gtex:ENC-1JKYN-177-SM-A4SDJ",
+        "thomas-gingeras:355"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG007004",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2015-12-02T19:38:36.228285+00:00",
+    "dbxrefs": [
+        "GEO:SAMN05897083"
+    ],
+    "description": "Lung tissue obtained from GTEx for the Gingeras lab to conduct RNA-Seq assays on.",
+    "documents": [],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "thomas-gingeras",
+    "lot_id": "ENC-1JKYN-177-SM-A4SDJ",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "treatments": [],
+    "uuid": "cfd89600-f797-4114-b6fa-2e1a9dbed3fd"
+},
+{
+    "accession": "ENCBS421TWG",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_40338",
+        "roadmap-epigenomics:40338",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_98016"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:23.676832+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2229",
+    "uuid": "d1c6852e-d440-42b9-9a1f-2f91460121c7"
+},
+{
+    "accession": "ENCBS058LJQ",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_40337",
+        "roadmap-epigenomics:40337",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_58354"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:23.510092+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 49,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2226",
+    "uuid": "d4d4280b-2532-40ad-9cca-d04d15a6269d"
+},
+{
+    "accession": "ENCBS089HGD",
+    "aliases": [
+        "gtex:ENC-1JKYN-178-SM-A6292"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-03-03T17:45:46.202739+00:00",
+    "dbxrefs": [
+        "GEO:SAMN07790789"
+    ],
+    "description": "",
+    "documents": [],
+    "donor": "ENCDO845WKR",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "michael-snyder",
+    "organism": "human",
+    "part_of": "ENCBS360NWY",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "f321805d-2861-4b0c-8783-2c65d06174c1",
+    "treatments": [],
+    "uuid": "d5076d9a-6c69-4e2c-8a0c-10529d2bf2ca"
+},
+{
+    "accession": "ENCBS621MSH",
+    "aliases": [
+        "gtex:ENC-1LVAN-132-SM-ADRWA-child_2"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006998",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2017-10-30T17:20:25.306960+00:00",
+    "dbxrefs": [
+        "GEO:SAMN10987132"
+    ],
+    "documents": [],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "2c67f476-983b-41d8-9958-7ac6cc1deb62",
+    "treatments": [],
+    "uuid": "da6ccfd0-fc14-4e27-857b-c5d1437d21a4"
+},
+{
+    "accession": "ENCBS011GFV",
+    "aliases": [
+        "gtex:ENC-1LVAN-129-SM-A62I3"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG006996",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-03-03T17:45:46.523682+00:00",
+    "dbxrefs": [
+        "GEO:SAMN07790745"
+    ],
+    "description": "",
+    "documents": [],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "michael-snyder",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "f321805d-2861-4b0c-8783-2c65d06174c1",
+    "treatments": [],
+    "uuid": "e62803b7-d321-433a-a83f-6e44e7247fd4"
+},
+{
+    "accession": "ENCBS002CZJ",
+    "aliases": [
+        "gtex:ENC-1LVAN-133-SM-ADRWB",
+        "richard-myers:mendenhall-gtex119"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-07-25T16:06:43.968198+00:00",
+    "dbxrefs": [
+        "GEO:SAMN07790738"
+    ],
+    "description": "",
+    "documents": [
+        "f8b74c7e-cf6f-47be-9589-d693effd4258",
+        "40ac95fd-dcb1-4172-9163-a32fdde3a101"
+    ],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "eb6a03ac-ecf3-4e3e-acef-e3fd3066a245"
+},
+{
+    "accession": "ENCBS961ISW",
+    "aliases": [
+        "gtex:ENC-1LVAN-132-SM-ADRWA-child_1",
+        "richard-myers:mendenhall-gtex118"
+    ],
+    "alternate_accessions": [],
+    "award": "ENCODE",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2016-07-25T16:06:43.733624+00:00",
+    "dbxrefs": [],
+    "description": "",
+    "documents": [
+        "f8b74c7e-cf6f-47be-9589-d693effd4258",
+        "40ac95fd-dcb1-4172-9163-a32fdde3a101"
+    ],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "richard-myers",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "uuid": "f2c69931-1cc6-4c83-9d4d-548c2be6e451"
+},
+{
+    "accession": "ENCBS347RWF",
+    "aliases": [
+        "john-stamatoyannopoulos:DS11918"
+    ],
+    "alternate_accessions": [],
+    "award": "U54HG004592",
+    "biosample_ontology": "primary_cell_CL_1001608",
+    "date_created": "2013-12-12T05:52:07.847420+00:00",
+    "dbxrefs": [
+        "UCSC-ENCODE-cv:NHDF-neo"
+    ],
+    "description": "neonatal dermal fibroblasts",
+    "documents": [
+        "84365d93-1efd-4e0a-8fe6-43af5fcaff73"
+    ],
+    "donor": "ENCDO191CQJ",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "john-stamatoyannopoulos",
+    "organism": "human",
+    "product_id": "CC-2509",
+    "references": [],
+    "schema_version": "24",
+    "source": "lonza",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "treatments": [],
+    "url": "http://www.lonza.com/products-services/bio-research/primary-and-stem-cells/human-cells-and-media/fibroblasts-and-media/human-dermal-fibroblasts.aspx",
+    "uuid": "f4d52ea6-403f-41c3-8557-91aa74a8d757"
+},
+{
+    "accession": "ENCBS524MEF",
+    "aliases": [
+        "roadmap-epigenomics:BioSam_35592",
+        "roadmap-epigenomics:35592",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_53582"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:22.343417+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 45,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2145",
+    "uuid": "f65cf99b-efb4-4e99-8827-7a02fe2c3140"
+},
+{
+    "accession": "ENCBS105BAT",
+    "aliases": [
+        "gtex:ENC-1LVAN-140-SM-IP2F2"
+    ],
+    "alternate_accessions": [],
+    "award": "UM1HG009444",
+    "biosample_ontology": "tissue_UBERON_0008952",
+    "date_created": "2019-05-09T15:48:23.466561+00:00",
+    "dbxrefs": [],
+    "documents": [],
+    "donor": "ENCDO271OUW",
+    "genetic_modifications": [],
+    "internal_tags": [
+        "ENTEx"
+    ],
+    "lab": "john-stamatoyannopoulos",
+    "nih_institutional_certification": "NIC00022",
+    "organism": "human",
+    "part_of": "ENCBS397VQB",
+    "references": [],
+    "schema_version": "24",
+    "source": "kristin-ardlie",
+    "status": "in progress",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "treatments": [],
+    "uuid": "f8b6180b-b894-4c83-a1ad-8615ffa91d36"
+},
+{
+    "accession": "ENCBS065EQG",
+    "aliases": [
+        "roadmap-epigenomics:35589",
+        "roadmap-epigenomics:BioSam_35589",
+        "roadmap-epigenomics:ES-I3 Cell Line_Mar-03-2010_82654"
+    ],
+    "alternate_accessions": [],
+    "award": "U01ES017155",
+    "biosample_ontology": "cell_line_EFO_0007076",
+    "date_created": "2015-08-04T00:09:23.176884+00:00",
+    "dbxrefs": [],
+    "description": "The I3 stem cell line was derived from donated blastocysts by removal of the trophoblast layer and further culturing of the intact inner cell mass on mitotically inactivated mouse embryonic fibroblast (MEF) feeder cells. Following injection into SCID mice, the I3 line formed teratomas that contained tissues from all three embryonic germ layers. This line exhibits a normal XX karyotype. These cells were provided by Alex Meissner and maintained in mTeSR medium.",
+    "documents": [],
+    "donor": "ENCDO840PTG",
+    "genetic_modifications": [],
+    "internal_tags": [],
+    "lab": "bradley-bernstein",
+    "organism": "human",
+    "passage_number": 45,
+    "references": [],
+    "schema_version": "24",
+    "source": "alex-meissner",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "treatments": [],
+    "url": "http://genboree.org/java-bin/project.jsp?projectName=XML%20Submissions%2FBroad%2FSAMPLE%2FEDACC.2199",
+    "uuid": "fd02cda8-d181-4c9f-834e-75c6d6409a1a"
+}
 ]

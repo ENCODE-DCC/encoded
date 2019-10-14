@@ -1,15 +1,654 @@
 [
-    {
-        "status": "released",
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "uuid": "49a550d0-f701-42ed-a101-e0a1292268d3",
-        "assay_term_name": "DNase-seq",
-        "quality_metric_of": [ "1050b698-f505-4ce5-96e5-6909e3a2acc7", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
-        "attachment": "generic_from_star_final_out.txt",
-        "lab": "/labs/robert-waterston/",
-        "award": "/awards/U41HG007355/",
-        "Reads Examined": 22939315,
-        "Read Duplicates": 1252636,
-        "Percent Duplication": 0.055817
-    }
+{
+    "Percent Duplication": 0.561171,
+    "Read Duplicates": 109898971,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 195838679,
+    "Unmapped Reads": 21852345,
+    "Unpaired Read Duplicates": 109898971,
+    "Unpaired Reads Examined": 195838679,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F05BJK00fF4YfqZYX43J0kG7"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:04:00.861780+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF127SLN"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "d33852d3-1438-43c8-83a5-3827037ba4b6",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "27ee3dad-8c17-47d7-b3f4-b2b72e79a016"
+},
+{
+    "Percent Duplication": 0.251694,
+    "Read Duplicates": 9258807,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 36785936,
+    "Unmapped Reads": 2341868,
+    "Unpaired Read Duplicates": 9258807,
+    "Unpaired Reads Examined": 36785936,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F74V8VQ0fF4Yb4Vk3Kx9gvz9"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:14:47.403445+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF862WRG"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "a7c6793e-c4dc-44e1-a8d3-c8f33f2845ae",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "287b6ff7-91b3-4a1a-8622-f425c3389125"
+},
+{
+    "Percent Duplication": 0.388513,
+    "Read Duplicates": 15419032,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 39687317,
+    "Unmapped Reads": 1793773,
+    "Unpaired Read Duplicates": 15419032,
+    "Unpaired Reads Examined": 39687317,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F6Xp0X00fF4YpJ3PB37kb74v"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:47:20.160272+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF949CIK"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "90136d3a-fc90-45f7-891a-a090d4dce65f",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "29155e07-f262-46ad-b052-352f7d528225"
+},
+{
+    "Percent Duplication": 0.377846,
+    "Read Duplicates": 15170597,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 40150261,
+    "Unmapped Reads": 1330829,
+    "Unpaired Read Duplicates": 15170597,
+    "Unpaired Reads Examined": 40150261,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F66xbF00fF4VxxK93860byzy"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T14:00:58.973260+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF168SXE"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "f2afc3d4-a369-4530-ada3-d9d637188d90",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "3400322a-f542-498a-9504-85e03e7e93ef"
+},
+{
+    "Percent Duplication": 0.662829,
+    "Read Duplicates": 36515123,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 55089839,
+    "Unmapped Reads": 43148763,
+    "Unpaired Read Duplicates": 36515123,
+    "Unpaired Reads Examined": 55089839,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F66xbBj0fF4VxxK93860byz4"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-08-24T13:57:49.070325+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF744BIP"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "34f10b05-31c4-4551-8809-f477d4e7e2dd",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "3e27ac8e-c4ad-446c-8845-851790faa213"
+},
+{
+    "Percent Duplication": 0.565001,
+    "Read Duplicates": 109833151,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 194394773,
+    "Unmapped Reads": 23296251,
+    "Unpaired Read Duplicates": 109833151,
+    "Unpaired Reads Examined": 194394773,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F74V8VQ0fF4Yb4Vk3Kx9gvz3"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-27T04:11:54.300604+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF318NIH"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "cace0180-14d5-49e6-9968-6d35c655b7f1",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "4bfae202-97b7-4aab-bb0e-eb0599ab09ab"
+},
+{
+    "Percent Duplication": 0.561171,
+    "Read Duplicates": 109898971,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 195838679,
+    "Unmapped Reads": 21852345,
+    "Unpaired Read Duplicates": 109898971,
+    "Unpaired Reads Examined": 195838679,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F72b4Xj0fF4k8Xg2Gy4G7Fvx"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:15:19.202280+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF823HSL"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "45db6050-9529-432a-856e-db3d1e37b1c9",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "5251ebfb-8fc9-43e5-9567-9112e4a58823"
+},
+{
+    "Percent Duplication": 0.242093,
+    "Read Duplicates": 8989587,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 37132751,
+    "Unmapped Reads": 1995053,
+    "Unpaired Read Duplicates": 8989587,
+    "Unpaired Reads Examined": 37132751,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F72b4Xj0fF4k8Xg2Gy4G7Fx7"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-25T21:18:54.586272+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF206IPN"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "53727f85-bd43-4d8d-a3b1-9c0ff8b07deb",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "576de955-5ec7-4c7f-a167-79de1eae552a"
+},
+{
+    "Percent Duplication": 0.565001,
+    "Read Duplicates": 109833248,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 194394773,
+    "Unmapped Reads": 23296251,
+    "Unpaired Read Duplicates": 109833248,
+    "Unpaired Reads Examined": 194394773,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F0599Kj0KZ0p6bJBPJzjKj9K"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T14:59:37.028961+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF393YTN"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "eab517e0-a35b-49c2-b63c-9eb5b8b26b40",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "596e6159-1cf4-4d4a-b2c6-5e7618705a8f"
+},
+{
+    "Estimated Library Size": 199728470,
+    "Percent Duplication": 0.275952,
+    "Read Duplicates": 74486341,
+    "Read Pair Duplicates": 36737006,
+    "Read Pair Optical Duplicates": 845177,
+    "Read Pairs Examined": 133841173,
+    "Reads Examined": 269925031,
+    "Unmapped Reads": 4047323,
+    "Unpaired Read Duplicates": 1012329,
+    "Unpaired Reads Examined": 2242685,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F8B86VQ0fF4bQfF8PPZ7x2KP"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-11-26T00:48:37.345179+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF326LLN"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "b2b10f96-89d9-4a4a-b9d2-d4a29b94b43a",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "5e13a45d-c04e-45cc-9892-b93db390ff66"
+},
+{
+    "Estimated Library Size": 197074368,
+    "Percent Duplication": 0.278094,
+    "Read Duplicates": 74189170,
+    "Read Pair Duplicates": 36085987,
+    "Read Pair Optical Duplicates": 831487,
+    "Read Pairs Examined": 131729992,
+    "Reads Examined": 266777249,
+    "Unmapped Reads": 7195105,
+    "Unpaired Read Duplicates": 2017196,
+    "Unpaired Reads Examined": 3317265,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F8K41ZQ0fF4b2jkV4gQ1fp2y"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR490JVQ_rep1_1_pe_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-12-04T03:26:09.686517+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF985OXZ"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "90c31a41-081d-404a-b939-0e7010dae658",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "64d6001c-3d16-42c2-9e01-9c2cbbdbabe4"
+},
+{
+    "Percent Duplication": 0.665861,
+    "Read Duplicates": 315585850,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 473951806,
+    "Unmapped Reads": 58978301,
+    "Unpaired Read Duplicates": 315585850,
+    "Unpaired Reads Examined": 473951806,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-FFZvvxj0fF4bpgqV0vfBYjJz"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:29:07.896275+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF584ZGK"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "524d6c46-4117-4a3e-bd31-e15898b1c4b4",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "6c4d5f49-3537-4eeb-aaf6-0ee04df90ab1"
+},
+{
+    "Percent Duplication": 0.662829,
+    "Read Duplicates": 36515123,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 55089839,
+    "Unmapped Reads": 43148763,
+    "Unpaired Read Duplicates": 36515123,
+    "Unpaired Reads Examined": 55089839,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F0JB18j0fF4Vz1J9q5qKfpyP"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T03:46:12.305042+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF390MNH"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "c2d01a1c-897a-42f4-bcac-cefd75117702",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "6ffcb22f-56c6-48f3-a63c-00ed03e23cad"
+},
+{
+    "Percent Duplication": 0.456096,
+    "Read Duplicates": 21759339,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 47707793,
+    "Unmapped Reads": 3222268,
+    "Unpaired Read Duplicates": 21759339,
+    "Unpaired Reads Examined": 47707793,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-FFPx9v80fF4fQzvgFq767k0Z"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:48:21.312784+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF732BYR"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "7407506d-8ebb-49a1-9097-223ecc3b393d",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "77fffd8b-d6dc-4b94-bddb-79d1d0d1ae04"
+},
+{
+    "Estimated Library Size": 76687849,
+    "Percent Duplication": 0.554261,
+    "Read Duplicates": 164587339,
+    "Read Pair Duplicates": 80509201,
+    "Read Pair Optical Duplicates": 1833252,
+    "Read Pairs Examined": 145402771,
+    "Reads Examined": 296948990,
+    "Unmapped Reads": 10660928,
+    "Unpaired Read Duplicates": 3568937,
+    "Unpaired Reads Examined": 6143448,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F6j4kzQ0fF4X8Q3V3y2kK3Bb"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-12T22:28:48.308397+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF283BSF"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "b62a0781-f194-4309-9765-04cce12ec546",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "815615c3-5b3b-4902-b3e2-501efede30b9"
+},
+{
+    "Percent Duplication": 0.667515,
+    "Read Duplicates": 36535344,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 54733342,
+    "Unmapped Reads": 43505260,
+    "Unpaired Read Duplicates": 36535344,
+    "Unpaired Reads Examined": 54733342,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F6Xp0Vj0fF4YpJ3PB37kb74F"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-06T14:44:46.575381+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF193MMR"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "58af23dd-03f5-42ae-9184-8ffbf6526b7b",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "8250cac5-7683-4a69-99aa-97585b13e953"
+},
+{
+    "Percent Duplication": 0.377846,
+    "Read Duplicates": 15170597,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 40150261,
+    "Unmapped Reads": 1330829,
+    "Unpaired Read Duplicates": 15170597,
+    "Unpaired Reads Examined": 40150261,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F0JB18j0fF4Vz1J9q5qKfpyY"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-04T03:49:31.166250+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF215EZE"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "af53e6be-2c49-4f38-a9ca-2be6cee711ec",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "8a17fe98-b05f-4576-a5a6-e509e759656c"
+},
+{
+    "Percent Duplication": 0.465279,
+    "Read Duplicates": 21872938,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 47010395,
+    "Unmapped Reads": 3919666,
+    "Unpaired Read Duplicates": 21872938,
+    "Unpaired Reads Examined": 47010395,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-FFZvvy80fF4bpgqV0vfBYjK7"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-07T16:32:09.723342+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF996VUV"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "d8b7cd87-f5f2-4b32-9fb3-eb9659840e2e",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "97c2629d-143b-4bc5-8416-335b5a7832ac"
+},
+{
+    "Percent Duplication": 0.242093,
+    "Read Duplicates": 8989587,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 37132751,
+    "Unmapped Reads": 1995053,
+    "Unpaired Read Duplicates": 8989587,
+    "Unpaired Reads Examined": 37132751,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F05BJK00fF4YfqZYX43J0kGF"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-23T18:07:25.156684+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF738JMU"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "226a054e-c6b3-47af-8be1-497c443b4d26",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "a567a11e-e19d-4e1b-8593-1c23f3e443c3"
+},
+{
+    "Percent Duplication": 0.667515,
+    "Read Duplicates": 36535344,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 54733342,
+    "Unmapped Reads": 43505260,
+    "Unpaired Read Duplicates": 36535344,
+    "Unpaired Reads Examined": 54733342,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F0QKx8j0fF4fZj590J8YzqkV"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T15:04:19.881629+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF562JJK"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "9938bd99-b799-4dec-974f-2f74d4157375",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ac523195-9929-41fa-a4d8-8725f06b38e8"
+},
+{
+    "Percent Duplication": 0.251695,
+    "Read Duplicates": 9258818,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 36785936,
+    "Unmapped Reads": 2341868,
+    "Unpaired Read Duplicates": 9258818,
+    "Unpaired Reads Examined": 36785936,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F0599P00KZ0p6bJBPJzjKj9p"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPZ_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-10-24T15:03:00.263584+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF414DFK"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "fa18a8ac-db21-45d5-b195-c16d47274636",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "ada48ff4-e152-470c-96c1-e3004b0943de"
+},
+{
+    "Percent Duplication": 0.658901,
+    "Read Duplicates": 317560799,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 481955591,
+    "Unmapped Reads": 50974516,
+    "Unpaired Read Duplicates": 317560799,
+    "Unpaired Reads Examined": 481955591,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-FFPx9v00fF4fQzvgFq767k09"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EPP_rep1_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-05-04T16:45:21.087649+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF682LAI"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "9255873f-bb9a-4daf-bf4b-fc7f37ce8498",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "c931a405-8818-488b-8c47-62a2e5984863"
+},
+{
+    "Estimated Library Size": 75253680,
+    "Percent Duplication": 0.556375,
+    "Read Duplicates": 163065645,
+    "Read Pair Duplicates": 79182541,
+    "Read Pair Optical Duplicates": 1804659,
+    "Read Pairs Examined": 142893954,
+    "Reads Examined": 293085660,
+    "Unmapped Reads": 14524258,
+    "Unpaired Read Duplicates": 4700563,
+    "Unpaired Reads Examined": 7297752,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F6v5jf80fF4YpP529Z11fYG3"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR164WOF_rep1_1_pe_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2017-09-22T16:47:26.027763+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF022PJN"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "94ab3c60-c960-4975-ae84-9f7dddc97261",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "cd3f6e6b-218b-448d-8c75-28deddf1e6d2"
+},
+{
+    "Percent Duplication": 0.388513,
+    "Read Duplicates": 15419032,
+    "Read Pair Duplicates": 0,
+    "Read Pair Optical Duplicates": 0,
+    "Read Pairs Examined": 0,
+    "Reads Examined": 39687317,
+    "Unmapped Reads": 1793773,
+    "Unpaired Read Duplicates": 15419032,
+    "Unpaired Reads Examined": 39687317,
+    "aliases": [
+        "dnanexus:qc.dup_stats.job-F0QKx8j0fF4fZj590J8Yzqkb"
+    ],
+    "assay_term_name": "DNase-seq",
+    "attachment": "ENCSR000EME_rep2_1_se_bwa_biorep_filtered_qc.txt",
+    "award": "U41HG006992",
+    "date_created": "2016-11-08T15:41:24.931131+00:00",
+    "lab": "encode-processing-pipeline",
+    "quality_metric_of": [
+        "ENCFF711FYT"
+    ],
+    "schema_version": "7",
+    "status": "released",
+    "step_run": "8192a05a-9cce-4549-8e5c-1d894cc76eea",
+    "submitted_by": "332d0e03-a907-4f53-8358-bb00118277c8",
+    "uuid": "f0b74933-f191-4d14-95aa-2fbe8b0c5e2e"
+}
 ]

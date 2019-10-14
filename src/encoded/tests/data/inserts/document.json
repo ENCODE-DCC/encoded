@@ -1,438 +1,1351 @@
 [
-    {       
-        "attachment": "PathologyImage_CMU-1.svs",
-        "award": "ENCODE2",
-        "description": "Example of high resolution pathology image in SVS format",
-        "document_type": "high resolution pathology slide image",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "2d306180-915d-43b8-a87e-a94c4fa86d7e"
-    },
-    {
-        "aliases": [
-            "axel-visel:HAoSMC_PC_8121902.2P_certificate_of_analysis"
-        ],
-        "attachment": "8121902.2P.pdf",
-        "award": "ENCODE2",
-        "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
-        "document_type": "certificate of analysis",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
-    },
-    {
-        "aliases": [
-            "kevin-white:K562_BAC_transfection_White_protocol"
-        ],
-        "attachment": "BACTransfectionProtocolK562Cells.pdf",
-        "award": "U54HG006996",
-        "description": "UChicago IGSB ENCODE K562 Transfection Protocol March 5, 2013",
-        "document_type": "transfection protocol",
-        "lab": "kevin-white",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "048d1185-2502-4f0e-a043-bbc75b9dd915"
-    },
-    {
-        "aliases": [
-            "encode:bedMethyl.as" 
-        ],
-        "attachment": "bedMethyl.txt",
-        "award": "ENCODE2",
-        "document_type": "file format specification",
-        "lab": "richard-myers",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
-    },
-    {
-        "aliases": [
-            "encode:C2C12_Wold_differentiation_protocol"
-        ],
-        "attachment": "C2C12_Wold_protocol.pdf",
-        "award": "ENCODE2-Mouse",
-        "document_type": "differentiation protocol",
-        "lab": "barbara-wold",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "a5f5c35a-cdda-4a45-9742-22e69ff50c9c"
-    },
-    {
-        "aliases": [
-            "encode:C2C12_Wold_growth_protocol"
-        ],
-        "attachment": "C2C12_Wold_protocol.pdf",
-        "award": "ENCODE2-Mouse",
-        "document_type": "growth protocol",
-        "lab": "barbara-wold",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "b42974fd-1490-4d51-bdcf-7db97a3e8fe0"
-    },
-    {
-        "aliases": [
-            "kevin-white:pBACGK1.1_BAC_vector"
-        ],
-        "attachment": "CH17_pBACGK1.1n.png",
-        "award": "U54HG006996",
-        "description": "Vector pBACGK1.1 information and map retrieved from http://bacpac.chori.org/pbacgk11.htm on May 23, 2013.",
-        "document_type": "construct image",
-        "lab": "kevin-white",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "urls": [
-            "http://bacpac.chori.org/library.php?id=231",
-            "http://bacpac.chori.org/pbacgk11.htm"
-        ],
-        "uuid": "dcf15d5e-40aa-43bc-b81c-32c70c9afb01",
-        "status": "released"
-    },
-    {
-        "aliases": [
-            "encode:diffProtB_6hr_protocol"
-        ],
-        "attachment": "diffProtB_6hr_protocol.txt",
-        "award": "ENCODE2",
-        "document_type": "treatment protocol",
-        "lab": "encode2-project",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e95b8f25-7b5b-4ce3-a351-b09d0c1eda8d"
-    },
-    {
-        "aliases": [
-            "encode:EPC_Stam_protocol"
-        ],
-        "attachment": "EPC_Stam_protocol.pdf",
-        "award": "ENCODE2-Mouse",
-        "description": "Isolation of mouse fetal liver cell subsets",
-        "document_type": "cell isolation protocol",
-        "lab": "john-stamatoyannopoulos",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "cd9aab06-e0cb-42fb-b47d-2a7dd8116e99"
-    },
-    {
-        "aliases": [
-            "encode:Heart_STL003_excision_protocol"
-        ],
-        "attachment": "Heart_STL003_excision_protocol.txt",
-        "award": "ENCODE2",
-        "description": "Heart_STL003 excision protocol",
-        "document_type": "excision protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "0b7105ae-a3f8-476c-a163-3821eb3da3da"
-    },
-    {
-        "aliases": [
-            "encode:Myers_Methyl450_protocol"
-        ],
-        "attachment": "human.wgEncodeHaibMethyl450.txt",
-        "award": "ENCODE2",
-        "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2. Isolation of mouse fetal liver cell subsets. Heart_STL003 general protocol.",
-        "document_type": "general protocol",
-        "lab": "richard-myers",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "71da87e2-92d0-418b-960b-0a30800172a0"
-    },
-    {
-        "aliases": [
-            "encode:K562_protocol"
-        ],
-        "attachment": "K562_protocol.pdf",
-        "award": "ENCODE2",
-        "document_type": "growth protocol",
-        "lab": "encode2-project",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "40792158-1613-47f4-ae3f-dc3400c097d3"
-    },
-    {
-        "aliases": [
-            "encode:Heart_STL003_general_protocol"
-        ],
-        "attachment": "LID48879.pdf",
-        "award": "ENCODE2",
-        "description": "Heart_STL003 general protocol",
-        "document_type": "general protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "bc505a2d-4afb-48f0-b8dd-77af9006c675"
-    },
-    {
-        "aliases": [
-            "encode:MCF-7_Crawford_growth_protocol"
-        ],
-        "attachment": "MCF-7_Crawford_protocol.pdf",
-        "award": "ENCODE2",
-        "description": "MCF-7 Cell Culture and +/- estrogen treatment",
-        "document_type": "growth protocol",
-        "lab": "gregory-crawford",
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "8f1a6855-0312-4027-8869-330e42a0b04a"
-    },
-    {
-        "aliases": [
-            "encode:MCF-7_Farnham_growth_protocol"
-        ],
-        "attachment": "MCF-7_Farnham_protocol.pdf",
-        "award": "ENCODE2",
-        "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
-        "document_type": "growth protocol",
-        "lab": "peggy-farnham",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "uuid": "984071d4-9149-476a-b353-93592c6f48f3"
-    },
-    {
-        "aliases": [
-            "encode:MCF-7_Farnham_treatment_protocol"
-        ],
-        "attachment": "MCF-7_Farnham_protocol.pdf",
-        "award": "ENCODE2",
-        "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
-        "document_type": "treatment protocol",
-        "lab": "peggy-farnham",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "uuid": "2897e1e0-a322-4579-86dd-d5e8cf4e6c24"
-    },
-    {
-        "aliases": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "attachment": "mouse.wgEncodeSydhHist.txt",
-        "award": "ENCODE2-Mouse",
-        "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
-        "document_type": "general protocol",
-        "lab": "michael-snyder",
-        "references": [
-            "72a4a030-bdfb-11e4-bb52-0800200c9a66",
-            "341bf550-be0c-11e4-bb52-0800200c9a66",
-            "cf890830-bdfc-11e4-bb52-0800200c9a66",
-            "4be68100-be0c-11e4-bb52-0800200c9a66",
-            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
-        ],
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
-    },
-    {
-        "aliases": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
-        ],
-        "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
-        "award": "ENCODE2",
-        "document_type": "general protocol",
-        "lab": "richard-myers",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "df9dd0ec-c1cf-4391-a745-a933ab1af7a7"
-    },
-    {
-        "aliases": [
-            "encode:PanIsletD_Crawford_protocol"
-        ],
-        "attachment": "PanIsletD_Crawford_protocol.pdf",
-        "award": "ENCODE2",
-        "document_type": "other",
-        "lab": "gregory-crawford",
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "87a97c62-08b7-43a8-a277-7aa51eb33bce"
-    },
-    {
-        "aliases": [
-            "encode:SAEC_Stam_protocol"
-        ],
-        "attachment": "SAEC_Stam_protocol.pdf",
-        "award": "ENCODE2",
-        "document_type": "growth protocol",
-        "lab": "john-stamatoyannopoulos",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "19d5277e-b6b0-49dd-9349-146783bd0082"
-    },
-    {
-        "aliases": [
-            "encode:HAoSMC_PC_8121902.2P_general_protocol"
-        ],
-        "attachment": "SID38242.pdf",
-        "award": "ENCODE2",
-        "description": "PromoCell Normal Human Aortic Smooth Muscle Cells general protocol",
-        "document_type": "general protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "7aa32299-cc11-4f07-bdaa-a55de6f51a99"
-    },
-    {
-        "aliases": [
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
-        ],
-        "attachment": "SID38806.pdf",
-        "award": "U54HG007004",
-        "document_type": "general protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "e23a0ea7-a490-4d00-9e4f-876bea90b1f7"
-    },
-    {
-        "aliases": [
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
-        ],
-        "attachment": "SID38807.pdf",
-        "award": "U54HG007004",
-        "document_type": "general protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "197f27b2-76b8-4bc2-928f-0b33c3dfb7c7"
-    },
-    {
-        "aliases": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
-        ],
-        "attachment": "SID38822.pdf",
-        "award": "U54HG007004",
-        "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS087RNA",
-        "document_type": "general protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4fdeaa98-a4c7-4f44-9414-c55977f8369b"
-    },
-    {
-        "aliases": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
-        ],
-        "attachment": "SID38823.pdf",
-        "award": "U54HG007004",
-        "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS088RNA",
-        "document_type": "general protocol",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "f39f4b6e-cc13-45cf-993b-8d74781ba6d0"
-    },
-    {
-        "aliases": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
-        ],
-        "attachment": "Spikes.fixed.fasta.txt",
-        "award": "U54HG007004",
-        "document_type": "other",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "f4974402-65a6-47fd-862e-9b226659d041"
-    },
-    {
-        "aliases": [
-            "encode:Stam_15_protocols"
-        ],
-        "attachment": "Stam_15_protocols.pdf",
-        "award": "ENCODE2",
-        "document_type": "growth protocol",
-        "lab": "john-stamatoyannopoulos",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "f704939d-1784-4856-9abd-434ca9336feb"
-    },
-    {
-        "aliases": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations"
-        ],
-        "attachment": "wgEncodeCshlSpikeinsConcentrations.txt",
-        "award": "ENCODE2",
-        "document_type": "other",
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "34e684ee-8e9a-4b4e-9708-4a0bc5ae9811"
-    },
-    {
-        "aliases": [
-            "encode:ZhBTc4_Stam_protocol"
-        ],
-        "attachment": "ZhBTc4_Stam_protocol.pdf",
-        "award": "ENCODE2-Mouse",
-        "document_type": "growth protocol",
-        "lab": "john-stamatoyannopoulos",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "113719b2-929f-4fb9-b073-e6483b2edd40"
-    },
-    {
-        "aliases": [
-            "gregory-crawford:pLKO1"
-        ],
-        "attachment": "pLKO1_vector.png",
-        "award": "ENCODE2",
-        "document_type": "construct image",
-        "lab": "gregory-crawford",
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "33d51ad0-62ba-11e3-949a-0800200c9a66"
-    },
-    {
-        "aliases": [
-            "encode:Antibody_characterization_standards_February_2014"
-        ],
-        "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
-        "award": "U41HG006992",
-        "document_type": "standards document",
-        "lab": "j-michael-cherry",
-        "submitted_by": "duis.pede@nonummy.scelerisque",
-        "uuid": "bcb5f3c8-d5e9-40d2-805f-4274f940c36d"
-    },
-    {
-        "aliases": [
-            "encode:sample_strain_generation_protocol"
-        ],
-        "attachment": "sample_strain_generation_protocol.pdf",
-        "award": "U41HG007355",
-        "document_type": "strain generation protocol",
-        "lab": "robert-waterston",
-        "submitted_by": "uskuf.shyec@doton.danona",
-        "uuid": "30705939-d234-4aca-8379-cd355686fd48"
-    },
-    {
-        "aliases": [
-            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
-        ],
-        "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
-        "award": "U41HG006992",
-        "document_type": "pipeline protocol",
-        "lab": "brenton-graveley",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
-    },
-    {
-        "aliases": [
-            "roderic-guigo:GeneQuantificationPipeline"
-        ],
-        "attachment": "GeneQuantificationPipeline.pdf",
-        "award": "U41HG006992",
-        "document_type": "pipeline protocol",
-        "lab": "roderic-guigo",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "d64ef6a0-5ae4-11e4-8ed6-0800200c9a66"
-    },
-    {
-        "aliases": [
-            "encode:ENCODE2_ChIP_seq_pipeline_diagram"
-        ],
-        "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
-        "award": "ENCODE2",
-        "document_type": "pipeline protocol",
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "c256d912-be84-4463-8e95-cef789e8d6ba"
-    },
-    {
-        "aliases": [
-            "encode:ENCODE2ChIP-seqpipelinespecifications"
-        ],
-        "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
-        "award": "ENCODE2",
-        "document_type": "pipeline protocol",
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "0f2f78fc-4675-4534-af7a-1c77e03c0cd3"
-    },
-    {
-        "aliases": [
-            "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
-        ],
-        "attachment": "iCLIP_pipeline_ENCODE.pdf",
-        "award": "U54HG007005",
-        "document_type": "pipeline protocol",
-        "lab": "gene-yeo",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
-    }
+{
+    "aliases": [],
+    "attachment": "DNase-seq Pipeline Overview.pdf",
+    "award": "U41HG006992",
+    "date_created": "2017-04-24T16:46:57.663957+00:00",
+    "description": "DNase pipeline protocol for both single- and paired-end",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "03e5b535-dcdf-4d5e-8ffc-fa7bef88b34b"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me1 in human hES I3 TESR cells_Jul-26-2011_91396_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K4me1 in human hES I3 TESR cells||Tue Jul 26 16:46:38 -0500 2011||91396.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:03:28.488445+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "0456e0d8-f9a9-4759-9e87-ec2edb94bb4b"
+},
+{
+    "aliases": [],
+    "attachment": "K562_Rabbit_88-264kDa_Input_sorted.txt",
+    "award": "U54HG006998",
+    "date_created": "2016-05-16T16:09:12.579566+00:00",
+    "description": "The raw data input for the fold enrichment calculation, Rabbit 88-264 kDa. K562",
+    "document_type": "data sheet",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "urls": [],
+    "uuid": "090d119e-bb2d-4565-893d-2b909fe40145"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Bravo ChIP v2.0"
+    ],
+    "attachment": "Bravo_ChIP_v2.0.pdf",
+    "award": "U54HG006991",
+    "date_created": "2016-10-08T10:00:11.446233+00:00",
+    "description": "Broad Bravo ChIP protocol v2.0",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "urls": [],
+    "uuid": "0bc735f0-1418-456c-a910-77992b868036"
+},
+{
+    "aliases": [],
+    "attachment": "RSEM_Documentation.pdf",
+    "award": "U24HG009397",
+    "date_created": "2017-03-16T15:51:55.991030+00:00",
+    "description": "RSEM Document with outputs; for long RNA-seq and RAMPAGE",
+    "document_type": "file format specification",
+    "lab": "colin-dewey",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [
+        "http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html#output"
+    ],
+    "uuid": "0c78ea4b-9392-421b-a6f3-6c858b6002aa"
+},
+{
+    "aliases": [],
+    "attachment": "GM12878_Rabbit_80-283kDa_Input_sorted.txt",
+    "award": "U54HG006998",
+    "date_created": "2016-05-16T16:00:08.901358+00:00",
+    "description": "The raw data input for the fold enrichment calculation, Rabbit 80-283 kDa. GM12878",
+    "document_type": "data sheet",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "urls": [],
+    "uuid": "181b470a-6294-4a98-bfa4-5db9fd36808f"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of WCE in human hES-I3 cells_Mar-03-2010_63229_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of WCE in human hES-I3 cells||Wed Mar 03 14:10:37 -0600 2010||63229.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:05:36.531061+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "1c0a5193-4d60-4308-9a3c-8a5bc6536962"
+},
+{
+    "aliases": [
+        "thomas-gingeras:296636_protocol"
+    ],
+    "attachment": "LID296636.pdf",
+    "award": "U54HG007004",
+    "date_created": "2016-04-11T15:22:51.169235+00:00",
+    "description": "This document describes the construction of library:thomas-gingeras:296636",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "26101df8-bc08-4317-9591-77282711582b",
+    "urls": [
+        "http://www.illumina.com/products/truseq_small_rna_sample_prep_kit.html"
+    ],
+    "uuid": "2319f3ec-e5c3-4b2e-a49d-77597115137c"
+},
+{
+    "aliases": [
+        "thomas-gingeras:Ambion-ERCC-DataSheet"
+    ],
+    "attachment": "Ambion-ERCC-Mix1.pdf",
+    "award": "U54HG007004",
+    "date_created": "2013-09-17T16:26:31.570819-08:00",
+    "description": "Ambion spike-in concentrations and subgroups for mix 1 and mix 2",
+    "document_type": "data sheet",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [
+        "http://www.lifetechnologies.com/order/catalog/product/4456740",
+        "http://tools.lifetechnologies.com/content/sfs/manuals/cms_086340.pdf"
+    ],
+    "uuid": "28fef8e0-e171-450d-b66d-e3d199531cf2"
+},
+{
+    "aliases": [
+        "michael-snyder:P-41"
+    ],
+    "attachment": "Tissue  ChIP-Seq Biorupter, Bravo protocol for Syapse.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-14T00:45:21.794366+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "michael-snyder",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "51d0b8cb-6bb4-46a7-a167-8db20f23e562",
+    "urls": [],
+    "uuid": "2d952d22-7fd6-4388-bf94-90b2e2b2a1a9"
+},
+{
+    "aliases": [
+        "encode:wgEncodeHaibTfbs"
+    ],
+    "attachment": "wgEncodeHaibTfbs.release3.html.pdf",
+    "award": "U54HG004576",
+    "date_created": "2014-10-16T20:33:52.007806+00:00",
+    "description": "Track description for UCSC Genome Browser composite track hg19/wgEncodeHaibTfbs",
+    "document_type": "general protocol",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "2f645c4a-dea3-49fb-817d-db81c7906ebe"
+},
+{
+    "aliases": [
+        "encode:BJ_Stam_protocol"
+    ],
+    "attachment": "BJ_Stam_protocol.pdf",
+    "award": "U54HG004592",
+    "date_created": "2013-09-13T13:28:40.601810-08:00",
+    "description": "Propagation of Normal Human BJ Skin Fibroblasts (BJ, ATCC) Protocol",
+    "document_type": "growth protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [
+        "7180f71d-f74a-48f2-b670-ebcbaffbb85a"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "urls": [],
+    "uuid": "2fe9e48c-ea34-4bd7-b75a-130596ed3ba9"
+},
+{
+    "aliases": [],
+    "attachment": "RAMPAGE pipeline overview.pdf",
+    "award": "U54HG006996",
+    "date_created": "2017-02-21T23:51:30.398834+00:00",
+    "description": "RAMPAGE pipeline: Includes overview and references for the pipeline",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "3006c3aa-f1a5-4b16-9a78-c0a57aeb30ec"
+},
+{
+    "aliases": [
+        "michael-snyder:IP Protocol (Light Chain Specific Secondary) 092313",
+        "michael-snyder:P-11"
+    ],
+    "attachment": "IP Protocol (Light Chain Specific Secondary) 092313.pdf",
+    "award": "U54HG006996",
+    "date_created": "2014-12-18T03:01:21.270267+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "michael-snyder",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "60bc1c02-53ad-44ff-8b9c-3cfc62ac1c1b",
+    "urls": [],
+    "uuid": "3394b2a7-a796-4097-b53a-b45611907c81"
+},
+{
+    "aliases": [],
+    "attachment": "GTEx Tissue Harvesting Work Instruction.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-03T22:41:35.796559+00:00",
+    "description": "GTEx Tissue Harvesting Work Instruction",
+    "document_type": "extraction protocol",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "urls": [],
+    "uuid": "3cede565-25cc-4d1a-86fd-3cb2bc10fca1"
+},
+{
+    "aliases": [
+        "gtex:ENC-DEJ-SVS"
+    ],
+    "attachment": "Encode Public IDs.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-10-10T00:02:22.611840+00:00",
+    "description": "Mapping of high resolution images (SVS format) ids to tissues",
+    "document_type": "data sheet",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "40ac95fd-dcb1-4172-9163-a32fdde3a101"
+},
+{
+    "aliases": [],
+    "attachment": "Small RNA-seq pipeline overview.pdf",
+    "award": "U54HG006996",
+    "date_created": "2017-02-21T23:05:15.641217+00:00",
+    "description": "Small RNA-seq pipeline: Includes overview and references for the pipeline",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "4187c88d-f516-4c21-9d31-7831fe339ba6"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types_Jun-29-2012_24530_protocol"
+    ],
+    "attachment": "Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types||Fri Jun 29 12:02:48 -0500 2012||24530.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:00:11.271236+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "4384a038-0ee5-48f9-b92c-2393727508b3"
+},
+{
+    "aliases": [],
+    "attachment": "Gingeras_TAP_Protocol.png",
+    "award": "U54HG004557",
+    "date_created": "2013-11-09T15:59:31.010954+00:00",
+    "description": "Gingeras lab Tobacco Acid Pyrophosphatase (TAP) protocol for RNA to remove 5' caps that would preclude cloning",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "449c2ec0-7631-4014-a0e3-01580f8a26b6"
+},
+{
+    "aliases": [],
+    "attachment": "ENC_Case-4_DEJ_PRCcsr_Redacted.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-19T21:20:11.048262+00:00",
+    "description": "PRC Case Summary Report For Case 4",
+    "document_type": "general protocol",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "urls": [],
+    "uuid": "490afb2b-4368-4e45-9e7e-713248c8bc6e"
+},
+{
+    "aliases": [
+        "encode:Histone_Modification_Antibody_Characterization_ENCODE3_Oct2016.pdf"
+    ],
+    "attachment": "ENCODE_Approved_Oct_2016_Histone_and_Chromatin_associated_Proteins_Antibody_Characterization_Guidelines.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-27T17:10:14.765072+00:00",
+    "description": "Histone Modification and Chromatin associated Protein Antibody Characterization Standards (October 2016)",
+    "document_type": "standards document",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "4bb40778-387a-47c4-ab24-cebe64ead5ae"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9me3 in human hES I3 TESR cells_Mar-03-2010_19963_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K9me3 in human hES I3 TESR cells||Wed Mar 03 10:16:00 -0600 2010||19963.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:04:58.781743+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "4eba5e94-736c-4028-a116-d998d0122841"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES I3 TESR cells_Mar-03-2010_86385_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K27me3 in human hES I3 TESR cells||Wed Mar 03 14:51:31 -0600 2010||86385.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:02:16.438358+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "5ba7d8b6-1c1a-4ef4-ad3b-1098122c7d6f"
+},
+{
+    "aliases": [],
+    "attachment": "Long RNA-seq pipeline overview.pdf",
+    "award": "U24HG009397",
+    "date_created": "2017-02-27T18:27:28.678999+00:00",
+    "description": "Long RNA-seq pipeline: Includes overview, references, and spike-ins information about the pipeline",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "6354169f-86f6-4b59-8322-141005ea44eb"
+},
+{
+    "aliases": [
+        "encode:wgEncodeUwDgf"
+    ],
+    "attachment": "wgEncodeUwDgf.release4.html.pdf",
+    "award": "U54HG004592",
+    "date_created": "2014-10-16T20:33:56.125493+00:00",
+    "description": "Track description for UCSC Genome Browser composite track hg19/wgEncodeUwDgf",
+    "document_type": "general protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "682c3e93-7ded-4ca4-beab-e5383ad2b862"
+},
+{
+    "aliases": [],
+    "attachment": "ChIP-seq_Mapping_Pipeline_Overview.pdf",
+    "award": "U24HG009397",
+    "date_created": "2017-04-04T03:03:37.882944+00:00",
+    "description": "ChIP mapping pipeline: Includes overview and references for the pipeline",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "notes": "Used for both histone and TFs",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "6f6351d4-9310-4a3b-a3c2-70ecac47b28b"
+},
+{
+    "aliases": [],
+    "attachment": "ChIP-seq_pipeline_overview.pdf",
+    "award": "U24HG009397",
+    "date_created": "2017-04-04T03:15:39.456538+00:00",
+    "description": "ChIP pipeline: Details for both histone and transcription factor",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "7009beb8-340b-4e71-b9db-53bb020c7fe2"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES-I3 cells_Mar-03-2010_41574_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K27me3 in human hES-I3 cells||Wed Mar 03 17:04:27 -0600 2010||41574.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:02:16.169374+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "71739e57-2054-406a-bfe7-c23af351e800"
+},
+{
+    "aliases": [],
+    "attachment": "EP300-H3115-WL.xlsx - Sheet1.pdf",
+    "award": "U54HG006998",
+    "date_created": "2017-06-15T01:22:53.463715+00:00",
+    "description": "Secondary antibody characterization of ENCAB284TTY",
+    "document_type": "standards document",
+    "lab": "richard-myers",
+    "notes": "Secondary antibody characterization of ENCAB284TTY",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "ca8ac763-9a72-4377-9a09-97d913e569c0",
+    "urls": [],
+    "uuid": "728fc31a-b30c-494e-a41e-0c4b5179c36c"
+},
+{
+    "aliases": [
+        "thomas-gingeras:NIST-ERCC-Spikes"
+    ],
+    "attachment": "NIST-ERCC-Spikes.pdf",
+    "award": "U54HG007004",
+    "date_created": "2013-09-17T16:26:31.782696-08:00",
+    "description": "NIST ERCC spike-ins datasheet for pools 12,13,14,15",
+    "document_type": "data sheet",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "75771109-b79e-43d5-9cc0-2dbf708a71f1"
+},
+{
+    "aliases": [
+        "thomas-gingeras:CSHL_SmallRNA_Protocol_1A"
+    ],
+    "attachment": "CSHL_Small_NoBarcode.png",
+    "award": "U54HG007004",
+    "date_created": "2015-07-17T15:33:48.367967+00:00",
+    "description": "This document presents an abbreviated view of the (Protocol 1A) CSHL Small RNA library structure, primer sequences and other features.",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [
+        "f44eae07-c940-437f-b3ba-111462d51f83"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "76321494-21b0-4808-8df0-14e7db32a712"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K36me3 in human hES I3 TESR cells_Mar-03-2010_8784_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K36me3 in human hES I3 TESR cells||Wed Mar 03 16:31:38 -0600 2010||8784.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:02:54.207193+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "79e0ac14-f970-4e07-bd13-9cfc103f4c32"
+},
+{
+    "aliases": [
+        "thomas-gingeras:Ambion-ERCC-Mix1_concentrations"
+    ],
+    "attachment": "AmbionMix1Concentrations.tsv",
+    "award": "U54HG007004",
+    "date_created": "2013-11-14T22:04:27.345516+00:00",
+    "description": "Ambion Mix 1 spike-in concentrations",
+    "document_type": "data sheet",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [
+        "http://www.lifetechnologies.com/order/catalog/product/4456740"
+    ],
+    "uuid": "7ae25f97-ab0a-448b-b345-cfffd6368c90"
+},
+{
+    "aliases": [],
+    "attachment": "HepG2_Rabbit_90-264kDa_Input_sorted.txt",
+    "award": "U54HG006998",
+    "date_created": "2016-05-16T16:02:04.388942+00:00",
+    "description": "The raw data input for the fold enrichment calculation, Rabbit 90-264 kDa. HepG2",
+    "document_type": "data sheet",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "urls": [],
+    "uuid": "7b550f61-b568-44eb-abed-89a7359f4cab"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9ac in human hES I3 TESR cells_Mar-03-2010_334_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K9ac in human hES I3 TESR cells||Wed Mar 03 19:19:26 -0600 2010||334.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:04:27.915427+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "7c145fb5-4e45-454b-bd9b-6b87de166045"
+},
+{
+    "aliases": [
+        "thomas-gingeras:296639_protocol"
+    ],
+    "attachment": "LID296639.pdf",
+    "award": "U54HG007004",
+    "date_created": "2016-04-11T15:17:39.064241+00:00",
+    "description": "This document describes the construction of library:thomas-gingeras:296639",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "26101df8-bc08-4317-9591-77282711582b",
+    "urls": [
+        "http://www.illumina.com/products/truseq_small_rna_sample_prep_kit.html"
+    ],
+    "uuid": "7feb0ace-54b1-4db7-a32d-df4c78297ae9"
+},
+{
+    "aliases": [
+        "encode:ENCLB555ANG_protocol",
+        "thomas-gingeras:LID8969_protocol"
+    ],
+    "attachment": "LID8969.pdf",
+    "award": "U54HG004557",
+    "date_created": "2013-11-21T22:21:27.655086+00:00",
+    "description": "Specific protocol for library ENCLB555ANG",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "82e4c842-cba3-46f3-9660-e3c475b6ea40"
+},
+{
+    "aliases": [
+        "encode:ENCLB555ARW_protocol",
+        "thomas-gingeras:LID8968_protocol"
+    ],
+    "attachment": "LID8968.pdf",
+    "award": "U54HG004557",
+    "date_created": "2013-11-21T22:21:27.479782+00:00",
+    "description": "Specific protocol for library ENCLB555ARW",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "839d1ddc-117c-4e2c-8708-c392d6d3403e"
+},
+{
+    "aliases": [
+        "encode:NHDF-neo_Stam_protocol"
+    ],
+    "attachment": "NHDF-neo_Stam_protocol.pdf",
+    "award": "U54HG004592",
+    "date_created": "2013-09-13T13:29:15.993230-08:00",
+    "description": "Propagation of Neonatal Human Dermal Fibroblasts (Lonza Bioscience) Protocol",
+    "document_type": "growth protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "urls": [],
+    "uuid": "84365d93-1efd-4e0a-8fe6-43af5fcaff73"
+},
+{
+    "aliases": [
+        "gtex:ENC-QWZ-SVS-81802"
+    ],
+    "attachment": "GTEx Tissue Harvesting Work Instruction.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-10-07T22:20:33.561206+00:00",
+    "description": "High-resolution whole slide digital images of pathological specimens (SVS format). Digital images in SVS format can be viewed with Aperio's ImageScope viewer.",
+    "document_type": "high resolution pathology slide image",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "859814a6-ac96-4aab-8a76-aa1086949b71"
+},
+{
+    "aliases": [
+        "encode:Antibody_Characterization_ENCODE3_February2014.pdf"
+    ],
+    "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
+    "award": "U54HG006996",
+    "date_created": "2014-07-29T20:45:05.846855+00:00",
+    "description": "Antibody Characterization Standards (Feb 2014)",
+    "document_type": "standards document",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "88dc12f7-c72d-4b43-a6cd-c6f3a9d08821"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of WCE in human hES I3 TESR cells_Sep-15-2010_6776_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of WCE in human hES I3 TESR cells||Wed Sep 15 09:37:39 -0500 2010||6776.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:05:36.747921+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "8b431209-600b-4e44-b081-a01cae294224"
+},
+{
+    "aliases": [],
+    "attachment": "EP300_MassSpecCaption.docx.pdf",
+    "award": "U54HG006998",
+    "date_created": "2017-06-15T01:20:42.619520+00:00",
+    "description": "Secondary antibody characterization of ENCAB284TTY",
+    "document_type": "standards document",
+    "lab": "richard-myers",
+    "notes": "Secondary antibody characterization of ENCAB284TTY",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "ca8ac763-9a72-4377-9a09-97d913e569c0",
+    "urls": [],
+    "uuid": "8e316928-8465-4072-a506-143cfba42ece"
+},
+{
+    "aliases": [
+        "john-stamatoyannopoulos:CulturedCellDNaseEtc"
+    ],
+    "attachment": "Culturedcells_SOP_nuclei_DNase_crosslink_RNA_V1.pdf",
+    "award": "U54HG007010",
+    "date_created": "2015-03-13T20:29:01.968692+00:00",
+    "description": "Cultured cells: nuclei, DNaseI treatment, crosslinking, and preserving cells for RNA",
+    "document_type": "other",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "d730c730-c7fa-4c98-a916-850edfad52a2",
+    "urls": [],
+    "uuid": "926174f5-d14c-4e77-bc52-5517b56daac0"
+},
+{
+    "aliases": [
+        "encode:wgEncodeUwHistone"
+    ],
+    "attachment": "wgEncodeUwHistone.release5.html.pdf",
+    "award": "U54HG004592",
+    "date_created": "2014-10-16T20:33:56.590351+00:00",
+    "description": "Track description for UCSC Genome Browser composite track hg19/wgEncodeUwHistone",
+    "document_type": "general protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "92cd1386-ccad-450a-b5a6-ad49983e7e3f"
+},
+{
+    "aliases": [
+        "encode:wgEncodeUwHistone.release5.ht9ml.pdf"
+    ],
+    "attachment": "wgEncodeUwHistone.release5.html.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-05-13T22:47:24.974507+00:00",
+    "description": "AutoSQL specification for the narrowPeak format",
+    "document_type": "file format specification",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "948203bb-8eb2-42a2-8b12-1c10f356c998"
+},
+{
+    "aliases": [],
+    "attachment": "WGBS pipeline overview.pdf",
+    "award": "U24HG009397",
+    "date_created": "2017-03-22T03:42:41.724272+00:00",
+    "description": "WGBS pipeline: Includes overview, references, and spike-ins information about the pipeline",
+    "document_type": "pipeline protocol",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "85978cd9-131e-48e2-a389-f752ab05b0a6",
+    "urls": [],
+    "uuid": "964e2676-d0be-4b5d-aeec-f4f02310b221"
+},
+{
+    "aliases": [
+        "thomas-gingeras:296289_protocol"
+    ],
+    "attachment": "296289.pdf",
+    "award": "U54HG007004",
+    "date_created": "2016-01-29T15:45:21.740062+00:00",
+    "description": "This document describes the construction of library:thomas-gingeras:296289",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [
+        "a66aada1-0a84-4ba6-9f00-06758cf7390a",
+        "f6f6a405-e284-4e5a-93b4-524ac2000854"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "26101df8-bc08-4317-9591-77282711582b",
+    "urls": [],
+    "uuid": "9c1a84e1-25c9-42ad-8c2b-7c34f9efd886"
+},
+{
+    "aliases": [],
+    "attachment": "WGBS_V4_protocol.pdf",
+    "award": "U54HG006998",
+    "date_created": "2017-11-16T21:07:34.975839+00:00",
+    "description": "This document describes the WGBS protocol used by the Mendenhall lab",
+    "document_type": "general protocol",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "ca6e2de3-a6bd-4fce-8b6d-52ef41e7c0c5",
+    "urls": [],
+    "uuid": "9d9cbba0-5ebe-482b-9fa3-d93a968a7045"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K36me3 in human hES-I3 cells_Mar-03-2010_68512_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K36me3 in human hES-I3 cells||Wed Mar 03 17:10:59 -0600 2010||68512.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:02:53.933920+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "9f301d1f-ecd8-43ff-ac59-78acf93bd9e2"
+},
+{
+    "aliases": [],
+    "attachment": "ENCDO845WKR_collection_times.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-04-21T22:08:04.546848+00:00",
+    "description": "Per-tissue collection times for ENCDO845WKR",
+    "document_type": "general protocol",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+    "urls": [],
+    "uuid": "a3ee0bcf-48e3-4173-a23e-28a370090f00"
+},
+{
+    "aliases": [],
+    "attachment": "RSEM_quantifications_specifications.txt",
+    "award": "U41HG006992",
+    "date_created": "2018-07-16T18:52:49.298345+00:00",
+    "description": "File format specification file for RSEM quantifications",
+    "document_type": "file format specification",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "urls": [],
+    "uuid": "a4a6caad-61ab-4d35-820a-409cadce1121"
+},
+{
+    "aliases": [],
+    "attachment": "EN-TEx ChIP-seq Protocol - Myers Lab.pdf",
+    "award": "U54HG006998",
+    "date_created": "2016-11-02T21:45:52.665996+00:00",
+    "description": "ENTEx ChIP-seq protocol, ENCODE3, Myers Lab",
+    "document_type": "extraction protocol",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "urls": [],
+    "uuid": "a59e54bc-ec64-4401-8cf6-b60161e1eae9"
+},
+{
+    "aliases": [],
+    "attachment": "ENC_Case-1_QWZ_PRCcsr_Redacted.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-19T21:14:51.530403+00:00",
+    "description": "PRC Case Summary Report For Case 1",
+    "document_type": "general protocol",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "urls": [],
+    "uuid": "a82cf1e6-3062-496d-864b-68fb66b65b4e"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me3 in human hES-I3 cells_Mar-03-2010_27521_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K4me3 in human hES-I3 cells||Wed Mar 03 13:01:42 -0600 2010||27521.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:04:03.909584+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "ae4487a7-d818-4cde-ab33-6cbd4b234f01"
+},
+{
+    "aliases": [],
+    "attachment": "ENC_Case-4_DEJ_TRF_revised.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-19T21:19:18.187137+00:00",
+    "description": "GTEx ENCODE Tissue Recovery Form II, Case 4",
+    "document_type": "general protocol",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "urls": [],
+    "uuid": "b9458ca9-fc02-4b57-96e5-f82effea7bde"
+},
+{
+    "aliases": [
+        "encode:bedMethyl.as"
+    ],
+    "attachment": "ENC_Case-4_DEJ_TRF_revised.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-05-13T22:46:11.553552+00:00",
+    "description": "AutoSQL specification for the bedMethyl format",
+    "document_type": "file format specification",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "bd8553e4-f49a-4f42-b93c-56b3235c1e9a"
+},
+{
+    "aliases": [
+        "bradley-bernstein:Alternative Mag Bead ChIP_RI v1.1 exp"
+    ],
+    "attachment": "Epigenomics_Alternative_Mag_Bead_ChIP_Protocol_v1.1_exp.pdf",
+    "award": "U54HG006991",
+    "date_created": "2014-02-20T04:37:35.500893+00:00",
+    "description": "Epigenomics Alternative Mag Bead ChIP Protocol v1.1 exp",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "f1843c60-e027-4b18-8582-64d3f3eae45b",
+    "urls": [],
+    "uuid": "be2a0f12-af38-430c-8f2d-57953baab5f5"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me1 in human hES-I3 cells_Mar-03-2010_44115_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K4me1 in human hES-I3 cells||Wed Mar 03 19:54:27 -0600 2010||44115.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:03:28.267371+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "c074c060-8f7e-416a-b6d9-4e9b519b7b76"
+},
+{
+    "aliases": [
+        "gtex:ENC-QWZ-SVS"
+    ],
+    "attachment": "image to tissue mapping public.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-10-10T00:06:10.462742+00:00",
+    "description": "Mapping of high resolution images (SVS format) ids to tissues",
+    "document_type": "data sheet",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "c530ba5c-4343-49bc-898b-5579c287a67e"
+},
+{
+    "aliases": [
+        "encode:TF_Antibody_Characterization_ENCODE3_May2016.pdf"
+    ],
+    "attachment": "ENCODE_Approved_May_2016_TF_Antibody Characterization_Guidelines.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-05-27T21:16:50.255770+00:00",
+    "description": "TF Antibody Characterization Standards (May 2016)",
+    "document_type": "standards document",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "c7cb0632-7e5f-455e-9119-46a54f160711"
+},
+{
+    "aliases": [
+        "thomas-gingeras:LID8967_protocol",
+        "encode:ENCLB555AOG_protocol"
+    ],
+    "attachment": "LID8967.pdf",
+    "award": "U54HG004557",
+    "date_created": "2013-11-21T22:21:27.294553+00:00",
+    "description": "Specific protocol for library ENCLB555AOG",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "cb3339fe-e4c8-4f00-989c-1e192350b97f"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K27me3 in human hES-I3 cells_Mar-03-2010_71046_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K27me3 in human hES-I3 cells||Wed Mar 03 09:55:39 -0600 2010||71046.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:02:15.898849+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "ccad8209-dd92-4b42-97e6-3c680b9f8a87"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9ac in human hES-I3 cells_Mar-03-2010_32191_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K9ac in human hES-I3 cells||Wed Mar 03 18:55:02 -0600 2010||32191.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:04:27.639258+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "ce01a71d-027e-4f68-905a-bd4d54849d33"
+},
+{
+    "aliases": [
+        "encode:wgEncodeUwDnase"
+    ],
+    "attachment": "wgEncodeUwDnase.release6.html.pdf",
+    "award": "U54HG004592",
+    "date_created": "2014-10-16T20:33:56.347588+00:00",
+    "description": "Track description for UCSC Genome Browser composite track hg19/wgEncodeUwDnase",
+    "document_type": "general protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "cf7e558d-817a-48bc-9933-9c068b48ff5a"
+},
+{
+    "aliases": [
+        "richard-myers:ASH1L",
+        "richard-myers:EED-K-3",
+        "richard-myers:HIPK1-K-2",
+        "richard-myers:HIVEP1",
+        "richard-myers:MGA",
+        "richard-myers:MLL",
+        "richard-myers:NFAT5",
+        "richard-myers:RBPJ-3",
+        "richard-myers:ZMYM3-2",
+        "richard-myers:F10-K-2"
+    ],
+    "attachment": "K562_Mouse_166-432kDa_sorted_input.txt",
+    "award": "U54HG006998",
+    "date_created": "2016-03-24T20:34:54.785543+00:00",
+    "description": "The raw data input for the fold enrichment calculation, Mouse 166-432 kDa.",
+    "document_type": "data sheet",
+    "lab": "richard-myers",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "9851ccbc-2df9-4529-a4f3-90edee981fc0",
+    "urls": [],
+    "uuid": "d3fa1e9b-aa29-41c6-b95c-7a02b79000bf"
+},
+{
+    "aliases": [],
+    "attachment": "ENC_Case-1_QWZ_2 0 TRF.pdf",
+    "award": "U54HG006996",
+    "date_created": "2016-10-19T21:13:41.090072+00:00",
+    "description": "GTEx ENCODE Tissue Recovery Form II, Case 1",
+    "document_type": "general protocol",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "urls": [],
+    "uuid": "d8c51d0e-febb-4cc2-9237-5a0ace71291a"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K4me3 in human hES I3 TESR cells_Mar-03-2010_48104_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K4me3 in human hES I3 TESR cells||Wed Mar 03 10:56:44 -0600 2010||48104.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:04:04.133387+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "d8f059ac-d22a-4e5d-adde-8879d2604755"
+},
+{
+    "aliases": [
+        "thomas-gingeras:296296_protocol"
+    ],
+    "attachment": "296296.pdf",
+    "award": "U54HG007004",
+    "date_created": "2016-01-29T15:39:03.773103+00:00",
+    "description": "This document describes the construction of library:thomas-gingeras:296296",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [
+        "a66aada1-0a84-4ba6-9f00-06758cf7390a",
+        "f6f6a405-e284-4e5a-93b4-524ac2000854"
+    ],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "26101df8-bc08-4317-9591-77282711582b",
+    "urls": [],
+    "uuid": "da79b00c-e3f4-4a78-b9ff-02340bab044d"
+},
+{
+    "aliases": [
+        "encode:Antibody_Characterization_ENCODE3_August2015.pdf"
+    ],
+    "attachment": "Antibody_Characterization_ENCODE3_August2015.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-08-05T20:54:18.845683+00:00",
+    "description": "Antibody Characterization Standards (August 2015)",
+    "document_type": "standards document",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "e7c46221-861b-4687-ab2c-6c5269223c5c"
+},
+{
+    "aliases": [],
+    "attachment": "Multiconsensus from rIgG 1rep+CTCF 1rep.txt",
+    "award": "U54HG006996",
+    "date_created": "2016-06-27T18:10:40.938708+00:00",
+    "description": "List of peptides detected by mass-spec when IP'd with ENCAB000AXU",
+    "document_type": "other",
+    "lab": "michael-snyder",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+    "urls": [],
+    "uuid": "e95e2b58-ff58-4fc9-a69e-a141fffc898c"
+},
+{
+    "aliases": [
+        "encode:ENCLB555ANH_protocol",
+        "thomas-gingeras:LID8970_protocol"
+    ],
+    "attachment": "LID8970.pdf",
+    "award": "U54HG004557",
+    "date_created": "2013-11-21T22:21:27.886089+00:00",
+    "description": "Specific protocol for library ENCLB555ANH",
+    "document_type": "general protocol",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "eb84ab16-6202-44ee-84f5-d67b241f94db"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types_May-18-2011_7074_protocol"
+    ],
+    "attachment": "Affymetrix HG-U133 arrays of NIH Epigenomics Roadmap Cell Types||Wed May 18 08:56:27 -0500 2011||7074.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:00:14.069204+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "f00f4a80-c3fd-407c-a1a2-9d4600af039c"
+},
+{
+    "aliases": [
+        "encode:wgEncodeUwTfbs"
+    ],
+    "attachment": "wgEncodeUwTfbs.release3.html.pdf",
+    "award": "U54HG004592",
+    "date_created": "2014-10-16T20:33:56.832889+00:00",
+    "description": "Track description for UCSC Genome Browser composite track hg19/wgEncodeUwTfbs",
+    "document_type": "general protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "f2013c2b-4e13-46e9-be5a-9f941f328d2e"
+},
+{
+    "aliases": [
+        "encode:broadPeak.as"
+    ],
+    "attachment": "ENC_Case-4_DEJ_TRF_revised.pdf",
+    "award": "U54HG006996",
+    "date_created": "2015-05-13T22:46:48.531525+00:00",
+    "description": "AutoSQL specification for the broadPeak format",
+    "document_type": "file format specification",
+    "lab": "encode-consortium",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "8b1f8780-b5d6-4fb7-a5a2-ddcec9054288",
+    "urls": [],
+    "uuid": "f4e14cde-9ce2-49cf-a7aa-341d7811a463"
+},
+{
+    "aliases": [
+        "roadmap-epigenomics:ChIP-Seq analysis of H3K9me3 in human hES-I3 cells_Mar-03-2010_60602_protocol"
+    ],
+    "attachment": "ChIP-Seq analysis of H3K9me3 in human hES-I3 cells||Wed Mar 03 12:26:10 -0600 2010||60602.txt",
+    "award": "U01ES017155",
+    "date_created": "2014-12-09T22:04:58.513054+00:00",
+    "description": "",
+    "document_type": "general protocol",
+    "lab": "bradley-bernstein",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "f66d2c01-da3c-4a42-9b6d-62acffd06432"
+},
+{
+    "aliases": [
+        "encode:Stam_15_protocols"
+    ],
+    "attachment": "Stam_15_protocols.pdf",
+    "award": "U54HG004592",
+    "date_created": "2013-09-13T13:29:32.673494-08:00",
+    "description": "UW ENCODE Project - Cell Culture SOPs (15 total cell lines)",
+    "document_type": "growth protocol",
+    "lab": "john-stamatoyannopoulos",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "ec729133-c5f3-4c53-be5b-a5ea73a367dd",
+    "urls": [],
+    "uuid": "f704939d-1784-4856-9abd-434ca9336feb"
+},
+{
+    "aliases": [],
+    "attachment": "human_P300_SC-585_validation_Myers.pdf",
+    "award": "U54HG004576",
+    "date_created": "2016-02-04T23:03:04.478087+00:00",
+    "description": "EP300 Antibody characterization document",
+    "document_type": "data QA",
+    "lab": "richard-myers",
+    "notes": "for ENCAB000AJM",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "eb26c7d8-cdb4-4370-8c6b-204b441ef987",
+    "urls": [],
+    "uuid": "f78a51aa-d2c2-431b-abe5-e3fd6cc5bb65"
+},
+{
+    "aliases": [
+        "gtex:ENC-DEJ-SVS-84269"
+    ],
+    "award": "U54HG004576",
+    "attachment": "human_P300_SC-585_validation_Myers.pdf",
+    "date_created": "2015-10-08T00:17:16.697010+00:00",
+    "description": "High-resolution whole slide digital images of pathological specimens (SVS format). Digital images in SVS format can be viewed with Aperio's ImageScope viewer.",
+    "document_type": "high resolution pathology slide image",
+    "lab": "j-michael-cherry",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "98fb23d3-0d79-4c3d-981d-01539e6589f1",
+    "urls": [],
+    "uuid": "f8b74c7e-cf6f-47be-9589-d693effd4258"
+},
+{
+    "aliases": [
+        "thomas-gingeras:NistPool14Concentrations"
+    ],
+    "attachment": "human_P300_SC-585_validation_Myers.pdf",
+    "award": "U54HG007004",
+    "date_created": "2014-03-26T00:01:24.963509+00:00",
+    "description": "NIST ERCC Pool 14 spike-in concentrations",
+    "document_type": "spike-in concentrations",
+    "lab": "thomas-gingeras",
+    "references": [],
+    "schema_version": "8",
+    "status": "released",
+    "submitted_by": "0abbd494-b852-433c-b360-93996f679dae",
+    "urls": [],
+    "uuid": "f96a19a6-dc66-4023-993a-f4c28af3d8e2"
+}
 ]
