@@ -117,7 +117,21 @@ organ_slims = {
     'UBERON:0000483': 'epithelium',
     'UBERON:0002407': 'pericardium',
     'UBERON:0001744': 'lymphoid tissue',
-    'UBERON:0001155': 'colon'
+    'UBERON:0001155': 'colon',
+    'UBERON:0003547': 'brain meninx',
+    'UBERON:0001350': 'coccyx',
+    'UBERON:0002368': 'endocrine gland',
+    'UBERON:0002365': 'exocrine gland',
+    'UBERON:0002073': 'hair follicle',
+    'UBERON:0005057': 'immune organ',
+    'UBERON:0001817': 'lacrimal gland',
+    'UBERON:0002182': 'main bronchus',
+    'UBERON:0001829': 'major salivary gland',
+    'UBERON:0000414': 'mucous gland',
+    'UBERON:0001821': 'sebaceous gland',
+    'UBERON:0000998': 'seminal vesicle',
+    'UBERON:0001820': 'sweat gland'
+
 }
 
 cell_slims = {
