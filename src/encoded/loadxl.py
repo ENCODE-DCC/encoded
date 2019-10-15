@@ -97,7 +97,8 @@ ORDER = [
     'gencode_category_quality_metric',
     'image',
     'page',
-    'cart'
+    'cart',
+    'access_key',
 ]
 
 IS_ATTACHMENT = [

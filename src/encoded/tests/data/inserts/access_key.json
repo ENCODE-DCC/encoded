@@ -1,0 +1,9 @@
+[
+    {
+        "uuid": "0abbd123-b456-433c-b360-93996f679dae",
+        "user": "/users/3787a0ac-f13a-40fc-a524-69628b04cd59/",
+        "description": "Unencrypted secret key is 'bazqux', hashed using edw_hash. To use with cURL to make admin requests, pass -u foobar:bazqux",
+        "access_key_id": "foobar",
+        "secret_access_key_hash": "45c9H91zyXXZr4KFADhZzr2QFLgnbDT3OPFZOVFRiNhbYB9OujH5ceZIJn9mEYAe"
+    }
+]
