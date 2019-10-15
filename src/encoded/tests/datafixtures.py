@@ -919,7 +919,7 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam):
 
 
 @pytest.fixture
-def pipeline_noassay_bam(testapp, lab, award, analysis_step_bam):
+def pipeline_without_assay_term_names_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
