@@ -1,34 +1,38 @@
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var webpack = require('webpack');
+const gulp = require('gulp');
+const log = require('fancy-log');
+const webpack = require('webpack');
 
-
-gulp.task('default', ['webpack', 'watch']);
-gulp.task('dev', ['default']);
-gulp.task('build', ['set-production', 'webpack']);
-
-gulp.task('set-production', [], function () {
-  process.env.NODE_ENV = 'production';
-});
-
-var webpackOnBuild = function (done) {
-  return function (err, stats) {
-    if (err) {
-      throw new gutil.PluginError("webpack", err);
+const setProduction = (cb) => {
+    process.env.NODE_ENV = 'production';
+    if (cb) {
+        cb();
     }
-    gutil.log("[webpack]", stats.toString({
-      colors: true
-    }));
-    if (done) { done(err); }
-  };
 };
 
-gulp.task('webpack', [], function (cb) {
-  var webpackConfig = require('./webpack.config.js');
-  webpack(webpackConfig).run(webpackOnBuild(cb));
-});
+const webpackOnBuild = done => (err, stats) => {
+    if (err) {
+        throw new log.error(err);
+    }
+    log(stats.toString({
+        colors: true,
+    }));
+    if (done) {
+        done(err);
+    }
+};
 
-gulp.task('watch', [], function (cb) {
-  var webpackConfig = require('./webpack.config.js');
-  webpack(webpackConfig).watch(300, webpackOnBuild());
-});
+const webpackSetup = (cb) => {
+    const webpackConfig = require('./webpack.config.js');
+    webpack(webpackConfig).run(webpackOnBuild(cb));
+};
+
+const watch = (cb) => {
+    const webpackConfig = require('./webpack.config.js');
+    webpack(webpackConfig).watch(300, webpackOnBuild(cb));
+};
+
+const series = gulp.series;
+
+gulp.task('default', series(webpackSetup, watch));
+gulp.task('dev', series('default'));
+gulp.task('build', series(setProduction, webpackSetup));
