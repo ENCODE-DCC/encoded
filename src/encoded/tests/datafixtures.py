@@ -325,30 +325,28 @@ def base_experiment(testapp, lab, award, heart):
 
 
 @pytest.fixture
-def micro_rna_experiment(
-    testapp,
-    base_experiment,
-    replicate_1_1,
-    replicate_2_1,
-    library_1,
-    library_2,
-    biosample_1,
-    biosample_2,
-    mouse_donor_1,
-    file_fastq_3,
-    file_fastq_4,
-    file_bam_1_1,
-    file_bam_2_1,
-    file_tsv_1_1,
-    file_tsv_1_2,
-    spearman_correlation_quality_metric,
-    micro_rna_quantification_quality_metric_1_2,
-    micro_rna_mapping_quality_metric_2_1,
-    analysis_step_run_bam,
-    analysis_step_version_bam,
-    analysis_step_bam,
-    pipeline_bam
-):
+def micro_rna_experiment(testapp,
+                        base_experiment,
+                        replicate_1_1,
+                        replicate_2_1,
+                        library_1,
+                        library_2,
+                        biosample_1,
+                        biosample_2,
+                        mouse_donor_1,
+                        file_fastq_3,
+                        file_fastq_4,
+                        file_bam_1_1,
+                        file_bam_2_1,
+                        file_tsv_1_1,
+                        file_tsv_1_2,
+                        spearman_correlation_quality_metric,
+                        micro_rna_quantification_quality_metric_1_2,
+                        micro_rna_mapping_quality_metric_2_1,
+                        analysis_step_run_bam,
+                        analysis_step_version_bam,
+                        analysis_step_bam,
+                        pipeline_bam):
     testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
     testapp.patch_json(

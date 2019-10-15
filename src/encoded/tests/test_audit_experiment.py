@@ -1856,7 +1856,7 @@ def test_audit_experiment_micro_rna_standards(
     testapp.patch_json(spearman_correlation_quality_metric['@id'], {'Spearman correlation': 0.99})
     testapp.patch_json(micro_rna_quantification_quality_metric_1_2['@id'], {'expressed_mirnas': 1000000})
     testapp.patch_json(micro_rna_mapping_quality_metric_2_1['@id'], {'aligned_reads': 10000000})
-    res = testapp.get(micro_rna_experiment['@id'] + '@@index-data')
+    res = testapp.get(micro_rna_experiment.json['object']['@id'] + '@@index-data')
     errors = collect_audit_errors(res)
     for audit in expected_audits:
         assert not any(
