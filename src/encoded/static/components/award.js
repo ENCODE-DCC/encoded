@@ -2037,7 +2037,7 @@ class CumulativeGraph extends React.Component {
                         xAxes: [{
                             ticks: {
                                 autoSkip: true,
-                                maxTicksLimit: 15, // sets maximum number of x-axis labels
+                                maxTicksLimit: 25, // sets maximum number of x-axis labels
                             },
                         }],
                         yAxes: [{
