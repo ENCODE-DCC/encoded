@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 9
 
-* *queried_RNP_size_range* property is added, the property captures ribonucleoprotein size range for eCLIP controls.
+* *queried_RNP_size_range* property is added, the property captures ribonucleoprotein size range targeted in the assay the library was constructed for.
 
 ### Schema version 9
 
