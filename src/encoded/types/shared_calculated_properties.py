@@ -511,27 +511,19 @@ class CalculatedReplicationType:
             'deleted',
             'replaced',
         )
-        filtered_file_objects = [
-            request.embed(f, '@@object')
-            for f in paths_filtered_by_status(
-                request,
-                original_files,
-                exclude=excluded_statuses
-            )
-        ]
-        related_replicates_from_filtered_files = [
-            f.get('replicate')
-            for f in filtered_file_objects 
-            if f.get('replicate') and f.get('replicate') in replicates
-        ]
-        filtered_replicate_objects = [
-            request.embed(r, '@@object')
-            for r in paths_filtered_by_status(
-                request,
-                related_replicates_from_filtered_files,
-                exclude=excluded_statuses,
-            )
-        ]
+        related_replicates_from_filtered_files = set()
+        for f in original_files:
+            file_object = request.embed(f, '@@object')
+            if ((file_object['status'] not in excluded_statuses) and 
+                file_object.get('replicate') and
+                (file_object.get('replicate') in replicates)):
+                related_replicates_from_filtered_files.add(file_object.get('replicate'))
+        filtered_replicate_objects = []
+        for r in related_replicates_from_filtered_files:
+            replicate_object = request.embed(r, '@@object')
+            if replicate_object['status'] not in excluded_statuses:
+                filtered_replicate_objects.append(replicate_object)
+
         bio_rep_dict = {}
         for r in filtered_replicate_objects:
             bio_rep_num = r['biological_replicate_number']
