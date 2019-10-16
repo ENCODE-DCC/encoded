@@ -7,7 +7,7 @@ import multiprocessing as mp
 
 EPILOG = __doc__
 
-_HGNC_FILE = 'https://test.encodedcc.org/files/TSTFF536342/@@download/TSTFF536342.tsv'
+_HGNC_FILE = 'https://www.encodeproject.org/files/ENCFF623FUK/@@download/ENCFF623FUK.tsv'
 _MOUSE_FILE = 'https://www.encodeproject.org/files/ENCFF097CIT/@@download/ENCFF097CIT.tsv'
 _DM_FILE = 'https://www.encodeproject.org/files/ENCFF311QAL/@@download/ENCFF311QAL.tsv'
 _CE_FILE = 'https://www.encodeproject.org/files/ENCFF324UJT/@@download/ENCFF324UJT.tsv'
