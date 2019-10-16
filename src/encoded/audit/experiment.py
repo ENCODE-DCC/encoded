@@ -412,7 +412,8 @@ def audit_experiment_mixed_libraries(value, system, excluded_types):
 
 def audit_experiment_pipeline_assay_details(value, system, files_structure):
     for pipeline in get_pipeline_objects(files_structure.get('original_files').values()):
-        if value.get('assay_term_name') not in pipeline['assay_term_names']:
+        pipeline_assays = pipeline.get('assay_term_names')
+        if not pipeline_assays or value.get('assay_term_name') not in pipeline_assays:
             detail = ('This experiment '
                 'contains file(s) associated with '
                 'pipeline {} which assay_term_names list '

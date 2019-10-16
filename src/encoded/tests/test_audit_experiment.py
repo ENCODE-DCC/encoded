@@ -1303,6 +1303,23 @@ def test_audit_experiment_pipeline_assay_term_name_consistency(
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_pipeline_without_assay_term_names(
+        testapp,
+        experiment, bam_file,
+        analysis_step_run_bam,
+        analysis_step_version_bam,
+        analysis_step_bam,
+        pipeline_without_assay_term_names_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    testapp.patch_json(pipeline_without_assay_term_names_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent assay_term_name'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_replicate_with_no_files(testapp,
                                                   base_experiment,
                                                   base_replicate,
