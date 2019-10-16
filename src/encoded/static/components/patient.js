@@ -6,6 +6,7 @@ import { Breadcrumbs } from './navigation';
 import { RelatedItems } from './item';
 import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
+import { CartToggle } from './cart';
 import Status from './status';
 import LabChart from "./LabChart";
 
