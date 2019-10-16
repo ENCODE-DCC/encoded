@@ -5,6 +5,7 @@
 * *groups* property was restricted to one of  
     "enum" : [
         "admin",
+        "read-only-admin",
         "verified"
     ]
 

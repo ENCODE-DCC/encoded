@@ -51,6 +51,8 @@ def user_8_9(value, system):
         for grp in value['groups']:
             if grp == 'admin':
                 new_groups.append(grp)
+            elif grp == 'read-only-admin':
+                new_groups.append(grp)
             elif grp == 'verified':
                 new_groups.append(grp)
             else:

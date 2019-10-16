@@ -80,7 +80,7 @@ def user_8(user):
     item.update({
         'schema_version': '3',
         'viewing_groups': ['ENCODE'],
-        'groups': ['admin', 'wrangler'],
+        'groups': ['admin', 'verified', 'wrangler'],
     })
     return item
 
@@ -89,4 +89,5 @@ def test_user_upgrade_8_to_9(upgrader, user_8):
     value = upgrader.upgrade('user', user_8, current_version='8', target_version='9')
     assert value['schema_version'] == '9'
     assert 'admin' in value['groups']
+    assert 'verified' in value['groups']
     assert 'wrangler' not in value['groups']

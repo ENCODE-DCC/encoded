@@ -64,6 +64,7 @@
                 "type": "string",
                 "enum": [
                     "admin",
+                    "read-only-admin",
                     "verified"
                 ]
             }
