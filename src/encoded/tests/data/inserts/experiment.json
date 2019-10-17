@@ -727,19 +727,6 @@
         "uuid": "6dde71b6-555c-4bed-9bb7-7bec3771893b"
     },
     {
-        "_test": "STARR-seq test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "STARR-seq",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751STR",
-        "uuid": "a4460c54-aece-43d2-bf52-dbaaa9298aaa"
-    },
-    {
         "_test": "PLAC-seq test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
@@ -752,19 +739,6 @@
         "target": "Control-human",
         "accession": "ENCSR751STT",
         "uuid": "03485813-0362-41f0-afd5-2bef9f5c52ef"
-    },
-    {
-        "_test": "MPRA test",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "award": "U54HG007010",
-        "assay_term_name": "MPRA",
-        "lab": "/labs/john-stamatoyannopoulos/",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751STU",
-        "uuid": "e828ec77-8f74-438f-8bf7-8535ee34819e"
     },
     {
         "_test": "microRNA test",

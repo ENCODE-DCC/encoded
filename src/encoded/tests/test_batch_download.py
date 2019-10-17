@@ -363,7 +363,7 @@ def test_batch_download_report_download(testapp, workbook):
     #     b'', b'', b'', b'', b'', b'', b'', b'', b'',
     #     b'', b'', b'', b'', b'', b'', b''
     # ]
-    assert len(lines) == 52
+    assert len(lines) == 50
 
 
 def test_batch_download_matched_set_report_download(testapp, workbook):
