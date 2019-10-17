@@ -204,3 +204,36 @@ def test_file_derived_replicate_libraries(testapp, fastq_pair_1, library, bam_fi
     testapp.patch_json(bam_file['@id'], {'derived_from': [res.json['@id']]})
     res = testapp.get(bam_file['@id'] + '@@index-data')
     assert res.json['object']['replicate_libraries'] == [library['@id']]
+
+
+def test_file_calculated_assay_term_name(testapp, fastq_pair_1):
+    r = testapp.post_json('/file', fastq_pair_1, status=201)
+    file_id = r.json['@graph'][0]['@id']
+    r = testapp.get(file_id)
+    assert r.json['assay_term_name'] == 'RNA-seq'
+
+
+def test_file_calculated_biosample_ontology(testapp, fastq_pair_1):
+    r = testapp.post_json('/file', fastq_pair_1, status=201)
+    file_id = r.json['@graph'][0]['@id']
+    r = testapp.get(file_id + '@@object')
+    assert r.json['biosample_ontology'] == '/biosample-types/cell-free_sample_NTR_0000471/'
+    r = testapp.get(file_id)
+    assert r.json['biosample_ontology']['name'] == 'cell-free_sample_NTR_0000471'
+
+
+def test_file_calculated_target(testapp, experiment, target_H3K27ac, fastq_pair_1):
+    testapp.patch_json(
+        experiment['@id'],
+        {
+            'assay_term_name': 'ChIP-seq',
+            'target': target_H3K27ac['@id']
+        }
+    )
+    r = testapp.post_json('/file', fastq_pair_1, status=201)
+    file_id = r.json['@graph'][0]['@id']
+    r = testapp.get(file_id + '@@object')
+    assert r.json['target'] == '/targets/H3K27ac-human/'
+    r = testapp.get(file_id)
+    assert r.json['target']['label'] == 'H3K27ac'
+    
