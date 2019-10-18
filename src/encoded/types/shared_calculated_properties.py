@@ -513,14 +513,14 @@ class CalculatedReplicationType:
         )
         related_replicates_from_filtered_files = set()
         for f in original_files:
-            file_object = request.embed(f, '@@object')
+            file_object = request.embed(f, '@@object?skip_calculated=true')
             if ((file_object['status'] not in excluded_statuses) and 
                 file_object.get('replicate') and
                 (file_object.get('replicate') in replicates)):
                 related_replicates_from_filtered_files.add(file_object.get('replicate'))
         filtered_replicate_objects = []
         for r in related_replicates_from_filtered_files:
-            replicate_object = request.embed(r, '@@object')
+            replicate_object = request.embed(r, '@@object?skip_calculated=true')
             if replicate_object['status'] not in excluded_statuses:
                 filtered_replicate_objects.append(replicate_object)
 
