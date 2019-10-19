@@ -609,7 +609,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in search(context, request)['@graph']:
+        for item in search(context, request).json['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
