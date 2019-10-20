@@ -53,7 +53,7 @@ jobs:
   npm-non-bdd-tests:
     executor: pandiseased-executor
     # indexing tests fail using default medium resource_class
-    resource_class: large
+    resource_class: medium
     parallelism: 2
     steps:
       - buildout
@@ -68,7 +68,7 @@ jobs:
               done | sort | circleci tests split | xargs -n 1 -t bin/test -v -v --timeout=400 -k
   bdd-tests:
     executor: pandiseased-executor
-    resource_class: large
+    resource_class: medium
     steps:
       - buildout
       # Use install tasks from the orb
