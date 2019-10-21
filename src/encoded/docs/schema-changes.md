@@ -156,10 +156,11 @@ Updating an existing schema
 
 There are two situations we need to consider when updating an existing schema:
 
-**No change in schema version**
+### No change on schema version
 
 * For some schema changes, there will be no change to the schema version. These will be some minor changes to the schema. One such example includes adding a new enum to an existing list of enums. Another example will be adding a new property to existing schemas.
-### No change on schema version
+
+**Follow the steps as outlined below**
 
 1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object.
 
@@ -167,7 +168,7 @@ There are two situations we need to consider when updating an existing schema:
 
 3. Update sample data, **data/inserts** directory, to test the changes made to the schema in **tests** directory. 
 
-**Update schema version**
+### Update schema version
 * In many other cases, a schema version update will be required. Examples of such cases include: cases where a property name is changed or if a previously existing property is removed from the schema. Hence, the previously existing objects will no longer validated with the new schema change. In addition, any new objects if posted using the old schema will no longer be valid after the schema update. 
 
 * Other examples include: when a property that allowed free text is now changed to a possible list of enums or if an existing enum is removed or if one object is migrated into another object.
@@ -176,7 +177,7 @@ There are two situations we need to consider when updating an existing schema:
 
 * In some situations even if we are not making any changes that may involve modifying existing properties and an upgrader step is not technically required; but if these involve several additional properties being added resulting in substantial schema changes, it is would be a good idea to update the schema version. For example if we are including ten new properties independent of the one's that already existed.
 
-### Update schema version
+**Follow the steps as outlined below**
 
 1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. Up until schema version 8 for library object, a submitter could specify only one fragmentation method. With the new change being implemented, we would like to allow a list of fragmentation methods to be specified. 
 
