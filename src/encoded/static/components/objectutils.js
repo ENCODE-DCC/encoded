@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import url from 'url';
 import { CartToggle } from './cart';
 import * as globals from './globals';
@@ -640,27 +641,25 @@ ImageWithFallback.propTypes = {
     imageAlt: PropTypes.string.isRequired,
 };
 
+
 /**
- * Display internal tag badges for collection pages
+ * Display internal tag badges from search results.
  */
 export const MatrixInternalTags = ({ context }) => {
-    // Collect internal tags that are filters
-    const internalTags = [];
-    context.filters.forEach((filter) => {
-        if (filter.field === 'internal_tags') {
-            if ((filter.term !== '*') && !internalTags.includes(filter.term)) {
-                internalTags.push(filter.term);
-            }
-        }
-    });
-    const tagBadges = internalTags.map(tag => (<ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />));
-    return <div className="matrix-tag">{tagBadges}</div>;
+    // Collect filters that are internal_tags.
+    const internalTags = _.uniq(context.filters.filter(filter => (
+        filter.field === 'internal_tags' && filter.term !== '*'
+    )).map(filter => filter.term));
+    return internalTags.map(tag => (
+        <ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />
+    ));
 };
 
 MatrixInternalTags.propTypes = {
-    /** encode object being displayed */
+    /** encode search-results object being displayed */
     context: PropTypes.object.isRequired,
 };
+
 
 /**
  * Given a search results object, extract the type of object that was requested in the query

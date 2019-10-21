@@ -3,6 +3,12 @@ $form-bg: #f3f3f3;
 
 // Contains all search result elements.
 .search-results {
+    @at-root #{&}__facets {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 25%;
+        }
+    }
+
     display: block;
 
     h4 {
@@ -15,13 +21,15 @@ $form-bg: #f3f3f3;
 
     .box.facets {
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 25%;
             margin-right: 10px;
         }
     }
 
     @at-root #{&}__result-list {
+        margin-top: 20px;
+
         @media screen and (min-width: $screen-md-min) {
+            margin-top: 0;
             flex: 0 1 75%;
             display: flex;
             flex-direction: column;
