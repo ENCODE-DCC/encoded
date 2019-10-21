@@ -124,8 +124,13 @@ class GenomeBrowser extends React.Component {
         if (BrowserFeat.getBrowserCaps('uaTrident')) {
             this.setState({ disableBrowserForIE: true });
         } else {
-            // Determine pinned files based on genome, filter and sort files, compute and draw tracks
-            this.setGenomeAndTracks();
+            // Load GenomeVisualizer library
+            // We have to wait for the component to mount because the library relies on window variable
+            require.ensure(['genome-visualizer'], (require) => {
+                this.GV = require('genome-visualizer');
+                // Determine pinned files based on genome, filter and sort files, compute and draw tracks
+                this.setGenomeAndTracks();
+            });
         }
     }
 
@@ -397,8 +402,7 @@ class GenomeBrowser extends React.Component {
     }
 
     drawTracks(container) {
-        // eslint-disable-next-line no-undef
-        const visualizer = new GenomeVisualizer({
+        const visualizer = new this.GV.GenomeVisualizer({
             clampToTracks: true,
             removableTracks: false,
             panels: [{
