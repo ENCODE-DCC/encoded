@@ -246,7 +246,7 @@ There are two situations we need to consider when updating an existing schema:
         #Schema version 8
         "fragmentation_methods": "sonication (Bioruptor Twin)",
 
-        #Schema version 9 Should be Changed to:
+        #Owing to schema version 9, the above should be changed to:
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
 
 4. Also,  add upgrade test to an existing/new python file named ```test_upgrade_{metadata_object}.py```. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
