@@ -241,10 +241,12 @@ There are two situations we need to consider when updating an existing schema:
                 value['fragmentation_methods'] = [value['fragmentation_method']]
                 value.pop('fragmentation_method')
 
-3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all fragmentation methods must now be a list. 
+3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all fragmentation methods must now be converted to a list object. So, we need to find every instance of fragmentation methods in the inserts and convert them accordingly. For example:
+
         #Schema version 8
         "fragmentation_methods": "sonication (Bioruptor Twin)",
-        #Schema version 9 Change to:
+
+        #Schema version 9 Should be Changed to:
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
 
 4. Also,  add upgrade test to an existing/new python file named ```test_upgrade_{metadata_object}.py```. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
