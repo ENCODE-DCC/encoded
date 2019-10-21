@@ -47,14 +47,5 @@ def user_7_8(value, system):
 @upgrade_step('user', '8', '9')
 def user_8_9(value, system):
     if 'groups' in value:
-        new_groups = []
-        for grp in value['groups']:
-            if grp == 'admin':
-                new_groups.append(grp)
-            elif grp == 'read-only-admin':
-                new_groups.append(grp)
-            elif grp == 'verified':
-                new_groups.append(grp)
-            else:
-                pass
+        new_groups = [group for group in value['groups'] if group in ['admin', 'verified', 'read-only-admin']]
         value['groups'] = new_groups

@@ -78,14 +78,13 @@ def test_user_upgrade_7_to_8(upgrader, user_3):
 def user_8(user):
     item = user.copy()
     item.update({
-        'schema_version': '3',
+        'schema_version': '8',
         'viewing_groups': ['ENCODE'],
         'groups': ['admin', 'verified', 'wrangler'],
     })
     return item
 
 def test_user_upgrade_8_to_9(upgrader, user_8):
-    user_8['schema_version'] = '8'
     value = upgrader.upgrade('user', user_8, current_version='8', target_version='9')
     assert value['schema_version'] == '9'
     assert 'admin' in value['groups']
