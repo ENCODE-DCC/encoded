@@ -107,14 +107,18 @@ class ViewControl {
      * not disallowed by the object type.
      * @param {string} type @type of object to register
      * @param {array} controlTypes Elements of ViewControlTypes to register
+     * @param {func} typeFilter Callback for type-specific filtering of views
      */
-    register(type, controlTypes) {
+    register(type, controlTypes, typeFilter) {
         const defaultViewControlTypes = [ViewControlTypes.SEARCH];
         if (!parentTypes.includes(type)) {
             // Add report view if object type has no child types.
             defaultViewControlTypes.push(ViewControlTypes.REPORT);
         }
-        this._registry[type] = new Set(controlTypes.concat(defaultViewControlTypes));
+        this._registry[type] = { types: new Set(controlTypes.concat(defaultViewControlTypes)) };
+        if (typeFilter) {
+            this._registry[type].typeFilter = typeFilter;
+        }
     }
 
     /**
@@ -128,14 +132,17 @@ class ViewControl {
     lookup(resultType) {
         if (this._registry[resultType]) {
             // Registered search result type. Sort and return saved views for that type.
-            return _.sortBy(Array.from(this._registry[resultType]), viewName => viewOrder.indexOf(viewName));
+            return {
+                types: _.sortBy(Array.from(this._registry[resultType].types), viewName => viewOrder.indexOf(viewName)),
+                typeFilter: this._registry[resultType].typeFilter,
+            };
         }
 
         // Unregistered search result type. Return all default views that apply to the type.
-        const defaultViewControlTypes = [ViewControlTypes.SEARCH];
+        const defaultViewControlTypes = { types: [ViewControlTypes.SEARCH] };
         if (!parentTypes.includes(resultType)) {
             // Add report view if object type has no child types.
-            defaultViewControlTypes.push(ViewControlTypes.REPORT);
+            defaultViewControlTypes.types.push(ViewControlTypes.REPORT);
         }
         return defaultViewControlTypes;
     }
@@ -183,7 +190,15 @@ export const ViewControls = ({ results, filterTerm }) => {
     if (typeFilters.length === 1) {
         // We'll get at least one `views` array element because /report/ is a view available to
         // every "type=" even if nothing has been registered for that type.
-        const views = ViewControlRegistry.lookup(typeFilters[0].term).filter(item => item !== results['@type'][0]);
+        let views;
+        const viewInfo = ViewControlRegistry.lookup(typeFilters[0].term);
+        if (viewInfo.typeFilter) {
+            // Custom type filter defined, so call that to get the relevant views.
+            views = viewInfo.typeFilter(viewInfo.types, results);
+        } else {
+            // No custom filter, so just get the default relevant views.
+            views = viewInfo.types.filter(item => item !== results['@type'][0]);
+        }
         const queryString = getQueryFromFilters(results.filters);
         return (
             <div className="btn-attached">

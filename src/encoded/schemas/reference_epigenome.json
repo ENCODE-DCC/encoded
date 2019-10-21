@@ -135,6 +135,10 @@
             "title": "Accession",
             "type": "string"
         },
+        "assay_term_name": {
+            "title": "Assay name",
+            "type": "string"
+        },
         "biosample_ontology.term_name" : {
             "title": "Biosample term name",
             "type": "string"

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import _ from 'underscore';
+import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanelReq } from './doc';
@@ -19,12 +20,33 @@ import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, A
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 
+/**
+ * 'Experiment' search results view-control filter. For most experiment searches, this just returns
+ * the default views for experiments. But if this displays the reference-epigenome matrix, it
+ * returns the subset of views relevant to those.
+ * @param {array} types Views defined by default for the Experiment @type.
+ * @param {object} results Current page's search-results object
+ *
+ * @return {array} Views that apply to the current search results.
+ */
+const viewControlFilter = (types, results) => {
+    let views;
+    const parsedUrl = url.parse(results['@id']);
+    if (parsedUrl.pathname === '/reference-epigenome-matrix/') {
+        views = ['Search', 'Report'];
+    } else {
+        views = types.filter(type => type !== results['@type'][0]);
+    }
+    return views;
+};
+
+
 ViewControlRegistry.register('Experiment', [
     ViewControlTypes.SEARCH,
     ViewControlTypes.MATRIX,
     ViewControlTypes.REPORT,
     ViewControlTypes.SUMMARY,
-]);
+], viewControlFilter);
 
 
 const anisogenicValues = [
@@ -276,7 +298,7 @@ const LibrarySubmitterComments = ({ replicates }) => {
 
 LibrarySubmitterComments.propTypes = {
     /** Replicates containing libraries whose comments we display */
-    replicates: PropTypes.array,
+    replicates: PropTypes.array.isRequired,
 };
 
 

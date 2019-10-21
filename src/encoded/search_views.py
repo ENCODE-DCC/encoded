@@ -38,6 +38,7 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -186,6 +187,35 @@ def matrix(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='reference-epigenome-matrix', request_method='GET', permission='search')
+def reference_epigenome_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Reference Epigenome Matrix'
+            ),
+            TypeResponseField(
+                at_type=['ReferenceEpigenomeMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='reference_epigenome'
             ),
             NotificationResponseField(),
             FiltersResponseField(),

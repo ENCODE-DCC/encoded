@@ -196,6 +196,17 @@ class Experiment(Dataset,
         }
     }
 
+    reference_epigenome = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
     audit = {
         'audit.ERROR.category': {
             'group_by': 'audit.ERROR.category',

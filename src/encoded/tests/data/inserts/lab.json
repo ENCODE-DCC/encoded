@@ -619,5 +619,16 @@
         "status": "current",
         "title": "ENCODE Processing Pipeline",
         "uuid": "a558111b-4c50-4b2e-9de8-73fd8fd3a67d"
+    },
+    {
+        "address1": "",
+        "awards": ["U41HG006992"],
+        "country": "",
+        "name": "encode-consortium",
+        "phone1": "",
+        "phone2": "",
+        "status": "current",
+        "title": "ENCODE Consortium",
+        "uuid": "cb0ef1f6-3bd3-4000-8636-1c5b9f7000dc"
     }
 ]
