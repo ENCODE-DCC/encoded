@@ -178,22 +178,75 @@ There are two situations we need to consider when updating an existing schema:
 
 ### Update schema version
 
-1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. For example if the original schema version was "1", change it to "2" (1->2): 
-        
-        "schema_version": {
-            "default": "2"
+1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. Up until schema version 8 for library object, a submitter could specify only one fragmentation method. With the new change being implemented, we would like to allow a list of fragmentation methods to be specified. 
+
+        "fragmentation_methods": {
+            "title": "Fragmentation methods",
+            "type": "array",
+            "uniqueItems": true,
+            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
+            "items":{
+                "title": "Fragmentation method",
+                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation.",
+                "type": "string",
+                "enum": [
+                    "chemical (DNaseI)",
+                    "chemical (DpnII restriction)",
+                    "chemical (generic)",
+                    "chemical (HindIII restriction)",
+                    "chemical (HindIII/DpnII restriction)",
+                    "chemical (Illumina TruSeq)",
+                    "chemical (MboI restriction)",
+                    "chemical (micrococcal nuclease)",
+                    "chemical (NcoI restriction)",
+                    "chemical (Nextera tagmentation)",
+                    "chemical (RNase III)",
+                    "chemical (Tn5 transposase)",
+                    "chemical (MseI restriction)",
+                    "chemical (CviAII restriction)",
+                    "chemical (Csp6I restriction)",
+                    "n/a",
+                    "none",
+                    "see document",
+                    "shearing (Covaris generic)",
+                    "shearing (Covaris LE Series)",
+                    "shearing (Covaris S2)",
+                    "shearing (generic)",
+                    "sonication (Bioruptor generic)",
+                    "sonication (Bioruptor Pico)",
+                    "sonication (Bioruptor Plus)",
+                    "sonication (Bioruptor Twin)",
+                    "sonication (Branson Sonifier 250)",
+                    "sonication (Branson Sonifier 450)",
+                    "sonication (generic microtip)",
+                    "sonication (generic)",
+                    "sonication (Sonics VCX130)"
+               ]
+
+            }
         }
 
-2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example of the upgrade step is shown below. Changing schema version (1->2):
+2. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. For example if the original schema version for the library object being modified was "8", change it to "9" (8->9): 
+        
+        "schema_version": {
+            "default": "9"
+        }
 
-        @upgrade_step('{metadata_object}', '1', '2')
-        def {metadata_object}_1_2(value, system):
+2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example to the upgrade step is shown below. Continuing with our example, after the upgrade all the existing "fragmentation methods" property must now be converted to list objects. The upgrade step ensures that the pre-existing library objects would now validate to the new schema. And since the schema is changing from version 8 to 9 the def must specify this (8->9):
 
-            # lowercase all values in property 1
-            if 'property_1' in value:
-                value['property_1'] = value['property_1'].lower()
+        @upgrade_step('library', '8', '9')
+        def library_8_9(value, system):
+            if 'fragmentation_method' in value:
+                value['fragmentation_methods'] = [value['fragmentation_method']]
+                value.pop('fragmentation_method')
 
-3.  In the **tests** directory add upgrade test to an existing/new python file named ```test_upgrade_{metadata_object}.py```. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
+3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all fragmentation methods must now be a list. 
+        #Schema version 8
+        "fragmentation_methods": "sonication (Bioruptor Twin)",
+        #Schema version 9 Change to:
+        "fragmentation_methods": ["sonication (Bioruptor Twin)"],
+
+4. Also,  add upgrade test to an existing/new python file named ```test_upgrade_{metadata_object}.py```. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
 
 
         @pytest.fixture
@@ -232,12 +285,12 @@ There are two situations we need to consider when updating an existing schema:
 
 6. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
-7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Below is an example of the changelog for above upgrade:
+7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading library object, the changelog for this upgrade would look like the following:
 
-    Schema version 2
-    ----------------
+    Schema version 9
 
-    * *property_1* values were changed to all lower case
+* *fragmentation_method* property was replaced by an array *fragmentation_methods*
+* *fragmentation_date* value, if specified, would apply to all the listed fragmentation methods
      
 
 [JSONSchema]: http://json-schema.org/
