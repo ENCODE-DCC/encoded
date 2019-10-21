@@ -151,13 +151,23 @@ class PatientChart extends React.Component {
                 let dataPoints = filteredData.filter(i => { return i.date === currentDate });
 
                 values.push([filteredDatesUnix[j], dataPoints[0].value]);
-                if (dataPoints[0].reference_low != undefined || dataPoints[0].reference_high != undefined){
-                  rangeValues.push([filteredDatesUnix[j], [dataPoints[0].reference_low, dataPoints[0].reference_high]]);
-                };
+
+                rangeValues.push([filteredDatesUnix[j], [dataPoints[0].reference_low, dataPoints[0].reference_high]]);
+
                 if (dataPoints[0].reference_low != undefined) {
                   rangeLows.push([dataPoints[0].reference_low]);
                 };
-            }
+            };
+            let rangeDataForDisplay = [];
+            for (let i = 0; i < rangeValues.length; i++) {
+              if (rangeValues[i][1][0] === undefined || rangeValues[i][1][1] === undefined) {
+                rangeDataForDisplay.push(-1);
+              } else {
+                rangeDataForDisplay.push("Reference low: "+ rangeValues[i][1][0] + ", Reference high: " + rangeValues[i][1][1]);
+
+              };
+            };
+
             let unit = filteredData[0].value_units;
             let minY = Math.min(...filteredData.map(i => { return i.value }));
             if (rangeLows.length > 0) {
@@ -195,12 +205,24 @@ class PatientChart extends React.Component {
                   {
                     type: 'line',
                     values: values,
+                    "data-range": rangeDataForDisplay,
                     // "data-day": allDates, //uncomment this to use dates in label
                     lineWidth: 1, /* in pixels */
                     lineColor: this.pickNextColor(i),
                     tooltip: {
                         visible: true,
-                        text: feature + ": %v " + unit + "<br> Date: %kl"
+                        rules: [
+                          {
+                            rule: "%data-range === -1",
+                            text: feature + ": %v " + unit + "<br> Date: %kl"
+                          }
+
+
+
+                        ],
+                        text: feature + ": %v " + unit + "<br> Date: %kl <br>%data-range"
+
+
 
                     }
                   },
@@ -210,8 +232,8 @@ class PatientChart extends React.Component {
                     backgroundColor: '#448aff',
                     lineColor: '#448aff',
                     tooltip: {
-                        visible: true,
-                        text: "Date: %kl"
+                        visible: false,
+                        //text: "Date: %kl"
                     }
 
                   }
@@ -224,7 +246,7 @@ class PatientChart extends React.Component {
                   },
                     minValue: startDate,
                     //maxValue: endDate,
-                    visible: false,
+                    visible: true,
                     zooming: true
                 },
                 scrollX: {
@@ -244,6 +266,7 @@ class PatientChart extends React.Component {
             this.myConfig.graphset.push(chart);
         }
         if (this.myConfig.graphset.length > 0) {
+          /*
           let lastChart = this.myConfig.graphset[this.myConfig.graphset.length - 1];
           lastChart.scaleX = {
               transform: {
@@ -256,6 +279,7 @@ class PatientChart extends React.Component {
               minValue: startDate,
               //maxValue: endDate,
           }
+          */
           this.zingchart.exec(this.props.chartId, 'destroy'); //kill the chart
           this.renderChart();
         } else {
