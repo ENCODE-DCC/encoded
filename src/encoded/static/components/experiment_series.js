@@ -9,7 +9,7 @@ import { FetchedItems } from './fetched';
 import { DatasetFiles } from './filegallery';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
-import { ItemAccessories, InternalTags } from './objectutils';
+import { ItemAccessories, InternalTags, singleTreatment } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
@@ -76,6 +76,7 @@ const viewableDatasetStatuses = {
     },
 };
 
+const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
 
 /**
  * Component to display experiment series pages.
@@ -252,6 +253,15 @@ class ExperimentSeriesComponent extends React.Component {
                                         </dd>
                                     </div>
                                 : null}
+
+                                {(context.treatment_term_name && context.treatment_term_name.length > 0) ?
+                                    <div data-test="treatmenttermname">
+                                        <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
+                                        <dd>
+                                            {context.treatment_term_name.join(', ')}
+                                        </dd>
+                                    </div>
+                                    : null}
                             </dl>
                         </div>
 
@@ -364,6 +374,8 @@ const ListingComponent = (props, reactContext) => {
     const replicates = result.related_datasets.reduce((collectedReplicates, dataset) => (
         dataset.replicates && dataset.replicates.length > 0 ? collectedReplicates.concat(dataset.replicates) : collectedReplicates
     ), []);
+    let treatments = [];
+
     replicates.forEach((replicate) => {
         if (replicate.library && replicate.library.biosample) {
             const biosample = replicate.library.biosample;
@@ -373,6 +385,13 @@ const ListingComponent = (props, reactContext) => {
             }
             if (biosample.age_display) {
                 ages.push(biosample.age_display);
+            }
+            if (biosample && biosample.treatments) {
+                biosample.treatments.forEach((treatment) => {
+                    if (!treatments.some(t => t.treatement_term_id === treatment.term_id)) {
+                        treatments.push(treatment);
+                    }
+                });
             }
         }
     });
@@ -390,6 +409,7 @@ const ListingComponent = (props, reactContext) => {
 
     // Work out the count of related datasets
     const totalDatasetCount = result.related_datasets.reduce((datasetCount, dataset) => (searchableDatasetStatuses.includes(dataset.status) ? datasetCount + 1 : datasetCount), 0);
+    const uniqueTreatments = getUniqueTreatments(treatments);
 
     return (
         <li className={resultItemClass(result)}>
@@ -415,6 +435,13 @@ const ListingComponent = (props, reactContext) => {
                         {targets.length > 0 ? <div><strong>Target: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{contributors.join(', ')}</div>
                         <div><strong>Project: </strong>{contributingAwards.join(', ')}</div>
+                        {treatments && treatments.length > 0 ?
+                            <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                <span>
+                                    {uniqueTreatments.join(', ')}
+                                </span>
+                            </div>
+                            : null}
                     </div>
                 </div>
                 <div className="result-item__meta">
