@@ -290,8 +290,7 @@ There are two situations we need to consider when updating an existing schema:
 
 7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading library object, the changelog for this upgrade would look like the following:
 
-    Schema version 9
-
+#Schema version 9
 * *fragmentation_method* property was replaced by an array *fragmentation_methods*
 * *fragmentation_date* value, if specified, would apply to all the listed fragmentation methods
      
