@@ -7,8 +7,7 @@ import { RelatedItems } from './item';
 import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import Status from './status';
-import LabChart from "./LabChart";
-
+import PatientChart from "./PatientChart";
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -74,7 +73,8 @@ class Patient extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                <LabChart chartId="chart" labs={context.labs}></LabChart>
+                <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
+                <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="vital Results Over Time"></PatientChart>
             </div>
         );
     }
