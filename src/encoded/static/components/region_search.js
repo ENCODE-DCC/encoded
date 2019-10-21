@@ -254,7 +254,6 @@ AdvSearch.contextTypes = {
     autocompleteHidden: PropTypes.bool,
     onAutocompleteHiddenChange: PropTypes.func,
     location_href: PropTypes.string,
-    navigate: PropTypes.func,
 };
 
 
@@ -364,7 +363,6 @@ RegionSearch.defaultProps = {
 
 RegionSearch.contextTypes = {
     location_href: PropTypes.string,
-    navigate: PropTypes.func,
 };
 
 export default AutocompleteBox;
