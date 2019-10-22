@@ -39,6 +39,7 @@ def includeme(config):
     config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
+    config.add_route('target_matrix', '/target-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -62,6 +63,7 @@ DEFAULT_ITEM_TYPES = [
     'Lab'
 ]
 
+TARGET_MATRIX_TITLE = 'TargetMatrix'
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request):
@@ -169,29 +171,22 @@ def matrixv2_raw(context, request):
     return fr.render()
 
 
-@view_config(route_name='matrix', request_method='GET', permission='search')
-def matrix(context, request):
+def generic_matrix(request, title_response_field_params=None, type_response_field_params=None, response_field_params=None):
     fr = FieldedResponse(
         _meta={
             'params_parser': ParamsParser(request)
         },
         response_fields=[
-            TitleResponseField(
-                title=MATRIX_TITLE
-            ),
-            TypeResponseField(
-                at_type=[MATRIX_TITLE]
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
             ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
-            ),
+            BasicMatrixWithFacetsResponseField(**response_field_params),
+            DebugQueryResponseField(),
+            IDResponseField(),
             NotificationResponseField(),
+            SearchBaseResponseField(),
+            TitleResponseField(**title_response_field_params),
+            TypeResponseField(**type_response_field_params),
             FiltersResponseField(),
             TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
         ]
     )
     return fr.render()
@@ -225,34 +220,46 @@ def reference_epigenome_matrix(context, request):
     )
     return fr.render()
 
+@view_config(route_name='matrix', request_method='GET', permission='search')
+def matrix(context, request):
+    return generic_matrix(
+        request,
+        title_response_field_params={'title': MATRIX_TITLE},
+        type_response_field_params={'at_type': [MATRIX_TITLE]},
+        response_field_params={'default_item_type': DEFAULT_ITEM_TYPES},
+    )
+
+
+@view_config(route_name='target_matrix', request_method='GET', permission='search')
+def target_matrix(context, request):
+    return generic_matrix(
+        request,
+        title_response_field_params={'title': 'Target Matrix'},
+        type_response_field_params={'at_type': [TARGET_MATRIX_TITLE]},
+        response_field_params={
+            'default_item_types': DEFAULT_ITEM_TYPES,
+            'matrix_definition_name': 'target_matrix',
+            'facets': [
+                ('status', {'title': 'Status'}),
+                ('award.project', {'title': 'Project'}),
+                ('target.investigated_as', {'title': 'Target category'}),
+                ('replicates.library.biosample.donor.organism.scientific_name', {'title': 'Organism'}),
+            ],
+        }
+    )
+
 
 @view_config(route_name='summary', request_method='GET', permission='search')
 def summary(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
+    return generic_matrix(
+        request,
+        title_response_field_params={'title': SUMMARY_TITLE},
+        type_response_field_params={'at_type': [SUMMARY_TITLE]},
+        response_field_params={
+            'default_item_types': DEFAULT_ITEM_TYPES,
+            'matrix_definition_name': SUMMARY
         },
-        response_fields=[
-            TitleResponseField(
-                title=SUMMARY_TITLE
-            ),
-            TypeResponseField(
-                at_type=[SUMMARY_TITLE]
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=SUMMARY
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
     )
-    return fr.render()
 
 
 @view_config(route_name='audit', request_method='GET', permission='search')

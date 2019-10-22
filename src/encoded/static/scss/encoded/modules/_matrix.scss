@@ -107,6 +107,12 @@ $row-data-header-width: 200px;
                 transform: rotate(180deg);
                 color: #000;
 
+                // Column subcategory links
+                &.sub {
+                    padding-top: 20px;
+                    color: #808080;
+                }
+
                 &:hover {
                     background-color: #e0e0e0;
                 }
@@ -533,6 +539,17 @@ table.matrix th.group-all-groups-cell {
         }
     }
 
+    .target-matrix__data-wrapper {
+        @extend .matrix__data-wrapper;
+
+        li {
+            font-style: italic;
+            a::after {
+                content: none !important;
+            }
+        }
+    }
+
     .matrix__col-category-header {
         > th {
             width: 25px;
@@ -551,6 +568,14 @@ table.matrix th.group-all-groups-cell {
         }
     }
 
+    .targetmatrix__col-category-header {
+        @extend .matrix__col-category-header;
+
+        th {
+            border-bottom: 1px solid #f0f0f0;
+        }
+    }
+
     .matrix__row-data {
         > td {
             position: relative;
@@ -564,6 +589,12 @@ table.matrix th.group-all-groups-cell {
                 bottom: 0;
                 left: 0;
             }
+        }
+    }
+
+    .target-matrix__row-data {
+        td {
+            text-align:center;
         }
     }
 }

@@ -35,5 +35,10 @@ describe('DataColor Module', () => {
             const testColors = dataColorsInstance.colorList(['primary cell'], { tint: 0.1 });
             expect(testColors[0]).toEqual('#ffa419');
         });
+
+        it('Merry-go-round if unseen key and merry-go-round in enabled', () => {
+            const testColors = dataColorsInstance.colorList(['apple'], { merryGoRoundColors: true });
+            expect(testColors[0]).toEqual('#2f62cf');
+        });
     });
 });

@@ -221,7 +221,14 @@ class DataColors {
     //         integer -- do not pass a string with a "%" sign at the end.
     colorList(keys, options) {
         let colors = [];
-        if (keys && keys.length > 0) {
+        if (options && keys && options.merryGoRoundColors && keys.length > 0) {
+            // Map the given keys to colors consistently
+            colors = keys.map((key, index) => {
+                const i = index % rootColorList.length;
+                const outColor = rootColorList[i % rootColorList.length];
+                return options && options.tint && options.tint > 0 ? tintColor(outColor, options.tint) : outColor;
+            });
+        } else if (keys && keys.length > 0) {
             // Map the given keys to colors consistently
             colors = keys.map((key) => {
                 let outColor;
