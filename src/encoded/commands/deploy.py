@@ -226,6 +226,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'CC_DIR': cc_dir,
             'COMMIT': instances_tag_data['commit'],
             'CLUSTER_NAME': 'NONE',
+            'PRIMARY_SHARDS': 1,
+            'REPLICATE_SHARDS': 0,
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_BRANCH': main_args.branch,
@@ -237,9 +239,12 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
         }
         if main_args.cluster_name:
+            # More shards in clustered deployment
             data_insert.update({
                 'CLUSTER_NAME': main_args.cluster_name,
                 'REGION_INDEX': 'True',
+                'PRIMARY_SHARDS': main_args.primary_shards,
+                'REPLICATE_SHARDS': main_args.replicate_shards
             })
         else:
             data_insert.update({
@@ -628,6 +633,8 @@ def parse_args():
     parser.add_argument('--es-wait', action='store_true', help="Create es nodes and head node.")
     parser.add_argument('--cluster-name', default=None, type=hostname, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=5, help="Elasticsearch cluster size")
+    parser.add_argument('--primary-shards', default=5, help="ES number of primary shards")
+    parser.add_argument('--replicate-shards', default=2, help="ES number of replicate shards")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
