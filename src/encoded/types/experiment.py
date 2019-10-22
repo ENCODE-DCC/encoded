@@ -188,6 +188,20 @@ class Experiment(Dataset,
         },
     }
 
+    chip_seq_matrix = {
+        'y': {
+            'group_by': [
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'target.label',
+            ],
+            'label': 'Target',
+        },
+        'x': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Term Name',
+        },
+    }
+
     summary = {
         'x': {
             'group_by': 'status'

@@ -10,7 +10,7 @@ Disallow: /batch_hub/
 Disallow: /batch_download/
 Disallow: /metadata/
 Disallow: /entex-matrix/
-Disallow: /target-matrix/
+Disallow: /chip-seq-matrix/
 Disallow: /reference-epigenome-matrix/
 Allow: /search/?type=Experiment$
 Allow: /search/?type=Experiment&status=released$

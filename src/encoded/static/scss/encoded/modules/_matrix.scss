@@ -121,6 +121,12 @@ $row-data-header-width: 200px;
                 transform: rotate(180deg);
                 color: #000;
 
+                // Column subcategory links
+                &.sub {
+                    padding-top: 20px;
+                    color: #808080;
+                }
+
                 &:hover {
                     background-color: #e0e0e0;
                 }
@@ -436,6 +442,23 @@ $row-data-header-width: 200px;
             margin-bottom: 0;
         }
     }
+
+    @at-root #{&}__target-filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 35%;
+            padding-right: 20px;
+        }
+    }
+
+    @at-root #{&}__target-search-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 65%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
 }
 
 
@@ -566,6 +589,43 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+.matrix__content--target {
+    @extend .matrix__content--reference-epigenome;
+
+    .chip_seq_matrix__data-wrapper {
+        border: 1px solid #eee;
+        overflow-x: auto;
+        li {
+            cursor: -webkit-grab;
+            cursor: grab;
+            a::after {
+                content: none !important;
+            }
+        }   
+    }
+}
+
+.chip_seq_matrix-search {
+    display: flex;
+    flex-wrap: nowrap !important;
+    justify-content: space-between;
+
+    select {
+        margin-left: 5px;
+    }
+}
+
+.chip_seq_matrix__data  {
+    table { 
+        tr:nth-child(2) td:nth-child(2) {
+            border-top-left-radius: 14px;
+        }
+        tr:nth-child(2) td:last-child {
+            border-top-right-radius: 14px;
+        }
+    }  
+}
+
 
 // Contents of organism-selection modal.
 .matrix-reference-epigenome__organism-selector {
@@ -587,6 +647,14 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+.chip_seq_matrix__organism-selector {
+    @extend .matrix-reference-epigenome__organism-selector;
+}
+
+.chip_seq_matrix__warning {
+    min-height: 40px;
+    margin: 10px;
+}
 
 /**
  * Styles specific to the ENTEx matrix.
