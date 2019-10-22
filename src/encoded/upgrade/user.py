@@ -47,5 +47,4 @@ def user_7_8(value, system):
 @upgrade_step('user', '8', '9')
 def user_8_9(value, system):
     if 'groups' in value:
-        new_groups = [group for group in value['groups'] if group in ['admin', 'verified', 'read-only-admin']]
-        value['groups'] = new_groups
+        value['groups'] = [group for group in value['groups'] if group in ['admin', 'verified', 'read-only-admin']]
