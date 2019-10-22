@@ -187,6 +187,20 @@ class Experiment(Dataset,
         },
     }
 
+    target_matrix = {
+        'x': {
+            'group_by': 'biosample_ontology.term_name',
+            'label': 'Term Name',
+        },
+        'y': {
+            'group_by': [
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'target.label',
+            ],
+            'label': 'Target',
+        },
+    }
+
     summary = {
         'x': {
             'group_by': 'status'

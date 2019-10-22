@@ -222,10 +222,12 @@ class DataColors {
     colorList(keys, options) {
         let colors = [];
         if (keys && keys.length > 0) {
+            let unmappedKeyIndex = 1;
             // Map the given keys to colors consistently
             colors = keys.map((key) => {
                 let outColor;
-                const i = this.keys.indexOf(key);
+                const keyIndex = this.keys.indexOf(key);
+                const i = keyIndex !== -1 ? keyIndex : (unmappedKeyIndex++) % rootColorList.length;
                 if (i === -1) {
                     // No matching key; just return medium gray
                     outColor = '#808080';
