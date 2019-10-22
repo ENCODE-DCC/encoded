@@ -109,6 +109,7 @@ class SearchFilter extends React.Component {
         const parsed = url.parse(matrixBase, true);
         const queryStringType = parsed.query.type || '';
         const type = pluralize(queryStringType.toLocaleLowerCase());
+
         return (
             <div className="matrix-general-search">
                 <p>Enter search terms to filter the {type} included in the matrix.</p>
@@ -131,6 +132,9 @@ SearchFilter.propTypes = {
 SearchFilter.contextTypes = {
     navigate: PropTypes.func,
     location_href: PropTypes.string,
+
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 

@@ -1,3 +1,5 @@
+import urllib.parse
+
 from pyramid.view import view_config
 
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
@@ -6,9 +8,12 @@ from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
 from snovault.elasticsearch.searches.interfaces import SUMMARY
 from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
+from snovault.elasticsearch.searches.interfaces import TARGET_MATRIX
+from snovault.elasticsearch.searches.interfaces import TARGET_MATRIX_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import BasicTargetMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
@@ -38,6 +43,7 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('target_matrix', '/targetmatrix/{assay_title_route}/{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -190,6 +196,38 @@ def matrix(context, request):
             FiltersResponseField(),
             TypeOnlyClearFiltersResponseField(),
             DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='target_matrix', request_method='GET', permission='search')
+def target_matrix(context, request):
+    assay_title_route = urllib.parse.quote(request.matchdict['assay_title_route'])
+    request.query_string += ('&assay_title=' + assay_title_route)
+
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            ContextResponseField(),
+            BasicTargetMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name=TARGET_MATRIX
+            ),
+            DebugQueryResponseField(),
+            IDResponseField(),
+            NotificationResponseField(),
+            SearchBaseResponseField(),
+            TitleResponseField(
+                title=TARGET_MATRIX_TITLE
+            ),
+            TypeResponseField(
+                at_type=[MATRIX_TITLE]
+            ),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
         ]
     )
     return fr.render()
