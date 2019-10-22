@@ -249,9 +249,9 @@ There are two situations we need to consider when updating an existing schema:
         #Owing to schema version 9, the above should be changed to:
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
 
-4. Also,  add upgrade test to an existing/new python file named ```test_upgrade_{metadata_object}.py```. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
+4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. For our example, we will need to edit the ```test_upgrad_library.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
 
-
+###General structure to follow###
         @pytest.fixture
         def {metadata_object}():
             return{
@@ -270,11 +270,39 @@ There are two situations we need to consider when updating an existing schema:
 
 
         def test_{metadata_object}_lowercase_property_1(app, {metadata_object}_2):
-            migrator = app.registry['migrator']
-            value = migrator.upgrade('{metadata_object}', {metadata_object}_2, target_version='3')
+            value = upgrader.upgrade('{metadata_object}', {metadata_object}_2, target_version='3')
             assert value['schema_version'] == '3'
             assert value['property_1'] == 'value 1'
-            
+
+## Specific example from the library object upgrade##
+import pytest
+
+
+@pytest.fixture
+def library(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'nucleic_acid_term_id': 'SO:0000352',
+        'nucleic_acid_term_name': 'DNA',
+    }
+
+@pytest.fixture
+def library_8(library_3):
+    item = library_3.copy()
+    item.update({
+        'schema_version': '8',
+        'status': "in progress"
+    })
+    return item
+
+def test_upgrade_library_8_to_9(upgrader, library_8):
+    value = upgrader.upgrade('library', library_8, target_version='9')
+    assert value['schema_version'] == '9'
+    assert isinstance(value['fragmentation_methods'], list)
+    assert value['fragmentation_methods'] == ['shearing (Covaris generic)']
+    assert 'fragmentation_method' not in value
+
 5. You must check the results of your upgrade on the current database:
    
    **note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
