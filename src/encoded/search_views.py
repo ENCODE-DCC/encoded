@@ -8,8 +8,6 @@ from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
 from snovault.elasticsearch.searches.interfaces import SUMMARY
 from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
-from snovault.elasticsearch.searches.interfaces import TARGET_MATRIX
-from snovault.elasticsearch.searches.interfaces import TARGET_MATRIX_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
@@ -212,16 +210,22 @@ def target_matrix(context, request):
         },
         response_fields=[
             ContextResponseField(),
-            BasicTargetMatrixWithFacetsResponseField(
+            BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=TARGET_MATRIX
+                matrix_definition_name='target_matrix',
+                facets=[
+                    ('status', {'title': 'Status'}),
+                    ('award.project', {'title': 'Project'}),
+                    ('target.investigated_as', {'title': 'Target category'}),
+                    ('replicates.library.biosample.donor.organism.scientific_name', {'title': 'Organism'}),
+                ],
             ),
             DebugQueryResponseField(),
             IDResponseField(),
             NotificationResponseField(),
             SearchBaseResponseField(),
             TitleResponseField(
-                title=TARGET_MATRIX_TITLE
+                title='Target Matrix'
             ),
             TypeResponseField(
                 at_type=[MATRIX_TITLE]
