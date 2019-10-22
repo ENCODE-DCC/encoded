@@ -58,7 +58,11 @@ def DBSession(app):
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
+    from snovault.elasticsearch import ELASTIC_SEARCH
     from snovault.elasticsearch import create_mapping
+    app.registry[ELASTIC_SEARCH].delete_by_query(index='_all',
+                                                 body={'query': {'match_all': {}}},
+                                                 conflicts='proceed')
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
@@ -89,7 +93,6 @@ def listening_conn(dbapi_conn):
 
 
 def test_indexing_simple(testapp, indexer_testapp):
-    import time
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
@@ -101,13 +104,6 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['txn_count'] == 1
     assert res.json['updated'] == [uuid]
     res = testapp.get('/search/?type=TestingPostPutPatch')
-    uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
-    count = 0
-    while uuid not in uuids and count < 20:
-        time.sleep(1)
-        res = testapp.get('/search/?type=TestingPostPutPatch')
-        uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
-        count += 1
     assert res.json['total'] == 2
 
 
