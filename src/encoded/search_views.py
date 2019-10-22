@@ -11,7 +11,6 @@ from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
-from snovault.elasticsearch.searches.fields import BasicTargetMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
