@@ -145,7 +145,7 @@ const LotComponent = (props, reactContext) => {
                 </h3>
                 <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'antibody-audit' }} />
             </header>
-            {props.auditDetail(context.audit, 'antibody-audit', { session: reactContext.session })}
+            {props.auditDetail(context.audit, 'antibody-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties })}
 
             <div className="antibody-statuses">
                 {antibodyStatuses}
@@ -714,11 +714,11 @@ const ListingComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">Antibody</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -731,6 +731,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

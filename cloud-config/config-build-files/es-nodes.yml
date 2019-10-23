@@ -7,12 +7,8 @@ power_state:
   mode: reboot
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
-%(CC_RUNCMD_ES_ELECT)s
+%(CC_RUNCMD_ES)s
 %(CC_USERS_ES)s
 write_files:
 %(CC_WF_UPGRADES)s
 %(CC_WF_CLOUDWATCHMON)s
-# Below did not seem used on data and es master install
-# - mkdir /srv/encoded
-# - chown encoded:encoded /srv/encoded
-# - cd /srv/encoded

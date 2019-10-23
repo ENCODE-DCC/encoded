@@ -19,6 +19,7 @@ import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
 import { AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -48,6 +49,13 @@ export function annotationBiosampleSummary(annotation) {
 function breakSetName(name) {
     return name.replace(/(\S)([A-Z])/g, '$1 $2');
 }
+
+
+ViewControlRegistry.register('Annotation', [
+    ViewControlTypes.SEARCH,
+    ViewControlTypes.MATRIX,
+    ViewControlTypes.REPORT,
+]);
 
 
 // Display Annotation page, a subtype of Dataset.
@@ -88,7 +96,7 @@ const AnnotationComponent = (props, reactContext) => {
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'annotation-audit' }} />
             </header>
-            {auditDetail(context.audit, 'annotation-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'annotation-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -276,7 +284,7 @@ const PublicationDataComponent = (props, reactContext) => {
                 </div>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'publicationdata-audit' }} />
             </header>
-            {auditDetail(context.audit, 'publicationdata-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'publicationdata-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -433,7 +441,7 @@ const ReferenceComponent = (props, reactContext) => {
                 </div>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'reference-audit' }} />
             </header>
-            {auditDetail(context.audit, 'reference-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'reference-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -774,7 +782,7 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
                 </div>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'ucscbrowsercomposite-audit' }} />
             </header>
-            {auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -1293,7 +1301,7 @@ export const SeriesComponent = (props, reactContext) => {
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
             </header>
-            {auditDetail(context.audit, 'series-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'series-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">

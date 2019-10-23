@@ -1,0 +1,22 @@
+## Elasticsearch Configuration: 
+#
+# For details see
+# - encoded-elasticsearch.yml.20190930
+# - default-elasticsearch.yml.20190930
+#
+## 
+
+network.host: 0.0.0.0
+http.port: 9201
+transport.tcp.port: 9299
+discovery.type: ec2
+cloud.aws.region: us-west-2
+discovery.ec2.groups: elasticsearch-https, ssh-http-https
+indices.query.bool.max_clause_count: 8192
+
+# Wait for master node
+node.master: false 
+node.data: true
+discovery.zen.minimum_master_nodes: 1
+
+# Cluster name is appened on deploy

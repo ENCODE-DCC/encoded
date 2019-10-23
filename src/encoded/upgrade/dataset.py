@@ -490,3 +490,8 @@ def experiment_26_27(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4711
     if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
         value['assay_term_name'] = 'single-nucleus ATAC-seq'
+
+@upgrade_step('experiment', '27', '28')
+def experiment_27_28(value, system):
+    #https://encodedcc.atlassian.net/browse/ENCD-4838
+    value.pop('experiment_classification', None)

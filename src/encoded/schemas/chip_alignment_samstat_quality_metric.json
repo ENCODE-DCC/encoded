@@ -1,6 +1,6 @@
 {
     "title": "ChIP-seq alignment quality metric",
-    "description": "Schema for reporting ChIP-seq alignment quality metric",
+    "description": "Schema for reporting ChIP-seq alignment quality metrics",
     "id": "/profiles/chip_alignment_samstat_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -56,7 +56,7 @@
             "minimum": 0
         },
         "mapped_reads_qc_failed": {
-            "title": "Number of reads mapped failing QC",
+            "title": "Number of mapped reads failing QC",
             "type": "integer",
             "minimum": 0
         },
@@ -139,12 +139,12 @@
             "maximum": 100.0
         },
         "diff_chroms": {
-            "title": "Number of reads with mate mapped to diff chr passing QC",
+            "title": "Number of reads with mate mapped to different chromosomes passing QC",
             "type": "integer",
             "minimum": 0
         },
         "diff_chroms_qc_failed": {
-            "title": "Number of reads with mate mapped to diff chr failing QC",
+            "title": "Number of reads with mate mapped to different chromosomes failing QC",
             "type": "integer",
             "minimum": 0
         }

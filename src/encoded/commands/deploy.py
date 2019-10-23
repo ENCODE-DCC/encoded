@@ -70,6 +70,11 @@ def _read_file_as_utf8(config_file):
         return file_handler.read()
 
 
+def _write_str_to_file(filepath, str_data):
+    with io.open(filepath, 'w') as file_handler:
+        return file_handler.write(str_data)
+
+
 def read_ssh_key(identity_file):
     ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
     fingerprint = subprocess.check_output(
@@ -156,7 +161,7 @@ def _get_instances_tag_data(main_args):
                 instances_tag_data['username'],
             )
         )
-        if main_args.elasticsearch:
+        if main_args.es_wait or main_args.es_elect:
             instances_tag_data['name'] = 'elasticsearch-' + instances_tag_data['name']
     return instances_tag_data
 
@@ -178,60 +183,31 @@ def _get_ec2_client(main_args, instances_tag_data):
 def _get_run_args(main_args, instances_tag_data, config_yaml):
     master_user_data = None
     cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
-    if not main_args.elasticsearch:
-        security_groups = ['ssh-http-https']
-        iam_role = main_args.iam_role
-        count = 1
-        data_insert = {
-            'WALE_S3_PREFIX': main_args.wale_s3_prefix,
-            'COMMIT': instances_tag_data['commit'],
-            'ROLE': main_args.role,
-            'REGION_INDEX': 'False',
-            'ES_IP': main_args.es_ip,
-            'ES_PORT': main_args.es_port,
-            'GIT_REPO': main_args.git_repo,
-            'GIT_BRANCH': main_args.branch,
-            'REDIS_IP': main_args.redis_ip,
-            'REDIS_PORT': main_args.redis_port,
-            'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
-            'CC_DIR': cc_dir,
-        }
-        if main_args.cluster_name:
-            data_insert['CLUSTER_NAME'] = main_args.cluster_name
-            data_insert['REGION_INDEX'] = 'True'
-        if main_args.set_region_index_to:
-            data_insert['REGION_INDEX'] = main_args.set_region_index_to
-        user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
-    else:
-        if not main_args.cluster_name:
-            print("Cluster must have a name")
-            sys.exit(1)
+    if main_args.es_wait or main_args.es_elect:
+        # Data node clusters
         count = int(main_args.cluster_size)
         security_groups = ['elasticsearch-https']
         iam_role = main_args.iam_role_es
+        es_opt = 'es-cluster-wait.yml' if main_args.es_wait else 'es-cluster-elect.yml'
         data_insert = {
-            'CLUSTER_NAME': main_args.cluster_name,
-            'ES_DATA': 'true',
-            'ES_MASTER': 'true',
-            'MIN_MASTER_NODES': int(count/2 + 1),
-            'GIT_REPO': main_args.git_repo,
-            'GIT_BRANCH': main_args.branch,
             'CC_DIR': cc_dir,
+            'CLUSTER_NAME': main_args.cluster_name,
+            'ES_OPT_FILENAME': es_opt,
+            'GIT_BRANCH': main_args.branch,
+            'GIT_REPO': main_args.git_repo,
+            'JVM_GIGS': main_args.jvm_gigs,
         }
-        if main_args.single_data_master:
-            data_insert['ES_MASTER'] = 'false'
-            data_insert['MIN_MASTER_NODES'] = 1
         user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
-        if main_args.single_data_master:
+        # Additional head node
+        if main_args.es_wait:
             master_data_insert = {
-                'CLUSTER_NAME': main_args.cluster_name,
-                'ES_DATA': 'false',
-                'ES_MASTER': 'true',
-                'MIN_MASTER_NODES': 1,
-                'GIT_REPO': main_args.git_repo,
-                'GIT_BRANCH': main_args.branch,
                 'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
                 'CC_DIR': cc_dir,
+                'CLUSTER_NAME': main_args.cluster_name,
+                'ES_OPT_FILENAME': 'es-cluster-head.yml',
+                'GIT_BRANCH': main_args.branch,
+                'GIT_REPO': main_args.git_repo,
+                'JVM_GIGS': main_args.jvm_gigs,
             }
             master_user_data = get_user_data(
                 instances_tag_data['commit'],
@@ -239,14 +215,45 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
                 master_data_insert,
                 main_args,
             )
+    else:
+        # Single demo or Frontends
+        security_groups = ['ssh-http-https']
+        iam_role = main_args.iam_role
+        count = 1
+        data_insert = {
+            'APP_WORKERS': main_args.app_workers,
+            'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
+            'CC_DIR': cc_dir,
+            'COMMIT': instances_tag_data['commit'],
+            'CLUSTER_NAME': 'NONE',
+            'ES_IP': main_args.es_ip,
+            'ES_PORT': main_args.es_port,
+            'GIT_BRANCH': main_args.branch,
+            'GIT_REPO': main_args.git_repo,
+            'REDIS_IP': main_args.redis_ip,
+            'REDIS_PORT': main_args.redis_port,
+            'REGION_INDEX': str(main_args.region_indexer),
+            'ROLE': main_args.role,
+            'WALE_S3_PREFIX': main_args.wale_s3_prefix,
+        }
+        if main_args.cluster_name:
+            data_insert.update({
+                'CLUSTER_NAME': main_args.cluster_name,
+                'REGION_INDEX': 'True',
+            })
+        else:
+            data_insert.update({
+                'JVM_GIGS': main_args.jvm_gigs,
+                'ES_OPT_FILENAME': 'es-demo.yml',
+            })
+        user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
     run_args = {
         'count': count,
         'iam_role': iam_role,
+        'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
     }
-    if master_user_data:
-        run_args['master_user_data'] = master_user_data
     return run_args
 
 
@@ -262,39 +269,44 @@ def _get_instance_output(
     )
     name_to_use = given_name if given_name else instances_tag_data['short_name']
     suffix = '-dm' if attach_dm else ''
+    skip_https_ssh = False
+    if suffix == '-dm':
+        name_to_use = name_to_use.replace('-data', 'd')
+        skip_https_ssh = True
+    else:
+        name_to_use = name_to_use.replace('-master', 'm')
     domain = 'demo'
     if instances_tag_data['domain'] == 'production':
         domain = 'production'
-    return [
-        'Host %s%s.*' % (name_to_use, suffix),
+    output_list = [
+        'Host %s.*' % name_to_use,
         '  Hostname %s' % hostname,
-        '  # https://%s.%s.encodedcc.org' % (instances_tag_data['name'], domain),
-        '  # ssh ubuntu@%s' % hostname,
     ]
+    if not skip_https_ssh:
+        output_list.append('  # https://%s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
+        output_list.append('  # ssh ubuntu@%s' % hostname)
+    return output_list
 
 
 def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
     instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
-    output_list = ['']
+    output_list = []
     is_cluster_master = False
     is_cluster = False
-    if main_args.elasticsearch and run_args['count'] > 1:
+    if (main_args.es_wait or main_args.es_elect) and run_args['count'] > 1:
         if cluster_master and run_args['master_user_data']:
             is_cluster_master = True
-            output_list.append('Creating Elasticsearch Master Node for cluster')
         else:
             is_cluster = True
-            output_list.append('Creating Elasticsearch cluster')
     created_cluster_master = False
     for i, instance in enumerate(instances):
         instances_tag_data['name'] = tmp_name
         instances_tag_data['id'] = instance.id
         if is_cluster_master:
-            # Hack: current tmp_name was the last data cluster, so remove '4'
-            instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
+            instances_tag_data['name'] = "{}datamaster".format(tmp_name[0:-1])
         elif is_cluster:
-            instances_tag_data['name'] = "{}{}".format(tmp_name, i)
+            instances_tag_data['name'] = "{}-data{}".format(tmp_name, i)
         if is_cluster_master or (is_cluster and not created_cluster_master):
             created_cluster_master = True
             output_list.extend(_get_instance_output(
@@ -302,7 +314,10 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
                 attach_dm=True,
                 given_name=main_args.name,
             ))
-        if is_cluster:
+            # For data node 0
+            if is_cluster:
+                output_list.append('  # Data Node %d: %s' % (i, instance.id))
+        elif is_cluster:
             output_list.append('  # Data Node %d: %s' % (i, instance.id))
         elif not is_cluster:
             output_list.extend(
@@ -312,189 +327,160 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
                 )
             )
         instance.wait_until_exists()
-        tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
-    for output in output_list:
-        print(output)
+        tag_ec2_instance(
+            instance, instances_tag_data, 
+            (main_args.es_wait or main_args.es_elect), 
+            main_args.cluster_name,
+        )
+    return output_list
 
 
-def _get_cloud_config_yaml(
-        branch=None,
-        conf_dir=None,
-        cluster_name=None,
-        elasticsearch=False,
-        no_es=False,
-        build_new_config=False,
-        use_local_config=False,
-        single_data_master=False,
-    ):
-    build_dir = "{}/prebuilt-config-yamls".format(conf_dir)
-    build_files_dir = None
-    if build_new_config:
-        build_dir = "{}/{}".format(
-            conf_dir,
-            'config-build-files',
-        )
-        build_files_dir = "{}/{}".format(
-            build_dir,
-            'cc-parts',
-        )
-    filename = 'demo.yml'
-    if single_data_master:
-        if elasticsearch:
-            filename = 'es-wait-head.yml'
-        else:
-            filename = 'es-head.yml'
-    elif no_es:
-        filename = 'frontend.yml'
-    elif elasticsearch:
-        filename = 'es-elect-head.yml'
-    filepath = build_dir + '/' + filename
-    if build_new_config:
-        pre_config_template = _read_file_as_utf8(filepath)
-        replace_vars = set(re.findall('\%\((.*)\)s', pre_config_template))
-        var_data_insert = {}
-        for replace_var in replace_vars:
-            var_data_path = "{}/{}.yml".format(
-                build_files_dir,
-                replace_var,
+def _get_cloud_config_yaml(main_args):
+    """
+    This will return a config yaml file built from a template and template parts
+    - There will still be run variables in the template.
+    """
+    branch = main_args.branch
+    cluster_name = main_args.cluster_name
+    conf_dir = main_args.conf_dir
+    diff_configs = main_args.diff_configs
+    es_elect = main_args.es_elect
+    es_wait = main_args.es_wait
+    postgres_version = main_args.postgres_version
+    save_config_name = main_args.save_config_name
+    use_prebuilt_config = main_args.use_prebuilt_config
+       
+    def _diff_configs(config_one, config_two):
+        results = list(
+            Differ().compare(
+                config_one.splitlines(keepends=True),
+                config_two.splitlines(keepends=True),
             )
-            var_data = _read_file_as_utf8(var_data_path).strip()
-            var_data_insert[replace_var] = var_data
-        return pre_config_template % var_data_insert, filepath
-    else:
-        if use_local_config:
-            return _read_file_as_utf8(filepath), filepath
-        else:
-            commit = _get_commit_sha_for_branch(branch)
-            cmd_list = ['git', 'show', commit + ':' + filepath]
-            return subprocess.check_output(cmd_list).decode('utf-8'), filepath
-    return None, filepath
-
-
-def _diff_configs(config_one, config_two):
-    results = list(
-        Differ().compare(
-            config_one.splitlines(keepends=True),
-            config_two.splitlines(keepends=True),
         )
-    )
-    is_clean = True
-    for index, result in enumerate(results, 1):
-        if not result[0] == ' ':
-            print(index, result)
-            is_clean = False
+        is_clean = True
+        for index, result in enumerate(results, 1):
+            if not result[0] == ' ':
+                print(index, result)
+                is_clean = False
+                break
+        return is_clean
+
+    def _get_prebuild_config_template():
+        read_config_path = "{}/{}/{}.yml".format(
+            conf_dir,
+            'prebuilt-config-yamls',
+            use_prebuilt_config
+        )
+        return  _read_file_as_utf8(read_config_path)
+
+    def _build_config_template(build_type):
+        template_path = "{}/{}/{}.yml".format(conf_dir, 'config-build-files', build_type)
+        built_config_template = _read_file_as_utf8(template_path)
+        replace_vars = set(re.findall('\%\((.*)\)s', built_config_template))
+        # Replace cc parts vars in template.  Run vars are in cc-parts.
+        template_parts_dir = "{}/{}/{}".format(conf_dir, 'config-build-files', 'cc-parts')
+        cc_parts_insert = {}
+        for replace_var_filename in replace_vars:
+            replace_var_path = "{}/{}.yml".format(
+                template_parts_dir,
+                replace_var_filename,
+            )
+            replace_var_data = _read_file_as_utf8(replace_var_path).strip()
+            cc_parts_insert[replace_var_filename] = replace_var_data
+        return built_config_template % cc_parts_insert
+
+    # Incompatibile build arguments
+    if postgres_version and postgres_version not in ['9.3']:
+        print("Error: postgres_version must be '9.3'")
+        return None, None, None
+    if (es_elect or es_wait) and not cluster_name:
+        print('Error: --cluster-name required for --es-wait and --es-elect')
+        return None, None, None
+    if diff_configs and not use_prebuilt_config:
+        print('Error: --diff-configs must have --use-prebuilt-config config to diff against')
+        return None, None, None
+    # Determine type of build from arguments
+    # - es-nodes builds will overwrite the postgres version
+    build_type = 'demo'
+    if es_elect or es_wait:
+        build_type = 'es-nodes'
+    elif cluster_name:
+        build_type = 'frontend'
+    # Determine config build method
+    if use_prebuilt_config and not diff_configs:
+        # Read a prebuilt config file from local dir and use for deployment
+        prebuilt_config_template =  _get_prebuild_config_template()
+        if prebuilt_config_template:
+            return prebuilt_config_template, None, build_type
+        return None, None, built_type
+    # Build config from template using cc-parts
+    config_template = _build_config_template(build_type)
+    if diff_configs:
+        # Read a prebuilt config file from local dir and use for deployment
+        prebuilt_config_template =  _get_prebuild_config_template()
+        print('Diffing')
+        _diff_configs(config_template, prebuilt_config_template) 
+        print('Diff Done')
+        return None, None, None
+    elif save_config_name:
+        # Having write_file_path set will not deploy
+        # After creating a new config rerun
+        #  with use_prebuilt_config=subpath/config_name
+        config_name = "{}-{}".format(save_config_name, build_type)
+        write_file_path = "{}/{}/{}.yml".format(
+            conf_dir,
+            'prebuilt-config-yamls',
+            config_name,
+        )
+        return config_template, write_file_path, build_type
+    return config_template, None, build_type
+
+
+def _write_config_to_file(build_config, build_path, build_type):
+    print("    * Made       Prebuild: ${}".format(' '.join(sys.argv)))
+    print("        # Wrote new config to %s" % build_path)
+    deployment_args = []
+    # Clean sys args of --save-config-name and parameter
+    config_name = ''
+    for index, arg in enumerate(sys.argv):
+        if arg == '--save-config-name':
+            config_name = sys.argv[index+1]
+            deployment_args.extend(sys.argv[index+2:])
             break
-    return is_clean
-
-
-def _test_config(title, kwargs):
-    print('\n')
-    print(title)
-    build_config, build_path = _get_cloud_config_yaml(**kwargs)
-    kwargs['build_new_config'] = False
-    prebuilt_config, prebuilt_path = _get_cloud_config_yaml(**kwargs)
-    print('build cc path: {}'.format(build_path))
-    print('build cc path: {}'.format(prebuilt_path))
-    print('Diff: ')
-    return _diff_configs(build_config, prebuilt_config)
-
-
-def _test_cloud_configs(branch):
-    import copy
-
-    kwargs = {
-        'branch': branch,
-        'build_new_config': True,
-        'cluster_name': 'dryruncc-cluster',
-        'conf_dir': './cloud-config',
-        'elasticsearch': False,
-        'no_es': False,
-        'single_data_master': False,
-        'use_local_config': False,
-    }
-
-    # All systems on one machine, Current development demo
-    # cloud-config.yml -> demo.yml
-    title = 'Testing Demo with on board ES'
-    demo_kwargs = copy.copy(kwargs)
-    if not _test_config(title, demo_kwargs):
-        return False
-
-    title = 'Testing Prod/Test/RC/Clustered-Demo frontend with separate ES'
-    frontend_kwargs = copy.copy(kwargs)
-    frontend_kwargs.update({'no_es': True})
-    frontend_kwargs.update({'cluster_name': 'dryruncc-cluster'})
-    if not _test_config(title, frontend_kwargs):
-        return False
-
-    # ES data node cluster with one node elected as master
-    # cloud-config-elasticsearch.yml -> es-elect-head.yml
-    title = 'Testing ES cluster that self elects a head node'
-    es_elect_head_kwargs = copy.copy(kwargs)
-    es_elect_head_kwargs.update({
-        'cluster_name': 'dryruncc-cluster',
-        'elasticsearch': True,
-    })
-    if not _test_config(title, es_elect_head_kwargs):
-        return False
-
-    # ES data node cluster that needs a es head node
-    # cloud-config-elasticsearch.yml -> es-wait-head.yml
-    title = 'Testing ES cluster that wait for a head node to be built'
-    es_wait_head_kwargs = copy.copy(kwargs)
-    es_wait_head_kwargs.update({
-        'cluster_name': 'dryruncc-cluster',
-        'elasticsearch': True,
-        'single_data_master': True,
-    })
-    if not _test_config(title, es_wait_head_kwargs):
-        return False
-
-    # ES head data node for data node cluster
-    # cloud-config-elasticsearch.yml -> es-head.yml
-    title = 'Testing ES cluster head node, required for wait es cluster'
-    es_head_kwargs = copy.copy(kwargs)
-    es_head_kwargs.update({
-        'cluster_name': 'dryruncc-cluster',
-        'single_data_master': True,
-    })
-    if not _test_config(title, es_head_kwargs):
-        return False
-    return True
+        deployment_args.append(arg)
+    deploy_cmd = ' '.join(deployment_args)
+    prebuild = "--use-prebuilt-config {}-{}".format(config_name, build_type)
+    print("    * Diff Build/Prebuild: ${} {} --diff-configs".format(deploy_cmd, prebuild))
+    es_ip_arg = '--es-ip $HEADNODEIP' if build_type == 'frontend' else ''
+    if es_ip_arg:
+        deploy_cmd += ' ' + es_ip_arg
+    print("    * Deploy     Prebuild: ${} {}".format(deploy_cmd, prebuild))
+    print("    * Deploy        Build: ${}".format(deploy_cmd))
+    _write_str_to_file(build_path, build_config)
 
 
 def main():
-    # Gather Info
     main_args = parse_args()
-    # Test prebuilt and new build config yamls
-    if main_args.dry_run_cc:
-        if _test_cloud_configs(main_args.branch):
-            sys.exit(0)
-        sys.exit(5)
-    # Normal Deployment
-    config_yaml, _ = _get_cloud_config_yaml(
-        main_args.branch,
-        main_args.conf_dir,
-        main_args.cluster_name,
-        main_args.elasticsearch,
-        main_args.no_es,
-        build_new_config=main_args.build_new_config,
-        use_local_config=main_args.use_local_config,
-    )
+    build_config, build_path, build_type = _get_cloud_config_yaml(main_args)
+    if not build_config or not build_type:
+        print('# Failure: Could not determine configuration type')
+        sys.exit(1)
+    if build_path:
+        _write_config_to_file(build_config, build_path, build_type)
+        sys.exit(0)
+    # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
+    print('# Deploying %s' % build_type)
+    print("# $ {}".format(' '.join(sys.argv)))
     instances_tag_data = _get_instances_tag_data(main_args)
     if instances_tag_data is None:
         sys.exit(10)
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
-    run_args = _get_run_args(main_args, instances_tag_data, config_yaml)
-    if main_args.dry_run_aws:
-        print('Dry Run AWS')
-        print('main_args', main_args)
-        print('run_args', run_args.keys())
-        print('Dry Run AWS')
-        sys.exit(30)
+    run_args = _get_run_args(main_args, instances_tag_data, build_config)
     bdm = _get_bdm(main_args)
+    # Create aws demo instance or frontend instance
+    # OR instances for es_wait nodes, es_elect nodes depending on count
     instances = ec2_client.create_instances(
         ImageId=main_args.image_id,
         MinCount=run_args['count'],
@@ -511,27 +497,37 @@ def main():
             'AvailabilityZone': main_args.availability_zone,
         },
     )
-    _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
-    if 'master_user_data' in run_args and main_args.single_data_master:
-        # ES MASTER instance when deploying elasticsearch data clusters
-        if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch:
-            instances = ec2_client.create_instances(
-                ImageId='ami-2133bc59',
-                MinCount=1,
-                MaxCount=1,
-                InstanceType='c5.9xlarge',
-                SecurityGroups=['ssh-http-https'],
-                UserData=run_args['master_user_data'],
-                BlockDeviceMappings=bdm,
-                InstanceInitiatedShutdownBehavior='terminate',
-                IamInstanceProfile={
-                    "Name": main_args.iam_role,
-                },
-                Placement={
-                    'AvailabilityZone': main_args.availability_zone,
-                },
-            )
-            _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
+    output_list = _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
+    for output in output_list:
+        print(output)
+    output_list = []
+    # Create aws es_wait frontend instance
+    if main_args.es_wait and run_args.get('master_user_data'):
+        instances = ec2_client.create_instances(
+            ImageId='ami-2133bc59',
+            MinCount=1,
+            MaxCount=1,
+            InstanceType='c5.9xlarge',
+            SecurityGroups=['ssh-http-https'],
+            UserData=run_args['master_user_data'],
+            BlockDeviceMappings=bdm,
+            InstanceInitiatedShutdownBehavior='terminate',
+            IamInstanceProfile={
+                "Name": main_args.iam_role,
+            },
+            Placement={
+                'AvailabilityZone': main_args.availability_zone,
+            },
+        )
+        output_list = _wait_and_tag_instances(
+            main_args, 
+            run_args, 
+            instances_tag_data, 
+            instances, 
+            cluster_master=True,
+        )
+        for output in output_list:
+            print(output)
 
 
 def parse_args():
@@ -573,76 +569,150 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
     )
+    parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
+    parser.add_argument('-n', '--name', default=None, type=hostname, help="Instance name")
+    parser.add_argument('--candidate', action='store_true', help="Prod candidate Flag")
+    parser.add_argument('--release-candidate', action='store_true', help="RC Flag")
+    parser.add_argument(
+        '--test', 
+        action='store_const', 
+        default='demo', 
+        const='test', 
+        dest='role',
+        help="Set role"
+    )
+    parser.add_argument(
+        '--git-repo', 
+        default='https://github.com/ENCODE-DCC/encoded.git',
+        help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git"
+    )
+    
+    # User Data Yamls
+    parser.add_argument('--app-workers', default='6', help="Apache config app workers")
+    parser.add_argument('--conf-dir', default='./cloud-config', help="Location of cloud build config")
+    parser.add_argument('--diff-configs', action='store_true', help="Diff new build config against prebuilt.")
+    parser.add_argument(
+        '--save-config-name', 
+        default=None,
+        help=(
+            "Output cloud config to file. "
+            "The type of config will be determined from args. "
+            "Ex) 20190920"
+        )
+    )
+    parser.add_argument('--use-prebuilt-config', default=None, help="Use prebuilt config file")
+    parser.add_argument(
+        '--region-indexer',
+        default=None,
+        help="Set region indexer to 'yes' or 'no'.  None is 'yes' for everything but demos."
+    )
     parser.add_argument(
         '-i',
         '--identity-file',
         default="{}/.ssh/id_rsa.pub".format(expanduser("~")),
         help="ssh identity file path"
     )
-    parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
-    parser.add_argument('--build-new-config', action='store_true', help="Build cloud config yaml.")
-    parser.add_argument('-n', '--name', default=None, type=hostname, help="Instance name")
-    parser.add_argument('--dry-run-aws', action='store_true', help="Abort before ec2 requests.")
-    parser.add_argument('--dry-run-cc', action='store_true', help="Abort after building cloud config.")
-    parser.add_argument('--single-data-master', action='store_true',
-            help="Create a single data master node.")
-    parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
-    parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
-    parser.add_argument('--conf-dir', default='./cloud-config', help="Location of cloud build config")
-    parser.add_argument('--elasticsearch', action='store_true', help="Launch an Elasticsearch cluster")
-    parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
-    parser.add_argument('--es-port', default='9201', help="ES Master ip port")
-    parser.add_argument('--iam-role', default='encoded-instance', help="Set AWS iam role for demo and cluster frontends")
-    parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="Set AWS iam role for elasticsearch nodes")
-    parser.add_argument('--image-id', default='ami-2133bc59',
-                        help=(
-                            "https://us-west-2.console.aws.amazon.com/ec2/home"
-                            "?region=us-west-2#LaunchInstanceWizard:ami=ami-2133bc59"
-                        ))
-    parser.add_argument('--instance-type', default='c5.9xlarge',
-                        help="c5.9xlarge for indexing. Switch to a smaller instance (m5.xlarge or c5.xlarge).")
-    parser.add_argument('--profile-name', default=None, help="AWS creds profile")
-    parser.add_argument('--no-es', action='store_true', help="Use non ES cloud condfig")
-    parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
-    parser.add_argument('--redis-port', default=6379, help="Redis Port.")
-    parser.add_argument('--set-region-index-to', type=check_region_index,
-                        help="Override region index in yaml to 'True' or 'False'")
-    parser.add_argument('--use-local-config', action='store_true', help="Use local config file in current directory")
-    parser.add_argument('--volume-size', default=200, type=check_volume_size,
-                        help="Size of disk. Allowed values 120, 200, and 500")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
-    parser.add_argument('--candidate', action='store_true', help="Deploy candidate instance")
-    parser.add_argument('--release-candidate', action='store_true', help="Deploy release-candidate instance")
     parser.add_argument(
-        '--test', action='store_const', default='demo', const='test', dest='role',
-        help="Deploy to production AWS")
-    parser.add_argument('--availability-zone', default='us-west-2a',
-        help="Set EC2 availabilty zone")
-    parser.add_argument('--git-repo', default='https://github.com/ENCODE-DCC/encoded.git',
-            help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git")
-    parser.add_argument('--batchupgrade-vars', nargs=4, default=['1000', '1', '16', '1'],
+        '--batchupgrade-vars', 
+        nargs=4, 
+        default=['1000', '1', '16', '1'],
         help=(
             "Set batchupgrade vars for demo only "
             "Ex) --batchupgrade-vars 1000 1 8 1 "
             "Where the args are batchsize, chunksize, processes, and maxtasksperchild"
         )
     )
+    
+    # Cluster
+    parser.add_argument('--es-elect', action='store_true', help="Create es nodes electing head node.")
+    parser.add_argument('--es-wait', action='store_true', help="Create es nodes and head node.")
+    parser.add_argument('--cluster-name', default=None, type=hostname, help="Name of the cluster")
+    parser.add_argument('--cluster-size', default=5, help="Elasticsearch cluster size")
+    parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
+    parser.add_argument('--es-port', default='9201', help="ES Master ip port")
+    parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
+  
+    # Database
+    parser.add_argument('--postgres-version', default='9.3', help="Postegres version. '9.3' or '11'")
+    parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
+    parser.add_argument('--redis-port', default=6379, help="Redis Port.")
+    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    
+    # AWS 
+    parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
+    parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
+    parser.add_argument(
+        '--image-id', 
+        default='ami-2133bc59',
+        help=(
+            "https://us-west-2.console.aws.amazon.com/ec2/home"
+            "?region=us-west-2#LaunchInstanceWizard:ami=ami-2133bc59"
+        )
+    )
+    parser.add_argument(
+        '--availability-zone', 
+        default='us-west-2a',
+        help="Set EC2 availabilty zone"
+    )
+    parser.add_argument(
+        '--instance-type', 
+        default=None,
+        help=(
+            "Leave empty for default. "
+            "Frontend default: c5.9xlarge. "
+            "Datanode default: m5.xlarge. "
+            "DataHead default: c5.9xlarge. "
+        )
+    )
+    parser.add_argument(
+        '--volume-size', 
+        default=200, 
+        type=check_volume_size,
+        help="Size of disk. Allowed values 120, 200, and 500"
+    )
+    args = parser.parse_args()
+    # Default frontend, datanode, and datahead instance types
+    if not args.instance_type:
+        if args.es_elect or args.es_wait:
+            # datanode
+            # - wait dataheads are defaulted in main
+            args.instance_type = 'm5.xlarge'
+        else:
+            # frontend
+            args.instance_type = 'c5.9xlarge'
+    # Check cluster name overrides name
+    if args.cluster_name:
+        cluster_tag = '-cluster'
+        args.name = args.cluster_name.replace(cluster_tag, '')
+        args.cluster_name = args.name + cluster_tag
+    if args.es_wait and args.es_elect:
+        raise ValueError('--es-wait and --es-elect cannot be used in the same command')
     # Set Role
     # - 'demo' role is default for making single or clustered
-    # applications for feature building
+    # applications for feature building.
     # - '--test' will set role to test
     # - 'rc' role is for Release-Candidate QA testing and
     # is the same as 'demo' except batchupgrade will be skipped during deployment.
     # This better mimics production but require a command be run after deployment.
     # - 'candidate' role is for production release that potential can
     # connect to produciton data.
-    args = parser.parse_args()
     if not args.role == 'test':
         if args.release_candidate:
             args.role = 'rc'
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
+    # region_indexer is default True for everything but demos
+    if args.region_indexer is not None:
+        if args.region_indexer[0].lower() == 'y':
+            args.region_indexer = True
+        else:
+            args.region_indexer = False
+    elif args.role == 'demo':
+        args.region_indexer = False
+    else:
+        args.region_indexer = True
     # Add branch arg
     if not args.branch:
         args.branch = subprocess.check_output(

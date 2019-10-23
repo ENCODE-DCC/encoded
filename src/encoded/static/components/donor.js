@@ -573,7 +573,7 @@ class DonorComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'experiment-audit', except: context['@id'] }} />
-                    {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
+                    {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
@@ -618,6 +618,7 @@ DonorComponent.propTypes = {
 
 DonorComponent.contextTypes = {
     session: PropTypes.object, // Login information
+    session_properties: PropTypes.object,
 };
 
 const Donor = auditDecor(DonorComponent);
@@ -662,11 +663,11 @@ const DonorListingComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">{organismTitle}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -680,6 +681,7 @@ DonorListingComponent.propTypes = {
 
 DonorListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const DonorListing = auditDecor(DonorListingComponent);

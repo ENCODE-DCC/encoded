@@ -15,8 +15,6 @@ from encoded.viewconfigs.auditview import AuditView
 from encoded.viewconfigs.matrix import MatrixView
 from encoded.viewconfigs.summary import SummaryView
 
-from snovault import AbstractCollection  # pylint: disable=import-error
-from snovault.resource_views import collection_view_listing_db  # pylint: disable=import-error
 from snovault.viewconfigs.report import ReportView   # pylint: disable=import-error
 from snovault.viewconfigs.searchview import SearchView   # pylint: disable=import-error
 
@@ -41,12 +39,12 @@ DEFAULT_DOC_TYPES = [
 
 def includeme(config):
     '''Associated views routes'''
-    config.add_route('search', '/search{slash:/?}')
+    config.add_route('searchv1', '/searchv1{slash:/?}')
     config.add_route('search_elements', '/search_elements/{search_params}')
-    config.add_route('report', '/report{slash:/?}')
-    config.add_route('matrix', '/matrix{slash:/?}')
-    config.add_route('audit', '/audit/')
-    config.add_route('summary', '/summary{slash:/?}')
+    config.add_route('reportv1', '/reportv1{slash:/?}')
+    config.add_route('matrixv1', '/matrixv1{slash:/?}')
+    config.add_route('auditv1', '/auditv1/')
+    config.add_route('summaryv1', '/summaryv1{slash:/?}')
     config.scan(__name__)
 
 
@@ -82,16 +80,8 @@ def _get_search_views(view_instance, context, request):
     return views
 
 
-@view_config(context=AbstractCollection, permission='list', request_method='GET', name='listing')
-def collection_view_listing_es(context, request):
-    '''Switch to change summary page loading options'''
-    if request.datastore != 'elasticsearch':
-        return collection_view_listing_db(context, request)
-    return search(context, request)
-
-
-@view_config(route_name='audit', request_method='GET', permission='search')
-def audit(context, request):
+@view_config(route_name='auditv1', request_method='GET', permission='search')
+def auditv1(context, request):
     '''
     Audit Page Endpoint
     /audit/?type=Experiment
@@ -100,8 +90,8 @@ def audit(context, request):
     return audit_view.preprocess_view()
 
 
-@view_config(route_name='matrix', request_method='GET', permission='search')
-def matrix(context, request):
+@view_config(route_name='matrixv1', request_method='GET', permission='search')
+def matrixv1(context, request):
     '''
     Matrix Page Endpoint
     /matrix/?type=Experiment
@@ -110,8 +100,8 @@ def matrix(context, request):
     return matrix_view.preprocess_view()
 
 
-@view_config(route_name='report', request_method='GET', permission='search')
-def report(context, request):
+@view_config(route_name='reportv1', request_method='GET', permission='search')
+def reportv1(context, request):
     '''
     Report Page Endpoint
     /report/?type=Experiment
@@ -128,8 +118,8 @@ def report(context, request):
     res['download_tsv'] = report_download_route + report_view._search_base
     return res
 
-@view_config(route_name='search', request_method='GET', permission='search')
-def search(context, request, search_type=None, return_generator=False):
+@view_config(route_name='searchv1', request_method='GET', permission='search')
+def searchv1(context, request, search_type=None, return_generator=False):
     '''
     Search Page Endpoint
     /search/?type=Experiment
@@ -159,8 +149,8 @@ def search_elements(context, request):  # pylint: disable=unused-argument
     return results
 
 
-@view_config(route_name='summary', request_method='GET', permission='search')
-def summary(context, request):
+@view_config(route_name='summaryv1', request_method='GET', permission='search')
+def summaryv1(context, request):
     '''
     Summary Page Endpoint
     /summary/?type=Experiment

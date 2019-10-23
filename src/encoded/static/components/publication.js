@@ -80,7 +80,7 @@ const PublicationComponent = (props, reactContext) => {
             <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
             <h2>{context.title}</h2>
             <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'publication-audit' }} />
-            {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, except: context['@id'] })}
+            {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             {context.authors ? <div className="authors">{context.authors}.</div> : null}
             <div className="journal">
                 <Citation context={context} />
@@ -125,6 +125,7 @@ PublicationComponent.propTypes = {
 
 PublicationComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 // Note that Publication needs to be exported for Jest tests.
@@ -337,11 +338,11 @@ const ListingComponent = (props, context) => {
                 <div className="result-item__meta">
                     <div className="result-item__meta-title">Publication</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: context.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: context.session, sessionProperties: context.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: context.session, forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: context.session, sessionProperties: context.session_properties, forcedEditLink: true })}
         </li>
     );
 };
@@ -354,6 +355,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

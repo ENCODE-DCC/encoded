@@ -182,12 +182,13 @@ $disabled-color-factor: 20%;
     &.btn-warning { color: #fff;    background-color: $brand-warning; }
     &.btn-danger  { color: #fff;    background-color: $brand-danger; }
 
-    &.btn-default:disabled { color: #000;    background-color: lighten(#f8f9fa, $disabled-color-factor); }
-    &.btn-primary:disabled { color: #fff;    background-color: lighten($brand-primary, $disabled-color-factor); }
-    &.btn-success:disabled { color: #fff;    background-color: lighten($brand-success, $disabled-color-factor); }
-    &.btn-info:disabled    { color: #fff;    background-color: lighten($brand-info, $disabled-color-factor); }
-    &.btn-warning:disabled { color: #fff;    background-color: lighten($brand-warning, $disabled-color-factor); }
-    &.btn-danger:disabled  { color: #fff;    background-color: lighten($brand-danger, $disabled-color-factor); }
+    &:disabled, &[disabled] { pointer-events: none; }
+    &.btn-default:disabled, &.btn-default[disabled] { color: #000; background-color: lighten(#f8f9fa, $disabled-color-factor); }
+    &.btn-primary:disabled, &.btn-primary[disabled] { color: #fff; background-color: lighten($brand-primary, $disabled-color-factor); }
+    &.btn-success:disabled, &.btn-success[disabled] { color: #fff; background-color: lighten($brand-success, $disabled-color-factor); }
+    &.btn-info:disabled, &.btn-info[disabled]    { color: #fff; background-color: lighten($brand-info, $disabled-color-factor); }
+    &.btn-warning:disabled, &.btn-warning[disabled] { color: #fff; background-color: lighten($brand-warning, $disabled-color-factor); }
+    &.btn-danger:disabled , &.btn-danger[disabled] { color: #fff; background-color: lighten($brand-danger, $disabled-color-factor); }
 
     &.btn-lg {
         @include button-size($padding-large-vertical, $padding-large-horizontal, $font-size-large, $btn-height-lg, $border-radius-large);
@@ -197,10 +198,6 @@ $disabled-color-factor: 20%;
     }
     &.btn-xs {
         @include button-size($padding-xs-vertical, $padding-xs-horizontal, $font-size-small, $btn-height-xs, $border-radius-small);
-    }
-
-    &[disabled] {
-        opacity: 0.65;
     }
 
     @at-root a#{&} {
@@ -262,9 +259,10 @@ $disabled-color-factor: 20%;
 	}
 }
 
-input[disabled],
-button[disabled] {
+input[disabled] {
+    opacity: 0.7;
     cursor: not-allowed;
+    pointer-events: none;
 }
 
 

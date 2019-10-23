@@ -145,7 +145,6 @@
             bottom: 0;
             right: 0;
             left: 0;
-            border: 1px solid #bdbdbd;
             background: white;
             z-index: 99999;
         }
@@ -154,6 +153,7 @@
             top: 0;
             background: white;
             color: black;
+            margin-top: 0;
         }
         
     }

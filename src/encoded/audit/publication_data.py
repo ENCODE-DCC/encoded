@@ -15,5 +15,5 @@ def audit_references_for_publication(value, system):
         return
 
     if not value['references']:
-        detail = 'publication dataset missing a reference to a publication'
+        detail = 'Publication dataset missing a reference to a publication.'
         raise AuditFailure('missing reference', detail, level='WARNING')

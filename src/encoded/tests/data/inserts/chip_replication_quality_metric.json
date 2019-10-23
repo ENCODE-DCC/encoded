@@ -12,7 +12,7 @@
         "rescue_ratio": 1.03187250996,
         "self_consistency_ratio": 2.375,
         "reproducibility": "pass",
-        "IDR_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+        "idr_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
     },
     {
         "status": "released",
@@ -24,6 +24,6 @@
         "quality_metric_of": [ "ENCFF003COS" ],
 
         "reproducible_peaks": 259,
-        "IDR_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+        "idr_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
     }
 ]

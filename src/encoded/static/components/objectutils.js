@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { CartToggle } from './cart';
 import * as globals from './globals';
 
@@ -509,101 +507,6 @@ export function publicDataset(dataset) {
 }
 
 
-// Display a Visualize button that brings up a modal that lets you choose an assembly and a browser
-// in which to display the visualization.
-export class BrowserSelector extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React state.
-        this.state = { selectorOpen: false };
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    // Called to open the browser-selection modal.
-    openModal() {
-        this.setState({ selectorOpen: true });
-    }
-
-    // Called to close the browser-seletino modal.
-    closeModal() {
-        this.setState({ selectorOpen: false });
-    }
-
-    // When the link to open a browser gets clicked, this gets called to close the modal in
-    // addition to going to the link.
-    handleClick() {
-        this.closeModal();
-    }
-
-    render() {
-        const { visualizeCfg, disabled, title } = this.props;
-        const assemblyList = _(Object.keys(visualizeCfg)).sortBy(assembly => _(globals.assemblyPriority).indexOf(assembly));
-
-        return (
-            <React.Fragment>
-                <button onClick={this.openModal} disabled={disabled} className="btn btn-info btn-sm" data-test="visualize">{title ? <span>{title}</span> : <span>Visualize</span>}</button>
-                {this.state.selectorOpen ?
-                    <Modal closeModal={this.closeModal} addClasses="browser-selector__modal">
-                        <ModalHeader title="Open visualization browser" closeModal={this.closeModal} />
-                        <ModalBody>
-                            <div className="browser-selector">
-                                <div className="browser-selector__inner">
-                                    <div className="browser-selector__title">
-                                        <div className="browser-selector__assembly-title">
-                                            Assembly
-                                        </div>
-                                        <div className="browser-selector__browsers-title">
-                                            Visualize with browser…
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    {assemblyList.map((assembly) => {
-                                        const assemblyBrowsers = visualizeCfg[assembly];
-                                        const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
-
-                                        return (
-                                            <div key={assembly} className="browser-selector__assembly-option">
-                                                <div className="browser-selector__assembly">
-                                                    {assembly}:
-                                                </div>
-                                                <div className="browser-selector__browsers">
-                                                    {browserList.map(browser =>
-                                                        <div key={browser} className="browser-selector__browser">
-                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
-                                                                {browser}
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
-                    </Modal>
-                : null}
-            </React.Fragment>
-        );
-    }
-}
-
-BrowserSelector.propTypes = {
-    visualizeCfg: PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
-    disabled: PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
-    title: PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
-};
-
-BrowserSelector.defaultProps = {
-    disabled: false,
-    title: '',
-};
-
-
 // You can use this function to render a panel view for a context object with a couple options:
 //   1. Pass an ENCODE context object (e.g. Biosample or Experiment) directly in props. PanelLookup
 //      returns a React component that you can render directly.
@@ -806,7 +709,7 @@ export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) 
     <div className="item-accessories">
         <div className="item-accessories--left">
             {audit ?
-                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, except: audit.except })
+                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
             : null}
         </div>
         <div className="item-accessories--right">
@@ -838,4 +741,5 @@ ItemAccessories.defaultProps = {
 
 ItemAccessories.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };

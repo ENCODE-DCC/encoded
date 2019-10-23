@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
@@ -19,7 +20,7 @@ import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowse
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
-
+dayjs.extend(utc);
 
 // Sort callback to compare the accession/external_accession of two files.
 function fileAccessionSort(a, b) {
@@ -120,7 +121,10 @@ export class FileTable extends React.Component {
             adminUser,
             showReplicateNumber,
         } = this.props;
+        const sessionProperties = this.context.session_properties;
         const loggedIn = !!(session && session['auth.userid']);
+        const roles = globals.getRoles(sessionProperties);
+        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
         // Establish the selected assembly and annotation for the tabs
         const selectedAssembly = null;
@@ -176,6 +180,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 session,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -189,6 +194,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 session,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -214,6 +220,7 @@ export class FileTable extends React.Component {
                                 graphedFiles,
                                 browserOptions,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -237,6 +244,7 @@ export class FileTable extends React.Component {
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 loggedIn,
+                                isAuthorized,
                                 adminUser,
                             }}
                         />
@@ -298,6 +306,7 @@ FileTable.defaultProps = {
     setInfoNodeId: null,
     setInfoNodeVisible: null,
     session: null,
+    session_properties: null,
     adminUser: false,
     schemas: null,
     noDefaultClasses: false,
@@ -355,7 +364,7 @@ FileTable.procTableColumns = {
     },
     date_created: {
         title: 'Date added',
-        getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+        getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
         sorter: (a, b) => {
             if (a && b) {
                 return Date.parse(a) - Date.parse(b);
@@ -370,7 +379,7 @@ FileTable.procTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} audit={item.audit} isAuthorized={meta.isAuthorized} />,
     },
     status: {
         title: 'File status',
@@ -406,7 +415,7 @@ FileTable.refTableColumns = {
     },
     date_created: {
         title: 'Date added',
-        getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+        getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
         sorter: (a, b) => {
             if (a && b) {
                 return Date.parse(a) - Date.parse(b);
@@ -421,7 +430,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <ObjectAuditIcon object={item} isAuthorized={meta.isAuthorized} />,
     },
     status: {
         title: 'File status',
@@ -484,7 +493,7 @@ class RawSequencingTable extends React.Component {
 
     render() {
         const { files, meta, showReplicateNumber } = this.props;
-        const { loggedIn, adminUser } = meta;
+        const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
             // Make object keyed by all files' @ids to make searching easy. Each key's value
@@ -623,9 +632,9 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
                                             <td className={pairClass}>{file.paired_end}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                            <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={pairClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                            <td className={pairClass}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -659,9 +668,9 @@ class RawSequencingTable extends React.Component {
                                         <td>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
                                         <td>{file.paired_end}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -715,7 +724,7 @@ class RawFileTable extends React.Component {
 
     render() {
         const { files, meta, showReplicateNumber } = this.props;
-        const { loggedIn, adminUser } = meta;
+        const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
             // Group all files by their library accessions. Any files without replicates or
@@ -740,7 +749,7 @@ class RawFileTable extends React.Component {
             const groupKeys = Object.keys(grouped).sort();
 
             return (
-                <table className="table table-sortable table-raw">
+                <table className="table table__sortable table-raw">
                     <thead>
                         <tr className="table-section">
                             <th colSpan="11">
@@ -803,9 +812,9 @@ class RawFileTable extends React.Component {
                                             <td className={groupBottom}>{file.output_type}</td>
                                             <td className={groupBottom}>{file.assembly}</td>
                                             <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                            <td className={groupBottom}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={groupBottom}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                            <td className={groupBottom}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                             <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -833,9 +842,9 @@ class RawFileTable extends React.Component {
                                         <td>{file.output_type}</td>
                                         <td>{file.assembly}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
+                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -2787,7 +2796,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
             const accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
             contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
         }
-        const dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
+        const dateString = !!selectedFile.date_created && dayjs.utc(selectedFile.date_created).format('YYYY-MM-DD');
         header = (
             <div className="graph-modal-header__content">
                 <h2>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h2>
@@ -2933,8 +2942,8 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 {auditsDisplayed(selectedFile.audit, session) ?
                     <div className="graph-modal-audits">
                         <h5>File audits:</h5>
-                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
-                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session }) : null}
+                        {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session, sessionProperties }) : null}
+                        {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session, sessionProperties }) : null}
                     </div>
                 : null}
             </div>
@@ -2978,7 +2987,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             date_created: {
                 title: 'Date added',
-                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+                getValue: item => dayjs.utc(item.date_created).format('YYYY-MM-DD'),
                 sorter: (a, b) => {
                     if (a && b) {
                         return Date.parse(a) - Date.parse(b);

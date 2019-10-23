@@ -2,18 +2,17 @@ import pytest
 
 
 @pytest.mark.parametrize('expected', [
-    "# http://localhost/batch_hub/type%3Dexperiment/hub.txt",
+    "# http://localhost/batch_hub/type%3DExperiment/hub.txt",
     "hub ENCODE_DCC_search",
     "shortLabel Hub (search:)",
     "longLabel ENCODE Data Coordination Center Data Hub",
     "genomesFile genomes.txt",
-    "email encode-help@lists.stanford.edu",
+    "email encode-help@lists.stanford.edu"
 ])
 def test_hub(testapp, workbook, expected):
-    res = testapp.get("/batch_hub/type%3Dexperiment/hub.txt")
-    if expected not in res.text:
-        expected = expected.replace('%3D', '=')
+    res = testapp.get("/batch_hub/type=Experiment/hub.txt")
     assert expected in res.text
+
 
 @pytest.mark.parametrize('expected', [
     "genome mm9",
@@ -24,7 +23,7 @@ def test_hub(testapp, workbook, expected):
     "trackDb hg19/trackDb.txt",
 ])
 def test_genomes(testapp, workbook, expected):
-    res = testapp.get("/batch_hub/type%3Dexperiment/genomes.txt")
+    res = testapp.get("/batch_hub/type=Experiment/genomes.txt")
     assert expected in res.text
 
 
@@ -92,7 +91,7 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "        subGroups BS=GM12878 EXP=ENCSR000DZQ REP=pool TARG=EBF1 view=bIDRT",
 ])
 def test_genomes(testapp, workbook, expected):
-    res = testapp.get("/batch_hub/type%3Dexperiment%2C%2caccession%3DENCSR000DZQ%2C%2caccession%3DENCSRENCSR575ZXX/hg19/trackDb.txt")
+    res = testapp.get("/batch_hub/type=Experiment%2C%2caccession%3DENCSR000DZQ%2C%2caccession%3DENCSRENCSR575ZXX/hg19/trackDb.txt")
     assert expected in res.text
 
 

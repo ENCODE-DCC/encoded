@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
@@ -16,6 +16,15 @@ import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import ViewControlRegistry, { ViewControlTypes } from './view_controls';
+
+
+ViewControlRegistry.register('Experiment', [
+    ViewControlTypes.SEARCH,
+    ViewControlTypes.MATRIX,
+    ViewControlTypes.REPORT,
+    ViewControlTypes.SUMMARY,
+]);
 
 
 const anisogenicValues = [
@@ -436,7 +445,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />
             </header>
-            {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
@@ -621,14 +630,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                             {context.date_submitted ?
                                 <div data-test="date-submitted">
                                     <dt>Date submitted</dt>
-                                    <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
+                                    <dd>{dayjs(context.date_submitted).format('MMMM D, YYYY')}</dd>
                                 </div>
                             : null}
 
                             {context.date_released ?
                                 <div data-test="date-released">
                                     <dt>Date released</dt>
-                                    <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
+                                    <dd>{dayjs(context.date_released).format('MMMM D, YYYY')}</dd>
                                 </div>
                             : null}
 

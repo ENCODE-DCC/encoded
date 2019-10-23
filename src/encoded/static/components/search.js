@@ -2,11 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { Panel, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
-import { svgIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
 import { FetchedData, Param } from './fetched';
@@ -14,15 +12,15 @@ import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Attachment } from './image';
 import {
-    BrowserSelector,
     DisplayAsJson,
-    requestSearch,
     DocTypeTitle,
     shadeOverflowOnScroll,
 } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
+import { BatchDownloadControls, ViewControls } from './view_controls';
+import { BrowserSelector } from './vis_defines';
 
 
 // Should really be singular...
@@ -145,12 +143,12 @@ const ItemComponent = ({ context: result, auditIndicators, auditDetail }, reactC
                 {result.accession ?
                     <div className="result-item__meta">
                         <div className="result-item__meta-title">{itemType}: {` ${result.accession}`}</div>
-                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                     </div>
                 : null}
                 <PickerActions context={result} />
             </div>
-            {auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
         </li>
     );
 };
@@ -163,6 +161,7 @@ ItemComponent.propTypes = {
 
 ItemComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Item = auditDecor(ItemComponent);
@@ -238,11 +237,11 @@ class BiosampleComponent extends React.Component {
                         <div className="result-item__meta-title">Biosample</div>
                         <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
                     <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
             </li>
         );
     }
@@ -257,6 +256,7 @@ BiosampleComponent.propTypes = {
 
 BiosampleComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Biosample = auditDecor(BiosampleComponent);
@@ -343,7 +343,7 @@ const ExperimentComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">{displayType}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
@@ -352,7 +352,7 @@ const ExperimentComponent = (props, reactContext) => {
                 : null}
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -371,6 +371,7 @@ ExperimentComponent.defaultProps = {
 ExperimentComponent.contextTypes = {
     session: PropTypes.object,
     actions: PropTypes.array,
+    session_properties: PropTypes.object,
 };
 
 const Experiment = auditDecor(ExperimentComponent);
@@ -461,11 +462,11 @@ const DatasetComponent = (props, reactContext) => {
                     <div className="result-item__meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -478,6 +479,7 @@ DatasetComponent.propTypes = {
 
 DatasetComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Dataset = auditDecor(DatasetComponent);
@@ -501,11 +503,11 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
             </div>
             <div className="result-item__meta">
                 <div className="result-item__meta-title">Target</div>
-                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
             </div>
             <PickerActions context={result} />
         </div>
-        {auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
     </li>
 );
 
@@ -517,6 +519,7 @@ TargetComponent.propTypes = {
 
 TargetComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Target = auditDecor(TargetComponent);
@@ -597,7 +600,7 @@ function termSelected(term, facet, filters) {
         // The given term is selected. Return the href to remove the term from the URI, as well as
         // whether this term was a negation term or not.
         return {
-            selected: url.parse(matchingFilter.remove).search,
+            selected: url.parse(matchingFilter.remove).search || matchingFilter.remove,
             negated,
             exists,
         };
@@ -798,7 +801,7 @@ class DateSelectorFacet extends React.Component {
 
         // Set possible years to be 2009 -> current year for 'date_released'
         // Set possible years to be 2008 -> current year for 'date_submitted'
-        const currentYear = moment().format('YYYY');
+        const currentYear = dayjs().format('YYYY');
         let firstYear = 2007;
         if (activeFacet === 'date_released') {
             firstYear = 2008;
@@ -916,15 +919,22 @@ class DateSelectorFacet extends React.Component {
     handleReset(resetString) {
         this.setState({ activeFacet: 'date_released' }, () => {
             this.setActiveFacetParameters();
-            this.context.navigate(resetString);
+
+            // * Strip trailing & for the ENCD-4803 branch because it keeps the training ampersand.
+            let processedResetString = resetString;
+            if (resetString[resetString.length - 1] === '&') {
+                processedResetString = resetString.substring(0, resetString.length - 1);
+            }
+
+            this.context.navigate(processedResetString);
         });
     }
 
     // Set dropdowns to match quick link query and nagivate to quick link
     handleQuickLink(searchBaseForDateRange, field) {
-        const currentYear = moment().format('YYYY');
-        const currentMonth = moment().format('MM');
-        const currentDay = moment().format('DD');
+        const currentYear = dayjs().format('YYYY');
+        const currentMonth = dayjs().format('MM');
+        const currentDay = dayjs().format('DD');
         const quickLinkString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
         this.setState({
             startMonth: currentMonth,
@@ -945,7 +955,7 @@ class DateSelectorFacet extends React.Component {
         const field = this.state.activeFacet;
         const activeFacet = facets.filter(f => f.field === this.state.activeFacet)[0];
 
-        const daysInEndMonth = moment(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
+        const daysInEndMonth = dayjs(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
 
         // if a date range has already been selected, we want to over-write that date range with a new one
         const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
@@ -1071,6 +1081,32 @@ const sanitizedString = inputString => inputString.toLowerCase()
     .replace(/ /g, '') // remove spaces (to allow multiple word searches)
     .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 
+/**
+ * Hack to get around an issue with firefox and safari where it cannot use the inbuilt Date object to
+ * format dates like 'January, 2016' (it is missing a day)
+ *
+ * @param {*} date
+ * @returns date
+ * @memberof Facet
+ * @todo: Need to fix this in a better way.
+ */
+const getValidDate = (date) => {
+    if (!date) {
+        return date;
+    }
+
+    const validDate = new Date(date);
+    if (validDate.getDay && !isNaN(validDate.getDay())) {
+        return date;
+    }
+
+    const dateComponents = date.split(' ');
+    if (dateComponents.length < 1) {
+        return date;
+    }
+    return `${dateComponents[0].replace(/(^,)|(,$)/g, '')} 1, ${dateComponents[1]}`;
+};
+
 class Facet extends React.Component {
     constructor() {
         super();
@@ -1149,11 +1185,11 @@ class Facet extends React.Component {
         // For date facets, sort by date
         let terms = [];
         if (field.match('date')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY-MM-DD').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(getValidDate(obj.key), 'YYYY-MM-DD').toISOString()).reverse();
         } else if (field.match('month')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(getValidDate(obj.key), 'MMMM, YYYY').toISOString()).reverse();
         } else if (field.match('year')) {
-            terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').toISOString()).reverse();
+            terms = _.sortBy(unsortedTerms, obj => dayjs(getValidDate(obj.key), 'YYYY').toISOString()).reverse();
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => obj.key);
@@ -1372,8 +1408,21 @@ TextFilter.propTypes = {
 };
 
 
+/**
+ * Determine whether a facet should be displayed or not.
+ * @param {object} facet One facet object from search results
+ * @param {object} session From <App> React context
+ * @param {object} sessionProperties From <App> React context
+ *
+ * @return True if given facet should be hidden
+ */
+const isFacetHidden = (facet, session, sessionProperties) => (
+    facet.field === 'internal_status' && !sessionProperties.admin
+);
+
+
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
-export const FacetList = (props) => {
+export const FacetList = (props, reactContext) => {
     const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix } = props;
 
     // Get "normal" facets, meaning non-audit facets.
@@ -1424,7 +1473,9 @@ export const FacetList = (props) => {
                 {(context || clearButton) ?
                     <div className="search-header-control">
                         {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                        <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                        {context.clear_filters ?
+                            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                        : null}
                     </div>
                 : null}
                 {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
@@ -1445,7 +1496,7 @@ export const FacetList = (props) => {
                             />
                         );
                     }
-                    if (facet.field === 'date_submitted') {
+                    if (facet.field === 'date_submitted' || isFacetHidden(facet, reactContext.session, reactContext.session_properties)) {
                         return null;
                     }
                     return (
@@ -1489,125 +1540,7 @@ FacetList.defaultProps = {
 
 FacetList.contextTypes = {
     session: PropTypes.object,
-};
-
-
-/**
- * Display the modal for batch download, and pass back clicks in the Download button
- */
-export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title || 'Download'}</button>}>
-        <ModalHeader title="Using batch download" closeModal />
-        <ModalBody>
-            <p>
-                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file has the URL or command line to download the metadata file.
-            </p>
-            <p>
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-            </p>
-            <p>
-                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:
-            </p>
-            <code>xargs -L 1 curl -O -L &lt; files.txt</code><br />
-            <div>{additionalContent}</div>
-        </ModalBody>
-        <ModalFooter
-            closeModal={<button className="btn btn-default">Close</button>}
-            submitBtn={<button className="btn btn-info" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
-            dontClose
-        />
-    </Modal>
-);
-
-BatchDownloadModal.propTypes = {
-    /** Function to call when Download button gets clicked */
-    handleDownloadClick: PropTypes.func.isRequired,
-    /** Title to override usual actuator "Download" button title */
-    title: PropTypes.string,
-    /** True to disable Download button */
-    disabled: PropTypes.bool,
-    /** Additional content in modal as component */
-    additionalContent: PropTypes.object,
-};
-
-BatchDownloadModal.defaultProps = {
-    title: '',
-    disabled: false,
-    additionalContent: null,
-};
-
-
-export class BatchDownload extends React.Component {
-    constructor() {
-        super();
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-    }
-
-    handleDownloadClick() {
-        if (!this.props.context) {
-            requestSearch(this.props.query).then((results) => {
-                this.context.navigate(results.batch_download);
-            });
-        } else {
-            this.context.navigate(this.props.context.batch_download);
-        }
-    }
-
-    render() {
-        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
-    }
-}
-
-BatchDownload.propTypes = {
-    context: PropTypes.object, // Search result object whose batch_download we're using
-    query: PropTypes.string, // Without `context`, perform a search using this query string
-};
-
-BatchDownload.defaultProps = {
-    context: null,
-    query: '',
-};
-
-BatchDownload.contextTypes = {
-    navigate: PropTypes.func,
-};
-
-
-/**
- * Display the search-result view controls that lets users go to the different search results pages
- * (matrix, report, etc).
- */
-export const ViewControls = ({ views, css, hrefProcessor }) => {
-    if (views && views.length > 0) {
-        return (
-            <div className={`btn-attached${css ? ` ${css}` : ''}`}>
-                {views.map((view) => {
-                    // Checks for the callback every iteration, but with so few buttons I don't
-                    // expect performance issues.
-                    const href = hrefProcessor ? hrefProcessor(view.href) : view.href;
-                    return <a href={href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(globals.viewToSvg[view.icon])}</a>;
-                })}
-            </div>
-        );
-    }
-    return null;
-};
-
-ViewControls.propTypes = {
-    /** Views from a search-result object */
-    views: PropTypes.array,
-    /** CSS to add to the wrapper <div> */
-    css: PropTypes.string,
-    /** Callback to modify hrefs for each button */
-    hrefProcessor: PropTypes.func,
-};
-
-ViewControls.defaultProps = {
-    views: null,
-    css: '',
-    hrefProcessor: null,
+    session_properties: PropTypes.object,
 };
 
 
@@ -1640,16 +1573,6 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-
-    // Get a sorted list of batch hubs keys with case-insensitive sort.
-    let visualizeKeys = [];
-    if (context.visualize_batch && Object.keys(context.visualize_batch).length > 0) {
-        visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-            const aLower = a.toLowerCase();
-            const bLower = b.toLowerCase();
-            return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
-        });
-    }
 
     let resultsToggle = null;
     if (showResultsToggle) {
@@ -1684,18 +1607,10 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
-                <ViewControls views={context.views} />
+                <ViewControls results={context} />
                 {resultsToggle}
-                {context.batch_download ?
-                    <BatchDownload context={context} />
-                : null}
-                {visualizeKeys.length > 0 ?
-                    <BrowserSelector
-                        visualizeCfg={context.visualize_batch}
-                        disabled={!!visualizeDisabledTitle}
-                        title={visualizeDisabledTitle || 'Visualize'}
-                    />
-                : null}
+                <BatchDownloadControls results={context} />
+                <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
             </div>
             <div className="results-table-control__json">
                 <DisplayAsJson />

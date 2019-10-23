@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
+import { BrowserSelector } from './vis_defines';
 
 
 const regionGenomes = [
@@ -259,6 +259,10 @@ AdvSearch.contextTypes = {
 };
 
 
+// Maximum number of selected items that can be visualized.
+const VISUALIZE_LIMIT = 100;
+
+
 class RegionSearch extends React.Component {
     constructor() {
         super();
@@ -277,7 +281,6 @@ class RegionSearch extends React.Component {
     }
 
     render() {
-        const visualizeLimit = 100;
         const context = this.props.context;
         const results = context['@graph'];
         const columns = context.columns;
@@ -287,17 +290,7 @@ class RegionSearch extends React.Component {
         const filters = context.filters;
         const facets = context.facets;
         const total = context.total;
-        const visualizeDisabled = total > visualizeLimit;
-
-        // Get a sorted list of batch hubs keys with case-insensitive sort
-        let visualizeKeys = [];
-        if (context.visualize_batch && Object.keys(context.visualize_batch).length > 0) {
-            visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-                const aLower = a.toLowerCase();
-                const bLower = b.toLowerCase();
-                return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
-            });
-        }
+        const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
 
         return (
             <div>
@@ -344,14 +337,7 @@ class RegionSearch extends React.Component {
                                             </span>
                                         }
 
-                                        {visualizeKeys && context.visualize_batch ?
-                                            <BrowserSelector
-                                                visualizeCfg={context.visualize_batch}
-                                                disabled={visualizeDisabled}
-                                                title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                            />
-                                        : null}
-
+                                        <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
                                     </div>
 
                                     <hr />

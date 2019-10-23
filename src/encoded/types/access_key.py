@@ -38,7 +38,7 @@ from snovault.validators import (
         'description': 'Programmatic access keys',
     },
     acl=[
-        (Allow, Authenticated, 'add'),
+        (Allow, 'group.verified', 'add'),
         (Allow, 'group.admin', 'list'),
         (Allow, 'group.read-only-admin', 'list'),
         (Allow, 'remoteuser.INDEXER', 'list'),

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import _ from 'underscore';
 import Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
@@ -16,6 +17,8 @@ import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { ReplacementAccessions } from './typeutils';
 
+
+dayjs.extend(utc)
 
 /**
  * Display list of file.matching_md5sum accessions as links to their respective files. This assumes
@@ -406,7 +409,7 @@ class FileComponent extends React.Component {
                     : null}
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'file-audit', except: context['@id'] }} />
                 </header>
-                {auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
+                {auditDetail(context.audit, 'file-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
                 <Panel>
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
@@ -544,7 +547,7 @@ class FileComponent extends React.Component {
                                 {context.date_created ?
                                     <div data-test="datecreated">
                                         <dt>Date added</dt>
-                                        <dd>{moment.utc(context.date_created).format('YYYY-MM-DD')}</dd>
+                                        <dd>{dayjs.utc(context.date_created).format('YYYY-MM-DD')}</dd>
                                     </div>
                                 : null}
 
@@ -740,11 +743,11 @@ class ListingComponent extends React.Component {
                         <div className="result-item__meta-title">File</div>
                         <div className="result-item__meta-id">{` ${result.title}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
                     <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties })}
             </li>
         );
     }
@@ -759,6 +762,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

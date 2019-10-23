@@ -400,7 +400,7 @@ class PipelineComponent extends React.Component {
                     </div>
                     <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'pipeline-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session })}
+                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, sessionProperties: this.context.session_properties })}
                 <Panel>
                     <PanelBody>
                         <dl className="key-value">
@@ -501,6 +501,7 @@ PipelineComponent.propTypes = {
 
 PipelineComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Pipeline = auditDecor(PipelineComponent);
@@ -586,11 +587,11 @@ class ListingComponent extends React.Component {
                         <div className="result-item__meta-title">Pipeline</div>
                         <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
                     <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, forcedEditLink: true })}
             </li>
         );
     }
@@ -605,6 +606,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

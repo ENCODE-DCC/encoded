@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
+import * as globals from './globals';
 
 // This module supports the display of an object's audits in the form of an indicator button that
 // shows a summary of the categories of audits in the current object. Currently, we have four
@@ -118,7 +119,7 @@ AuditIcon.defaultProps = {
 /**
  * Display the audit icon for the highest audit level for the given object.
  */
-export const ObjectAuditIcon = ({ object, audit, loggedIn }) => {
+export const ObjectAuditIcon = ({ object, audit, isAuthorized }) => {
     if (audit !== null) {
         let highestAuditLevel;
         const objectAudit = audit || object.audit;
@@ -126,8 +127,8 @@ export const ObjectAuditIcon = ({ object, audit, loggedIn }) => {
         if (objectAudit) {
             const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy(level => -objectAudit[level][0].level);
 
-            // Only logged-in users should see ambulance icon (INTERNAL_ACTION)
-            highestAuditLevel = !loggedIn && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
+            // Only authorized users should see ambulance icon (INTERNAL_ACTION)
+            highestAuditLevel = !isAuthorized && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
         } else {
             highestAuditLevel = 'OK';
         }
@@ -141,13 +142,13 @@ ObjectAuditIcon.propTypes = {
     object: PropTypes.object.isRequired,
     /** Audit object when `object` has none; null to suppress display */
     audit: PropTypes.object,
-    /** True if user is logged in */
-    loggedIn: PropTypes.bool,
+    /** True if user is authorized in */
+    isAuthorized: PropTypes.bool,
 };
 
 ObjectAuditIcon.defaultProps = {
     audit: undefined,
-    loggedIn: false,
+    isAuthorized: false,
 };
 
 
@@ -291,14 +292,14 @@ export function auditsDisplayed(audits, session) {
 /**
  * Display a summary of audit levels and their counts. Useful in audit buttons.
  */
-export const AuditCounts = ({ audits, useWrapper, loggedIn }) => {
+export const AuditCounts = ({ audits, useWrapper, isAuthorized }) => {
     // Sort the audit levels by their level number, using the first element of each warning
     // category.
     if (audits && Object.keys(audits).length > 0) {
         const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
         const auditCountsContent = (
             sortedAuditLevels.map((level) => {
-                if (loggedIn || level !== 'INTERNAL_ACTION') {
+                if (isAuthorized || level !== 'INTERNAL_ACTION') {
                     // Calculate the CSS class for the icon.
                     const levelName = level.toLowerCase();
                     const btnClass = `audit-counts__level audit-counts__level--${levelName}`;
@@ -334,14 +335,14 @@ AuditCounts.propTypes = {
     audits: PropTypes.object,
     /** True to wrap counts in a div with appropriate CSS class; false if taken care of outside */
     useWrapper: PropTypes.bool,
-    /** True if user is logged in */
-    loggedIn: PropTypes.bool,
+    /** True if user is authorized to view */
+    isAuthorized: PropTypes.bool,
 };
 
 AuditCounts.defaultProps = {
     audits: null,
     useWrapper: true,
-    loggedIn: false,
+    isAuthorized: false,
 };
 
 
@@ -363,17 +364,24 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditIndicators(audits, id, options) {
-        const { session, search } = options || {};
-        const loggedIn = !!(session && session['auth.userid']);
+        const { session, search, sessionProperties } = options || {};
+        const roles = globals.getRoles(sessionProperties);
+        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
         if (auditsDisplayed(audits, session)) {
             // Calculate the class of the indicator button based on whether the audit detail panel
             // is open or not.
             const indicatorClass = `audit-indicators btn btn-sm${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
+            const auditItems = Object.keys(audits);
+
+            // special case for unauthorized users
+            if (!isAuthorized && auditItems.length === 1 && auditItems[0] === 'INTERNAL_ACTION') {
+                return null;
+            }
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
-                    <AuditCounts audits={audits} useWrapper={false} loggedIn={loggedIn} />
+                    <AuditCounts audits={audits} useWrapper={false} isAuthorized={isAuthorized} />
                 </button>
             );
         }
@@ -383,18 +391,19 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditDetail(audits, id, options) {
-        const { session } = options || {};
+        const { sessionProperties } = options || {};
         if (audits && this.state.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
             const sortedAuditLevelNames = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
-            const loggedIn = session && session['auth.userid'];
+            const roles = globals.getRoles(sessionProperties);
+            const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
             // First loop by audit level, then by audit group
             return (
                 <div className="audit-detail" id={id.replace(/\W/g, '')} aria-hidden={!this.state.auditDetailOpen}>
                     {sortedAuditLevelNames.map((auditLevelName) => {
-                        if (loggedIn || auditLevelName !== 'INTERNAL_ACTION') {
+                        if (isAuthorized || auditLevelName !== 'INTERNAL_ACTION') {
                             const audit = audits[auditLevelName];
 
                             // Group audits within a level by their category ('name' corresponds to

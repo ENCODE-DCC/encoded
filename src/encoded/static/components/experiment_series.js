@@ -42,7 +42,7 @@ const experimentTableColumns = {
 
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <AuditCounts audits={meta.auditsByDataset[item['@id']]} loggedIn={meta.loggedIn} />,
+        display: (item, meta) => <AuditCounts audits={meta.auditsByDataset[item['@id']]} isAuthorized={meta.isAuthorized} />,
         sorter: false,
     },
 
@@ -164,7 +164,8 @@ class ExperimentSeriesComponent extends React.Component {
         const { context, auditDetail, auditIndicators } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const viewableDatasets = this.getViewableDatasets();
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        const roles = globals.getRoles(this.context.session_properties);
+        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
         // Set up the breadcrumbs.
         const datasetType = context['@type'][1];
@@ -215,7 +216,7 @@ class ExperimentSeriesComponent extends React.Component {
                     <h2>Summary for experiment series {context.accession}</h2>
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
                 </header>
-                {auditDetail(context.audit, 'series-audit', { session: this.context.session })}
+                {auditDetail(context.audit, 'series-audit', { session: this.context.session, sessionProperties: this.context.session_properties })}
                 <Panel>
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
@@ -304,7 +305,7 @@ class ExperimentSeriesComponent extends React.Component {
                             columns={experimentTableColumns}
                             css="table-experiment-series"
                             footer="Use cart to download files"
-                            meta={{ auditsByDataset: this.state.auditsByDataset, loggedIn }}
+                            meta={{ auditsByDataset: this.state.auditsByDataset, isAuthorized }}
                         />
                     </SortTablePanel>
                 : null}
@@ -423,11 +424,11 @@ const ListingComponent = (props, reactContext) => {
                         <a href={`/search/?type=Experiment&related_series.@id=${result['@id']}${searchableDatasetStatusQuery}`}>View {totalDatasetCount} datasets</a>
                     </div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
                 <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -443,6 +444,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

@@ -533,9 +533,10 @@ const SchemaPanel = (props, reactContext) => {
 
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
-    const decoration = loggedIn ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
-    const decorationClasses = loggedIn ? 'profiles-add-obj' : '';
+    const roles = globals.getRoles(reactContext.session_properties);
+    const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
+    const decorationClasses = isAuthorized ? 'profiles-add-obj' : '';
 
     return (
         <Panel>
@@ -569,6 +570,7 @@ SchemaPanel.propTypes = {
 
 SchemaPanel.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
@@ -627,7 +629,12 @@ globals.contentViews.register(SchemaPage, 'JSONSchema');
 // add a new object of that type if you're logged in.
 const AllSchemasPage = (props, reactContext) => {
     const { context } = props;
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    const reactContextUser = reactContext.session_properties ? reactContext.session_properties.user : null;
+    const canAddSchema = !!(
+        reactContextUser && reactContextUser.lab && reactContextUser.lab.status === 'current' &&
+        reactContextUser.submits_for && reactContextUser.submits_for.length > 0 &&
+        reactContextUser.submits_for.includes(reactContextUser.lab['@id'])
+    );
 
     // Get a sorted list of all available schema object names (e.g. GeneticModification). Filter
     // out those without any `identifyingProperties` because the user can't add objects of that
@@ -665,7 +672,7 @@ const AllSchemasPage = (props, reactContext) => {
 
                             return (
                                 <div className="schema-list__item" key={objectName}>
-                                    {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
+                                    {canAddSchema ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
                                     <a href={schemaPath} title={context[objectName].description}>{objectName}</a>
                                 </div>
                             );
@@ -683,6 +690,7 @@ AllSchemasPage.propTypes = {
 
 AllSchemasPage.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 globals.contentViews.register(AllSchemasPage, 'JSONSchemas');

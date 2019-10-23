@@ -53,7 +53,7 @@ const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactConte
                 <h1>{context.title}</h1>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'software-audit' }} />
             </header>
-            {auditDetail(context.audit, 'software-audit', { session: reactContext.session, except: context['@id'] })}
+            {auditDetail(context.audit, 'software-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
 
             <Panel>
                 <PanelBody>
@@ -116,6 +116,7 @@ SoftwareComponent.propTypes = {
 SoftwareComponent.contextTypes = {
     location_href: PropTypes.string,
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
@@ -181,11 +182,11 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
             <div className="result-item__meta">
                 <div className="result-item__meta-title">Software</div>
                 <Status item={result.status} badgeSize="small" css="result-table__status" />
-                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
             </div>
             <PickerActions context={result} />
         </div>
-        {auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
     </li>
 );
 
@@ -197,6 +198,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

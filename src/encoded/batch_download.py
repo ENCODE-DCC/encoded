@@ -10,7 +10,7 @@ from urllib.parse import (
     urlencode,
     quote,
 )
-from encoded.viewconfigs.views import search
+from encoded.search_views import search
 from snovault.helpers.helper import list_visible_columns_for_schemas
 import csv
 import io
@@ -609,7 +609,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in search(context, request, return_generator=True):
+        for item in search(context, request)['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 

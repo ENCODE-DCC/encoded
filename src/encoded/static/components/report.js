@@ -6,7 +6,8 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
-import { FacetList, ViewControls } from './search';
+import { FacetList } from './search';
+import { ViewControls } from './view_controls';
 
 
 function columnChoices(schema, selected) {
@@ -669,6 +670,9 @@ class Report extends React.Component {
         }
         const columns = columnChoices(schema, queryFields);
 
+        // Compose download-TSV link.
+        const downloadTsvPath = `/report.tsv${parsedUrl.path.slice(parsedUrl.pathname.length)}`;
+
         /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <Panel>
@@ -681,23 +685,11 @@ class Report extends React.Component {
                             <h4>Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}</h4>
                             <div className="results-table-control">
                                 <div className="results-table-control__main">
-                                    <ViewControls
-                                        views={context.views}
-                                        hrefProcessor={
-                                            (viewHref) => {
-                                                // Strip any `field` properties out of the view's href as
-                                                // they don't apply to search or matrix
-                                                const parsedViewUrl = url.parse(viewHref, true);
-                                                delete parsedViewUrl.query.field;
-                                                delete parsedViewUrl.search;
-                                                return url.format(parsedViewUrl);
-                                            }
-                                        }
-                                    />
+                                    <ViewControls results={context} />
                                     <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
                                         <i className="icon icon-columns" /> Columns
                                     </button>
-                                    <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass data-test="download-tsv">Download TSV</a>
+                                    <a className="btn btn-info btn-sm" href={downloadTsvPath} data-bypass data-test="download-tsv">Download TSV</a>
                                 </div>
                             </div>
                             <Table context={context} more={this.state.more} columns={columns} setSort={this.setSort} />

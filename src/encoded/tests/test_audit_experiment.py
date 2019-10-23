@@ -186,8 +186,7 @@ def ctrl_experiment(testapp, lab, award, control_target, cell_free):
         'lab': lab['uuid'],
         'biosample_ontology': cell_free['uuid'],
         'status': 'in progress',
-        'assay_term_name': 'ChIP-seq',
-        'experiment_classification': ['functional genomics assay']
+        'assay_term_name': 'ChIP-seq'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 

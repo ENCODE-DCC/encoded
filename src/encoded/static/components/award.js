@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
@@ -1682,34 +1682,36 @@ MilestonesTable.propTypes = {
  * array has contiguous months.
  *
  * @param {array} sortedDateTerms - Array of date terms sorted by date
- * @param {string} startDate - First date to appear in new array in YYYY-MM format
+ * @param {string} startDateText - First date to appear in new array in YYYY-MM format
  * @return {array} - New array with `sortedDateTerms` data plus 0 entries in between given months.
  */
-const fillDates = (sortedDateTerms, startDate) => {
+const fillDates = (sortedDateTerms, startDateText) => {
     // The new array limits go between `startDate` and the current date.
-    const startDateMoment = moment(startDate, 'YYYY-MM');
-    const endDateMoment = moment();
-    const monthCount = endDateMoment.diff(startDateMoment, 'months') + 1;
+    const startingDate = dayjs(startDateText, 'YYYY-MM');
+    const endingDate = dayjs();
+    const monthCount = endingDate.diff(startingDate, 'months') + 1;
 
     // For every possible month, generate a new array entry, filling in the doc_count with
     // matching data from `sortedDateTerms`, or 0 if `sortedDateTerms` has no matching month.
     const filledDateArray = [];
-    let sortedDateIndex = sortedDateTerms.findIndex(term => term.key >= startDate);
+    let sortedDateIndex = sortedDateTerms.findIndex(term => term.key >= startDateText);
     sortedDateIndex = sortedDateIndex > -1 ? sortedDateIndex : 0;
-    let currentMonth = startDate;
+    let currentMonthText = startDateText;
+    let currentDate = startingDate.clone();
     for (let i = 0; i < monthCount; i += 1) {
         let docCount = 0;
-        if (sortedDateTerms[sortedDateIndex] && currentMonth === sortedDateTerms[sortedDateIndex].key) {
+        if (sortedDateTerms[sortedDateIndex] && currentMonthText === sortedDateTerms[sortedDateIndex].key) {
             // An entry in `sortedDateTerms` matches the current month we're generating in the new
             // array, so copy its doc_count to the new array and go to the next entry in
             // `sortedDateTerms`.
             docCount = sortedDateTerms[sortedDateIndex].doc_count;
             sortedDateIndex += 1;
         }
-        filledDateArray.push({ key: currentMonth, doc_count: docCount });
+        filledDateArray.push({ key: currentMonthText, doc_count: docCount });
 
-        // Move to the next month. Note `add()` mutates `startDateMoment`.
-        currentMonth = startDateMoment.add(1, 'month').format('YYYY-MM');
+        // Move to the next month..
+        currentDate = currentDate.add(1, 'month');
+        currentMonthText = currentDate.format('YYYY-MM');
     }
     return filledDateArray;
 };
@@ -1758,9 +1760,9 @@ export const ExperimentDate = (props) => {
 
     // Take an array of date facet terms and return an array of terms sorted by date.
     function sortTerms(dateArray) {
-        // Use Moment to format arrays of submitted and released date
+        // Use dayjs to format arrays of submitted and released date
         const standardTerms = dateArray.map((term) => {
-            const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
+            const standardDate = dayjs(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
             return { key: standardDate, doc_count: term.doc_count };
         });
 
@@ -1797,9 +1799,9 @@ export const ExperimentDate = (props) => {
 
         // Add an object with the most current date to one of the arrays.
         if ((releasedDates && releasedDates.length > 0) && (submittedDates && submittedDates.length > 0)) {
-            if (sortedreleasedTerms.length > 0 && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+            if (sortedreleasedTerms.length > 0 && dayjs(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
                 sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
-            } else if (sortedsubmittedTerms.length > 0 && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+            } else if (sortedsubmittedTerms.length > 0 && dayjs(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
                 sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
             }
         }
@@ -1807,7 +1809,7 @@ export const ExperimentDate = (props) => {
         // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
         let awardStartDate;
         if (award && award.start_date) {
-            awardStartDate = moment(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
+            awardStartDate = dayjs(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
         } else {
             const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
             const submittedIndex = sortedsubmittedTerms.findIndex(item => item.doc_count);
@@ -1819,7 +1821,7 @@ export const ExperimentDate = (props) => {
         deduplicatedsubmitted = fillDates(sortedsubmittedTerms, awardStartDate);
 
         // Create an array of dates.
-        date = deduplicatedreleased.map(dateTerm => moment(dateTerm.key, 'YYYY-MM').format('MMM YYYY'));
+        date = deduplicatedreleased.map(dateTerm => dayjs(dateTerm.key, 'YYYY-MM').format('MMM YYYY'));
         accumulatedDataReleased = createDataset(deduplicatedreleased);
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted);
 
@@ -2185,7 +2187,7 @@ const Award = ({ context }, reactContext) => {
                         <dl className="key-value">
                             <div data-test="dates">
                                 <dt>Dates</dt>
-                                <dd>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dd>
+                                <dd>{dayjs(context.start_date).format('MMMM DD, YYYY')} - {dayjs(context.end_date).format('MMMM DD, YYYY')}</dd>
                             </div>
 
                             <div data-test="rfa">

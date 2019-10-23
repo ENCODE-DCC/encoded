@@ -2,7 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 
 def audit_term(value, system):
     '''
@@ -20,16 +23,23 @@ def audit_term(value, system):
     term_id = value['term_id']
 
     if term_id.startswith('NTR:'):
-        detail = 'BiosampleType {} has a New Term Request {} - {}'.format(
-            value['@id'], term_id, term_name
+        detail = ('BiosampleType {} has a New Term Request {} - {}.'.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            term_id,
+            term_name
+            )
         )
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
         return
 
     if term_id not in ontology:
         detail = ('BiosampleType {} specifies a term_id {} '
-                  'that is not part of the {} ontology.').format(
-                      value['@id'], term_id, term_id.split(':', 1)[0])
+            'that is not part of the {} ontology.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                term_id,
+                term_id.split(':', 1)[0]
+            )
+        )
         yield AuditFailure('term_id not in ontology', detail,
                            level='INTERNAL_ACTION')
         return
@@ -38,13 +48,15 @@ def audit_term(value, system):
     if (ontology_term_name != term_name
         and term_name not in ontology[term_id]['synonyms']):
         detail = ('BiosampleType {object_id} has a mismatch between'
-                  ' term_id ({term_id}) and term_name ({term_name}),'
-                  ' ontology term_name for term_id {term_id} is'
-                  ' {ontology_term_name}.').format(
-                      object_id=value['@id'],
-                      term_id=term_id,
-                      term_name=term_name,
-                      ontology_term_name=ontology_term_name)
+            ' term_id ({term_id}) and term_name ({term_name}),'
+            ' ontology term_name for term_id {term_id} is'
+            ' {ontology_term_name}.'.format(
+                object_id=audit_link(path_to_text(value['@id']), value['@id']),
+                term_id=term_id,
+                term_name=term_name,
+                ontology_term_name=ontology_term_name
+            )
+        )
         yield AuditFailure('inconsistent ontology term', detail,
                            level='ERROR')
 
