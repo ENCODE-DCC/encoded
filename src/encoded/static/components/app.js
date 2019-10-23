@@ -40,8 +40,8 @@ const portal = {
             title: 'Data',
             children: [
                 { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released' },
-                { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released' },
-                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment&status=released' },
+                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released' },
+                { id: 'functional-char-assays', title: 'Functional characterization search', url: '/search/?type=FunctionalCharacterizationExperiment' },
                 { id: 'sep-mm-1' },
                 { id: 'cloud', title: 'Cloud Resources' },
                 { id: 'aws-link', title: 'AWS Open Data', url: 'https://registry.opendata.aws/encode-project/', tag: 'cloud' },
