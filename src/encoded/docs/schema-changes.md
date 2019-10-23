@@ -154,7 +154,7 @@ This new object is an array of example objects that can successfully POST agains
 Updating an existing schema
 ----------------
 
-There are two situations we need to consider when updating an existing schema: (1) No update of the schema version (2) Schema version update
+There are two situations we need to consider when updating an existing schema: (1) No update of the schema version (2) Update schema version
 
 ### No change on schema version
 
@@ -188,13 +188,21 @@ There are two situations we need to consider when updating an existing schema: (
 * *μg/kg* can now be specified as amount units.
 
 ### Update schema version
-* In many other cases, a schema version update will be required. Examples of such cases include: cases where a property name is changed or if a previously existing property is removed from the schema. Hence, the previously existing objects will no longer validated with the new schema change. In addition, any new objects if posted using the old schema will no longer be valid after the schema update. 
+* Schema version has to be updated (bumped up by 1) if the change that is being introduced will lead to a potential invalidation of existing objects in the database. 
 
-* Other examples include: when a property that allowed free text is now changed to a possible list of enums or if an existing enum is removed or if one object is migrated into another object.
+* Examples include:
+    1) Changing the name of a property in the existing schema.
+    2) Removing a property from the existing schema.
+    3) A property that previously allowed free text is now changed to a possible list of allowed enums.
+    4) If an existing enum is removed from a property.
+    5) If one object is migrated into another object.
+    6) Addition of multiple new schema properties leading to substantial changes to an existing schema.
+
+* Most of the changes described above are examples where there will be a potential conflict for the existing objects to be validated under the new schema. 
 
 * An additional step that will be needed in all such cases will be adding an upgrader script that will change all the existing objects to fit into the new schema that is currently being implemented.
 
-* In some situations even if we are not making any changes that may involve modifying existing properties and an upgrader step is not technically required; but if these involve several additional properties being added resulting in substantial schema changes, it is would be a good idea to update the schema version. For example if we are including ten new properties independent of the one's that already existed.
+* While the addition of multiple new schema properties is not going to invalidate any existing objects, it makes sense to update the schema version. This will be especially helpful to all the users and submitters who are trying to use these objects either for their submissions or while querying the database using scripts.
 
 **Follow the steps as outlined below**
 
