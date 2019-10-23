@@ -648,7 +648,9 @@ class Matrix extends React.Component {
     getRowCategories() {
         const rowCategory = this.props.context.matrix.y.group_by[0];
         const rowCategoryData = this.props.context.matrix.y[rowCategory].buckets;
-        const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryData.map(rowCategoryDatum => rowCategoryDatum.key));
+        const title = this.props.context.title.toLowerCase();
+        const merryGoRoundColors = title === 'target matrix';
+        const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryData.map(rowCategoryDatum => rowCategoryDatum.key), { merryGoRoundColors });
         const rowCategoryNames = {};
         rowCategoryData.forEach((datum) => {
             rowCategoryNames[datum.key] = datum.key;
