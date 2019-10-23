@@ -5,11 +5,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import Pager from '../../libs/bootstrap/pager';
-import { Panel, PanelBody, PanelHeading } from '../../libs/bootstrap/panel';
+import Pager from '../../libs/ui/pager';
+import { Panel, PanelBody, PanelHeading } from '../../libs/ui/panel';
 import { tintColor } from '../datacolors';
 import { itemClass, encodedURIComponent, parseAndLogError } from '../globals';
-import { requestObjects, DisplayAsJson } from '../objectutils';
+import { requestObjects, ItemAccessories } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartClearButton from './clear';
@@ -1176,11 +1176,9 @@ class CartComponent extends React.Component {
 
         return (
             <div className={itemClass(cartContext, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{cartName}</h2>
-                        {cartType === 'OBJECT' ? <DisplayAsJson /> : null}
-                    </div>
+                <header>
+                    <h2>{cartName}</h2>
+                    {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
                 </header>
                 <Panel addClasses="cart__result-table">
                     {cartElements.length > 0 ?

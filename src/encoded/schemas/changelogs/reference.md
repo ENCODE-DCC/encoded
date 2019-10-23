@@ -3,7 +3,7 @@
 ### Minor changes since schema version 16
 
 * *functional elements* is added to the enums list of *reference_type* property
-* Added MouseDevSeries to *internal_tags*
+* Added *MouseDevSeries* enum to *internal_tags*
 
 ### Schema version 16
 
@@ -11,7 +11,7 @@
 
 ### Schema version 15
 
-* Replace started status with in progress.
+* Replace *started* enum in *status* with *in progress*.
 
 ### Schema version 14
 
@@ -19,7 +19,7 @@
 
 ### Schema version 13
 
-* Remove *proposed* from status enum (dataset mixin).
+* Remove *proposed* from *status* enum (*dataset* mixin).
 
 ### Schema version 12
 

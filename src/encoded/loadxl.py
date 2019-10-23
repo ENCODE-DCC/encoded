@@ -61,8 +61,15 @@ ORDER = [
     'analysis_step_run',
     'file',
     'star_quality_metric',
+    'gene_quantification_quality_metric',
+    'gene_type_quantification_quality_metric',
     'bismark_quality_metric',
     'cpg_correlation_quality_metric',
+    'atac_alignment_quality_metric',
+    'atac_alignment_enrichment_quality_metric',
+    'atac_library_complexity_quality_metric',
+    'atac_peak_enrichment_quality_metric',
+    'atac_replication_quality_metric',
     'chip_alignment_samstat_quality_metric',
     'chip_alignment_enrichment_quality_metric',
     'chip_library_quality_metric',
@@ -107,6 +114,11 @@ IS_ATTACHMENT = [
     'jsd_plot',
     'gc_bias_plot',
     'IDR_dispersion_plot',
+    'idr_dispersion_plot',
+    'idr_parameters',
+    'tss_enrichment_plot',
+    'fragment_length_distribution_plot',
+    'peak_width_distribution_plot',
 ]
 
 

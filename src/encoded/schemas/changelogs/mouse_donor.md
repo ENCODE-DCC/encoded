@@ -10,7 +10,7 @@
 
 ### Schema version 9
 
-* *status* values "proposed" and "preliminary" were removed
+* *status* values *proposed* and *preliminary* were removed
 * *status* and *dbxrefs* values are restricted to DCC access only
 
 ### Schema version 8

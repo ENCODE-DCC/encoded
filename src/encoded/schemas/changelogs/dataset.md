@@ -1,11 +1,11 @@
 ## Changelog for dataset.json
 
 ### Minor changes since schema version 13
-* Added MouseDevSeries to *internal_tags*
+* Added *MouseDevSeries* enum to *internal_tags*
 
 ### Schema version 13
 
-* *internal_tags* removes cre_inputv10 and cre_inputv11, and adds ENCYCLOPEDIAv5, ccre_inputv1, and ccre_inputv2.
+* *internal_tags* removes *cre_inputv10* and *cre_inputv11*, and adds *ENCYCLOPEDIAv5*, *ccre_inputv1*, and *ccre_inputv2*.
 
 ### Schema version 12
 
@@ -19,7 +19,7 @@
 ### Schema version 10
 
 * *description*, *notes*, and *submitter_comment* are now not allowed to have any leading or trailing whitespace
-* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the *term_name*
 
 ### Schema version 9
 

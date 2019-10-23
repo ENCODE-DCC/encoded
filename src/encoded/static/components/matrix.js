@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';

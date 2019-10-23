@@ -35,6 +35,7 @@ module.exports = {
         'no-nested-ternary': 0,
         'no-param-reassign': [2, { props: false }],
         'no-underscore-dangle': 0,
+        "no-restricted-globals": 0,
         'no-restricted-properties': 0,
         'object-curly-newline': ['error', {
             ObjectExpression: { consistent: true },

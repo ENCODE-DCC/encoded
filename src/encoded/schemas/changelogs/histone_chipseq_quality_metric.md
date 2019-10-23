@@ -2,7 +2,7 @@
 
 ### Schema version 2
 
-* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+* *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
 
 ### Minor changes since schema version 1
 
@@ -10,4 +10,4 @@
 
 ### Schema version 1
 
-* New schema for histone_chipseq_quality_metric added
+* New schema for *histone_chipseq_quality_metric* added

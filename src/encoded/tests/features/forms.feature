@@ -19,11 +19,11 @@ Feature: Edit forms
         When I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for 20 seconds
         And I fill in "antigen_description" with "It's not a very nice antigen"
-        And I click the link with text "ENCODE"
+        And I press "ENCODE"
         And I dismiss the alert
         Then field "antigen_description" should have the value "It's not a very nice antigen"
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
-        When I click the link with text "ENCODE"
+        When I press "ENCODE"
         And I accept the alert
         And I wait for 20 seconds
 
@@ -34,7 +34,7 @@ Feature: Edit forms
         And I wait for an element with the css selector ".rf-Message + input[name=date_created]" to load
         Then I should see "is not any of" within 5 seconds
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
-        When I click the link with text "ENCODE"
+        When I press "ENCODE"
         And I accept the alert
 
 # To add:

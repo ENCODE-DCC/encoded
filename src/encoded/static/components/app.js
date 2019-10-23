@@ -1032,7 +1032,6 @@ class App extends React.Component {
     render() {
         console.log('render app');
         let content;
-        let containerClass;
         let context = this.state.context;
         const hrefUrl = url.parse(this.state.href);
         // Every component is remounted when a new search is executed because 'key' is the full url
@@ -1042,7 +1041,6 @@ class App extends React.Component {
         if (isHomePage) {
             context = context.default_page;
             content = <Home context={context} />;
-            containerClass = 'container-homepage';
         } else {
             if (!currentAction && context.default_page) {
                 context = context.default_page;
@@ -1050,7 +1048,6 @@ class App extends React.Component {
             if (context) {
                 const ContentView = globals.contentViews.lookup(context, currentAction);
                 content = <ContentView context={context} />;
-                containerClass = 'container';
             }
         }
         const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
@@ -1109,21 +1106,19 @@ class App extends React.Component {
                             __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
                         }}
                     />
-                    <div id="slot-application">
-                        <div id="application" className={appClass}>
+                    <div id="slot-application" className={appClass}>
+                        <div id="application">
                             <div className="loading-spinner" />
-                            <div id="layout">
-                                <Provider store={cartStore}>
-                                    <div>
-                                        <Navigation isHomePage={isHomePage} />
-                                        <div id="content" className={containerClass} key={key}>
-                                            {content}
-                                        </div>
-                                        {errors}
-                                        <div id="layout-footer" />
+                            <Provider store={cartStore}>
+                                <div id="layout">
+                                    <Navigation isHomePage={isHomePage} />
+                                    <div id="content" className="container" key={key}>
+                                        {content}
                                     </div>
-                                </Provider>
-                            </div>
+                                    {errors}
+                                    <div id="layout-footer" />
+                                </div>
+                            </Provider>
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-## Changelog for software.json
+## Changelog for software_version.json
 
 ### Schema version 4
 

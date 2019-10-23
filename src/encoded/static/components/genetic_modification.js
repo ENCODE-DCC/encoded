@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { Document, DocumentPreview, DocumentFile, DocumentsPanel } from './doc';
 import { FetchedData, Param } from './fetched';
@@ -10,8 +10,8 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, requestSearch, DisplayAsJson, AlternateAccession } from './objectutils';
-import { PickerActions } from './search';
+import { singleTreatment, requestSearch, ItemAccessories, AlternateAccession } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleTable, DonorTable } from './typeutils';
@@ -141,16 +141,17 @@ ModificationSiteItems.defaultProps = {
 };
 
 
-// Display a section for the modification site data from the given genetic modification object. to
-// render into the GM summary panel as its own section;
+/**
+ * Display a section for the modification site data from the given genetic modification object. to
+ * render into the GM summary panel as its own section;
+ */
 const ModificationSite = (props) => {
     const { geneticModification } = props;
 
     if (hasModificationSiteProps(geneticModification)) {
         const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
         return (
-            <div>
-                <hr />
+            <div className="gm-summary-subsection">
                 <h4>Modification site</h4>
                 <ModificationSiteItems geneticModification={geneticModification} itemClass={itemClass} />
             </div>
@@ -160,7 +161,8 @@ const ModificationSite = (props) => {
 };
 
 ModificationSite.propTypes = {
-    geneticModification: PropTypes.object.isRequired, // GM object with modification site data to display
+    /** GM object with modification site data to display */
+    geneticModification: PropTypes.object.isRequired,
 };
 
 
@@ -178,8 +180,7 @@ const ModificationMethod = (props) => {
     }
 
     return (
-        <div>
-            <hr />
+        <div className="gm-summary-subsection">
             <h4>Modification method</h4>
             <dl className={itemClass}>
                 <div data-test="technique">
@@ -201,11 +202,7 @@ const ModificationMethod = (props) => {
                 {geneticModification.rnai_sequences && geneticModification.rnai_sequences.length > 0 ?
                     <div data-test="rnai">
                         <dt>RNAi sequences</dt>
-                        <dd>
-                            <ul className="multi-value">
-                                {geneticModification.rnai_sequences.join(', ')}
-                            </ul>
-                        </dd>
+                        <dd>{geneticModification.rnai_sequences.join(', ')}</dd>
                     </div>
                 : null}
 
@@ -267,7 +264,7 @@ const AttributionRenderer = (props) => {
 
     return (
         <div>
-            <div className="flexcol-heading experiment-heading">
+            <div className="panel__split-heading panel__split-heading--genetic-modification">
                 <h4>Attribution</h4>
                 <ProjectBadge award={award} addClasses="badge-heading" />
             </div>
@@ -523,7 +520,6 @@ class GeneticModificationComponent extends React.Component {
 
     render() {
         const { context, session } = this.props;
-        const itemClass = globals.itemClass(context, 'view-detail key-value');
 
         // Configure breadcrumbs for the page.
         const crumbs = [
@@ -536,85 +532,80 @@ class GeneticModificationComponent extends React.Component {
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.accession}</h2>
-                        <div className="replacement-accessions">
-                            <AlternateAccession altAcc={context.alternate_accessions} />
-                        </div>
-                        {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session })}
-                        <DisplayAsJson />
+                <header>
+                    <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h1>{context.accession}</h1>
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
+                    <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'genetic-modification-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session })}
-                <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                                <dl className={itemClass}>
-                                    <div data-test="status">
-                                        <dt>Status</dt>
-                                        <dd><Status item={context} inline /></dd>
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session, except: context['@id'] })}
+                <Panel>
+                    <PanelBody addClasses="panel__split">
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--genetic-modification">
+                                <h4>Summary</h4>
+                            </div>
+                            <dl className="key-value">
+                                <div data-test="status">
+                                    <dt>Status</dt>
+                                    <dd><Status item={context} inline /></dd>
+                                </div>
+
+                                {context.description ?
+                                    <div data-test="description">
+                                        <dt>Description</dt>
+                                        <dd>{context.description}</dd>
                                     </div>
+                                : null}
 
-                                    {context.description ?
-                                        <div data-test="description">
-                                            <dt>Description</dt>
-                                            <dd>{context.description}</dd>
-                                        </div>
-                                    : null}
+                                <div data-test="type">
+                                    <dt>Type</dt>
+                                    <dd>{context.category}</dd>
+                                </div>
 
+                                {context.introduced_sequence ?
                                     <div data-test="type">
-                                        <dt>Type</dt>
-                                        <dd>{context.category}</dd>
+                                        <dt>Introduced sequence</dt>
+                                        <dd>{context.introduced_sequence ? <span>{context.introduced_sequence}</span> : null}</dd>
                                     </div>
+                                : null}
 
-                                    {context.introduced_sequence ?
-                                        <div data-test="type">
-                                            <dt>Introduced sequence</dt>
-                                            <dd>{context.introduced_sequence ? <span>{context.introduced_sequence}</span> : null}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.introduced_gene ?
-                                        <div data-test="introduced-gene">
-                                            <dt>Introduced gene</dt>
-                                            <dd><a href={context.introduced_gene}>{context.introduced_gene}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.introduced_elements ?
-                                        <div data-test="introduced-elements">
-                                            <dt>Introduced elements</dt>
-                                            <dd>{context.introduced_elements}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.zygosity ?
-                                        <div data-test="zygosity">
-                                            <dt>Zygosity</dt>
-                                            <dd>{context.zygosity}</dd>
-                                        </div>
-                                    : null}
-
-                                    <IntroducedTags geneticModification={context} />
-
-                                    <div data-test="purpose">
-                                        <dt>Purpose</dt>
-                                        <dd>{context.purpose}</dd>
+                                {context.introduced_gene ?
+                                    <div data-test="introduced-gene">
+                                        <dt>Introduced gene</dt>
+                                        <dd><a href={context.introduced_gene}>{context.introduced_gene}</a></dd>
                                     </div>
-                                </dl>
+                                : null}
 
-                                <ModificationSite geneticModification={context} />
+                                {context.introduced_elements ?
+                                    <div data-test="introduced-elements">
+                                        <dt>Introduced elements</dt>
+                                        <dd>{context.introduced_elements}</dd>
+                                    </div>
+                                : null}
 
-                                <ModificationMethod geneticModification={context} />
-                            </div>
+                                {context.zygosity ?
+                                    <div data-test="zygosity">
+                                        <dt>Zygosity</dt>
+                                        <dd>{context.zygosity}</dd>
+                                    </div>
+                                : null}
 
-                            <div className="flexcol-sm-6">
-                                <Attribution geneticModification={context} />
-                            </div>
+                                <IntroducedTags geneticModification={context} />
+
+                                <div data-test="purpose">
+                                    <dt>Purpose</dt>
+                                    <dd>{context.purpose}</dd>
+                                </div>
+                            </dl>
+                            <ModificationSite geneticModification={context} />
+                            <ModificationMethod geneticModification={context} />
+                        </div>
+
+                        <div className="panel__split-element">
+                            <Attribution geneticModification={context} />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -675,20 +666,22 @@ const ListingComponent = (props, reactContext) => {
     const result = props.context;
 
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Genetic modification</p>
-                    <p className="type">{` ${result.accession}`}</p>
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose} &mdash; {result.method}</a>
+                    <div className="result-item__data-row">
+                        {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                        {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
+                    </div>
+                </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Genetic modification</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
-                <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>
-                <div className="data-row">
-                    {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
-                    {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
-                </div>
+                <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
@@ -887,7 +880,24 @@ CharacterizationDetail.defaultProps = {
 };
 
 
+/**
+ * Display a genetic modification characterization object.
+ */
+const GeneticModificationCharacterization = ({ context }) => {
+    const documentSpecs = [
+        { documents: [context] },
+    ];
+    return <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />;
+};
+
+GeneticModificationCharacterization.propTypes = {
+    /** GeneticModificationCharacterization object */
+    context: PropTypes.object.isRequired,
+};
+
+
 // Parts of individual genetic modification characterization panels override default parts.
+globals.contentViews.register(GeneticModificationCharacterization, 'GeneticModificationCharacterization');
 globals.panelViews.register(Document, 'GeneticModificationCharacterization');
 globals.documentViews.header.register(CharacterizationHeader, 'GeneticModificationCharacterization');
 globals.documentViews.caption.register(CharacterizationCaption, 'GeneticModificationCharacterization');

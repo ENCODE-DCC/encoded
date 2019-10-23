@@ -1,0 +1,17 @@
+/**
+ * For items common to all, or a large subset of, pages.
+ */
+
+// Accessory block at the top of most object pages with audits, JSON, etc.
+.item-accessories {
+    display: flex;
+
+    @at-root #{&}--left {
+        flex: 1 1 auto;
+    }
+
+    @at-root #{&}--right {
+        display: flex;
+        flex: 0 1 auto;
+    }
+}

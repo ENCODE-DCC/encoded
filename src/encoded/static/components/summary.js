@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
 import { FacetList, ViewControls, ClearFilters } from './search';
@@ -28,7 +28,9 @@ const SummaryTitle = (props) => {
         <div className="summary-header__title_control">
             <div className="summary-header__title">
                 <h1>{context.title}</h1>
-                <ViewControls views={context.views} />
+                <div className="results-table-control__main">
+                    <ViewControls views={context.views} />
+                </div>
             </div>
             <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
         </div>

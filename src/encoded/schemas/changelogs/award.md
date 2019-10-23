@@ -2,7 +2,7 @@
 
 ### Schema version 7
 
-* *assay_term_name* enum 'single-nuclei ATAC-seq' was changed to 'single-nucleus ATAC-seq'
+* *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
 
 ### Schema version 6
 * *title* is now a required property
@@ -26,7 +26,7 @@
 
 ### Schema version 3
 
-* Broke out enum value "ENCODE" in viewing_group to ENCODE3 and ENCODE4
+* Broke out enum value *ENCODE* in *viewing_group* to *ENCODE3* and *ENCODE4*
 
 ### Schema version 2
 

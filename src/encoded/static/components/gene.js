@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList, dbxrefHref } from './dbxref';
-import { PickerActions } from './search';
+import { PickerActions, resultItemClass } from './search';
 import { auditDecor } from './audit';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
 import { RelatedItems } from './item';
 import { ExperimentTable } from './typeutils';
 
@@ -28,12 +28,10 @@ const Gene = (props) => {
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
-                    <DisplayAsJson />
-                </div>
+            <header>
+                <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
+                <ItemAccessories item={context} />
             </header>
 
             <div className="panel">
@@ -117,25 +115,25 @@ globals.contentViews.register(Gene, 'Gene');
 const ListingComponent = (props, reactContext) => {
     const result = props.context;
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Gene</p>
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                </div>
-                <div className="accession">
-                    <a href={result['@id']}>
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">
                         {result.symbol}
                         {result.organism && result.organism.scientific_name ? <em>{` (${result.organism.scientific_name})`}</em> : null}
                     </a>
+                    <div className="result-item__data-row">
+                        <strong>External resources: </strong>
+                        {result.dbxrefs && result.dbxrefs.length ?
+                            <DbxrefList context={result} dbxrefs={result.dbxrefs} />
+                        : <em>None submitted</em> }
+                    </div>
                 </div>
-                <div className="data-row">
-                    <strong>External resources: </strong>
-                    {result.dbxrefs && result.dbxrefs.length > 0 ?
-                        <DbxrefList context={result} dbxrefs={result.dbxrefs} />
-                    : <em>None submitted</em> }
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Gene</div>
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
+                <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>

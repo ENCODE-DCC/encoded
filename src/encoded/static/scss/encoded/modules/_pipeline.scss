@@ -62,7 +62,7 @@ $pipeline-node-types:
         }
     }
 
-    .graph-modal-#{$node-type} {
+    .graph-modal--#{$node-type} {
         background-color: $color;
     }
 }
@@ -141,9 +141,9 @@ g.edgePath {
 }
 
 .graph-dl {
+    display: flex;
     margin: 0;
     padding: 5px;
-    border-bottom: 1px solid #e8e8e8;
 }
 
 .step-info {
@@ -162,12 +162,8 @@ g.edgePath {
     }
 }
 
-.btn-orient {
-    margin: 2px 4px;
-    padding: 5px 10px;
-    line-height: 0.9;
-    overflow: hidden;
-    fill: white;
+.btn.btn-orient {
+    margin-right: 5px;
 }
 
 g.pipeline-node-qc-metric {
@@ -242,6 +238,28 @@ g.pipeline-node-qc-metric {
     }
 }
 
+.quality-metrics-modal {
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+    }
+
+    @at-root #{&}__data {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 33.33%;
+        }
+    }
+
+    @at-root #{&}__attachments {
+        h5 {
+            margin: 0 0 10px;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 66.66%;
+        }
+    }
+}
+
 .quality-metrics-attachments {
     margin-top: 20px;
 
@@ -302,6 +320,23 @@ g.pipeline-node-qc-metric {
     font-size: 1.5rem;
     font-weight: bold;
     vertical-align: middle;
+}
+
+.graph-modal-header {
+    @at-root #{&}__content {
+        flex: 1 1 auto;
+
+        h2 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        h5 {
+            margin: 0;
+            font-size: 1rem;
+            color: #808080;
+        }
+    }
 }
 
 .graph-modal-audits {

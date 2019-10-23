@@ -50,6 +50,7 @@
 // For the list of available schemas on the /profiles/ page.
 .schema-list {
     display: block;
+    margin-top: 10px;
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
@@ -57,6 +58,8 @@
     }
 
     @at-root #{&}__item {
+        display: flex;
+        align-items: center;
         margin: 2px 0;
 
         @media screen and (min-width: $screen-md-min) {
@@ -70,9 +73,25 @@
             margin: 2px 0;
         }
 
+        @media screen and (min-width: $screen-xl-min) {
+            flex: 0 1 25%;
+            width: 25%;
+            margin: 2px 0;
+        }
+
         .btn {
             margin-right: 5px;
         }
+    }
+}
+
+// Descriptive text for the schema page.
+.schema-description {
+    margin-top: -15px;
+    border-bottom: 1px solid #e0e0e0;
+
+    p {
+        line-height: 1.4;
     }
 }
 

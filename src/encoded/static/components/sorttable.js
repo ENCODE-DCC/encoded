@@ -59,7 +59,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading } from '../libs/ui/panel';
 
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
@@ -74,10 +74,10 @@ export const SortTablePanel = (props) => {
                     <h4>{title ? <span>{props.title}</span> : null}</h4>
                 </PanelHeading>
             : (header ?
-                <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
+                <PanelHeading key="heading">{props.header}</PanelHeading>
             : null)}
 
-            <div className="table-responsive" key="table">
+            <div className="table__scrollarea" key="table">
                 {props.children}
             </div>
         </Panel>
@@ -130,7 +130,9 @@ class ColumnSortDir extends React.Component {
 
         return (
             <th key={columnId} className={thClass} onClick={this.handleClick}>
-                <span>{title}<i className={columnClass} /></span>
+                <div className="tcell-sortable__column-header">
+                    {title}<i className={columnClass} />
+                </div>
             </th>
         );
     }
@@ -260,7 +262,7 @@ export class SortTable extends React.Component {
             const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;
 
             return (
-                <table className={`table table-sortable${css ? ` ${css}` : ''}`}>
+                <table className={`table table__sortable${css ? ` ${css}` : ''}`}>
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
 
@@ -316,13 +318,15 @@ export class SortTable extends React.Component {
                         </tbody>
                     : null}
 
-                    <tfoot>
-                        <tr>
-                            <td className={`file-table-footer${this.props.collapsed ? ' hiding' : ''}`} colSpan={colCount}>
-                                {this.props.footer}
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {this.props.footer ?
+                        <tfoot>
+                            <tr>
+                                <td className={this.props.collapsed ? 'hiding' : null} colSpan={colCount}>
+                                    {this.props.footer}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    : null}
                 </table>
             );
         }

@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { removeMultipleFromCartAndSave } from './actions';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
 
 /**
@@ -36,8 +36,8 @@ class CartClearModalComponent extends React.Component {
                     <p id="clear-cart-description">Clearing the cart is not reversible.</p>
                 </ModalBody>
                 <ModalFooter
-                    closeModal={<button id="clear-cart-close" onClick={closeClickHandler} className="btn btn-info">Cancel</button>}
-                    submitBtn={<button onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-info" id="clear-cart-submit">Clear</button>}
+                    closeModal={<button id="clear-cart-close" onClick={closeClickHandler} className="btn btn-default">Cancel</button>}
+                    submitBtn={<button onClick={this.handleConfirmClearClick} disabled={inProgress} className="btn btn-danger" id="clear-cart-submit">Clear</button>}
                     dontClose
                 />
             </Modal>
@@ -122,12 +122,12 @@ class CartClearButtonComponent extends React.Component {
         const { elements, inProgress } = this.props;
         if (elements.length > 0) {
             return (
-                <span>
-                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-info btn-sm">Clear cart</button>
+                <React.Fragment>
+                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm">Clear cart</button>
                     {this.state.modalOpen ?
                         <CartClearModal closeClickHandler={this.handleCloseClick} />
                     : null}
-                </span>
+                </React.Fragment>
             );
         }
         return null;

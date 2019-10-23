@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
-import { PickerActions } from './search';
+import { PickerActions, resultItemClass } from './search';
 import Status from './status';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 import { FetchedData, Param } from './fetched';
 
@@ -36,6 +37,7 @@ const datasetsColumns = {
     },
     description: {
         title: 'Description',
+        sorter: false,
     },
     lab: {
         getValue: dataset => (dataset.lab ? dataset.lab.title : ''),
@@ -77,36 +79,39 @@ const PublicationComponent = (props, reactContext) => {
         <div className={itemClass}>
             <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
             <h2>{context.title}</h2>
-            {props.auditIndicators(context.audit, 'publication-audit', { session: reactContext.session })}
-            {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session })}
+            <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'publication-audit' }} />
+            {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, except: context['@id'] })}
             {context.authors ? <div className="authors">{context.authors}.</div> : null}
-            <DisplayAsJson />
             <div className="journal">
-                <Citation {...props} />
+                <Citation context={context} />
             </div>
 
             {context.abstract || context.data_used || (context.identifiers && context.identifiers.length > 0) ?
-                <div className="view-detail panel">
-                    <Abstract {...props} />
-                </div>
+                <Panel>
+                    <PanelBody>
+                        <Abstract context={context} />
+                    </PanelBody>
+                </Panel>
             : null}
 
             {context.datasets && context.datasets.length > 0 ?
-                    <SortTablePanel title="Datasets">
-                        <FetchedData>
-                            <Param name="datasets" url={datasetsUrl} allowMultipleRequest />
-                            <DatasetsComponent columns={datasetsColumns} />
-                        </FetchedData>
-                    </SortTablePanel>
+                <SortTablePanel title="Datasets">
+                    <FetchedData>
+                        <Param name="datasets" url={datasetsUrl} allowMultipleRequest />
+                        <DatasetsComponent columns={datasetsColumns} />
+                    </FetchedData>
+                </SortTablePanel>
             : null }
 
             {context.supplementary_data && context.supplementary_data.length > 0 ?
-                <div>
-                    <h3>Related data</h3>
-                    <div className="panel view-detail" data-test="supplementarydata">
+                <Panel>
+                    <PanelHeading>
+                        <h4>Related data</h4>
+                    </PanelHeading>
+                    <PanelBody>
                         {context.supplementary_data.map((data, i) => <SupplementaryData data={data} key={i} />)}
-                    </div>
-                </div>
+                    </PanelBody>
+                </Panel>
             : null}
         </div>
     );
@@ -262,7 +267,7 @@ class SupplementaryDataListing extends React.Component {
         const nodeId = id.replace(/\//g, '') + index;
 
         return (
-            <div className="list-supplementary">
+            <div className="list-supplementary__item">
                 {data.supplementary_data_type ?
                     <div><strong>Available supplemental data: </strong>{data.supplementary_data_type}</div>
                 : null}
@@ -276,16 +281,17 @@ class SupplementaryDataListing extends React.Component {
                 : null}
 
                 {summary ?
-                    <span id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
-                        <strong>Data summary: </strong>{excerpt ?
-                            <span>
+                    <div id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
+                        <strong>Data summary: </strong>
+                        {excerpt ?
+                            <React.Fragment>
                                 {this.state.excerptExpanded ? summary : excerpt}
-                                <button className="btn btn-link" aria-controls={nodeId} onClick={this.handleClick}>
+                                <button className="btn btn-default btn-xs" aria-controls={nodeId} onClick={this.handleClick}>
                                     {this.state.excerptExpanded ? <span>See less</span> : <span>See more</span>}
                                 </button>
-                            </span>
+                            </React.Fragment>
                         : summary}
-                    </span>
+                    </div>
                 : null}
             </div>
         );
@@ -309,27 +315,31 @@ const ListingComponent = (props, context) => {
     const authors = authorList.length === 4 ? `${authorList.splice(0, 3).join(', ')}, et al` : result.authors;
 
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Publication</p>
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <a href={result['@id']} className="result-item__link">{result.title}</a>
+                    <div className="result-item__data-row">
+                        {authors ? <p className="list-author">{authors}.</p> : null}
+                        <p className="list-citation"><Citation context={result} /></p>
+                        {result.identifiers && result.identifiers.length ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
+                        {result.supplementary_data && result.supplementary_data.length ?
+                            <React.Fragment>
+                                {result.supplementary_data.map((data, i) =>
+                                    <section className="list-supplementary" key={i}>
+                                        <SupplementaryDataListing data={data} id={result['@id']} index={i} />
+                                    </section>
+                                )}
+                            </React.Fragment>
+                        : null}
+                    </div>
+                </div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Publication</div>
                     <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: context.session, search: true })}
                 </div>
-                <div className="accession"><a href={result['@id']}>{result.title}</a></div>
-                <div className="data-row">
-                    {authors ? <p className="list-author">{authors}.</p> : null}
-                    <p className="list-citation"><Citation {...props} /></p>
-                    {result.identifiers && result.identifiers.length > 0 ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
-                    {result.supplementary_data && result.supplementary_data.length > 0 ?
-                        <div>
-                            {result.supplementary_data.map((data, i) =>
-                                <SupplementaryDataListing data={data} id={result['@id']} index={i} key={i} />
-                            )}
-                        </div>
-                    : null}
-                </div>
+                <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: context.session, forcedEditLink: true })}
         </li>
