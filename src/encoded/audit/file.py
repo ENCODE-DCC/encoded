@@ -373,6 +373,69 @@ def audit_file_in_correct_bucket(value, system):
         )
 
 
+
+def audit_read_structure(value, system):
+    read_structure = value.get('read_structure', [])
+    for element in read_structure:
+        if element['start'] == 0 or element['end'] == 0:
+            detail = (
+                'The read_stucture is 1-based. '
+                'Neither start or end can be 0 for sequence element {}'
+            ).format(element['sequence_element'])
+            yield AuditFailure(
+                'invalid read_structure',
+                detail,
+                level='ERROR'
+            )
+        if element['start'] > element['end']:
+            detail = (
+                'The start coordinate is bigger than the end coordinate '
+                'for sequence element {}'
+            ).format(element['sequence_element'])
+            yield AuditFailure(
+                'invalid read_structure',
+                detail,
+                level='ERROR'
+            )
+
+
+def audit_file_matching_md5sum(value, system):
+    '''
+    Files with md5 sums matching other files should be marked with a WARNING audit.
+    If the other files are listed as matching but in fact have different md5 sums,
+    the file should be flagged with an ERROR for incorrect metadata.
+    '''
+
+    matching_files = []
+    checked_statuses = ['released', 'revoked', 'archived', 'in progress']
+    if 'matching_md5sum' not in value or value.get('status') not in checked_statuses:
+        return
+
+    for file in value.get('matching_md5sum'):
+        if file.get('md5sum') != value.get('md5sum'):
+            detail = 'File {} is listed as having a matching md5 sum '.format(file['@id']) + \
+                     'as file {}, but the files have different md5 sums.'.format(value['@id'])
+            yield AuditFailure('Incorrect matching_md5sum', detail, level='ERROR')
+        else:
+            matching_files.append(file['@id'])
+
+    if not matching_files:
+        return
+    elif len(matching_files) > 2:
+        matching_files_joined = '{}, and {}'.format(
+            ', '.join(matching_files[:-1]),
+            matching_files[-1]
+        )
+    else:
+        matching_files_joined = ' and '.join(matching_files)
+
+    detail = 'The md5 sum of file {} '.format(value['@id']) + \
+             'matches that of file(s) {}.'.format(matching_files_joined)
+    yield AuditFailure('Matching md5 sums', detail, level='WARNING')
+
+    return
+
+
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
@@ -383,6 +446,8 @@ function_dispatcher = {
     'audit_controlled_by': audit_file_controlled_by,
     'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
     'audit_file_in_correct_bucket': audit_file_in_correct_bucket,
+    'audit_read_structure': audit_read_structure,
+    'audit_file_matching_md5sum': audit_file_matching_md5sum
 }
 
 
@@ -404,6 +469,7 @@ function_dispatcher = {
                       'controlled_by.paired_with',
                       'controlled_by.platform',
                       'quality_metrics',
+                      'matching_md5sum',
                       ]
                )
 def audit_file(value, system):

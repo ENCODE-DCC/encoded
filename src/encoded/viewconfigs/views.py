@@ -73,7 +73,8 @@ def _get_search_views(view_instance, context, request):
     if len(doc_types) == 1:
         if doc_types[0] in view_instance._types:
             type_info = view_instance._types[doc_types[0]]
-            views.append(view_item.tabular_report)
+            if len(type_info.subtypes) <= 1:
+                views.append(view_item.tabular_report)
             if hasattr(type_info.factory, 'matrix'):
                 views.append(view_item.summary_matrix)
             if hasattr(type_info.factory, 'summary_data'):

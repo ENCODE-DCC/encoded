@@ -1,6 +1,8 @@
 ## Changelog for reference.json
 
 ### Minor changes since schema version 16
+
+* *functional elements* is added to the enums list of *reference_type* property
 * Added MouseDevSeries to *internal_tags*
 
 ### Schema version 16

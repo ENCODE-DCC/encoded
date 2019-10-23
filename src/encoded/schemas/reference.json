@@ -56,7 +56,8 @@
                 "index",
                 "genome",
                 "mappability",
-                "spike-in"
+                "spike-in",
+                "functional elements"
             ]
         },
         "organism": {

@@ -383,5 +383,18 @@
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
         "clonality": "monoclonal",
         "uuid": "534171de-26f6-4363-8a1e-a353357daea9"
+    },
+    {
+        "_test": "ENCODE4 antibody",
+        "accession": "ENCAB264EPV",
+        "award": "UM1HG009442",
+        "lab": "kevin-white",
+        "product_id": "rabbit-anti-GFP-UC",
+        "source": "kevin-white",
+        "lot_id": "unknown",
+        "host_organism": "rabbit",
+        "uuid": "d19e14dd-4ae9-4439-9825-0ccb53578562",
+        "targets": ["/targets/eGFP-avictoria"],
+        "status": "in progress"
     }
 ]

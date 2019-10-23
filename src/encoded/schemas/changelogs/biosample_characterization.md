@@ -3,6 +3,7 @@
 ### Minor changes since schema version 11 
 
 * *review* has been added to the schema to allow other lab to review the characterization.
+* *antibody* is added to the schema to indicate the antibody used in the characterization.
 
 ### Schema version 11
 

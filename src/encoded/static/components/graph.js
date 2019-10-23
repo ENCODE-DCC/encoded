@@ -265,6 +265,8 @@ export class Graph extends React.Component {
         this.rangeMouseDown = this.rangeMouseDown.bind(this);
         this.rangeMouseUp = this.rangeMouseUp.bind(this);
         this.rangeDoubleClick = this.rangeDoubleClick.bind(this);
+        this.changeZoom = this.changeZoom.bind(this);
+        this.slider = React.createRef();
     }
 
     componentDidMount() {
@@ -632,6 +634,26 @@ export class Graph extends React.Component {
         this.setState({ zoomLevel });
     }
 
+    /**
+    * Changes the graph's zoom base on a provided value.
+    *
+    * @param {Number} change Positive number for increase in range, negative number for a decrease
+    * @returns undefined
+    * @memberof Graph
+    */
+    changeZoom(change) {
+        const currentValue = Number(this.slider.current.value) || 0;
+        let newValue = currentValue + change;
+
+        // normalize value if outside range (0 - 100)
+        if (newValue < 0 || newValue > 100) {
+            newValue = newValue < 0 ? 0 : 100;
+        }
+        this.slider.current.value = newValue.toString();
+        const event = new Event('input', { bubbles: true });
+        this.slider.current.dispatchEvent(event);
+    }
+
     render() {
         const { graph, colorize } = this.props;
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
@@ -644,9 +666,9 @@ export class Graph extends React.Component {
                         <table className="zoom-control">
                             <tbody>
                                 <tr>
-                                    <td className="zoom-indicator"><i className="icon icon-minus" /></td>
-                                    <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                    <td className="zoom-indicator"><i className="icon icon-plus" /></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-6)}><i className="icon icon-minus" /></button></td>
+                                    <td className="zomm-controller"><input type="range" className="zoom-slider" ref={this.slider} min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onInput={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(6)}><i className="icon icon-plus" /></button></td>
                                 </tr>
                             </tbody>
                         </table>

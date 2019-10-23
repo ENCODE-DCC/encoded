@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { collapseIcon } from '../libs/svg-icons';
-import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
+import { auditDecor, auditsDisplayed, ObjectAuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser, { filterForVisualizableFiles } from './genome_browser';
 import * as globals from './globals';
@@ -19,22 +19,6 @@ import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowse
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
-
-
-// Get the audit icon for the highest audit level in the given file.
-function fileAuditStatus(file, loggedIn) {
-    let highestAuditLevel;
-
-    if (file.audit) {
-        const sortedAuditLevels = _(Object.keys(file.audit)).sortBy(level => -file.audit[level][0].level);
-
-        // only logged in users should see ambulance icon (INTERNAL_ACTION)
-        highestAuditLevel = !loggedIn && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
-    } else {
-        highestAuditLevel = 'OK';
-    }
-    return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
-}
 
 
 // Sort callback to compare the accession/external_accession of two files.
@@ -386,7 +370,7 @@ FileTable.procTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <div>{fileAuditStatus(item, meta.loggedIn)}</div>,
+        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
@@ -437,7 +421,7 @@ FileTable.refTableColumns = {
     },
     audit: {
         title: 'Audit status',
-        display: (item, meta) => <div>{fileAuditStatus(item, meta.loggedIn)}</div>,
+        display: (item, meta) => <ObjectAuditIcon object={item} loggedIn={meta.loggedIn} />,
     },
     status: {
         title: 'File status',
@@ -641,7 +625,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}>{fileAuditStatus(file, loggedIn)}</td>
+                                            <td className={pairClass}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                             <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -677,7 +661,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td>{fileAuditStatus(file, loggedIn)}</td>
+                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -821,7 +805,7 @@ class RawFileTable extends React.Component {
                                             <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={groupBottom}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupBottom}>{fileAuditStatus(file, loggedIn)}</td>
+                                            <td className={groupBottom}><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                             <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
@@ -851,7 +835,7 @@ class RawFileTable extends React.Component {
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td>{fileAuditStatus(file, loggedIn)}</td>
+                                        <td><ObjectAuditIcon object={file} loggedIn={loggedIn} /></td>
                                         <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
@@ -1115,6 +1099,11 @@ function qcAbbr(qc) {
     const qcAbbrMap = {
         BigwigcorrelateQualityMetric: 'BC',
         BismarkQualityMetric: 'BK',
+        ChipAlignmentQualityMetric: 'AL',
+        ChipAlignmentEnrichmentQualityMetric: 'AE',
+        ChipLibraryQualityMetric: 'LB',
+        ChipPeakEnrichmentQualityMetric: 'PE',
+        ChipReplicationQualityMetric: 'RP',
         ChipSeqFilterQualityMetric: 'CF',
         ComplexityXcorrQualityMetric: 'CX',
         CorrelationQualityMetric: 'CN',
@@ -1997,18 +1986,27 @@ function createFacetObject(propertyKey, fileList, filters) {
 // outlier:
 //                 "None"
 function computeAssemblyAnnotationValue(assembly, annotation) {
-    const assemblyNumber = assembly.match(/[0-9]+/g)[0];
+    // There are three levels of sorting
+    // First level of sorting: most recent assemblies are ordered first (represented by numerical component of assembly)
+    // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimial')
+    // Third level of sorting: Annotations within an assembly are ordered with most recent first, with more recent annotations having a higher annotation number (with the exception of "ENSEMBL V65") (represented by the annotation number divided by 10,000, or, the three decimal places after the tenths place)
+    let assemblyNumber = +assembly.match(/[0-9]+/g)[0];
+    if (assembly.indexOf('minimal') === -1) {
+        // If there is no '-minimal', add 0.5 which will order this assembly ahead of any assembly with '-minimal' and the same numerical component
+        assemblyNumber += 0.5;
+    }
     if (annotation) {
         const annotationNumber = +annotation.match(/[0-9]+/g)[0];
         let annotationDecimal = 0;
         // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
-        // We divide by 1000 because the highest annotation number (for now) is 245 and we want to make sure that annotations are a secondary sort, and that assembly remains the primary sort
+        // We divide by 10000 because the highest annotation number (for now) is 245
         if (+annotationNumber === 65) {
-            annotationDecimal = (+annotationNumber / 100000);
+            annotationDecimal = (+annotationNumber / 1000000);
         } else {
-            annotationDecimal = (+annotationNumber / 1000);
+            annotationDecimal = (+annotationNumber / 10000);
         }
-        return +assemblyNumber + +annotationDecimal;
+        assemblyNumber += annotationDecimal;
+        return assemblyNumber;
     }
     return assemblyNumber;
 }

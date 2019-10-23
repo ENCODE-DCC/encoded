@@ -38,11 +38,11 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 85
-    ontology.json file: ontology-2019-04-23.json
-    [UBERON release date]: 2018-10-14
-    [OBI release date]: 2018-08-27
-    [EFO release date]: 2019-04-18
+    Site release version: 89
+    ontology.json file: ontology-2019-07-13.json
+    [UBERON release date]: 2019-06-27
+    [OBI release date]: 2019-06-05
+    [EFO release date]: 2019-06-17
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/

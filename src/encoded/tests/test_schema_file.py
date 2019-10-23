@@ -501,3 +501,10 @@ def test_database_output_type_requirement(testapp, file_database_output_type):
     testapp.post_json('/file', file_database_output_type, status=422)
     file_database_output_type.update({'output_type': 'transcriptome index'})
     testapp.post_json('/file', file_database_output_type, status=201)
+
+
+def test_matching_md5sum(testapp, file_no_error, file_good_bam):
+    file = testapp.post_json('/file', file_good_bam).json['@graph'][0]
+    file_no_error.update({'matching_md5sum': [file['@id']]})
+    res = testapp.post_json('/file', file_no_error, expect_errors=False)
+    assert res.status_code == 201

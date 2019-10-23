@@ -67,7 +67,7 @@
             "peak calling"
         ],
         "input_file_types": ["alignments", "reads", "blacklisted regions"],
-        "output_file_types": ["optimal idr thresholded peaks"],
+        "output_file_types": ["optimal IDR thresholded peaks"],
         "qa_stats_generated": ["NSC", "RSC", "SPOT"],
         "status": "released",
         "uuid": "d8b871df-a73b-4338-a19f-c3e3c6f7cd88"

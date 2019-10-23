@@ -17,6 +17,30 @@ import Status from './status';
 import { ReplacementAccessions } from './typeutils';
 
 
+/**
+ * Display list of file.matching_md5sum accessions as links to their respective files. This assumes
+ * no duplicates exist in the `matching_md5sum` array.
+ */
+const MatchingMD5Sum = ({ file }) => {
+    if (file.matching_md5sum && file.matching_md5sum.length > 0) {
+        const matchingMD5Accessions = file.matching_md5sum.map(fileAtId => (
+            <a key={fileAtId} href={fileAtId}>{globals.atIdToAccession(fileAtId)}</a>
+        ));
+        return (
+            <div className="supplemental-refs">
+                Matching md5sum {matchingMD5Accessions.reduce((prev, curr) => [prev, ', ', curr])}
+            </div>
+        );
+    }
+    return null;
+};
+
+MatchingMD5Sum.propTypes = {
+    /** File to display matching_md5sum info, if that property exists */
+    file: PropTypes.object.isRequired,
+};
+
+
 // Columns to display in Deriving/Derived From file tables
 const derivingCols = {
     accession: {
@@ -374,12 +398,13 @@ class FileComponent extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
+                        <ReplacementAccessions context={context} />
+                        <MatchingMD5Sum file={context} />
                         {context.restricted ?
                             <div className="replacement-accessions">
                                 <h4>Restricted file</h4>
                             </div>
                         : null}
-                        <ReplacementAccessions context={context} />
                         {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session })}
                         <DisplayAsJson />

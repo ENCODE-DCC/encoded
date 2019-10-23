@@ -573,7 +573,6 @@ export class BrowserSelector extends React.Component {
                                                         <div key={browser} className="browser-selector__browser">
                                                             <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
                                                                 {browser}
-                                                                {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
                                                             </a>
                                                         </div>
                                                     )}

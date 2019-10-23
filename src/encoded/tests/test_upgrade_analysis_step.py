@@ -64,6 +64,26 @@ def analysis_step_6(base_analysis_step):
     return item
 
 
+@pytest.fixture
+def analysis_step_7(base_analysis_step):
+    item = base_analysis_step.copy()
+    item.update({
+        'input_file_types': [
+            'peaks',
+            'optimal idr thresholded peaks',
+            'conservative idr thresholded peaks',
+            'pseudoreplicated idr thresholded peaks'
+        ],
+        'output_file_types': [
+            'peaks',
+            'optimal idr thresholded peaks',
+            'conservative idr thresholded peaks',
+            'pseudoreplicated idr thresholded peaks'
+        ],
+    })
+    return item
+
+
 def test_analysis_step_2_3(registry, upgrader, analysis_step_1, threadlocals):
     value = upgrader.upgrade('analysis_step', analysis_step_1, current_version='2', target_version='3', registry=registry)
     assert 'signal of all reads' in value['output_file_types']
@@ -94,3 +114,21 @@ def test_analysis_step_6_7(upgrader, analysis_step_6):
     assert 'candidate regulatory elements' not in value['output_file_types']
     assert 'candidate Cis-Regulatory Elements' in value['input_file_types']
     assert 'candidate Cis-Regulatory Elements' in value['output_file_types']
+
+
+def test_analysis_step_7_8(upgrader, analysis_step_7):
+    expectation = sorted([
+        'peaks',
+        'optimal IDR thresholded peaks',
+        'conservative IDR thresholded peaks',
+        'pseudoreplicated IDR thresholded peaks'
+    ])
+    value = upgrader.upgrade(
+        'analysis_step',
+        analysis_step_7,
+        current_version='7',
+        target_version='8'
+    )
+    assert value['schema_version'] == '8'
+    assert sorted(value['input_file_types']) == expectation
+    assert sorted(value['output_file_types']) == expectation

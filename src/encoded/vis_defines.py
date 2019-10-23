@@ -336,8 +336,9 @@ OUTPUT_TYPE_8CHARS = {
     # "male genome reference":"XY ref",   # references not to be viewed
     # "male genome index":"XY rix",       # references not to be viewed
     # "spike-in sequence":"spike",        # references not to be viewed
-    "optimal idr thresholded peaks":        "oIDR pk",
-    "conservative idr thresholded peaks":   "cIDR pk",
+    "IDR thresholded peaks":                "IDRt pk",
+    "optimal IDR thresholded peaks":        "oIDR pk",
+    "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
     "semi-automated genome annotation":     "saga"
     }
@@ -660,7 +661,7 @@ class VisDefines(object):
         # Starting with a little cheat for rare cases where techreps are compared instead of bioreps
         if a_file.get("file_format_type", "none") in ["idr_peak"]:
             return "combined"
-        if a_file['output_type'].endswith("idr thresholded peaks"):
+        if a_file['output_type'].endswith("IDR thresholded peaks"):
             return "combined"
 
         bio_rep = 0
@@ -1544,13 +1545,13 @@ def browsers_available(
     if "Dataset" not in types:
         return []
     if item_type is None:
-        visualizabe_types = set(VISIBLE_DATASET_TYPES)
-        if visualizabe_types.isdisjoint(types):
+        visualizable_types = set(VISIBLE_DATASET_TYPES)
+        if visualizable_types.isdisjoint(types):
             return []
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
     browsers = set()
-    full_set = {'ucsc', 'ensembl', 'quickview', 'hic'}
+    full_set = {'ucsc', 'ensembl', 'hic'}
     file_assemblies = None
     file_types = None
     if request is not None:
@@ -1582,16 +1583,6 @@ def browsers_available(
                 and not BROWSER_FILE_TYPES['ensembl'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
                 browsers.add('Ensembl')
-        if ('quickview' not in browsers
-                and 'quickview' in mapped_assembly.keys()
-                and not BROWSER_FILE_TYPES['quickview'].isdisjoint(file_types)):
-            # NOTE: quickview may not have vis_blob as 'in progress'
-            #   files can also be displayed
-            #       Ideally we would also look at files' statuses and formats.
-            #   However, the (calculated)files property only contains
-            #   'released' files so it doesn't really help for quickview!
-            if vis_blob is not None or status not in QUICKVIEW_STATUSES_BLOCKED:
-                browsers.add('Quick View')
         if ('hic' not in browsers
                 and 'hic' in mapped_assembly.keys()
                 and not BROWSER_FILE_TYPES['hic'].isdisjoint(file_types)):

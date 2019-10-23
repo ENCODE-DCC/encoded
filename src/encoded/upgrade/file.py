@@ -586,3 +586,16 @@ def file_13_14(value, system):
 
     if output_type and output_type == 'candidate regulatory elements':
         value['output_type'] = 'candidate Cis-Regulatory Elements'
+
+
+@upgrade_step('file', '14', '15')
+def file_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4641
+    output_type = value.get('output_type', None)
+
+    if output_type and output_type == 'optimal idr thresholded peaks':
+        value['output_type'] = 'optimal IDR thresholded peaks'
+    elif output_type and output_type == 'conservative idr thresholded peaks':
+        value['output_type'] = 'conservative IDR thresholded peaks'
+    elif output_type and output_type == 'pseudoreplicated idr thresholded peaks':
+        value['output_type'] = 'pseudoreplicated IDR thresholded peaks'

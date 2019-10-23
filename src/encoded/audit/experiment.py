@@ -979,7 +979,7 @@ def check_experiment_chip_seq_standards(
 
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
-    idr_peaks_files = files_structure.get('optimal_idr_peaks').values()
+    idr_peaks_files = files_structure.get('preferred_default_idr_peaks').values()
 
     upper_limit_read_length = 50
     medium_limit_read_length = 36
@@ -2615,14 +2615,17 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                         level)
 
 
+def is_tagging_genetic_modification(modification):
+    if modification['purpose'] == 'tagging':
+        return True
+    return False
+
+
 def audit_experiment_biosample_characterization(value, system, excluded_types):
-    if check_award_condition(value, ["ENCODE4"]):
-        level = 'ERROR'
-    else:
-        level = 'WARNING'
     detail = ''
     no_characterizations = False
     if 'replicates' in value:
+        needs_characterization_flag = False
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and
                 'library' in rep and
@@ -2638,6 +2641,9 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                     return
                 elif (modifications and 
                     not biosample_characterizations):
+                    for mod in modifications:
+                        if is_tagging_genetic_modification(mod):
+                            needs_characterization_flag = True
                     no_characterizations = True
                     mod_ids = str(
                         [mod['@id'] for mod in modifications]
@@ -2649,6 +2655,10 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                             biosample['@id'],
                             mod_ids
                         )
+        if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag:
+            level = 'ERROR'
+        else:
+            level = 'WARNING'
         if no_characterizations:
             detail = 'B' + detail[1:-2] + '.'
             yield AuditFailure(
@@ -3175,15 +3185,31 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
         ab_targets_investigated_as = set()
         sample_match = False
 
-        if not antibody['characterizations']:
+        for t in antibody_targets:
+            for i in t['investigated_as']:
+                ab_targets_investigated_as.add(i)
+
+        characterized = False
+        # ENCODE4 tagged antibodies are characterized differently (ENCD-4608)
+        ab_award = system.get('request').embed(
+            antibody['award'], '@@object?skip_calculated=true'
+        )['rfa']
+        if (
+            ab_award == 'ENCODE4'
+            and (
+                'tag' in ab_targets_investigated_as
+                or 'synthetic tag' in ab_targets_investigated_as
+            )
+        ):
+            characterized = bool(antibody['used_by_biosample_characterizations'])
+        else:
+            characterized = bool(antibody['characterizations'])
+
+        if not characterized:
             detail = '{} has not yet been characterized in any cell type or tissue in {}.'.format(
                 antibody['@id'], organism)
             yield AuditFailure('uncharacterized antibody', detail, level='NOT_COMPLIANT')
             return
-
-        for t in antibody_targets:
-            for i in t['investigated_as']:
-                ab_targets_investigated_as.add(i)
 
         # We only want the audit raised if the organism in lot reviews matches that of the biosample
         # and if has not been characterized to standards. Otherwise, it doesn't apply and we
@@ -3761,7 +3787,7 @@ def create_files_mapping(files_list, excluded):
                  'peaks_files': {},
                  'gene_quantifications_files': {},
                  'signal_files': {},
-                 'optimal_idr_peaks': {},
+                 'preferred_default_idr_peaks': {},
                  'cpg_quantifications': {},
                  'contributing_files': {},
                  'excluded_types': excluded}
@@ -3807,9 +3833,17 @@ def create_files_mapping(files_list, excluded):
                 if file_output and file_output == 'signal of unique reads':
                     to_return['signal_files'][file_object['@id']] = file_object
 
-                if file_output and file_output == 'optimal idr thresholded peaks':
-                    to_return['optimal_idr_peaks'][file_object['@id']
-                                                   ] = file_object
+                if file_output and file_output == 'optimal IDR thresholded peaks':
+                    to_return['preferred_default_idr_peaks'][
+                        file_object['@id']
+                    ] = file_object
+                if (
+                    file_object.get('preferred_default')
+                    and file_output == 'IDR thresholded peaks'
+                ):
+                    to_return['preferred_default_idr_peaks'][
+                        file_object['@id']
+                    ] = file_object
 
                 if file_output and file_output == 'methylation state at CpG':
                     to_return['cpg_quantifications'][file_object['@id']

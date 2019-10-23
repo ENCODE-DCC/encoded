@@ -19,6 +19,7 @@ def audit_antibody_dbxrefs_ar(value, system):
 
 
 @audit_checker('AntibodyLot', frame=[
+    'award',
     'targets',
     'characterizations',
     'characterizations.target'],
@@ -31,6 +32,45 @@ def audit_antibody_missing_characterizations(value, system):
     for t in value['targets']:
         if 'control' in t.get('investigated_as'):
             return
+
+    # ENCD-4608 ENCODE4 tag antibodies need only linked biosample
+    # characterization(s) as primary characterization(s) and don't need any
+    # secondary characterizations
+    if all([
+        value.get('award', {}).get('rfa') == 'ENCODE4',
+        {'tag', 'synthetic tag'} & {
+            i for t in value.get('targets', {})
+            for i in t.get('investigated_as', [])
+        }
+    ]):
+        if not value['used_by_biosample_characterizations']:
+            detail = (
+                '{} is an ENCODE4 antibody'
+                'and hasn\'t been linked to any biosample characterizations.'
+            ).format(value['@id'])
+            yield AuditFailure(
+                'no biosample characterizations linked',
+                detail,
+                level='NOT_COMPLIANT'
+            )
+            return
+        if (
+            {
+                'characterized to standards',
+                'characterized to standards with exemption'
+            } & {r['status'] for r in value['lot_reviews']}
+        ):
+            return
+        detail = (
+            '{} is an ENCODE4 antibody and hasn\'t been linked to '
+            'any compliant biosample characterizations.'
+        ).format(value['@id'])
+        yield AuditFailure(
+            'need one compliant biosample characterization',
+            detail,
+            level='NOT_COMPLIANT'
+        )
+        return
 
     if not value['characterizations']:
         detail = '{} does not have any supporting characterizations submitted.'.format(value['@id'])

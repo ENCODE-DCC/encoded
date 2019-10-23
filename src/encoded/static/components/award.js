@@ -596,7 +596,7 @@ class AntibodyChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/report/?type=AntibodyLot&award=/awards/${award.name}/${AntibodyQuery}&lot_reviews.status=`;
+        chart.options.onClick.baseSearchUri = `/report/?type=AntibodyLot&award.@id=/awards/${award.name}/${AntibodyQuery}&lot_reviews.status=`;
         chart.update();
 
         // Redraw the updated legend
@@ -638,7 +638,7 @@ class AntibodyChart extends React.Component {
             <div className="award-charts__chart">
                 <div className="award-charts__title">
                     Antibodies {this.relevantData.length > 0 ?
-                    <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award.@id=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
                     null}
                 </div>
@@ -1322,8 +1322,8 @@ const ChartRenderer = (props) => {
             statuses: [],
             categoryFacet: 'lot_reviews.status',
             title: 'Antibodies',
-            uriBase: 'type=AntibodyLot&award=/awards',
-            linkUri: '/report/?type=AntibodyLot&award=/awards/',
+            uriBase: 'type=AntibodyLot&award.@id=/awards',
+            linkUri: '/report/?type=AntibodyLot&award.@id=/awards/',
         },
         controls: {
             ident: 'experiments',
@@ -1932,7 +1932,7 @@ class AwardCharts extends React.Component {
                         <Param name="experiments" url={`/search/?type=Experiment&target.investigated_as!=control&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
                         <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
-                        <Param name="antibodies" url={`/search/?type=AntibodyLot&award=${award['@id']}${AntibodyQuery}`} />
+                        <Param name="antibodies" url={`/search/?type=AntibodyLot&award.@id=${award['@id']}${AntibodyQuery}`} />
                         <Param name="controls" url={`/search/?type=Experiment&target.investigated_as=control&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="unreplicated" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="isogenic" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />

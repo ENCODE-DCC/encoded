@@ -26,8 +26,12 @@ class AntibodyLot(SharedItem):
     name_key = 'accession'
     rev = {
         'characterizations': ('AntibodyCharacterization', 'characterizes'),
+        'used_by_biosample_characterizations': (
+            'BiosampleCharacterization', 'antibody'
+        )
     }
     embedded = [
+        'award',
         'source',
         'host_organism',
         'targets',
@@ -90,6 +94,18 @@ class AntibodyLot(SharedItem):
     })
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
+
+    @calculated_property(schema={
+        "title": "Used by biosample characterizatons",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "BiosampleCharacterization.antibody",
+        },
+        'notSubmittable': True,
+    })
+    def used_by_biosample_characterizations(self, request, used_by_biosample_characterizations):
+        return paths_filtered_by_status(request, used_by_biosample_characterizations)
 
 
 @calculated_property(context=AntibodyLot, schema={
@@ -154,18 +170,30 @@ class AntibodyLot(SharedItem):
         }
     },
 })
-def lot_reviews(characterizations, targets, request):
+def lot_reviews(
+    characterizations,
+    targets,
+    request,
+    award,
+    used_by_biosample_characterizations=[]
+):
     characterizations = paths_filtered_by_status(request, characterizations)
     target_organisms = set()
 
     is_control = False
     is_histone = False
+    is_tag = False
     for t in targets:
         target = request.embed(t, '@@object')
         if 'control' in target['investigated_as']:
             is_control = True
         if 'histone' in target['investigated_as']:
             is_histone = True
+        if (
+            'tag' in target['investigated_as']
+            or 'synthetic tag' in target['investigated_as']
+        ):
+            is_tag = True
 
         organism = target.get('organism')
         if organism:  # None (synthetic tag) triggers indexinng error
@@ -183,16 +211,6 @@ def lot_reviews(characterizations, targets, request):
         if is_control else ab_state_details[(None, None)]
     }
 
-    if not characterizations:
-        # If there are no characterizations, then default to awaiting characterization.
-        return [base_review]
-
-    review_targets = set()
-    char_organisms = {}
-    primary_chars = []
-    secondary_chars = []
-    secondary_status = None
-
     status_ranking = {
         'characterized to standards': 15,
         'characterized to standards with exemption': 14,
@@ -209,6 +227,74 @@ def lot_reviews(characterizations, targets, request):
         'not submitted for review by lab': 3,
         'deleted': 2
     }
+
+    if is_tag and request.embed(award, '@@object?skip_calculated=true')['rfa'] == 'ENCODE4':
+        # ENCD-4608 standards for ENCODE4 tag antibody needs different
+        # configurations to start with
+        encode4_tag_ab_states = {
+            'compliant': 'characterized to standards',
+            'not compliant': 'not characterized to standards',
+            'exempt from standards': 'characterized to standards with exemption',
+            'requires secondary opinion': 'awaiting characterization',
+            None: 'awaiting characterization',
+        }
+        encode4_tag_ab_state_details = {
+            'compliant': 'Fully characterized.',
+            'not compliant': 'Awaiting compliant biosample characterizations.',
+            'exempt from standards': 'Fully characterized with exemption.',
+            'requires secondary opinion': 'Awaiting to be linked to biosample characterizations.',
+            None: 'Awaiting to be linked to biosample characterizations.',
+        }
+        # Techincally, a tag antibody can be a control at the same time
+        if not is_control:
+            base_review['status'] = 'awaiting characterization'
+            base_review['detail'] = 'Awaiting to be linked to biosample characterizations.'
+
+        char_reviews = {}
+        for bio_char in used_by_biosample_characterizations:
+            bio_char_obj = request.embed(
+                bio_char, '@@object?skip_calculated=true'
+            )
+            bio_char_status = bio_char_obj.get('review', {}).get('status')
+            bio_obj = request.embed(
+                bio_char_obj['characterizes'], '@@object?skip_calculated=true'
+            )
+            bio_type_obj = request.embed(
+                bio_obj['biosample_ontology'], '@@object?skip_calculated=true'
+            )
+            bio_char_review = {
+                'biosample_term_name': bio_type_obj['term_name'],
+                'biosample_term_id': bio_type_obj['term_id'],
+                'organisms': [bio_obj['organism']],
+                'targets': sorted(targets),
+                'status': encode4_tag_ab_states[bio_char_status],
+                'detail': encode4_tag_ab_state_details[bio_char_status]
+            }
+            key = (
+                bio_char_review['biosample_term_name'],
+                bio_char_review['biosample_term_id'],
+                bio_obj['organism'],
+            )
+            if key not in char_reviews:
+                char_reviews[key] = bio_char_review
+                continue
+            rank = status_ranking[bio_char_review.get('status')]
+            if rank > status_ranking[char_reviews[key].get('status')]:
+                char_reviews[key] = bio_char_review
+        if char_reviews:
+            return list(char_reviews.values())
+        else:
+            return [base_review]
+
+    if not characterizations:
+        # If there are no characterizations, then default to awaiting characterization.
+        return [base_review]
+
+    review_targets = set()
+    char_organisms = {}
+    primary_chars = []
+    secondary_chars = []
+    secondary_status = None
 
     # Since characterizations can only take one target (not an array) and primary characterizations
     # for histone modifications may be done in multiple species, we really need to check lane.organism

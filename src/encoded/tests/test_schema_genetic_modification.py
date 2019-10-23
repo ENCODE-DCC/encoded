@@ -362,10 +362,13 @@ def test_mpra_properties(testapp, mpra):
     assert res.status_code == 201
 
 
-def test_starr_seq_properties(testapp, starr_seq):
+def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
     # Episome modifications need to include introduced_elements and satisfy characterization dependency
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 422
     starr_seq.update({'introduced_elements': 'sheared genomic DNA'})
+    res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
+    assert res.status_code == 422
+    starr_seq.update({'donor': mouse_donor['@id']})
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 201

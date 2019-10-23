@@ -152,6 +152,33 @@ def file_13(file_base):
     })
     return item
 
+@pytest.fixture
+def file_14_optimal(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'optimal idr thresholded peaks'
+    })
+    return item
+
+
+@pytest.fixture
+def file_14_conservative(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'conservative idr thresholded peaks'
+    })
+    return item
+
+
+@pytest.fixture
+def file_14_pseudoreplicated(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'pseudoreplicated idr thresholded peaks'
+    })
+    return item
+
+
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -238,3 +265,27 @@ def test_file_upgrade_13_to_14(upgrader, file_13):
     value = upgrader.upgrade('file', file_13, current_version='13', target_version='14')
     assert value['schema_version'] == '14'
     assert value['output_type'] == 'candidate Cis-Regulatory Elements'
+
+
+def test_file_upgrade_14_to_15(upgrader,
+                               file_14_optimal,
+                               file_14_conservative,
+                               file_14_pseudoreplicated):
+    value = upgrader.upgrade(
+        'file', file_14_optimal, current_version='14', target_version='15'
+    )
+    assert value['schema_version'] == '15'
+    assert value['output_type'] == 'optimal IDR thresholded peaks'
+    value = upgrader.upgrade(
+        'file', file_14_conservative, current_version='14', target_version='15'
+    )
+    assert value['schema_version'] == '15'
+    assert value['output_type'] == 'conservative IDR thresholded peaks'
+    value = upgrader.upgrade(
+        'file',
+        file_14_pseudoreplicated,
+        current_version='14',
+        target_version='15'
+    )
+    assert value['schema_version'] == '15'
+    assert value['output_type'] == 'pseudoreplicated IDR thresholded peaks'

@@ -261,6 +261,17 @@ def experiment_25(root, experiment):
 
 
 @pytest.fixture
+def experiment_26(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '26',
+        'assay_term_name': 'single-nuclei ATAC-seq'
+    })
+    return properties
+
+
+@pytest.fixture
 def annotation_20(award, lab):
     return {
         'award': award['@id'],
@@ -609,3 +620,15 @@ def test_upgrade_annotation_24_to_25(upgrader, annotation_21):
     )
     assert value['schema_version'] == '25'
     assert value['annotation_type'] == 'candidate Cis-Regulatory Elements'
+
+
+def test_upgrade_experiment_26_to_27(upgrader, experiment_26):
+    assert experiment_26['schema_version'] == '26'
+    value = upgrader.upgrade('experiment', experiment_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
+    assert value['assay_term_name'] == 'single-nucleus ATAC-seq'
+    experiment_26['schema_version'] = '26'
+    experiment_26['assay_term_name'] = 'HiC'
+    value = upgrader.upgrade('experiment', experiment_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
+    assert value['assay_term_name'] == 'HiC'

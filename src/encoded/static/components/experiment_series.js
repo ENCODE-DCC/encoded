@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { CartAddAllElements, CartToggle } from './cart';
-import { auditDecor } from './audit';
+import { auditDecor, AuditCounts } from './audit';
 import { FilePanelHeader } from './dataset';
 import { FetchedItems } from './fetched';
 import { DatasetFiles } from './filegallery';
@@ -21,19 +21,6 @@ const experimentTableColumns = {
         display: experiment => <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>,
     },
 
-    assay_term_name: {
-        title: 'Assay',
-    },
-
-    target: {
-        title: 'Target',
-        getValue: experiment => (experiment.target ? experiment.target.label : null),
-    },
-
-    description: {
-        title: 'Description',
-    },
-
     lab: {
         title: 'Lab',
         getValue: experiment => (experiment.lab ? experiment.lab.title : null),
@@ -43,9 +30,19 @@ const experimentTableColumns = {
         title: 'Date released',
     },
 
+    award: {
+        title: 'RFA',
+        getValue: experiment => (experiment.award ? experiment.award.rfa : null),
+    },
+
     status: {
         title: 'Status',
         display: experiment => <Status item={experiment} badgeSize="small" />,
+    },
+
+    audit: {
+        title: 'Audit status',
+        display: (item, meta) => <AuditCounts audits={meta.auditsByDataset[item['@id']]} loggedIn={meta.loggedIn} />,
     },
 
     cart: {
@@ -82,173 +79,250 @@ const viewableDatasetStatuses = {
 /**
  * Component to display experiment series pages.
  */
-const ExperimentSeriesComponent = (props, reactContext) => {
-    const context = props.context;
-    const itemClass = globals.itemClass(context, 'view-item');
-    const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
-    const viewableStatuses = getObjectStatuses('Dataset', accessLevel, viewableDatasetStatuses);
-
-    // Set up the breadcrumbs.
-    const datasetType = context['@type'][1];
-    const crumbs = [
-        { id: 'Datasets' },
-        { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
-        { id: 'Experiment Series', uri: '/search/?type=ExperimentSeries&status=released', wholeTip: 'Search for released experiment series' },
-    ];
-    const crumbsReleased = (context.status === 'released');
-
-    // Calculate the biosample summary from the organism and the biosample onotology.
-    let speciesRender = null;
-    if (context.organism && context.organism.length > 0) {
-        const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
-        speciesRender = (
-            <span>
-                {speciesList.map((species, i) =>
-                    <span key={i}>
-                        {i > 0 ? <span> and </span> : null}
-                        <i>{species}</i>
-                    </span>
-                )}
-            </span>
-        );
+class ExperimentSeriesComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            /** Audit objects keyed by dataset @id. Datasets w/o audits included with empty object */
+            auditsByDataset: {},
+        };
+        this.getDatasetAudits = this.getDatasetAudits.bind(this);
+        this.getViewableDatasets = this.getViewableDatasets.bind(this);
     }
 
-    // Filter out any files we shouldn't see.
-    const experimentList = context.related_datasets.filter(dataset => viewableStatuses.includes(dataset.status));
-
-    // Add the "Add all to cart" button and internal tags from all related datasets.
-    let addAllToCartControl;
-    let internalTags = [];
-    if (experimentList.length > 0) {
-        addAllToCartControl = (
-            <div className="experiment-table__header">
-                <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
-                <CartAddAllElements elements={experimentList} />
-            </div>
-        );
-
-        // Collect unique internal_tags from all relevant experiments.
-        internalTags = _.uniq(experimentList.reduce((allInternalTags, experiment) => (
-            experiment.internal_tags && experiment.internal_tags.length > 0 ? allInternalTags.concat(experiment.internal_tags) : allInternalTags
-        ), []));
+    componentDidMount() {
+        this.getDatasetAudits();
     }
 
-    return (
-        <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>Summary for experiment series {context.accession}</h2>
-                    {props.auditIndicators(context.audit, 'series-audit', { session: reactContext.session })}
-                    <DisplayAsJson />
+    componentDidUpdate() {
+        const relatedDatasets = this.props.context.related_datasets;
+        if (relatedDatasets.length > 0) {
+            // If any @id in related_datasets isn't in this.state.auditsByDataset, retrieve all
+            // dataset audits. This can happen if the user edits the viewed ExperimentSeries
+            // object.
+            const datasetsInAudits = relatedDatasets.some(dataset => !!this.state.auditsByDataset[dataset['@id']]);
+            if (!datasetsInAudits) {
+                this.getDatasetAudits();
+            }
+        }
+    }
+
+    /**
+     * Retrieve the audits of all related datasets in the current ExperimentSeries object. Once
+     * all dataset audits have been retrieved, they're put into this.state.datasetAudit.
+     */
+    getDatasetAudits() {
+        const relatedDatasets = this.props.context.related_datasets;
+        if (relatedDatasets.length > 0) {
+            // Retrieve the audits of all related datasets.
+            const datasetAtIds = relatedDatasets.map(dataset => dataset['@id']);
+            Promise.all(datasetAtIds.map(datasetAtId => (
+                fetch(`${datasetAtId}?frame=audit`, {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                }).then((response) => {
+                    // Convert each response response to JSON
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    return Promise.resolve(null);
+                })
+            ))).then((datasetAudits) => {
+                // All dataset audits have been retrieved, or we got an error when trying to
+                // retrieve one or more of them.
+                const auditsByDataset = {};
+                if (datasetAudits && datasetAudits.length > 0) {
+                    datasetAudits.forEach((datasetAudit) => {
+                        auditsByDataset[datasetAudit['@id']] = datasetAudit.audit || {};
+                    });
+                }
+                this.setState({ auditsByDataset });
+            });
+        }
+    }
+
+    /**
+     * Calculate a list of related_datasets that we can view given our access level and each
+     * dataset's status and place this list into this.viewableDatasets.
+     *
+     * @return {array} All datasets from ExperimentSeries object we can display. Empty array if
+     *                 none.
+     */
+    getViewableDatasets() {
+        if (this.props.context.related_datasets.length > 0) {
+            const accessLevel = sessionToAccessLevel(this.context.session, this.context.session_properties);
+            const viewableStatuses = getObjectStatuses('Dataset', accessLevel, viewableDatasetStatuses);
+            return this.props.context.related_datasets.filter(dataset => viewableStatuses.includes(dataset.status));
+        }
+        return [];
+    }
+
+    render() {
+        const { context, auditDetail, auditIndicators } = this.props;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const viewableDatasets = this.getViewableDatasets();
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+
+        // Set up the breadcrumbs.
+        const datasetType = context['@type'][1];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: 'Experiment Series', uri: '/search/?type=ExperimentSeries&status=released', wholeTip: 'Search for released experiment series' },
+        ];
+        const crumbsReleased = (context.status === 'released');
+
+        // Calculate the biosample summary from the organism and the biosample ontology.
+        let speciesRender = null;
+        if (context.organism && context.organism.length > 0) {
+            const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
+            speciesRender = (
+                <span>
+                    {speciesList.map((species, i) =>
+                        <span key={i}>
+                            {i > 0 ? <span> and </span> : null}
+                            <i>{species}</i>
+                        </span>
+                    )}
+                </span>
+            );
+        }
+
+        // Add the "Add all to cart" button and internal tags from all related datasets.
+        let addAllToCartControl;
+        let internalTags = [];
+        if (viewableDatasets.length > 0) {
+            addAllToCartControl = (
+                <div className="experiment-table__header">
+                    <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
+                    <CartAddAllElements elements={viewableDatasets} />
                 </div>
-            </header>
-            {props.auditDetail(context.audit, 'series-audit', { session: reactContext.session })}
-            <Panel addClasses="data-display">
-                <PanelBody addClasses="panel-body-with-header">
-                    <div className="flexrow">
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                            <dl className="key-value">
-                                <div data-test="status">
-                                    <dt>Status</dt>
-                                    <dd><Status item={context} inline /></dd>
-                                </div>
+            );
 
-                                {context.description ?
-                                    <div data-test="description">
-                                        <dt>Description</dt>
-                                        <dd>{context.description}</dd>
-                                    </div>
-                                : null}
+            // Collect unique internal_tags from all relevant experiments.
+            internalTags = _.uniq(viewableDatasets.reduce((allInternalTags, experiment) => (
+                experiment.internal_tags && experiment.internal_tags.length > 0 ? allInternalTags.concat(experiment.internal_tags) : allInternalTags
+            ), []));
+        }
 
-                                {context.assay_term_name && context.assay_term_name.length > 0 ?
-                                    <div data-test="description">
-                                        <dt>Assay</dt>
-                                        <dd>{context.assay_term_name.join(', ')}</dd>
-                                    </div>
-                                : null}
-
-                                {(context.biosample_summary && context.biosample_summary.length > 0) || speciesRender ?
-                                    <div data-test="biosamplesummary">
-                                        <dt>Biosample summary</dt>
-                                        <dd>
-                                            {speciesRender ? <span>{speciesRender}&nbsp;</span> : null}
-                                            {context.biosample_summary && context.biosample_summary.length > 0 ? <span>{context.biosample_summary.join(' and ')} </span> : null}
-                                        </dd>
-                                    </div>
-                                : null}
-                            </dl>
-                        </div>
-
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading">
-                                <h4>Attribution</h4>
-                            </div>
-                            <dl className="key-value">
-                                {context.contributors.length > 0 ?
-                                    <div data-test="contributors">
-                                        <dt>Contributors</dt>
-                                        <dd>
-                                            {context.contributors.map(contributor => (
-                                                <span key={contributor['@id']} className="line-item">
-                                                    {contributor.title}
-                                                </span>
-                                            ))}
-                                        </dd>
-                                    </div>
-                                : null}
-
-                                {context.aliases.length > 0 ?
-                                    <div data-test="aliases">
-                                        <dt>Aliases</dt>
-                                        <dd>{context.aliases.join(', ')}</dd>
-                                    </div>
-                                : null}
-
-                                {context.submitter_comment ?
-                                    <div data-test="submittercomment">
-                                        <dt>Submitter comment</dt>
-                                        <dd>{context.submitter_comment}</dd>
-                                    </div>
-                                : null}
-
-                                {internalTags.length > 0 ?
-                                    <div className="tag-badges" data-test="tags">
-                                        <dt>Tags</dt>
-                                        <dd><InternalTags internalTags={internalTags} objectType="Experiment" /></dd>
-                                    </div>
-                                : null}
-                            </dl>
-                        </div>
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        <h2>Summary for experiment series {context.accession}</h2>
+                        {auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
+                        <DisplayAsJson />
                     </div>
-                </PanelBody>
-            </Panel>
+                </header>
+                {auditDetail(context.audit, 'series-audit', { session: this.context.session })}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
 
-            {addAllToCartControl ?
-                <div>
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.assay_term_name && context.assay_term_name.length > 0 ?
+                                        <div data-test="description">
+                                            <dt>Assay</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {(context.biosample_summary && context.biosample_summary.length > 0) || speciesRender ?
+                                        <div data-test="biosamplesummary">
+                                            <dt>Biosample summary</dt>
+                                            <dd>
+                                                {speciesRender ? <span>{speciesRender}&nbsp;</span> : null}
+                                                {context.biosample_summary && context.biosample_summary.length > 0 ? <span>{context.biosample_summary.join(' and ')} </span> : null}
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                </div>
+                                <dl className="key-value">
+                                    {context.contributors.length > 0 ?
+                                        <div data-test="contributors">
+                                            <dt>Contributors</dt>
+                                            <dd>
+                                                {context.contributors.map(contributor => (
+                                                    <span key={contributor['@id']} className="line-item">
+                                                        {contributor.title}
+                                                    </span>
+                                                ))}
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    {context.aliases.length > 0 ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{context.aliases.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {internalTags.length > 0 ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd><InternalTags internalTags={internalTags} objectType="Experiment" /></dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+                        </div>
+                    </PanelBody>
+                </Panel>
+
+                {addAllToCartControl ?
                     <SortTablePanel header={addAllToCartControl}>
                         <SortTable
-                            list={experimentList}
+                            list={viewableDatasets}
                             columns={experimentTableColumns}
                             css="table-experiment-series"
                             footer="Use cart to download files"
+                            meta={{ auditsByDataset: this.state.auditsByDataset, loggedIn }}
                         />
                     </SortTablePanel>
-                </div>
-            : null}
+                : null}
 
-            <FetchedItems
-                {...props}
-                url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
-                Component={DatasetFiles}
-                filePanelHeader={<FilePanelHeader context={context} />}
-                encodevers={globals.encodeVersion(context)}
-                session={reactContext.session}
-            />
-        </div>
-    );
-};
+                <FetchedItems
+                    {...this.props}
+                    url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
+                    Component={DatasetFiles}
+                    filePanelHeader={<FilePanelHeader context={context} />}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                />
+            </div>
+        );
+    }
+}
 
 ExperimentSeriesComponent.propTypes = {
     /** ExperimentSeries object to display */

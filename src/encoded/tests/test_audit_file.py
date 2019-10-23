@@ -991,3 +991,89 @@ def test_audit_incorrect_file_bucket_has_audit_no_file_available_false(testapp, 
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
     assert errors_list
+
+
+def test_audit_read_structure(testapp, file1_2):
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': -5,
+                'end': -1
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert all(
+        error['category'] != 'invalid read_structure'
+        for error in errors
+    )
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': 0,
+                'end': 5
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert any(
+        error['category'] == 'invalid read_structure'
+        and error['detail'].startswith('The read_stucture is 1-based.')
+        for error in errors
+    )
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': 1,
+                'end': -1
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert any(
+        error['category'] == 'invalid read_structure'
+        and error['detail'].startswith(
+            'The start coordinate is bigger than the end coordinate'
+        )
+        for error in errors
+    )
+
+
+def test_audit_matching_md5sum(testapp, file7, file6):
+    testapp.patch_json(
+        file7['@id'],
+        {
+            'matching_md5sum': [file6['@id']]
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'Incorrect matching_md5sum'
+               for error in errors_list)
+
+    testapp.patch_json(
+        file6['@id'],
+        {
+            'lab': '/labs/encode-processing-pipeline/',
+            'md5sum': '91be74b6e11515394507f4ebfa66d78a',
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'Matching md5 sums'
+               for error in errors_list)

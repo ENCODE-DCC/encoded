@@ -89,7 +89,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "26"
+            "default": "27"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -120,13 +120,14 @@
                         ]
                     },
                     {
-                        "comment": "Assay classification will migrate into new functional characterization experiment object, functional characterization assay classification in no longer valid for new submissions.",
+                        "comment": "Assay classification migrated into new functional characterization experiment object, not valid for new submissions.",
                         "permission": "import_items",
                         "enum": [
                             "functional characterization assay"
                         ]
                     }
-                ]  
+                ]
+                
             }    
         },
         "dbxrefs": {

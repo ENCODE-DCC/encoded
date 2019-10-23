@@ -114,6 +114,18 @@ def award(testapp):
 
 
 @pytest.fixture
+def award_encode4(testapp):
+    item = {
+        'name': 'encode4-award',
+        'rfa': 'ENCODE4',
+        'project': 'ENCODE',
+        'title': 'A Generic ENCODE4 Award',
+        'viewing_group': 'ENCODE4',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+
+@pytest.fixture
 def award_modERN(testapp):
     item = {
         'name': 'modERN-award',
@@ -520,6 +532,25 @@ def construct_genetic_modification_N(
 
 
 @pytest.fixture
+def interference_genetic_modification(
+        testapp,
+        lab,
+        award,
+        document,
+        target):
+    item = {
+        'award': award['@id'],
+        'documents': [document['@id']],
+        'lab': lab['@id'],
+        'category': 'interference',
+        'purpose': 'repression',
+        'method': 'RNAi',        
+        'modified_site_by_target_id': target['@id']
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
 def gm_characterization(testapp, award, lab, construct_genetic_modification_N, attachment):
     item = {
         'characterizes': construct_genetic_modification_N['@id'],
@@ -869,7 +900,8 @@ def encode_lab(testapp):
     item = {
         'name': 'encode-processing-pipeline',
         'title': 'ENCODE Processing Pipeline',
-        'status': 'current'
+        'status': 'current',
+        'uuid': 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d',
         }
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 
