@@ -189,7 +189,9 @@ def get_rows_from_file(file_name, row_delimiter):
     response = requests.get(file_name)
     rows = response.content.decode('utf-8').split(row_delimiter)
     header = rows[0].split('\t')
-    zipped_rows = [dict(zip(header, row.split('\t'))) for row in rows[1:]]
+    # remove the leading and ending double-quote string 
+    # that sometimes is present in source-file fields
+    zipped_rows = [dict(zip(header, [r.strip('\"') for r in row.split('\t')])) for row in rows[1:]]
     return zipped_rows
 
 

@@ -31,26 +31,26 @@ export function BiosampleOrganismNames(biosamples) {
 export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
-    if (biosample.documents && biosample.documents.length) {
+    if (biosample.documents && biosample.documents.length > 0) {
         protocolDocuments = _.uniq(biosample.documents);
     }
     let characterizations = [];
-    if (biosample.characterizations && biosample.characterizations.length) {
+    if (biosample.characterizations && biosample.characterizations.length > 0) {
         characterizations = _.uniq(biosample.characterizations);
     }
     let donorDocuments = [];
     let donorCharacterizations = [];
     if (biosample.donor) {
-        if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
+        if (biosample.donor.characterizations && biosample.donor.characterizations.length > 0) {
             donorCharacterizations = biosample.donor.characterizations;
         }
-        if (biosample.donor.documents && biosample.donor.documents.length) {
+        if (biosample.donor.documents && biosample.donor.documents.length > 0) {
             donorDocuments = biosample.donor.documents;
         }
     }
     let treatmentDocuments = [];
-    if (biosample.treatments && biosample.treatments.length) {
-        treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length) ? allDocs.concat(treatment.documents) : allDocs), []);
+    if (biosample.treatments && biosample.treatments.length > 0) {
+        treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length > 0) ? allDocs.concat(treatment.documents) : allDocs), []);
     }
 
     // Put together the document list for rendering

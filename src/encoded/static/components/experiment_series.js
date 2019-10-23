@@ -99,7 +99,6 @@ const ExperimentSeriesComponent = (props, reactContext) => {
 
     // Calculate the biosample summary from the organism and the biosample onotology.
     let speciesRender = null;
-    const biosampleOntologies = context.biosample_ontology || [];
     if (context.organism && context.organism.length > 0) {
         const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
         speciesRender = (
@@ -113,7 +112,6 @@ const ExperimentSeriesComponent = (props, reactContext) => {
             </span>
         );
     }
-    const terms = biosampleOntologies.length > 0 ? _.uniq(biosampleOntologies.map(biosampleOntology => biosampleOntology.term_name)) : [];
 
     // Filter out any files we shouldn't see.
     const experimentList = context.related_datasets.filter(dataset => viewableStatuses.includes(dataset.status));
@@ -145,7 +143,7 @@ const ExperimentSeriesComponent = (props, reactContext) => {
                     <DisplayAsJson />
                 </div>
             </header>
-            {props.auditDetail(context.audit, 'series-audit', { session: reactContext.session, except: context['@id'] })}
+            {props.auditDetail(context.audit, 'series-audit', { session: reactContext.session })}
             <Panel addClasses="data-display">
                 <PanelBody addClasses="panel-body-with-header">
                     <div className="flexrow">
@@ -171,12 +169,12 @@ const ExperimentSeriesComponent = (props, reactContext) => {
                                     </div>
                                 : null}
 
-                                {terms.length > 0 || speciesRender ?
+                                {(context.biosample_summary && context.biosample_summary.length > 0) || speciesRender ?
                                     <div data-test="biosamplesummary">
                                         <dt>Biosample summary</dt>
                                         <dd>
-                                            {terms.length > 0 ? <span>{terms.join(' and ')} </span> : null}
-                                            {speciesRender ? <span>({speciesRender})</span> : null}
+                                            {speciesRender ? <span>{speciesRender}&nbsp;</span> : null}
+                                            {context.biosample_summary && context.biosample_summary.length > 0 ? <span>{context.biosample_summary.join(' and ')} </span> : null}
                                         </dd>
                                     </div>
                                 : null}
@@ -351,6 +349,12 @@ const ListingComponent = (props, reactContext) => {
                             </span>
                         </a>
                     </div>
+                    {result.biosample_summary && result.biosample_summary.length > 0 ?
+                        <div className="highlight-row">
+                            {organism ? <i>{organism} </i> : null}
+                            <span>{result.biosample_summary.join(' and ')} </span>
+                        </div>
+                    : null}
                     <div className="data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
                         {targets.length > 0 ? <div><strong>Target: </strong>{targets.join(', ')}</div> : null}
@@ -359,7 +363,7 @@ const ListingComponent = (props, reactContext) => {
                     </div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

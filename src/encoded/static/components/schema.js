@@ -99,7 +99,7 @@ function createJsonDisplay(elementId, term) {
  */
 function schemaIdToName(schemaId) {
     const pathMatch = schemaId.match(/\/profiles\/(.*).json/);
-    return pathMatch && pathMatch.length ? pathMatch[1] : null;
+    return pathMatch && pathMatch.length > 0 ? pathMatch[1] : null;
 }
 
 
@@ -185,16 +185,16 @@ const SchemaTermLinksSection = (props) => {
     // Collect all the linkTo and linkFrom @types from schemaProp.
     const collectedLinks = collectLinks(schemaProp);
 
-    if (collectedLinks.linkTo.length || collectedLinks.linkFrom.length) {
+    if (collectedLinks.linkTo.length > 0 || collectedLinks.linkFrom.length > 0) {
         return (
             <div className="schema-term-links">
-                {collectedLinks.linkTo.length ?
+                {collectedLinks.linkTo.length > 0 ?
                     <div>
                         <span className="schema-term-links__title">References: </span>
                         <SchemaTermLinks schemaNames={collectedLinks.linkTo} profilesMap={profilesMap} />
                     </div>
                 : null}
-                {collectedLinks.linkFrom.length ?
+                {collectedLinks.linkFrom.length > 0 ?
                     <div>
                         <span className="schema-term-links__title">Referenced by: </span>
                         <SchemaTermLinks schemaNames={collectedLinks.linkFrom} profilesMap={profilesMap} />
@@ -347,7 +347,7 @@ const TermDisplay = (props) => {
             // array (at this time, I don't think any schema array values have non-simple types)
             // and sort the results.
             const simpleTermValues = termSchema.filter(item => !!simpleTypeDisplay[typeof item]).sort();
-            if (simpleTermValues.length) {
+            if (simpleTermValues.length > 0) {
                 return (
                     <div>
                         {simpleTermValues.map((item, i) => (
@@ -635,7 +635,7 @@ const AllSchemasPage = (props, reactContext) => {
     // out those without any `identifyingProperties` because the user can't add objects of that
     // type, nor display their schemas.
     const objectNames = Object.keys(context).sort().filter(objectName => (
-        !!(context[objectName].identifyingProperties && context[objectName].identifyingProperties.length)
+        context[objectName].identifyingProperties && context[objectName].identifyingProperties.length > 0
     ));
 
     return (

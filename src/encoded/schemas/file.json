@@ -475,7 +475,7 @@
                                             "CEL",
                                             "fastq",
                                             "gff",
-                                            "gtf",
+                                            "gtf",                                            
                                             "bed",
                                             "bigBed",
                                             "bam",
@@ -527,7 +527,7 @@
                                         "reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts"
+                                        "reporter code counts"                                        
                                     ]
                                 }
                             }
@@ -599,7 +599,8 @@
                                 },
                                 "output_type": {
                                     "enum": [
-                                        "restriction enzyme site locations"
+                                        "restriction enzyme site locations",
+                                        "sequence adapters"
                                     ]
                                 }
                             }
@@ -1150,6 +1151,8 @@
                         "RNA-binding protein associated mRNAs",           
                         "rRNA reference",
                         "semi-automated genome annotation",
+                        "sequence adapters",
+                        "sequence barcodes",
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
@@ -1160,6 +1163,7 @@
                         "transcript quantifications",
                         "transcription start sites",
                         "transcriptome alignments",
+                        "transcriptome annotations",
                         "transcriptome index",
                         "transcriptome reference",
                         "TSS reference",
@@ -1587,6 +1591,7 @@
         "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
+        "transcriptome annotations": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -1608,6 +1613,8 @@
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
+        "sequence barcodes": "reference",
+        "sequence adapters": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
@@ -1649,5 +1656,16 @@
         "sam": ".sam.gz",
         "txt": ".txt"
     },
+     "boost_values": {
+         "accession": 20.0,
+         "@type": 1.0,
+         "assembly": 5.0,
+         "file_format": 5.0,
+         "file_type": 5.0,
+         "file_format_type": 2.0,
+         "output_category": 2.0,
+         "output_type": 2.0,
+         "status": 1.0
+     },
     "changelog": "/profiles/changelogs/file.md"
 }

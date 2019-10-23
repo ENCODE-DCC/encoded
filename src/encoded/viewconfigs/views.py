@@ -34,6 +34,8 @@ DEFAULT_DOC_TYPES = [
     'Software',
     'Gene',
     'Target',
+    'File',
+    'Lab'
 ]
 
 

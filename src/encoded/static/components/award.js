@@ -26,7 +26,7 @@ function generateQuery(chosenOrganisms, searchTerm) {
     let query = '';
 
     // Add all the selected organisms, if any
-    if (chosenOrganisms.length) {
+    if (chosenOrganisms.length > 0) {
         const queryStrings = {
             HUMAN: `${searchTerm}Homo+sapiens`, // human
             MOUSE: `${searchTerm}Mus+musculus`, // mouse
@@ -51,7 +51,7 @@ function drawDonutCenter(chart) {
         ctx.clearRect(0, 0, width, height);
     } else {
         const data = chart.data.datasets[0].data;
-        if (data.length) {
+        if (data.length > 0) {
             ctx.fillStyle = '#000000';
             ctx.restore();
             const fontSize = (height / 114).toFixed(2);
@@ -312,7 +312,7 @@ export class LabChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${labChartId}-${this.props.ident}`, this.relevantData);
         }
     }
@@ -322,7 +322,7 @@ export class LabChart extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -392,7 +392,7 @@ export class LabChart extends React.Component {
                 <div className="award-charts__title">
                     Lab
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -433,7 +433,7 @@ export class CategoryChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
     }
@@ -443,7 +443,7 @@ export class CategoryChart extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -516,7 +516,7 @@ export class CategoryChart extends React.Component {
                 <div className="title">
                     {title}
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -560,13 +560,13 @@ class AntibodyChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -637,12 +637,12 @@ class AntibodyChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Antibodies {this.relevantData.length ?
+                    Antibodies {this.relevantData.length > 0 ?
                     <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
                     null}
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div>
                         <div className="award-charts__visual">
                             <div id={id} className="award-charts__canvas">
@@ -681,13 +681,13 @@ class BiosampleChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -712,7 +712,6 @@ class BiosampleChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-        // if (this.props.selectedOrganisms.length)
         const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
         // Update chart data and redraw with the new data.
         chart.data.datasets[0].data = values;
@@ -758,11 +757,11 @@ class BiosampleChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Biosamples {this.relevantData.length ?
+                    Biosamples {this.relevantData.length > 0 ?
                         <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     : null}
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div>
                         <div className="award-charts__visual">
                             <div id={id} className="award-charts__canvas">
@@ -819,13 +818,13 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     let anisogenicDataset = [];
 
     // Find status in facets for each replicate type (unreplicated, isogenic, anisogenic) search
-    if (experiments && experiments.facets && experiments.facets.length) {
+    if (experiments && experiments.facets && experiments.facets.length > 0) {
         const unreplicatedFacet = unreplicated.facets.find(facet => facet.field === 'status');
         const isogenicFacet = isogenic.facets.find(facet => facet.field === 'status');
         const anisogenicFacet = anisogenic.facets.find(facet => facet.field === 'status');
-        unreplicatedArray = (unreplicatedFacet && unreplicatedFacet.terms && unreplicatedFacet.terms.length) ? unreplicatedFacet.terms : [];
-        isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length) ? isogenicFacet.terms : [];
-        anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
+        unreplicatedArray = (unreplicatedFacet && unreplicatedFacet.terms && unreplicatedFacet.terms.length > 0) ? unreplicatedFacet.terms : [];
+        isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length > 0) ? isogenicFacet.terms : [];
+        anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length > 0) ? anisogenicFacet.terms : [];
     }
     const labels = ['in progress', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
 
@@ -834,7 +833,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     //      so that it can be easily and accurately passed to chart.js in createBarChart
     //      First pushes anything that has a key in labels, then sorts the dataset
     //      If the array has no length, just push an array with 0 values
-    if (unreplicatedArray.length) {
+    if (unreplicatedArray.length > 0) {
         for (let j = 0; j < labels.length; j += 1) {
             for (let i = 0; i < unreplicatedArray.length; i += 1) {
                 if (unreplicatedArray[i].key === labels[j]) {
@@ -852,7 +851,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     } else {
         unreplicatedDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
-    if (isogenicArray.length) {
+    if (isogenicArray.length > 0) {
         for (let j = 0; j < labels.length; j += 1) {
             for (let i = 0; i < isogenicArray.length; i += 1) {
                 if (isogenicArray[i].key === labels[j]) {
@@ -870,7 +869,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     } else {
         isogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
-    if (anisogenicArray.length) {
+    if (anisogenicArray.length > 0) {
         for (let j = 0; j < labels.length; j += 1) {
             for (let i = 0; i < anisogenicArray.length; i += 1) {
                 if (anisogenicArray[i].key === labels[j]) {
@@ -899,13 +898,13 @@ class ControlsChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -976,7 +975,7 @@ class ControlsChart extends React.Component {
                 <div className="award-charts__title">
                     Controls
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1016,13 +1015,13 @@ class StatusExperimentChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -1103,7 +1102,7 @@ class StatusExperimentChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1153,13 +1152,13 @@ class StatusChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.relevantData.length > 0) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
@@ -1229,7 +1228,7 @@ class StatusChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                {this.relevantData.length ?
+                {this.relevantData.length > 0 ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1264,9 +1263,9 @@ StatusChart.contextTypes = {
 // The existing species are added to the array of species
 function generateUpdatedSpeciesArray(categories, query, updatedSpeciesArray) {
     let categorySpeciesArray;
-    if (categories && categories.facets && categories.facets.length) {
+    if (categories && categories.facets && categories.facets.length > 0) {
         const genusFacet = categories.facets.find(facet => facet.field === query);
-        categorySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        categorySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const categorySpeciesArrayLength = categorySpeciesArray.length;
         for (let j = 0; j < categorySpeciesArrayLength; j += 1) {
             if (categorySpeciesArray[j].doc_count !== 0) {
@@ -1371,24 +1370,24 @@ const ChartRenderer = (props) => {
     searchData.controls.data = (controls && controls.facets) || [];
 
     ['experiments', 'annotations', 'antibodies', 'biosamples', 'controls'].forEach((chartCategory) => {
-        if (searchData[chartCategory].data.length) {
+        if (searchData[chartCategory].data.length > 0) {
             // Get the array of lab data.
             const labFacet = searchData[chartCategory].data.find(facet => facet.field === 'lab.title');
-            searchData[chartCategory].labs = (labFacet && labFacet.terms && labFacet.terms.length) ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : [];
+            searchData[chartCategory].labs = (labFacet && labFacet.terms && labFacet.terms.length > 0) ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : [];
 
             // Get the array of data specific to experiments, annotations, or antibodies
             const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === searchData[chartCategory].categoryFacet);
-            searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
+            searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length > 0) ? categoryFacet.terms : [];
 
             // Get the array of status data.
             const statusFacet = searchData[chartCategory].data.find(facet => facet.field === 'status');
-            searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length) ? statusFacet.terms : [];
+            searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length > 0) ? statusFacet.terms : [];
         }
     });
     // If there are experiements, then the corresponding species are added to the array of species
-    if (experiments && experiments.facets && experiments.facets.length) {
+    if (experiments && experiments.facets && experiments.facets.length > 0) {
         const genusFacet = experiments.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
-        experimentSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        experimentSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const experimentSpeciesArrayLength = experimentSpeciesArray.length;
         for (let j = 0; j < experimentSpeciesArrayLength; j += 1) {
             if (experimentSpeciesArray[j].doc_count !== 0) {
@@ -1397,9 +1396,9 @@ const ChartRenderer = (props) => {
         }
     }
     // If there are annotations, then the corresponding species are added to the array of species
-    if (annotations && annotations.facets && annotations.facets.length) {
+    if (annotations && annotations.facets && annotations.facets.length > 0) {
         const genusFacet = annotations.facets.find(facet => facet.field === 'organism.scientific_name');
-        annotationSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        annotationSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const annotationSpeciesArrayLength = annotationSpeciesArray.length;
         for (let j = 0; j < annotationSpeciesArrayLength; j += 1) {
             if (annotationSpeciesArray[j].doc_count !== 0) {
@@ -1408,9 +1407,9 @@ const ChartRenderer = (props) => {
         }
     }
     // If there are biosamples, then the corresponding species are iadded to the array of species
-    if (biosamples && biosamples.facets && biosamples.facets.length) {
+    if (biosamples && biosamples.facets && biosamples.facets.length > 0) {
         const genusFacet = biosamples.facets.find(facet => facet.field === 'organism.scientific_name=');
-        biosampleSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        biosampleSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const biosampleSpeciesArrayLength = biosampleSpeciesArray.length;
         for (let j = 0; j < biosampleSpeciesArrayLength; j += 1) {
             if (biosampleSpeciesArray[j].doc_count !== 0) {
@@ -1419,9 +1418,9 @@ const ChartRenderer = (props) => {
         }
     }
     // If there are antibodies, then the corresponding species are added to the array of species
-    if (antibodies && antibodies.facets && antibodies.facets.length) {
+    if (antibodies && antibodies.facets && antibodies.facets.length > 0) {
         const genusFacet = antibodies.facets.find(facet => facet.field === 'targets.organism.scientific_name=');
-        antibodySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        antibodySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const antibodySpeciesArrayLength = antibodySpeciesArray.length;
         for (let j = 0; j < antibodySpeciesArrayLength; j += 1) {
             if (antibodySpeciesArray[j].doc_count !== 0) {
@@ -1452,11 +1451,11 @@ const ChartRenderer = (props) => {
             <PanelBody>
                 <div className="award-chart__group-wrapper">
                     <h2>
-                        Assays {experimentsConfig.labs.length ?
+                        Assays {experimentsConfig.labs.length > 0 ?
                             <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&${ExperimentQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                         : null}
                     </h2>
-                    {experimentsConfig.labs.length ?
+                    {experimentsConfig.labs.length > 0 ?
                         <div>
                             <div className="award-chart__group">
                                 <LabChart
@@ -1496,11 +1495,11 @@ const ChartRenderer = (props) => {
                 </div>
                 <div className="award-chart__group-wrapper">
                     <h2>
-                        Annotations {annotationsConfig.labs.length ?
+                        Annotations {annotationsConfig.labs.length > 0 ?
                             <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&${AnnotationQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                         : null}
                     </h2>
-                    {annotationsConfig.labs.length ?
+                    {annotationsConfig.labs.length > 0 ?
                         <div>
                             <div className="award-chart__group">
                                 <LabChart
@@ -1537,7 +1536,7 @@ const ChartRenderer = (props) => {
                 </div>
                 <div className="award-chart__group-wrapper">
                     <h2>Reagents</h2>
-                    {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length || experimentsConfig.statuses.length ?
+                    {antibodiesConfig.categoryData.length > 0 || biosamplesConfig.categoryData.length > 0 || experimentsConfig.statuses.length > 0 ?
                         <div className="award-chart__group">
                             <AntibodyChart
                                 award={award}
@@ -1605,7 +1604,7 @@ class GenusButtons extends React.Component {
     render() {
         const { updatedGenusArray, selectedOrganisms, handleClick } = this.props;
         // If genera exist, then the button for each specific genus is created
-        if (updatedGenusArray.length) {
+        if (updatedGenusArray.length > 0) {
             return (
                 <div className="organism-selector">
                     {updatedGenusArray.indexOf('HUMAN') !== -1 ?
@@ -1748,11 +1747,11 @@ export const ExperimentDate = (props) => {
     let deduplicatedsubmitted = {};
 
     // Search experiments for month_released and date_submitted in facets
-    if (experiments.facets && experiments.facets.length) {
+    if (experiments.facets && experiments.facets.length > 0) {
         const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
         const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
-        releasedDates = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length) ? monthReleasedFacet.terms : [];
-        submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
+        releasedDates = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length > 0) ? monthReleasedFacet.terms : [];
+        submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length > 0) ? dateSubmittedFacet.terms : [];
     }
 
     // Take an array of date facet terms and return an array of terms sorted by date.
@@ -1790,15 +1789,15 @@ export const ExperimentDate = (props) => {
     let accumulatedDataReleased = [];
     let accumulatedDataSubmitted = [];
     let date = [];
-    if (releasedDates.length || submittedDates.length) {
+    if (releasedDates.length > 0 || submittedDates.length > 0) {
         const sortedreleasedTerms = consolidateSortedDates(sortTerms(releasedDates));
         const sortedsubmittedTerms = consolidateSortedDates(sortTerms(submittedDates));
 
         // Add an object with the most current date to one of the arrays.
-        if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
-            if (sortedreleasedTerms.length && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+        if ((releasedDates && releasedDates.length > 0) && (submittedDates && submittedDates.length > 0)) {
+            if (sortedreleasedTerms.length > 0 && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
                 sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
-            } else if (sortedsubmittedTerms.length && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+            } else if (sortedsubmittedTerms.length > 0 && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
                 sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
             }
         }
@@ -1828,7 +1827,7 @@ export const ExperimentDate = (props) => {
 
     return (
         <div>
-            {accumulatedDataReleased.length || accumulatedDataSubmitted.length ?
+            {accumulatedDataReleased.length > 0 || accumulatedDataSubmitted.length > 0 ?
                 <Panel addClasses={panelCss}>
                     <PanelHeading addClasses={panelHeadingCss}>
                         <h4>Cumulative Number of Experiments</h4>

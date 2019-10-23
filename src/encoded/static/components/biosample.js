@@ -76,7 +76,7 @@ class BiosampleComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -165,7 +165,7 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.depleted_in_term_name && context.depleted_in_term_name.length ?
+                                    {context.depleted_in_term_name && context.depleted_in_term_name.length > 0 ?
                                         <div data-test="depletedin">
                                             <dt>Depleted in</dt>
                                             <dd>
@@ -249,7 +249,7 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.parent_of && context.parent_of.length ?
+                                    {context.parent_of && context.parent_of.length > 0 ?
                                         <div data-test="parentof">
                                             <dt>Parent of biosamples</dt>
                                             <dd>
@@ -306,7 +306,7 @@ class BiosampleComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
 
-                                    {dbxrefs.length ?
+                                    {dbxrefs.length > 0 ?
                                         <div data-test="externalresources">
                                             <dt>External resources</dt>
                                             <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
@@ -327,7 +327,7 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.aliases.length ?
+                                    {context.aliases.length > 0 ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd>{aliasList}</dd>
@@ -350,21 +350,6 @@ class BiosampleComponent extends React.Component {
                                 </dl>
                             </div>
                         </div>
-
-                        {context.pooled_from && context.pooled_from.length ?
-                            <section data-test="pooledfrom">
-                                <hr />
-                                <h4>Pooled from biosamples</h4>
-                                <ul className="non-dl-list">
-                                    {context.pooled_from.map(biosample => (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section>
-                        : null}
-
                         {context.treatments.length ?
                             <section>
                                 <hr />
@@ -374,8 +359,15 @@ class BiosampleComponent extends React.Component {
                         : null}
                     </PanelBody>
                 </Panel>
+                {context.pooled_from && context.pooled_from.length > 0 ?
+                    <BiosampleTable
+                        title="Pooled from biosamples"
+                        items={context.pooled_from}
+                        total={context.pooled_from.length}
+                    />
+                : null}
 
-                {context.applied_modifications && context.applied_modifications.length ?
+                {context.applied_modifications && context.applied_modifications.length > 0 ?
                     <GeneticModificationSummary geneticModifications={context.applied_modifications} />
                 : null}
 
@@ -409,7 +401,7 @@ class BiosampleComponent extends React.Component {
                     Component={BiosampleTable}
                 />
 
-                {combinedDocs.length ?
+                {combinedDocs.length > 0 ?
                     <DocumentsPanel documentSpecs={[{ documents: combinedDocs }]} />
                 : null}
             </div>
@@ -578,7 +570,7 @@ const CharacterizationDetail = (props) => {
 
     // See if we need a list of documents or not. Documents without attachments don't get
     // displayed.
-    const docs = characterization.documents && characterization.documents.length ?
+    const docs = characterization.documents && characterization.documents.length > 0 ?
         characterization.documents.filter(doc => !!(doc.attachment && doc.attachment.href && doc.attachment.download))
     : [];
 
@@ -618,7 +610,7 @@ const CharacterizationDetail = (props) => {
                     </div>
                 : null}
 
-                {docs.length ?
+                {docs.length > 0 ?
                     <div data-test="documents">
                         <dt>Documents</dt>
                         <CharacterizationDocuments docs={docs} />

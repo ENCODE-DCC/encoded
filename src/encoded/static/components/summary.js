@@ -55,7 +55,7 @@ function generateStatusData(buckets, labels) {
     const statusData = Array.from({ length: labels.length }, (() => 0));
 
     // Convert statusData to a form createBarChart understands.
-    if (buckets && buckets.length) {
+    if (buckets && buckets.length > 0) {
         buckets.forEach((bucketItem) => {
             const statusIndex = labels.indexOf(bucketItem.key);
             if (statusIndex !== -1) {
@@ -347,14 +347,14 @@ class SummaryData extends React.Component {
 
         // Filter the assay list if any assay facets have been selected so that the assay graph will be
         // filtered accordingly. Find assay_title filters. Same applies to the lab filters.
-        if (context.filters && context.filters.length) {
+        if (context.filters && context.filters.length > 0) {
             const assayTitleFilters = context.filters.filter(filter => filter.field === 'assay_title');
-            if (assayTitleFilters.length) {
+            if (assayTitleFilters.length > 0) {
                 const assayTitleFilterTerms = assayTitleFilters.map(filter => filter.term);
                 assays = assays.filter(assayItem => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
             }
             const labFilters = context.filters.filter(filter => filter.field === 'lab.title');
-            if (labFilters.length) {
+            if (labFilters.length > 0) {
                 const labFilterTerms = labFilters.map(filter => filter.term);
                 labs = labs.filter(labItem => labFilterTerms.indexOf(labItem.key) !== -1);
             }
@@ -370,7 +370,7 @@ class SummaryData extends React.Component {
 
         // Collect selected facet terms to add to the base linkUri.
         let searchQuery = '';
-        if (context.filters && context.filters.length) {
+        if (context.filters && context.filters.length > 0) {
             searchQuery = context.filters.reduce((queryAcc, filter) => `${queryAcc}&${filter.field}=${globals.encodedURIComponent(filter.term)}`, '');
         }
         const linkUri = `/matrix/?type=Experiment${searchQuery}`;

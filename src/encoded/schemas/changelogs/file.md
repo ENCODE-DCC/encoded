@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 14
+
+* *output_type* list was updated to include the following enums: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
+
 ### Schema version 14
 
 * Changed *candidate regulatory elements* in *output_type* to *candidate Cis-Regulatory Elements*

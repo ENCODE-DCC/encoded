@@ -195,7 +195,7 @@ const FetchedRelatedItems = (props) => {
     const { Component, context, title, itemUrl } = props;
     if (context === undefined) return null;
     const items = context['@graph'];
-    if (!items || !items.length) return null;
+    if (!items || !items.length > 0) return null;
 
     return (
         <Component {...props} title={title} context={context} total={context.total} items={items} url={itemUrl} showControls={false} />

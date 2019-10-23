@@ -41,14 +41,14 @@ const HumanDonor = (props) => {
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                         </div>
 
-                        {context.aliases.length ?
+                        {context.aliases.length > 0 ?
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.external_ids && context.external_ids.length ?
+                        {context.external_ids && context.external_ids.length > 0 ?
                             <div data-test="externalid">
                                 <dt>Donor external identifiers</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
@@ -97,7 +97,7 @@ const HumanDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.dbxrefs && context.dbxrefs.length ?
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -223,14 +223,14 @@ const MouseDonor = (props) => {
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                         </div>
 
-                        {context.aliases.length ?
+                        {context.aliases.length > 0 ?
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.external_ids && context.external_ids.length ?
+                        {context.external_ids && context.external_ids.length > 0 ?
                             <div data-test="externalid">
                                 <dt>Donor external identifiers</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
@@ -286,14 +286,14 @@ const MouseDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.dbxrefs && context.dbxrefs.length ?
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
-                        {context.references && context.references.length ?
+                        {context.references && context.references.length > 0 ?
                             <div data-test="references">
                                 <dt>References</dt>
                                 <dd>{pubReferenceList(context.references)}</dd>
@@ -308,7 +308,7 @@ const MouseDonor = (props) => {
                         : null}
                     </dl>
 
-                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length > 0 ?
                         <div>
                             <hr />
                             <h4>Characterizations</h4>
@@ -357,14 +357,14 @@ const FlyWormDonor = (props) => {
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                         </div>
 
-                        {context.aliases.length ?
+                        {context.aliases.length > 0 ?
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.external_ids && context.external_ids.length ?
+                        {context.external_ids && context.external_ids.length > 0 ?
                             <div data-test="externalid">
                                 <dt>Donor external identifiers</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
@@ -420,7 +420,7 @@ const FlyWormDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.dbxrefs && context.dbxrefs.length ?
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -497,8 +497,8 @@ class DonorComponent extends React.Component {
         // just arrays of human_donor @ids. This function does a database search to retrieve all
         // donor.parent and donor.children objects.
         const donor = this.props.context;
-        const parentAtids = donor.parents && donor.parents.length ? donor.parents : [];
-        const childrenAtids = donor.children && donor.children.length ? donor.children : [];
+        const parentAtids = donor.parents && donor.parents.length > 0 ? donor.parents : [];
+        const childrenAtids = donor.children && donor.children.length > 0 ? donor.children : [];
 
         // Do both the donor.parent and donor.children as a combined search, and sort the results
         // out after they get retrieved.
@@ -506,7 +506,7 @@ class DonorComponent extends React.Component {
 
         // atIds now has an array of human_donor parents and children @ids. Send a GET request to
         // perform a search.
-        if (atIds.length) {
+        if (atIds.length > 0) {
             requestObjects(atIds, '/search/?type=HumanDonor&limit=all&status!=deleted&status!=revoked&status!=replaced').then((parentChildDonors) => {
                 // Got search results with all human_donor parents and children as one search
                 // result array. Sort them into parents and children based on their locations in
@@ -544,12 +544,12 @@ class DonorComponent extends React.Component {
         let donorDocuments = [];
 
         // Collect the characterization documents.
-        if (context.characterizations && context.characterizations.length) {
+        if (context.characterizations && context.characterizations.length > 0) {
             characterizationDocuments = context.characterizations;
         }
 
         // Collect the donor documents.
-        if (context.documents && context.documents.length) {
+        if (context.documents && context.documents.length > 0) {
             donorDocuments = context.documents;
         }
 
@@ -574,14 +574,14 @@ class DonorComponent extends React.Component {
                             <AlternateAccession altAcc={context.alternate_accessions} />
                         </div>
                         {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
+                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
 
-                {context.genetic_modifications && context.genetic_modifications.length ?
+                {context.genetic_modifications && context.genetic_modifications.length > 0 ?
                     <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
 
@@ -591,11 +591,11 @@ class DonorComponent extends React.Component {
                     Component={BiosampleTable}
                 />
 
-                {context['@type'][0] === 'HumanDonor' && this.state.childDonors && this.state.childDonors.length ?
+                {context['@type'][0] === 'HumanDonor' && this.state.childDonors && this.state.childDonors.length > 0 ?
                     <DonorTable title="Children of this donor" donors={this.state.childDonors} />
                 : null}
 
-                {context['@type'][0] === 'HumanDonor' && this.state.parentDonors && this.state.parentDonors.length ?
+                {context['@type'][0] === 'HumanDonor' && this.state.parentDonors && this.state.parentDonors.length > 0 ?
                     <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
                 : null}
 
@@ -605,7 +605,7 @@ class DonorComponent extends React.Component {
                     Component={ExperimentTable}
                 />
 
-                {combinedDocuments.length ?
+                {combinedDocuments.length > 0 ?
                     <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} />
                 : null}
             </div>
@@ -656,12 +656,12 @@ const DonorListingComponent = (props, reactContext) => {
                 <div className="accession">
                     <a href={result['@id']}>
                         <i>{result.organism.scientific_name}</i>
-                        {details.length ? ` (${details.join(', ')})` : null}
+                        {details.length > 0 ? ` (${details.join(', ')})` : null}
                     </a>
                 </div>
                 <div className="data-row">
                     {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
-                    {result.external_ids && result.external_ids.length ?
+                    {result.external_ids && result.external_ids.length > 0 ?
                         <div>
                             <strong>External resources: </strong>
                             <DbxrefList context={result} dbxrefs={result.external_ids} />
@@ -669,7 +669,7 @@ const DonorListingComponent = (props, reactContext) => {
                     : null}
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

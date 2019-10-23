@@ -33,7 +33,7 @@ class SoftwareComponent extends React.Component {
         // See if there’s a version number to highlight
         let highlightVersion;
         const queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
-        if (queryParsed && Object.keys(queryParsed).length) {
+        if (queryParsed && Object.keys(queryParsed).length > 0) {
             // Find the first 'version' query string item, if any
             const versionKey = _(Object.keys(queryParsed)).find(key => key === 'version');
             if (versionKey) {
@@ -57,7 +57,7 @@ class SoftwareComponent extends React.Component {
                         <DisplayAsJson />
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session })}
 
                 <div className="panel">
                     <dl className="key-value">
@@ -79,14 +79,14 @@ class SoftwareComponent extends React.Component {
                             <dd>{context.description}</dd>
                         </div>
 
-                        {context.software_type && context.software_type.length ?
+                        {context.software_type && context.software_type.length > 0 ?
                             <div data-test="type">
                                 <dt>Software type</dt>
                                 <dd>{context.software_type.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.purpose && context.purpose.length ?
+                        {context.purpose && context.purpose.length > 0 ?
                             <div data-test="purpose">
                                 <dt>Used for</dt>
                                 <dd>{context.purpose.join(', ')}</dd>
@@ -102,7 +102,7 @@ class SoftwareComponent extends React.Component {
                     </dl>
                 </div>
 
-                {context.versions && context.versions.length ?
+                {context.versions && context.versions.length > 0 ?
                     <div>
                         <h3>Software Versions</h3>
                         <SoftwareVersionTable items={context.versions} highlightVersion={highlightVersion} />
@@ -194,7 +194,7 @@ class ListingComponent extends React.Component {
                     </div>
                     <div className="data-row">
                         <div>{result.description}</div>
-                        {result.software_type && result.software_type.length ?
+                        {result.software_type && result.software_type.length > 0 ?
                             <div>
                                 <strong>Software type: </strong>
                                 {result.software_type.join(', ')}
@@ -202,7 +202,7 @@ class ListingComponent extends React.Component {
                         : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }

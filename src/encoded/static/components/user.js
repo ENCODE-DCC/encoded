@@ -122,7 +122,7 @@ class AccessKeyTable extends React.Component {
         return (
             <div>
                 <button className="btn btn-success" onClick={this.create}>Add Access Key</button>
-                {this.state.access_keys.length ?
+                {this.state.access_keys.length > 0 ?
                     <table className="table">
                         <thead>
                             <tr>

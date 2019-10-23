@@ -50,7 +50,7 @@ const LotComponent = (props, reactContext) => {
 
     // Make an array of targets with no falsy entries and no repeats
     const targets = {};
-    if (context.lot_reviews && context.lot_reviews.length) {
+    if (context.lot_reviews && context.lot_reviews.length > 0) {
         context.lot_reviews.forEach((lotReview) => {
             lotReview.targets.forEach((target) => {
                 targets[target['@id']] = target;
@@ -118,7 +118,7 @@ const LotComponent = (props, reactContext) => {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
                     <h3>
-                        {targetKeys.length ?
+                        {targetKeys.length > 0 ?
                             <span>
                                 Antibody against {Object.keys(targets).map((target, i) => {
                                     const targetObj = targets[target];
@@ -133,7 +133,7 @@ const LotComponent = (props, reactContext) => {
                     <DisplayAsJson />
                 </div>
             </header>
-            {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}
+            {props.auditDetail(context.audit, 'antibody-audit', { session: reactContext.session })}
 
             <div className="antibody-statuses">
                 {antibodyStatuses}
@@ -162,7 +162,7 @@ const LotComponent = (props, reactContext) => {
                             <dd>{context.lot_id}</dd>
                         </div>
 
-                        {Object.keys(targets).length ?
+                        {Object.keys(targets).length > 0 ?
                             <div data-test="targets">
                                 <dt>Characterized targets</dt>
                                 <dd>
@@ -174,7 +174,7 @@ const LotComponent = (props, reactContext) => {
                             </div>
                         : null}
 
-                        {context.lot_id_alias && context.lot_id_alias.length ?
+                        {context.lot_id_alias && context.lot_id_alias.length > 0 ?
                             <div data-test="lotidalias">
                                 <dt>Lot ID aliases</dt>
                                 <dd>{context.lot_id_alias.join(', ')}</dd>
@@ -193,7 +193,7 @@ const LotComponent = (props, reactContext) => {
                             </div>
                         : null}
 
-                        {context.purifications && context.purifications.length ?
+                        {context.purifications && context.purifications.length > 0 ?
                             <div data-test="purifications">
                                 <dt>Purification</dt>
                                 <dd className="sentence-case">{context.purifications.join(', ')}</dd>
@@ -221,14 +221,14 @@ const LotComponent = (props, reactContext) => {
                             </div>
                         : null}
 
-                        {context.aliases && context.aliases.length ?
+                        {context.aliases && context.aliases.length > 0 ?
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.dbxrefs && context.dbxrefs.length ?
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
                             <div data-test="dbxrefs">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -356,7 +356,7 @@ const CharacterizationHeader = (props) => {
             <div className="document__header">
                 {doc.target.label} <span>{' ('}{doc.target.organism ? <i>{doc.target.organism.scientific_name}</i> : <span>{doc.target.investigated_as[0]}</span>}{')'}</span>
             </div>
-            {doc.characterization_reviews && doc.characterization_reviews.length ?
+            {doc.characterization_reviews && doc.characterization_reviews.length > 0 ?
                 <div className="document__characterization-reviews">
                     {doc.characterization_reviews.map(review => (
                         <span key={review.biosample_ontology.term_name} className="document__characterization-biosample-term">{review.biosample_ontology.term_name}</span>
@@ -489,7 +489,7 @@ const CharacterizationDetail = (props) => {
                     {download}
                 </div>
 
-                {doc.documents && doc.documents.length ?
+                {doc.documents && doc.documents.length > 0 ?
                     <div data-test="documents">
                         <dt>Documents</dt>
                         <CharacterizationDocuments docs={doc.documents} />
@@ -682,7 +682,7 @@ const ListingComponent = (props, reactContext) => {
                     <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

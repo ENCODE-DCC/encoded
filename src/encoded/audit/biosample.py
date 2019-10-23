@@ -2,6 +2,7 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from .formatter import audit_link
 
 
 # flag biosamples that contain GM that is different from the GM in donor. It could be legitimate case, but we would like to see it.
@@ -91,7 +92,7 @@ def audit_biosample_donor(value, system):
         return
 
     if 'donor' not in value:
-        detail = 'Biosample {} is not associated with any donor.'.format(value['@id'])
+        detail = 'Biosample {} is not associated with any donor.'.format(audit_link(value['accession'], value['@id']))
         if 'award' in value and 'rfa' in value['award'] and \
            value['award']['rfa'] == 'GGR':
             yield AuditFailure('missing donor', detail, level='INTERNAL_ACTION')

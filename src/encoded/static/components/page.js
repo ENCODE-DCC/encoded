@@ -71,7 +71,7 @@ globals.listingViews.register(Listing, 'Page');
 // Display a list of keywords for the news article in the `post` prop.
 const NewsKeywordList = (props) => {
     const post = props.post;
-    if (post.news_keywords && post.news_keywords.length) {
+    if (post.news_keywords && post.news_keywords.length > 0) {
         return (
             <div className="news-keyword-list">
                 <p>View news matching these terms, or all recent news</p>

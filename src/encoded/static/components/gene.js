@@ -77,7 +77,7 @@ const Gene = (props) => {
                     <div data-test="external">
                         <dt>External resources</dt>
                         <dd>
-                            {context.dbxrefs.length ?
+                            {context.dbxrefs.length > 0 ?
                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                             : <em>None submitted</em> }
                         </dd>
@@ -132,12 +132,12 @@ const ListingComponent = (props, reactContext) => {
                 </div>
                 <div className="data-row">
                     <strong>External resources: </strong>
-                    {result.dbxrefs && result.dbxrefs.length ?
+                    {result.dbxrefs && result.dbxrefs.length > 0 ?
                         <DbxrefList context={result} dbxrefs={result.dbxrefs} />
                     : <em>None submitted</em> }
                 </div>
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session })}
         </li>
     );
 };

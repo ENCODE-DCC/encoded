@@ -8,6 +8,7 @@ import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
+import { BrowserFeat } from './browserfeat';
 import cartStore, {
     cartCacheSaved,
     cartCreateAutosave,
@@ -283,6 +284,9 @@ class App extends React.Component {
             session,
         });
 
+        // Set browser features in the <html> CSS class.
+        BrowserFeat.setHtmlFeatClass();
+
         // Make a URL for the logo.
         const hrefInfo = url.parse(this.state.href);
         const logoHrefInfo = {
@@ -313,7 +317,7 @@ class App extends React.Component {
         // Add privacy link to auth0 login modal.
         this.lock.on('signin ready', () => {
             const lockElements = document.getElementsByClassName('auth0-lock-form');
-            if (lockElements && lockElements.length) {
+            if (lockElements && lockElements.length > 0) {
                 const privacyDiv = document.createElement('div');
                 const privacyLink = document.createElement('a');
                 const privacyLinkText = document.createTextNode('Privacy policy');
@@ -366,17 +370,6 @@ class App extends React.Component {
             window.onhashchange = this.onHashChange;
         }
         window.onbeforeunload = this.handleBeforeUnload;
-        (function walkmeinit() {
-            const s = document.getElementsByTagName('script')[0];
-            if (s) {
-                const walkme = document.createElement('script');
-                walkme.type = 'text/javascript';
-                walkme.async = true;
-                walkme.src = 'https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js';
-                s.parentNode.insertBefore(walkme, s);
-                window._walkmeConfig = { smartLoad: true };
-            }
-        }());
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -833,7 +826,7 @@ class App extends React.Component {
     /* eslint no-alert: 0 */
     confirmNavigation() {
         // check for beforeunload confirmation
-        if (this.state.unsavedChanges.length) {
+        if (this.state.unsavedChanges.length > 0) {
             const res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
             if (res) {
                 this.setState({ unsavedChanges: [] });
@@ -844,7 +837,7 @@ class App extends React.Component {
     }
 
     handleBeforeUnload() {
-        if (this.state.unsavedChanges.length || cartIsUnsaved()) {
+        if (this.state.unsavedChanges.length > 0 || cartIsUnsaved()) {
             return 'You have unsaved changes.';
         }
         return undefined;
@@ -1101,6 +1094,8 @@ class App extends React.Component {
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
                     <script async src="//www.google-analytics.com/analytics.js" />
+                    <script src="https://cdn.jsdelivr.net/gh/VALIS-software/valis-hpgv/dist/valis-hpgv.js?9" />
+                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}

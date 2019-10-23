@@ -205,7 +205,7 @@
         }
     },
     "boost_values": {
-        "accession": 1.0,
+        "accession": 20.0,
         "alternate_accessions": 1.0,
         "related_datasets.assay_term_name": 1.0,
         "related_datasets.assay_term_id": 1.0,
@@ -235,6 +235,8 @@
         "related_datasets.replicates.library.alternate_accessions": 1.0,
         "related_datasets.replicates.library.aliases": 1.0,
         "related_datasets.replicates.library.biosample.accession": 1.0,
+        "related_datasets.replicates.library.biosample.age": 5.0,
+        "related_datasets.replicates.library.biosample.sex": 5.0,
         "related_datasets.replicates.library.biosample.alternate_accessions": 1.0,
         "related_datasets.replicates.library.biosample.aliases": 1.0,
         "related_datasets.replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
@@ -250,6 +252,7 @@
         "related_datasets.replicates.antibody.product_id": 1.0,
         "related_datasets.replicates.antibody.aliases": 1.0,
         "related_datasets.replicates.antibody.dbxrefs": 1.0,
+        "related_datasets.biosample_summary": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
@@ -271,7 +274,8 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "description": 3.0
     },
     "changelog": "/profiles/changelogs/treatment_time_series.md"
 }

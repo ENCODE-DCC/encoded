@@ -1183,7 +1183,7 @@ class CartComponent extends React.Component {
                     </div>
                 </header>
                 <Panel addClasses="cart__result-table">
-                    {cartElements.length ?
+                    {cartElements.length > 0 ?
                         <PanelHeading addClasses="cart__header">
                             <PagerArea currentPage={this.state.currentDatasetResultsPage} totalPageCount={totalDatasetPages} updateCurrentPage={this.updateDatasetCurrentPage} />
                             <CartTools

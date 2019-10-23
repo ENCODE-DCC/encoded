@@ -2,6 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
 
@@ -1344,13 +1348,13 @@ def check_replicate_metric_dual_threshold(
                 level = 'NOT_COMPLIANT'
                 standards_severity = 'requirements'
                 audit_name_severity = 'insufficient'
-            file_names_fmt = str(files).replace('\'', ' ')
+            file_names_links = [audit_link(path_to_text(file), file) for file in files]
             detail = (
                 'Files {} have {} of {}, which is below ENCODE {}. According to '
                 'ENCODE standards, a number for this property in a replicate of > {:,} '
                 'is required, and > {:,} is recommended.'
             ).format(
-                file_names_fmt,
+                ', '.join(file_names_links),
                 metric_description,
                 metric_value,
                 standards_severity,
@@ -2616,6 +2620,8 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
         level = 'ERROR'
     else:
         level = 'WARNING'
+    detail = ''
+    no_characterizations = False
     if 'replicates' in value:
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and
@@ -2623,24 +2629,33 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                 rep['library']['status'] not in excluded_types and
                 'biosample' in rep['library'] and
                 rep['library']['biosample']['status'] not in excluded_types):
+                
                 biosample = rep['library']['biosample']
-                if (biosample.get('applied_modifications') and
-                    not biosample.get('characterizations')):
+                modifications = biosample.get('applied_modifications')
+                biosample_characterizations = biosample.get('characterizations')
+                if (modifications and 
+                    biosample_characterizations):
+                    return
+                elif (modifications and 
+                    not biosample_characterizations):
+                    no_characterizations = True
                     mod_ids = str(
-                        [mod['@id'] for mod in biosample['applied_modifications']]
+                        [mod['@id'] for mod in modifications]
                     ).replace('\'', ' ')
-                    detail = (
-                        'Biosample {} which has been modified by {} '
-                        'is missing validating characterization.'
-                    ).format(
-                        biosample['@id'],
-                        mod_ids
-                    )
-                    yield AuditFailure(
-                        'missing biosample characterization',
-                        detail,
-                        level
-                    )
+                    detail += (
+                            'biosample {} which has been modified by {} '
+                            'is missing characterization validating the modification, '
+                        ).format(
+                            biosample['@id'],
+                            mod_ids
+                        )
+        if no_characterizations:
+            detail = 'B' + detail[1:-2] + '.'
+            yield AuditFailure(
+                'missing biosample characterization',
+                detail,
+                level
+            )
 
 
 def audit_experiment_replicates_biosample(value, system, excluded_types):
@@ -2708,7 +2723,7 @@ def audit_experiment_documents(value, system, excluded_types):
 
     # If there are no library documents anywhere, then we say something
     if lib_docs == 0:
-        detail = 'Experiment {} has no attached documents'.format(value['@id'])
+        detail = 'Experiment {} has no attached documents'.format(audit_link(value['accession'], value['@id']))
         yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
     return
 

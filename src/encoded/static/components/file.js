@@ -62,12 +62,12 @@ function sortProcessedPagedFiles(files) {
     // Start by sorting the accessioned files.
     let sortedAccession = [];
     let sortedExternal = [];
-    if (accessionList.accession && accessionList.accession.length) {
+    if (accessionList.accession && accessionList.accession.length > 0) {
         sortedAccession = accessionList.accession.sort((a, b) => (a.accession > b.accession ? 1 : (a.accession < b.accession ? -1 : 0)));
     }
 
     // Now sort the external_accession files
-    if (accessionList.external && accessionList.external.length) {
+    if (accessionList.external && accessionList.external.length > 0) {
         sortedExternal = accessionList.external.sort((a, b) => (a.title > b.title ? 1 : (a.title < b.title ? -1 : 0)));
     }
     return sortedAccession.concat(sortedExternal);
@@ -112,7 +112,7 @@ class DerivedFiles extends React.Component {
         requestSearch(`type=File&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&field=accession&field=title&field=accession&derived_from=${file['@id']}`).then((result) => {
             // The server has returned search results. See if we got matching files to display
             // in the table.
-            if (Object.keys(result).length && result['@graph'] && result['@graph'].length) {
+            if (Object.keys(result).length > 0 && result['@graph'] && result['@graph'].length > 0) {
                 // Sort the files. We still get an array of search results from the server, just
                 // sorted by accessioned files, followed by external_accession files.
                 const sortedFiles = sortProcessedPagedFiles(result['@graph']);
@@ -177,7 +177,7 @@ class DerivedFiles extends React.Component {
     // @id of files that derive from the one being displayed, and this.state.currentPage to hold
     // the currently displayed page of files in the table.
     currentPageFiles() {
-        if (this.allFileIds && this.allFileIds.length) {
+        if (this.allFileIds && this.allFileIds.length > 0) {
             const start = this.state.currentPage * PagedFileTableMax;
             return this.allFileIds.slice(start, start + PagedFileTableMax);
         }
@@ -191,7 +191,7 @@ class DerivedFiles extends React.Component {
     render() {
         const { file } = this.props;
 
-        if (this.state.pageFiles.length) {
+        if (this.state.pageFiles.length > 0) {
             // If we have more than one page of files to display, render a pager component in the
             // footer.
             const pager = this.state.totalPages > 1 ? <Pager total={this.state.totalPages} current={this.state.currentPage} updateCurrentPage={this.updateCurrentPage} /> : null;
@@ -212,7 +212,7 @@ class DerivedFiles extends React.Component {
 }
 
 DerivedFiles.propTypes = {
-    file: React.PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
+    file: PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
 };
 
 
@@ -337,8 +337,8 @@ class FileComponent extends React.Component {
 
         // Retrieve an array of file @ids that this file derives from. Once this array arrives.
         // it sets the derivedFromFiles React state that causes the list to render.
-        const derivedFromFileIds = file.derived_from && file.derived_from.length ? file.derived_from : [];
-        if (derivedFromFileIds.length) {
+        const derivedFromFileIds = file.derived_from && file.derived_from.length > 0 ? file.derived_from : [];
+        if (derivedFromFileIds.length > 0) {
             requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
                 this.setState({ derivedFromFiles });
             });
@@ -346,8 +346,8 @@ class FileComponent extends React.Component {
 
         // Retrieve an array of file format specification document @ids. Once the array arrives,
         // set the fileFormatSpecs React state that causes the list to render.
-        const fileFormatSpecs = file.file_format_specifications && file.file_format_specifications.length ? file.file_format_specifications : [];
-        if (fileFormatSpecs.length) {
+        const fileFormatSpecs = file.file_format_specifications && file.file_format_specifications.length > 0 ? file.file_format_specifications : [];
+        if (fileFormatSpecs.length > 0) {
             requestObjects(fileFormatSpecs, '/search/?type=Document&limit=all&status!=deleted&status!=revoked&status!=replaced').then((docs) => {
                 this.setState({ fileFormatSpecs: docs });
             });
@@ -357,14 +357,14 @@ class FileComponent extends React.Component {
     render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
-        const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
+        const aliasList = (context.aliases && context.aliases.length > 0) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!this.context.session_properties.admin;
 
         // Collect up relevant pipelines and quality metrics.
         let pipelines = [];
-        if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length) {
+        if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length > 0) {
             pipelines = context.analysis_step_version.analysis_step.pipelines;
         }
         const qualityMetrics = context.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
@@ -381,7 +381,7 @@ class FileComponent extends React.Component {
                         : null}
                         <ReplacementAccessions context={context} />
                         {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
-                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
+                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
                 </header>
@@ -414,21 +414,21 @@ class FileComponent extends React.Component {
                                     {context.restriction_enzymes ?
                                         <div data-test="restrictionEnzymes">
                                             <dt>Restriction enzymes</dt>
-                                            <dd>{context.restriction_enzymes.join(", ")}</dd>
+                                            <dd>{context.restriction_enzymes.join(', ')}</dd>
                                         </div>
                                     : null}
 
                                     <div data-test="bioreplicate">
                                         <dt>Biological replicate(s)</dt>
-                                        <dd>{`[${context.biological_replicates && context.biological_replicates.length ? context.biological_replicates.join(', ') : '-'}]`}</dd>
+                                        <dd>{`[${context.biological_replicates && context.biological_replicates.length > 0 ? context.biological_replicates.join(', ') : '-'}]`}</dd>
                                     </div>
 
                                     <div data-test="techreplicate">
                                         <dt>Technical replicate(s)</dt>
-                                        <dd>{`[${context.technical_replicates && context.technical_replicates.length ? context.technical_replicates.join(', ') : '-'}]`}</dd>
+                                        <dd>{`[${context.technical_replicates && context.technical_replicates.length > 0 ? context.technical_replicates.join(', ') : '-'}]`}</dd>
                                     </div>
 
-                                    {pipelines.length ?
+                                    {pipelines.length > 0 ?
                                         <div data-test="pipelines">
                                             <dt>Pipelines</dt>
                                             <dd>
@@ -527,7 +527,7 @@ class FileComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.dbxrefs && context.dbxrefs.length ?
+                                    {context.dbxrefs && context.dbxrefs.length > 0 ?
                                         <div data-test="externalresources">
                                             <dt>External resources</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -571,15 +571,15 @@ class FileComponent extends React.Component {
                     <SequenceFileInfo file={context} />
                 : null}
 
-                {this.state.derivedFromFiles && this.state.derivedFromFiles.length ? <DerivedFromFiles file={context} derivedFromFiles={this.state.derivedFromFiles} /> : null}
+                {this.state.derivedFromFiles && this.state.derivedFromFiles.length > 0 ? <DerivedFromFiles file={context} derivedFromFiles={this.state.derivedFromFiles} /> : null}
 
                 <DerivedFiles file={context} />
 
-                {this.state.fileFormatSpecs.length ?
+                {this.state.fileFormatSpecs.length > 0 ?
                     <DocumentsPanel title="File format specifications" documentSpecs={[{ documents: this.state.fileFormatSpecs }]} />
                 : null}
 
-                {qualityMetrics.length ?
+                {qualityMetrics.length > 0 ?
                     <QualityMetricsPanel qcMetrics={qualityMetrics} file={context} />
                 : null}
             </div>
@@ -625,7 +625,7 @@ class SequenceFileInfo extends React.Component {
                             </div>
                         : null}
 
-                        {file.flowcell_details && file.flowcell_details.length ?
+                        {file.flowcell_details && file.flowcell_details.length > 0 ?
                             <div data-test="flowcelldetails">
                                 <dt>Flowcell</dt>
                                 <dd>
@@ -642,7 +642,7 @@ class SequenceFileInfo extends React.Component {
                             </div>
                         : null}
 
-                        {file.fastq_signature && file.fastq_signature.length ?
+                        {file.fastq_signature && file.fastq_signature.length > 0 ?
                             <div data-test="fastqsignature">
                                 <dt>Fastq flowcell signature</dt>
                                 <dd>{file.fastq_signature.join(', ')}</dd>
@@ -669,7 +669,7 @@ class SequenceFileInfo extends React.Component {
                             </div>
                         : null}
 
-                        {file.controlled_by && file.controlled_by.length ?
+                        {file.controlled_by && file.controlled_by.length > 0 ?
                             <div data-test="controlledby">
                                 <dt>Controlled by</dt>
                                 <dd>
@@ -722,7 +722,7 @@ class ListingComponent extends React.Component {
                         </div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session })}
             </li>
         );
     }
