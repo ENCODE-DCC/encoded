@@ -200,8 +200,8 @@
                 }
             }
         },
-        "readname_details": {
-            "comment": "Only fastq files can have readname_details specified.",
+        "read_name_details": {
+            "comment": "Only fastq files can have read_name_details specified.",
             "properties": {
                 "file_format": {
                     "enum": ["fastq"]
@@ -712,7 +712,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "accession": {
             "accessionType": "FF"
@@ -980,7 +980,7 @@
             ]
         },
         "read_name_details": {
-            "title": "Fastq readname details",
+            "title": "Fastq read name details",
             "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
             "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
             "type": "object",
@@ -990,28 +990,28 @@
                 "flowcell_id_location": {
                     "title": "Flowcell identifier location",
                     "description": "Location of the flowcell identifier in the read name",
-                    "comment": "Zero-based location of the flowcell identifier in the readname, if you split read name using space and : as delimiters",
+                    "comment": "Zero-based location of the flowcell identifier in the read name, if you split read name using space and : as delimiters",
                     "type": "integer",
                     "minimum": 0
                 },
                 "lane_id_location": {
                     "title": "Lane identifier location",
                     "description": "Location of the lane identifier in the read name",
-                    "comment": "Zero-based location of the lane identifier in the readname, if you split the read name using space and : as delimiters",
+                    "comment": "Zero-based location of the lane identifier in the read name, if you split the read name using space and : as delimiters",
                     "type": "integer",
                     "minimum": 0
                 },
                 "read_number_location": {
                     "title": "Read number (1 or 2) identifier location",
                     "description": "Location of the read number in the read name",
-                    "comment": "Zero-based location of the read number in the readname, if you split the read name using space and : as delimiters",
+                    "comment": "Zero-based location of the read number in the read name, if you split the read name using space and : as delimiters",
                     "type": "integer",
                     "minimum": 0
                 },
                 "barcode_location": {
                     "title": "Barcode location",
                     "description": "Location of the barcode in the read name",
-                    "comment": "Zero-based location of the barcode in the readname, if you split the read name using space and : as delimiters",
+                    "comment": "Zero-based location of the barcode in the read name, if you split the read name using space and : as delimiters",
                     "type": "integer",
                     "minimum": 0
                 }
@@ -1077,9 +1077,9 @@
                     "enum": [
                         "alignments",
                         "blacklisted regions",
+                        "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
                         "candidate promoters",
-                        "candidate regulatory elements",
                         "chromatin interactions",
                         "mapping quality thresholded chromatin interactions",
                         "conservative idr thresholded peaks",
@@ -1579,7 +1579,7 @@
         "candidate promoters": "annotation",
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
-        "candidate regulatory elements": "annotation",
+        "candidate Cis-Regulatory Elements": "annotation",
         "representative dnase hypersensitivity sites":"annotation",
         "variant calls": "annotation",
         "maternal variant calls": "annotation",

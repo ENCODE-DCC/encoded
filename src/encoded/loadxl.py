@@ -50,6 +50,7 @@ ORDER = [
     'organism_development_series',
     'replication_timing_series',
     'aggregate_series',
+    'experiment_series',
     'reference_epigenome',
     'software',
     'software_version',

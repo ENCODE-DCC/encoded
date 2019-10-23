@@ -29,7 +29,6 @@ require('./target');
 require('./publication');
 require('./pipeline');
 require('./software');
-require('./news');
 require('./testing');
 require('./edit');
 require('./inputs');
@@ -40,6 +39,7 @@ require('./summary');
 require('./region_search');
 require('./gene');
 require('./biosample_type');
+require('./experiment_series');
 
 
 module.exports = require('./app');

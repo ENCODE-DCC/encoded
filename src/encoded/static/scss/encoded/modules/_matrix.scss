@@ -3,11 +3,24 @@ $col-category-header-height: 200px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
 
+// Add a shadow to the right edge of the first column's cells.
+@mixin matrix-freeze-shadow {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    bottom: -1px;
+    left: 100%;
+    width: 6px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
+}
+
+
 // Applied to all matrix <table>
 .matrix {
-    margin-left: 10px;
-    margin-bottom: 20px;
-
+    border-collapse: separate;
+    max-width: none;
+	
     @at-root #{&}__header {
         border-bottom: 1px solid #eeeeee;
     }
@@ -40,48 +53,19 @@ $row-data-header-width: 200px;
 
         @at-root #{&}-content {
             display: flex;
-
-            .matrix-shading {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                width: 30px;
-                height: auto;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.2s ease-in-out;
-    
-                &--left {
-                    right: auto;
-                    left: 0;
-                    background: linear-gradient(270deg, rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
-    
-                    &.showing {
-                        opacity: 1;
-                    }
-                }
-    
-                &--right {
-                    right: 0;
-                    left: auto;
-                    background: linear-gradient(90deg, rgba(0,0,0,0), 70%, rgba(0,0,0,0.2));
-    
-                    &.showing {
-                        opacity: 1;
-                    }
-                }
-            }
         }
     }
 
     @at-root #{&}__data-wrapper {
         position: relative;
+        padding-left: 10px;
         flex: 0 1 auto;
         border : 1px solid #eee;
         overflow: hidden;
     }
 
     @at-root #{&}__data {
+        margin-right: 1px;
         overflow-x: auto;
     }
 
@@ -121,6 +105,19 @@ $row-data-header-width: 200px;
                 }
             }
         }
+
+        > td {
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            border-radius: 0;
+            z-index: 1;
+
+            &:after {
+                @include matrix-freeze-shadow;
+            }
+        }
     }
 
     @at-root #{&}__row-data {
@@ -130,6 +127,16 @@ $row-data-header-width: 200px;
             width: $row-data-header-width;
             text-align: right;
             border-left: 1px solid #f0f0f0;
+            background-color: #fff;
+            z-index: 1;
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            border-bottom: 1px solid #fff;
+
+            &:after {
+                @include matrix-freeze-shadow;
+            }
 
             > a {
                 display: block;
@@ -159,6 +166,10 @@ $row-data-header-width: 200px;
                     text-decoration: none;
                 }
             }
+
+            &:first-of-type {
+                border-left: none;
+            }
         }
     }
 
@@ -175,14 +186,21 @@ $row-data-header-width: 200px;
             > div {
                 height: $row-category-cell-height;
             }
+
+            &:first-child {
+                position: -webkit-sticky;
+                position: sticky;
+                left: 0;
+
+                &:after {
+                    @include matrix-freeze-shadow;
+                }
+            }
         }
 
         // Actuator to expand/collapse a many-subcategory category
         button {
             display: block;
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
             padding: 0;
             height: 12px;
             width: 32px;
@@ -205,7 +223,17 @@ $row-data-header-width: 200px;
         > th {
             vertical-align: bottom;
             white-space: nowrap;
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            border-bottom: 1px solid #fff;
+            background-color: #fff;
+            z-index: 1;
 
+            &:after {
+                @include matrix-freeze-shadow();
+            }
+	
             > div {
                 padding-left: 10px;
                 padding-right: 10px;
@@ -235,6 +263,7 @@ $row-data-header-width: 200px;
         > td {
             padding: 0 !important;
             border-left: 1px solid #f0f0f0;
+            border-bottom: 1px solid #fff;
 
             &:last-child > div, &:last-child > a {
                 border-top-right-radius: 14px;
@@ -250,6 +279,10 @@ $row-data-header-width: 200px;
                 font-size: 0.9rem;
                 color: #fff;
                 text-decoration: none;
+            }
+
+            &:first-of-type {
+                border-left: none;
             }
         }
 

@@ -5,6 +5,8 @@
 # apt deps:
 # 	awscli
 
+S3_AUTH_KEYS=$1
+
 # Add team ssh public keys from s3
 mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
-aws s3 cp --region=us-west-2 s3://encoded-conf-prod/ssh-keys/demo-authorized_keys /home/ubuntu/.ssh/authorized_keys
+aws s3 cp --region=us-west-2 $S3_AUTH_KEYS /home/ubuntu/.ssh/authorized_keys

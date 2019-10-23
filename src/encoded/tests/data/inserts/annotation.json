@@ -101,5 +101,20 @@
         "uuid": "a625bb6b-47fd-445a-85bd-c3beb0a350a3",
         "related_files": ["ENCFF000LSP", "ENCFF000LSQ", "ENCFF690MGJ", "ENCFF145DKR"],
         "date_released": "2016-09-21"
+    },
+    {
+        "_test": "annotation type",
+        "accession": "ENCSR848CFY",
+        "award": "U54HG007004",
+        "annotation_type": "candidate Cis-Regulatory Elements",
+        "description": "ENCODE Annotations v3",
+        "encyclopedia_version": "3",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "a7bf146e-097c-46af-8b06-74c9449ecdb1",
+        "related_files": ["ENCFF000LSP", "ENCFF000LSQ"],
+        "date_released": "2019-05-20"
     }
 ]

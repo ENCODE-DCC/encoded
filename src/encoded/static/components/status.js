@@ -67,7 +67,7 @@ const standardStatuses = {
 // If a base object and its derivatives share the same statuses, only the base object needs an
 // entry here, e.g. Experiments share the same statuses as the Datasets they derive from, so only
 // `Dataset` is needed here.
-const objectStatuses = {
+const defaultObjectStatuses = {
     AccessKey: {
         external: [
             'current',
@@ -274,7 +274,7 @@ export const sessionToAccessLevel = (session, sessionProperties) => {
  * @param {string} accessLevel - Level of statuses to get (external, consortium, administrator).
  * @return {array} - Returns array of possible statuses for given object/@type and access level.
  */
-export const getObjectStatuses = (item, accessLevel = 'external') => {
+export const getObjectStatuses = (item, accessLevel = 'external', objectStatuses = defaultObjectStatuses) => {
     // Go down the @type list for the object until a matching block is found in `objectStatuses`.
     const objectType = typeof item === 'string' ? item : item['@type'].find(type => objectStatuses[type]);
 

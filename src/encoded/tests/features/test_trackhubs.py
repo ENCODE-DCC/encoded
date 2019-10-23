@@ -84,7 +84,7 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "        track ENCFF003COS",
     "        parent chip_aOIDR_view on",
     "        bigDataUrl /files/ENCFF003COS/@@download/ENCFF003COS.bigBed?proxy=true",
-    "        longLabel EBF1 ChIP-seq of GM12878 optimal idr thresholded peaks pool ENCSR000DZQ - ENCFF003COS",
+    "        longLabel EBF1 TF ChIP-seq of GM12878 optimal idr thresholded peaks pool ENCSR000DZQ - ENCFF003COS",
     "        shortLabel pool oIDR pk",
     "        type bigNarrowPeak",
     "        color 153,38,0",

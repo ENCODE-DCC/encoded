@@ -461,16 +461,16 @@ class ScreenSearch extends React.Component {
             <div className="site-search__screen">
                 <div className="site-search__reference">
                     <a href="/data/annotations/" role="button" className="site-search__reference-element">About ENCODE Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+regulatory+elements" role="button" className="site-search__reference-element">Candidate Regulatory Elements</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+Cis-Regulatory+Elements" role="button" className="site-search__reference-element">candidate Cis-Regulatory Elements</a>
                 </div>
                 <form>
                     <fieldset>
                         <legend className="sr-only">Screen search</legend>
                         <div className="site-search__input">
                             <label htmlFor="screen-search" id="screen-search-label">
-                                Search for Candidate Regulatory Elements
+                                Search for candidate Cis-Regulatory Elements
                                 <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
-                                    Search for candidate regulatory elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
+                                    Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
                                 <br />
                                 <span className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></span>
@@ -654,7 +654,7 @@ export default class Home extends React.Component {
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">
-                                        <h2>News <a href="/news/" title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
+                                        <h2>News <a href={newsUri} title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
                                     </div>
                                     <NewsLoader newsLoaded={this.newsLoaded} />
                                 </div>

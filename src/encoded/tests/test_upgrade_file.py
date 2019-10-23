@@ -144,6 +144,13 @@ def file_8b(file_base, old_file):
     })
     return item
 
+@pytest.fixture
+def file_13(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'candidate regulatory elements'
+    })
+    return item
 
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
@@ -225,3 +232,9 @@ def test_file_upgrade_12_to_13(upgrader, file_12):
     value = upgrader.upgrade('file', file_12, current_version='12', target_version='13')
     assert value['schema_version'] == '13'
     assert 'run_type' not in value
+
+
+def test_file_upgrade_13_to_14(upgrader, file_13):
+    value = upgrader.upgrade('file', file_13, current_version='13', target_version='14')
+    assert value['schema_version'] == '14'
+    assert value['output_type'] == 'candidate Cis-Regulatory Elements'
