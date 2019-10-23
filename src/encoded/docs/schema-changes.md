@@ -245,14 +245,14 @@ There are two situations we need to consider when updating an existing schema: (
             "default": "7"
         }
 
-2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example to the upgrade step is shown below. Continuing with our example, after the upgrade all the existing objects with the property "validation" as a part of the purpose object property must now be changed to "characterization". The upgrade step ensures that all the pre-existing genetic modification objects would now be upgraded so that they validate the new schema. And since the schema is changing from version 6 to 7 the def must specify this (6->7):
+2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example to the upgrade step is shown below. Continuing with our example, after the upgrade all the existing objects with that had "purpose" specified to be "validation" must now be changed to "characterization". And since the schema is changing from version 6 to 7 the def must specify this (6->7):
 
         @upgrade_step('genetic_modification', '6', '7')
         def genetic_modification_6_7(value, system):
             if value['purpose'] == 'validation':
                 value['purpose'] = 'characterization'
 
-3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all fragmentation methods must now be converted to a list object. So, we need to find every instance of fragmentation methods in the library inserts and convert them accordingly. For example:
+3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. So, we need to change all the corresponding inserts within the genetic modification object. For example:
 
         #Schema version 6
         "purpose": "validation",
@@ -307,11 +307,11 @@ There are two situations we need to consider when updating an existing schema: (
 
 6. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
-7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading library object, the changelog for this upgrade would look like the following:
+7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading genetic modifications object, the changelog for this upgrade would look like the following:
 
 ### Schema version 7
 
-* *purpose* property *validation* was renamed to *characterization*, and *screening* was also added to the list of enums
+* *purpose* property *validation* was renamed to *characterization*
 
      
 
