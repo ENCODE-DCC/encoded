@@ -7,7 +7,7 @@ Guide to where to edit Source Code
 ----------------
 
 * **src** directory - contains all the python and javascript code for front and backends
-    * **audit** - contains python scripts that check metadata stored in the schema and triggers audits in cases as defined here.
+    * **audit** - contains python scripts that check json objects' metadata stored in the schema.
     * **schemas** - JSON schemas ([JSONSchema], [JSON-LD]) describing allowed types and values for all metadata objects
     * **tests** - Unit and integration tests
     * **types** -  business logic for dispatching URLs and producing the correct JSON
@@ -154,11 +154,11 @@ This new object is an array of example objects that can successfully POST agains
 Updating an existing schema
 ----------------
 
-There are two situations we need to consider when updating an existing schema:
+There are two situations we need to consider when updating an existing schema: (1) No update of the schema version (2) Schema version update
 
 ### No change on schema version
 
-* For some schema changes, there will be no change to the schema version. These will be some minor changes to the schema. One such example includes adding a new enum to an existing list of enums. Another example will be adding a new property to existing schemas.
+* Schema version should not to be updated if the change introduced is not going to cause a potential invalidation of the existing objects in the database. For example an addition of a new enum value to a list of existing enums can not cause schema invalidation, but will simply extend the list of potential values to choose from.
 
 **Follow the steps as outlined below**
 
@@ -166,7 +166,26 @@ There are two situations we need to consider when updating an existing schema:
 
 2. In the **types** directory, make appropriate updates to object class by adding *embedding*, *reverse links*, and *calculated properties* as necessary.
 
-3. Update sample data, **data/inserts** directory, to test the changes made to the schema in **tests** directory. 
+3. Update the inserts within the **data/inserts** directory.
+
+4. Add test in the **tests** directory to make sure your schema change functions as expected. For example, if we included a minor change in treatment object such that *μg/kg* could be specified as treatment units, the following test should allow one to test whether the update has been successfully implemented or not:
+
+        def test_treatment_patch_amount_units(testapp, treatment):
+            testapp.patch_json(
+            treatment['@id'],
+            {
+                'treatment_type': 'injection',
+                'amount': 20,
+                'amount_units': 'μg/kg'
+            },
+        status=200, ## Status 200 means successfully patched the above.
+    )
+
+5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
+
+### Minor changes since schema version 11
+
+* *μg/kg* can now be specified as amount units.
 
 ### Update schema version
 * In many other cases, a schema version update will be required. Examples of such cases include: cases where a property name is changed or if a previously existing property is removed from the schema. Hence, the previously existing objects will no longer validated with the new schema change. In addition, any new objects if posted using the old schema will no longer be valid after the schema update. 
@@ -179,75 +198,60 @@ There are two situations we need to consider when updating an existing schema:
 
 **Follow the steps as outlined below**
 
-1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. Up until schema version 8 for library object, a submitter could specify only one fragmentation method. With the new change being implemented, we would like to allow a list of fragmentation methods to be specified. 
+1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. One of the possible enums for for the genetic modifications object was "validation" up until schema version 6. As a part of schema version upate to 7, "validation" was removed and instead the term "characterization" was added.
 
-        "fragmentation_methods": {
-            "title": "Fragmentation methods",
-            "type": "array",
-            "uniqueItems": true,
-            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
-            "items":{
-                "title": "Fragmentation method",
-                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation.",
-                "type": "string",
-                "enum": [
-                    "chemical (DNaseI)",
-                    "chemical (DpnII restriction)",
-                    "chemical (generic)",
-                    "chemical (HindIII restriction)",
-                    "chemical (HindIII/DpnII restriction)",
-                    "chemical (Illumina TruSeq)",
-                    "chemical (MboI restriction)",
-                    "chemical (micrococcal nuclease)",
-                    "chemical (NcoI restriction)",
-                    "chemical (Nextera tagmentation)",
-                    "chemical (RNase III)",
-                    "chemical (Tn5 transposase)",
-                    "chemical (MseI restriction)",
-                    "chemical (CviAII restriction)",
-                    "chemical (Csp6I restriction)",
-                    "n/a",
-                    "none",
-                    "see document",
-                    "shearing (Covaris generic)",
-                    "shearing (Covaris LE Series)",
-                    "shearing (Covaris S2)",
-                    "shearing (generic)",
-                    "sonication (Bioruptor generic)",
-                    "sonication (Bioruptor Pico)",
-                    "sonication (Bioruptor Plus)",
-                    "sonication (Bioruptor Twin)",
-                    "sonication (Branson Sonifier 250)",
-                    "sonication (Branson Sonifier 450)",
-                    "sonication (generic microtip)",
-                    "sonication (generic)",
-                    "sonication (Sonics VCX130)"
-               ]
+        "purpose":{
+            "title": "Purpose",
+            "description": "The purpose of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "activation",
+                "analysis",
+                "overexpression",
+                "repression",
+                "tagging",
+                "validation",
+                "screening",
+                "expression"
+            ]
+        },
+        # Changing validation to characterization as a list of enums within the purpose property:
+        "purpose":{
+            "title": "Purpose",
+            "description": "The purpose of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "activation",
+                "analysis",
+                "overexpression",
+                "repression",
+                "tagging",
+                "characterization",
+                "screening",
+                "expression"
+            ]
+        },
 
-            }
-        }
-
-2. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. For example if the original schema version for the library object being modified was "8", change it to "9" (8->9): 
+2. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. For example if the original schema version for the genetic modification object being modified was "6", change it to "7" (6->7): 
         
         "schema_version": {
-            "default": "9"
+            "default": "7"
         }
 
-2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example to the upgrade step is shown below. Continuing with our example, after the upgrade all the existing "fragmentation methods" property must now be converted to list objects. The upgrade step ensures that the pre-existing library objects would now validate to the new schema. And since the schema is changing from version 8 to 9 the def must specify this (8->9):
+2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example to the upgrade step is shown below. Continuing with our example, after the upgrade all the existing objects with the property "validation" as a part of the purpose object property must now be changed to "characterization". The upgrade step ensures that all the pre-existing genetic modification objects would now be upgraded so that they validate the new schema. And since the schema is changing from version 6 to 7 the def must specify this (6->7):
 
-        @upgrade_step('library', '8', '9')
-        def library_8_9(value, system):
-            if 'fragmentation_method' in value:
-                value['fragmentation_methods'] = [value['fragmentation_method']]
-                value.pop('fragmentation_method')
+        @upgrade_step('genetic_modification', '6', '7')
+        def genetic_modification_6_7(value, system):
+            if value['purpose'] == 'validation':
+                value['purpose'] = 'characterization'
 
-3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all fragmentation methods must now be converted to a list object. So, we need to find every instance of fragmentation methods in the inserts and convert them accordingly. For example:
+3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all fragmentation methods must now be converted to a list object. So, we need to find every instance of fragmentation methods in the library inserts and convert them accordingly. For example:
 
-        #Schema version 8
-        "fragmentation_methods": "sonication (Bioruptor Twin)",
+        #Schema version 6
+        "purpose": "validation",
 
-        #Owing to schema version 9, the above should be changed to:
-        "fragmentation_methods": ["sonication (Bioruptor Twin)"],
+        #Owing to schema version 7, the above should be changed to (within the genetic modifications object):
+        "purpose": "characterization",
 
 4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. For our example, we will need to edit the ```test_upgrad_library.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
 
@@ -275,35 +279,13 @@ There are two situations we need to consider when updating an existing schema:
             assert value['schema_version'] == '3'
             assert value['property_1'] == 'value 1'
 
-**Specific example from the library object upgrade**
+**Specific example from the genetic modifications object upgrade**
 
-        import pytest
-
-
-        @pytest.fixture
-        def library(lab, award):
-            return {
-                'award': award['uuid'],
-                'lab': lab['uuid'],
-                'nucleic_acid_term_id': 'SO:0000352',
-                'nucleic_acid_term_name': 'DNA',
-            }
-
-        @pytest.fixture
-        def library_8(library_3):
-            item = library_3.copy()
-            item.update({
-            'schema_version': '8',
-            'status': "in progress"
-        })
-        return item
-
-        def test_upgrade_library_8_to_9(upgrader, library_8):
-            value = upgrader.upgrade('library', library_8, target_version='9')
-            assert value['schema_version'] == '9'
-            assert isinstance(value['fragmentation_methods'], list)
-            assert value['fragmentation_methods'] == ['shearing (Covaris generic)']
-            assert 'fragmentation_method' not in value
+        def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
+            value = upgrader.upgrade('genetic_modification', genetic_modification_6,
+                             current_version='6', target_version='7')
+            assert value['schema_version'] == '7'
+            assert value.get('purpose') == 'characterization'
 
 5. You must check the results of your upgrade on the current database:
    
@@ -320,9 +302,10 @@ There are two situations we need to consider when updating an existing schema:
 
 7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading library object, the changelog for this upgrade would look like the following:
 
-#Schema version 9
-* *fragmentation_method* property was replaced by an array *fragmentation_methods*
-* *fragmentation_date* value, if specified, would apply to all the listed fragmentation methods
+### Schema version 7
+
+* *purpose* property *validation* was renamed to *characterization*, and *screening* was also added to the list of enums
+
      
 
 [JSONSchema]: http://json-schema.org/
