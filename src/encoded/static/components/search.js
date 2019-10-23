@@ -1468,48 +1468,50 @@ export const FacetList = (props, reactContext) => {
     const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
 
     return (
-        <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-            <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                {(context || clearButton) ?
-                    <div className="search-header-control">
-                        {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
-                        {context.clear_filters ?
-                            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
-                        : null}
-                    </div>
-                : null}
-                {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
-                {facets.map((facet) => {
-                    if (hideTypes && facet.field === 'type') {
-                        return <span key={facet.field} />;
-                    }
-                    if (facet.field === 'date_released') {
+        <div className="search-results__facets">
+            <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
+                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
+                    {(context || clearButton) ?
+                        <div className="search-header-control">
+                            {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
+                            {context.clear_filters ?
+                                <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
+                            : null}
+                        </div>
+                    : null}
+                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
+                    {facets.map((facet) => {
+                        if (hideTypes && facet.field === 'type') {
+                            return <span key={facet.field} />;
+                        }
+                        if (facet.field === 'date_released') {
+                            return (
+                                <DateSelectorFacet
+                                    {...props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                    facets={facets}
+                                />
+                            );
+                        }
+                        if (facet.field === 'date_submitted' || isFacetHidden(facet, reactContext.session, reactContext.session_properties)) {
+                            return null;
+                        }
                         return (
-                            <DateSelectorFacet
+                            <Facet
                                 {...props}
                                 key={facet.field}
                                 facet={facet}
                                 filters={filters}
                                 width={width}
                                 negationFilters={negationFilters}
-                                facets={facets}
                             />
                         );
-                    }
-                    if (facet.field === 'date_submitted' || isFacetHidden(facet, reactContext.session, reactContext.session_properties)) {
-                        return null;
-                    }
-                    return (
-                        <Facet
-                            {...props}
-                            key={facet.field}
-                            facet={facet}
-                            filters={filters}
-                            width={width}
-                            negationFilters={negationFilters}
-                        />
-                    );
-                })}
+                    })}
+                </div>
             </div>
         </div>
     );

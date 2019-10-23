@@ -26,7 +26,6 @@ require('./platform');
 require('./search');
 require('./report');
 require('./matrix');
-require('./auditmatrixv1');
 require('./auditmatrix');
 require('./target');
 require('./publication');

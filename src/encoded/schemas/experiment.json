@@ -271,7 +271,8 @@
             "title": "Library treatment"
         },
         "date_released": {
-            "title": "Date released"
+            "title": "Date released",
+            "length": "long"
         },
         "date_submitted": {
             "title": "Date submitted"

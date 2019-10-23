@@ -156,7 +156,11 @@ ObjectAuditIcon.defaultProps = {
 const markdownRegex = /{(.+?)\|(.+?)}/g;
 
 
-// Display details text with embedded links. This gets displayed in each row of the audit details.
+/**
+ * Display details text with embedded links. This gets displayed in each row of the audit details.
+ * Links, if they exist in the `detail` text, must be formatted in this form:
+ * {link text|URI}
+ */
 const DetailEmbeddedLink = ({ detail }) => {
     let linkMatches = markdownRegex.exec(detail);
     if (linkMatches) {
@@ -178,36 +182,11 @@ const DetailEmbeddedLink = ({ detail }) => {
         const postText = detail.substring(segmentIndex, detail.length);
         return renderedDetail.concat(postText ? <span key={segmentIndex}>{postText}</span> : null);
     }
-
-    // TODO: Remove this segment of code once no audits include bare paths.
-    const matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
-    if (matches) {
-        // Build React object of text followed by path for all paths in detail string
-        let lastStart = 0;
-        const result = matches.map((match) => {
-            let preMatchedChar = '';
-            const linkStart = detail.indexOf(match, lastStart);
-            const preText = detail.slice(lastStart, linkStart);
-            lastStart = linkStart + match.length;
-            const linkText = detail.slice(linkStart, lastStart);
-            if (linkText[0] !== '/') {
-                preMatchedChar = linkText[0];
-            }
-            return <span key={linkStart}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
-        });
-
-        // Pick up any trailing text after the last path, if any
-        const postText = detail.slice(lastStart);
-
-        // Render all text and paths, plus the trailing text
-        return <span>{result}{postText}</span>;
-    }
-
     return detail;
 };
 
 DetailEmbeddedLink.propTypes = {
-    /** Audit detail text, possibly containing @ids or marks to turn into links */
+    /** Audit detail text containing formatted links */
     detail: PropTypes.string.isRequired,
 };
 

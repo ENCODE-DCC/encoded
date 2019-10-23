@@ -22,10 +22,6 @@ $row-data-header-width: 200px;
     max-width: none;
     border-spacing: 0;
 	
-    @at-root #{&}__header {
-        border-bottom: 1px solid #eeeeee;
-    }
-
     // Holds vertical facets and matrix itself.
     @at-root #{&}__content {
         display: block;
@@ -48,7 +44,7 @@ $row-data-header-width: 200px;
         overflow: hidden;
 
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 80%;
+            flex: 0 1 75%;
             padding-left: 10px;
         }
 
@@ -370,6 +366,58 @@ $row-data-header-width: 200px;
 }
 
 
+.matrix-header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+
+    @at-root #{&}__title {
+        display: flex;
+        justify-content: space-between;
+
+        h1 {
+            flex: 0 1 auto;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .matrix-tags {
+            flex: 0 1 auto;
+
+            img {
+                display: inline-block;
+                margin-left: 5px;
+                height: 22px;
+            }
+        }
+    }
+
+    @at-root #{&}__controls {
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            align-items: flex-end;
+        }
+    }
+
+    @at-root #{&}__filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 25%;
+            padding-right: 20px;
+        }
+    }
+
+    @at-root #{&}__search-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 75%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
+}
+
+
 @keyframes arrow-pulse {
     0% {
         opacity: 1;
@@ -435,34 +483,8 @@ table.matrix th.group-all-groups-cell {
 }
 
 .matrix-general-search {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.matrix__header {
-    display: flex;
-    align-items: flex-end;
-    border-bottom: 1px solid #ccc;
-    h1 {
-        margin-top: 0;
-        margin-bottom: 5px;
-        padding-bottom: 5px;
-        font-size: 1.5rem;
-        flex: 0 1 30%;
-        border-bottom: 0;
-    }
-    .matrix-tag {
-        flex: 0 1 70%;
-        text-align: right;
-    }
-}
-
-.matrix-tag {
-    float: right;
-    img {
-        height: 22px;
-        vertical-align: top;
-        padding-left: 10px;
-        margin-bottom: 5px;
+    .general-search-entry {
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
 }

@@ -693,12 +693,6 @@ def download(context, request):
         _filename, = request.subpath
         if filename != _filename:
             raise HTTPNotFound(_filename)
-
-    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers \
-                                                or 'Range' in request.headers
-
-    use_download_proxy = request.client_addr not in request.registry['aws_ipset']
-
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto3.client('s3')
@@ -715,7 +709,6 @@ def download(context, request):
         raise HTTPNotFound(
             detail='External service {} not expected'.format(external.get('service'))
         )
-
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
         return {
@@ -723,16 +716,9 @@ def download(context, request):
             'location': location,
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
-
+    proxy = asbool(request.params.get('proxy'))
     if proxy:
         return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
-
-    # We don't use X-Accel-Redirect here so that client behaviour is similar for
-    # both aws and non-aws users.
-    if use_download_proxy:
-        location = request.registry.settings.get('download_proxy', '') + str(location)
-
-    # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
 
 

@@ -127,9 +127,9 @@ def audit_biosample_donor(value, system):
         detail = ('Biosample {} is organism {}, yet its donor {} is organism {}.'
             ' Biosamples require a donor of the same species'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
-                audit_link(path_to_text(value.get('organism')), value.get('organism')),
+                path_to_text(value.get('organism')),
                 audit_link(path_to_text(donor['@id']), donor['@id']),
-                audit_link(path_to_text(donor.get('organism')), donor.get('organism'))
+                path_to_text(donor.get('organism'))
             )
         )
         yield AuditFailure('inconsistent organism', detail, level='ERROR')

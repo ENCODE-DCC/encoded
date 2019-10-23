@@ -1,5 +1,9 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
+from urllib.parse import (
+    parse_qs,
+    urlencode,
+)
 
 from collections import OrderedDict
 
@@ -13,6 +17,7 @@ def includeme(config):
     # config.scan()
     config.add_route('cart-view', '/cart-view{slash:/?}')
     config.add_route('cart-manager', '/cart-manager{slash:/?}')
+    config.add_route('search_elements', '/search_elements/{search_params}')
     config.scan(__name__)
 
 
@@ -74,3 +79,13 @@ def cart_manager(context, request):
         'cart_user_max': CART_USER_MAX
     }
     return result
+
+
+@view_config(route_name='search_elements', request_method='POST')
+def search_elements(context, request):
+    '''Same as search but takes JSON payload of search filters'''
+    param_list = parse_qs(request.matchdict['search_params'])
+    param_list.update(request.json_body)
+    path = '/search/?%s' % urlencode(param_list, True)
+    results = request.embed(path, as_user=True)
+    return results

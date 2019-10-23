@@ -810,5 +810,18 @@
         "uuid": "eb4b29ea-10f0-11e4-a921-1681be563d2e",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
+    },
+    {
+        "_test": "eCLIP control library",
+        "accession": "ENCLB011ECL",
+        "strand_specificity": true,
+        "biosample": "ENCBS804RUL",
+        "lab": "robert-waterston",
+        "status": "in progress",
+        "nucleic_acid_term_name": "RNA",
+        "queried_RNP_size_range": "25-75",
+        "uuid": "f0344255-883d-4828-a909-a557a72a447c",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG007010"
     }
 ]

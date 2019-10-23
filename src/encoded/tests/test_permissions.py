@@ -354,23 +354,3 @@ def test_wronggroup_post_qc_metric(remc_member_testapp, step_run, file, remc_lab
 
 def test_experiment_submitter_no_edit_status(submitter_testapp, lab, award, experiment):
     submitter_testapp.patch_json(experiment['@id'], {'status': 'submitted'}, status=422)
-
-
-def test_submitter_post_restricted_assay_fcc_experiment(submitter_testapp, wrangler_testapp, lab, award, cell_free):
-    experiment = {'lab': lab['@id'],
-                  'award': award['@id'],
-                  'assay_term_name': 'MPRA',
-                  'biosample_ontology': cell_free['uuid']}
-    submitter_testapp.post_json('/experiment', experiment, status=422)
-    wrangler_testapp.post_json('/experiment', experiment, status=201)
-
-
-def test_submitter_patch_restricted_assay_fcc_experiment(submitter_testapp, wrangler_testapp, lab, award, cell_free):
-    experiment = {'lab': lab['@id'],
-                  'award': award['@id'],
-                  'assay_term_name': 'ChIP-seq',
-                  'biosample_ontology': cell_free['uuid']}
-    res = submitter_testapp.post_json('/experiment', experiment, status=201)
-    term_name = {'assay_term_name': 'STARR-seq'}
-    submitter_testapp.patch_json(res.json['@graph'][0]['@id'], term_name, status=422)
-    wrangler_testapp.patch_json(res.json['@graph'][0]['@id'], term_name, status=200)

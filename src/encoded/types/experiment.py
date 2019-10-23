@@ -178,31 +178,10 @@ class Experiment(Dataset,
 
     matrix = {
         'y': {
-            'facets': [
-                'status',
-                'replicates.library.biosample.donor.organism.scientific_name',
-                'biosample_ontology.classification',
-                'biosample_ontology.term_name',
-                'biosample_ontology.organ_slims',
-                'biosample_ontology.cell_slims',
-                'award.project',
-                'assembly',
-                'month_released',
-                'internal_status',
-                'audit_category', # Added for auditmatrix
-                'lab.title'
-            ],
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
             'label': 'Biosample',
         },
         'x': {
-            'facets': [
-                'assay_slims',
-                'assay_title',
-                'target.investigated_as',
-                'target.label',
-                'files.file_type',
-            ],
             'group_by': 'assay_title',
             'label': 'Assay',
         },
@@ -234,43 +213,9 @@ class Experiment(Dataset,
             'label': 'Warning'
         },
         'x': {
-            'group_by': 'assay_title', 'label': 'Assay'
-        }
-    }
-
-    summary_data = {
-        'y': {
-            'facets': [
-                'replicates.library.biosample.donor.organism.scientific_name',
-                'biosample_ontology.classification',
-                'biosample_ontology.term_name',
-                'biosample_ontology.organ_slims',
-                'biosample_ontology.cell_slims',
-                'award.project',
-                'award.rfa',
-                'status',
-                'assembly',
-                'internal_status',
-                'audit_category',
-                'lab.title',
-                'month_released',
-                'date_submitted',
-            ],
-            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
-            'label': 'Biosample',
-        },
-        'x': {
-            'facets': [
-                'assay_slims',
-                'assay_title',
-                'target.investigated_as',
-                'target.label',
-                'files.file_type',
-            ],
             'group_by': 'assay_title',
-            'label': 'Assay',
-        },
-        'grouping': ['replication_type', 'status'],
+            'label': 'Assay'
+        }
     }
 
 
