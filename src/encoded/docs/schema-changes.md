@@ -179,7 +179,7 @@ There are two situations we need to consider when updating an existing schema: (
                 'amount_units': 'μg/kg'
             },
             status=200, 
-            ## Status 200 means the object was a successful patch on the testapp.
+            ## Status 200 means the object was a successfully patched and the schema update works as expected.
         )
 
 5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
