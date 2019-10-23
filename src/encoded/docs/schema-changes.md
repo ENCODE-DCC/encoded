@@ -178,7 +178,8 @@ There are two situations we need to consider when updating an existing schema: (
                 'amount': 20,
                 'amount_units': 'μg/kg'
             },
-            status=200, ## Status 200 means successfully patched the above.
+            status=200, 
+            ## Status 200 means the object was a successful patch on the testapp.
         )
 
 5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
@@ -261,7 +262,7 @@ There are two situations we need to consider when updating an existing schema: (
         #Owing to schema version 7, the above should be changed to (within the genetic modifications object):
         "purpose": "characterization",
 
-4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. For our example, we will need to edit the ```test_upgrad_library.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
+4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. For our example, we will need to edit the ```test_upgrade_genetic_modification.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
 
 **General structure to follow**
 
