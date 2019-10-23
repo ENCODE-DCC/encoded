@@ -199,11 +199,9 @@ There are two situations we need to consider when updating an existing schema: (
     5) If one object is migrated into another object.
     6) Addition of multiple new schema properties leading to substantial changes to an existing schema.
 
-* Most of the changes described above are examples where there will be a potential conflict for the existing objects to be validated under the new schema. 
+* Most of the cases described above are examples where there will be a potential conflict for all the existing objects to be validated under the new schema. Hence, an additional step of adding an upgrader script will be required. This will ensure that all the existing objects will be changed such that they can fit into the new schema that is currently being implemented.
 
-* An additional step that will be needed in all such cases will be adding an upgrader script that will change all the existing objects to fit into the new schema that is currently being implemented.
-
-* While the addition of multiple new schema properties is not going to invalidate any existing objects, it makes sense to update the schema version. This will be especially helpful to all the users and submitters who are trying to use these objects either for their submissions or while querying the database using scripts.
+* While the addition of multiple new schema properties is not going to invalidate any existing objects, it makes sense to update the schema version. This will be especially helpful to all the users and submitters who are trying to use these properties to either submit their data or while querying the database using scripts.
 
 **Follow the steps as outlined below**
 
