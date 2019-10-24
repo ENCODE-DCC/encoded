@@ -227,7 +227,7 @@ Up until schema version 6 for the genetic modifications object, one of the possi
             ]
         },
 
-## Replacing the enum "validation" by the enum "characterization" in the list of enums of the "purpose" property:
+Replacing the enum "validation" by the enum "characterization" in the list of enums of the "purpose" property:
 
         "purpose":{
             "title": "Purpose",
@@ -296,16 +296,16 @@ Below, is an example of an upgrader step that must be added to the ```test_upgra
 
 6. You must check the results of your upgrade on the current database:
    
-   **note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
+   **Note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
    
    You can check using the following methods:
    * Checking for errors in the /var/log/cloud-init-output.log (search for "batchupgrade" a few times) in any demo with your upgrade, this can be done about 30min after launch (after machine reboots post-install), no need to wait for the indexing to complete.
    * Looking at the JSON for an object that should be upgraded by checking it's schema_version property.
    * Updating and object and looking in the /var/log/apache2/error.log for stack traces.
    
-   A good upgrade would ensure that all objects POSTed before release would not fail validation. Nevertheless,it will be a good idea to check that during the release.
+   A good upgrade would ensure that all objects POSTed before and after release would not fail validation. Nevertheless, it will be a good idea to check that again during the release.
 
-**Specific example from a successful batch upgrade:**
+**Specific example from a successful batch upgrade on a demo:**
 
 You can find upgrade results on a demo at `/var/log/cloud-init-output.log`. Batchupgrade is almost the last step of demo initiation. So you would expect upgrade results at the end of that log. Batchupgrade log starts with the following progress log which is about 1300 lines:
 ```
@@ -320,7 +320,7 @@ INFO [snovault.batchupgrade][MainThread] 1273 of ~1272 Batch: Updated 0 of 1000 
 INFO [snovault.batchupgrade][MainThread] End Upgrade
 ```
 
-After that you will find a summary of the upgrade which should indicate any potential errors. Since, the ```Sum errors: 0``` in the following example, everything looks good for this upgrade:
+After that you will find a summary of the upgrade which should indicate any potential errors. Since, in the example below, the line ```Sum errors: 0```, everything looks good for this upgrade:
 
 ```
 INFO [snovault.batchupgrade][MainThread] Upgrade Summary
