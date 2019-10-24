@@ -569,7 +569,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         method = 'POST'
         pipeline.extend(PHASE1_PIPELINES.get(item_type, []))
     elif phase == 2:
-        method = 'PUT'
+        method = 'PATCH'
         pipeline.extend(PHASE2_PIPELINES.get(item_type, []))
 
     pipeline.extend([
