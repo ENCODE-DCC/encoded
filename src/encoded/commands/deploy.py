@@ -74,6 +74,10 @@ def _write_str_to_file(filepath, str_data):
     with io.open(filepath, 'w') as file_handler:
         return file_handler.write(str_data)
 
+def _write_str_to_file(filepath, str_data):
+    with io.open(filepath, 'w') as file_handler:
+        return file_handler.write(str_data)
+
 
 def read_ssh_key(identity_file):
     ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
@@ -230,6 +234,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'ES_PORT': main_args.es_port,
             'GIT_BRANCH': main_args.branch,
             'GIT_REPO': main_args.git_repo,
+            'PG_VERSION': main_args.postgres_version,
             'REDIS_IP': main_args.redis_ip,
             'REDIS_PORT': main_args.redis_port,
             'REGION_INDEX': str(main_args.region_indexer),
@@ -390,8 +395,8 @@ def _get_cloud_config_yaml(main_args):
         return built_config_template % cc_parts_insert
 
     # Incompatibile build arguments
-    if postgres_version and postgres_version not in ['9.3']:
-        print("Error: postgres_version must be '9.3'")
+    if postgres_version and postgres_version not in ['9.3', '11']:
+        print("Error: postgres_version must be '9.3' or '11'")
         return None, None, None
     if (es_elect or es_wait) and not cluster_name:
         print('Error: --cluster-name required for --es-wait and --es-elect')
@@ -405,7 +410,9 @@ def _get_cloud_config_yaml(main_args):
     if es_elect or es_wait:
         build_type = 'es-nodes'
     elif cluster_name:
-        build_type = 'frontend'
+        build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
+    else:
+        build_type = 'pg{}-{}'.format(postgres_version.replace('.', ''), build_type)
     # Determine config build method
     if use_prebuilt_config and not diff_configs:
         # Read a prebuilt config file from local dir and use for deployment
@@ -416,12 +423,12 @@ def _get_cloud_config_yaml(main_args):
     # Build config from template using cc-parts
     config_template = _build_config_template(build_type)
     if diff_configs:
-        # Read a prebuilt config file from local dir and use for deployment
+        # Read a prebuilt config file from local dir and use for diff
         prebuilt_config_template =  _get_prebuild_config_template()
         print('Diffing')
         _diff_configs(config_template, prebuilt_config_template) 
         print('Diff Done')
-        return None, None, None
+        return config_template, None, build_type
     elif save_config_name:
         # Having write_file_path set will not deploy
         # After creating a new config rerun
@@ -462,6 +469,11 @@ def _write_config_to_file(build_config, build_path, build_type):
 def main():
     main_args = parse_args()
     build_config, build_path, build_type = _get_cloud_config_yaml(main_args)
+    if main_args.diff_configs:
+        # instances_tag_data = _get_instances_tag_data(main_args)
+        # run_args = _get_run_args(main_args, instances_tag_data, build_config)
+        # print(run_args['user_data'])
+        sys.exit(0)
     if not build_config or not build_type:
         print('# Failure: Could not determine configuration type')
         sys.exit(1)

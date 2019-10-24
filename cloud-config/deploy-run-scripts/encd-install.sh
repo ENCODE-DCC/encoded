@@ -20,7 +20,9 @@ sudo -u encoded git checkout -b "$GIT_BRANCH" origin/"$GIT_BRANCH"
 sudo pip3 install -U zc.buildout setuptools redis
 sudo -u encoded buildout bootstrap
 sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c "$ROLE".cfg buildout:es-ip="$ES_IP" buildout:es-port="$ES_PORT"
-sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
+sudo -u encoded mkdir /srv/encoded/.aws
+sudo -u root cp /home/ubuntu/encd-aws-keys/* /srv/encoded/.aws/
+sudo -u root chown -R encoded:encoded ~encoded/.aws
 until sudo -u postgres psql postgres -c ""; do sleep 10; done
 sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 sudo -u encoded bin/create-mapping production.ini --app-name app
