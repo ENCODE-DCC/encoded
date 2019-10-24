@@ -58,9 +58,9 @@ export function truncateString(str, len) {
     let localStr = str;
     if (localStr.length > len) {
         localStr = localStr.replace(/(^\s)|(\s$)/gi, ''); // Trim leading/trailing white space
-        const isOneWord = str.match(/\s/gi) === null; // Detect single-word string
         localStr = localStr.substr(0, len - 1); // Truncate to length ignoring word boundary
-        localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Back up to word boundary
+        const isOneWord = localStr.match(/\s/gi) === null; // Detect single-word string
+        localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Ensure last word is not prematurely split
     }
     return localStr;
 }
