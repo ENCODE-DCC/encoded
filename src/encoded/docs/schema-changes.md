@@ -299,6 +299,31 @@ Below, is an example of an upgrader step that we would need to add to the ```tes
    
    It is also possible that an upgrade can be clean under a current database but new objects POSTed before release are broken, so it will be checked again during release.
 
+**Specific example from a successful batch upgrade:**
+
+You can find upgrade results on a demo at `/var/log/cloud-init-output.log`. Batchupgrade is almost the last step of demo initiation. So you would expect upgrade results at the end of that log. Batchupgrade log starts with the following progress log which is about 1300 lines:
+```
+INFO [snovault.batchupgrade][MainThread] Start Upgrade with 1272190 items: 1000, 1, 16, 1
+INFO [snovault.batchupgrade][MainThread] 1 of ~1272 Batch: Updated 0 of 1000 (errors 0)
+INFO [snovault.batchupgrade][MainThread] 2 of ~1272 Batch: Updated 0 of 1000 (errors 0)
+INFO [snovault.batchupgrade][MainThread] 3 of ~1272 Batch: Updated 0 of 1000 (errors 0)
+...
+INFO [snovault.batchupgrade][MainThread] 1271 of ~1272 Batch: Updated 0 of 1000 (errors 0)
+INFO [snovault.batchupgrade][MainThread] 1272 of ~1272 Batch: Updated 0 of 1000 (errors 0)
+INFO [snovault.batchupgrade][MainThread] 1273 of ~1272 Batch: Updated 0 of 1000 (errors 0)
+INFO [snovault.batchupgrade][MainThread] End Upgrade
+```
+After that you will find a summary of upgrade and may or may not see errors there like this:
+```
+INFO [snovault.batchupgrade][MainThread] Upgrade Summary
+INFO [snovault.batchupgrade][MainThread] Sum updated: 2
+INFO [snovault.batchupgrade][MainThread] Collection cart: Updated 2 of 142 (errors 0)
+INFO [snovault.batchupgrade][MainThread] Collection user: Updated 616 of 616 (errors 0)
+INFO [snovault.batchupgrade][MainThread] Sum errors: 0
+INFO [snovault.batchupgrade][MainThread] Run Time: 11.91 minutes
+```
+If you do see errors in the summary above, you need to look back to the log above and find out what objects and/or why they failed upgrades.
+
 7. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
 8. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. 
