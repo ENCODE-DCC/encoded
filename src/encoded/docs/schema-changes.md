@@ -280,7 +280,7 @@ Continuing with our example, all the ```"purpose": "validation"``` must now be c
 #genetic_modification insert **after** the change from schema version 6 to 7:
 
         "purpose": "characterization",
-        
+
 
 5. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, create a new file. 
 
@@ -330,7 +330,7 @@ INFO [snovault.batchupgrade][MainThread] Collection user: Updated 616 of 616 (er
 INFO [snovault.batchupgrade][MainThread] Sum errors: 0
 INFO [snovault.batchupgrade][MainThread] Run Time: 11.91 minutes
 ```
-If you do see any errors in the summary above, you would need to look at log above and must find out what objects failed the upgrade and why.
+If you do see any errors in the summary above, you must to look at log above and find out what objects failed the upgrade and why.
 
 7. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
