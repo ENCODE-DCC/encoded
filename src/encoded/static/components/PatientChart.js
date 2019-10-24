@@ -68,6 +68,7 @@ class PatientChart extends React.Component {
 
     zoomOut() {
         this.zingchart.exec(this.props.chartId, "zoomout", { zoomx: true, zoomy: false });
+
     }
 
     createCheckboxes() {
@@ -160,7 +161,7 @@ class PatientChart extends React.Component {
             };
             let rangeDataForDisplay = [];
             for (let i = 0; i < rangeValues.length; i++) {
-              if (rangeValues[i][1][0] === undefined || rangeValues[i][1][1] === undefined) {
+              if (rangeValues[i][1][0] === undefined && rangeValues[i][1][1] === undefined) {
                 rangeDataForDisplay.push(-1);
               } else {
                 rangeDataForDisplay.push("Reference low: "+ rangeValues[i][1][0] + ", Reference high: " + rangeValues[i][1][1]);
