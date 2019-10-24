@@ -847,6 +847,7 @@ def check_experiment_rna_seq_standards(value,
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
     unfiltered_alignment_files = files_structure.get('unfiltered_alignments').values()
+    merged_files_list = list(alignment_files) + list(unfiltered_alignment_files)
     gene_quantifications = files_structure.get(
         'gene_quantifications_files').values()
     transcript_quantifications = files_structure.get(
@@ -854,7 +855,7 @@ def check_experiment_rna_seq_standards(value,
     assay_term_name = value['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
-        alignment_files,
+        merged_files_list,
         ['GRCh38', 'mm10'],
         ['RNA-seq of long RNAs (paired-end, stranded)',
          'RNA-seq of long RNAs (single-end, unstranded)',
@@ -4197,6 +4198,7 @@ def create_files_mapping(files_list, excluded):
                  'fastq_files': {},
                  'alignments': {},
                  'unfiltered_alignments': {},
+                 'alignments_unfiltered_alignments': {},
                  'transcriptome_alignments': {},
                  'peaks_files': {},
                  'gene_quantifications_files': {},
