@@ -182,7 +182,7 @@ For example, if we included a minor change in treatment object such that *μg/kg
                 'amount_units': 'μg/kg'
             },
             status=200, 
-            ## Status 200 means the object was a successfully patched and the schema update works as expected.
+            ## Status 200 means the object was successfully patched and the schema update works as expected.
         )
 
 5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. 
