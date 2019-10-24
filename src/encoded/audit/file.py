@@ -467,7 +467,7 @@ def audit_file_matching_md5sum(value, system):
                 )
             )
             yield AuditFailure('Incorrect matching_md5sum', detail, level='ERROR')
-        else:
+        elif file.get('status') in checked_statuses:
             matching_files.append(file['@id'])
             matching_files_links = [audit_link(path_to_text(file), file) for file in matching_files]
 
