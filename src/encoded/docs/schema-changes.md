@@ -292,7 +292,7 @@ Continuing with our example, all the ```"purpose": "validation"``` must now be c
 
 **Specific example from the genetic modifications object upgrade:**
 
-Below, is an example of an upgrader step that must be added to the ```test_upgrade_genetic_modification.py``` script.
+Below, is an example of an upgrade step that must be added to the ```test_upgrade_genetic_modification.py``` script.
 
         def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
             value = upgrader.upgrade('genetic_modification', genetic_modification_6,
@@ -348,7 +348,7 @@ Continuing with our example of upgrading genetic modifications object, the chang
 
         ### Schema version 7
 
-        * *purpose* property enum value *validation* was renamed (or replaced) by *characterization*
+        * *purpose* property enum value *validation* was renamed to *characterization*
 
      
 
