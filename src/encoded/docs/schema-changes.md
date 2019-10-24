@@ -204,7 +204,11 @@ There are two situations we need to consider when updating an existing schema: (
 
 **Follow the steps as outlined below**
 
-1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. One of the possible enums for for the genetic modifications object was "validation" up until schema version 6. As a part of schema version upate to 7, "validation" was removed and instead the term "characterization" was added.
+1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. 
+
+**Specific example from the genetic modifications object schema change**
+Up until schema version 6 for the genetic modifications object, one of the possible enums for "purpose" property was "validation". As a part of schema version upate to 7, "validation" was removed and instead the term "characterization" was added.
+
 
         "purpose":{
             "title": "Purpose",
@@ -238,20 +242,29 @@ There are two situations we need to consider when updating an existing schema: (
             ]
         },
 
-2. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. For example if the original schema version for the genetic modification object being modified was "6", change it to "7" (6->7): 
+2. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version.
+
+**Specific example from the genetic modifications object upgrade**
+For example if the original schema version for the genetic modification object being modified was "6", change it to "7" (6->7): 
         
         "schema_version": {
             "default": "7"
         }
 
-2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. An example to the upgrade step is shown below. Continuing with our example, after the upgrade all the existing objects with that had "purpose" specified to be "validation" must now be changed to "characterization". And since the schema is changing from version 6 to 7 the def must specify this (6->7):
+2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. 
+
+**Specific example from the genetic modifications object upgrade**
+An example to the upgrade step is shown below. Continuing with our example on genetic modifications, all the existing objects with that had "purpose" specified to be "validation" must now be changed to "characterization". And since the schema is changing from version 6 to 7 the def must specify this (6->7):
 
         @upgrade_step('genetic_modification', '6', '7')
         def genetic_modification_6_7(value, system):
             if value['purpose'] == 'validation':
                 value['purpose'] = 'characterization'
 
-3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. So, we need to change all the corresponding inserts within the genetic modification object. For example:
+3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. 
+
+**Specific example from the genetic modifications object upgrade**
+Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. So, we need to change all the corresponding inserts within the genetic modifications object. For example:
 
         #Schema version 6
         "purpose": "validation",
@@ -259,7 +272,7 @@ There are two situations we need to consider when updating an existing schema: (
         #Owing to schema version 7, the above should be changed to (within the genetic modifications object):
         "purpose": "characterization",
 
-4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. For our example, we will need to edit the ```test_upgrade_genetic_modification.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
+4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
 
 **General structure to follow**
 
@@ -286,6 +299,7 @@ There are two situations we need to consider when updating an existing schema: (
             assert value['property_1'] == 'value 1'
 
 **Specific example from the genetic modifications object upgrade**
+Below, is an example of an upgrader step that we would need to add to the ```test_upgrade_genetic_modification.py``` script.
 
         def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
             value = upgrader.upgrade('genetic_modification', genetic_modification_6,
@@ -306,7 +320,10 @@ There are two situations we need to consider when updating an existing schema: (
 
 6. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
-7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading genetic modifications object, the changelog for this upgrade would look like the following:
+7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. 
+
+**Specific example from the genetic modifications object upgrade**
+Continuing with our example of upgrading genetic modifications object, the changelog for this upgrade would look like the following:
 
         ### Schema version 7
 
