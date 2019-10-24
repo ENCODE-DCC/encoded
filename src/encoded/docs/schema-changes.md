@@ -273,10 +273,14 @@ An example to the upgrade step is shown below. Continuing with our example on ge
 Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. Change all the corresponding inserts within the genetic modifications object. For example:
 
 #genetic_modification insert **before** the change from schema version 6 to 7:
+
         "purpose": "validation",
 
+
 #genetic_modification insert **after** the change from schema version 6 to 7:
+
         "purpose": "characterization",
+        
 
 5. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, create a new file. 
 
