@@ -226,7 +226,7 @@ Up until schema version 6 for the genetic modifications object, one of the possi
                 "expression"
             ]
         },
-        # Changing validation to characterization as a list of enums within the purpose property:
+        # Replacing the enum "validation" by the enum "characterization" in the list of enums of the "purpose" property:
         "purpose":{
             "title": "Purpose",
             "description": "The purpose of the genetic modification.",
@@ -253,7 +253,7 @@ For example if the original schema version for the genetic modification object b
             "default": "7"
         }
 
-2. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. 
+3. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. 
 
 **Specific example from the genetic modifications object upgrade:**
 
@@ -264,43 +264,19 @@ An example to the upgrade step is shown below. Continuing with our example on ge
             if value['purpose'] == 'validation':
                 value['purpose'] = 'characterization'
 
-3. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. 
+4. In the **tests/data/inserts** directory, we will need to change all the corresponding objects to follow the new schema. 
 
 **Specific example from the genetic modifications object upgrade:**
 
-Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. So, we need to change all the corresponding inserts within the genetic modifications object. For example:
+Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. Change all the corresponding inserts within the genetic modifications object. For example:
 
-        #Schema version 6
+        #genetic_modification insert before the change from schema version 6 to 7:
         "purpose": "validation",
 
-        #Owing to schema version 7, the above should be changed to (within the genetic modifications object):
+        #genetic_modification insert after the change from schema version 6 to 7:
         "purpose": "characterization",
 
-4. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, we must create a new file. This example shows the basic structure of setting up ```pytest.fixture``` and upgrade to  ```property_1```:
-
-**General structure to follow:**
-
-        @pytest.fixture
-        def {metadata_object}():
-            return{
-                "property_1": "Value 1",
-                "property_2": 10,         
-            }
-
-
-        @pytest.fixture
-        def {metadata_object}_2({metadata_object}):
-            item = {metadata_object}.copy()
-            item.update({
-                'schema_version': '2',
-            })
-            return item
-
-
-        def test_{metadata_object}_lowercase_property_1(app, {metadata_object}_2):
-            value = upgrader.upgrade('{metadata_object}', {metadata_object}_2, target_version='3')
-            assert value['schema_version'] == '3'
-            assert value['property_1'] == 'value 1'
+5. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, we must create a new file. 
 
 **Specific example from the genetic modifications object upgrade:**
 
@@ -312,7 +288,7 @@ Below, is an example of an upgrader step that we would need to add to the ```tes
             assert value['schema_version'] == '7'
             assert value.get('purpose') == 'characterization'
 
-5. You must check the results of your upgrade on the current database:
+6. You must check the results of your upgrade on the current database:
    
    **note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
    
@@ -323,9 +299,9 @@ Below, is an example of an upgrader step that we would need to add to the ```tes
    
    It is also possible that an upgrade can be clean under a current database but new objects POSTed before release are broken, so it will be checked again during release.
 
-6. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
+7. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
-7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. 
+8. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. 
 
 **Specific example from the genetic modifications object upgrade:**
 
@@ -333,7 +309,7 @@ Continuing with our example of upgrading genetic modifications object, the chang
 
         ### Schema version 7
 
-        * *purpose* property *validation* was renamed to *characterization*
+        * *purpose* property enum value *validation* was renamed (or replaced) by *characterization*
 
      
 
