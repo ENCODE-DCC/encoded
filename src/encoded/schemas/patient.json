@@ -54,7 +54,8 @@
                 "Black",
                 "Hawaiian Pacific Islander",
                 "White",
-                "Other"
+                "Declined",
+                "Other",
             ]
         },
         "ethnicity": {
