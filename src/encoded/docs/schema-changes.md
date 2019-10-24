@@ -253,7 +253,7 @@ For example if the original schema version for the genetic modification object b
             "default": "7"
         }
 
-3. In the **upgrade** directory add an ```upgrade_step``` to an existing/new python file named after the object. 
+3. In the **upgrade** directory add an ```upgrade_step``` to a python file named after the object (create new if there is no such a file in the upgrade directory". For some objects the upgrade happens in the abstract class - like dataset for the experiment.
 
 **Specific example from the genetic modifications object upgrade:**
 
