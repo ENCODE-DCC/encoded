@@ -185,7 +185,10 @@ For example, if we included a minor change in treatment object such that *μg/kg
             ## Status 200 means the object was a successfully patched and the schema update works as expected.
         )
 
-5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
+5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. 
+
+**Specific example from the treatment object schema change:**
+For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
 
         ### Minor changes since schema version 11
 
