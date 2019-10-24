@@ -323,6 +323,16 @@ def base_experiment(testapp, lab, award, heart):
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
+@pytest.fixture
+def experiment_with_RNA_library(
+    testapp,
+    base_experiment,
+    base_replicate,
+    base_library,
+):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    return testapp.get(base_experiment['@id'] + '@@index-data')
 
 @pytest.fixture
 def micro_rna_experiment(
@@ -1014,6 +1024,16 @@ def platform2(testapp):
     item = {
         'term_id': 'OBI:0002049',
         'term_name': 'HiSeq4000'
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
+def platform3(testapp):
+    item = {
+        'term_id': 'NTR:0000430',
+        'term_name': 'Pacific Biosciences Sequel',
+        'uuid': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
     }
     return testapp.post_json('/platform', item).json['@graph'][0]
 
