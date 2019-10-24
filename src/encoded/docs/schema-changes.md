@@ -156,7 +156,7 @@ Updating an existing schema
 
 There are two situations we need to consider when updating an existing schema: (1) No update of the schema version (2) Update schema version
 
-### No change on schema version
+### No update of the schema version
 
 * Schema version should not to be updated if the change introduced is not going to cause a potential invalidation of the existing objects in the database. For example an addition of a new enum value to a list of existing enums can not cause schema invalidation, but will simply extend the list of potential values to choose from.
 
@@ -184,9 +184,9 @@ There are two situations we need to consider when updating an existing schema: (
 
 5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
 
-### Minor changes since schema version 11
+        ### Minor changes since schema version 11
 
-* *μg/kg* can now be specified as amount units.
+        * *μg/kg* can now be specified as amount units.
 
 ### Update schema version
 * Schema version has to be updated (bumped up by 1) if the change that is being introduced will lead to a potential invalidation of existing objects in the database. 
@@ -196,12 +196,11 @@ There are two situations we need to consider when updating an existing schema: (
     2) Removing a property from the existing schema.
     3) A property that previously allowed free text is now changed to a possible list of allowed enums.
     4) If an existing enum is removed from a property.
-    5) If one object is migrated into another object.
-    6) Addition of multiple new schema properties leading to substantial changes to an existing schema.
+
 
 * Most of the cases described above are examples where there will be a potential conflict for all the existing objects to be validated under the new schema. Hence, an additional step of adding an upgrader script will be required. This will ensure that all the existing objects will be changed such that they can fit into the new schema that is currently being implemented.
 
-* While the addition of multiple new schema properties is not going to invalidate any existing objects, it makes sense to update the schema version. This will be especially helpful to all the users and submitters who are trying to use these properties to either submit their data or while querying the database using scripts.
+* One more case needs a mention here: When adding multiple new schema properties that would lead to substantial changes within an existing schema, one must update the schema version. Even though, the addition of multiple new schema properties is not going to invalidate any existing objects, it would be useful to do so. Particularly, this will be helpful to all the submitters and users who are trying to use these properties either to submit their data or while querying the database using scripts.
 
 **Follow the steps as outlined below**
 
@@ -309,9 +308,9 @@ There are two situations we need to consider when updating an existing schema: (
 
 7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Continuing with our example of upgrading genetic modifications object, the changelog for this upgrade would look like the following:
 
-### Schema version 7
+        ### Schema version 7
 
-* *purpose* property *validation* was renamed to *characterization*
+        * *purpose* property *validation* was renamed to *characterization*
 
      
 
