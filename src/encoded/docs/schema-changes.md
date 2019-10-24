@@ -168,7 +168,10 @@ There are two situations we need to consider when updating an existing schema: (
 
 3. Update the inserts within the **data/inserts** directory.
 
-4. Add test in the **tests** directory to make sure your schema change functions as expected. For example, if we included a minor change in treatment object such that *μg/kg* could be specified as treatment units, the following test should allow one to test whether the update has been successfully implemented or not:
+4. Add test in the **tests** directory to make sure your schema change functions as expected. 
+
+**Specific example from the treatment object schema change:**
+For example, if we included a minor change in treatment object such that *μg/kg* could be specified as treatment units, the following test should allow one to test whether the update has been successfully implemented or not:
 
         def test_treatment_patch_amount_units(testapp, treatment):
             testapp.patch_json(
