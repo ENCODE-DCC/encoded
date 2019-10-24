@@ -208,7 +208,7 @@ There are two situations we need to consider when updating an existing schema: (
 
 **Specific example from the genetic modifications object schema change:**
 
-Up until schema version 6 for the genetic modifications object, one of the possible enums for "purpose" property was "validation". As a part of schema version upate to 7, "validation" was removed and instead the term "characterization" was added.
+Up until schema version 6 for the genetic modifications object, "validation" was an enum for the "purpose" property. As a part of schema version update to 7, "validation" was removed and instead the term "characterization" was added.
 
 
         "purpose":{
