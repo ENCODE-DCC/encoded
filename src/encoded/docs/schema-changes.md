@@ -43,7 +43,7 @@ Adding a new schema
             }
 
 
-2. Add appropriate properties in the properties block. Example of different property types:
+2. Add appropriate properties in the "properties" block. Example of different property types:
 
             {
                 "example_string": {
@@ -75,14 +75,14 @@ Adding a new schema
             }
 
 
-3. Identify all required properties to make an object and add to the "required" array, for treatment we have::
+3. Identify all required properties to make an object and add to the "required" array, for treatment we have.
 
 
             "required": ["treatment_term_name", "treatment_type"]
 
 
 4. In the **types** directory add a collection class for the object to define the rendering of the object. 
-Refer to [object-lifecycle.rst] to understand object rendering. Example of basic collection definition for treatments::
+Refer to [object-lifecycle.rst] to understand object rendering. Example of basic collection definition for treatments:
 
     
             @collection(
@@ -120,7 +120,7 @@ Refer to [object-lifecycle.rst] to understand object rendering. Example of basic
                 def title(self, term_name):
                     return term_name
 
-6. In ``loadxl.py`` add the new metadata object into the ```Order``` array, for example to add new object ```train.json```::
+6. In ``loadxl.py`` add the new metadata object into the ```Order``` array, for example to add new object ```train.json```.
 
             ORDER = [
                 'user',
@@ -133,7 +133,7 @@ Refer to [object-lifecycle.rst] to understand object rendering. Example of basic
             ]
 
 7. Add in sample data to test the new schema in **tests** directory. Create a new JSON file in the **data/inserts** directory named after the new metadata object. 
-This new object is an array of example objects that can successfully POST against the schema defined, for example ::
+This new object is an array of example objects that can successfully POST against the schema defined, for example:
 
             [
                 {
@@ -156,11 +156,31 @@ Updating an existing schema
 
 There are two situations we need to consider when updating an existing schema: (1) No update of the schema version (2) Update schema version
 
+**When not to update a version**
+
+* Do not update the schema version if the updated schema allows all existing objects in the database to continue to validate. For example, a new enum value in an existing list of enums would not cause existing objects of that type to fail validation.
+
+**When to update a version**
+
+* Schema version has to be updated (bumped up by 1) if the change that is being introduced will lead to a potential invalidation of existing objects in the database. 
+
+* Examples include:
+    1) Changing the name of a property in the existing schema.
+    2) Removing a property from the existing schema.
+    3) A property that previously allowed free text is now changed to a possible list of allowed enums.
+    4) If an existing enum is removed from a property.
+
+* Most of the cases described above are examples where existing objects could potentially fail the validation under the new schema version. Hence, an additional step of adding an upgrade script is required. This will ensure that all the existing objects will be upgraded (changed) such that they will be valid under the new schema version.
+
+* **NOTE:** You should update the schema version when making substantial changes to an existing schema even if these changes do not cause existing objects using this schema to fail validation.
+
+* Particularly, this will be helpful to all the submitters and users who are trying to use these properties either to submit their data or while querying the database using scripts.
+
+* **NOTE:** Whenever in doubt (whether to upgrade or not), it would be a good idea to discuss with other members of the group as there can be grey areas as mentioned in the note above. When multiple new properties are being added to the new schema (potentially leading to no conflict with the schema validation), technically the upgrade step would just be bumping the schema version.
+
+**Some detailed steps to follow in each of the above cases are outlined below**
+
 ### No update of the schema version
-
-* Schema version should not to be updated if the change introduced is not going to cause a potential invalidation of the existing objects in the database. For example an addition of a new enum value to a list of existing enums can not cause schema invalidation, but will simply extend the list of potential values to choose from.
-
-**Follow the steps as outlined below**
 
 1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object.
 
@@ -195,20 +215,6 @@ For example, a minor change in the treatment object after version 11 that allowe
         * *μg/kg* can now be specified as amount units.
 
 ### Update schema version
-* Schema version has to be updated (bumped up by 1) if the change that is being introduced will lead to a potential invalidation of existing objects in the database. 
-
-* Examples include:
-    1) Changing the name of a property in the existing schema.
-    2) Removing a property from the existing schema.
-    3) A property that previously allowed free text is now changed to a possible list of allowed enums.
-    4) If an existing enum is removed from a property.
-
-
-* Most of the cases described above are examples where existing objects could potentially fail the validation under the new schema version. Hence, an additional step of adding an upgrade script is required. This will ensure that all the existing objects will be upgraded (changed) such that they will be valid under the new schema version.
-
-* One more case needs a mention here: When adding multiple new schema properties that would lead to substantial changes within an existing schema, one must update the schema version. Even though, the addition of multiple new schema properties is not going to invalidate any existing objects, it would be useful to do so. Particularly, this will be helpful to all the submitters and users who are trying to use these properties either to submit their data or while querying the database using scripts.
-
-**Follow the steps as outlined below**
 
 1. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version. 
 
