@@ -50,3 +50,35 @@ def test_matrix_view(workbook, testapp):
         'biosample_ontology.classification']['buckets']) > 0
     assert len(res['matrix']['y'][
         'biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']) > 0
+
+
+def test_target_matrix_view(workbook, testapp):
+    res = testapp.get('/target-matrix/?type=Experiment').json
+    assert res['@type'] == ['Matrix']
+    assert res['@id'] == '/target-matrix/?type=Experiment'
+    assert res['@context'] == '/terms/'
+    assert res['notification'] == 'Success'
+    assert res['title'] == 'Target Matrix'
+    assert res['total'] > 0
+    assert 'filters' in res
+    assert 'matrix' in res
+    assert res['matrix']['x']['group_by'] == 'biosample_ontology.term_name'
+    assert res['matrix']['x']['label'] == 'Term Name'
+    assert res['matrix']['y']['group_by'] == ['replicates.library.biosample.donor.organism.scientific_name', 'target.label']
+    assert res['matrix']['y']['label'] == 'Target'
+    assert len(res['matrix']['y']['replicates.library.biosample.donor.organism.scientific_name']['buckets']) > 0
+    assert len(res['matrix']['y']['replicates.library.biosample.donor.organism.scientific_name']['buckets'][0]['target.label']['buckets']) > 0
+
+
+def test_summary_view(workbook, testapp):
+    res = testapp.get('/summary/?type=Experiment').json
+    assert res['@type'] == ['Summary']
+    assert res['@id'] == '/summary/?type=Experiment'
+    assert res['@context'] == '/terms/'
+    assert res['notification'] == 'Success'
+    assert res['title'] == 'Summary'
+    assert res['total'] > 0
+    assert 'filters' in res
+    assert 'matrix' in res
+    assert res['matrix']['x']['group_by'] == 'status'
+    assert res['matrix']['y']['group_by'] == ['replication_type']

@@ -38,8 +38,7 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
-    config.add_route('target_matrix_tf_chip_seq', '/target_matrix/TF ChIP-seq{slash:/?}')
-    config.add_route('target_matrix_histone', '/target_matrix/Histone ChIP-seq{slash:/?}')
+    config.add_route('target_matrix', '/target-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -170,29 +169,7 @@ def matrixv2_raw(context, request):
     return fr.render()
 
 
-def add_to_request_query_string(request, **params):
-    """
-    Add query strings to request.
-
-        :param request: Request object
-        :param **params: Query string key/value pairs to add to request
-    """
-    if not request:
-        return request
-    query_string_addition = [''.join(['&', param[0], '=', param[1]]) for param in params.items()]
-    request.query_string = 'type=Experiment' + ''.join(query_string_addition)
-    return request
-
-
-def matrix_renderer(request, title, at_type, response_field_params=None):
-    """
-    Render a matrix.
-
-        :param request: Pyramid request
-        :param title:  Title
-        :param at_type: a_type
-        :param response_field_params: Response field parameters as a dictionary
-    """
+def generic_matrix(request, title_response_field_params=None, type_response_field_params=None, response_field_params=None):
     fr = FieldedResponse(
         _meta={
             'params_parser': ParamsParser(request)
@@ -204,12 +181,8 @@ def matrix_renderer(request, title, at_type, response_field_params=None):
             IDResponseField(),
             NotificationResponseField(),
             SearchBaseResponseField(),
-            TitleResponseField(
-                title=title,
-            ),
-            TypeResponseField(
-                at_type=at_type,
-            ),
+            TitleResponseField(**title_response_field_params),
+            TypeResponseField(**type_response_field_params),
             FiltersResponseField(),
             TypeOnlyClearFiltersResponseField(),
         ]
@@ -219,61 +192,20 @@ def matrix_renderer(request, title, at_type, response_field_params=None):
 
 @view_config(route_name='matrix', request_method='GET', permission='search')
 def matrix(context, request):
-    """
-    Matrix view.
-
-        :param context: Pyramid context
-        :param request: Pyramid Request
-    """
-    return matrix_renderer(
+    return generic_matrix(
         request,
-        MATRIX_TITLE,
-        [MATRIX_TITLE],
-        response_field_params={
-            'default_item_type' : DEFAULT_ITEM_TYPES
-        },
+        title_response_field_params={'title': MATRIX_TITLE},
+        type_response_field_params={'at_type': [MATRIX_TITLE]},
+        response_field_params={'default_item_type': DEFAULT_ITEM_TYPES},
     )
 
 
-@view_config(route_name='target_matrix_tf_chip_seq', request_method='GET', permission='search')
-def target_matrix_tf(context, request):
-    """
-    Matrix view.
-
-        :param context: Pyramid context
-        :param request: Pyramid Request
-    """
-    request = add_to_request_query_string(request, assay_title='TF ChIP-seq')
-    return matrix_renderer(
+@view_config(route_name='target_matrix', request_method='GET', permission='search')
+def target_matrix(context, request):
+    return generic_matrix(
         request,
-        'Target Matrix',
-        [MATRIX_TITLE],
-        response_field_params={
-            'default_item_types': DEFAULT_ITEM_TYPES,
-            'matrix_definition_name': 'target_matrix',
-            'facets': [
-                ('status', {'title': 'Status'}),
-                ('award.project', {'title': 'Project'}),
-                ('target.investigated_as', {'title': 'Target category'}),
-                ('replicates.library.biosample.donor.organism.scientific_name', {'title': 'Organism'}),
-            ],
-        }
-    )
-
-
-@view_config(route_name='target_matrix_histone', request_method='GET', permission='search')
-def target_matrix_histone(context, request):
-    """
-    Matrix view.
-
-        :param context: Pyramid context
-        :param request: Pyramid Request
-    """
-    request = add_to_request_query_string(request, assay_title='Histone ChIP-seq')
-    return matrix_renderer(
-        request,
-        'Target Matrix',
-        [MATRIX_TITLE],
+        title_response_field_params={'title': 'Target Matrix'},
+        type_response_field_params={'at_type': [MATRIX_TITLE]},
         response_field_params={
             'default_item_types': DEFAULT_ITEM_TYPES,
             'matrix_definition_name': 'target_matrix',
@@ -289,31 +221,15 @@ def target_matrix_histone(context, request):
 
 @view_config(route_name='summary', request_method='GET', permission='search')
 def summary(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
+    return generic_matrix(
+        request,
+        title_response_field_params={'title': SUMMARY_TITLE},
+        type_response_field_params={'at_type': [SUMMARY_TITLE]},
+        response_field_params={
+            'default_item_types': DEFAULT_ITEM_TYPES,
+            'matrix_definition_name': SUMMARY
         },
-        response_fields=[
-            TitleResponseField(
-                title=SUMMARY_TITLE
-            ),
-            TypeResponseField(
-                at_type=[SUMMARY_TITLE]
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=SUMMARY
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
     )
-    return fr.render()
 
 
 @view_config(route_name='audit', request_method='GET', permission='search')
