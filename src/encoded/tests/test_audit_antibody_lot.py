@@ -91,6 +91,21 @@ def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_tar
     return testapp.post_json('/antibody_lot', item).json['@graph'][0]
 
 
+@pytest.fixture
+def control_antibody(testapp, lab, award, source, mouse, target):
+    item = {
+        'product_id': 'WH0000468M1',
+        'lot_id': 'CB191-2B3',
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'source': source['@id'],
+        'host_organism': mouse['@id'],
+        'control_type': 'isotype control',
+        'isotype': 'IgG',
+    }
+    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
+
+
 def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characterization1, base_antibody_characterization2):
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -109,10 +124,8 @@ def test_audit_antibody_ar_dbxrefs(testapp, antibody_lot):
     assert any(error['category'] == 'missing antibody registry reference' for error in errors_list)
 
 
-def test_audit_control_characterizations(testapp, antibody_lot, base_target1):
-    testapp.patch_json(base_target1['@id'], {'investigated_as': ['control']})
-    testapp.patch_json(antibody_lot['@id'], {'targets': [base_target1['@id']]})
-    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+def test_audit_control_characterizations(testapp, control_antibody):
+    res = testapp.get(control_antibody['@id'] + '@@index-data')
     errors = res.json['audit']
     print(errors)
     assert 'NOT_COMPLIANT' not in errors

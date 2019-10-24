@@ -77,7 +77,7 @@
                 {
                     "properties": {
                         "purpose": {
-                            "enum": ["analysis"]
+                            "enum": ["analysis", "non-specific target control"]
                         }
                     }
                 },
@@ -180,6 +180,19 @@
                         },
                         "purpose": {
                             "enum": ["repression"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["deletion", "interference"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR", "RNAi"]
+                        },
+                        "purpose": {
+                            "enum": ["non-specific target control"]
                         }
                     }
                 },
@@ -312,7 +325,7 @@
                     "enum": ["interference"]
                 },
                 "purpose": {
-                    "enum": ["repression"]
+                    "enum": ["repression", "non-specific target control"]
                 }
             }
         },
@@ -465,6 +478,7 @@
             "enum": [
                 "activation",
                 "analysis",
+                "non-specific target control",
                 "overexpression",
                 "repression",
                 "tagging",

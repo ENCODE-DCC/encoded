@@ -488,6 +488,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </React.Fragment>
                             : null}
 
+                            {context.control_type ?
+                                <div data-test="control_type">
+                                    <dt>Control type</dt>
+                                    <dd>{context.control_type}</dd>
+                                </div>
+                            : null}
+
                             {context.biosample_summary ?
                                 <div data-test="biosample-summary">
                                     <dt>Biosample summary</dt>

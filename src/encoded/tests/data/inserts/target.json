@@ -13,34 +13,6 @@
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
-        "label": "Control",
-        "target_organism": "mouse",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
-    },
-    {
-        "label": "mouse-IgG-control",
-        "target_organism": "human",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "2e19e501-8f32-4205-8469-2fb593a30595"
-    },
-    {
-        "label": "mouse-IgG-control",
-        "target_organism": "mouse",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "6fcd4ef8-9a84-4951-958a-828c41a5ffb0"
-    },
-    {
-        "label": "Control",
-        "target_organism": "human",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
-    },
-    {
         "dbxref": [
             "ENSEMBL:ENSG00000102974",
             "GeneID:10664",

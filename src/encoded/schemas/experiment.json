@@ -188,6 +188,19 @@
             "comment": "should be used on experiments with internal_status:pipeline error",
             "permission": "import_items",
             "title": "Pipeline error message"
+        },
+        "control_type": {
+            "type": "string",
+            "title": "Control type",
+            "description": "The specific type of control if the experiment is a control.",
+            "enum": [
+                "control",
+                "IgG",
+                "input library",
+                "mock input",
+                "no protein target",
+                "non-specific target"
+            ]
         }
     },
     "facets": {

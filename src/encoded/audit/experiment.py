@@ -121,11 +121,17 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
     if value.get('target') and 'name' in value.get('target'):
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
-        if target_name in ['Control-human', 'Control-mouse']:
+    elif value.get('control_type'):
+        if get_organism_name(
+            reps=value['replicates'], excluded_types=[]
+        ) in ['human', 'mouse']:
             return
-        controls = value.get('possible_controls')
-        if not controls:
-            return
+        target_name = value.get('control_type')
+        target_investigated_as = [value.get('control_type')]
+    else:
+        return
+    controls = value.get('possible_controls')
+    if controls:
         controls_files_structures = {}
         control_objects = {}
         for control_experiment in controls:
@@ -215,39 +221,49 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
     if not control:
         return
     target_failures = []
-    if 'target' not in control:
-        detail = ('Control {} file {} '
-            'has no target specified.'.format(
-                bam_type,
-                audit_link(path_to_text(bam_id), bam_id)
+    if not control.get('control_type'):
+        detail = 'Control {} file {} has no target specified.'.format(
+            bam_type,
+            audit_link(path_to_text(bam_id), bam_id)
+        )
+        target_failures.append(
+            AuditFailure(
+                'missing target of control experiment',
+                detail,
+                level='WARNING'
             )
         )
-        target_failures.append(AuditFailure('missing target of control experiment', detail, level='WARNING'))
-        return target_failures
-    if control['@type'][0] == 'Experiment':
-        if control['target']['name'] not in ['Control-human', 'Control-mouse']:
-            detail = ('Control {} file {} '
-                'has a target {} that is neither '
-                'Control-human nor Control-mouse.'.format(
-                    bam_type,
-                    audit_link(path_to_text(bam_id), bam_id),
-                    control['target']['name']
-                )
+    elif 'input library' not in control['control_type']:
+        detail = (
+            'Control {} file {} has a wrong control type {} '
+            'which is not "input library".'
+        ).format(
+            bam_type,
+            audit_link(path_to_text(bam_id), bam_id),
+            control['control_type']
+        )
+        target_failures.append(
+            AuditFailure(
+                'improper control_type of control experiment',
+                detail,
+                level='WARNING'
             )
-            target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
-            return target_failures
-    else:
-        for target_of_related_dataset in control['target']:
-            if target_of_related_dataset['name'] not in ['Control-human', 'Control-mouse']:
-                detail = ('Control {} file {} '
-                    'has a target {} that is neither '
-                    'Control-human nor Control-mouse.'.format(
-                        bam_type,
-                        audit_link(path_to_text(bam_id), bam_id),
-                        target_of_related_dataset['name']
-                    )
-                )
-                target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
+        )
+    if 'target' in control and control['target']:
+        detail = (
+            'Control {} file {} has unexpected target {} specified.'
+        ).format(
+            bam_type,
+            audit_link(path_to_text(bam_id), bam_id),
+            control['target']['name']
+        )
+        target_failures.append(
+            AuditFailure(
+                'unexpected target of control experiment',
+                detail,
+                level='WARNING'
+            )
+        )
     return target_failures
 
 
@@ -1080,14 +1096,25 @@ def check_experiment_chip_seq_standards(
     if pipeline_title is False:
         return
 
+    organism_name = get_organism_name(
+        reps=experiment['replicates'],
+        excluded_types=[]
+    )  # human/mouse
     for f in alignment_files:
         target = get_target(experiment)
-        if target is False:
+        if target is False and not experiment.get('control_type'):
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
 
-        yield from check_file_chip_seq_read_depth(f, target, read_depth, standards_version)
+        yield from check_file_chip_seq_read_depth(
+            f,
+            experiment.get('control_type'),
+            organism_name,
+            target,
+            read_depth,
+            standards_version
+        )
         yield from check_file_chip_seq_library_complexity(f)
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
@@ -1836,6 +1863,8 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
 
 
 def check_file_chip_seq_read_depth(file_to_check,
+                                   control_type,
+                                   organism_name,
                                    target,
                                    read_depth,
                                    standards_version):
@@ -1865,15 +1894,19 @@ def check_file_chip_seq_read_depth(file_to_check,
 
     if target is not False and 'name' in target:
         target_name = target['name']
+    elif control_type:
+        target_name = control_type
     else:
         return
 
     if target is not False and 'investigated_as' in target:
         target_investigated_as = target['investigated_as']
+    elif control_type:
+        target_investigated_as = [control_type]
     else:
         return
 
-    if target_name in ['Control-human', 'Control-mouse'] and 'control' in target_investigated_as:
+    if control_type == 'input library' and organism_name in ['human', 'mouse']:
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
                 detail = ('modERN processed alignment file {} has {} '
@@ -2745,10 +2778,8 @@ def audit_experiment_replicated(value, system, excluded_types):
     if is_gtex_experiment(value) is True:
         return
 
-    if 'target' in value:
-        target = value['target']
-        if 'control' in target['investigated_as']:
-            return
+    if value.get('control_type'):
+        return
 
     num_bio_reps = set()
     for rep in value['replicates']:
@@ -3048,6 +3079,10 @@ def audit_experiment_target(value, system, excluded_types):
     if value.get('assay_term_name') not in targetBasedAssayList:
         return
 
+    # ENCD-4674 control target assays (ChIP-seq, etc) can be no target
+    if value.get('control_type'):
+        return
+
     if 'target' not in value:
         detail = ('{} experiments require a target'.format(
             value['assay_term_name'])
@@ -3056,8 +3091,6 @@ def audit_experiment_target(value, system, excluded_types):
         return
 
     target = value['target']
-    if 'control' in target['investigated_as']:
-        return
 
     # Experiment target should be untagged
     non_tag_mods = ['Methylation',
@@ -3191,7 +3224,7 @@ def audit_experiment_control(value, system, excluded_types):
         return
 
     # We do not want controls
-    if 'target' in value and 'control' in value['target']['investigated_as']:
+    if value.get('control_type'):
         return
 
     audit_level = 'ERROR'
@@ -3310,7 +3343,7 @@ def audit_experiment_ChIP_control(value, system, files_structure):
         return
 
     # We do not want controls
-    if 'target' in value and 'control' in value['target']['investigated_as']:
+    if value.get('control_type'):
         return
 
     if not value['possible_controls']:
@@ -3350,16 +3383,8 @@ def audit_experiment_ChIP_control(value, system, files_structure):
 
 
 def is_control_dataset(dataset):
-    if 'target' not in dataset:
-        return False
-    if dataset['@type'][0] == 'Experiment':
-        return 'control' in dataset['target']['investigated_as']
-    else:
-        for target_of_related_dataset in dataset['target']:
-            if 'control' not in target_of_related_dataset['investigated_as']:
-                return False
-    return True
-    
+    return bool(dataset.get('control_type'))
+
 
 def audit_experiment_spikeins(value, system, excluded_types):
     if not check_award_condition(value, [
@@ -3501,7 +3526,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
     if not target:
         return
 
-    if 'control' in target['investigated_as']:
+    if value.get('control_type'):
         return
 
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
@@ -3977,22 +4002,6 @@ def has_pipelines(bam_file):
     if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
         return False
     return True
-
-
-def get_target_name(derived_from_fastqs):
-    if not derived_from_fastqs:
-        return False
-
-    control_fastq = False
-    for entry in derived_from_fastqs:
-        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
-            # getting representative FASTQ
-            control_fastq = entry['controlled_by'][0]
-            break
-    if control_fastq and 'target' in control_fastq['dataset'] and \
-       'name' in control_fastq['dataset']['target']:
-        return control_fastq['dataset']['target']['name']
-    return False
 
 
 def get_target(experiment):

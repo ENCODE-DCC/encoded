@@ -63,7 +63,7 @@
         "date_submitted": "2015-04-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
-        "target": "Control-mouse",
+        "control_type": "control",
         "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
     },
     {
@@ -315,7 +315,7 @@
         "date_submitted": "2015-06-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
-        "target": "Control-human",
+        "control_type": "control",
         "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78"
     },
     {
@@ -346,7 +346,7 @@
         "assay_term_name": "5C",
         "award": "U54HG007004",
         "biosample_ontology": "cell_line_EFO_0001086",
-        "target": "/targets/Control-human",
+        "control_type": "control",
         "description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
         "lab": "robert-waterston",
         "status": "released",
@@ -679,7 +679,7 @@
         "assay_term_name": "ChIP-seq",
         "award": "ENCODE2",
         "biosample_ontology": "cell_line_EFO_0002067",
-        "target": "Control-human",
+        "control_type": "control",
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
@@ -736,7 +736,7 @@
         "assay_term_name": "PLAC-seq",
         "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
-        "target": "Control-human",
+        "control_type": "control",
         "accession": "ENCSR751STT",
         "uuid": "03485813-0362-41f0-afd5-2bef9f5c52ef"
     },

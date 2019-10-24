@@ -223,10 +223,10 @@ def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgr
     assert value['status'] == new_status
 
 
-def test_target_upgrade_link_to_gene(root, upgrader, target_control,
+def test_target_upgrade_link_to_gene(root, upgrader, target_H3K27ac,
                                      target_8_no_genes, target_8_one_gene,
                                      target_8_two_genes, gene3012, gene8335):
-    context = root.get_by_uuid(target_control['uuid'])
+    context = root.get_by_uuid(target_H3K27ac['uuid'])
     no_genes = upgrader.upgrade(
         'target', target_8_no_genes, current_version='8', target_version='9',
         context=context)

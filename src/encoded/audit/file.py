@@ -260,8 +260,7 @@ def audit_file_controlled_by(value, system):
     if value['file_format'] not in ['fastq']:
         return
 
-    if 'target' in value['dataset'] and \
-       'control' in value['dataset']['target'].get('investigated_as', []):
+    if value['dataset'].get('control_type'):
         return
 
     if not value.get('controlled_by'):

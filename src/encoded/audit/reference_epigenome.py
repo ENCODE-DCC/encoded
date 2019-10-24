@@ -120,6 +120,10 @@ def audit_reference_epigenome_assay_types_requirments(value, system):
                     key = (assay_id, assay_taget)
                     if key in required_assays:
                         required_assays[key] = 1
+                elif assay.get('control_type'):
+                    key = (assay_id, 'Control')
+                    if key in required_assays:
+                        required_assays[key] = 1
             elif assay_id in required_assays:
                     required_assays[assay_id] = 1
 

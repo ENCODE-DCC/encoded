@@ -35,9 +35,8 @@ def audit_antibody_missing_characterizations(value, system):
     Check to see what characterizations are lacking for each antibody,
     for the cell lines we know about.
     '''
-    for t in value['targets']:
-        if 'control' in t.get('investigated_as'):
-            return
+    if value.get('control_type'):
+        return
 
     # ENCD-4608 ENCODE4 tag antibodies need only linked biosample
     # characterization(s) as primary characterization(s) and don't need any

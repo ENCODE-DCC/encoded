@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "targets"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -20,6 +20,14 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/notes" }
 
+    ],
+    "oneOf": [
+        {
+            "required": ["targets"]
+        },
+        {
+            "required": ["control_type", "isotype"]
+        }
     ],
     "properties": {
         "schema_version": {
@@ -167,6 +175,7 @@
         "targets": {
             "title": "Target",
             "type": "array",
+            "minItems": 1,
             "uniqueItems": true,
             "items": {
                 "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
@@ -174,6 +183,14 @@
                 "type": "string",
                 "linkTo": "Target"
             }
+        },
+        "control_type": {
+            "type": "string",
+            "title": "Control type",
+            "description": "The specific type of control if the experiment is a control.",
+            "enum": [
+                "isotype control"
+            ]
         }
    },
    "facets": {
@@ -211,6 +228,12 @@
         "accession": {
             "title": "Accession"
         },
+        "control_type": {
+            "title": "Control type"
+        },
+        "isotype": {
+            "title": "Isotype"
+        },
         "lot_reviews.biosample_term_name": {
             "title": "Biosample name"
         },
@@ -225,6 +248,9 @@
         },
         "lot_reviews.targets.label": {
             "title": "Target"
+        },
+        "lot_reviews.targets.name": {
+            "title": "Target name"
         },
         "lot_reviews.targets.organism.scientific_name": {
             "title": "Target organism"
