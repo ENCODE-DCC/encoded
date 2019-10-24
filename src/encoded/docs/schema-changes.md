@@ -198,7 +198,7 @@ There are two situations we need to consider when updating an existing schema: (
     4) If an existing enum is removed from a property.
 
 
-* Most of the cases described above are examples where there will be a potential conflict for all the existing objects to be validated under the new schema. Hence, an additional step of adding an upgrader script will be required. This will ensure that all the existing objects will be changed such that they can fit into the new schema that is currently being implemented.
+* Most of the cases described above are examples where existing objects could potentially fail the validation under the new schema version. Hence, an additional step of adding an upgrade script is required. This will ensure that all the existing objects will be upgraded (changed) such that they will be valid under the new schema version.
 
 * One more case needs a mention here: When adding multiple new schema properties that would lead to substantial changes within an existing schema, one must update the schema version. Even though, the addition of multiple new schema properties is not going to invalidate any existing objects, it would be useful to do so. Particularly, this will be helpful to all the submitters and users who are trying to use these properties either to submit their data or while querying the database using scripts.
 
@@ -226,7 +226,9 @@ Up until schema version 6 for the genetic modifications object, one of the possi
                 "expression"
             ]
         },
-        # Replacing the enum "validation" by the enum "characterization" in the list of enums of the "purpose" property:
+
+## Replacing the enum "validation" by the enum "characterization" in the list of enums of the "purpose" property:
+
         "purpose":{
             "title": "Purpose",
             "description": "The purpose of the genetic modification.",
@@ -253,11 +255,11 @@ For example if the original schema version for the genetic modification object b
             "default": "7"
         }
 
-3. In the **upgrade** directory add an ```upgrade_step``` to a python file named after the object (create new if there is no such a file in the upgrade directory". For some objects the upgrade happens in the abstract class - like dataset for the experiment.
+3. In the **upgrade** directory add an ```upgrade_step``` to a python file named after the object (create new if there is no such a file in the upgrade directory). For some objects the upgrade is defined in the parent class - like dataset.py for the experiment object.
 
 **Specific example from the genetic modifications object upgrade:**
 
-An example to the upgrade step is shown below. Continuing with our example on genetic modifications, all the existing objects with that had "purpose" specified to be "validation" must now be changed to "characterization". And since the schema is changing from version 6 to 7 the def must specify this (6->7):
+An example to the upgrade step is shown below. Continuing with our example on genetic modifications, all the existing objects with that had "purpose" specified to be "validation" must now be changed to "characterization". 
 
         @upgrade_step('genetic_modification', '6', '7')
         def genetic_modification_6_7(value, system):
@@ -270,17 +272,17 @@ An example to the upgrade step is shown below. Continuing with our example on ge
 
 Continuing with our example, all the ```"purpose": "validation"``` must now be converted to ```"purpose": "characterization"```. Change all the corresponding inserts within the genetic modifications object. For example:
 
-        #genetic_modification insert before the change from schema version 6 to 7:
+#genetic_modification insert **before** the change from schema version 6 to 7:
         "purpose": "validation",
 
-        #genetic_modification insert after the change from schema version 6 to 7:
+#genetic_modification insert **after** the change from schema version 6 to 7:
         "purpose": "characterization",
 
-5. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, we must create a new file. 
+5. Next, add an upgrade test to an existing python file named ```test_upgrade_{metadata_object}.py```. If a corresponding test file doesn't exist, create a new file. 
 
 **Specific example from the genetic modifications object upgrade:**
 
-Below, is an example of an upgrader step that we would need to add to the ```test_upgrade_genetic_modification.py``` script.
+Below, is an example of an upgrader step that must be added to the ```test_upgrade_genetic_modification.py``` script.
 
         def test_genetic_modification_upgrade_6_7(upgrader, genetic_modification_6):
             value = upgrader.upgrade('genetic_modification', genetic_modification_6,
@@ -297,7 +299,7 @@ Below, is an example of an upgrader step that we would need to add to the ```tes
    * Looking at the JSON for an object that should be upgraded by checking it's schema_version property.
    * Updating and object and looking in the /var/log/apache2/error.log for stack traces.
    
-   It is also possible that an upgrade can be clean under a current database but new objects POSTed before release are broken, so it will be checked again during release.
+   A good upgrade would ensure that all objects POSTed before release would not fail validation. Nevertheless,it will be a good idea to check that during the release.
 
 **Specific example from a successful batch upgrade:**
 
@@ -313,7 +315,9 @@ INFO [snovault.batchupgrade][MainThread] 1272 of ~1272 Batch: Updated 0 of 1000 
 INFO [snovault.batchupgrade][MainThread] 1273 of ~1272 Batch: Updated 0 of 1000 (errors 0)
 INFO [snovault.batchupgrade][MainThread] End Upgrade
 ```
-After that you will find a summary of upgrade and may or may not see errors there like this:
+
+After that you will find a summary of the upgrade which should indicate any potential errors. Since, the ```Sum errors: 0``` in the following example, everything looks good for this upgrade:
+
 ```
 INFO [snovault.batchupgrade][MainThread] Upgrade Summary
 INFO [snovault.batchupgrade][MainThread] Sum updated: 2
@@ -322,7 +326,7 @@ INFO [snovault.batchupgrade][MainThread] Collection user: Updated 616 of 616 (er
 INFO [snovault.batchupgrade][MainThread] Sum errors: 0
 INFO [snovault.batchupgrade][MainThread] Run Time: 11.91 minutes
 ```
-If you do see errors in the summary above, you need to look back to the log above and find out what objects and/or why they failed upgrades.
+If you do see any errors in the summary above, you would need to look at log above and must find out what objects failed the upgrade and why.
 
 7. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
