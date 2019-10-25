@@ -176,7 +176,7 @@ Exception: When making substantial changes to an existing schema, even if these 
 * Most of the cases described above are examples where existing objects could potentially fail the validation under the new schema version. Hence, an additional step of adding an upgrade script is required. This will ensure that all the existing objects will be upgraded (changed) such that they will be valid under the new schema version.
 
 * **NOTE:** You should update the schema version when making substantial changes to an existing schema even if these changes do not cause existing objects using this schema to fail validation.
-The new schema version number in such cases helps submitters and users realize that a substantial change has been made to the schema and they can may need to update their scripts accordingly.
+The new schema version number in such cases helps submitters and users realize that a substantial change has been made to the schema and they may need to update their scripts accordingly.
 
 * **NOTE:** Whenever in doubt (whether to update or not), it would be a good idea to discuss with other members of the group as there can be grey areas as mentioned in the note above. When multiple new properties are being added to the new schema (potentially leading to no conflict with the schema validation), technically the upgrade step would just be bumping the schema version.
 
