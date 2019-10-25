@@ -2005,7 +2005,15 @@ def test_audit_experiment_long_read_rna_standards(
     )
     testapp.patch_json(
         file_bam_2_1['@id'],
-        {'step_run': analysis_step_run_bam['@id'], 'assembly': 'mm10'}
+        {'step_run': analysis_step_run_bam['@id'], 'assembly': 'mm10', 'output_type': 'unfiltered alignments'}
+    )
+    testapp.patch_json(
+        file_tsv_1_1['@id'],
+        {'output_type': 'transcript quantifications'}
+    )
+    testapp.patch_json(
+        file_tsv_1_2['@id'],
+        {'output_type': 'transcript quantifications'}
     )
     testapp.patch_json(
         pipeline_bam['@id'],
