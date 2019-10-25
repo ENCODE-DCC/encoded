@@ -309,7 +309,7 @@ class PatientChart extends React.Component {
     componentDidMount() {
         this.zingchart = window.zingchart;
         this.moment = window.moment;
-        this.axios = window.axios;
+        //this.axios = window.axios;
         this.drawChart();
     }
 }
