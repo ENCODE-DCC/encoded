@@ -1,6 +1,6 @@
 {
     "title": "Patient",
-    "description": "Description of the metadata that this object aims to capture.",
+    "description": "Schema for submitting patient demographics.",
     "id": "/profiles/patient.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "identifyingProperties": ["uuid", "accession", "aliases"],
