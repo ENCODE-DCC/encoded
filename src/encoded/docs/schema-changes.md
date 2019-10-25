@@ -161,7 +161,7 @@ There are two situations we need to consider when updating an existing schema: (
 * Do not update the schema version if the updated schema allows all existing objects in the database to continue to validate. For example, a new enum value in an existing list of enums would not cause existing objects of that type to fail validation. 
 
 **NOTE:** 
-Exception: when making substantial changes to an existing schema, even if these changes do not cause the existing objects using this schema to fail validation, an upgrade is recommended (see below).
+Exception: When making substantial changes to an existing schema, even if these changes do not cause the existing objects using this schema to fail validation, an upgrade is recommended (please see below).
 
 **When to update a version**
 
@@ -176,7 +176,7 @@ Exception: when making substantial changes to an existing schema, even if these 
 * Most of the cases described above are examples where existing objects could potentially fail the validation under the new schema version. Hence, an additional step of adding an upgrade script is required. This will ensure that all the existing objects will be upgraded (changed) such that they will be valid under the new schema version.
 
 * **NOTE:** You should update the schema version when making substantial changes to an existing schema even if these changes do not cause existing objects using this schema to fail validation.
-The new schema version number in cases like this helps submitters and users realize that a substantial change have been made to the schema and they can update their scripts accordingly.
+The new schema version number in such cases helps submitters and users realize that a substantial change has been made to the schema and they can may need to update their scripts accordingly.
 
 * **NOTE:** Whenever in doubt (whether to upgrade or not), it would be a good idea to discuss with other members of the group as there can be grey areas as mentioned in the note above. When multiple new properties are being added to the new schema (potentially leading to no conflict with the schema validation), technically the upgrade step would just be bumping the schema version.
 
