@@ -44,14 +44,14 @@ class CartBatchDownloadComponent extends React.Component {
         const fileFormatSelections = _.compact(Object.keys(this.props.selectedTerms).map((field) => {
             let subQueryString = '';
             if (this.props.selectedTerms[field].length > 0) {
-                subQueryString = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(encodedURIComponent(term))}`).join('&');
+                subQueryString = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(term)}`).join('&');
             }
             return subQueryString;
         }));
 
         // Initiate a batch download as a POST, passing it all dataset @ids in the payload.
         this.props.setInProgress(true);
-        this.props.fetch(`/batch_download/type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}`, {
+        this.props.fetch(`/batch_download/?type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}`, {
             method: 'POST',
             headers: {
                 Accept: 'text/plain',
