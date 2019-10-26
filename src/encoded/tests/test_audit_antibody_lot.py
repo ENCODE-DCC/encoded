@@ -141,7 +141,7 @@ def test_audit_encode4_tag_ab_characterizations(
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(
-        error['category'] == 'no biosample characterizations linked'
+        error['category'] == 'no characterizations submitted'
         for errs in errors.values() for error in errs
     )
     testapp.patch_json(
@@ -151,7 +151,7 @@ def test_audit_encode4_tag_ab_characterizations(
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
     assert all(
-        error['category'] != 'no biosample characterizations linked'
+        error['category'] != 'no characterizations submitted'
         for errs in errors.values() for error in errs
     )
     assert any(
@@ -171,10 +171,54 @@ def test_audit_encode4_tag_ab_characterizations(
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
     assert all(
-        error['category'] != 'no biosample characterizations linked'
+        error['category'] != 'no characterizations submitted'
         for errs in errors.values() for error in errs
     )
     assert all(
         error['category'] != 'need one compliant biosample characterization'
         for errs in errors.values() for error in errs
     )
+
+
+def test_audit_encode3_tag_ab_characterizations(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    biosample_characterization,
+    base_antibody_characterization1,
+    lab,
+    submitter
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+    biosample = testapp.get(biosample_characterization['characterizes']).json
+    testapp.patch_json(
+        base_antibody_characterization1['@id'],
+        {
+            'target': gfp_target['uuid'],
+            'characterization_reviews': [{
+                'lane': 1,
+                'organism': biosample['organism']['uuid'],
+                'biosample_ontology': biosample['biosample_ontology']['uuid'],
+                'lane_status': 'not compliant'
+            }]
+        }
+    )
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    errors = [err for errs in res.json['audit'].values() for err in errs]
+    assert any(error['category'] == 'need compliant primaries' for error in errors)
+    assert any(error['category'] == 'no secondary characterizations' for error in errors)
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'status': 'compliant',
+                'lab': lab['@id'],
+                'reviewed_by': submitter['@id'],
+            },
+            'antibody': antibody_lot['@id']
+        }
+    )
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    errors = [err for errs in res.json['audit'].values() for err in errs]
+    assert all(error['category'] != 'need compliant primaries' for error in errors)
+    assert all(error['category'] != 'no secondary characterizations' for error in errors)

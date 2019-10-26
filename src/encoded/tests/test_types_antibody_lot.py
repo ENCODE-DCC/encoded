@@ -689,3 +689,413 @@ def test_encode4_tagged_ab_review_status(testapp,
         'status': 'characterized to standards with exemption',
         'targets': ['/targets/gfp-human/'],
     } in res.json['object']['lot_reviews']
+
+
+def test_encode3_nontagged_ab_compliant_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_compliant,
+):
+    # Antibody characterization only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # With unreviewed biosample characterization
+    testapp.patch_json(
+        biosample_characterization_compliant['@id'],
+        {'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+
+def test_encode3_tagged_ab_unreviewed_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_no_review,
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+
+    # Antibody characterizations only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # With unreviewed biosample characterization
+    testapp.patch_json(
+        biosample_characterization_no_review['@id'],
+        {'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+
+def test_encode3_tagged_ab_compliant_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_compliant,
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+
+    # Antibody characterizations only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # With compliant biosample characterization
+    testapp.patch_json(
+        biosample_characterization_compliant['@id'],
+        {'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'characterized to standards'
+    assert lot_reviews[0]['detail'] == 'Fully characterized.'
+
+
+def test_encode3_tagged_ab_exempt_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_exempt,
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+
+    # Antibody characterizations only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # With exempt biosample characterization
+    testapp.patch_json(
+        biosample_characterization_exempt['@id'],
+        {'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == (
+        'characterized to standards with exemption'
+    )
+    assert lot_reviews[0]['detail'] == 'Fully characterized with exemption.'
+
+
+def test_encode3_tagged_ab_secondary_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_2nd_opinion,
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+
+    # Antibody characterizations only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # With secondary opinion biosample characterization
+    testapp.patch_json(
+        biosample_characterization_2nd_opinion['@id'],
+        {'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+
+def test_encode3_tagged_ab_not_compliant_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_not_compliant,
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+
+    # Antibody characterizations only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # With non-compliant biosample characterization
+    testapp.patch_json(
+        biosample_characterization_not_compliant['@id'],
+        {'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+
+def test_encode3_tagged_ab_other_exempt_biosample_char(
+    testapp,
+    antibody_lot,
+    gfp_target,
+    immunoblot,
+    biosample,
+    wrangler,
+    document,
+    biosample_characterization_exempt,
+    biosample_1,
+):
+    testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
+
+    # Antibody characterizations only
+    prim_char = testapp.post_json(
+        '/antibody_characterization', immunoblot
+    ).json['@graph'][0]
+    characterization_review = {
+        'biosample_ontology': biosample['biosample_ontology'],
+        'organism': biosample['organism'],
+        'lane': 1,
+        'lane_status': 'compliant'
+    }
+    testapp.patch_json(
+        prim_char['@id'],
+        {
+            'target': gfp_target['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'documents': [document['@id']],
+            'characterization_reviews': [characterization_review]
+        }
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 1
+    assert lot_reviews[0]['status'] == 'partially characterized'
+    assert lot_reviews[0]['detail'] == (
+        'Awaiting submission of a compliant secondary characterization.'
+    )
+
+    # Different biosamples between antibody characterization and biosample
+    # characterization
+    testapp.patch_json(
+        biosample_characterization_exempt['@id'],
+        {'characterizes': biosample_1['@id'], 'antibody': antibody_lot['@id']}
+    )
+    lot_reviews = testapp.get(
+        antibody_lot['@id'] + '@@index-data'
+    ).json['object']['lot_reviews']
+    assert len(lot_reviews) == 2
+    assert {
+        "biosample_term_id": "UBERON:0000948",
+        "biosample_term_name": "heart",
+        "detail": "Awaiting submission of a compliant secondary characterization.",
+        "organisms": [
+            "/organisms/human/"
+        ],
+        "status": "partially characterized",
+        "targets": [
+            "/targets/gfp-human/"
+        ]
+    } in lot_reviews
+    assert {
+        "biosample_term_id": "UBERON:0002107",
+        "biosample_term_name": "liver",
+        "detail": "Fully characterized with exemption.",
+        "organisms": [
+            "/organisms/human/"
+        ],
+        "status": "characterized to standards with exemption",
+        "targets": [
+            "/targets/gfp-human/"
+        ]
+    } in lot_reviews

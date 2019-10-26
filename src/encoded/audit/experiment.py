@@ -3564,21 +3564,23 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
             for i in t['investigated_as']:
                 ab_targets_investigated_as.add(i)
 
-        characterized = False
+        characterized = bool(antibody['characterizations'])
         # ENCODE4 tagged antibodies are characterized differently (ENCD-4608)
-        ab_award = system.get('request').embed(
-            antibody['award'], '@@object?skip_calculated=true'
-        )['rfa']
         if (
-            ab_award == 'ENCODE4'
-            and (
-                'tag' in ab_targets_investigated_as
-                or 'synthetic tag' in ab_targets_investigated_as
-            )
+            'tag' in ab_targets_investigated_as
+            or 'synthetic tag' in ab_targets_investigated_as
         ):
-            characterized = bool(antibody['used_by_biosample_characterizations'])
-        else:
-            characterized = bool(antibody['characterizations'])
+            ab_award = system.get('request').embed(
+                antibody['award'], '@@object?skip_calculated=true'
+            )['rfa']
+            if ab_award == 'ENCODE4':
+                characterized = bool(
+                    antibody['used_by_biosample_characterizations']
+                )
+            elif ab_award == 'ENCODE3':
+                characterized = characterized or bool(
+                    antibody['used_by_biosample_characterizations']
+                )
 
         if not characterized:
             detail = ('Antibody {} has not yet been characterized in any cell type or tissue in {}.'.format(
