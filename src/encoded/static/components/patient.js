@@ -6,8 +6,9 @@ import { Breadcrumbs } from './navigation';
 import { RelatedItems } from './item';
 import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
+import { CartToggle } from './cart';
 import Status from './status';
-
+import PatientChart from "./PatientChart";
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -27,6 +28,9 @@ class Patient extends React.Component {
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
+                <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+                <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Patient" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
@@ -70,7 +74,8 @@ class Patient extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-
+                <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
+                <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
             </div>
         );
     }

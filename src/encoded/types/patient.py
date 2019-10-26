@@ -6,6 +6,7 @@ from pyramid.security import (
     Deny,
     Everyone,
 )
+from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
@@ -18,6 +19,7 @@ from .base import (
 )
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
+from collections import defaultdict
 
 
 ONLY_ADMIN_VIEW_DETAILS = [
@@ -37,6 +39,22 @@ USER_DELETED = [
 ] + ONLY_ADMIN_VIEW_DETAILS
 
 
+def group_values_by_lab(request, labs):
+    values_by_key = defaultdict(list)
+    for path in labs:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        values_by_key[properties.get('lab')].append(properties)
+    return dict(values_by_key)
+
+
+def group_values_by_vital(request, vitals):
+    values_by_key = defaultdict(list)
+    for path in vitals:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        values_by_key[properties.get('vital')].append(properties)
+    return dict(values_by_key)
+
+
 @collection(
      name='patients',
      unique_key='accession',
@@ -48,7 +66,63 @@ class Patient(Item):
     item_type = 'patient'
     schema = load_schema('encoded:schemas/patient.json')
     name_key = 'accession'
+    embedded = [
+        'labs',
+        'vitals'
+    ]
+    rev = {
+        'labs': ('LabResult', 'patient'),
+        'vitals': ('VitalResult', 'patient'),
+    }
+    set_status_up = [
+    ]
+    set_status_down = []
 
+    @calculated_property( schema={
+        "title": "Labs",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "LabResult",
+        },
+    })
+    def labs(self, request, labs):
+        return group_values_by_lab(request, labs)
+
+    @calculated_property( schema={
+        "title": "Vitals",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "VitalResult",
+        },
+    })
+    def vitals(self, request, vitals):
+        return group_values_by_vital(request, vitals)
+
+
+@collection(
+    name='lab-results',
+    properties={
+        'title': 'Lab results',
+        'description': 'Lab results pages',
+    })
+class LabResult(Item):
+    item_type = 'lab_results'
+    schema = load_schema('encoded:schemas/lab_results.json')
+    embeded = []
+
+
+@collection(
+    name='vital-results',
+    properties={
+        'title': 'Vital results',
+        'description': 'Vital results pages',
+    })
+class VitalResult(Item):
+    item_type = 'vital_results'
+    schema = load_schema('encoded:schemas/vital_results.json')
+    embeded = []
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
@@ -67,7 +141,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals']:
         try:
             filtered[key] = properties[key]
         except KeyError:
