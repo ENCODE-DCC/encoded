@@ -68,11 +68,13 @@ class Patient(Item):
     name_key = 'accession'
     embedded = [
         'labs',
-        'vitals'
+        'vitals',
+        'germline'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
+        'germline': ('Germline', 'patient')
     }
     set_status_up = [
     ]
@@ -100,6 +102,16 @@ class Patient(Item):
     def vitals(self, request, vitals):
         return group_values_by_vital(request, vitals)
 
+    @calculated_property(schema={
+        "title": "Germline Mutations",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Germline"
+        },
+    })
+    def germline(self, request, germline):
+        return paths_filtered_by_status(request, germline)
 
 @collection(
     name='lab-results',
@@ -124,6 +136,19 @@ class VitalResult(Item):
     schema = load_schema('encoded:schemas/vital_results.json')
     embeded = []
 
+
+@collection(
+    name='germline',
+    properties={
+        'title': 'Germline Mutations',
+        'description': 'Germline Mutation results pages',
+    })
+class Germline(Item):
+    item_type = 'germline'
+    schema = load_schema('encoded:schemas/germline.json')
+    embeded = []
+
+
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
     if request.has_permission('view_details'):
@@ -141,7 +166,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline']:
         try:
             filtered[key] = properties[key]
         except KeyError:

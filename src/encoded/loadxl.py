@@ -21,6 +21,7 @@ ORDER = [
     'patient',
     'lab_results',
     'vital_results',
+    'germline',
     'cart'
 ]
 
