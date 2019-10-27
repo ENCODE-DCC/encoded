@@ -86,6 +86,12 @@
         "race": {
             "title": "Race"
         },
+        "germline.target": {
+            "title": "Germline Mutation"
+        },
+        "germline.significance": {
+            "title": "Clinical Significance"
+        },
         "status": {
             "title": "Status"
         }
@@ -117,7 +123,9 @@
         "accession": 1.0,
         "gender": 1.0,
         "ethnicity": 1.0,
-        "race": 1.0
+        "race": 1.0,
+        "germline.target": 1.0,
+        "germline.significance": 1.0
     },
     "changelog": "/profiles/changelogs/patient.md"
 }
