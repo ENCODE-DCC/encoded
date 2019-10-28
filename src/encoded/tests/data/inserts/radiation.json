@@ -1,0 +1,134 @@
+[
+    {
+        "patient": "KCEPT318AXY",
+        "dose_cgy_actual": 3000.0,
+        "fractions_actual": 10.0,
+        "site_general": "Bone and bone marrow",
+        "site_specific": "L shoulder",
+        "start_date": "1858-10-22",
+        "status": "released",
+        "treatment_intention": "Not Available",
+        "uuid": "90857418-6fd5-4207-a3e2-d9fbbd5b09d3"
+    },
+    {
+        "patient": "KCEPT318AXY",
+        "dose_cgy_actual": 3000.0,
+        "fractions_actual": 5.0,
+        "site_general": "Bone and bone marrow",
+        "site_specific": "R Hip",
+        "start_date": "1859-06-10",
+        "status": "released",
+        "treatment_intention": "De-Bulking",
+        "uuid": "a494a8f3-cabc-4f37-a768-412835b1bb3c"
+    },
+    {
+        "patient": "KCEPT708IJT",
+        "dose_cgy_actual": 2000.0,
+        "fractions_actual": 1.0,
+        "site_general": "Bone and bone marrow",
+        "site_specific": "Femur",
+        "start_date": "1857-06-14",
+        "status": "released",
+        "treatment_intention": "Palliative",
+        "uuid": "6fd2e3ca-46f1-4f7f-9a93-0b613b82a6cb"
+    },
+    {
+        "patient": "KCEPT708IJT",
+        "dose_cgy_actual": 2000.0,
+        "fractions_actual": 1.0,
+        "site_general": "Spine",
+        "site_specific": "Spine",
+        "start_date": "1857-06-14",
+        "status": "released",
+        "treatment_intention": "Palliative",
+        "uuid": "628bf556-406a-423b-8222-270821c1173d"
+    },
+    {
+        "patient": "KCEPT396JUN",
+        "dose_cgy_actual": 3600.0,
+        "fractions_actual": 3.0,
+        "site_general": "Adrenal gland, right",
+        "site_specific": "RtAdrenal",
+        "start_date": "1870-05-26",
+        "status": "released",
+        "treatment_intention": "Consolidative",
+        "uuid": "0bb213ad-4084-47b8-93b5-11283c99bf9a"
+    },
+    {
+        "patient": "KCEPT756AEN",
+        "dose_cgy_actual": 4000.0,
+        "fractions_actual": 5.0,
+        "site_general": "Lung, right",
+        "site_specific": "PTV RUL 40Gy5fx",
+        "start_date": "1855-02-05",
+        "status": "released",
+        "treatment_intention": "Consolidative",
+        "uuid": "07e51df2-be5c-4b70-8b73-7b015458270f"
+    },
+    {
+        "patient": "KCEPT294KIZ",
+        "dose_cgy_actual": 2500.0,
+        "fractions_actual": 5.0,
+        "site_general": "Retroperitoneum & peritoneum",
+        "site_specific": "Abdomen",
+        "start_date": "1901-01-30",
+        "status": "released",
+        "treatment_intention": "Not Available",
+        "uuid": "ebc9d69e-ca6b-405c-bead-c007042b89fd"
+    },
+    {
+        "patient": "KCEPT021XWS",
+        "dose_cgy_actual": 1300.0,
+        "fractions_actual": 1.0,
+        "site_general": "Brain",
+        "site_specific": "0A:1 L frontal",
+        "start_date": "1824-05-21",
+        "status": "released",
+        "treatment_intention": "Not Available",
+        "uuid": "32b7a03d-7dd8-458f-a7b3-c58eb2b7b5a8"
+    },
+    {
+        "patient": "KCEPT021XWS",
+        "dose_cgy_actual": 1300.0,
+        "fractions_actual": 1.0,
+        "site_general": "Brain",
+        "site_specific": "0B:2 R Cor Callos",
+        "start_date": "1824-05-21",
+        "status": "released",
+        "treatment_intention": "Not Available",
+        "uuid": "2249708c-0f2b-45e3-a916-c727b0a80343"
+    },
+    {
+        "patient": "KCEPT021XWS",
+        "dose_cgy_actual": 1300.0,
+        "fractions_actual": 1.0,
+        "site_general": "Brain",
+        "site_specific": "0C:3 R ventral po",
+        "start_date": "1824-05-21",
+        "status": "released",
+        "treatment_intention": "Not Available",
+        "uuid": "1eb94edf-51ff-4ce8-9506-ef91f1d6f46d"
+    },
+    {
+        "patient": "KCEPT021XWS",
+        "dose_cgy_actual": 1300.0,
+        "fractions_actual": 1.0,
+        "site_general": "Brain",
+        "site_specific": "0D:4 R eye",
+        "start_date": "1824-05-21",
+        "status": "released",
+        "treatment_intention": "Not Available",
+        "uuid": "960902e1-dc18-4d6f-ba18-11b6cec998b5"
+    },
+    {
+        "patient": "KCEPT359MHZ",
+        "dose_cgy_actual": 3000.0,
+        "fractions_actual": 5.0,
+        "site_general": "Liver",
+        "site_specific": "Liver",
+        "start_date": "1855-07-13",
+        "status": "released",
+        "treatment_intention": "Curative",
+        "uuid": "dc3c1516-248b-43e3-8791-31cfd91c2179"
+    }
+]
