@@ -250,12 +250,16 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
             )
         )
     if 'target' in control and control['target']:
+        if isinstance(control['target'], list):
+            target_name = ', '.join(t['name'] for t in control['target'])
+        else:
+            target_name = control['target']['name']
         detail = (
             'Control {} file {} has unexpected target {} specified.'
         ).format(
             bam_type,
             audit_link(path_to_text(bam_id), bam_id),
-            control['target']['name']
+            target_name
         )
         target_failures.append(
             AuditFailure(
@@ -3157,7 +3161,7 @@ def audit_experiment_target(value, system, excluded_types):
             antibody = rep['antibody']
             unique_antibody_target = set()
             unique_investigated_as = set()
-            for antibody_target in antibody['targets']:
+            for antibody_target in antibody.get('targets', []):
                 label = antibody_target['label']
                 unique_antibody_target.add(label)
                 for investigated_as in antibody_target['investigated_as']:
@@ -3185,7 +3189,7 @@ def audit_experiment_target(value, system, excluded_types):
                 # genetic modification within replicate after ENCD-4425.
                 target_matches = False
                 antibody_targets = []
-                for antibody_target in antibody['targets']:
+                for antibody_target in antibody.get('targets', []):
                     antibody_targets.append(antibody_target.get('name'))
                     if target['name'] == antibody_target.get('name'):
                         target_matches = True
@@ -3357,8 +3361,9 @@ def audit_experiment_ChIP_control(value, system, files_structure):
 
     for control_dataset in value['possible_controls']:
         if not is_control_dataset(control_dataset):
-            detail = ('Experiment {} is ChIP-seq but its control {} is not linked'
-                ' to a target with investigated.as = control'.format(
+            detail = (
+                'Experiment {} is ChIP-seq but its control {} does not '
+                'have a valid "control_type".'.format(
                     audit_link(path_to_text(value['@id']), value['@id']),
                     audit_link(path_to_text(control_dataset['@id']), control_dataset['@id'])
                 )
@@ -3551,7 +3556,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
             continue
 
         organism = biosample.get('organism')
-        antibody_targets = antibody['targets']
+        antibody_targets = antibody.get('targets', [])
         ab_targets_investigated_as = set()
         sample_match = False
 
