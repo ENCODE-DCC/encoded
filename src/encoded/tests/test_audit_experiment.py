@@ -3727,16 +3727,16 @@ def test_audit_experiment_inconsist_mod_target(testapp, experiment, replicate,
 
 
 def test_audit_experiment_chip_seq_control_target_failures(
-            testapp,
-            base_experiment,
-            experiment,
-            treatment_time_series,
-            file_fastq_3,
-            file_bam_1_1,
-            file_tsv_1_2,
-            analysis_step_run_bam,
-            pipeline_bam,
-            target_H3K9me3,
+    testapp,
+    base_experiment,
+    experiment,
+    treatment_time_series,
+    file_fastq_3,
+    file_bam_1_1,
+    file_tsv_1_2,
+    analysis_step_run_bam,
+    pipeline_bam,
+    target_H3K9me3,
 ):
     testapp.patch_json(
         treatment_time_series['@id'],
