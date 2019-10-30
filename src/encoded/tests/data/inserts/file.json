@@ -2872,5 +2872,25 @@
         "assembly": "GRCh38",
         "md5sum": "61111f06df8446c9cee45ed6e1961d54",
         "derived_from": ["ENCFF032OJW"]
+    },
+    {
+        "_test": "miRNA annotations",
+        "accession": "ENCFF136OPM",
+        "award": "/awards/U41HG006992",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2019-11-07T16:46:18.670068+00:00",
+        "derived_from": [
+            "/files/ENCFF001MXE/"
+        ],
+        "file_format": "gtf",
+        "assembly": "hg19",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "a8cf74b6e11515394414f4ebfa63d58e",
+        "output_type": "miRNA annotations",
+        "status": "released",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "talon_tanscript_annotations.gtf.gz",
+        "uuid": "12271a1b-53de-421c-9001-181acb0622c2"
     }
+
 ]

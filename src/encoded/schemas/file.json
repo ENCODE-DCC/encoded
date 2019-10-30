@@ -1150,6 +1150,7 @@
                         "methylation state at CHH",
                         "methylation state at CpG",
                         "microRNA quantifications",
+                        "miRNA annotations",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondria blacklisted regions",
@@ -1681,6 +1682,7 @@
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
         "transcriptome annotations": "annotation",
+        "miRNA annotations": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
