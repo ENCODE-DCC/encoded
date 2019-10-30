@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 15
 
+* Added new PacBio platform, PacBio Sequel II to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on PacBio platform.
 * *output_type* list was updated to include the enum *elements reference*
 
 ### Schema version 15
