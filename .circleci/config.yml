@@ -78,17 +78,7 @@ jobs:
       - run:
           name: Indexing tests
           command: |
-            mkdir test-results
-            npm run circleci-test
-            bin/test -m indexing --collect-only -qq |
-              while read test; do
-                [ -z "$test" ] && break
-                echo ${test%:*}
-              done | sort | circleci tests split | xargs -n 1 -I {} -t bin/test -v -v --timeout=400 --junitxml=test-results/{}_junit.xml -k {}
-          environment:
-            JEST_JUNIT_OUTPUT: "~/encoded/test-results/js-test-results.xml"
-      - store_test_results:
-          path: test-results
+            bin/test -s -vv -m indexing
   bdd-tests:
     executor: encoded-executor
     resource_class: large
