@@ -222,13 +222,13 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
         return
     target_failures = []
     if not control.get('control_type'):
-        detail = 'Control {} file {} has no target specified.'.format(
+        detail = 'Control {} file {} has no control_type specified.'.format(
             bam_type,
             audit_link(path_to_text(bam_id), bam_id)
         )
         target_failures.append(
             AuditFailure(
-                'missing target of control experiment',
+                'missing control_type of control experiment',
                 detail,
                 level='WARNING'
             )

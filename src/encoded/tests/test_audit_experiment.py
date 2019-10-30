@@ -3724,3 +3724,96 @@ def test_audit_experiment_inconsist_mod_target(testapp, experiment, replicate,
     audits = testapp.get(experiment['@id'] + '@@index-data').json['audit']
     assert any(detail['category'] == 'inconsistent genetic modification targets'
                for audit in audits.values() for detail in audit)
+
+
+def test_audit_experiment_chip_seq_control_target_failures(
+            testapp,
+            base_experiment,
+            experiment,
+            treatment_time_series,
+            file_fastq_3,
+            file_bam_1_1,
+            file_tsv_1_2,
+            analysis_step_run_bam,
+            pipeline_bam,
+            target_H3K9me3,
+):
+    testapp.patch_json(
+        treatment_time_series['@id'],
+        {'related_datasets': [experiment['@id']]}
+    )
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'target': target_H3K9me3['@id'],
+            'possible_controls': [treatment_time_series['@id']],
+            'assay_term_name': 'ChIP-seq',
+        }
+    )
+    testapp.patch_json(
+        file_tsv_1_2['@id'],
+        {
+            'derived_from': [file_bam_1_1['@id']],
+            'dataset': base_experiment['@id'],
+            'file_format_type': 'narrowPeak',
+            'file_format': 'bed',
+            'output_type': 'peaks',
+        }
+    )
+    testapp.patch_json(
+        file_bam_1_1['@id'],
+        {
+            'step_run': analysis_step_run_bam['@id'],
+            'dataset': treatment_time_series['@id'],
+            'derived_from': [file_fastq_3['@id']]
+        }
+    )
+
+    testapp.patch_json(
+        experiment['@id'],
+        {
+            'target': target_H3K9me3['@id'],
+            'assay_term_name': 'ChIP-seq'
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing control_type of control experiment'
+        for error in collect_audit_errors(res)
+    )
+    assert all(
+        error['category'] != 'improper control_type of control experiment'
+        for error in collect_audit_errors(res)
+    )
+    assert any(
+        error['category'] == 'unexpected target of control experiment'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        experiment['@id'],
+        {
+            'control_type': 'control',
+            'assay_term_name': 'ChIP-seq'
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing control_type of control experiment'
+        for error in collect_audit_errors(res)
+    )
+    assert any(
+        error['category'] == 'improper control_type of control experiment'
+        for error in collect_audit_errors(res)
+    )
+    assert any(
+        error['category'] == 'unexpected target of control experiment'
+        for error in collect_audit_errors(res)
+    )
+    ctrl_exp = testapp.get(experiment['@id'] + '@@edit').json
+    ctrl_exp.pop('target')
+    testapp.put_json(experiment['@id'], ctrl_exp)
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'unexpected target of control experiment'
+        for error in collect_audit_errors(res)
+    )
