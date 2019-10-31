@@ -68,14 +68,15 @@ class Patient(Item):
     name_key = 'accession'
     embedded = [
         'labs',
-        'vitals'
+        'vitals',
+        'consent'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
+        'consent': ('Consent', 'patient'),
     }
-    set_status_up = [
-    ]
+    set_status_up = []
     set_status_down = []
 
     @calculated_property( schema={
@@ -101,6 +102,18 @@ class Patient(Item):
         return group_values_by_vital(request, vitals)
 
 
+    @calculated_property(schema={
+        "title": "Consent",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Consent"
+        },
+    })
+    def consent(self, request, consent):
+        return paths_filtered_by_status(request, consent)
+
+
 @collection(
     name='lab-results',
     properties={
@@ -123,6 +136,19 @@ class VitalResult(Item):
     item_type = 'vital_results'
     schema = load_schema('encoded:schemas/vital_results.json')
     embeded = []
+
+
+@collection(
+    name='consent',
+    properties={
+        'title': 'Consent',
+        'description': 'Consent results pages',
+    })
+class Consent(Item):
+    item_type = 'consent'
+    schema = load_schema('encoded:schemas/consent.json')
+    embeded = []
+
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
