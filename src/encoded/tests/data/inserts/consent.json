@@ -1,0 +1,167 @@
+[
+    {
+        "future_contact": "Agree",
+        "future_research": "Agree",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT359MHZ",
+        "status": "released",
+        "uuid": "5b5e70c7-2c04-473e-9f16-c3a0cd73a029"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Agree",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT708IJT",
+        "status": "released",
+        "uuid": "02a36882-c990-4340-83ee-4f77a5d43406"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Refuse",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT026PGS",
+        "status": "released",
+        "uuid": "060cfb0d-334c-446b-8af6-f92d9accf499"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Refuse",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Refuse",
+        "overall": "Agree",
+        "patient": "KCEPT925TMI",
+        "status": "released",
+        "uuid": "90508437-ff87-478f-98fa-e3f5d5071f50"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Refuse",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Refuse",
+        "overall": "Agree",
+        "patient": "KCEPT480NBU",
+        "status": "released",
+        "uuid": "823a9c07-fe92-44e5-ba99-ddc71466c9b7"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Refuse",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT873QVK",
+        "status": "released",
+        "uuid": "9d038791-ffe0-4f0b-a5e2-9de6770c8b59"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Refuse",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT802XRB",
+        "status": "released",
+        "uuid": "ebf9eb20-56ff-41fe-8b8b-b195e3f24565"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Refuse",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Refuse",
+        "overall": "Agree",
+        "patient": "KCEPT240HMN",
+        "status": "released",
+        "uuid": "9c453714-67ab-4090-8f5c-bec5c64e24b4"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Agree",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT186NZW",
+        "status": "released",
+        "uuid": "08d4b613-0376-4070-8ef2-2ea97f247e14"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Agree",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Refuse",
+        "overall": "Agree",
+        "patient": "KCEPT139SOR",
+        "status": "released",
+        "uuid": "fc4cd663-c93f-41c8-b221-86083621bd3a"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Refuse",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Refuse",
+        "overall": "Agree",
+        "patient": "KCEPT604LAK",
+        "status": "released",
+        "uuid": "d6aae2c4-1ccb-44db-8395-be6a694f8054"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Refuse",
+        "genetic_information_release": "Refuse",
+        "hippa": "Refuse",
+        "information_release": "Refuse",
+        "overall": "Refuse",
+        "patient": "KCEPT692UHR",
+        "status": "released",
+        "uuid": "cfcd20f1-8771-4ce4-a95a-e5a18f49b038"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Agree",
+        "genetic_information_release": "Refuse",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT294KIZ",
+        "status": "released",
+        "uuid": "5d4e174d-b00b-4dfa-81c3-9b1de459cd32"
+    },
+    {
+        "future_contact": "Refuse",
+        "future_research": "Refuse",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Agree",
+        "overall": "Agree",
+        "patient": "KCEPT398JLK",
+        "status": "released",
+        "uuid": "4d1e1355-c783-455e-adc9-fdef6cca40a4"
+    },
+    {
+        "future_contact": "Agree",
+        "future_research": "Agree",
+        "genetic_information_release": "Agree",
+        "hippa": "Agree",
+        "information_release": "Refuse",
+        "overall": "Agree",
+        "patient": "KCEPT756AEN",
+        "status": "released",
+        "uuid": "21a2ed04-4d86-4fe4-8618-906b29ea59c1"
+    }
+]
