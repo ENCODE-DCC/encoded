@@ -277,7 +277,7 @@ class Biosample(Item):
             "type": "string",
             "linkTo": "GeneticModification",
         }
-    })
+    }, define=True)
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
 
@@ -512,6 +512,25 @@ class Biosample(Item):
 
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
+
+    @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def perturbed(
+        self,
+        request,
+        applied_modifications,
+        treatments=None,
+    ):
+        return bool(treatments) or any(
+            (
+                request.embed(m, '@@object').get('perturbation', False)
+                for m in applied_modifications
+            )
+        )
 
 
 def generate_summary_dictionary(

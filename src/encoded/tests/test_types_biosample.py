@@ -161,3 +161,58 @@ def test_biosample_summary_construct(testapp,
     assert res.json['object']['summary'] == (
         'Drosophila melanogaster '
         'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+
+
+def test_perturbed_gm(
+    testapp,
+    biosample_1,
+    interference_genetic_modification,
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'genetic_modifications': [interference_genetic_modification['@id']],
+        }
+    )
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is True
+
+
+def test_perturbed_treatment(
+    testapp,
+    biosample_1,
+    treatment,
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'treatments': [treatment['@id']],
+        }
+    )
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is True
+
+
+def test_perturbed_treatment_gm(
+    testapp,
+    biosample_1,
+    interference_genetic_modification,
+    treatment,
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'treatments': [treatment['@id']],
+            'genetic_modifications': [interference_genetic_modification['@id']],
+        }
+    )
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is True
+
+
+def test_perturbed_none(
+    testapp,
+    biosample_1,
+):
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is False
