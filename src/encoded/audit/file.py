@@ -465,7 +465,7 @@ def audit_file_matching_md5sum(value, system):
                     audit_link(path_to_text(value['@id']), value['@id'])
                 )
             )
-            yield AuditFailure('Incorrect matching_md5sum', detail, level='ERROR')
+            yield AuditFailure('incorrect matching_md5sum', detail, level='ERROR')
         elif file.get('status') in checked_statuses:
             matching_files.append(file['@id'])
             matching_files_links = [audit_link(path_to_text(file), file) for file in matching_files]
@@ -486,7 +486,7 @@ def audit_file_matching_md5sum(value, system):
             matching_files_joined
         )
     )
-    yield AuditFailure('Matching md5 sums', detail, level='WARNING')
+    yield AuditFailure('matching md5 sums', detail, level='WARNING')
 
     return
 

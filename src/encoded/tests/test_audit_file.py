@@ -1058,7 +1058,7 @@ def test_audit_matching_md5sum(testapp, file7, file6):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'Incorrect matching_md5sum'
+    assert any(error['category'] == 'incorrect matching_md5sum'
                for error in errors_list)
 
     testapp.patch_json(
@@ -1073,5 +1073,5 @@ def test_audit_matching_md5sum(testapp, file7, file6):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'Matching md5 sums'
+    assert any(error['category'] == 'matching md5 sums'
                for error in errors_list)
