@@ -184,13 +184,19 @@ def _get_instances_tag_data(main_args):
 def _get_ec2_client(main_args, instances_tag_data):
     session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
     ec2 = session.resource('ec2')
+    name_to_check = instances_tag_data['name']
+    if main_args.node_name:
+        if int(main_args.cluster_size) != 1:
+            print('--node-name can only be used --cluster-size 1')
+            return None
+        name_to_check = main_args.node_name
     if any(ec2.instances.filter(
             Filters=[
-                {'Name': 'tag:Name', 'Values': [instances_tag_data['name']]},
+                {'Name': 'tag:Name', 'Values': [name_to_check]},
                 {'Name': 'instance-state-name',
                  'Values': ['pending', 'running', 'stopping', 'stopped']},
             ])):
-        print('An instance already exists with name: %s' % instances_tag_data['name'])
+        print('An instance already exists with name: %s' % name_to_check)
         return None
     return ec2
 
@@ -216,7 +222,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         }
         user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
         # Additional head node
-        if main_args.es_wait:
+        if main_args.es_wait and main_args.node_name is None:
             master_data_insert = {
                 'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
                 'CC_DIR': cc_dir,
@@ -327,6 +333,8 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
             instances_tag_data['name'] = "{}datamaster".format(tmp_name[0:-1])
         elif is_cluster:
             instances_tag_data['name'] = "{}-data{}".format(tmp_name, i)
+        if main_args.node_name:
+            instances_tag_data['name'] = main_args.node_name
         if is_cluster_master or (is_cluster and not created_cluster_master):
             created_cluster_master = True
             output_list.extend(_get_instance_output(
@@ -657,6 +665,7 @@ def parse_args():
     parser.add_argument('--cluster-size', default=5, help="Elasticsearch cluster size")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
+    parser.add_argument('--node-name', default=None, type=hostname, help="Name of single node to add to already existing cluster")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
   
     # Database
@@ -713,6 +722,22 @@ def parse_args():
         cluster_tag = '-cluster'
         args.name = args.cluster_name.replace(cluster_tag, '')
         args.cluster_name = args.name + cluster_tag
+        # adding a single node to a pre existing cluster
+        if args.node_name and int(args.cluster_size) != 1:
+            raise ValueError(
+                'Adding a node to a preexisting cluster. '
+                '--cluster-size must be 1.'
+            )
+        # Elect clusters must have size of 4 or 5 due to
+        # hard coded discovery size in es-cluster-elect.yml
+        if (args.node_name is None and args.es_elect and
+            (int(args.cluster_size) < 4 or int(args.cluster_size) > 5)
+        ):
+            raise ValueError(
+                '--es-elect cluster must have a size of 4 or 5 '
+                'since election discovery is hard coded to 3 '
+                'in es-cluster-elect.yml'
+            )
     if args.es_wait and args.es_elect:
         raise ValueError('--es-wait and --es-elect cannot be used in the same command')
     # Set Role
