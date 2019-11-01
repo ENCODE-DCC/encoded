@@ -1,5 +1,48 @@
 Changes
 =======
+
+v92.0 (released) snovault 1.0.37
+---------------------------------------
+
+1. ENCD-4924 fix bugs in moving controls (#3001)
+2. ENCD-4928-run-npm-once (#3002)
+3. ENCD-4925-increase-circle-es-heap (#2999)
+4. ENCD-4895-adjust-long-read-RNA-audit (#2982)
+5. ENCD-4920-update-snovault-1.0.37 (#2997)
+6. ENCD-3336-Upgrade-postgres-11 (#2976)  
+7. ENCD-4892 region search refresh (#2978)
+8. ENCD-4861 add enum to user groups(#2964)
+9. ENCD-4849-fix-description-misalignment-in-docs (#2958)
+10. ENCD-4840-Add-Donor-accession-boost-value (#2975)
+11. ENCD-4674 move Control from Target to Experiment (#2866)
+12. ENCD-4894 Exclude long read RNA-seq from RNA fragment size audit and add tests for missing read_length (#2969)
+13. ENCD-4900 Add status check for matching md5 sum audit (#2972)
+14. ENCD-4903-image-update (#2983)
+15. [HOTFIX] SNO-120-stream-large-json (#2980)
+16. ENCD-4885 add entry for functional characterization assays (#2981)
+17. ENCD-4916-fix-circleci (#2986)
+18. ENCD-4816 Summary release date source change (#2961)
+19. ENCD-4722 install Valis as component (#2937)
+20. ENCD-4855 Extra-wide search facets (#2948)
+21. ENCD-4876-add-assembly-annotations (#2956)
+22. ENCD-4865 remove fcc assay term names from experiements (#2952)
+23. SNO-115-delete-old-search-code (#2966)
+24. ENCD-4731 Add audits for experiment series (#2960)
+25. ENCD-4890-library-target-size-range (#2970)
+26. ENCD-4901-redirect-file-downloads (#2968)
+27. ENCD-4902-fix-graph-x-tick (#2971)
+28. ENCD-4887-fix-audit-detail-bugs (#2957)
+29. ENCD-4862-fix-audit-script error (#2962)
+30. ENCD-4836-bring-back-alt-color-report-view-table (#2963)
+31. ENCD-4854 Change severity of missing controlled by audit (#2953)
+32. ENCD-4858-table-border (#2949)
+33. ENCD-4863-audit-paths (#2940)
+34. ENCD-4866 fix sorttable comment (#2947)
+35. ENCD-4868-update-organ-slims (#2954)
+36. ENCD-4888-add-admin-access-key-to-insert (#2946)
+37. ENCD-4079-fix-npm-audit-errors (#2913)
+38. ENCD-4816 Summary release date source change (#2961)
+
 v91.0 (released) snovault 1.0.36
 ---------------------------------------
 1. ENCD-4891-region-search-crash-with-position (#2955)
