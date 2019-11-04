@@ -60,11 +60,11 @@ def DBSession(app):
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
-    # from snovault.elasticsearch import ELASTIC_SEARCH
+    from snovault.elasticsearch import ELASTIC_SEARCH
     from snovault.elasticsearch import create_mapping
-    #app.registry[ELASTIC_SEARCH].delete_by_query(index='_all',
-                                                 #body={'query': {'match_all': {}}},
-                                                 #conflicts='proceed')
+    app.registry[ELASTIC_SEARCH].delete_by_query(index='_all',
+                                                 body={'query': {'match_all': {}}},
+                                                 conflicts='proceed')
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")

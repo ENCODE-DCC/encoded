@@ -10,7 +10,7 @@ executors:
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
-      - ES_JAVA_OPTS: -Xms1g -Xmx1g
+      - ES_JAVA_OPTS: -Xms2g -Xmx2g
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
 
 commands:
@@ -86,7 +86,7 @@ jobs:
               while read test; do
                 [ -z "$test" ] && break
                 echo ${test%:*}
-              done | sort | circleci tests split | xargs -n 1 -I {} -t bin/test -v -v --timeout=400 --junitxml=test-results/{}_junit.xml -k {}
+              done | sort | circleci tests split | xargs -n 1 -I {} -t bin/test -v -v --timeout=40 --junitxml=test-results/{}_junit.xml -k {}
           environment:
             JEST_JUNIT_OUTPUT: "~/encoded/test-results/js-test-results.xml"
       - store_test_results:
