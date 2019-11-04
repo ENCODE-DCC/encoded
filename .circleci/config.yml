@@ -10,7 +10,7 @@ executors:
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
-      - ES_JAVA_OPTS: -Xms512m -Xmx512m
+      - ES_JAVA_OPTS: -Xms1g -Xmx1g
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
 
 commands:
