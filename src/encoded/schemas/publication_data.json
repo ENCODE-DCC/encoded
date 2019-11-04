@@ -58,6 +58,7 @@
                 "type": "string",
                 "linkTo": "Publication"
             }
+        }
     },
     "facets": {
         "assay_term_name": {
