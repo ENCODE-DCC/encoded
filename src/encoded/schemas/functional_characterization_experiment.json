@@ -151,6 +151,14 @@
                 "type": "string",
                 "linkTo": "FunctionalCharacterizationExperiment"
             }
+        },
+        "control_type": {
+            "type": "string",
+            "title": "Control type",
+            "description": "The specific type of control if the experiment is a control.",
+            "enum": [
+                "control"
+            ]
         }
     },
     "facets": {
