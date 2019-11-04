@@ -654,11 +654,11 @@ def ucsc_browser_composite(testapp, lab, award):
 
 
 @pytest.fixture
-def publication_data(testapp, lab, award):
+def publication_data(testapp, lab, award, publication):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
-        'references': [],
+        'references': [publication['@id']],
     }
     return testapp.post_json('/publication_data', item).json['@graph'][0]
 

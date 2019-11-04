@@ -54,7 +54,7 @@
             "uniqueItems": true,
             "items": {
                 "title": "Reference",
-                "description": "A publication that provide smore information about the object.",
+                "description": "A publication that provides more information about the object.",
                 "type": "string",
                 "linkTo": "Publication"
             }
