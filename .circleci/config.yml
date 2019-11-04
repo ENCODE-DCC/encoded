@@ -74,7 +74,7 @@ jobs:
   indexing-tests:
     executor: encoded-executor
     # indexing tests fail using default medium resource_class
-    resource_class: large
+    resource_class: medium
     steps:
       - buildout
       - run:
