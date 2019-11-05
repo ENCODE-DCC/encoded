@@ -776,7 +776,7 @@ class DateSelectorFacet extends React.Component {
         // If there is a date filter applied, we'll use that filter to set state when the component is mounted
         if (initializationFlag) {
             // if a date range has already been selected, we will use that date range to populate drop-downs
-            const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
+            const existingFilter = this.props.filters.filter(filter => (filter.field === 'advancedQuery' && filter.term.includes('date')));
             if (existingFilter[0]) {
                 activeFilter = true;
                 const filterString = existingFilter[0].term;
@@ -935,7 +935,7 @@ class DateSelectorFacet extends React.Component {
         const currentYear = dayjs().format('YYYY');
         const currentMonth = dayjs().format('MM');
         const currentDay = dayjs().format('DD');
-        const quickLinkString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
+        const quickLinkString = `${searchBaseForDateRange}advancedQuery=${field}:[${currentYear - 1}-${currentMonth}-${currentDay} TO ${currentYear}-${currentMonth}-${currentDay}]`;
         this.setState({
             startMonth: currentMonth,
             endMonth: currentMonth,
@@ -958,7 +958,7 @@ class DateSelectorFacet extends React.Component {
         const daysInEndMonth = dayjs(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
 
         // if a date range has already been selected, we want to over-write that date range with a new one
-        const existingFilter = this.props.filters.filter(filter => filter.field === 'advancedQuery');
+        const existingFilter = this.props.filters.filter(filter => (filter.field === 'advancedQuery' && filter.term.includes('date')));
         let resetString = '';
         let searchBaseForDateRange = searchBase;
         if (existingFilter.length > 0) {
@@ -968,7 +968,7 @@ class DateSelectorFacet extends React.Component {
             resetString = searchBase;
         }
 
-        const searchString = `${searchBaseForDateRange}advancedQuery=@type:Experiment ${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
+        const searchString = `${searchBaseForDateRange}advancedQuery=${this.state.activeFacet}:[${this.state.startYear}-${this.state.startMonth}-01 TO ${this.state.endYear}-${this.state.endMonth}-${daysInEndMonth}]`;
 
         // Print selected date range next to date selector facet
         let dateRangeString = '';
