@@ -23,5 +23,14 @@ def audit_analysis_steps_closure(value, system):
         yield AuditFailure('incomplete analysis_steps', detail, level='ERROR')
 
 
+@audit_checker('Pipeline', frame=['assay_term_names'])
+def audit_pipeline_assay_term_names(value, system):
+    ''' All pipelines should have the assay_term_names property specified.
+    '''
+    if 'assay_term_names' not in value:
+        detail = ('Pipeline {} has no assay_term_names specified.'.format(audit_link(path_to_text(value['@id']), value['@id'])))
+        yield AuditFailure('missing assay_term_names', detail, level='ERROR')
+
+
 # def audit_pipeline_assay(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-3416
