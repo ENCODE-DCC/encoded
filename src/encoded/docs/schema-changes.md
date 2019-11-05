@@ -7,7 +7,7 @@ Guide to where to edit Source Code
 ----------------
 
 * **src** directory - contains all the python and javascript code for front and backends
-    * **audit** - contains python scripts that check json objects' metadata stored in the schema.
+    * **audit** - contains python scripts that check json objects' metadata stored in the schema
     * **schemas** - JSON schemas ([JSONSchema], [JSON-LD]) describing allowed types and values for all metadata objects
     * **tests** - Unit and integration tests
     * **types** -  business logic for dispatching URLs and producing the correct JSON
@@ -171,7 +171,7 @@ Exception: When making substantial changes to an existing schema, even if these 
     1) Changing the name of a property in the existing schema.
     2) Removing a property from the existing schema.
     3) A property that previously allowed free text is now changed to a possible list of allowed enums.
-    4) If an existing enum is removed from a property.
+    4) Removing an enum from an existing property.
 
 * Most of the cases described above are examples where existing objects could potentially fail the validation under the new schema version. Hence, an additional step of adding an upgrade script is required. This will ensure that all the existing objects will be upgraded (changed) such that they will be valid under the new schema version.
 
@@ -210,7 +210,7 @@ For example, if we included a minor change in treatment object such that *μg/kg
 5. Document the changes to the corresponding log file within the **schemas/changelogs** directory. 
 
 **Specific example from the treatment object schema change:**
-For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment units is shown below:
+For example, a minor change in the treatment object after version 11 that allowed one to use *μg/kg* as treatment amount units is shown below:
 
         ### Minor changes since schema version 11
 
@@ -231,12 +231,7 @@ Up until schema version 6 for the genetic modifications object, "validation" was
             "type": "string",
             "enum": [
                 "activation",
-                "analysis",
-                "overexpression",
-                "repression",
-                "tagging",
                 "validation",
-                "screening",
                 "expression"
             ]
         },
@@ -249,17 +244,12 @@ Replacing the enum "validation" by the enum "characterization" in the list of en
             "type": "string",
             "enum": [
                 "activation",
-                "analysis",
-                "overexpression",
-                "repression",
-                "tagging",
                 "characterization",
-                "screening",
                 "expression"
             ]
         },
 
-2. In the **schemas** directory, edit the existing properties in the corresponding JSON file named after the object and increment the schema version.
+2. In the **schemas** directory, edit the properties in the corresponding JSON file named after the object and increment the schema version..
 
 **Specific example from the genetic modifications object upgrade:**
 
