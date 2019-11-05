@@ -651,6 +651,10 @@ class RegionIndexer(Indexer):
         #else:  Other file types?
 
         if file_data:
+            if self.test_instance:
+                chr1 = file_data['chr1']
+                file_data.clear()
+                file_data['chr1'] = chr1
             return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, 'encoded')
 
         return False
