@@ -23,7 +23,7 @@ def audit_analysis_steps_closure(value, system):
         yield AuditFailure('incomplete analysis_steps', detail, level='ERROR')
 
 
-@audit_checker('Pipeline', frame=['assay_term_names'])
+@audit_checker('Pipeline', frame='object')
 def audit_pipeline_assay_term_names(value, system):
     ''' All pipelines should have the assay_term_names property specified.
     '''
