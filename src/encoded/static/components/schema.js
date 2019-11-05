@@ -36,6 +36,7 @@ const excludedTerms = [
     'file_format_file_extension',
     'sort_by',
     'anyOf',
+    'oneOf',
 ];
 
 
