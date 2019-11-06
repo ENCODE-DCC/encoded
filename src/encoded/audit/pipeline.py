@@ -27,7 +27,7 @@ def audit_analysis_steps_closure(value, system):
 def audit_pipeline_assay_term_names(value, system):
     ''' All pipelines should have the assay_term_names property specified.
     '''
-    if 'assay_term_names' not in value:
+    if 'assay_term_names' not in value or not 'assay_term_names' in value:
         detail = ('Pipeline {} has no assay_term_names specified.'.format(audit_link(path_to_text(value['@id']), value['@id'])))
         yield AuditFailure('missing assay_term_names', detail, level='ERROR')
 
