@@ -4,19 +4,22 @@
 # apt deps:
 
 GIT_REPO="$1"
-GIT_BRANCH="$2"
-ROLE="$3"
-ES_IP="$4"
-ES_PORT="$5"
-REGION_INDEX="$6"
-APP_WORKERS="$7"
+GIT_REMOTE="$2"
+GIT_BRANCH="$3"
+ROLE="$4"
+ES_IP="$5"
+ES_PORT="$6"
+REGION_INDEX="$7"
+APP_WORKERS="$8"
+
+git_uri="$GIT_REMOTE/$GIT_BRANCH"
 
 encd_home='/srv/encoded'
 mkdir "$encd_home"
 chown encoded:encoded "$encd_home"
 cd "$encd_home"
 sudo -u encoded git clone "$GIT_REPO" .
-sudo -u encoded git checkout -b "$GIT_BRANCH" origin/"$GIT_BRANCH"
+sudo -u encoded git checkout -b "$GIT_BRANCH" "$git_uri"
 sudo pip3 install -U zc.buildout setuptools redis
 sudo -u encoded buildout bootstrap
 sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c "$ROLE".cfg buildout:es-ip="$ES_IP" buildout:es-port="$ES_PORT"

@@ -150,9 +150,20 @@ def _get_instances_tag_data(main_args):
         'username': None,
     }
     instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
-    if not subprocess.check_output(
+    # check if commit is a tag first then branch
+    is_tag = False
+    tag_output = subprocess.check_output(
+        ['git', 'tag', '--contains', instances_tag_data['commit']]
+    ).strip().decode()
+    if tag_output:
+        if tag_output == main_args.branch:
+            is_tag = True
+    is_branch = False
+    if subprocess.check_output(
             ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
         ).strip():
+        is_branch = True
+    if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
         sys.exit(1)
     instances_tag_data['username'] = getpass.getuser()
@@ -167,7 +178,7 @@ def _get_instances_tag_data(main_args):
         )
         if main_args.es_wait or main_args.es_elect:
             instances_tag_data['name'] = 'elasticsearch-' + instances_tag_data['name']
-    return instances_tag_data
+    return instances_tag_data, is_tag
 
 
 def _get_ec2_client(main_args, instances_tag_data):
@@ -184,9 +195,10 @@ def _get_ec2_client(main_args, instances_tag_data):
     return ec2
 
 
-def _get_run_args(main_args, instances_tag_data, config_yaml):
+def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     master_user_data = None
     cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
+    git_remote = 'origin' if not is_tag else 'tags'
     if main_args.es_wait or main_args.es_elect:
         # Data node clusters
         count = int(main_args.cluster_size)
@@ -198,6 +210,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_OPT_FILENAME': es_opt,
             'GIT_BRANCH': main_args.branch,
+            'GIT_REMOTE': git_remote,
             'GIT_REPO': main_args.git_repo,
             'JVM_GIGS': main_args.jvm_gigs,
         }
@@ -210,6 +223,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
                 'CLUSTER_NAME': main_args.cluster_name,
                 'ES_OPT_FILENAME': 'es-cluster-head.yml',
                 'GIT_BRANCH': main_args.branch,
+                'GIT_REMOTE': git_remote,
                 'GIT_REPO': main_args.git_repo,
                 'JVM_GIGS': main_args.jvm_gigs,
             }
@@ -233,6 +247,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_BRANCH': main_args.branch,
+            'GIT_REMOTE': git_remote,
             'GIT_REPO': main_args.git_repo,
             'PG_VERSION': main_args.postgres_version,
             'REDIS_IP': main_args.redis_ip,
@@ -470,7 +485,7 @@ def main():
     main_args = parse_args()
     build_config, build_path, build_type = _get_cloud_config_yaml(main_args)
     if main_args.diff_configs:
-        # instances_tag_data = _get_instances_tag_data(main_args)
+        # instances_tag_data, is_tag = _get_instances_tag_data(main_args)
         # run_args = _get_run_args(main_args, instances_tag_data, build_config)
         # print(run_args['user_data'])
         sys.exit(0)
@@ -483,13 +498,13 @@ def main():
     # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
     print('# Deploying %s' % build_type)
     print("# $ {}".format(' '.join(sys.argv)))
-    instances_tag_data = _get_instances_tag_data(main_args)
+    instances_tag_data, is_tag = _get_instances_tag_data(main_args)
     if instances_tag_data is None:
         sys.exit(10)
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
-    run_args = _get_run_args(main_args, instances_tag_data, build_config)
+    run_args = _get_run_args(main_args, instances_tag_data, build_config, is_tag=is_tag)
     bdm = _get_bdm(main_args)
     # Create aws demo instance or frontend instance
     # OR instances for es_wait nodes, es_elect nodes depending on count
