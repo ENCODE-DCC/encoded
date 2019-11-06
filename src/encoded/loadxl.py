@@ -260,7 +260,7 @@ def read_single_sheet(path, name=None):
 
     if name is None:
         root, ext = os.path.splitext(path)
-        stream = open(path, 'r')
+        stream = open(path, 'rb')
 
         if ext == '.xlsx':
             return read_xl(stream)
@@ -284,19 +284,19 @@ def read_single_sheet(path, name=None):
         names = zf.namelist()
 
         if (name + '.xlsx') in names:
-            stream = zf.open(name + '.xlsx', 'r')
+            stream = zf.open(name + '.xlsx')
             return read_xl(stream)
 
         if (name + '.tsv') in names:
-            stream = io.TextIOWrapper(zf.open(name + '.tsv'), encoding='utf-8')
+            stream = zf.open(name + '.tsv')
             return read_csv(stream, dialect='excel-tab')
 
         if (name + '.csv') in names:
-            stream = io.TextIOWrapper(zf.open(name + '.csv'), encoding='utf-8')
+            stream = zf.open(name + '.csv')
             return read_csv(stream)
 
         if (name + '.json') in names:
-            stream = io.TextIOWrapper(zf.open(name + '.json'), encoding='utf-8')
+            stream = zf.open(name + '.json')
             return read_json(stream)
 
     if os.path.isdir(path):
@@ -307,15 +307,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if os.path.exists(root + '.tsv'):
-            stream = open(root + '.tsv', 'rU')
+            stream = open(root + '.tsv', 'rb')
             return read_csv(stream, dialect='excel-tab')
 
         if os.path.exists(root + '.csv'):
-            stream = open(root + '.csv', 'rU')
+            stream = open(root + '.csv', 'rb')
             return read_csv(stream)
 
         if os.path.exists(root + '.json'):
-            stream = open(root + '.json', 'r')
+            stream = open(root + '.json', 'rb')
             return read_json(stream)
 
     return []
@@ -328,12 +328,14 @@ def read_xl(stream):
 
 def read_csv(stream, **kw):
     import csv
-    return cast_row_values(csv.DictReader(stream, **kw))
+    decoded = io.TextIOWrapper(stream, encoding='utf-8', newline='')
+    return cast_row_values(csv.DictReader(decoded, **kw))
 
 
 def read_json(stream):
     import json
-    obj = json.load(stream)
+    decoded = io.TextIOWrapper(stream, encoding='utf-8', newline='')
+    obj = json.load(decoded)
     if isinstance(obj, dict):
         return [obj]
     return obj
