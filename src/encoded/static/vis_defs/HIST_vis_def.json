@@ -16,8 +16,8 @@
                 "Replicated peaks",
                 "Stable peaks",
                 "Peaks",
-                "Fold change over control",
                 "Signal p-value",
+                "Fold change over control",
                 "Signal"
             ],
             "groups": {
