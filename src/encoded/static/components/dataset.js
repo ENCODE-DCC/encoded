@@ -1347,7 +1347,7 @@ export const SeriesComponent = (props, reactContext) => {
                                 <div data-test="treatmenttermname">
                                     <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
                                     <dd>
-                                        {context.treatment_term_name.map(name => name).join(', ')}
+                                        {context.treatment_term_name.join(', ')}
                                     </dd>
                                 </div>
                             : null}
