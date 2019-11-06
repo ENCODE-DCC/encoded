@@ -7,6 +7,7 @@ a2enmod headers
 a2enmod proxy_http
 a2enmod rewrite
 a2enmod ssl
+a2enmod log_forensic
 a2ensite encoded.conf
 a2dissite 000-default
 a2enconf logging
