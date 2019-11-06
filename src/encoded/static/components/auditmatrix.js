@@ -400,7 +400,7 @@ const MatrixHeader = ({ context }) => {
                     <SearchFilter context={context} />
                 </div>
                 <div className="matrix-header__search-controls">
-                    <h4>Showing {context.total} results</h4>
+                    <h4>Showing audits from {context.total} experiment{context.total === 1 ? '' : 's'}</h4>
                     <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} />
                 </div>
             </div>
