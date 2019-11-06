@@ -9,6 +9,7 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
+import Radiation from "./radiation";
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -27,11 +28,15 @@ class Patient extends React.Component {
 
         let hasLabs = false;
         let hasVitals = false;
+        let hasRadiation = false;
         if (Object.keys(this.props.context.labs).length > 0) {
           hasLabs = true;
         };
         if (Object.keys(this.props.context.vitals).length > 0) {
           hasVitals = true;
+        };
+        if (Object.keys(this.props.context.radiation).length > 0) {
+          hasRadiation = true;
         };
 
         return (
@@ -94,6 +99,14 @@ class Patient extends React.Component {
                     </PanelHeading>
                     <PanelBody>
                         <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
+                    </PanelBody>
+                </Panel> }
+                { hasRadiation && <Panel>
+                    <PanelHeading>
+                        <h4>Radiation History</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
                     </PanelBody>
                 </Panel> }
             </div>
