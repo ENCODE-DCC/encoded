@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 25
 * Added *MouseDevSeries* enum to *internal_tags*
+* Added *consensus DNase hypersensitivity sites* enum to *annotation_type*
 
 ### Schema version 25
 
