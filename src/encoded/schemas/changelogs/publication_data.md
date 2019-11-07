@@ -1,6 +1,8 @@
 ## Changelog for publication_data.json
 
 ### Minor changes since schema version 15
+
+* *references* was set to have a minimum of 1.
 * Added *MouseDevSeries* enum to *internal_tags*
 
 ### Schema version 15
@@ -18,4 +20,3 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
-
