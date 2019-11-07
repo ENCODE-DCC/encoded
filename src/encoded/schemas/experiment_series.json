@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        { "$ref": "mixins.json#/submitter_comment" },
+        { "$ref": "series.json#/properties" }
     ],
     "dependencies": {
         "status": {
@@ -46,17 +47,7 @@
             "default": "1"
         },
         "related_datasets": {
-            "title": "Additional datasets",
-            "description": "List of datasets to be associated with the series.",
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
-            "items": {
-                "title": "Dataset",
-                "comment": "See dataset.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Experiment"
-            }
+            "minItems": 1
         }
     },
     "facets": {
