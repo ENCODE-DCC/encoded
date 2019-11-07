@@ -43,8 +43,6 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
     except:
         return('', '', '')
     else:
-        if 'mappings' not in new_response:
-            print(new_response)
         if not len(new_response['mappings']):
             return('', '', '')
         data = new_response['mappings'][0]['mapped']
