@@ -2874,23 +2874,20 @@
         "derived_from": ["ENCFF032OJW"]
     },
     {
-        "_test": "miRNA annotations",
-        "accession": "ENCFF136OPM",
-        "award": "/awards/U41HG006992",
+        "_test": "microRNA miRNA annotations",
+        "accession": "ENCFF783YZT",
+        "award": "/awards/U41HG006992/",
         "dataset": "ENCSR123MRN",
         "date_created": "2019-11-07T16:46:18.670068+00:00",
-        "derived_from": [
-            "/files/ENCFF001MXE/"
-        ],
-        "file_format": "gtf",
+        "file_format": "gff",
+        "file_format_type": "gff3",
         "assembly": "hg19",
         "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "a8cf74b6e11515394414f4ebfa63d58e",
+        "md5sum": "39589bdd2de81dfea7cb5380a6aeb1e7",
         "output_type": "miRNA annotations",
         "status": "released",
-        "submitted_by": "sit.duis@blandit.hendrerit",
-        "submitted_file_name": "talon_tanscript_annotations.gtf.gz",
-        "uuid": "12271a1b-53de-421c-9001-181acb0622c2"
+        "file_size": 1,
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "bcea9611-9262-4c13-b9e5-5c156acdf7c0"
     }
-
 ]
