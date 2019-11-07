@@ -281,7 +281,7 @@ const ExperimentComponent = (props, reactContext) => {
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
-    let treatments = [];
+    const treatments = [];
 
     if (result.replicates && result.replicates.length > 0) {
         biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
@@ -427,14 +427,7 @@ const DatasetComponent = (props, reactContext) => {
 
                             if (lifeStage) { lifeStages.push(lifeStage); }
                             if (biosample.age_display) { ages.push(biosample.age_display); }
-
-                            if (biosample.treatments) {
-                                biosample.treatments.forEach((treatment) => {
-                                    if (!treatments.some(t => t.treatement_term_id === treatment.term_id)) {
-                                        treatments.push(treatment);
-                                    }
-                                });
-                            }
+                            if (biosample.treatments) { treatments = [...treatments, ...biosample.treatments]; }
                         }
                     });
                 }
