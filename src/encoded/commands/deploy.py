@@ -645,10 +645,10 @@ def parse_args():
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
   
     # Database
-    parser.add_argument('--postgres-version', default='9.3', help="Postegres version. '9.3' or '11'")
+    parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
     parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
     
     # AWS 
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
