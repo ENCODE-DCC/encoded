@@ -816,6 +816,6 @@ def search_result_actions(request, doc_types, es_results, position=None):
             bucket_has_doc):
         actions['batch_download'] = request.route_url(
             'batch_download',
-            search_params=request.query_string
+            search_params='?' + request.query_string
         )
     return actions

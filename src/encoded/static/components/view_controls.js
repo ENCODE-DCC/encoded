@@ -287,7 +287,7 @@ export class BatchDownloadControls extends React.Component {
 
     handleDownloadClick() {
         const queryString = getQueryFromFilters(this.props.results.filters);
-        this.context.navigate(`/batch_download/${queryString}`);
+        this.context.navigate(`/batch_download/?${queryString}`);
     }
 
     render() {
