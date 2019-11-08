@@ -327,6 +327,34 @@
                     "rRNA"
                 ]
             }
+        },
+        "adapters": {
+            "type": "array",
+            "title": "Sequencing adapters",
+            "description": "Adapter(s) used during library preparation",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequencing adapter",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "adapter_type": {
+                        "title": "Adapter type",
+                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                        "type": "string",
+                        "enum": [
+                            "5' adapter",
+                            "3' adapter"
+                        ]
+                    },
+                    "adapter_file": {
+                        "title": "Adapter file",
+                        "description": "One file with adapter sequence(s).",
+                        "type": "string",
+                        "linkTo": "File"
+                    }
+                }
+            }
         }
     },
     "columns": {

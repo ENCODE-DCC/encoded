@@ -2889,5 +2889,65 @@
         "file_size": 1,
         "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
         "uuid": "bcea9611-9262-4c13-b9e5-5c156acdf7c0"
+    },
+    {
+        "_test": "microRNA-seq 3' adapter",
+        "file_format": "txt",
+        "file_size": 61,
+        "accession": "ENCFF463QEL",
+        "date_created": "2019-07-01T22:25:23.688980+00:00",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "dataset": "/references/ENCSR819DEL/",
+        "aliases": [
+            "ali-mortazavi:miRNA-three-prime-adapter"
+        ],
+        "md5sum": "e9d9cc919aad107b62bbc2596c4a9e99",
+        "lab": "/labs/ali-mortazavi/",
+        "status": "in progress",
+        "award": "/awards/U54HG006998/",
+        "submitted_file_name": "/Users/zach/tickets/WRAN-1139/files/full_sized_reference_files_adapters_three_prime_adapter.fasta",
+        "content_md5sum": "e9d9cc919aad107b62bbc2596c4a9e99",
+        "no_file_available": false,
+        "output_type": "sequence adapters"
+    },
+    {
+        "_test": "microRNA-seq 5' adapter",
+        "content_md5sum": "dcc144ecfe88b6b1bbe15b118756534b",
+        "dataset": "/references/ENCSR819DEL/",
+        "date_created": "2019-07-01T22:25:12.551139+00:00",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "lab": "/labs/ali-mortazavi/",
+        "no_file_available": false,
+        "submitted_file_name": "/Users/zach/tickets/WRAN-1139/files/full_sized_reference_files_adapters_five_prime_adapter_set3.fasta",
+        "award": "/awards/U54HG006998/",
+        "file_format": "txt",
+        "aliases": [
+            "ali-mortazavi:miRNA-five-prime-adapter-set3"
+        ],
+        "accession": "ENCFF980GYX",
+        "output_type": "sequence adapters",
+        "file_size": 52,
+        "md5sum": "dcc144ecfe88b6b1bbe15b118756534b",
+        "status": "in progress"
+    },
+    {
+        "_test": "microRNA-seq 5' adapter",
+        "accession": "ENCFF379BCO",
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/ali-mortazavi/",
+        "file_size": 52,
+        "content_md5sum": "2b5f8ece618483ed43edd96eecacc8e4",
+        "file_format": "txt",
+        "output_type": "sequence adapters",
+        "submitted_file_name": "/Users/zach/tickets/WRAN-1139/files/full_sized_reference_files_adapters_five_prime_adapter_set4.fasta",
+        "md5sum": "2b5f8ece618483ed43edd96eecacc8e4",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "no_file_available": false,
+        "date_created": "2019-07-01T22:25:14.861061+00:00",
+        "dataset": "/references/ENCSR819DEL/",
+        "aliases": [
+            "ali-mortazavi:miRNA-five-prime-adapter-set4"
+        ],
+        "status": "in progress"
     }
 ]

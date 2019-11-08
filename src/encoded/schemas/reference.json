@@ -56,7 +56,8 @@
                 "genome",
                 "mappability",
                 "spike-in",
-                "functional elements"
+                "functional elements",
+                "sequence adapters"
             ]
         },
         "organism": {

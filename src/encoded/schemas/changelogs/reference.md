@@ -4,6 +4,7 @@
 
 * *functional elements* is added to the enums list of *reference_type* property
 * Added *MouseDevSeries* enum to *internal_tags*
+* *reference_type* was updated to include the enum *adapters*
 
 ### Schema version 16
 
@@ -24,4 +25,3 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
-
