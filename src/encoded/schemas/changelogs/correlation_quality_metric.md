@@ -1,6 +1,6 @@
 ## Changelog for correlation_quality_metric.json
 
-### Minor changes since schema version 8x
+### Minor changes since schema version 8
 
 * *quality_metric_of* was set to have a minimum of 1.
 
