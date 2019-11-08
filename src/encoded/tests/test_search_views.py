@@ -514,12 +514,20 @@ def test_search_views_audit_view_no_matrix_defined(workbook, testapp):
 
 
 def test_search_views_reference_epigenome_matrix_response(workbook, testapp):
-    r = testapp.get('/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus')
+    r = testapp.get(
+        '/reference-epigenome-matrix/'
+        '?type=Experiment&related_series.@type=ReferenceEpigenome'
+        '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'
+    )
     assert 'aggregations' not in r.json
     assert 'facets' in r.json
     assert 'total' in r.json
     assert r.json['@type'] == ['ReferenceEpigenomeMatrix']
-    assert r.json['@id'] == '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'
+    assert r.json['@id'] == (
+        '/reference-epigenome-matrix/'
+        '?type=Experiment&related_series.@type=ReferenceEpigenome'
+        '&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus'
+    )
     assert r.json['@context'] == '/terms/'
     assert r.json['notification'] == 'Success'
     assert r.json['title'] == 'Reference Epigenome Matrix'
@@ -529,9 +537,13 @@ def test_search_views_reference_epigenome_matrix_response(workbook, testapp):
     assert r.json['matrix']['x']['group_by'] == ['assay_title', 'target.label']
     assert r.json['matrix']['x']['label'] == 'Assay'
     assert r.json['matrix']['y']['group_by'] == [
-        'biosample_ontology.classification', 'biosample_ontology.term_name']
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
     assert r.json['matrix']['y']['label'] == 'Biosample'
-    assert len(r.json['matrix']['y'][
-        'biosample_ontology.classification']['buckets']) > 0
-    assert len(r.json['matrix']['y'][
-        'biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']) > 0
+    assert len(
+        r.json['matrix']['y']['biosample_ontology.classification']['buckets']
+    ) > 0
+    assert len(
+        r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
+    ) > 0
