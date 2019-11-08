@@ -676,6 +676,8 @@ const Term = (props) => {
         href = null;
     } else if (selected) {
         href = selected;
+    } else if (negated) {
+        href = searchBase;
     } else if (facet.type === 'exists') {
         if (term === 'yes') {
             href = `${searchBase}${field}=*`;
@@ -708,6 +710,12 @@ const Term = (props) => {
     return (
         <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
             {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
+            <div className="facet-term__selector facet-term__plus">
+                {(selected || negated) ? null : <a href={href} onClick={href ? onFilter : null} title={'Include items with this term'}><i className="icon icon-plus-circle" /></a>}
+            </div>
+            <div className="facet-term__selector facet-term__minus">
+                {(selected || negated || exists) ? null : <a href={negationHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
+            </div>
             <a className="facet-term__item" href={href} onClick={href ? onFilter : null}>
                 <div className="facet-term__text">
                     {em ? <em>{title}</em> : <span>{title}</span>}
@@ -715,9 +723,6 @@ const Term = (props) => {
                 {negated ? null : <div className="facet-term__count">{count}</div>}
                 {(selected || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
             </a>
-            <div className="facet-term__negator">
-                {(selected || negated || exists) ? null : <a href={negationHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
-            </div>
         </li>
     );
 };

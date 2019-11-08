@@ -202,27 +202,33 @@
     }
 
     // Button to negate a facet term...
-    @at-root #{&}__negator {
+    @at-root #{&}__selector {
         flex: 0 0 15px;
         margin-left: 5px;
         padding: 0 2px 0 0;
         width: 15px;
         height: 10px;
         text-align: right;
+        font-size: 1rem;
 
         > a {
-            display: none;
-            width: 10px;
-            height: 10px;
-            color: #e50400;
+            width: 15px;
+            height: 15px;
         }
     }
 
-    /// ...only appears while hovering anywhere over the term.
-    &:hover {
-        .facet-term__negator > a {
-            display: inline;
-        }
+}
+
+.facet-term__plus {
+    a {
+        color: #2A6044;
+    }
+}
+
+.facet-term__minus {
+    a {
+        color: #FC9E4F;
+        // color: #e50400;
     }
 }
 
