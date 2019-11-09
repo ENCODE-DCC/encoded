@@ -274,7 +274,7 @@
                             "not": {
                                 "properties": {
                                     "introduced_elements": {
-                                        "enum": ["sheared genomic DNA", "genomic DNA fragments"]
+                                        "enum": ["sheared genomic DNA", "genomic DNA regions"]
                                     }
                                 }
                             }
@@ -283,7 +283,7 @@
                             "required": ["donor"],
                             "properties": {
                                 "introduced_elements": {
-                                    "enum": ["sheared genomic DNA", "genomic DNA fragments"]
+                                    "enum": ["sheared genomic DNA", "genomic DNA regions"]
                                 }
                             }
                         }
@@ -294,7 +294,7 @@
         "donor": {
             "properties": {
                 "introduced_elements": {
-                    "enum": ["sheared genomic DNA", "genomic DNA fragments"]
+                    "enum": ["sheared genomic DNA", "genomic DNA regions"]
                 },
                 "purpose": {
                     "enum": ["characterization"]
@@ -454,7 +454,7 @@
         },
         "donor": {
             "title": "Donor",
-            "description": "The donor or strain the sheared genomic DNA or genomic DNA fragments originated from.",
+            "description": "The donor or strain the sheared genomic DNA or genomic DNA regions originated from.",
             "type": "string",
             "linkTo": "Donor"            
         },
@@ -643,7 +643,7 @@
             "type": "string",
             "enum": [
                 "sheared genomic DNA",
-                "genomic DNA fragments",
+                "genomic DNA regions",
                 "synthesized DNA"
             ]
         },

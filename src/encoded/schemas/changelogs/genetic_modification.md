@@ -2,9 +2,9 @@
 
 ### Minor changes since schema version 8
 * Added calculated property *perturbed* to indicate genetic modifications which cause genetic perturbations.
-* *donor* property was added to allow specification of the origin of the sheared genomic DNA elements or genomic DNA fragments
+* *donor* property was added to allow specification of the origin of the sheared genomic DNA elements or genomic DNA regions
 * *non-specific target control* was added to the *purpose* enum.
-* *genomic DNA fragments* was added to the *introduced_elements* enum to describe selected fragments originating from donor DNA
+* *genomic DNA regions* was added to the *introduced_elements* enum to describe selected regions derived from donor DNA
 
 ### Schema version 8
 

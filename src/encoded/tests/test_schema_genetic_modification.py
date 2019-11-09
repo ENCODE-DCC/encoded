@@ -142,7 +142,7 @@ def introduced_elements(lab, award):
         'category': 'episome',
         'purpose': 'characterization',
         'method': 'transient transfection',
-        'introduced_elements': 'genomic DNA fragments'
+        'introduced_elements': 'genomic DNA regions'
     }
 
 
@@ -388,7 +388,7 @@ def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
 
 
 def test_introduced_elements_properties(testapp, introduced_elements, mouse_donor):
-    # genomic DNA fragments in introduced_elements property requires donor specification
+    # genomic DNA regions in introduced_elements property requires donor specification
     testapp.post_json('/genetic_modification', introduced_elements, status=422)
     introduced_elements.update({'donor': mouse_donor['@id']})
     testapp.post_json('/genetic_modification', introduced_elements, status=201)
