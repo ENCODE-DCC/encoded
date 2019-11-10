@@ -1,5 +1,11 @@
 'use strict';
 
+// IE11 hack to install promise, despite babel
+// issue- https://www.bountysource.com/issues/67086174-ie-support-promise-is-undefined-bundles$
+if (window && !window.Promise) {
+    window.Promise = require('bluebird');
+}
+
 // Read and clear stats cookie
 var cookie = require('js-cookie');
 window.stats_cookie = cookie.get('X-Stats') || '';
