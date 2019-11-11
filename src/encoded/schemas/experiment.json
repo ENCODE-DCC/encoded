@@ -280,9 +280,6 @@
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
         },
-        "replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
-        },
         "date_released": {
             "title": "Date released",
             "length": "long"
