@@ -247,7 +247,7 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
                'inconsistent paired_with' for error in errors_list)
 
 
-def test_audit_file1_missing_paired_with(testapp, file2):
+def test_audit_file1_missing_paired_with(testapp, file2, file4):
     testapp.patch_json(file2['@id'], {
                         'run_type': 'paired-ended', 'paired_end': '1'})
     res = testapp.get(file2['@id'] + '@@index-data')
@@ -255,8 +255,16 @@ def test_audit_file1_missing_paired_with(testapp, file2):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        print(errors_list)
     assert any(error['category'] ==
+                'missing paired_end 2 file' for error in errors_list)
+    testapp.patch_json(file2['@id'], {
+                        'paired_with': file4['uuid']})
+    res2  = testapp.get(file2['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
                 'missing paired_end 2 file' for error in errors_list)
 
 
