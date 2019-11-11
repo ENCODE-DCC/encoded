@@ -133,6 +133,19 @@ def starr_seq(lab, award):
         'method': 'transient transfection'
     }
 
+
+@pytest.fixture
+def introduced_elements(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'episome',
+        'purpose': 'characterization',
+        'method': 'transient transfection',
+        'introduced_elements': 'genomic DNA regions'
+    }
+
+
 def test_crispr_deletion_missing_site(testapp, crispr_deletion):
     # modified_site_(by_target_id|by_coordinates|by_sequence) must be specified for deletions
     res = testapp.post_json('/genetic_modification', crispr_deletion, expect_errors=True)
@@ -372,3 +385,10 @@ def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
     starr_seq.update({'donor': mouse_donor['@id']})
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_introduced_elements_properties(testapp, introduced_elements, mouse_donor):
+    # genomic DNA regions in introduced_elements property requires donor specification
+    testapp.post_json('/genetic_modification', introduced_elements, status=422)
+    introduced_elements.update({'donor': mouse_donor['@id']})
+    testapp.post_json('/genetic_modification', introduced_elements, status=201)
