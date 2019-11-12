@@ -148,14 +148,7 @@ class PatientChart extends React.Component {
         let endDate = Math.max(...allDatesUnix) + 1000*60*60*24;
 
         for (let i = 0; i < this.features.length; i++) {
-            // for (let i = 0; i < 3; i++) {
             let feature = this.features[i];
-            /*
-            if (this.featuresChecked[feature]["checked"] === false) {
-                continue;
-            }
-            */
-            //let filteredData = this.data.filter(i => { return i.patient === this.state.currentPatient && i.lab === feature });
             let filteredData = this.data[this.features[i]];
             let filteredDates = this.data[this.features[i]].map(i => {return i.date;});
             let filteredDatesUnix = filteredDates.map(i => { return this.parseTime(i) });
@@ -174,12 +167,15 @@ class PatientChart extends React.Component {
                   rangeLows.push([dataPoints[0].reference_low]);
                 };
             };
-            let rangeDataForDisplay = [];
+            let highs = [];
+            let lows = []
             for (let i = 0; i < rangeValues.length; i++) {
               if (rangeValues[i][1][0] === undefined && rangeValues[i][1][1] === undefined) {
-                rangeDataForDisplay.push(-1);
+                lows.push(-1);
+                highs.push(-1);
               } else {
-                rangeDataForDisplay.push("Reference low: "+ rangeValues[i][1][0] + ", Reference high: " + rangeValues[i][1][1]);
+                lows.push(rangeValues[i][1][0]);
+                highs.push(rangeValues[i][1][1])
 
               };
             };
@@ -193,13 +189,6 @@ class PatientChart extends React.Component {
 
             let chart = {
                 type: "mixed",
-                // crosshairX: {
-                //     shared: true,
-                //     plotLabel: {
-                //         // text: "%data-day " + feature + ": %v " + unit //uncomment this to use dates in label
-                //         text: feature + ": %v " + unit
-                //     }
-                // },
                 plot: {
                     marker: {
 
@@ -221,7 +210,9 @@ class PatientChart extends React.Component {
                   {
                     type: 'line',
                     values: values,
-                    "data-range": rangeDataForDisplay,
+                    //"data-range": rangeDataForDisplay,
+                    "data-highs": highs,
+                    "data-lows": lows,
                     // "data-day": allDates, //uncomment this to use dates in label
                     lineWidth: 1, /* in pixels */
                     lineColor: "#003767",
@@ -229,18 +220,22 @@ class PatientChart extends React.Component {
                         visible: true,
                         rules: [
                           {
-                            rule: "%data-range === -1",
+                            rule: "%data-highs === -1 ",
+                            text: feature + ": %v " + unit + "<br> Date: %kl"
+                          },
+                          {
+                            rule: "%data-lows === -1",
                             text: feature + ": %v " + unit + "<br> Date: %kl"
                           }
                         ],
-                        text: feature + ": %v " + unit + "<br> Date: %kl <br>%data-range"
+                        text: feature + ": %v " + unit + "<br> Date: %kl <br>Reference range: %data-lows - %data-highs"
                     }
                   },
                   {
                     type: 'range',
                     values: rangeValues,
                     backgroundColor: '#cde5fa',
-                    lineColor: '#cde5fa',
+                    lineColor: 'none',
                     tooltip: {
                         visible: false,
                     }
@@ -249,7 +244,7 @@ class PatientChart extends React.Component {
                 scaleX: {
                   transform: {
                     type: "date",
-                    all: "%m-%d-%Y"
+                    all: "%M-%d-%Y"
                   },
                     minValue: startDate,
                     maxValue: endDate,

@@ -177,7 +177,7 @@ class Radiation extends React.Component {
  	        },
  	        transform : {
  	          type : "date",
- 	          text : "%M-%d-%y"
+ 	          text : "%M-%d-%Y"
  	        }
       	},
  	      scaleY : {
