@@ -16,6 +16,7 @@ import {
     DisplayAsJson,
     DocTypeTitle,
     shadeOverflowOnScroll,
+    singleTreatment,
 } from './objectutils';
 import { DbxrefList } from './dbxref';
 import Status from './status';
@@ -70,6 +71,8 @@ const datasetTypes = {
     FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
 };
 
+const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
+
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -105,7 +108,6 @@ export function Listing(reactProps) {
  * @return {string} CSS class for this type of object
  */
 export const resultItemClass = item => `result-item--type-${item['@type'][0]}`;
-
 
 export const PickerActions = ({ context }, reactContext) => {
     if (reactContext.actions && reactContext.actions.length > 0) {
@@ -280,8 +282,12 @@ const ExperimentComponent = (props, reactContext) => {
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
+    const treatments = [];
+
     if (result.replicates && result.replicates.length > 0) {
         biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+        // flatten treatment array of arrays
+        _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
     }
 
     // Get all biosample organism names
@@ -299,6 +305,8 @@ const ExperimentComponent = (props, reactContext) => {
                 : ''));
         }));
     }
+
+    const uniqueTreatments = getUniqueTreatments(treatments);
 
     return (
         <li className={resultItemClass(result)}>
@@ -338,6 +346,13 @@ const ExperimentComponent = (props, reactContext) => {
 
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
+                        {treatments && treatments.length > 0 ?
+                            <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                <span>
+                                    {uniqueTreatments.join(', ')}
+                                </span>
+                            </div>
+                            : null}
                     </div>
                 </div>
                 <div className="result-item__meta">
@@ -389,6 +404,7 @@ const DatasetComponent = (props, reactContext) => {
     let targets;
     let lifeStages = [];
     let ages = [];
+    let treatments = [];
 
     // Determine whether the dataset is a series or not
     const seriesDataset = result['@type'].indexOf('Series') >= 0;
@@ -412,6 +428,7 @@ const DatasetComponent = (props, reactContext) => {
 
                             if (lifeStage) { lifeStages.push(lifeStage); }
                             if (biosample.age_display) { ages.push(biosample.age_display); }
+                            if (biosample.treatments) { treatments = [...treatments, ...biosample.treatments]; }
                         }
                     });
                 }
@@ -429,6 +446,7 @@ const DatasetComponent = (props, reactContext) => {
 
     const haveSeries = result['@type'].indexOf('Series') >= 0;
     const haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+    const uniqueTreatments = getUniqueTreatments(treatments);
 
     return (
         <li className={resultItemClass(result)}>
@@ -457,6 +475,13 @@ const DatasetComponent = (props, reactContext) => {
                         {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
+                        { treatments && treatments.length > 0 ?
+                                <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                    <span>
+                                        {uniqueTreatments.join(', ')}
+                                    </span>
+                                </div>
+                            : null}
                     </div>
                 </div>
                 <div className="result-item__meta">

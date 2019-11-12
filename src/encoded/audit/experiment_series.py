@@ -73,17 +73,36 @@ def audit_mismatched_properties(value, system):
 					if not biosample['treatments']:
 						treatments['no treatment'].add(dataset['@id'])
 					else:
-						treatments_combined = ', '.join(
-							sorted([treatment['treatment_term_name'] for treatment in biosample['treatments']]))
+						treatment_labels = []
+						for treatment in biosample['treatments']:
+							amt, amt_units, dur, dur_units = [''] * 4
+							treatment_id = treatment['@id']
+							treatment_term_name = treatment['treatment_term_name']
+							if 'amount' in treatment:
+								amt = str(treatment['amount'])
+								amt_units = treatment['amount_units']
+							if 'duration' in treatment:
+								dur = str(treatment['duration'])
+								dur_units = treatment['duration_units']
+							if dur_units and dur_units[-1] != 's':
+								dur_units += 's'
+
+							treatment_label = "{}{}{}".format(
+								(amt + ' ' + amt_units + ' ' if amt and amt_units else ''),
+								(treatment_term_name + ' ' if treatment_term_name else ''),
+								('for ' + dur + ' ' + dur_units if dur and dur_units else ''),
+							)
+							treatment_labels.append((treatment_label, treatment_id))
+						treatments_combined = tuple(sorted(treatment_labels))
 						if treatments_combined in treatments:
 							treatments[treatments_combined].add(dataset['@id'])
 						else:
 							treatments[treatments_combined] = set([dataset['@id']])
-						
-					if not biosample['genetic_modifications']: 
+
+					if not biosample['applied_modifications']:
 						genetic_modifications['no genetic modification'].add(dataset['@id'])
 					else:
-						gm_combined = ', '.join(sorted(biosample['genetic_modifications']))
+						gm_combined = tuple(sorted(biosample['applied_modifications']))
 						if gm_combined in genetic_modifications:
 							genetic_modifications[gm_combined].add(dataset['@id'])
 						else:
@@ -126,10 +145,14 @@ def audit_mismatched_properties(value, system):
 			audit_link(path_to_text(value['@id']),value['@id']))
 		for target in targets:
 			expt_list = generate_formatted_list_of_experiments(targets[target])
+			if target is 'no target':
+				link = target
+			else:
+				link = audit_link(path_to_text(target),target)
 			detail = '{} Experiments {} target {}.'.format(
 				detail,
 				expt_list,
-				audit_link(path_to_text(target),target)
+				link
 				)
 		yield AuditFailure('Mismatched targets', detail, level='WARNING')
 
@@ -150,10 +173,17 @@ def audit_mismatched_properties(value, system):
 			audit_link(path_to_text(value['@id']),value['@id']))
 		for treatment_key in treatments:
 			expt_list = generate_formatted_list_of_experiments(treatments[treatment_key])
+			if treatment_key is 'no treatment':
+				link = treatment_key
+			else:
+				formatted_links = []
+				for label_id in treatment_key:
+					formatted_links.append(audit_link(label_id[0], label_id[1]))
+				link = ', '.join(formatted_links)
 			detail = '{} Biosamples of Experiments {} were treated with {}.'.format(
 				detail,
 				expt_list,
-				treatment_key
+				link
 				)
 		yield AuditFailure('Mismatched biosample treatments', detail, level='WARNING')
 
@@ -162,10 +192,17 @@ def audit_mismatched_properties(value, system):
 			audit_link(path_to_text(value['@id']),value['@id']))
 		for gm_key in genetic_modifications:
 			expt_list = generate_formatted_list_of_experiments(genetic_modifications[gm_key])
+			if gm_key is 'no genetic modification':
+				links = gm_key
+			else:
+				formatted_links = []
+				for gm_id in gm_key:
+					formatted_links.append(audit_link(path_to_text(gm_id), gm_id))
+				links = ', '.join(formatted_links)
 			detail = '{} Biosamples of Experiments {} were modified by {}.'.format(
 				detail,
 				expt_list,
-				gm_key
+				links
 				)
-		yield AuditFailure('Mismatched genetic modifications', detail, level='WARNING') #this text doesn't make sense for unmodified
+		yield AuditFailure('Mismatched genetic modifications', detail, level='WARNING')
 	return

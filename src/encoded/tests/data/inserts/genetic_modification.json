@@ -228,5 +228,20 @@
         "modified_site_nonspecific": "random",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "method": "transduction"
+    },
+    {
+        "accession": "ENCGM200XPR",
+        "aliases": [
+            "kevin-white:eSTARR_Batch1_input"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "episome",
+        "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
+        "introduced_elements": "genomic DNA regions",
+        "lab": "/labs/kevin-white/",
+        "method": "transient transfection",
+        "purpose": "characterization",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
     }
 ]

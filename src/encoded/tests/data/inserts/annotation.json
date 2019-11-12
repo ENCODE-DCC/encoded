@@ -116,5 +116,19 @@
         "uuid": "a7bf146e-097c-46af-8b06-74c9449ecdb1",
         "related_files": ["ENCFF000LSP", "ENCFF000LSQ"],
         "date_released": "2019-05-20"
+    },
+    {
+        "_test": "DHSs annotation type",
+        "accession": "ENCSR148DHS",
+        "award": "U54HG007004",
+        "annotation_type": "consensus DNase hypersensitivity sites",
+        "description": "Conservative DHSs",
+        "encyclopedia_version": "3",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "24634bd4-68f9-4fd9-8144-e27580d78cf4",
+        "date_released": "2019-05-20"
     }
 ]

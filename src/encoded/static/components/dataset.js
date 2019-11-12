@@ -1342,6 +1342,15 @@ export const SeriesComponent = (props, reactContext) => {
                                     </dd>
                                 </div>
                             : null}
+
+                            {context.treatment_term_name && context.treatment_term_name.length > 0 ?
+                                <div data-test="treatmenttermname">
+                                    <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
+                                    <dd>
+                                        {context.treatment_term_name.join(', ')}
+                                    </dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
 

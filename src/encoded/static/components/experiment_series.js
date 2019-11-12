@@ -252,6 +252,15 @@ class ExperimentSeriesComponent extends React.Component {
                                         </dd>
                                     </div>
                                 : null}
+
+                                {(context.treatment_term_name && context.treatment_term_name.length > 0) ?
+                                    <div data-test="treatmenttermname">
+                                        <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
+                                        <dd>
+                                            {context.treatment_term_name.join(', ')}
+                                        </dd>
+                                    </div>
+                                : null}
                             </dl>
                         </div>
 
@@ -364,6 +373,7 @@ const ListingComponent = (props, reactContext) => {
     const replicates = result.related_datasets.reduce((collectedReplicates, dataset) => (
         dataset.replicates && dataset.replicates.length > 0 ? collectedReplicates.concat(dataset.replicates) : collectedReplicates
     ), []);
+
     replicates.forEach((replicate) => {
         if (replicate.library && replicate.library.biosample) {
             const biosample = replicate.library.biosample;
