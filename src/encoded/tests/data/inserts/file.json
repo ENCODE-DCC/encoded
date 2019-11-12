@@ -2905,7 +2905,7 @@
         "lab": "/labs/ali-mortazavi/",
         "status": "in progress",
         "award": "/awards/U54HG006998/",
-        "submitted_file_name": "/Users/zach/tickets/WRAN-1139/files/full_sized_reference_files_adapters_three_prime_adapter.fasta",
+        "submitted_file_name": "full_sized_reference_files_adapters_three_prime_adapter.fasta",
         "content_md5sum": "e9d9cc919aad107b62bbc2596c4a9e99",
         "no_file_available": false,
         "output_type": "sequence adapters"
@@ -2918,7 +2918,7 @@
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "lab": "/labs/ali-mortazavi/",
         "no_file_available": false,
-        "submitted_file_name": "/Users/zach/tickets/WRAN-1139/files/full_sized_reference_files_adapters_five_prime_adapter_set3.fasta",
+        "submitted_file_name": "full_sized_reference_files_adapters_five_prime_adapter_set3.fasta",
         "award": "/awards/U54HG006998/",
         "file_format": "txt",
         "aliases": [
@@ -2939,7 +2939,7 @@
         "content_md5sum": "2b5f8ece618483ed43edd96eecacc8e4",
         "file_format": "txt",
         "output_type": "sequence adapters",
-        "submitted_file_name": "/Users/zach/tickets/WRAN-1139/files/full_sized_reference_files_adapters_five_prime_adapter_set4.fasta",
+        "submitted_file_name": "full_sized_reference_files_adapters_five_prime_adapter_set4.fasta",
         "md5sum": "2b5f8ece618483ed43edd96eecacc8e4",
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "no_file_available": false,
