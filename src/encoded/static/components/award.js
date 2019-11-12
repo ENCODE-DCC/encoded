@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import dayjs from 'dayjs';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
@@ -126,7 +127,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         text.push('<ul>');
                         for (let i = 0; i < chartData.length; i += 1) {
                             if (chartData[i]) {
-                                text.push(`<li><a href="${baseSearchUri}${globals.encodedURIComponent(chartLabels[i])}">`);
+                                text.push(`<li><a href="${baseSearchUri}${encoding.encodedURIComponentOLD(chartLabels[i])}">`);
                                 text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
                                 text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
                                 text.push('</a></li>');
@@ -151,9 +152,9 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                             const clickedElementIndex = activePoints[0]._index;
                             const term = chart.data.labels[clickedElementIndex];
                             if (chart.options.onClick.baseSearchUri) {
-                                navigate(`${chart.options.onClick.baseSearchUri}${globals.encodedURIComponent(term)}`);
+                                navigate(`${chart.options.onClick.baseSearchUri}${encoding.encodedURIComponentOLD(term)}`);
                             } else {
-                                navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
+                                navigate(`${baseSearchUri}${encoding.encodedURIComponentOLD(term)}`);
                             }
                         }
                     },
@@ -286,9 +287,9 @@ export function createBarChart(chartId, data, colors, replicateLabels, legendTit
                             //      that is passed to the createDonutChart or createBarChart functions because cannot directly
                             //      make changes to the param baseSearchUri in updateChart().
                             if (chart.options.onClick.baseSearchUri) {
-                                navigate(`${chart.options.onClick.baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                                navigate(`${chart.options.onClick.baseSearchUri}&status=${encoding.encodedURIComponentOLD(term)}&replication_type=${item}`);
                             } else {
-                                navigate(`${baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                                navigate(`${baseSearchUri}&status=${encoding.encodedURIComponentOLD(term)}&replication_type=${item}`);
                             }
                         }
                     },

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { CartToggle } from './cart';
 import * as globals from './globals';
 
@@ -164,7 +165,7 @@ export function requestObjects(atIds, uri, filteringObjects) {
     // complete.
     return Promise.all(objectChunks.map((objectChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
-        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
+        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${encoding.encodedURIComponentOLD('@id')}=${encoding.encodedURIComponentOLD(current)}`, ''));
         return fetch(objectUrl, {
             method: 'GET',
             headers: {
@@ -573,7 +574,7 @@ AlternateAccession.defaultProps = {
  */
 export const InternalTags = ({ internalTags, objectType, css }) => {
     const tagBadges = internalTags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${globals.encodedURIComponent(tag)}&status=released`;
+        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${encoding.encodedURIComponentOLD(tag)}&status=released`;
         return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
     });
     return <span className={css}>{tagBadges}</span>;

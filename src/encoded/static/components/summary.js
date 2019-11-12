@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
@@ -297,7 +298,7 @@ class SummaryData extends React.Component {
         // Collect selected facet terms to add to the base linkUri.
         let searchQuery = '';
         if (context.filters && context.filters.length > 0) {
-            searchQuery = context.filters.map(filter => `${filter.field}=${globals.encodedURIComponent(filter.term)}`).join('&');
+            searchQuery = context.filters.map(filter => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
         }
         const linkUri = `/matrix/?${searchQuery}`;
 

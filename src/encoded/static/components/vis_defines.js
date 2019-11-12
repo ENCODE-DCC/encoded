@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import * as globals from './globals';
 
@@ -113,7 +114,7 @@ export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) =>
         const fileQueries = files.map((file) => {
             parsedUrl.pathname = file.href;
             const name = file.biological_replicates && file.biological_replicates.length > 0 ? `&name=${dataset.accession} / ${file.title}, Replicate ${file.biological_replicates.join(',')}` : '';
-            return globals.encodedURIComponent(`{hicUrl=${url.format(parsedUrl)}${name}}`, { encodeEquals: true });
+            return encoding.encodedURIComponentOLD(`{hicUrl=${url.format(parsedUrl)}${name}}`, { encodeEquals: true });
         });
         href = `http://aidenlab.org/juicebox/?juicebox=${fileQueries.join(',')}`;
         break;

@@ -33,9 +33,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import * as encoding from '../libs/query_encoding';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
-import * as globals from './globals';
 
 
 /**
@@ -168,7 +168,7 @@ const getQueryFromFilters = (filters) => {
     const typeQueries = filters.filter(searchFilter => searchFilter.field === 'type');
     const termQueries = filters.filter(searchFilter => searchFilter.field !== 'type' && searchFilter.field !== 'searchTerm');
     const searchTermQueries = filters.filter(searchFilter => searchFilter.field === 'searchTerm');
-    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map(searchFilter => `${searchFilter.field}=${globals.encodedURIComponent(searchFilter.term)}`);
+    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map(searchFilter => `${searchFilter.field}=${encoding.encodedURIComponentOLD(searchFilter.term)}`);
     return `${queryElements.join('&')}`;
 };
 

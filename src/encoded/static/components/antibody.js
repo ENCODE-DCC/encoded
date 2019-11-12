@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import _ from 'underscore';
 import { auditDecor } from './audit';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import * as globals from './globals';
@@ -98,7 +99,7 @@ const LotComponent = (props, reactContext) => {
             const organismName = organism.noOrganism ? <span>{organism.name}</span> : <i>{organism.name}</i>;
             return <span key={organism.name}>{i > 0 ? <span> + {organismName}</span> : <span>{organismName}</span>}</span>;
         });
-        organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${globals.encodedURIComponent(organism.name)}`).join('&');
+        organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${encoding.encodedURIComponentOLD(organism.name)}`).join('&');
     } else if (context.control_type) {
         organisms.push({ name: context.control_type });
         organismComponents = <span>{context.control_type}</span>;
@@ -111,7 +112,7 @@ const LotComponent = (props, reactContext) => {
     if (genes.length > 0) {
         genes = _.uniq(genes);
         geneComponents = genes.map((gene, i) => <span key={gene}>{i > 0 ? <span> + {gene}</span> : <span>{gene}</span>}</span>);
-        geneQuery = genes.map(gene => `targets.genes.symbol=${globals.encodedURIComponent(gene)}`).join('&');
+        geneQuery = genes.map(gene => `targets.genes.symbol=${encoding.encodedURIComponentOLD(gene)}`).join('&');
     }
 
     // Build the breadcrumb object with option gene component.

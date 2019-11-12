@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
@@ -140,7 +141,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
 
         // Generate one rowCategory's rows of subCategories, adding a header cell for each
         // subCategory on the left of the row.
-        const categoryNameQuery = globals.encodedURIComponent(rowCategoryBucket.key);
+        const categoryNameQuery = encoding.encodedURIComponentOLD(rowCategoryBucket.key);
         const categoryExpanded = expandedRowCategories.indexOf(rowCategoryBucket.key) !== -1;
         const renderedData = categoryExpanded ? subCategoryData : subCategoryData.slice(0, SUB_CATEGORY_SHORT_SIZE);
         matrixRowKeys[matrixRow] = rowCategoryBucket.key;
@@ -169,7 +170,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${context.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${context.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -214,7 +215,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
@@ -264,7 +265,6 @@ const MatrixHeader = ({ context }) => {
     const parsedUrl = url.parse(context['@id'], true);
     parsedUrl.query.format = 'json';
     parsedUrl.search = '';
-    console.log(url.format(parsedUrl));
     const searchQuery = url.parse(context['@id']).search;
     if (searchQuery) {
         // If we have a 'type' query string term along with others terms, we need a Clear Filters
@@ -500,7 +500,7 @@ MatrixContent.propTypes = {
  * @return {string} mapped row category query
  */
 const mapRowCategoryQueriesExperiment = (rowCategory, rowCategoryBucket) => (
-    `${rowCategory}=${globals.encodedURIComponent(rowCategoryBucket.key)}`
+    `${rowCategory}=${encoding.encodedURIComponentOLD(rowCategoryBucket.key)}`
 );
 
 
@@ -514,7 +514,7 @@ const mapRowCategoryQueriesExperiment = (rowCategory, rowCategoryBucket) => (
  * @return {string} mapped subcategory query
  */
 const mapSubCategoryQueriesExperiment = (subCategory, subCategoryQuery) => (
-    `${subCategory}=${globals.encodedURIComponent(subCategoryQuery)}`
+    `${subCategory}=${encoding.encodedURIComponentOLD(subCategoryQuery)}`
 );
 
 

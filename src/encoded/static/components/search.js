@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import _ from 'underscore';
 import dayjs from 'dayjs';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
@@ -658,8 +659,8 @@ const Term = (props) => {
         }
     } else {
         // Term isn't selected. Get the href for the term, and for its negation button.
-        href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
-        negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
+        href = `${searchBase}${field}=${encoding.encodedURIComponentOLD(term)}`;
+        negationHref = `${searchBase}${field}!=${encoding.encodedURIComponentOLD(term)}`;
     }
 
     if (facet.appended === 'true') {

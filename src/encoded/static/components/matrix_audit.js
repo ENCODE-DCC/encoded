@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
@@ -109,7 +110,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
     // Generate the top-row sideways header labels. First item is null for the empty upper-left
     // cell.
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${context.search_base}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryName)}`}>{colCategoryName}</a>,
+        header: <a href={`${context.search_base}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryName)}`}>{colCategoryName}</a>,
     })));
 
     // Extract the audit names (levels) from the given row data and sort it according to their
@@ -168,7 +169,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${context.search_base}&${rowCategoryName}=${globals.encodedURIComponent(subCategoryBucket.key)}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${context.search_base}&${rowCategoryName}=${encoding.encodedURIComponentOLD(subCategoryBucket.key)}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -181,7 +182,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}&${rowCategoryName}=${globals.encodedURIComponent(subCategoryBucket.key)}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${context.search_base}&${rowCategoryName}=${encoding.encodedURIComponentOLD(subCategoryBucket.key)}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -190,7 +191,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
         // Generate a row for a rowCategory alone, concatenated with the subCategory rows under it,
         // concatenated with an spacer row that might be empty or might have a rowCategory expander
         // button.
-        const categoryNameQuery = globals.encodedURIComponent(rowCategoryName);
+        const categoryNameQuery = encoding.encodedURIComponentOLD(rowCategoryName);
         matrixRowKeys[matrixRow] = `${rowCategoryName}-spacer`;
         matrixRow += 1;
         return accumulatingTable.concat(
