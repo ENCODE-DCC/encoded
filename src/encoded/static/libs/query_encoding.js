@@ -30,7 +30,7 @@ export const decodedURIComponent = value => (
 
 // Encode a URI with much less intensity than encodeURIComponent but a bit more than encodeURI.
 // In addition to encodeURI, this function escapes exclamations and at signs.
-// ! Do not use this function; all usage should move to the one in ../libs/query_string.js
+// ! Do not use this function; all usage should move to encodedURIComponent.
 export function encodedURIOLD(uri) {
     return encodeURI(uri).replace(/!/g, '%21').replace(/@/g, '%40');
 }

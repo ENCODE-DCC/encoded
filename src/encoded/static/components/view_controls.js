@@ -8,14 +8,15 @@
  * types. For example, Experiments support all currently supported types: search (list), report,
  * matrix, and summary.
  *
- * This function call in the module space of experiment.js registers those four views:
+ * This function call in the module space of experiment.js registers those four views and an
+ * optional type filter:
  *
  * ViewControlRegistry.register('Experiment', [
  *     ViewControlTypes.SEARCH,
  *     ViewControlTypes.MATRIX,
  *     ViewControlTypes.REPORT,
  *     ViewControlTypes.SUMMARY,
- * ]);
+ * ], typeFilter);
  *
  * When any of /search/, /matrix/, /report/, or /summary/ specify type=Experiment and no other
  * types in the query string, the three view buttons for the search results pages not currently
@@ -24,6 +25,14 @@
  * Any object types not registered still display search and report buttons on search-result pages
  * specifying only that type, as these two buttons get displayed for all type=<whatever> search
  * results when only one type= exists in the query string.
+ *
+ * The optional type filter lets you alter the list of returned views from what you specified in
+ * the array parameter. You pass a function that takes two parameters:
+ * - Array of views -- the same array as you passed in the second parameter to the `register`
+ *   method.
+ * - Search results object for the current page.
+ * This type-filter function returns the actual list of views to display, so that specific searches
+ * can alter the available views.
  *
  * DISPLAY
  * To display the buttons at the top of any search results, use the <ViewControls> component,

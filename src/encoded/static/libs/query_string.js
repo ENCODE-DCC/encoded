@@ -20,7 +20,7 @@ import * as queryEncoding from './query_encoding';
 
 class QueryString {
     constructor(query) {
-        this._query = query; // Not currently used; seems handy to keep
+        this._query = query;
         this._parse();
     }
 
@@ -36,6 +36,7 @@ class QueryString {
      * @return {object} Reference to this object for method chaining.
      */
     _parse() {
+        // Filter out any empty elements caused by a trailing ampersand.
         const inputQueryElements = this._query.split('&').filter(element => element);
         this._parsedQuery = inputQueryElements.map((element) => {
             const keyValue = element.split('=');

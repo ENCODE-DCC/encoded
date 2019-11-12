@@ -37,8 +37,8 @@ const COL_SUBCATEGORY = 'target.label';
 
 
 /**
- * Order that assay_titles should appear along the horizontal axis of the matrix. Anything not
- * included get sorted after these.
+ * Order in which assay_titles should appear along the horizontal axis of the matrix. Anything not
+ * included gets sorted after these.
  */
 const assaySortOrder = [
     'polyA plus RNA-seq',
@@ -97,7 +97,7 @@ const generateColMap = (context) => {
     let colIndex = 0;
 
     // Sort column categories according to a specified order, with any items not specified sorted
-    // at the end in order of occurence.
+    // at the end in order of occurrence.
     const colCategoryBuckets = context.matrix.x[colCategory].buckets;
     const sortedColCategoryBuckets = _(colCategoryBuckets).sortBy((colCategoryBucket) => {
         const sortIndex = assaySortOrder.indexOf(colCategoryBucket.key);
@@ -178,7 +178,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
             header: (
                 clearClassifications ?
                     <div className="matrix__clear-classifications">
-                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifcations</a>
+                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
                     </div>
                 : null
             ),
