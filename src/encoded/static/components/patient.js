@@ -27,27 +27,6 @@ class Patient extends React.Component {
 
         const crumbsReleased = (context.status === 'released');
         console.log(context.accession);
-    //     console.log(context.germline);
-    //     let germlineFilters= [];
-    //    germlineFilters = context.germline;
-    //    console.log(germlineFilters);
-    //     let germlineGenes=[];
-    //     germlineGenes= germlineFilters.filter(i=>{return i.significance==="Positive"||i.significance==="Variant" ||i.significance==="Positive Variant" }).map(i=>{return  [i.target, i.significance]});
-    //     // || i.significance==='Variant'
-    //     console.log(germlineGenes);
-        
-        
-
-        //const data = context.germline; 
-        //const list= [];
-        //let list = data.map(i=>{return i.target});
-        //console.log(list);
-        // for (let i = 0; i < data.lentgh; i++)
-        // {  
-        //     console.log (Object.keys(i)[target]);
-        // }
-        
-
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
