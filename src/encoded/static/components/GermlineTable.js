@@ -15,7 +15,7 @@ class GermlineTable extends React.Component {
 
     render() {
         this.data = this.props.data;
-        console.log(this.data);
+        //console.log(this.data);
         if (!Array.isArray(this.data) || !this.data.length) {
             return (
                 <div>
