@@ -270,6 +270,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
+        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
     }
     return run_args
 
@@ -530,6 +531,7 @@ def main():
         Placement={
             'AvailabilityZone': main_args.availability_zone,
         },
+        KeyName=run_args['key-pair-name'],
     )
     output_list = _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
     for output in output_list:
@@ -552,6 +554,7 @@ def main():
             Placement={
                 'AvailabilityZone': main_args.availability_zone,
             },
+            KeyName=run_args['key-pair-name'],
         )
         output_list = _wait_and_tag_instances(
             main_args,
