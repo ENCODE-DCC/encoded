@@ -16,7 +16,7 @@ import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers } from './vis_defines';
+import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -1019,7 +1019,7 @@ class VisualizationControls extends React.Component {
                 {browsers.length > 0 ?
                     <select className="form-control--select" value={currentBrowser} onChange={this.handleBrowserChange}>
                         {browsers.map(browser => (
-                            <option key={browser} value={browser}>{browser}</option>
+                            <option key={browser} value={browser}>{visMapBrowserName(browser)}</option>
                         ))}
                     </select>
                 : null}

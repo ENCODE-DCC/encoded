@@ -205,6 +205,23 @@ export const visSortBrowsers = browsers => (
 
 
 /**
+ * Map of browser to display name.
+ */
+const browserNameMap = {
+    UCSC: 'UCSC',
+    hic: 'Juicebox',
+    Ensembl: 'Ensembl',
+};
+
+
+/**
+ * Map a browser to its display name.
+ * @param {string} browser Browser whose display name is desired
+ */
+export const visMapBrowserName = browser => browserNameMap[browser];
+
+
+/**
  * Batch visualization section.
  **************************************************************************************************
  */
