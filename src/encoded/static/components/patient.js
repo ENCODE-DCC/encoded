@@ -26,7 +26,16 @@ class Patient extends React.Component {
         ];
 
         const crumbsReleased = (context.status === 'released');
-        console.log(context.accession);
+
+        let hasLabs = false;
+        let hasVitals = false;
+        if (Object.keys(this.props.context.labs).length > 0) {
+          hasLabs = true;
+        };
+        if (Object.keys(this.props.context.vitals).length > 0) {
+          hasVitals = true;
+        };
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
@@ -72,16 +81,32 @@ class Patient extends React.Component {
                                 {formatMeasurement(context.age, context.age_units)}
                             </dd>
                         </div>
-
                     </dl>
                     </PanelBody>
                 </Panel>
-                
-                <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
-                <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
-                <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTable>
-
-
+                { hasLabs && <Panel>
+                    <PanelHeading>
+                        <h4>Lab Results Over Time</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
+                    </PanelBody>
+                </Panel> }
+                { hasVitals && <Panel>
+                    <PanelHeading>
+                        <h4>Vital Results Over Time</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
+                    </PanelBody>
+                </Panel> }
+                <Panel>
+                <PanelHeading>
+                  <h4>Germline mutations</h4>
+                </PanelHeading>
+                <PanelBody>
+                    <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable>
+                </PanelBody>
             </div>
         );
     }

@@ -4,7 +4,7 @@
     "description": "Schema for describing the vital results.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["vital", "value_units", "value"],
+    "required": ["vital", "value_units", "value", "patient"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
