@@ -7,6 +7,7 @@
 ### Minor changes since schema version 15
 
 * *output_type* list was updated to include the enum *elements reference*
+* *output_type* list was updated to include the enum *miRNA annotations*
 
 ### Schema version 15
 

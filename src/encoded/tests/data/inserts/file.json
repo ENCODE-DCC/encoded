@@ -2872,5 +2872,22 @@
         "assembly": "GRCh38",
         "md5sum": "61111f06df8446c9cee45ed6e1961d54",
         "derived_from": ["ENCFF032OJW"]
+    },
+    {
+        "_test": "microRNA miRNA annotations",
+        "accession": "ENCFF783YZT",
+        "award": "/awards/U41HG006992/",
+        "dataset": "ENCSR123MRN",
+        "date_created": "2019-11-07T16:46:18.670068+00:00",
+        "file_format": "gff",
+        "file_format_type": "gff3",
+        "assembly": "hg19",
+        "lab": "/labs/encode-processing-pipeline/",
+        "md5sum": "39589bdd2de81dfea7cb5380a6aeb1e7",
+        "output_type": "miRNA annotations",
+        "status": "released",
+        "file_size": 1,
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "bcea9611-9262-4c13-b9e5-5c156acdf7c0"
     }
 ]
