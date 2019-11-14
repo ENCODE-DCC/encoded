@@ -150,9 +150,20 @@ def _get_instances_tag_data(main_args):
         'username': None,
     }
     instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
-    if not subprocess.check_output(
+    # check if commit is a tag first then branch
+    is_tag = False
+    tag_output = subprocess.check_output(
+        ['git', 'tag', '--contains', instances_tag_data['commit']]
+    ).strip().decode()
+    if tag_output:
+        if tag_output == main_args.branch:
+            is_tag = True
+    is_branch = False
+    if subprocess.check_output(
             ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
         ).strip():
+        is_branch = True
+    if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
         sys.exit(1)
     instances_tag_data['username'] = getpass.getuser()
@@ -167,26 +178,33 @@ def _get_instances_tag_data(main_args):
         )
         if main_args.es_wait or main_args.es_elect:
             instances_tag_data['name'] = 'elasticsearch-' + instances_tag_data['name']
-    return instances_tag_data
+    return instances_tag_data, is_tag
 
 
 def _get_ec2_client(main_args, instances_tag_data):
     session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
     ec2 = session.resource('ec2')
+    name_to_check = instances_tag_data['name']
+    if main_args.node_name:
+        if int(main_args.cluster_size) != 1:
+            print('--node-name can only be used --cluster-size 1')
+            return None
+        name_to_check = main_args.node_name
     if any(ec2.instances.filter(
             Filters=[
-                {'Name': 'tag:Name', 'Values': [instances_tag_data['name']]},
+                {'Name': 'tag:Name', 'Values': [name_to_check]},
                 {'Name': 'instance-state-name',
                  'Values': ['pending', 'running', 'stopping', 'stopped']},
             ])):
-        print('An instance already exists with name: %s' % instances_tag_data['name'])
+        print('An instance already exists with name: %s' % name_to_check)
         return None
     return ec2
 
 
-def _get_run_args(main_args, instances_tag_data, config_yaml):
+def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     master_user_data = None
     cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
+    git_remote = 'origin' if not is_tag else 'tags'
     if main_args.es_wait or main_args.es_elect:
         # Data node clusters
         count = int(main_args.cluster_size)
@@ -198,18 +216,20 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_OPT_FILENAME': es_opt,
             'GIT_BRANCH': main_args.branch,
+            'GIT_REMOTE': git_remote,
             'GIT_REPO': main_args.git_repo,
             'JVM_GIGS': main_args.jvm_gigs,
         }
         user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
         # Additional head node
-        if main_args.es_wait:
+        if main_args.es_wait and main_args.node_name is None:
             master_data_insert = {
                 'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
                 'CC_DIR': cc_dir,
                 'CLUSTER_NAME': main_args.cluster_name,
                 'ES_OPT_FILENAME': 'es-cluster-head.yml',
                 'GIT_BRANCH': main_args.branch,
+                'GIT_REMOTE': git_remote,
                 'GIT_REPO': main_args.git_repo,
                 'JVM_GIGS': main_args.jvm_gigs,
             }
@@ -233,6 +253,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml):
             'ES_IP': main_args.es_ip,
             'ES_PORT': main_args.es_port,
             'GIT_BRANCH': main_args.branch,
+            'GIT_REMOTE': git_remote,
             'GIT_REPO': main_args.git_repo,
             'PG_VERSION': main_args.postgres_version,
             'REDIS_IP': main_args.redis_ip,
@@ -312,6 +333,8 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
             instances_tag_data['name'] = "{}datamaster".format(tmp_name[0:-1])
         elif is_cluster:
             instances_tag_data['name'] = "{}-data{}".format(tmp_name, i)
+        if main_args.node_name:
+            instances_tag_data['name'] = main_args.node_name
         if is_cluster_master or (is_cluster and not created_cluster_master):
             created_cluster_master = True
             output_list.extend(_get_instance_output(
@@ -470,7 +493,7 @@ def main():
     main_args = parse_args()
     build_config, build_path, build_type = _get_cloud_config_yaml(main_args)
     if main_args.diff_configs:
-        # instances_tag_data = _get_instances_tag_data(main_args)
+        # instances_tag_data, is_tag = _get_instances_tag_data(main_args)
         # run_args = _get_run_args(main_args, instances_tag_data, build_config)
         # print(run_args['user_data'])
         sys.exit(0)
@@ -483,13 +506,13 @@ def main():
     # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
     print('# Deploying %s' % build_type)
     print("# $ {}".format(' '.join(sys.argv)))
-    instances_tag_data = _get_instances_tag_data(main_args)
+    instances_tag_data, is_tag = _get_instances_tag_data(main_args)
     if instances_tag_data is None:
         sys.exit(10)
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
-    run_args = _get_run_args(main_args, instances_tag_data, build_config)
+    run_args = _get_run_args(main_args, instances_tag_data, build_config, is_tag=is_tag)
     bdm = _get_bdm(main_args)
     # Create aws demo instance or frontend instance
     # OR instances for es_wait nodes, es_elect nodes depending on count
@@ -642,6 +665,7 @@ def parse_args():
     parser.add_argument('--cluster-size', default=5, help="Elasticsearch cluster size")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
+    parser.add_argument('--node-name', default=None, type=hostname, help="Name of single node to add to already existing cluster")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
   
     # Database
@@ -698,6 +722,22 @@ def parse_args():
         cluster_tag = '-cluster'
         args.name = args.cluster_name.replace(cluster_tag, '')
         args.cluster_name = args.name + cluster_tag
+        # adding a single node to a pre existing cluster
+        if args.node_name and int(args.cluster_size) != 1:
+            raise ValueError(
+                'Adding a node to a preexisting cluster. '
+                '--cluster-size must be 1.'
+            )
+        # Elect clusters must have size of 4 or 5 due to
+        # hard coded discovery size in es-cluster-elect.yml
+        if (args.node_name is None and args.es_elect and
+            (int(args.cluster_size) < 4 or int(args.cluster_size) > 5)
+        ):
+            raise ValueError(
+                '--es-elect cluster must have a size of 4 or 5 '
+                'since election discovery is hard coded to 3 '
+                'in es-cluster-elect.yml'
+            )
     if args.es_wait and args.es_elect:
         raise ValueError('--es-wait and --es-elect cannot be used in the same command')
     # Set Role

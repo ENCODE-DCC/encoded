@@ -47,7 +47,7 @@ def rss_checker(rss_limit=None):
         if rss_limit and rss > rss_limit:
             msg = "Restarting process. Memory usage exceeds limit of %d: %d"
             log.error(msg, rss_limit, rss)
-            process.kill()
+            process.terminate()
 
     return callback
 
