@@ -125,3 +125,9 @@ $brand-info: #4F689E;
 // Utility classes - Bootstrap 3, keep last
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
+
+//moves the help button to the right side
+#walkme-player {
+    right: 0px !important;
+}
+
