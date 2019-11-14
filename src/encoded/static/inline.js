@@ -1,5 +1,9 @@
 'use strict';
 
+if (window && !window.Promise) {
+	window.Promise = require('bluebird');
+}
+
 // Read and clear stats cookie
 var cookie = require('js-cookie');
 window.stats_cookie = cookie.get('X-Stats') || '';

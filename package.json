@@ -68,6 +68,7 @@
   },
   "dependencies": {
     "auth0-lock": "^11.17.2",
+    "bluebird": "^3.7.1",
     "brace": "^0.11.1",
     "chart.js": "^2.8.0",
     "ckeditor": "file:node_shims/ckeditor",
@@ -86,7 +87,7 @@
     "marked": "^0.7.0",
     "pluralize": "^8.0.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.8.3",
+    "query-string": "^4.1.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^5.0.7",
