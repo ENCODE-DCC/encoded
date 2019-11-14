@@ -101,12 +101,13 @@ class Patient extends React.Component {
                     </PanelBody>
                 </Panel> }
                 <Panel>
-                <PanelHeading>
-                  <h4>Germline mutations</h4>
-                </PanelHeading>
-                <PanelBody>
-                    <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable>
-                </PanelBody>
+                  <PanelHeading>
+                    <h4>Germline mutations</h4>
+                  </PanelHeading>
+                  <PanelBody>
+                      <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable>
+                  </PanelBody>
+                </Panel>
             </div>
         );
     }
