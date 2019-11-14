@@ -840,12 +840,12 @@
         "lab": "/labs/ali-mortazavi/",
         "adapters": [
             {
-              "adapter_type": "3' adapter",
-              "adapter_file": "ENCFF463QEL"
+              "type": "3' adapter",
+              "file": "ENCFF463QEL"
             },
             {
-              "adapter_type": "5' adapter",
-              "adapter_file": "ENCFF980GYX"
+              "type": "5' adapter",
+              "file": "ENCFF980GYX"
             }
         ]
     },
@@ -865,12 +865,12 @@
         "status": "released",
         "adapters": [
             {
-              "adapter_type": "3' adapter",
-              "adapter_file": "ENCFF463QEL"
+              "type": "3' adapter",
+              "file": "ENCFF463QEL"
             },
             {
-              "adapter_type": "5' adapter",
-              "adapter_file": "ENCFF379BCO"
+              "type": "5' adapter",
+              "file": "ENCFF379BCO"
             }
         ]
     }

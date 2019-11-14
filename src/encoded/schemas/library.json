@@ -338,6 +338,7 @@
                 "title": "Sequencing adapter",
                 "type": "object",
                 "additionalProperties": false,
+                "required": ["file"],
                 "properties": {
                     "type": {
                         "title": "Adapter type",
