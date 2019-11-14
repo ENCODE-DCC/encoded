@@ -699,6 +699,16 @@ def pipeline(testapp, lab, award):
 
 
 @pytest.fixture
+def pipeline_without_assay_term_names(testapp, lab, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "Test pipeline"
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
 def software(testapp, award, lab):
     item = {
         "name": "fastqc",
