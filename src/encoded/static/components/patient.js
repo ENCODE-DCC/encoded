@@ -74,8 +74,22 @@ class Patient extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
-                <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
+                <Panel>
+                    <PanelHeading>
+                        <h4>Lab Results Over Time</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
+                    </PanelBody>
+                </Panel>
+                <Panel>
+                    <PanelHeading>
+                        <h4>Vital Results Over Time</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
+                    </PanelBody>
+                </Panel>
             </div>
         );
     }
