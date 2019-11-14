@@ -29,7 +29,7 @@
             "title": "Files",
             "description": "One or more files that this metric either applies to or is calculated from.",
             "type": "array",
-            "default": [],
+            "minItems": 1,
             "uniqueItems": true,
             "items": {
                 "title": "File",

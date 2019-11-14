@@ -1,5 +1,9 @@
 ## Changelog for mad_quality_metric.json
 
+### Minor changes since schema version 7
+
+* *quality_metric_of* was set to have a minimum of 1.
+
 ### Schema version 7
 
 * *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
