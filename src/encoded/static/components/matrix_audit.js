@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import pluralize from 'pluralize';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { FacetList, TextFilter, ClearFilters, SearchControls } from './search';
+import { RowCategoryExpander, SearchFilter } from './matrix';
+import { FacetList, ClearFilters, SearchControls } from './search';
 
 
 /** Number of subcategory items to show when subcategory isn't expanded. */
@@ -31,113 +32,6 @@ const auditOrderKey = [
     'audit.ERROR.category',
     'audit.INTERNAL_ACTION.category',
 ];
-
-
-/**
- * Render the expander button for a row category, and react to clicks by calling the parent to
- * render the expansion change.
- */
-class RowCategoryExpander extends React.Component {
-    constructor() {
-        super();
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    /**
-     * Called when the user clicks the expander button to expand or collapse the section.
-     */
-    handleClick() {
-        this.props.expanderClickHandler(this.props.categoryName);
-    }
-
-    render() {
-        const { categoryId, expanderColor, expanderBgColor, expanded } = this.props;
-        return (
-            <button
-                className="matrix__category-expander"
-                aria-expanded={expanded}
-                aria-controls={categoryId}
-                onClick={this.handleClick}
-                style={{ backgroundColor: expanderBgColor }}
-            >
-                {svgIcon(expanded ? 'chevronUp' : 'chevronDown', { fill: expanderColor })}
-            </button>
-        );
-    }
-}
-
-RowCategoryExpander.propTypes = {
-    /** Unique ID; should match id of expanded element */
-    categoryId: PropTypes.string.isRequired,
-    /** Category name; gets passed to click handler */
-    categoryName: PropTypes.string.isRequired,
-    /** Color to draw the icon or text of the expander button */
-    expanderColor: PropTypes.string,
-    /** Color to draw the background of the expander button */
-    expanderBgColor: PropTypes.string,
-    /** True if category is currently expanded */
-    expanded: PropTypes.bool,
-    /** Function to call to handle clicks in the expander button */
-    expanderClickHandler: PropTypes.func.isRequired,
-};
-
-RowCategoryExpander.defaultProps = {
-    expanderColor: '#000',
-    expanderBgColor: 'transparent',
-    expanded: false,
-};
-
-
-/**
- * Render and handle the free-text search box. After the user presses the return key, this
- * navigates to the current URL plus the given search term.
- */
-class SearchFilter extends React.Component {
-    constructor() {
-        super();
-        this.onChange = this.onChange.bind(this);
-    }
-
-    /**
-     * Called after the user completes entering a search term. Navigate to the resulting query
-     * string on this audit matrix page.
-     * @param {string} href Query based on user's search term to navigate to
-     */
-    onChange(href) {
-        this.context.navigate(href);
-    }
-
-    render() {
-        const { context } = this.props;
-        const parsedUrl = url.parse(this.context.location_href);
-        const matrixBase = parsedUrl.search || '';
-        const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
-        const parsed = url.parse(matrixBase, true);
-        const queryStringType = parsed.query.type || '';
-        const type = pluralize(queryStringType.toLocaleLowerCase());
-        return (
-            <div className="matrix-general-search">
-                <p>Enter search terms to filter the {type} included in the matrix.</p>
-                <div className="general-search-entry">
-                    <i className="icon icon-search" />
-                    <div className="searchform">
-                        <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-SearchFilter.propTypes = {
-    /** Matrix search results object */
-    context: PropTypes.object.isRequired,
-};
-
-SearchFilter.contextTypes = {
-    navigate: PropTypes.func,
-    location_href: PropTypes.string,
-};
 
 
 /**
@@ -171,15 +65,6 @@ const analyzeSubCategoryData = (subCategoryData, columnCategoryType) => {
     });
     return { maxSubCategoryValue, minSubCategoryValue: minSubCategoryValue - 1 };
 };
-
-
-/**
- * Remove spaces from id so it can be accepted as an id by HTML.
- * @param {string} id Arbitrary string to sanitize.
- *
- * @return {string} id without space, or dash if id is empty
- */
-const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
 
 
 let _navbarHeight = null;
@@ -225,7 +110,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
     // Generate the top-row sideways header labels. First item is null for the empty upper-left
     // cell.
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${context.search_base}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryName)}`}>{colCategoryName}</a>,
+        header: <a href={`${context.search_base}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryName)}`}>{colCategoryName}</a>,
     })));
 
     // Extract the audit names (levels) from the given row data and sort it according to their
@@ -284,7 +169,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${context.search_base}&${rowCategoryName}=${globals.encodedURIComponent(subCategoryBucket.key)}&${columnCategoryType}=${globals.encodedURIComponent(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${context.search_base}&${rowCategoryName}=${encoding.encodedURIComponentOLD(subCategoryBucket.key)}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -297,7 +182,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}&${rowCategoryName}=${globals.encodedURIComponent(subCategoryBucket.key)}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${context.search_base}&${rowCategoryName}=${encoding.encodedURIComponentOLD(subCategoryBucket.key)}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -306,7 +191,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
         // Generate a row for a rowCategory alone, concatenated with the subCategory rows under it,
         // concatenated with an spacer row that might be empty or might have a rowCategory expander
         // button.
-        const categoryNameQuery = globals.encodedURIComponent(rowCategoryName);
+        const categoryNameQuery = encoding.encodedURIComponentOLD(rowCategoryName);
         matrixRowKeys[matrixRow] = `${rowCategoryName}-spacer`;
         matrixRow += 1;
         return accumulatingTable.concat(
@@ -314,7 +199,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
                 {
                     rowContent: [{
                         header: (
-                            <div id={sanitizeId(rowCategoryName)} style={{ backgroundColor: rowCategoryColor }}>
+                            <div id={globals.sanitizeId(rowCategoryName)} style={{ backgroundColor: rowCategoryColor }}>
                                 {expandableRowCategory ?
                                     <RowCategoryExpander
                                         categoryId={rowCategoryName}
@@ -481,7 +366,7 @@ class MatrixPresentation extends React.Component {
 
             // Category does exist in array
             // Move close to header
-            const header = document.querySelector(`#${sanitizeId(category)}`);
+            const header = document.querySelector(`#${globals.sanitizeId(category)}`);
             const headerToPageTopDistance = header ? header.getBoundingClientRect().top : 0;
             const buffer = 20; // extra space between navbar and header
             const top = headerToPageTopDistance - (getNavbarHeight() + buffer);

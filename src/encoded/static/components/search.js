@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import _ from 'underscore';
 import dayjs from 'dayjs';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
@@ -683,8 +684,8 @@ const Term = (props) => {
         }
     } else {
         // Term isn't selected. Get the href for the term, and for its negation button.
-        href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
-        negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
+        href = `${searchBase}${field}=${encoding.encodedURIComponentOLD(term)}`;
+        negationHref = `${searchBase}${field}!=${encoding.encodedURIComponentOLD(term)}`;
     }
 
     if (facet.appended === 'true') {
@@ -1596,7 +1597,7 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
@@ -1637,7 +1638,9 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 <ViewControls results={context} />
                 {resultsToggle}
                 <BatchDownloadControls results={context} />
-                <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
+                {!hideBrowserSelector ?
+                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
+                : null}
             </div>
             <div className="results-table-control__json">
                 <DisplayAsJson />
@@ -1665,12 +1668,15 @@ SearchControls.propTypes = {
         }
         return null;
     },
+    /** True to hide the Visualize button */
+    hideBrowserSelector: PropTypes.bool,
 };
 
 SearchControls.defaultProps = {
     visualizeDisabledTitle: '',
     showResultsToggle: false,
     onFilter: null,
+    hideBrowserSelector: false,
 };
 
 SearchControls.contextTypes = {

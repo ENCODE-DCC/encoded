@@ -21,7 +21,7 @@ $row-data-header-width: 200px;
     border-collapse: separate;
     max-width: none;
     border-spacing: 0;
-	
+
     // Holds vertical facets and matrix itself.
     @at-root #{&}__content {
         display: block;
@@ -56,14 +56,24 @@ $row-data-header-width: 200px;
     @at-root #{&}__data-wrapper {
         position: relative;
         padding-left: 10px;
-        flex: 0 1 auto;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: calc(100% - 20px);
+        width: calc(100% - 20px);
         border : 1px solid #eee;
         overflow: hidden;
+        min-width: 0;
     }
 
     @at-root #{&}__data {
         margin-right: 1px;
         overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    // Empty matrix needs some height to show axis label untruncated.
+    @at-root #{&}__data--empty {
+        height: 200px;
     }
 
     // Text/link rotation method from:
@@ -238,7 +248,7 @@ $row-data-header-width: 200px;
             &:after {
                 @include matrix-freeze-shadow();
             }
-	
+
             > div {
                 display: flex;
                 align-items: center;
@@ -363,6 +373,27 @@ $row-data-header-width: 200px;
         background-color: #f0f0f0;
         z-index: 1;
     }
+
+    @at-root #{&}__disabled-cell {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: url(/static/img/fine-diagonal-lines.svg);
+    }
+
+    @at-root #{&}__modal-header {
+        h2 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+    }
+
+    // Link to clear selected classifications (filters)
+    @at-root #{&}__clear-classifications {
+        font-weight: normal;
+    }
 }
 
 
@@ -486,5 +517,74 @@ table.matrix th.group-all-groups-cell {
     .general-search-entry {
         margin-bottom: 0;
         padding-bottom: 0;
+    }
+}
+
+.matrix__content--reference-epigenome {
+    display: block;
+
+    .matrix__data-wrapper {
+        padding-left: 0;
+        overflow: visible;
+
+        .tab-content {
+            padding-left: 10px;
+            overflow: hidden;
+        }
+    }
+
+    .matrix__col-category-header {
+        > th {
+            width: 25px;
+
+            > a {
+                width: 25px;
+                line-height: 25px;
+                font-weight: bold;
+
+                // Column subcategory links
+                &.sub {
+                    padding-top: 20px;
+                    font-weight: normal;
+                }
+            }
+        }
+    }
+
+    .matrix__row-data {
+        > td {
+            position: relative;
+            width: 25px;
+
+            // Reference epigenome cells have no content but have clickable links.
+            > a {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
+    }
+}
+
+
+// Contents of organism-selection modal.
+.matrix-reference-epigenome__organism-selector {
+    > div {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    > .selectors {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+
+        .btn {
+            flex: 0 1 auto;
+            margin: 0 2px;
+        }
     }
 }

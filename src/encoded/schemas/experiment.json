@@ -335,6 +335,9 @@
         "files.@id": {
             "title": "Files"
         },
+        "related_series": {
+            "title": "Related series"
+        },
         "replicates.library.biosample.accession": {
             "title": "Biosample accession"
         },

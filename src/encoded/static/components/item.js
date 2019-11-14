@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel } from '../libs/ui/panel';
 import Table from './collection';
 import { FetchedData, Param } from './fetched';
@@ -201,7 +202,7 @@ FetchedRelatedItems.defaultProps = {
 
 
 export const RelatedItems = (props) => {
-    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=submitted&status=in+progress`);
+    const itemUrl = encoding.encodedURIOLD(`${props.url}&status=released&status=submitted&status=in+progress`);
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (

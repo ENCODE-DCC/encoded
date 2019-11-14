@@ -9,5 +9,6 @@ pytestmark = [
 ]
 
 scenarios(
-    'matrix.feature',
+    'matrix_experiment.feature',
+    'matrix_reference_epigenome.feature'
 )

@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import { encodedURIComponent } from '../globals';
+import * as encoding from '../../libs/query_encoding';
 import { cartOperationInProgress } from './actions';
 import { BatchDownloadModal } from '../view_controls';
 
@@ -44,7 +44,7 @@ class CartBatchDownloadComponent extends React.Component {
         const fileFormatSelections = _.compact(Object.keys(this.props.selectedTerms).map((field) => {
             let subQueryString = '';
             if (this.props.selectedTerms[field].length > 0) {
-                subQueryString = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(term)}`).join('&');
+                subQueryString = this.props.selectedTerms[field].map(term => `files.${field}=${encoding.encodedURIComponentOLD(term)}`).join('&');
             }
             return subQueryString;
         }));

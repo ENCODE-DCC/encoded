@@ -140,10 +140,11 @@ class TabPanel extends React.Component {
         super(props);
 
         this.state = {
-            currentTab: props.selectedTab ? props.selectedTab : '',
+            currentTab: props.selectedTab || '',
         };
 
         this.handleClick = this.handleClick.bind(this);
+        this.getCurrentTab = this.getCurrentTab.bind(this);
     }
 
     // Handle a click on a tab
@@ -154,6 +155,23 @@ class TabPanel extends React.Component {
         if (tab !== this.state.currentTab) {
             this.setState({ currentTab: tab });
         }
+    }
+
+    /**
+     * Get the currently selected tab from `selectedTab`, or the component state `currentTab`, or
+     * just the first tab if neither of those is specified.
+     *
+     * @return {string} Key of selected tab
+     */
+    getCurrentTab() {
+        const { selectedTab } = this.props;
+        if (selectedTab === null || selectedTab) {
+            return selectedTab;
+        }
+        if (this.state.currentTab) {
+            return currentTab;
+        }
+        return Object.keys(this.props.tabs)[0];
     }
 
     render() {
@@ -172,7 +190,8 @@ class TabPanel extends React.Component {
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component
-                    return React.cloneElement(child, { id: child.key, active: this.props.selectedTab ? this.props.selectedTab === child.key : this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i });
+                    const active = this.getCurrentTab() === child.key;
+                    return React.cloneElement(child, { id: child.key, active });
                 }
                 return child;
             });
@@ -183,10 +202,8 @@ class TabPanel extends React.Component {
                 <div className="tab-nav">
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {Object.keys(tabs).map((tab, i) => {
-                            const currentTab = this.props.selectedTab ? this.props.selectedTab : this.state.currentTab ? this.state.currentTab : i === 0 ? tab : '';
-
                             return (
-                                <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
+                                <li key={tab} role="presentation" aria-controls={tab} className={this.getCurrentTab() === tab ? 'active' : ''}>
                                     <TabItem tab={tab} handleClick={this.handleClick}>
                                         {tabs[tab]}
                                         {tabs[tab] === 'Genome browser' ?
@@ -214,7 +231,7 @@ TabPanel.propTypes = {
     tabs: PropTypes.object.isRequired,
     /** CSS class for the entire tab panel <div> */
     tabPanelCss: PropTypes.string,
-    /** key of tab to select (must provide handleTabClick) too. */
+    /** key of tab to select (must provide handleTabClick) too; null for no selection */
     selectedTab: PropTypes.string,
     /** Classes to add to navigation <ul> */
     navCss: PropTypes.string,
