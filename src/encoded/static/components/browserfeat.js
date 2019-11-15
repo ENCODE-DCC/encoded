@@ -34,6 +34,18 @@ module.exports.BrowserFeat = {
                 return 'flexBasis' in elem.style;
             })();
 
+            // Detect hidden scroll bars
+            this.feat.hiddenscroll = (() => {
+                const scrollDiv = document.createElement('div');
+                scrollDiv.style.width = '100px';
+                scrollDiv.style.height = '1px';
+                scrollDiv.style.overflow = 'scroll';
+                document.body.appendChild(scrollDiv);
+                const hiddenscroll = scrollDiv.offsetWidth === scrollDiv.clientWidth;
+                document.body.removeChild(scrollDiv);
+                return hiddenscroll;
+            })();
+
             // UA checks; should be retired as soon as possible
             this.feat.uaEdge = (() => navigator.userAgent.indexOf('Edge') > 0)();
 

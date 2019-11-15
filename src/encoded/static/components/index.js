@@ -23,6 +23,7 @@ require('./file');
 require('./item');
 require('./page');
 require('./platform');
+require('./facets');
 require('./search');
 require('./report');
 require('./matrix_audit');
