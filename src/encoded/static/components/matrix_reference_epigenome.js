@@ -297,32 +297,6 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
         matrixRow += 1;
         const categoryId = globals.sanitizeId(rowCategoryBucket.key);
         return accumulatingTable.concat(
-            [
-                {
-                    rowContent: [{
-                        header: (
-                            <div id={categoryId} style={{ backgroundColor: rowCategoryColor }}>
-                                {expandableRowCategory ?
-                                    <RowCategoryExpander
-                                        categoryId={categoryId}
-                                        categoryName={rowCategoryBucket.key}
-                                        expanderColor={rowCategoryTextColor}
-                                        expanded={categoryExpanded}
-                                        expanderClickHandler={expanderClickHandler}
-                                    />
-                                : null}
-                                {clearClassifications ?
-                                    <div style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</div>
-                                :
-                                    <a href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
-                                }
-                            </div>
-                        ),
-                    },
-                    { content: <div style={{ backgroundColor: rowCategoryColor }} />, colSpan: 0 }],
-                    css: 'matrix__row-category',
-                },
-            ],
             subcategoryRows,
             [{
                 rowContent: [
@@ -712,4 +686,115 @@ ReferenceEpigenomeMatrix.contextTypes = {
     biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
 };
 
+
+class TargetMatrixPresentation extends MatrixPresentation {
+    render() {
+        var x = _;
+        const { context } = this.props;
+        const { scrolledRight } = this.state;
+        const availableOrganism = this.getOrganismTabs();
+        const organismTabs = {};
+        Object.keys(availableOrganism).forEach((organismName) => {
+            if ((context.matrix.viewableTabs || []).includes(organismName)) {
+                organismTabs[organismName] = availableOrganism[organismName];
+            }
+        });
+        const clearClassifications = this.getClearClassificationsLink();
+
+        // Convert reference epigenome matrix data to a DataTable object.
+        let dataTable;
+        let rowKeys;
+        let matrixConfig;
+        if (this.initialSelectedTab) {
+            ({ dataTable, rowKeys } = convertReferenceEpigenomeToDataTable(context, this.state.expandedRowCategories, this.expanderClickHandler, clearClassifications));
+            matrixConfig = {
+                rows: dataTable,
+                rowKeys,
+                tableCss: 'matrix',
+            };
+        }
+
+        return (
+            <div className="matrix__presentation">
+                <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
+                    <span>{context.matrix.x.label}</span>
+                    {svgIcon('largeArrow')}
+                </div>
+                <div className="matrix__presentation-content">
+                    <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
+                    <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
+                        {!this.state.organismChooserVisible ?
+                            <div className="matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
+                                {matrixConfig ?
+                                    <DataTable tableData={matrixConfig} />
+                                : null}
+                            </div>
+                        :
+                            <React.Fragment>
+                                <div className="matrix__data--empty" />
+                                <Modal>
+                                    <ModalHeader closeModal={false} addCss="matrix__modal-header">
+                                        <h2>Target Matrix &mdash; choose organism</h2>
+                                    </ModalHeader>
+                                    <ModalBody addCss="matrix-reference-epigenome__organism-selector">
+                                        <div>Organism to view in matrix:</div>
+                                        <div className="selectors">
+                                            {Object.keys(organismTabs).map(organism => (
+                                                // Encode the organism name into the <a> class for BDD testing.
+                                                <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
+                                            ))}
+                                        </div>
+                                    </ModalBody>
+                                </Modal>
+                            </React.Fragment>
+                        }
+                    </TabPanel>
+                </div>
+            </div>
+        );
+    }
+}
+
+const TargetMatrixContent = ({ context }) => (
+    <div className="matrix__content matrix__content--reference-epigenome">
+        <TargetMatrixPresentation context={context} />
+    </div>
+);
+
+TargetMatrixContent.propTypes = {
+    /** Matrix search result object */
+    context: PropTypes.object.isRequired,
+};
+
+
+const TargetMatrix = ({ context }) => {
+    const itemClass = globals.itemClass(context, 'view-item');
+
+    if (context.total > 0) {
+        return (
+            <Panel addClasses={itemClass}>
+                <PanelBody>
+                    <MatrixHeader context={context} />
+                    <TargetMatrixContent context={context} />
+                </PanelBody>
+            </Panel>
+        );
+    }
+    return <h4>No results found</h4>;
+};
+
+
+TargetMatrix.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+
+TargetMatrix.contextTypes = {
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
+    biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
+};
+
+
 globals.contentViews.register(ReferenceEpigenomeMatrix, 'ReferenceEpigenomeMatrix');
+globals.contentViews.register(TargetMatrix, 'TargetMatrix');
