@@ -15,23 +15,27 @@ class CollapsiblePanel extends React.Component {
       this.handleLeave = this.handleLeave.bind(this);
 
   }
+
   handleHover() {
-    let heading = document.getElementById(this.headId);
+    let heading = document.getElementById(this.headId).parentElement;
     heading.style.cursor = "pointer";
-    //heading.style.backgroundColor = "#777";
+    heading.style.backgroundColor = "#777";
   }
+
+
   handleLeave() {
-      let heading = document.getElementById(this.headId);
+      let heading = document.getElementById(this.headId).parentElement;
       heading.style.cursor = "default";
-      //heading.style.backgroundColor = "#d8d8d8";
+      heading.style.backgroundColor = "#d8d8d8";
   }
+
   handleClick(e) {
     let body = document.getElementById(this.bodyId);
     let symbol = e.currentTarget.getElementsByTagName("span")[1]
-    if(symbol.innerHTML === "˅") {
-      symbol.innerHTML = "˄";
+    if(symbol.innerHTML === "+") {
+      symbol.innerHTML = "-";
     }else {
-      symbol.innerHTML = "˅";
+      symbol.innerHTML = "+";
     }
     if (body.style.display === "none") {
       body.style.display = "block";
@@ -43,7 +47,7 @@ class CollapsiblePanel extends React.Component {
   render() {
     const styles = {diplay: 'clock'};
     const symbolStyles = {
-      //fontWeight: "bold",
+      fontWeight: "bold",
       float: "right",
       marginLeft: "5px"
     };
@@ -53,7 +57,7 @@ class CollapsiblePanel extends React.Component {
             <div id={this.headId} >
               <h4 onClick = {this.handleClick} onMouseOver={this.handleHover} onMouseLeave={this.handleLeave}>
                 <span >{this.title}</span>
-                <span style={symbolStyles}>˄</span>
+                <span style={symbolStyles}>-</span>
               </h4>
             </div>
           </PanelHeading>

@@ -39,8 +39,8 @@ class PatientChart extends React.Component {
                     <div className="chart-checkboxes pb-2"> {this.state.checkboxes}</div>
                     {/* zoom in and out buttons */}
                     <div className="pt-2" >
-                        <button className="mr-2"  onClick={this.zoomIn}><FontAwesomeIcon icon={faSearchPlus} size="2x"/></button>
-                        <button onClick={this.zoomOut}><FontAwesomeIcon icon={faSearchMinus} size="2x"/></button>
+                        <button className="mr-2"  onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x"/></button>
+                        <button onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x"/></button>
                     </div>
                 </div>
                 <div className="chart-main" >
