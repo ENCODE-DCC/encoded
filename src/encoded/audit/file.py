@@ -171,6 +171,11 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
+        detail = ('The file {} that is a read1 in a paired ended sequencing run is not paired_with a paired end 2 file'.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            )
+        )
+        yield AuditFailure('missing paired_with', detail, level='WARNING')
         return
 
     paired_with_file_format = value['paired_with'].get('file_format')
@@ -204,6 +209,18 @@ def audit_paired_with(value, system):
             )
         )
         yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+
+    paired_with_id = value['paired_with'].get('@id')
+
+    if value['paired_end'] == value['paired_with'].get('paired_end'):
+        detail = ('The read{} file {} is paired with read{} file {}.'.format(
+            value['paired_end'],
+            audit_link(path_to_text(value['@id']), value['@id']),
+            value['paired_with'].get('paired_end'),
+            audit_link(path_to_text(paired_with_id), paired_with_id),
+            )
+        )
+        yield AuditFailure('inconsistent paired_with', detail, level='WARNING')
 
     if value['paired_end'] == '1':
         context = system['context']
