@@ -823,5 +823,55 @@
         "uuid": "f0344255-883d-4828-a909-a557a72a447c",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
+    },
+    {
+        "_test": "microRNA-seq rep1 library",
+        "date_created": "2018-07-04T00:03:13.006401+00:00",
+        "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
+        "nucleic_acid_term_name": "miRNA",
+        "accession": "ENCLB136UZC",
+        "status": "released",
+        "size_range": "<30",
+        "award": "/awards/U54HG006998/",
+        "aliases": [
+            "ali-mortazavi:K562-Lib1"
+        ],
+        "biosample": "/biosamples/ENCBS001EPI/",
+        "lab": "/labs/ali-mortazavi/",
+        "adapters": [
+            {
+              "type": "3' adapter",
+              "file": "ENCFF463QEL"
+            },
+            {
+              "type": "5' adapter",
+              "file": "ENCFF980GYX"
+            }
+        ]
+    },
+    {
+        "_test": "microRNA-seq rep2 library",
+        "date_created": "2018-07-04T00:03:13.133968+00:00",
+        "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
+        "nucleic_acid_term_name": "miRNA",
+        "award": "/awards/U54HG006998/",
+        "aliases": [
+            "ali-mortazavi:K562-Lib2"
+        ],
+        "accession": "ENCLB339NLX",
+        "size_range": "<30",
+        "lab": "/labs/ali-mortazavi/",
+        "biosample": "/biosamples/ENCBS088RNA/",
+        "status": "released",
+        "adapters": [
+            {
+              "type": "3' adapter",
+              "file": "ENCFF463QEL"
+            },
+            {
+              "type": "5' adapter",
+              "file": "ENCFF379BCO"
+            }
+        ]
     }
 ]
