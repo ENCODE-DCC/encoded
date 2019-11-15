@@ -135,7 +135,12 @@ const generateColMap = (context) => {
  * Display a disabled cell in the matrix. Used to reduce a bit of code per cell when matrices can
  * be very large.
  */
-const DisabledCell = () => <div className="matrix__disabled-cell" />;
+const DisabledCell = () => (
+    <React.Fragment>
+        <div className="matrix__disabled-cell" />
+        &nbsp;
+    </React.Fragment>
+);
 
 
 /**
@@ -246,9 +251,12 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                             const colIndex = colMap[colMapKey].col;
                             cells[colIndex] = {
                                 content: (
-                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
-                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
-                                    </a>
+                                    <React.Fragment>
+                                        <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
+                                            <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
+                                        </a>
+                                        &nbsp;
+                                    </React.Fragment>
                                 ),
                             };
                         });
@@ -258,9 +266,12 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                         const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
                         cells[colIndex] = {
                             content: (
-                                <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
-                                    <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
-                                </a>
+                                <React.Fragment>
+                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
+                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
+                                    </a>
+                                    &nbsp;
+                                </React.Fragment>
                             ),
                         };
                     }
