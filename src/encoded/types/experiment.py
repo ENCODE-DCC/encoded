@@ -220,6 +220,7 @@ class Experiment(Dataset,
             'label': 'Term Name',
         },
         'viewableTabs': ['Homo sapiens', 'Mus musculus'],
+        'assays': ['TF ChIP-seq', 'Histone ChIP-seq'],
     }
 
     audit = {

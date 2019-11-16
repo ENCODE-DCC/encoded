@@ -137,7 +137,6 @@ const generateColMap = (context) => {
  */
 const DisabledCell = () => <div className="matrix__disabled-cell" />;
 
-
 /**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
  * for the matrix. This is a shim between the incoming matrix data and the object <DataTable>
@@ -297,6 +296,32 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
         matrixRow += 1;
         const categoryId = globals.sanitizeId(rowCategoryBucket.key);
         return accumulatingTable.concat(
+            [
+                {
+                    rowContent: [{
+                        header: (
+                            <div id={categoryId} style={{ backgroundColor: rowCategoryColor }}>
+                                {expandableRowCategory ?
+                                    <RowCategoryExpander
+                                        categoryId={categoryId}
+                                        categoryName={rowCategoryBucket.key}
+                                        expanderColor={rowCategoryTextColor}
+                                        expanded={categoryExpanded}
+                                        expanderClickHandler={expanderClickHandler}
+                                    />
+                                : null}
+                                {clearClassifications ?
+                                    <div style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</div>
+                                :
+                                    <a href={`${context['@id']}&${rowCategoryQuery}`} style={{ color: rowCategoryTextColor }}>{rowCategoryBucket.key}</a>
+                                }
+                            </div>
+                        ),
+                    },
+                    { content: <div style={{ backgroundColor: rowCategoryColor }} />, colSpan: 0 }],
+                    css: 'matrix__row-category',
+                },
+            ],
             subcategoryRows,
             [{
                 rowContent: [
@@ -687,6 +712,195 @@ ReferenceEpigenomeMatrix.contextTypes = {
 };
 
 
+/**
+ * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
+ * for the matrix. This is a shim between the incoming matrix data and the object <DataTable>
+ * needs.
+ * @param {object} context Matrix JSON for the page
+ * @param {array}  expandedRowCategories Names of rowCategories the user has expanded
+ * @param {func}   expanderClickHandler Called when the user expands/collapses a row category
+ * @param {string} clearClassification URI to use to clear classification filter; null for none
+ *
+ * @return {object} Generated object suitable for passing to <DataTable>
+ */
+
+const convertTargetMatrixToDataTable = (context, expandedRowCategories, expanderClickHandler, clearClassifications) => {
+    const colCategory = context.matrix.x.group_by[0];
+    const colSubcategory = context.matrix.x.group_by[1];
+    const rowCategory = context.matrix.y.group_by[0];
+    const rowSubcategory = context.matrix.y.group_by[1];
+
+    // Generate the mapping of column categories and subcategories.
+    const colMap = generateColMap(context);
+    const colCount = Object.keys(colMap).length;
+
+    // Convert column map to an array of column map values sorted by column number for displaying
+    // in the matrix header.
+    const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
+
+    // Generate array of names of assays that have targets and don't collapse their targets, for
+    // rendering those columns as disabled.
+    const colCategoriesWithSubcategories = Object.keys(colMap).filter(colCategoryName => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
+
+    // Generate the hierarchical top-row sideways header label cells. The first cell is null unless
+    // it contains a link to clear the currently selected classification. At the end of this loop,
+    // rendering `{header}` shows this header row. The `sortedCols` array gets mutated in this loop,
+    // acquiring a `query` property in each of its objects that gets used later to generate cell
+    // hrefs.
+    const header = [
+        {
+            header: (
+                clearClassifications ?
+                    <div className="matrix__clear-classifications">
+                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
+                    </div>
+                : null
+            ),
+        },
+    ].concat(sortedCols.map((colInfo) => {
+        const categoryQuery = `${COL_CATEGORY}=${encoding.encodedURIComponent(colInfo.category)}`;
+        if (!colInfo.subcategory) {
+            // Add the category column links.
+            colInfo.query = categoryQuery;
+            return { header: <a href={`${context.search_base}&${categoryQuery}`}>{colInfo.category}</a> };
+        }
+
+        // Add the subcategory column links.
+        const subCategoryQuery = `${COL_SUBCATEGORY}=${encoding.encodedURIComponent(colInfo.subcategory)}`;
+        colInfo.query = `${categoryQuery}&${subCategoryQuery}`;
+        return { header: <a className="sub" href={`${context.search_base}&${categoryQuery}&${subCategoryQuery}`}>{colInfo.subcategory}</a> };
+    }));
+
+    // Generate the main table content including the data hierarchy, where the upper level of the
+    // hierarchy gets referred to here as "rowCategory" and the lower-level gets referred to as
+    // "rowSubcategory." Both these types of rows get collected into `dataTable` which gets passed
+    // to <DataTable>. Also generate an array of React keys to use with <DataMatrix> by using an
+    // array index that's independent of the reduce-loop index because of spacer/expander row
+    // insertion.
+    let matrixRow = 1;
+    const rowKeys = ['column-categories'];
+    const rowCategoryBuckets = context.matrix.y[rowCategory].buckets;
+    const rowCategoryColors = globals.biosampleTypeColors.colorList(rowCategoryBuckets.map(rowCategoryDatum => rowCategoryDatum.key));
+    const dataTable = rowCategoryBuckets.reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
+        // Each loop iteration generates one biosample classification row as well as the rows of
+        // biosample term names under it.
+        const rowCategoryColor = rowCategoryColors[rowCategoryIndex];
+        const rowSubcategoryColor = tintColor(rowCategoryColor, 0.5);
+        const rowCategoryTextColor = isLight(rowCategoryColor) ? '#000' : '#fff';
+        const rowSubcategoryBuckets = rowCategoryBucket[rowSubcategory].buckets;
+        const expandableRowCategory = rowSubcategoryBuckets.length > SUB_CATEGORY_SHORT_SIZE;
+        const rowCategoryQuery = `${ROW_CATEGORY}=${encoding.encodedURIComponent(rowCategoryBucket.key)}`;
+
+        // Update the row key mechanism.
+        rowKeys[matrixRow] = rowCategoryBucket.key;
+        matrixRow += 1;
+
+        // Get the list of subcategory names, or the first items of the list if the category isn't
+        // expanded.
+        const categoryExpanded = expandedRowCategories.indexOf(rowCategoryBucket.key) !== -1;
+        const visibleRowSubcategoryBuckets = categoryExpanded ? rowSubcategoryBuckets : rowSubcategoryBuckets.slice(0, SUB_CATEGORY_SHORT_SIZE);
+
+        // Generate one classification's rows of term names.
+        const cells = Array(colCount);
+        const subcategoryRows = visibleRowSubcategoryBuckets.map((rowSubcategoryBucket) => {
+            const subCategoryQuery = `${ROW_SUBCATEGORY}=${encoding.encodedURIComponent(rowSubcategoryBucket.key)}`;
+
+            // Generate an array of data cells for a single term-name row.
+            cells.fill(null);
+            rowSubcategoryBucket[colCategory].buckets.forEach((rowSubcategoryColCategoryBucket) => {
+                // Skip any excluded assay columns.
+                if (!excludedAssays.includes(rowSubcategoryColCategoryBucket.key)) {
+                    const rowSubcategoryColSubcategoryBuckets = rowSubcategoryColCategoryBucket[colSubcategory].buckets;
+                    if (rowSubcategoryColSubcategoryBuckets.length > 0 && !collapsedAssays.includes(rowSubcategoryColCategoryBucket.key)) {
+                        // The assay has targets and doesn't collapse them, so put relevant colored
+                        // cells in the subcategory columns. Each cell has no visible content, but
+                        // has hidden text for screen readers.
+                        rowSubcategoryColSubcategoryBuckets.forEach((cellData) => {
+                            const colMapKey = `${rowSubcategoryColCategoryBucket.key}|${cellData.key}`;
+                            const colIndex = colMap[colMapKey].col;
+                            cells[colIndex] = {
+                                content: (
+                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
+                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
+                                    </a>
+                                ),
+                            };
+                        });
+                    } else {
+                        // The assay does not have targets, or it does but collapses them, so just
+                        // add a colored cell for the column category.
+                        const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
+                        cells[colIndex] = {
+                            content: (
+                                <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
+                                    <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
+                                </a>
+                            ),
+                        };
+                    }
+                }
+            });
+
+            // Show assay columns as disabled (i.e. nothing to see here) if those columns have
+            // target columns.
+            colCategoriesWithSubcategories.forEach((colCategoryName) => {
+                cells[colMap[colCategoryName].col] = { content: <DisabledCell /> };
+            });
+
+            // Add a single term-name row's data and left header to the matrix.
+            rowKeys[matrixRow] = `${rowCategoryBucket.key}|${rowSubcategoryBucket.key}`;
+            matrixRow += 1;
+            return {
+                rowContent: [
+                    {
+                        header: (
+                            <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}`}>
+                                <div className="subcategory-row-text">{rowSubcategoryBucket.key}</div>
+                            </a>
+                        ),
+                    },
+                ].concat(cells),
+                css: 'matrix__row-data',
+            };
+        });
+
+        // Generate a row for a classification concatenated with the term-name rows under it,
+        // concatenated with an spacer row that might be empty or might have a rowCategory expander
+        // button.
+        rowKeys[matrixRow] = `${rowCategoryBucket.key}-spacer`;
+        matrixRow += 1;
+        const categoryId = globals.sanitizeId(rowCategoryBucket.key);
+        return accumulatingTable.concat(
+            subcategoryRows,
+            [{
+                rowContent: [
+                    {
+                        content: (
+                            expandableRowCategory ?
+                                <RowCategoryExpander
+                                    categoryId={categoryId}
+                                    categoryName={rowCategoryBucket.key}
+                                    expanded={categoryExpanded}
+                                    expanderClickHandler={expanderClickHandler}
+                                    expanderColor={rowCategoryTextColor}
+                                    expanderBgColor={rowCategoryColor}
+                                />
+                            : null
+                        ),
+                    },
+                    {
+                        content: null,
+                        colSpan: 0,
+                    },
+                ],
+                css: `matrix__row-spacer${expandableRowCategory ? ' matrix__row-spacer--expander' : ''}`,
+            }]
+        );
+    }, [{ rowContent: header, css: 'matrix__col-category-header' }]);
+    return { dataTable, rowKeys };
+};
+
+
 class TargetMatrixPresentation extends MatrixPresentation {
     render() {
         var x = _;
@@ -696,7 +910,8 @@ class TargetMatrixPresentation extends MatrixPresentation {
         const organismTabs = {};
         Object.keys(availableOrganism).forEach((organismName) => {
             if ((context.matrix.viewableTabs || []).includes(organismName)) {
-                organismTabs[organismName] = availableOrganism[organismName];
+                const organism = availableOrganism[organismName];
+                organismTabs[organismName] = organism;
             }
         });
         const clearClassifications = this.getClearClassificationsLink();
@@ -706,13 +921,25 @@ class TargetMatrixPresentation extends MatrixPresentation {
         let rowKeys;
         let matrixConfig;
         if (this.initialSelectedTab) {
-            ({ dataTable, rowKeys } = convertReferenceEpigenomeToDataTable(context, this.state.expandedRowCategories, this.expanderClickHandler, clearClassifications));
+            ({ dataTable, rowKeys } = convertTargetMatrixToDataTable(context, this.state.expandedRowCategories, this.expanderClickHandler, clearClassifications));
             matrixConfig = {
                 rows: dataTable,
                 rowKeys,
                 tableCss: 'matrix',
             };
         }
+
+        const organismTabsSet = [];
+
+        context.matrix.assays.forEach((assay) => {
+            Object.keys(organismTabs).forEach((organism) => {
+                organismTabsSet.push({
+                    organism,
+                    assay,
+                });
+            });
+        });
+
 
         return (
             <div className="matrix__presentation">
@@ -739,9 +966,9 @@ class TargetMatrixPresentation extends MatrixPresentation {
                                     <ModalBody addCss="matrix-reference-epigenome__organism-selector">
                                         <div>Organism to view in matrix:</div>
                                         <div className="selectors">
-                                            {Object.keys(organismTabs).map(organism => (
+                                            {organismTabsSet.map(tab => (
                                                 // Encode the organism name into the <a> class for BDD testing.
-                                                <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
+                                                <a key={tab.organism} className={`btn btn-info btn__selector--${tab.organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(tab.organism)}&assay_title=${tab.assay}`}>{tab.organism} | {tab.assay}</a>
                                             ))}
                                         </div>
                                     </ModalBody>
