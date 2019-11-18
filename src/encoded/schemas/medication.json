@@ -1,0 +1,86 @@
+{
+    "title": "Medication",
+    "id": "/profiles/medication.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["patient", "start_date", 'medication'],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/standard_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the lab was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "medication": {
+            "title": "Medication name",
+            "type": "string",
+            "enum": [
+                "Aldesleukin",
+                "Atezolizumab",
+                "Avelumab",
+                "Axitinib",
+                "Bevacizumab",
+                "CPI-444",
+                "Cabozantinib",
+                "Everolimus",
+                "IL-2",
+                "Interferon",
+                "Ipilimumab",
+                "Lenvatinib",
+                "Meds",
+                "NKTR-214",
+                "NKTR-262",
+                "Nivolumab",
+                "PT2385",
+                "Pazopanib",
+                "Pembrolizumab",
+                "Sirolimus",
+                "Sorafenib",
+                "Sunitinib",
+                "Temsirolimus"
+            ]
+        },
+        "start_date": {
+            "title": "Start date",
+            "description": "Start Date of medication.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "end_date": {
+            "title": "End date",
+            "description": "End Date of medication.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        }
+    },
+    "facets": {
+        "medication": {
+            "title": "Medication name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "boost_values": {
+        "medication": 1.0,
+    },
+    "changelog": "/profiles/changelogs/medication.md"
+
+}
