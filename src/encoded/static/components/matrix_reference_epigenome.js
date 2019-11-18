@@ -940,6 +940,8 @@ class TargetMatrixPresentation extends MatrixPresentation {
             });
         });
 
+        // TODO- Figure this out
+        this.state.organismChooserVisible = false;
 
         return (
             <div className="matrix__presentation">
@@ -949,7 +951,7 @@ class TargetMatrixPresentation extends MatrixPresentation {
                 </div>
                 <div className="matrix__presentation-content">
                     <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
-                    <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
+                    <TabPanel tabs={organismTabs} organismTabsSet={organismTabsSet} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
                         {!this.state.organismChooserVisible ?
                             <div className="matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
                                 {matrixConfig ?

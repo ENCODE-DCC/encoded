@@ -169,13 +169,13 @@ class TabPanel extends React.Component {
             return selectedTab;
         }
         if (this.state.currentTab) {
-            return currentTab;
+            return this.state.currentTab;
         }
         return Object.keys(this.props.tabs)[0];
     }
 
     render() {
-        const { tabs, tabPanelCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
+        const { tabs, tabPanelCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses, organismTabsSet } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
@@ -201,18 +201,31 @@ class TabPanel extends React.Component {
             <div className={tabPanelCss}>
                 <div className="tab-nav">
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
-                        {Object.keys(tabs).map((tab, i) => {
-                            return (
-                                <li key={tab} role="presentation" aria-controls={tab} className={this.getCurrentTab() === tab ? 'active' : ''}>
-                                    <TabItem tab={tab} handleClick={this.handleClick}>
-                                        {tabs[tab]}
-                                        {tabs[tab] === 'Genome browser' ?
+                        { organismTabsSet ?
+                            organismTabsSet.map(organismTab => (
+                                <li key={organismTab.organism} role="presentation" aria-controls={organismTab.organism} className={this.getCurrentTab() === organismTab.organism ? 'active' : ''}>
+                                    <TabItem organismTabs={organismTab} handleClick={this.handleClick}>
+                                        {organismTabsSet[organismTab.organism]}
+                                        {organismTabsSet[organismTab.organism] === 'Genome browser' ?
                                             <span className="BETA">BETA</span>
-                                        : null}
+                                            : null}
                                     </TabItem>
                                 </li>
-                            );
-                        })}
+                            ))
+                            :
+                            Object.keys(tabs).map((tab, i) => {
+                                return (
+                                    <li key={tab} role="presentation" aria-controls={tab} className={this.getCurrentTab() === tab ? 'active' : ''}>
+                                        <TabItem tab={tab} handleClick={this.handleClick}>
+                                            {tabs[tab]}
+                                            {tabs[tab] === 'Genome browser' ?
+                                                <span className="BETA">BETA</span>
+                                        : null}
+                                        </TabItem>
+                                    </li>
+                                );
+                            })
+                        }
                         {moreComponents ? <div className={moreComponentsClasses}>{moreComponents}</div> : null}
                     </ul>
                     {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
@@ -278,11 +291,25 @@ class TabItem extends React.Component {
     render() {
         const tab = this.props.tab;
 
-        return (
-            <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
-                {this.props.children}
-            </a>
-        );
+        if (tab) {
+            return (
+                <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
+                    {this.props.children}
+                </a>
+            );
+        }
+
+        const { assay, organism } = this.props.organismTabs;
+
+        if (organism) {
+            return (
+                <a href={`#${organism}`} ref={organism} onClick={this.clickHandler} data-trigger="tab" aria-controls={organism} role="tab" data-toggle="tab">
+                    {organism} | {assay}
+                </a>
+            );
+        }
+
+        return null;
     }
 }
 
