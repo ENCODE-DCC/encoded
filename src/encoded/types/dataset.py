@@ -180,13 +180,6 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-    @calculated_property(condition='date_released', schema={
-        "title": "Month released",
-        "type": "string",
-    })
-    def month_released(self, date_released):
-        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
-
 
 class FileSet(Dataset):
     item_type = 'file_set'

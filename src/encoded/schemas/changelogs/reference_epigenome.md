@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 16
 * Added *MouseDevSeries* enum to *internal_tags*
+* Removed *month_released* calculated property.
 
 ### Schema version 16
 

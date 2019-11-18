@@ -1,5 +1,8 @@
 ## Changelog for page.json
 
+### Minor changes since schema version 3
+* Removed *month_released* calculated property.
+
 ### Schema version 3
 
 * *status* property was restricted to one of  

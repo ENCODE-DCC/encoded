@@ -4,6 +4,7 @@
 
 * *references* was set to have a minimum of 1.
 * Added *MouseDevSeries* enum to *internal_tags*
+* Removed *month_released* calculated property.
 
 ### Schema version 15
 

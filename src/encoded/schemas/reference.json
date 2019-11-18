@@ -104,9 +104,6 @@
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
         },
-        "month_released": {
-            "title": "Month released"
-        },
         "software_used.software.name": {
             "title": "Software used"
         },

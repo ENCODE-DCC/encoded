@@ -196,9 +196,6 @@
         "news_keywords": {
             "title": "News keywords"
         },
-        "month_released": {
-            "title": "Month released"
-        },
         "award.project": {
             "title": "Project"
         }
