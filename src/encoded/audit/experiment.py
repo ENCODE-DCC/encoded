@@ -2691,7 +2691,7 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                                         detail, level='WARNING')
 
 
-def audit_experiment_replicate_with_no_files(value, system, files_structure):
+def audit_experiment_replicate_with_no_files(value, system, excluded_statuses):
     if 'internal_tags' in value and 'DREAM' in value['internal_tags']:
         return
 
@@ -2706,8 +2706,9 @@ def audit_experiment_replicate_with_no_files(value, system, files_structure):
 
     rep_dictionary = {}
     rep_numbers = {}
-    excluded_statuses = files_structure.get('excluded_types')
-    excluded_statuses += ['deleted', 'replaced']
+    files_structure = create_files_mapping(
+        value.get('original_files'),
+        [x for x in excluded_statuses if x != 'archived'])
 
     for rep in value.get('replicates'):
         if rep['status'] in excluded_statuses:
@@ -4512,12 +4513,12 @@ function_dispatcher_without_files = {
     'audit_control': audit_experiment_control,
     'audit_spikeins': audit_experiment_spikeins,
     'audit_nih_consent': audit_experiment_nih_institutional_certification,
+    'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
 }
 
 function_dispatcher_with_files = {
     'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
-    'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_platforms': audit_experiment_platforms_mismatches,
     'audit_uploading_files': audit_experiment_with_uploading_files,
     'audit_pipeline_assay': audit_experiment_pipeline_assay_details,

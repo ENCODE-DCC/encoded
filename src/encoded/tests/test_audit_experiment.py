@@ -1356,38 +1356,34 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_pipeline_assay_term_name_consistency(
+def test_audit_experiment_replicate_with_archived_file(
         testapp,
-        experiment, bam_file,
-        analysis_step_run_bam,
-        analysis_step_version_bam,
-        analysis_step_bam,
-        pipeline_bam):
-    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
-    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
-    testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'RNA-seq of long RNAs (single-end, unstranded)',
-                                             'assay_term_names': ['RNA-seq', 'RAMPAGE']})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    res = testapp.get(experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'inconsistent assay_term_name'
+        file_fastq,
+        base_experiment,
+        base_replicate,
+        base_library
+    ):
+    testapp.patch_json(file_fastq['@id'], {
+        'replicate': base_replicate['@id'],
+        'status': 'archived'})
+    testapp.patch_json(base_experiment['@id'], {
+        'assay_term_name': 'RNA-seq',
+        'status': 'released',
+        'date_released': '2016-01-01'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all((error['category'] != 'missing raw data in replicate')
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_pipeline_without_assay_term_names(
-        testapp,
-        experiment, bam_file,
-        analysis_step_run_bam,
-        analysis_step_version_bam,
-        analysis_step_bam,
-        pipeline_without_assay_term_names_bam):
-    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
-    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
-    testapp.patch_json(pipeline_without_assay_term_names_bam['@id'], {'title':
-                                             'RNA-seq of long RNAs (single-end, unstranded)'})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    res = testapp.get(experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'inconsistent assay_term_name'
+def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
+                                                        base_experiment,
+                                                        base_replicate,
+                                                        base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing raw data in replicate'
                for error in collect_audit_errors(res))
 
 
@@ -1429,6 +1425,41 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
                error in collect_audit_errors(res, ['ERROR']))
 
 
+def test_audit_experiment_pipeline_assay_term_name_consistency(
+        testapp,
+        experiment, bam_file,
+        analysis_step_run_bam,
+        analysis_step_version_bam,
+        analysis_step_bam,
+        pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)',
+                                             'assay_term_names': ['RNA-seq', 'RAMPAGE']})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent assay_term_name'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_pipeline_without_assay_term_names(
+        testapp,
+        experiment, bam_file,
+        analysis_step_run_bam,
+        analysis_step_version_bam,
+        analysis_step_bam,
+        pipeline_without_assay_term_names_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    testapp.patch_json(pipeline_without_assay_term_names_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent assay_term_name'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_not_uploaded_files(testapp, file_bam,
                                              base_experiment,
                                              base_replicate,
@@ -1448,18 +1479,6 @@ def test_audit_experiment_uploading_files(testapp, file_bam,
     assert all(error['category'] != 'file validation error'
                for error in collect_audit_errors(res))
     assert any(error['category'] == 'file in uploading state'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
-                                                        base_experiment,
-                                                        base_replicate,
-                                                        base_library):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'missing raw data in replicate'
                for error in collect_audit_errors(res))
 
 
