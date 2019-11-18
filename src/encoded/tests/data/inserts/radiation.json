@@ -1,6 +1,6 @@
 [
     {
-        "accession": "KCEPT318AXY",
+        "patient": "KCEPT318AXY",
         "dose_cgy_actual": 3000.0,
         "end_date": "1858-11-15",
         "fractions_actual": 10.0,
@@ -12,7 +12,7 @@
         "uuid": "e71307d2-9bae-495b-b66d-876945fa9cb9"
     },
     {
-        "accession": "KCEPT318AXY",
+        "patient": "KCEPT318AXY",
         "dose_cgy_actual": 3000.0,
         "end_date": "1859-06-19",
         "fractions_actual": 5.0,
@@ -24,7 +24,7 @@
         "uuid": "8568d2e5-2126-4bbe-94f7-2777f231cdad"
     },
     {
-        "accession": "KCEPT708IJT",
+        "patient": "KCEPT708IJT",
         "dose_cgy_actual": 2000.0,
         "end_date": "1857-06-14",
         "fractions_actual": 1.0,
@@ -36,7 +36,7 @@
         "uuid": "5248d590-e5b5-4305-95f0-54c0ddcf855a"
     },
     {
-        "accession": "KCEPT708IJT",
+        "patient": "KCEPT708IJT",
         "dose_cgy_actual": 2000.0,
         "end_date": "1857-06-14",
         "fractions_actual": 1.0,
@@ -48,7 +48,7 @@
         "uuid": "2170f94a-5483-4d58-a515-dde8aadf4ed8"
     },
     {
-        "accession": "KCEPT396JUN",
+        "patient": "KCEPT396JUN",
         "dose_cgy_actual": 3600.0,
         "end_date": "1870-05-26",
         "fractions_actual": 3.0,
@@ -60,7 +60,7 @@
         "uuid": "20fbd314-05b9-4fec-81bf-dee56fd4126e"
     },
     {
-        "accession": "KCEPT756AEN",
+        "patient": "KCEPT756AEN",
         "dose_cgy_actual": 4000.0,
         "end_date": "1855-02-27",
         "fractions_actual": 5.0,
@@ -72,7 +72,7 @@
         "uuid": "7be66a73-164b-4a5b-83c5-ae02b54ce532"
     },
     {
-        "accession": "KCEPT294KIZ",
+        "patient": "KCEPT294KIZ",
         "dose_cgy_actual": 2500.0,
         "end_date": "1901-02-19",
         "fractions_actual": 5.0,
@@ -84,7 +84,7 @@
         "uuid": "2ffea372-4b24-4ed9-9597-13d1024139d9"
     },
     {
-        "accession": "KCEPT021XWS",
+        "patient": "KCEPT021XWS",
         "dose_cgy_actual": 1300.0,
         "end_date": "1824-05-21",
         "fractions_actual": 1.0,
@@ -96,7 +96,7 @@
         "uuid": "9a33f76b-5c6a-448c-bbfd-fc00e8b6c9e9"
     },
     {
-        "accession": "KCEPT021XWS",
+        "patient": "KCEPT021XWS",
         "dose_cgy_actual": 1300.0,
         "end_date": "1824-05-21",
         "fractions_actual": 1.0,
@@ -108,7 +108,7 @@
         "uuid": "e2e81a7b-b620-4286-bebe-7a80115d3ab9"
     },
     {
-        "accession": "KCEPT021XWS",
+        "patient": "KCEPT021XWS",
         "dose_cgy_actual": 1300.0,
         "end_date": "1824-05-21",
         "fractions_actual": 1.0,
@@ -120,7 +120,7 @@
         "uuid": "d3c285f4-6cbb-4488-a4e5-9c0a199e6e70"
     },
     {
-        "accession": "KCEPT021XWS",
+        "patient": "KCEPT021XWS",
         "dose_cgy_actual": 1300.0,
         "end_date": "1824-05-21",
         "fractions_actual": 1.0,
@@ -132,7 +132,7 @@
         "uuid": "eb84facd-d0f6-4c02-8b58-0e02ed70154b"
     },
     {
-        "accession": "KCEPT359MHZ",
+        "patient": "KCEPT359MHZ",
         "dose_cgy_actual": 3000.0,
         "end_date": "1855-07-28",
         "fractions_actual": 5.0,
