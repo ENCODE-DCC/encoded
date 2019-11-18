@@ -34,7 +34,7 @@
             "enum": [
               "Adrenal gland, left",
               "Adrenal gland, right",
-              "Bone and bone marrow",
+              "Bone",
               "Brain",
               "Connective, subcutaneous and other soft tissue, abdomen",
               "Connective, subcutaneous and other soft tissues, NOS",
@@ -69,7 +69,16 @@
         },
         "start_date": {
             "title": "Start date",
-            "description": "Date of radiation to site.",
+            "description": "Start date of radiation to site.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "end_date": {
+            "title": "End date",
+            "description": "End date of radiation to site.",
             "comment": "Date can be submitted as YYYY-MM-DD.",
             "type": "string",
             "anyOf": [
