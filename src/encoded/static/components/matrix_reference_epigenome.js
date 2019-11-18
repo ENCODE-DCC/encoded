@@ -10,7 +10,7 @@ import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, SearchFilter } from './matrix';
+import { matrixAssaySortOrder, MATRIX_VISUALIZE_LIMIT, RowCategoryExpander, SearchFilter } from './matrix';
 import { MatrixInternalTags } from './objectutils';
 import { SearchControls } from './search';
 
@@ -22,40 +22,12 @@ import { SearchControls } from './search';
 const SUB_CATEGORY_SHORT_SIZE = 10;
 
 
-/**
- * Maximum number of selected items that can be visualized.
- * @constant
- */
-const VISUALIZE_LIMIT = 500;
-
-
 // Reference epigenome category properties we use.
 const ROW_CATEGORY = 'biosample_ontology.classification';
 const ROW_SUBCATEGORY = 'biosample_ontology.term_name';
 const COL_CATEGORY = 'assay_title';
 const COL_SUBCATEGORY = 'target.label';
 
-
-/**
- * Order in which assay_titles should appear along the horizontal axis of the matrix. Anything not
- * included gets sorted after these.
- */
-const assaySortOrder = [
-    'polyA plus RNA-seq',
-    'total RNA-seq',
-    'small RNA-seq',
-    'microRNA-seq',
-    'microRNA counts',
-    'RNA microarray',
-    'DNase-seq',
-    'ATAC-seq',
-    'WGBS',
-    'RRBS',
-    'MeDIP-seq',
-    'MRE-seq',
-    'TF ChIP-seq',
-    'Histone ChIP-seq',
-];
 
 /**
  * All assay columns to not include in matrix.
@@ -100,7 +72,7 @@ const generateColMap = (context) => {
     // at the end in order of occurrence.
     const colCategoryBuckets = context.matrix.x[colCategory].buckets;
     const sortedColCategoryBuckets = _(colCategoryBuckets).sortBy((colCategoryBucket) => {
-        const sortIndex = assaySortOrder.indexOf(colCategoryBucket.key);
+        const sortIndex = matrixAssaySortOrder.indexOf(colCategoryBucket.key);
         return sortIndex >= 0 ? sortIndex : colCategoryBuckets.length;
     });
 
@@ -358,7 +330,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
  * Render the area above the matrix itself, including the page title.
  */
 const MatrixHeader = ({ context }) => {
-    const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
 
     return (
         <div className="matrix-header">

@@ -547,3 +547,43 @@ def test_search_views_reference_epigenome_matrix_response(workbook, testapp):
     assert len(
         r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
     ) > 0
+
+
+def test_search_views_entex_matrix_response(workbook, testapp):
+    r = testapp.get(
+        '/entex-matrix/'
+        '?type=Experiment&status=released&internal_tags=ENTEx'
+    )
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['@type'] == ['EntexMatrix']
+    assert r.json['@id'] == (
+        '/entex-matrix/'
+        '?type=Experiment&status=released&internal_tags=ENTEx'
+    )
+    assert r.json['@context'] == '/terms/'
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['total'] >= 4
+    assert 'filters' in r.json
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == ['assay_title', ['target.label', 'no_target'], 'replicates.library.biosample.donor.sex', 'replicates.library.biosample.donor.accession']
+    assert r.json['matrix']['x']['label'] == 'Assay'
+    assert r.json['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
+    assert r.json['matrix']['y']['label'] == 'Biosample'
+    assert 'buckets' in r.json['matrix']['y']['biosample_ontology.classification']
+    assert 'key' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/search/?type=Experiment&status=released&internal_tags=ENTEx'
+    assert len(
+        r.json['matrix']['y']['biosample_ontology.classification']['buckets']
+    ) > 0
+    assert len(
+        r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
+    ) > 0

@@ -955,5 +955,88 @@
         "status": "released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
         "uuid": "693c82ee-70f1-11e9-a923-1681be663d3e"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS376EJL",
+        "aliases": [
+            "gtex:ENC-1LVAN-061-SM-IP2F3"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "donor": "ENCDO271OUW",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00019",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "e6440a82-d112-43a3-b892-a9763bdce7cf"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS009WOO",
+        "aliases": [
+            "john-stamatoyannopoulos:TC9599",
+            "gtex:ENC-1LGRB-010-CR89G"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "donor": "ENCDO793LXB",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00019",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "0e6c7ee8-9400-4bb8-ae2e-966ca5bb09fb"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS061XGD",
+        "aliases": [
+            "gtex:ENC-1JKYN-031-SM-9JLPD-1"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "description": "RNA Evaluation human tissue adrenal gland 1-2 microRNA-seq from Mortazavi",
+        "donor": "ENCDO845WKR",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00022",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "49b698f0-02ed-4e83-b04b-15642053c78d"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS204NZH",
+        "aliases": [
+            "john-stamatoyannopoulos:TC9581",
+            "gtex:ENC-1K2DA-026-IP2FC"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "donor": "ENCDO451RUA",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00019",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "17790c53-a3f4-4e9e-86a6-227689f757cb"
     }
 ]

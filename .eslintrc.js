@@ -3,6 +3,9 @@ module.exports = {
     env: {
         browser: true,
     },
+    plugins: [
+        'react-hooks',
+    ],
     parserOptions: {
         ecmaVersion: 6,
         ecmaFeatures: {
@@ -43,6 +46,8 @@ module.exports = {
         }],
         'prefer-destructuring': 0, // FF
         'react/forbid-prop-types': 0,
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': 'warn',
         'react/jsx-filename-extension': 0,
         'react/jsx-indent': 0,
         'react/jsx-indent-props': [2, 4],

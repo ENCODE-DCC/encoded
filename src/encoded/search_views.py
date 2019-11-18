@@ -9,6 +9,7 @@ from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import MissingMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
@@ -39,6 +40,7 @@ def includeme(config):
     config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
+    config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -216,6 +218,35 @@ def reference_epigenome_matrix(context, request):
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='reference_epigenome'
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='entex-matrix', request_method='GET', permission='search')
+def entex_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='ENTEx Matrix'
+            ),
+            TypeResponseField(
+                at_type=['EntexMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='entex'
             ),
             NotificationResponseField(),
             FiltersResponseField(),
