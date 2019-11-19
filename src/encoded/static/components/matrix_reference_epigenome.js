@@ -132,18 +132,6 @@ const generateColMap = (context) => {
 
 
 /**
- * Display a disabled cell in the matrix. Used to reduce a bit of code per cell when matrices can
- * be very large.
- */
-const DisabledCell = () => (
-    <React.Fragment>
-        <div className="matrix__disabled-cell" />
-        &nbsp;
-    </React.Fragment>
-);
-
-
-/**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
  * for the matrix. This is a shim between the incoming matrix data and the object <DataTable>
  * needs.
@@ -252,12 +240,13 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                             cells[colIndex] = {
                                 content: (
                                     <React.Fragment>
-                                        <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
+                                        <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`}>
                                             <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
                                         </a>
                                         &nbsp;
                                     </React.Fragment>
                                 ),
+                                style: { backgroundColor: rowSubcategoryColor },
                             };
                         });
                     } else {
@@ -267,12 +256,13 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                         cells[colIndex] = {
                             content: (
                                 <React.Fragment>
-                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`} style={{ backgroundColor: rowSubcategoryColor }}>
+                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`}>
                                         <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
                                     </a>
                                     &nbsp;
                                 </React.Fragment>
                             ),
+                            style: { backgroundColor: rowSubcategoryColor },
                         };
                     }
                 }
@@ -281,7 +271,7 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
             // Show assay columns as disabled (i.e. nothing to see here) if those columns have
             // target columns.
             colCategoriesWithSubcategories.forEach((colCategoryName) => {
-                cells[colMap[colCategoryName].col] = { content: <DisabledCell /> };
+                cells[colMap[colCategoryName].col] = { css: 'matrix__disabled-cell' };
             });
 
             // Add a single term-name row's data and left header to the matrix.
