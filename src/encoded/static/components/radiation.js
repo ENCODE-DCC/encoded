@@ -24,6 +24,24 @@ class Radiation extends React.Component {
       }
       return false;
     }
+    filterData(dataPoint, ganttData){
+      for (let i = 0; i < ganttData.length; i++) {
+        if (ganttData[i].id === dataPoint.id && ganttData[i].start === dataPoint.start) {
+            ganttData[i].numberOfSite++;
+            //compare DosagePerFraction
+            ganttData[i].maxDosagePerFraction = Math.max(ganttData[i].maxDosagePerFraction, dataPoint.maxDosagePerFraction);
+            ganttData[i].minDosagePerFraction = Math.min(ganttData[i].minDosagePerFraction, dataPoint.minDosagePerFraction);
+
+            //compare end date
+            if (ganttData[i].end != ganttData[i].end) {
+              ganttData[i].end = Math.max(ganttData[i].end,dataPoint.end);
+              ganttData[i].endDate = new Date(ganttData[i].end - 60000*60*24);
+            }
+
+
+        }
+      }
+    }
 
     render() {
         return (
@@ -49,14 +67,21 @@ class Radiation extends React.Component {
 
       for (let i = 0; i < this.radiationAppointments.length; i++) {
         let startDateUnix =  this.parseTime(this.radiationAppointments[i].start_date);
-        let endDateUnix = startDateUnix + this.radiationAppointments[i].fractions_actual *60000*60*24;
+        let endDateUnix = this.parseTime(this.radiationAppointments[i].end_date) + 60000*60*24;
         let dataPoint = {
           id: this.radiationAppointments[i].site_general,
           start: startDateUnix,
-          end: endDateUnix
+          startDate: this.radiationAppointments[i].start_date,
+          end: endDateUnix,
+          endDate: this.radiationAppointments[i].end_date,
+          numberOfSite: 1,
+          maxDosagePerFraction: this.radiationAppointments[i].dose_cgy_actual/this.radiationAppointments[i].fractions_actual,
+          minDosagePerFraction: this.radiationAppointments[i].dose_cgy_actual/this.radiationAppointments[i].fractions_actual
         };
         if (!this.containsObject(dataPoint, ganttData)) {
           ganttData.push(dataPoint);
+        } else{
+          this.filterData(dataPoint, ganttData);
         }
         datesUnix.push(startDateUnix);
       }
@@ -89,13 +114,26 @@ class Radiation extends React.Component {
 
         seriesData.push({
           type: 'line',
+          "data-max": ganttData[i].maxDosagePerFraction,
+          "data-min": ganttData[i].minDosagePerFraction,
           values : [[ganttData[i].start, projectNames.indexOf(ganttData[i].id) ], [ganttData[i].end, projectNames.indexOf(ganttData[i].id) ]],
           lineColor : '#29A2CC',
           marker : {
  	         visible : false
  	        },
           tooltip : {
-            text : "Radiation site: " + ganttData[i].id + "<br> Start date: %kl"
+            rules: [
+              {
+                rule: "%data-max === %data-min",
+                text : "Site: " + ganttData[i].id  + "<br>Number of lesions: "+ ganttData[i].numberOfSite +"<br>Dosage per fraction: " + ganttData[i].minDosagePerFraction + "<br>Start date: " + ganttData[i].startDate +  "<br>End date: " + ganttData[i].endDate
+
+              },
+              {
+                rule: "%data-max > %data-min",
+                text : "Site: " + ganttData[i].id  + "<br>Number of lesions: "+ ganttData[i].numberOfSite +"<br>Dosage per fraction: " + ganttData[i].minDosagePerFraction + " - " + ganttData[i].maxDosagePerFraction + "<br>Start date: " + ganttData[i].startDate +  "<br>End date: " + ganttData[i].endDate
+
+              }
+            ]
           },
         })
 
@@ -185,6 +223,8 @@ class Radiation extends React.Component {
           labels : projectNames,
  	        offset : 25,
  	        mirrored : true,
+          maxValue: scaleYIndex,
+          step: 1,
  	        guide : {
  	          visible : true,
  	          lineWidth : 1,

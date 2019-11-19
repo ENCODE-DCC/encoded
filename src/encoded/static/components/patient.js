@@ -51,11 +51,11 @@ class Patient extends React.Component {
         if (Object.keys(this.props.context.vitals).length > 0) {
           hasVitals = true;
         };
-        /*
+
         if (Object.keys(this.props.context.radiation).length > 0) {
           hasRadiation = true;
         };
-        */
+        
 
         const labsPanelBody = (
           <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
