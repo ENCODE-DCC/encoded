@@ -24,6 +24,12 @@ class PatientChart extends React.Component {
         };
         this.featuresChecked = {};
         this.features = Object.keys(this.props.data).sort();
+        if (this.features.indexOf("BP_SYS") != -1 && this.features.indexOf("BP_DIAS") != -1){
+          let indexSystolic = this.features.indexOf("BP_SYS");
+          let indexDiastolic = this.features.indexOf("BP_DIAS");
+          this.features[indexSystolic] = "BP_DIAS";
+          this.features[indexDiastolic] = "BP_SYS";
+        }
         this.numOfFeaturesChecked = this.features.length;
         this.data = {};
         this.charts = {};
@@ -118,6 +124,12 @@ class PatientChart extends React.Component {
       this.myConfig.graphset = [];
       this.myConfig.layout = this.numOfFeaturesChecked  + "x1";
       let features = Object.keys(this.currentCharts).sort();
+      if (features.indexOf("BP_SYS") != -1 && features.indexOf("BP_DIAS") != -1){
+        let indexSystolic = features.indexOf("BP_SYS");
+        let indexDiastolic = features.indexOf("BP_DIAS");
+        features[indexSystolic] = "BP_DIAS";
+        features[indexDiastolic] = "BP_SYS";
+      }
       for (let i = 0; i < this.numOfFeaturesChecked; i++) {
         this.myConfig.graphset.push(this.currentCharts[features[i]]);
       }
