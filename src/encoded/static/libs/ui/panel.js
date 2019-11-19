@@ -169,7 +169,7 @@ class TabPanel extends React.Component {
             return selectedTab;
         }
         if (this.state.currentTab) {
-            return currentTab;
+            return this.state.currentTab;
         }
         return Object.keys(this.props.tabs)[0];
     }
