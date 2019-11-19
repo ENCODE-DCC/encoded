@@ -110,8 +110,6 @@ class PatientChart extends React.Component {
 
     }
 
-
-
     updateChart() {
         this.myConfig.graphset = [];
 

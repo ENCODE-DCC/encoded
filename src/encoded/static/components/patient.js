@@ -10,6 +10,7 @@ import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
 import GermlineTable from './GermlineTable';
+import GermlineTableNoState from './GermlineTableNoState';
 
 
 
@@ -27,6 +28,7 @@ class Patient extends React.Component {
 
         const crumbsReleased = (context.status === 'released');
         console.log(context.accession);
+        console.log(context.germline);
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
@@ -80,6 +82,7 @@ class Patient extends React.Component {
                 <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
                 <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
                 <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTable>
+                <GermlineTableNoState tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " />
 
 
             </div>
