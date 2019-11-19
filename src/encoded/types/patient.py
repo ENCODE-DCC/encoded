@@ -68,11 +68,13 @@ class Patient(Item):
     name_key = 'accession'
     embedded = [
         'labs',
-        'vitals'
+        'vitals',
+        'medications'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
+        'medications': ('Medication', 'patient'),
     }
     set_status_up = [
     ]
@@ -100,6 +102,17 @@ class Patient(Item):
     def vitals(self, request, vitals):
         return group_values_by_vital(request, vitals)
 
+    @calculated_property( schema={
+        "title": "Medications",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Medication",
+        },
+    })
+    def medications(self, request, vitals):
+        return group_values_by_vital(request, vitals)
+
 
 @collection(
     name='lab-results',
@@ -122,6 +135,18 @@ class LabResult(Item):
 class VitalResult(Item):
     item_type = 'vital_results'
     schema = load_schema('encoded:schemas/vital_results.json')
+    embeded = []
+
+
+@collection(
+    name='medication',
+    properties={
+        'title': 'Medications',
+        'description': 'Medication results pages',
+    })
+class Medication(Item):
+    item_type = 'medication'
+    schema = load_schema('encoded:schemas/medication.json')
     embeded = []
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
