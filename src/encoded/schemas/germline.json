@@ -4,7 +4,7 @@
     "description": "Schema for describing the germline mutation results.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["patient", "register_date", "service_date", "target", "patient"],
+    "required": ["patient", "register_date", "service_date", "target"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [

@@ -43,7 +43,6 @@ class PatientChart extends React.Component {
                     </div>
                 </div>
                 <div className="chart-main" >
-                    <div className="chart-title" ><h3>{this.props.chartTitle}</h3></div>
                     <div id={this.props.chartId} className="chart-area" >
 
                     </div>
