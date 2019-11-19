@@ -239,12 +239,9 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                             const colIndex = colMap[colMapKey].col;
                             cells[colIndex] = {
                                 content: (
-                                    <React.Fragment>
-                                        <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`}>
-                                            <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
-                                        </a>
-                                        &nbsp;
-                                    </React.Fragment>
+                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[colMapKey].query}`}>
+                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}, {cellData.key}</span>
+                                    </a>
                                 ),
                                 style: { backgroundColor: rowSubcategoryColor },
                             };
@@ -255,12 +252,9 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
                         const colIndex = colMap[rowSubcategoryColCategoryBucket.key].col;
                         cells[colIndex] = {
                             content: (
-                                <React.Fragment>
-                                    <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`}>
-                                        <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
-                                    </a>
-                                    &nbsp;
-                                </React.Fragment>
+                                <a href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}&${colMap[rowSubcategoryColCategoryBucket.key].query}`}>
+                                    <span className="sr-only">Search {rowCategoryBucket.key}, {rowSubcategoryBucket.key} for {rowSubcategoryColCategoryBucket.key}</span>
+                                </a>
                             ),
                             style: { backgroundColor: rowSubcategoryColor },
                         };
