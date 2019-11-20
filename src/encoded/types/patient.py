@@ -153,8 +153,8 @@ class Radiation(Item):
         "title": "Dosage per Fraction",
         "type": "number",
     })
-    def dose_per_fraction(self, request, dose_cgy_actual, fractions_actual):
-        dose_per_fraction = dose_cgy_actual/fractions_actual
+    def dose_per_fraction(self, request, dose, fractions):
+        dose_per_fraction = dose/fractions
         return dose_per_fraction
 
 
