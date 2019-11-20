@@ -618,9 +618,31 @@ export class ImageWithFallback extends React.Component {
         });
     }
 
+    onError() {
+        let imageAlt = null;
+        let imageUrl = null;
+
+        // IE11 has an issue where it frequently throws a "Permission denied" exception, when the image
+        // exist. This workaround either shows the image or if not found shows the browser's
+        // inbuilt no-image display
+        if (document && document.all !== undefined) {
+            imageUrl = this.state.imageUrl;
+            imageAlt = this.state.imageAlt;
+        } else {
+            imageUrl = '/static/img/brokenImage.png';
+            imageAlt = 'Not found';
+        }
+
+        this.setState({
+            imageUrl,
+            imageAlt,
+        });
+    }
+
     render() {
         return (
             <img
+                onError={this.onError}
                 src={this.state.imageUrl}
                 alt={this.state.imageAlt}
             />
