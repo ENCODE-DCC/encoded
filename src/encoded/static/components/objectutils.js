@@ -618,18 +618,9 @@ export class ImageWithFallback extends React.Component {
         });
     }
 
-    // Display default "not found" image for non-existent image src
-    onError() {
-        this.setState({
-            imageUrl: '/static/img/brokenImage.png',
-            imageAlt: 'Not found',
-        });
-    }
-
     render() {
         return (
             <img
-                onError={this.onError}
                 src={this.state.imageUrl}
                 alt={this.state.imageAlt}
             />

@@ -72,16 +72,22 @@ class CartBatchDownloadComponent extends React.Component {
             // Extract filename from batch_download response content disposition tag.
             const matchResults = contentDisposition.match(/filename="(.*?)"/);
             const filename = matchResults ? matchResults[1] : 'files.txt';
+            const nav = window.navigator;
 
-            // Make a temporary link in the DOM with the URL from the response blob and then
-            // click the link to automatically download the file. Many references to the technique
-            // including https://blog.jayway.com/2017/07/13/open-pdf-downloaded-api-javascript/
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // IE11 workaround (also activates on Edge-Trident but not Edge-Chromium)
+            if (nav && nav.msSaveOrOpenBlob) {
+                nav.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Make a temporary link in the DOM with the URL from the response blob and then
+                // click the link to automatically download the file. Many references to the technique
+                // including https://blog.jayway.com/2017/07/13/open-pdf-downloaded-api-javascript/
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         }).catch((err) => {
             this.props.setInProgress(false);
             console.warn('batchDownload error %s:%s', err.name, err.message);
