@@ -75,8 +75,8 @@ class Radiation extends React.Component {
           end: endDateUnix,
           endDate: this.radiationAppointments[i].end_date,
           numberOfSite: 1,
-          maxDosagePerFraction: this.radiationAppointments[i].dose_cgy_actual/this.radiationAppointments[i].fractions_actual,
-          minDosagePerFraction: this.radiationAppointments[i].dose_cgy_actual/this.radiationAppointments[i].fractions_actual
+          maxDosagePerFraction: this.radiationAppointments[i].dose_per_fraction,
+          minDosagePerFraction: this.radiationAppointments[i].dose_per_fraction
         };
         if (!this.containsObject(dataPoint, ganttData)) {
           ganttData.push(dataPoint);

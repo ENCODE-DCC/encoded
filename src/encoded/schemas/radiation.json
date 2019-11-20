@@ -4,7 +4,7 @@
     "id": "/profiles/radiation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention", "dose_cgy_actual", "fractions_actual" ],
+    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention", "dose", "dose_units", "fractions" ],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -13,16 +13,28 @@
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
+    "dependencies": {
+      "dose": ["dose_units"],
+      "dose_units": ["dose"]
+    },
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "dose_cgy_actual": {
-            "title": "Dose CGY Actual",
+        "dose": {
+            "title": "Dose",
             "description": "The total actual dose received.",
             "type": "number"
         },
-        "fractions_actual": {
+        "dose_units": {
+            "title": "Dose units",
+            "type": "string",
+            "default": "cGy",
+            "enum": [
+                "cGy"
+            ]
+        },
+        "fractions": {
             "title": "Fraction",
             "description": "The total fractions received.",
             "type": "number"
