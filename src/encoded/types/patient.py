@@ -110,8 +110,8 @@ class Patient(Item):
             "linkTo": "Medication",
         },
     })
-    def medications(self, request, vitals):
-        return group_values_by_vital(request, vitals)
+    def medications(self, request, medications):
+        return paths_filtered_by_status(request, medications)
 
 
 @collection(
@@ -166,7 +166,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'medications']:
         try:
             filtered[key] = properties[key]
         except KeyError:
