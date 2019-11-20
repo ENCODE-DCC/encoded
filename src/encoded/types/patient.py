@@ -149,7 +149,7 @@ class Radiation(Item):
     schema = load_schema('encoded:schemas/radiation.json')
     embeded = []
 
-    @calculated_property(condition='dose_cgy_actual', schema={
+    @calculated_property(condition='dose', schema={
         "title": "Dosage per Fraction",
         "type": "number",
     })
