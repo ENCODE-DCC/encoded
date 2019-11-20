@@ -10,7 +10,9 @@ import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
 import GermlineTable from './GermlineTable';
-import GermlineTableNoState from './GermlineTableNoState';
+// import GermlineTableNoState from './GermlineTableNoState';
+import GermlineTableNoStatePanel from './GermlineTableNoStatePanel';
+
 
 
 
@@ -30,11 +32,11 @@ class Patient extends React.Component {
         let hasLabs = false;
         let hasVitals = false;
         if (Object.keys(this.props.context.labs).length > 0) {
-          hasLabs = true;
-        };
+            hasLabs = true;
+        }
         if (Object.keys(this.props.context.vitals).length > 0) {
-          hasVitals = true;
-        };
+            hasVitals = true;
+        }
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -107,7 +109,9 @@ class Patient extends React.Component {
                   </PanelHeading>
                   <PanelBody>
                       <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable>
-                      <GermlineTableNoState tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " />
+                      {/* <GermlineTableNoState tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTableNoState> */}
+                      <GermlineTableNoStatePanel tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTableNoStatePanel>
+                  
                   </PanelBody>
                 </Panel>
             </div>

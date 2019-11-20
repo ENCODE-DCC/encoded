@@ -31,7 +31,18 @@ class GermlineTableNoState extends React.Component {
         } else {
              this.germlineFilters = this.data.filter(i => (i.significance === 'Positive' || i.significance === 'Variant' || i.significance === 'Positive and Variant'));;
             //this.transferData = this.germlineFilters.map(i => ({ values: [i.target, i.significance] }));
-            this.transferData = this.germlineFilters.map(i => ({ "target": i.target, "significance": i.significance}));
+            //this.transferData = this.germlineFilters.map(i => ({ "target": i.target, "significance": i.significance}));
+            this.transferData = this.germlineFilters.map(i => (
+                    // { target:{ 
+                    //     title: 'Target',
+                    //     display: i.target
+                    //     }, 
+                    // significance:{ 
+                    //     title: 'Significance', 
+                    //     display: i.significance
+                    //     }
+                    // }));
+
             //this.data = this.props.data;
             console.log(this.data);
             console.log(this.transferData);
@@ -60,14 +71,10 @@ class GermlineTableNoState extends React.Component {
                 // for(let i=0;i<this.transferData.length, i++;)
                 // {
                    
-                   return (
-                        <SortTablePanel  title={this.props.tableTitle} >
-                            <SortTable   list={this.transferData}  columns={this.transferData[0]} ></SortTable>
-                        {/* columns={columns} columnId={Object.keys(this.transferData[0])}title={this.transferData[0].keys} columnClass={Object.keys(this.transferData[0]) title={this.props.tableTitle}*/}
-                        {/* columnsSet; */}
+                   return ( <SortTablePanel  title={this.props.tableTitle} >
+                            <SortTable   list={this.transferData}  columns={this.transferData[0]}></SortTable>
                         </SortTablePanel>)
                     //columnsSet.push();
-                
                     
             } else {
                 return (
