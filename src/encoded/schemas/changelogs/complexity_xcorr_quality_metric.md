@@ -1,5 +1,9 @@
 ## Changelog for complexity_xcorr_quality_metric.json
 
+### Minor changes since schema version 8
+
+*quality_metric_of* was added as a required field
+
 ### Schema version 8
 
 * *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*

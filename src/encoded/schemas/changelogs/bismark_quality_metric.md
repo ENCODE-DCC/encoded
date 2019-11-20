@@ -1,5 +1,9 @@
 ## Changelog for bismark_quality_metric.json
 
+### Minor changes since schema version 9
+
+*quality_metric_of* was added as a required field
+
 ### Schema version 9
 
 * *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
