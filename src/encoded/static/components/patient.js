@@ -9,8 +9,7 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
-import GermlineTable from './GermlineTable';
-import GermlineTableNoState from './GermlineTableNoState';
+import { SortTablePanel, SortTable } from './sorttable';
 
 
 
@@ -101,16 +100,12 @@ class Patient extends React.Component {
                         <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
                     </PanelBody>
                 </Panel> }
-                <Panel>
-                  <PanelHeading>
-                    <h4>Germline mutations</h4>
-                  </PanelHeading>
-                  <PanelBody>
-                      <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable>
-                      <GermlineTableNoState tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " />
-                  </PanelBody>
-                </Panel>
-            </div>
+
+                  {Object.keys(context.germline).length ?
+                      <GermlineTable filteredGermline={context.germline}/>
+                  : null}
+
+              </div>
         );
     }
 }
@@ -125,3 +120,31 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
+const germlineTableColumns = {
+    target: {
+        title: 'Target Gene',
+    },
+
+    significance: {
+        title: 'Clinical Significance',
+    },
+};
+
+// Display the table of germline mutations.
+const GermlineTable = (props) => {
+    let tableTitle;
+    const { filteredGermline } = props;
+    
+
+    tableTitle = 'Germline Mutations';
+    return (
+        <SortTablePanel title={tableTitle}>
+            <SortTable list={filteredGermline} columns={germlineTableColumns} />
+        </SortTablePanel>
+    );
+};
+
+GermlineTable.propTypes = {
+    filteredGermline: PropTypes.array.isRequired, // Condensed 'array' of germline objects
+};
