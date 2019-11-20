@@ -19,6 +19,7 @@ ORDER = [
     'image',
     'page',
     'patient',
+    'medication',
     'lab_results',
     'vital_results',
     'cart'

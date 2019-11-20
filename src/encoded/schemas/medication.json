@@ -3,7 +3,7 @@
     "id": "/profiles/medication.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["patient", "start_date", 'medication'],
+    "required": ["patient", "start_date", "name"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -22,7 +22,7 @@
             "type": "string",
             "linkTo": "Patient"
         },
-        "medication": {
+        "name": {
             "title": "Medication name",
             "type": "string",
             "enum": [
@@ -71,7 +71,7 @@
         }
     },
     "facets": {
-        "medication": {
+        "name": {
             "title": "Medication name"
         },
         "status": {
@@ -79,7 +79,7 @@
         }
     },
     "boost_values": {
-        "medication": 1.0,
+        "name": 1.0
     },
     "changelog": "/profiles/changelogs/medication.md"
 

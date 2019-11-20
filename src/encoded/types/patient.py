@@ -74,7 +74,7 @@ class Patient(Item):
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
-        'medications': ('Medication', 'patient'),
+        'medication': ('Medication', 'patient'),
     }
     set_status_up = [
     ]
@@ -110,8 +110,8 @@ class Patient(Item):
             "linkTo": "Medication",
         },
     })
-    def medications(self, request, medications):
-        return paths_filtered_by_status(request, medications)
+    def medications(self, request, medication):
+        return paths_filtered_by_status(request, medication)
 
 
 @collection(
@@ -148,6 +148,7 @@ class Medication(Item):
     item_type = 'medication'
     schema = load_schema('encoded:schemas/medication.json')
     embeded = []
+
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
