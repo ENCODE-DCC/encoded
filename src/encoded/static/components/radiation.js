@@ -105,10 +105,50 @@ class Radiation extends React.Component {
         }
 
       }
-      projectNames[0] = "Diagnosis Date";
+      //projectNames[0] = "Diagnosis Date";
+      projectNames[0] = "";
       projectNames[scaleYIndex - 1] = "";
-      projectNames[scaleYIndex] = "Deceased Date";
+      //projectNames[scaleYIndex] = "Deceased Date";
+      projectNames[scaleYIndex] = "";
 
+      let diagnosisDate = minDateUnix + 60000*60*24;
+      let deceasedDate = maxDateUnix - 60000*60*24;
+      seriesData.push(
+        {
+          type: 'scatter',
+          values: [[diagnosisDate, 0]],
+          marker: {
+            type: 'triangle',
+            angle: 90,
+            backgroundColor: 'none',
+            borderColor: '#101010',
+            borderWidth: '3px',
+            size: '7px'
+          },
+          tooltip : {
+            text : "Date of diagnosis: %kl",
+            backgroundColor: '#101010'
+          },
+        }
+      );
+      seriesData.push(
+        {
+          type: 'scatter',
+          values: [[deceasedDate, scaleYIndex]],
+          marker: {
+            type: 'triangle',
+            angle: -90,
+            backgroundColor: 'none',
+            borderColor: '#101010',
+            borderWidth: '3px',
+            size: '7px'
+          },
+          tooltip : {
+            text : "Deceased date: %kl",
+            backgroundColor: '#101010'
+          },
+        }
+      );
 
       for(var i = 0; i < ganttData.length; i++){
 
@@ -138,45 +178,6 @@ class Radiation extends React.Component {
         })
 
       }
-
-
-      let diagnosisDate = minDateUnix + 60000*60*24;
-      let deceasedDate = maxDateUnix - 60000*60*24;
-      seriesData.push(
-        {
-          type: 'scatter',
-          values: [[diagnosisDate, 0]],
-          marker: {
-            type: 'triangle',
-            angle: 90,
-            backgroundColor: 'none',
-            borderColor: '#D31E1E',
-            borderWidth: '3px',
-            size: '10px'
-          },
-          tooltip : {
-            text : "Diagnosis date: %kl"
-          },
-        }
-      );
-      seriesData.push(
-        {
-          type: 'scatter',
-          values: [[deceasedDate, scaleYIndex]],
-          marker: {
-            type: 'triangle',
-            angle: -90,
-            backgroundColor: 'none',
-            borderColor: '#D31E1E',
-            borderWidth: '3px',
-            size: '10px'
-          },
-          tooltip : {
-            text : "Deceased date: %kl"
-          },
-        }
-      );
-
 
       this.myConfig = {
  	      type: "mixed",
@@ -244,6 +245,28 @@ class Radiation extends React.Component {
  	          visible : false
  	        }
         },
+        labels:[
+              {
+                  text: "Date of diagnosis",
+                  fontSize: "12px",
+                  fontFamily: "arial",
+                  fontWeight: "normal",
+                  fontColor: "#101010",
+                  padding: "5%",
+                  offsetX: 58,
+                  hook:"node:plot=0;index=0"
+              },
+              {
+                  text: "Deceased date",
+                  fontSize: "12px",
+                  fontFamily: "arial",
+                  fontWeight: "normal",
+                  fontColor: "#101010",
+                  padding: "5%",
+                  offsetX: -52,
+                  hook:"node:plot=1;index=0"
+              }
+        ],
         series : seriesData
       };
 
