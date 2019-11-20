@@ -149,6 +149,19 @@ class Radiation(Item):
     schema = load_schema('encoded:schemas/radiation.json')
     embeded = []
 
+    @calculated_property(condition='dose_cgy_actual', schema={
+        "title": "Dosage per Fraction",
+        "type": "number",
+    })
+    def dose_per_fraction(self, request, dose_cgy_actual, fractions_actual):
+        dose_per_fraction = dose_cgy_actual/fractions_actual
+        return dose_per_fraction
+
+
+@property
+def __name__(self):
+    return self.name()
+
 
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):

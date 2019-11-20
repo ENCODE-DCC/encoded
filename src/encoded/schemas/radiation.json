@@ -4,7 +4,7 @@
     "id": "/profiles/radiation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention"],
+    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention", "dose_cgy_actual", "fractions_actual" ],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
