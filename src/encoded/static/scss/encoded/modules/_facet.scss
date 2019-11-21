@@ -152,7 +152,7 @@
         &:hover {
             ~.facet-term__item {
                 color: black;
-                background-color: lighten(#FC9E4F, 10%);//#e50400, 40%);
+                background-color: lighten(#FCC24E, 10%);//lighten(#FC9E4F, 10%);//#e50400, 40%);
             }
         }
     }
@@ -228,7 +228,7 @@
 .facet-term__minus {
     margin-right: 5px;
     a {
-        color: #FC9E4F;
+        color: #FCC24E;//#FC9E4F;
         // color: #e50400;
     }
 }
@@ -241,8 +241,8 @@
 
     &.negated-selected {
         // background-color: #e50400;
-        background-color: #FC9E4F;
-        color: white;
+        background-color: #FCC24E;//#FC9E4F;
+        // color: white;
     }
 }
 
@@ -411,7 +411,7 @@
         padding: 0 5px;
     }
     .negation-filter {
-        color: #FC9E4F;//#e50400;
+        color: darken(#FCC24E, 15%);//#FC9E4F;//#e50400;
     }
     .filter-link {
         display: inline-block;
