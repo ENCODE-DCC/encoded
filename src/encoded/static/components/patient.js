@@ -15,25 +15,21 @@ import CollapsiblePanel from './collapsiblePanel';
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state= {
+        showButton: false
+      }
+      this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(){
+      this.setState("showButton", !this.state.showButton);
+    }
     render() {
 
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        const btnStyles = {
-          display: "block",
-          position: "fixed",
-          bottom: "20px",
-          left: "30px",
-          zIndex: "99",
-          fontSize: "18px",
-          border: "none",
-          outline: "none",
-          backgroundColor: "red",
-          color: "white",
-          cursor: "pointer",
-          padding: "15px",
-          borderRadius: "4px"
-        };
         // Set up breadcrumbs
         const crumbs = [
             { id: 'Patients' },
@@ -55,7 +51,7 @@ class Patient extends React.Component {
         if (Object.keys(this.props.context.radiation).length > 0) {
           hasRadiation = true;
         };
-        
+
 
         const labsPanelBody = (
           <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
@@ -116,7 +112,6 @@ class Patient extends React.Component {
                 { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
                 { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
-                { false && <button style={btnStyles} onClick="topFunction()" id="myBtn" title="Go to top">Top</button> }
             </div>
         );
     }

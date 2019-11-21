@@ -116,6 +116,7 @@ class Radiation extends React.Component {
       seriesData.push(
         {
           type: 'scatter',
+          scales: "scaleX2, scaleY",
           values: [[diagnosisDate, 0]],
           marker: {
             type: 'triangle',
@@ -134,6 +135,7 @@ class Radiation extends React.Component {
       seriesData.push(
         {
           type: 'scatter',
+          scales: "scaleX2, scaleY",
           values: [[deceasedDate, scaleYIndex]],
           marker: {
             type: 'triangle',
@@ -154,6 +156,7 @@ class Radiation extends React.Component {
 
         seriesData.push({
           type: 'line',
+          scales: "scaleX, scaleY",
           "data-max": ganttData[i].maxDosagePerFraction,
           "data-min": ganttData[i].minDosagePerFraction,
           values : [[ganttData[i].start, projectNames.indexOf(ganttData[i].id) ], [ganttData[i].end, projectNames.indexOf(ganttData[i].id) ]],
@@ -182,6 +185,7 @@ class Radiation extends React.Component {
       this.myConfig = {
  	      type: "mixed",
  	      theme : 'light',
+        //scales: "scaleX, scaleY, scaleX2",
        	plot :{
           alpha:0.7,
  	        lineWidth : 40,
@@ -201,7 +205,7 @@ class Radiation extends React.Component {
         },
       	scaleX : {
  	        zooming : true,
- 	        placement : "opposite",
+ 	        //placement : "opposite",
           minValue : minDateUnix,
           maxValue: maxDateUnix,
           step : "day",
@@ -219,6 +223,27 @@ class Radiation extends React.Component {
  	          text : "%M-%d-%Y"
  	        }
       	},
+        scaleX2 : {
+          zooming : true,
+          placement : "opposite",
+          //blended: true,
+          minValue : minDateUnix,
+          maxValue: maxDateUnix,
+          step : "day",
+          item : {
+          //visible : false
+          },
+          guide : {
+            lineWidth : "1px"
+          },
+          tick : {
+            visible : false
+          },
+          transform : {
+            type : "date",
+            text : "%M-%d-%Y"
+          }
+        },
  	      scaleY : {
  	        itemsOverlap : true,
           labels : projectNames,

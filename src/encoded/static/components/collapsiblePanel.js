@@ -13,6 +13,12 @@ class CollapsiblePanel extends React.Component {
       this.handleClick = this.handleClick.bind(this);
       this.handleHover = this.handleHover.bind(this);
       this.handleLeave = this.handleLeave.bind(this);
+      this.styles = {diplay: 'clock'};
+      this.symbolStyles = {
+        fontWeight: "bold",
+        float: "right",
+        marginLeft: "5px"
+      };
 
   }
 
@@ -45,24 +51,19 @@ class CollapsiblePanel extends React.Component {
 
   }
   render() {
-    const styles = {diplay: 'clock'};
-    const symbolStyles = {
-      fontWeight: "bold",
-      float: "right",
-      marginLeft: "5px"
-    };
+
     return (
       <Panel>
           <PanelHeading >
             <div id={this.headId} >
               <h4 onClick = {this.handleClick} onMouseOver={this.handleHover} onMouseLeave={this.handleLeave}>
                 <span >{this.title}</span>
-                <span style={symbolStyles}>-</span>
+                <span style={this.symbolStyles}>-</span>
               </h4>
             </div>
           </PanelHeading>
-          <PanelBody style={styles}>
-              <div id={this.bodyId} style={styles}>
+          <PanelBody style={this.styles}>
+              <div id={this.bodyId} style={this.styles}>
                 {this.props.content}
               </div>
           </PanelBody>
