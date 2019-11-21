@@ -491,7 +491,6 @@ def experiment_26_27(value, system):
     if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
         value['assay_term_name'] = 'single-nucleus ATAC-seq'
 
-
 @upgrade_step('experiment', '27', '28')
 def experiment_27_28(value, system):
     #https://encodedcc.atlassian.net/browse/ENCD-4838
@@ -501,20 +500,18 @@ def experiment_27_28(value, system):
 @upgrade_step('annotation', '25', '26')
 def annotation_25_26(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4488
-    if value.get('encyclopedia_version') == '1':
-        value['encyclopedia_version'] = 'ENCODE v1'
-    if value.get('encyclopedia_version') == '2':
-        value['encyclopedia_version'] = 'ENCODE v2'
-    if value.get('encyclopedia_version') == 'ENCODE2':
-        value['encyclopedia_version'] = 'ENCODE v2'
-    if value.get('encyclopedia_version') == '3':
-        value['encyclopedia_version'] = 'ENCODE v3'
-    if value.get('encyclopedia_version') == '4':
-        value['encyclopedia_version'] = 'ENCODE v4'
-    if value.get('encyclopedia_version') == '5':
-        value['encyclopedia_version'] = 'ENCODE v5'
-    if value.get('encyclopedia_version') == 'ROADMAP':
-        value['encyclopedia_version'] = 'Roadmap'
-    if value.get('encyclopedia_version') == 'Blacklists':
+    enc_ver = value.get('encyclopedia_version')
+    ver_dict = {
+        '1': 'ENCODE v1',
+        '2': 'ENCODE v2',
+        'ENCODE2': 'ENCODE v2',
+        '3': 'ENCODE v3',
+        '4': 'ENCODE v4',
+        '5': 'ENCODE v5',
+        'ROADMAP': 'Roadmap',
+    }
+    if enc_ver in ver_dict:
+        value['encyclopedia_version'] = ver_dict[enc_ver]
+    elif enc_ver == 'Blacklists':
         value.pop('encyclopedia_version', None)
     return

@@ -1,7 +1,7 @@
 ## Changelog for annotation.json
 
 ### Schema version 26
-* Restricted *encyclopedia_version* to enum.
+* Altered *encyclopedia_version* from free text to an enum list of terms, including a new specification for ENCODE v5.
 
 ### Minor changes since schema version 25
 * Added *MouseDevSeries* enum to *internal_tags*

@@ -294,7 +294,6 @@ def annotation_20(award, lab):
         'internal_tags': ['cre_inputv10', 'cre_inputv11', 'ENCYCLOPEDIAv3']
     }
 
-
 @pytest.fixture
 def annotation_21(award, lab):
     return {
@@ -306,7 +305,7 @@ def annotation_21(award, lab):
 
 
 @pytest.fixture
-def annotation_22(award, lab):
+def annotation_25(award, lab):
     return {
         'award': award['@id'],
         'lab': lab['@id'],
@@ -655,7 +654,6 @@ def test_upgrade_experiment_26_to_27(upgrader, experiment_26):
     assert value['schema_version'] == '27'
     assert value['assay_term_name'] == 'HiC'
 
-
 def test_upgrade_experiment_27_to_28(upgrader, experiment_27):
     assert experiment_27['schema_version'] == '27'
     assert experiment_27['experiment_classification'] == ['functional genomics assay']
@@ -664,9 +662,9 @@ def test_upgrade_experiment_27_to_28(upgrader, experiment_27):
     assert 'experiment_classification' not in value
 
 
-def test_upgrade_annotation_25_to_26(upgrader, annotation_22):
+def test_upgrade_annotation_25_to_26(upgrader, annotation_25):
     value = upgrader.upgrade(
-        'annotation', annotation_22, current_version='25', target_version='26'
+        'annotation', annotation_25, current_version='25', target_version='26'
     )
     assert value['schema_version'] == '26'
     assert value['encyclopedia_version'] == 'ENCODE v1'
