@@ -75,8 +75,8 @@ class Radiation extends React.Component {
           end: endDateUnix,
           endDate: this.radiationAppointments[i].end_date,
           numberOfSite: 1,
-          maxDosagePerFraction: this.radiationAppointments[i].dose_cgy_actual/this.radiationAppointments[i].fractions_actual,
-          minDosagePerFraction: this.radiationAppointments[i].dose_cgy_actual/this.radiationAppointments[i].fractions_actual
+          maxDosagePerFraction: this.radiationAppointments[i].dose_per_fraction,
+          minDosagePerFraction: this.radiationAppointments[i].dose_per_fraction
         };
         if (!this.containsObject(dataPoint, ganttData)) {
           ganttData.push(dataPoint);
@@ -105,15 +105,58 @@ class Radiation extends React.Component {
         }
 
       }
-      projectNames[0] = "Diagnosis Date";
+      //projectNames[0] = "Diagnosis Date";
+      projectNames[0] = "";
       projectNames[scaleYIndex - 1] = "";
-      projectNames[scaleYIndex] = "Deceased Date";
+      //projectNames[scaleYIndex] = "Deceased Date";
+      projectNames[scaleYIndex] = "";
 
+      let diagnosisDate = minDateUnix + 60000*60*24;
+      let deceasedDate = maxDateUnix - 60000*60*24;
+      seriesData.push(
+        {
+          type: 'scatter',
+          scales: "scaleX2, scaleY",
+          values: [[diagnosisDate, 0]],
+          marker: {
+            type: 'triangle',
+            angle: 90,
+            backgroundColor: 'none',
+            borderColor: '#101010',
+            borderWidth: '3px',
+            size: '7px'
+          },
+          tooltip : {
+            text : "Date of diagnosis: %kl",
+            backgroundColor: '#101010'
+          },
+        }
+      );
+      seriesData.push(
+        {
+          type: 'scatter',
+          scales: "scaleX2, scaleY",
+          values: [[deceasedDate, scaleYIndex]],
+          marker: {
+            type: 'triangle',
+            angle: -90,
+            backgroundColor: 'none',
+            borderColor: '#101010',
+            borderWidth: '3px',
+            size: '7px'
+          },
+          tooltip : {
+            text : "Deceased date: %kl",
+            backgroundColor: '#101010'
+          },
+        }
+      );
 
       for(var i = 0; i < ganttData.length; i++){
 
         seriesData.push({
           type: 'line',
+          scales: "scaleX, scaleY",
           "data-max": ganttData[i].maxDosagePerFraction,
           "data-min": ganttData[i].minDosagePerFraction,
           values : [[ganttData[i].start, projectNames.indexOf(ganttData[i].id) ], [ganttData[i].end, projectNames.indexOf(ganttData[i].id) ]],
@@ -139,48 +182,10 @@ class Radiation extends React.Component {
 
       }
 
-
-      let diagnosisDate = minDateUnix + 60000*60*24;
-      let deceasedDate = maxDateUnix - 60000*60*24;
-      seriesData.push(
-        {
-          type: 'scatter',
-          values: [[diagnosisDate, 0]],
-          marker: {
-            type: 'triangle',
-            angle: 90,
-            backgroundColor: 'none',
-            borderColor: '#D31E1E',
-            borderWidth: '3px',
-            size: '10px'
-          },
-          tooltip : {
-            text : "Diagnosis date: %kl"
-          },
-        }
-      );
-      seriesData.push(
-        {
-          type: 'scatter',
-          values: [[deceasedDate, scaleYIndex]],
-          marker: {
-            type: 'triangle',
-            angle: -90,
-            backgroundColor: 'none',
-            borderColor: '#D31E1E',
-            borderWidth: '3px',
-            size: '10px'
-          },
-          tooltip : {
-            text : "Deceased date: %kl"
-          },
-        }
-      );
-
-
       this.myConfig = {
  	      type: "mixed",
  	      theme : 'light',
+        //scales: "scaleX, scaleY, scaleX2",
        	plot :{
           alpha:0.7,
  	        lineWidth : 40,
@@ -200,7 +205,7 @@ class Radiation extends React.Component {
         },
       	scaleX : {
  	        zooming : true,
- 	        placement : "opposite",
+ 	        //placement : "opposite",
           minValue : minDateUnix,
           maxValue: maxDateUnix,
           step : "day",
@@ -218,6 +223,27 @@ class Radiation extends React.Component {
  	          text : "%M-%d-%Y"
  	        }
       	},
+        scaleX2 : {
+          zooming : true,
+          placement : "opposite",
+          //blended: true,
+          minValue : minDateUnix,
+          maxValue: maxDateUnix,
+          step : "day",
+          item : {
+          //visible : false
+          },
+          guide : {
+            lineWidth : "1px"
+          },
+          tick : {
+            visible : false
+          },
+          transform : {
+            type : "date",
+            text : "%M-%d-%Y"
+          }
+        },
  	      scaleY : {
  	        itemsOverlap : true,
           labels : projectNames,
@@ -244,6 +270,28 @@ class Radiation extends React.Component {
  	          visible : false
  	        }
         },
+        labels:[
+              {
+                  text: "Date of diagnosis",
+                  fontSize: "12px",
+                  fontFamily: "arial",
+                  fontWeight: "normal",
+                  fontColor: "#101010",
+                  padding: "5%",
+                  offsetX: 58,
+                  hook:"node:plot=0;index=0"
+              },
+              {
+                  text: "Deceased date",
+                  fontSize: "12px",
+                  fontFamily: "arial",
+                  fontWeight: "normal",
+                  fontColor: "#101010",
+                  padding: "5%",
+                  offsetX: -52,
+                  hook:"node:plot=1;index=0"
+              }
+        ],
         series : seriesData
       };
 
