@@ -671,13 +671,20 @@ const Term = (props) => {
     // should be. If it *is* selected, also indicate whether it was selected for negation or not.
     const { selected, negated, exists } = termSelected(term, facet, filters);
     let href;
-    let negationHref = '';
-    if (selected && !canDeselect) {
-        href = null;
+    let negationHref;
+    let termHref;
+    // if (selected && !canDeselect) {
+    //     href = '';
+    //     termHref = selected;
+    //     console.log('not sure what this weird case is');
+    if (negated) {
+        href = `${searchBase.replace(`!=${term.replace(' ', '+')}`, `=${term.replace(' ', '+')}`).slice(0, -1)}`;
+        termHref = selected;
+        negationHref = '';
     } else if (selected) {
-        href = selected;
-    } else if (negated) {
-        href = searchBase;
+        href = '';
+        negationHref = `${searchBase.replace(`=${term.replace(' ', '+')}`, `!=${term.replace(' ', '+')}`).slice(0, -1)}`;
+        termHref = selected;
     } else if (facet.type === 'exists') {
         if (term === 'yes') {
             href = `${searchBase}${field}=*`;
@@ -687,6 +694,7 @@ const Term = (props) => {
     } else {
         // Term isn't selected. Get the href for the term, and for its negation button.
         href = `${searchBase}${field}=${encoding.encodedURIComponentOLD(term)}`;
+        termHref = `${searchBase}${field}=${encoding.encodedURIComponentOLD(term)}`;
         negationHref = `${searchBase}${field}!=${encoding.encodedURIComponentOLD(term)}`;
     }
 
@@ -709,14 +717,14 @@ const Term = (props) => {
 
     return (
         <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
-            {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
             <div className="facet-term__selector facet-term__plus">
-                {(selected || negated) ? null : <a href={href} onClick={href ? onFilter : null} title={'Include items with this term'}><i className="icon icon-plus-circle" /></a>}
+                <a href={href} onClick={href ? onFilter : null} title={'Include items with this term'}><i className="icon icon-plus-circle" /></a>
             </div>
             <div className="facet-term__selector facet-term__minus">
-                {(selected || negated || exists) ? null : <a href={negationHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
+                <a href={negationHref} onClick={negationHref ? onFilter : null} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>
             </div>
-            <a className="facet-term__item" href={href} onClick={href ? onFilter : null}>
+            {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
+            <a className={`facet-term__item facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`} href={termHref} onClick={termHref ? onFilter : null}>
                 <div className="facet-term__text">
                     {em ? <em>{title}</em> : <span>{title}</span>}
                 </div>

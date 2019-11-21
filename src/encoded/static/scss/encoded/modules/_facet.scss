@@ -132,7 +132,7 @@
 .facet-term {
     display: flex;
     position: relative;
-    align-items: center;
+    align-items: baseline;
     margin: 1px 0;
     padding: 0;
     border-radius: 3px;
@@ -140,20 +140,21 @@
     line-height: 1;
     z-index: 0;
 
-    &:hover {
-        background-color: lighten(#4183c4, 40%);
-    }
-
-    &.selected {
-        background-color: #4183c4;
-
-        .facet-term__item {
-            color: white;
+    .facet-term__plus {
+        &:hover {
+            ~.facet-term__item {
+                color: black;
+                background-color: lighten(#4183c4, 30%);
+            }
         }
     }
-
-    &.negated-selected {
-        background-color: #e50400;
+    .facet-term__minus {
+        &:hover {
+            ~.facet-term__item {
+                color: black;
+                background-color: lighten(#FC9E4F, 10%);//#e50400, 40%);
+            }
+        }
     }
 
     // Optional icon in status facets.
@@ -209,26 +210,39 @@
         width: 15px;
         height: 10px;
         text-align: right;
-        font-size: 1rem;
+        font-size: 1.2rem;
 
         > a {
             width: 15px;
             height: 15px;
         }
     }
-
 }
 
-.facet-term__plus {
-    a {
-        color: #2A6044;
-    }
-}
+// .facet-term__plus {
+//     a {
+//         color: #2A6044;
+//     }
+// }
 
 .facet-term__minus {
+    margin-right: 5px;
     a {
         color: #FC9E4F;
         // color: #e50400;
+    }
+}
+
+.facet-term__item {
+    &.selected {
+        background-color: #4183c4;
+        color: white;
+    }
+
+    &.negated-selected {
+        // background-color: #e50400;
+        background-color: #FC9E4F;
+        color: white;
     }
 }
 
@@ -397,7 +411,7 @@
         padding: 0 5px;
     }
     .negation-filter {
-        color: #e50400;
+        color: #FC9E4F;//#e50400;
     }
     .filter-link {
         display: inline-block;
