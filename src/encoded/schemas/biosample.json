@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "source", "organism", "biosample_ontology"],
-    "identifyingProperties": ["uuid","accession","aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/genetic_modifications"},
