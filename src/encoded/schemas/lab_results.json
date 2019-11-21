@@ -13,6 +13,10 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/standard_status" }
     ],
+    "dependencies": {
+        "value": ["value_units"],
+        "value_units": ["value"]
+    },
     "properties": {
         "schema_version": {
             "default": "1"
