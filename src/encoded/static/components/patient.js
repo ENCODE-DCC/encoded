@@ -9,14 +9,27 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
+import Radiation from "./radiation";
+import CollapsiblePanel from './collapsiblePanel';
 
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state= {
+        showButton: false
+      }
+      this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(){
+      this.setState("showButton", !this.state.showButton);
+    }
     render() {
+
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-
         // Set up breadcrumbs
         const crumbs = [
             { id: 'Patients' },
@@ -27,12 +40,28 @@ class Patient extends React.Component {
 
         let hasLabs = false;
         let hasVitals = false;
+        let hasRadiation = false;
         if (Object.keys(this.props.context.labs).length > 0) {
           hasLabs = true;
         };
         if (Object.keys(this.props.context.vitals).length > 0) {
           hasVitals = true;
         };
+
+        if (Object.keys(this.props.context.radiation).length > 0) {
+          hasRadiation = true;
+        };
+
+
+        const labsPanelBody = (
+          <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
+        );
+        const vitalsPanelBody = (
+          <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
+        );
+        const radiationPanelBody = (
+          <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
+        );
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -80,22 +109,9 @@ class Patient extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                { hasLabs && <Panel>
-                    <PanelHeading>
-                        <h4>Lab Results Over Time</h4>
-                    </PanelHeading>
-                    <PanelBody>
-                        <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
-                    </PanelBody>
-                </Panel> }
-                { hasVitals && <Panel>
-                    <PanelHeading>
-                        <h4>Vital Results Over Time</h4>
-                    </PanelHeading>
-                    <PanelBody>
-                        <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
-                    </PanelBody>
-                </Panel> }
+                { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
+                { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
+                { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
             </div>
         );
     }

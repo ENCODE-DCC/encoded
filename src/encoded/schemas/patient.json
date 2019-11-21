@@ -87,6 +87,12 @@
         "race": {
             "title": "Race"
         },
+        "radiation.site_general" : {
+          "title": "Radiation Site"
+        },
+        "radiation.treatment_intention" : {
+          "title": "Radiation Treatment Intention"
+        },
         "status": {
             "title": "Status"
         }
@@ -118,7 +124,9 @@
         "accession": 1.0,
         "gender": 1.0,
         "ethnicity": 1.0,
-        "race": 1.0
+        "race": 1.0,
+        "radiation.site_general": 1.0,
+        "radiation.treatment_intention": 1.0
     },
     "changelog": "/profiles/changelogs/patient.md"
 }

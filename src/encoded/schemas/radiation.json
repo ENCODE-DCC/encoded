@@ -1,0 +1,131 @@
+{
+    "title": "Radiation Therapy",
+    "description": "Schema for submitting radiation therapy history.",
+    "id": "/profiles/radiation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention", "dose", "dose_units", "fractions" ],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "dependencies": {
+      "dose": ["dose_units"],
+      "dose_units": ["dose"]
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "dose": {
+            "title": "Dose",
+            "description": "The total actual dose received.",
+            "type": "number"
+        },
+        "dose_units": {
+            "title": "Dose units",
+            "type": "string",
+            "default": "cGy",
+            "enum": [
+                "cGy"
+            ]
+        },
+        "fractions": {
+            "title": "Fraction",
+            "description": "The total fractions received.",
+            "type": "number"
+        },
+        "site_general": {
+            "title": "Site General",
+            "description": "The summarized site receiving radiation treatment.",
+            "type": "string",
+            "enum": [
+              "Adrenal gland, left",
+              "Adrenal gland, right",
+              "Bone",
+              "Brain",
+              "Connective, subcutaneous and other soft tissue, abdomen",
+              "Connective, subcutaneous and other soft tissues, NOS",
+              "Gastrointestine/ digestive system & spleen",
+              "Kidney, left",
+              "Kidney, right",
+              "Kidney, thrombus",
+              "Liver",
+              "Lung",
+              "Lung, left",
+              "Lung, right",
+              "Lymph node, intra abdominal",
+              "Lymph node, intrathoracic",
+              "Lymph node, NOS",
+              "Retroperitoneum & peritoneum",
+              "Retroperitoneum / renal bed, left",
+              "Retroperitoneum / renal bed, right",
+              "Salivary gland",
+              "Spine"
+            ]
+        },
+        "site_specific": {
+            "title": "Site Specific",
+            "description": "The specific site receiving radiation treatment.",
+            "type": "string"
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the lab was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "start_date": {
+            "title": "Start date",
+            "description": "Start date of radiation to site.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "end_date": {
+            "title": "End date",
+            "description": "End date of radiation to site.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "treatment_intention": {
+            "title": "Treatment Intention",
+            "description": "Purpose of treatment",
+            "type": "string",
+            "enum": [
+                "Adjuvant",
+                "Conditioning",
+                "Consolidative",
+                "Curative",
+                "De-Bulking",
+                "Definitive",
+                "Palliative",
+                "Primary-Neoadjuvant",
+                "Prophylactic",
+                "Not Available"
+            ]
+        }
+    },
+    "facets": {
+        "treatment_intention": {
+            "title": "Treatment Intention"
+        },
+        "site_general":  {
+            "title": "Site General"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/radiation.md"
+
+}
