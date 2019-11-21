@@ -718,10 +718,28 @@ const Term = (props) => {
     return (
         <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
             <div className="facet-term__selector facet-term__plus">
-                <a href={href} onClick={href ? onFilter : null} title={'Include items with this term'}><i className="icon icon-plus-circle" /></a>
+                <a href={href} onClick={href ? onFilter : null} title={'Include items with this term'}>
+                    {(selected && !negated) ?
+                        <i className="icon icon-plus-circle" />
+                    :
+                        <React.Fragment>
+                            <i className="icon icon-circle-o" />
+                            <i className="icon icon-plus" />
+                        </React.Fragment>
+                    }
+                </a>
             </div>
             <div className="facet-term__selector facet-term__minus">
-                <a href={negationHref} onClick={negationHref ? onFilter : null} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>
+                <a href={negationHref} onClick={negationHref ? onFilter : null} title={'Do not include items with this term'}>
+                    {negated ?
+                        <i className="icon icon-minus-circle" />
+                    :
+                        <React.Fragment>
+                            <i className="icon icon-circle-o" />
+                            <i className="icon icon-minus" />
+                        </React.Fragment>
+                    }
+                </a>
             </div>
             {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
             <a className={`facet-term__item facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`} href={termHref} onClick={termHref ? onFilter : null}>

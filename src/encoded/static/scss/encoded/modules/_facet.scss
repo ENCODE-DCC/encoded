@@ -219,11 +219,21 @@
     }
 }
 
-// .facet-term__plus {
-//     a {
-//         color: #2A6044;
-//     }
-// }
+.facet-term__selector {
+    position: relative;
+    .icon-plus {
+        position: absolute;
+        top: 4px;
+        left: 3px;
+        font-size: 0.75rem;
+    }
+    .icon-minus {
+        position: absolute;
+        top: 4px;
+        left: 3px;
+        font-size: 0.75rem;
+    }
+}
 
 .facet-term__minus {
     margin-right: 5px;
