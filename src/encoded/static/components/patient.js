@@ -9,6 +9,7 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
+import MedicationChart from './MedicationChart';
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -24,7 +25,7 @@ class Patient extends React.Component {
         ];
 
         const crumbsReleased = (context.status === 'released');
-
+        console.log(context.medications);
         let hasLabs = false;
         let hasVitals = false;
         if (Object.keys(this.props.context.labs).length > 0) {
@@ -96,6 +97,14 @@ class Patient extends React.Component {
                         <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
                     </PanelBody>
                 </Panel> }
+                <Panel>
+                    <PanelHeading>
+                        <h4>Medications over time</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <MedicationChart chartId="medicationChart" data={context.medications} chartTitle="Medications results over time" ></MedicationChart>
+                    </PanelBody>
+                </Panel>
             </div>
         );
     }
