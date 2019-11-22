@@ -4,7 +4,7 @@
     "id": "/profiles/consent.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["patient", "schema_version", "overall_consent", "consent_date"],
+    "required": ["patient", "consent_version", "overall_consent", "consent_date"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -64,7 +64,10 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3",
+            "default": "1"
+        },
+        "consent_version": {
+            "default": "Version 3",
             "enum": ["Version 1", "Version 2", "Version 3"]
         },
         "patient": {
@@ -97,7 +100,7 @@
     "allOf": [
         {
             "if": {
-                "properties": { "schema_version": {"const": "Version 1"}}
+                "properties": { "consent_version": {"const": "Version 1"}}
             },
             "then": {
                 "properties": {
@@ -113,7 +116,7 @@
         },
         {
             "if": {
-                "properties": { "schema_version": {"const": "Version 2"}}
+                "properties": { "consent_version": {"const": "Version 2"}}
             },
             "then": {
                 "properties": {
@@ -126,7 +129,7 @@
         },
         {
             "if": {
-                "properties": { "schema_version": {"const": "Version 3"}}
+                "properties": { "consent_version": {"const": "Version 3"}}
             },
             "then": {
                 "properties": {
