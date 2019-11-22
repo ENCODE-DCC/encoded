@@ -9,7 +9,6 @@ class PatientChart extends React.Component {
         this.state = {
             checkboxes: []
         };
-
         this.myConfig = {
             "utc": true,
             "plotarea": {
