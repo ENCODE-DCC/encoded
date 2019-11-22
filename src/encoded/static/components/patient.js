@@ -8,7 +8,7 @@ import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
-import PatientChart from "./PatientChart";
+import PatientChart from "./patientChart";
 import Radiation from "./radiation";
 import CollapsiblePanel from './collapsiblePanel';
 
