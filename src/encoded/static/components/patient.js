@@ -9,7 +9,6 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
-import { SortTablePanel, SortTable } from './sorttable';
 import GermlineTable from './germlineTable';
 
 
@@ -102,16 +101,8 @@ class Patient extends React.Component {
                     </PanelBody>
                 </Panel> }
 
-                  {/* {Object.keys(context.germline).length ?
-                      <GermlineTable filteredGermline={context.germline} />
-                  : null} */}
                 {
-                    // <Panel>
-                    //     {/* <PanelHeading><h4>Germline mutation list</h4> </PanelHeading> */}
-                    //     <PanelBody>
                             <GermlineTable data={context.germline} tableTitle="Germline mutation"></GermlineTable>
-                    //     </PanelBody>
-                    // </Panel>
                 }
               </div>
         );
@@ -128,29 +119,3 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
-
-// const germlineTableColumns = {
-//     target: {
-//         title: 'Target Gene',
-//     },
-
-//     significance: {
-//         title: 'Clinical Significance',
-//     },
-// };
-
-// // Display the table of germline mutations.
-// const GermlineTable = (props) => {
-//     let tableTitle;
-//     const { filteredGermline } = props;
-//     tableTitle = 'Germline Mutations';
-//     return (
-//         <SortTablePanel title={tableTitle}>
-//             <SortTable list={filteredGermline} columns={germlineTableColumns} />
-//         </SortTablePanel>
-//     );
-// };
-
-// GermlineTable.propTypes = {
-//     filteredGermline: PropTypes.array.isRequired, // Condensed 'array' of germline objects
-// };

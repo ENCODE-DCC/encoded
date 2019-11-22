@@ -18,7 +18,6 @@ class GermlineTable extends React.Component {
         console.log(this.data);
         console.log(this.transferData);
         console.log(this.germlineFilters);
-        // this.transferData=[{target: "VHL", significance: "Positive"}]
     }
 
 
@@ -29,6 +28,7 @@ class GermlineTable extends React.Component {
                     </SortTablePanel>
             );
         }
+        //Transfer data format to <SortTable/> format
         if (this.transferData) {
             const germlineTableColumns = {
                 target: {
