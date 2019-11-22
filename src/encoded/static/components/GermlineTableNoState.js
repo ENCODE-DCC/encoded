@@ -31,69 +31,52 @@ class GermlineTableNoState extends React.Component {
         } else {
              this.germlineFilters = this.data.filter(i => (i.significance === 'Positive' || i.significance === 'Variant' || i.significance === 'Positive and Variant'));;
             //this.transferData = this.germlineFilters.map(i => ({ values: [i.target, i.significance] }));
-            //this.transferData = this.germlineFilters.map(i => ({ "target": i.target, "significance": i.significance}));
-            this.transferData = this.germlineFilters.map(i => (
-                    // { target:{ 
-                    //     title: 'Target',
-                    //     display: i.target
-                    //     }, 
-                    // significance:{ 
-                    //     title: 'Significance', 
-                    //     display: i.significance
-                    //     }
-                    // }));
-
-            //this.data = this.props.data;
+            this.transferData = this.germlineFilters.map(i => ({ "target": i.target, "significance": i.significance}));
             console.log(this.data);
             console.log(this.transferData);
+            //this.data = this.props.data;
+            
             //console.log(this.germlineFilters);
             // this.transferData=[{target: "VHL", significance: "Positive"}]
             
                 if(this.transferData){
-                    // for(let i=0; i<this.transferData.length;i++){
-                    //     const transferDataColumns = {
-                    //         target : {
-                    //             title: 'Target',
-                    //             //getValue: this.transferData[i] => this.transferData[i].target,
-                    //             getValue: this.transferData[i] => return this.transferData[i].target,
-                    //         },
-                    //         significance: {
-                    //             title: 'Significance',
-                    //             getValue: this.transferData[i] => this.transferData[i].significance,
-                    //         }
-                    //     };
-                    // } 
-                
-               //this.transferData=[{"target":"vhl", "significance": "positive"},{"target":"bca1", "significance": "Positive and Variant"}]
-                //let list=[{"target":vhl, "significance": positive}]
-                //let columns={}
-                
-                // for(let i=0;i<this.transferData.length, i++;)
-                // {
-                   
-                   return ( <SortTablePanel  title={this.props.tableTitle} >
-                            <SortTable   list={this.transferData}  columns={this.transferData[0]}></SortTable>
-                        </SortTablePanel>)
-                    //columnsSet.push();
+                    const germlineTableColumns = {
+                        target: {
+                            title: 'Target Gene',
+                        },
                     
-            } else {
-                return (
-                
-                    <div className="flex-container">
-                        <div className="chart-main">
-                            <div className="chart-title">
-                                <div><h3>{this.props.tableTitle}</h3> </div>
-                                <div> <h4>No positive !</h4></div>
+                        significance: {
+                            title: 'Clinical Significance',
+                        },
+                    };
+                    
+                 let tableTitle = 'Germline Mutations';
+                   return (
+                    <SortTablePanel title={tableTitle}>
+                        <SortTable list={this.transferData} columns={germlineTableColumns} />
+                    </SortTablePanel>
+                     );
+                    
+                } else {
+                        return (
+                            <div className="flex-container">
+                                <div className="chart-main">
+                                    <div className="chart-title">
+                                        <div><h3>{this.props.tableTitle}</h3> </div>
+                                        <div> <h4>No positive !</h4></div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                );
-            }
+                        );
+                }
         }
     }
 }
 
+
 export default GermlineTableNoState;
+
+
 // ============================================================
 //http://localhost:6543/report/?type=Page&news=true&limit=all&sort=-%40id
 {/* <SortTablePanel title={tableTitle}>

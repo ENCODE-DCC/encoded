@@ -9,10 +9,11 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
-import GermlineTable from './GermlineTable';
-// import GermlineTableNoState from './GermlineTableNoState';
-import GermlineTableNoStatePanel from './GermlineTableNoStatePanel';
+// import GermlineTable from './GermlineTable';
+import GermlineTableNoState from './GermlineTableNoState';
+//import GermlineTableNoStatePanel from './GermlineTableNoStatePanel';
 
+//import { SortTablePanel, SortTable } from './sorttable';
 
 
 
@@ -27,7 +28,7 @@ class Patient extends React.Component {
             { id: 'Patients' },
             { id: <i>{context.accession}</i> },
         ];
-
+        console.log(context.germline);
         const crumbsReleased = (context.status === 'released');
         let hasLabs = false;
         let hasVitals = false;
@@ -108,13 +109,18 @@ class Patient extends React.Component {
                     <h4>Germline mutations</h4>
                   </PanelHeading>
                   <PanelBody>
-                      <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable>
-                      {/* <GermlineTableNoState tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTableNoState> */}
-                      <GermlineTableNoStatePanel tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTableNoStatePanel>
-                  
-                  </PanelBody>
-                </Panel>
-            </div>
+                      {/* <GermlineTable tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations" ></GermlineTable> */}
+                      <GermlineTableNoState tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTableNoState>
+                      {/* {/* <GermlineTableNoStatePanel tableId="germlineMutation" data={context.germline} tableTitle="Germline mutations " ></GermlineTableNoStatePanel>
+                   */}
+                  </PanelBody> 
+               </Panel>
+
+                  {/* {Object.keys(context.germline).length ?
+                      <GermlineTable1 filteredGermline={context.germline}/>
+                  : null} */}
+
+             </div>
         );
     }
 }
@@ -129,3 +135,29 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
+// const germlineTableColumns = {
+//     target: {
+//         title: 'Target Gene',
+//     },
+
+//     significance: {
+//         title: 'Clinical Significance',
+//     },
+// };
+
+// // Display the table of germline mutations.
+// const GermlineTable1 = (props) => {
+//     let tableTitle1;
+//     const { filteredGermline } = props;
+//     tableTitle1 = 'Germline Mutations';
+//     return (
+//         <SortTablePanel title={tableTitle1}>
+//             <SortTable list={filteredGermline} columns={germlineTableColumns} />
+//         </SortTablePanel>
+//     );
+// };
+
+// GermlineTable1.propTypes = {
+//     filteredGermline: PropTypes.array.isRequired, // Condensed 'array' of germline objects
+// };
