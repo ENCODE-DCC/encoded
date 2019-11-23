@@ -87,11 +87,8 @@
         "race": {
             "title": "Race"
         },
-        "germline.target": {
+        "germline_summary": {
             "title": "Germline Mutation"
-        },
-        "germline.significance": {
-            "title": "Clinical Significance"
         },
         "status": {
             "title": "Status"
