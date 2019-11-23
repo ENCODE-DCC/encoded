@@ -24,16 +24,16 @@ class Patient extends React.Component {
             { id: 'Patients' },
             { id: <i>{context.accession}</i> },
         ];
-
+        console.log(context.germline);
         const crumbsReleased = (context.status === 'released');
         let hasLabs = false;
         let hasVitals = false;
         if (Object.keys(this.props.context.labs).length > 0) {
-          hasLabs = true;
-        };
+            hasLabs = true;
+        }
         if (Object.keys(this.props.context.vitals).length > 0) {
-          hasVitals = true;
-        };
+            hasVitals = true;
+        }
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -100,9 +100,8 @@ class Patient extends React.Component {
                         <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
                     </PanelBody>
                 </Panel> }
-
                 {
-                            <GermlineTable data={context.germline} tableTitle="Germline mutation"></GermlineTable>
+                    <GermlineTable data={context.germline} tableTitle="Germline mutation"></GermlineTable>
                 }
               </div>
         );
