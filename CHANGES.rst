@@ -1,5 +1,48 @@
 Changes
 =======
+v93.0 (released) snovault 1.0.38
+---------------------------------------
+1.	ENCD-4970 Make reference-epignome cells render on IE11 (#3041)
+2.	ENCD-4973-raw-schema (#3042)
+3.	ENCD-4968-update-snovault-1.0.38 (#3040)
+4.	ENCD-4930-flag-read1-without-read2 (#3036)
+5.	ENCD-4687-add-adapter-files-to-library (#3033)
+6.	ENCD-4949-Fix-IE11 (#3039)
+7.	ENCD-4908-turn-on-swap-in-deployment (#3037)
+8.	ENCD-2304 Reference epigenome matrix (#3032)
+9.	ENCD-4912-update-matching-md5-audit (#3005)
+10.	ENCD-4896-Add-mirna-annotations-to-file-and-analysis-step (#3030)
+11.	ENCD-4898-add-pipeline-assay-audit (#3021)
+12.	ENCD-4851 remove duplicated dataset (#3035)
+13.	ENCD-2529-fix-default-required-properties-in-json-schema (#3015)
+14.	ENCD-4822-update-hgnc-file-to-fix-missing-suggest-genes (#2934)
+15.	ENCD-2401 fix IHEC trackhub JSON (#3028)
+16.	ENCD-4926-add-michael-schatz-to-aliases (#3011)
+17.	ENCD-4848-display-juicebox-name-for-hic (#3038)
+18.	ENCD-4934-add-perturbed-property-to-biosample (#3026)
+19.	ENCD-4939-change-memlimit-kill-to-terminate
+20.	ENCD-4938-add-forensic-logging-to-deployment
+21.	ENCD-4937-add-single-node-name-arg
+22.	ENCD-4911-increase-upload-limit-to-5gb
+23.	ENCD-4947-Fix-deploy-tag-bug-that-pulls-origin-dev
+24.	ENCD-4025-update-schema-md (#2985)
+25.	ENCD-4842-new-gm-property-introduced-elements (#3031)
+26.	ENCD-4929 add control type to FCC experiments (#3018)
+27.	ENCD-4933-remove-library-treatment-facet (#3016)
+28.	ENCD-4932 Fix links and formatting in Experiment Series audit (#3017)
+29.	ENCD-4946-add-new-annotation-type (#3020)
+30.	ENCD-4921-add-pacbio-sequel-to-file (#3004)
+31.	ENCD-4944 remove oneOf from target schema (#3027)
+32.	ENCD-4906-add-treatment-info-metadata (#2995)
+33.	SNO-125-switch-batch-download-to-query-string (#2998)
+34.	ENCD-4905-add-search-view-tests (#2974)
+35.	ENCD-4950-update-deploy-defaults-for-pg11 (#3029)
+36.	ENCD-4873-update-audit-search-label (#3019)
+37.	SNO-118-simple-query-string (#3013)
+38.	SNO-123-limit-es-scan (#3024)
+39.	ENCD-4935-reduce-compute-circle-ci-tests (#3003)
+40.	ENCD-4914-fix-test-timeout (#3012)
+41.	ENCD-4904-add-ingrid-as-user
 
 v92.0 (released) snovault 1.0.37
 ---------------------------------------
