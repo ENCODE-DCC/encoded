@@ -20,6 +20,7 @@ chown encoded:encoded "$encd_home"
 cd "$encd_home"
 sudo -u encoded git clone "$GIT_REPO" .
 sudo -u encoded git checkout -b "$GIT_BRANCH" "$git_uri"
+sudo pip3 install --upgrade pip
 sudo pip3 install -U zc.buildout setuptools redis
 sudo -u encoded buildout bootstrap
 sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c "$ROLE".cfg buildout:es-ip="$ES_IP" buildout:es-port="$ES_PORT"
