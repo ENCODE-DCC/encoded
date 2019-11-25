@@ -1,6 +1,10 @@
 Changes
 =======
-v93.0 (released) snovault 1.0.38
+v93.1 (unreleased) snovault 1.0.38
+---------------------------------------
+1. ENCD-4978 update bcrypt and pip3 (#3051)
+
+v93.0 (unreleased) snovault 1.0.38
 ---------------------------------------
 1.	ENCD-4970 Make reference-epignome cells render on IE11 (#3041)
 2.	ENCD-4973-raw-schema (#3042)
