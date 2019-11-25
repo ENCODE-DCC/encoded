@@ -46,6 +46,7 @@ commands:
       - run:
           name: Run buildout
           command: |
+            sudo pip3 install --upgrade pip
             sudo pip3 install -U zc.buildout setuptools
             buildout bootstrap
             bin/buildout
