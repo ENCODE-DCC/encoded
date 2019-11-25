@@ -113,6 +113,23 @@ class Patient(Item):
     def germline(self, request, germline):
         return paths_filtered_by_status(request, germline)
 
+    @calculated_property(condition='germline', schema={
+        "title": "Positive Germline Mutations",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def germline_summary(self, request, germline):
+        germline_summary = []
+        for mutation in germline:
+            mutatation_object = request.embed(mutation, '@@object')
+            if mutatation_object['significance'] in ['Positive', 'Variant', 'Positive and Variant']:
+                mutation_summary = mutatation_object['target']
+                germline_summary.append(mutation_summary)
+        return germline_summary
+
+
 @collection(
     name='lab-results',
     properties={
@@ -166,7 +183,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:
