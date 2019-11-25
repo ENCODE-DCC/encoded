@@ -6,48 +6,56 @@ import { SortTablePanel, SortTable } from './sorttable';
 class GermlineTable extends React.Component {
     constructor(props) {
         super(props);
-        this.data = this.props.data;
+       // this.data = this.props.data;
         this.germlineFilters = [];
-        this.transferData = [];
-        this.tableTitle = this.props.tableTitle;
+        this.transformData = [];
+       // this.tableTitle = this.props.tableTitle;
     }
 
     filterData() {
-        this.germlineFilters = this.data.filter(i => (i.significance === 'Positive' || i.significance === 'Variant' || i.significance === 'Positive and Variant'));
-        this.transferData = this.germlineFilters.map(i => ({ target: i.target, significance: i.significance }));
-        console.log(this.data);
-        console.log(this.transferData);
+        //let data=this.props.data;
+        this.germlineFilters = this.props.data.filter(i => (i.significance === 'Positive' || i.significance === 'Variant' || i.significance === 'Positive and Variant'));
+        this.transformData = this.germlineFilters.map(i => ({ target: i.target, significance: i.significance }));
+        console.log(this.props.data);
+        console.log(this.transformData);
         console.log(this.germlineFilters);
     }
 
 
     renderData() {
-        if (!Array.isArray(this.data) || !this.data.length) {
-            return (<SortTablePanel title={this.tableTitle}>
+        if (!Array.isArray(this.props.data) || !this.props.data.length) {
+            return (<SortTablePanel title={this.props.tableTitle}>
                         <div className="table-body"><h5>Germline mutation data is not available!</h5></div>
                     </SortTablePanel>
             );
         }
-        //Transfer data format to <SortTable/> format
-        if (this.transferData) {
-            const germlineTableColumns = {
-                target: {
-                    title: 'Target Gene',
-                },
-                significance: {
-                    title: 'Clinical Significance',
-                },
-            };
-            return (
-                <SortTablePanel title={this.tableTitle}>
-                    <SortTable list={this.transferData} columns={germlineTableColumns} />
-                </SortTablePanel>
-            );
-        }  
-                return (<SortTablePanel title={this.tableTitle}>
-                         <div className="table-body"><h5>No Positive for mutations!</h5></div>
+        else {
+            if(this.transformData.length>0) {
+                const germlineTableColumns = {
+                    target: {
+                        title: 'Target Gene',
+                    },
+                    significance: {
+                        title: 'Clinical Significance',
+                    },
+                };
+                return (
+                    <SortTablePanel title={this.props.tableTitle}>
+                        <SortTable list={this.transformData} columns={germlineTableColumns} />
                     </SortTablePanel>
                 );
+            }
+            else {
+                return (<SortTablePanel title={this.props.tableTitle}>
+                        <div className="table-body"><h5>No Positive for mutations!</h5></div>
+                    </SortTablePanel>
+                );
+            }
+        }
+
+        
+        //Transformat data to <SortTable/> format
+
     }
 
     render() {
