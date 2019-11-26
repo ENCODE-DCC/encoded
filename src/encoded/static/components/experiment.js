@@ -468,39 +468,75 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />
             </header>
             {auditDetail(context.audit, 'experiment-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
+            <Panel addClasses="highlight-panel">
+                <div data-test="status">
+                    <span className="small-hed">Status</span>
+                    <span className="small-info">
+                        <Status item={context} css="dd-status" title="Experiment status" inline />
+                        {adminUser && context.internal_status ?
+                            <Status item={context.internal_status} title="Internal status" inline />
+                        : null}
+                    </span>
+                </div>
+                <div data-test="assay">
+                    <span className="small-hed">Assay</span>
+                    <span className="small-info">
+                        {context.assay_term_name}
+                        {context.assay_term_name !== context.assay_title ?
+                            <span>{` (${context.assay_title})`}</span>
+                        : null}
+                    </span>
+                </div>
+                <div data-test="target">
+                    <span className="small-hed">Target</span>
+                    <span className="small-info"><a href={context.target['@id']}>{context.target.label}</a></span>
+                </div>
+                <div data-test="biosample-type">
+                    <span className="small-hed">Biosample type</span>
+                    <span className="small-info">{context.biosample_ontology.classification}</span>
+                </div>
+                {context.biosample_summary ?
+                    <div data-test="biosample-summary">
+                        <span className="small-hed">Biosample summary</span>
+                        <span className="small-info">
+                            {organismNames.length > 0 ?
+                                <span>
+                                    {organismNames.map((organismName, i) =>
+                                        <span key={organismName}>
+                                            {i > 0 ? <span> and </span> : null}
+                                            <i>{organismName}</i>
+                                        </span>
+                                    )}
+                                    &nbsp;
+                                </span>
+                            : null}
+                            <span>{context.biosample_summary}</span>
+                        </span>
+                    </div>
+                : null}
+                <div data-test="lab">
+                    <span className="small-hed">Lab</span>
+                    <span className="small-info">{context.lab.title}</span>
+                </div>
+            </Panel>
+
+            {Object.keys(condensedReplicates).length > 0 ?
+                <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
+            : null}
+
+            {/* Display the file widget with the facet, graph, and tables */}
+            <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
                         <div className="panel__split-heading panel__split-heading--experiment">
-                            <h4>Summary</h4>
+                            <h4>Detailed summary</h4>
+                            <ProjectBadge award={context.award} addClasses="badge-heading" />
                         </div>
                         <dl className="key-value">
-                            <div data-test="status">
-                                <dt>Status</dt>
-                                <dd>
-                                    <Status item={context} css="dd-status" title="Experiment status" inline />
-                                    {adminUser && context.internal_status ?
-                                        <Status item={context.internal_status} title="Internal status" inline />
-                                    : null}
-                                </dd>
-                            </div>
-
-                            <div data-test="assay">
-                                <dt>Assay</dt>
-                                <dd>
-                                    {context.assay_term_name}
-                                    {context.assay_term_name !== context.assay_title ?
-                                        <span>{` (${context.assay_title})`}</span>
-                                    : null}
-                                </dd>
-                            </div>
-
                             {context.target ?
                                 <React.Fragment>
-                                    <div data-test="target">
-                                        <dt>Target</dt>
-                                        <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                    </div>
                                     {context.target_expression_range_minimum !== undefined && context.target_expression_range_maximum !== undefined ?
                                         <div data-test="target-min">
                                             <dt>Target expression range minimum - maximum</dt>
@@ -514,26 +550,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="control_type">
                                     <dt>Control type</dt>
                                     <dd>{context.control_type}</dd>
-                                </div>
-                            : null}
-
-                            {context.biosample_summary ?
-                                <div data-test="biosample-summary">
-                                    <dt>Biosample summary</dt>
-                                    <dd>
-                                        {organismNames.length > 0 ?
-                                            <span>
-                                                {organismNames.map((organismName, i) =>
-                                                    <span key={organismName}>
-                                                        {i > 0 ? <span> and </span> : null}
-                                                        <i>{organismName}</i>
-                                                    </span>
-                                                )}
-                                                &nbsp;
-                                            </span>
-                                        : null}
-                                        <span>{context.biosample_summary}</span>
-                                    </dd>
                                 </div>
                             : null}
 
@@ -615,13 +631,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
                         </dl>
-                    </div>
-
-                    <div className="panel__split-element">
-                        <div className="panel__split-heading panel__split-heading--experiment">
-                            <h4>Attribution</h4>
-                            <ProjectBadge award={context.award} addClasses="badge-heading" />
-                        </div>
                         <dl className="key-value">
                             <div data-test="lab">
                                 <dt>Lab</dt>
@@ -696,13 +705,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                     </div>
                 </PanelBody>
             </Panel>
-
-            {Object.keys(condensedReplicates).length > 0 ?
-                <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
-            : null}
-
-            {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
