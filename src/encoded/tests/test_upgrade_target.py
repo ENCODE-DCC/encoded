@@ -157,6 +157,16 @@ def target_10_other_ptm(gene8335):
     return item
 
 
+@pytest.fixture
+def target_11_control(human):
+    item = {
+        'investigated_as': ['control'],
+        'target_organism': human['uuid'],
+        'label': 'No protein target control'
+    }
+    return item
+
+
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -286,3 +296,14 @@ def test_target_upgrade_categories(upgrader,
         'RNA binding protein',
         'chromatin remodeler',
     ]
+
+
+def test_target_upgrade_remove_control(
+    upgrader,
+    target_11_control,
+):
+    new_target = upgrader.upgrade(
+        'target', target_11_control, current_version='11', target_version='12'
+    )
+    assert new_target['schema_version'] == '12'
+    assert new_target['investigated_as'] == ['other context']
