@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "source", "organism", "biosample_ontology"],
-    "identifyingProperties": ["uuid","accession","aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/genetic_modifications"},
@@ -86,7 +86,7 @@
         },
         "post_treatment_time_units": {
             "required":["post_treatment_time", "treatments"],
-            "comment": "Biosample with a specified post_treatment_time_units requires requires non-empty treatments list post_treatment_time specification.",
+            "comment": "Biosample with a specified post_treatment_time_units requires non-empty treatments list post_treatment_time specification.",
             "properties":{
                 "treatments": {
                     "minItems": 1
@@ -690,7 +690,7 @@
         "post_differentiation_time": {
             "title": "Post-differentiation time",
             "description": "The time that elapsed past the point when biosamples were differentiated.",
-            "comment": "Use in conjunction with post_differentiation_time_units to specify time elapsed post-differentiation. Use of this property requires post_treatment_time_units specification.",
+            "comment": "Use in conjunction with post_differentiation_time_units to specify time elapsed post-differentiation. Use of this property requires post_differentiation_time_units specification.",
             "type": "integer"
         },
         "post_differentiation_time_units": {
