@@ -9,7 +9,7 @@ import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
 import PatientChart from "./PatientChart";
-import MedicationChart from './MedicationChart';
+import MedicationChart from './medicationChart';
 
 
 /* eslint-disable react/prefer-stateless-function */
