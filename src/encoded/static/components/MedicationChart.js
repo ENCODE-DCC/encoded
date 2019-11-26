@@ -118,15 +118,15 @@ class MedicationChart extends React.Component {
                 };
                 this.series.push(this.treatRange);
             
-            this.drugNames[this.scaleYIndex - 1] = '';
+            //this.drugNames[this.scaleYIndex - 1] = '';
             this.drugNames[this.scaleYIndex] = this.filterData[i].id;
-            this.scaleYIndex += 2;
+            this.scaleYIndex += 1;
             console.log(this.scaleYIndex);
         }
-        this.drugNames[-1] = 'diagnosis date';
+        //this.drugNames[-1] = 'diagnosis date';
         console.log(this.drugNames);
         //this.drugNames.pop();
-        console.log(this.drugNames);
+        //console.log(this.drugNames);
         console.log(this.series);
         return this.series;
     }
@@ -135,83 +135,61 @@ class MedicationChart extends React.Component {
         return (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear();
     }
     drawChart() {
-        this.myConfig = {
-            type: 'line',
+      
+       this.myConfig = {
+            type: "line",
             theme: 'light',
             plot: {
-                lineWidth: 15,
-                marker: {
-                    visible: false,
-                },
+              lineWidth: 20,
+              marker: {
+                visible: false
+              },
             },
             globals: {
-                shadow: false,
+              shadow: false
             },
             plotarea: {
-                maskTolerance: 80,
-                marginTop: 'dynamic',
-                marginBottom: '50',
-                marginLeft: 'dynamic',
-                marginRight: 'dynamic',
+              maskTolerance: 80,
+              marginTop: "dynamic",
+              marginBottom: "50",
+              marginLeft: "dynamic",
+              marginRight: "dynamic",
             },
             scaleX: {
-                zooming: true,
-                placement: 'opposite',
-                minValue: this.minDate,
-                maxValue: this.maxDate,
-                step: 'year',
-                item: {
-                    // visible : false
-                },
-                guide: {
-                    lineWidth: '1px',
-                },
-                tick: {
-                    visible: false,
-                },
-                transform: {
-                    type: 'date',
-                    text: '%m-%d-%y',
-                },
+              zooming: true,
+              placement: "opposite",
+              minValue: this.minDate,
+              maxValue: this.maxDate,
+              step: 'year',
+            //   step: "day",
+              item: {
+                //visible : false
+              },
+              guide: {
+                lineWidth: "1px"
+              },
+              tick: {
+                visible: false
+              },
+              transform: {
+                type: "date",
+                text: "%m-%d-%Y"
+              }
             },
             scaleY: {
-                itemsOverlap: true,
-                labels: this.drugNames,
-                // item: {
-                //     rules: [
-                //         {
-                //             rule: '%i > % this.drugNames.length-1',
-                //             visible: false,
-                //         },
-                //     ],
-                // },
-                offset: 25,
-                mirrored: true,
-                // minValue: 0,
-                maxValue: this.scaleYIndex,
-                guide: {
-                    visible: true,
-                    lineWidth: 1,
-                    lineStyle: 'solid',
-                    rules: [
-                        {
-                            rule: '%v % 2 === 0',
-                            visible: false,
-                        },
-                    ],
-                },
-                minorTicks: 1,
-                minorTick: {
-                    visible: false,
-                },
-                tick: {
-                    visible: false,
-                },
+              labels: this.drugNames,
+              offset: 25,
+              mirrored: true,
+              step: 1,
+              guide: {
+                visible: true,
+                lineWidth: 1,
+                lineStyle: "solid",
+              },
             },
-            // series: this.transferDataFun(this.filterData),
             series: this.series,
-        };
-
+            //series: createTimeline(ganttData2)
+          };
         // this.calculateLineWidth(this.myConfig);
         // this.addEventListener();
         this.chart = {
@@ -230,10 +208,85 @@ class MedicationChart extends React.Component {
         this.filterDataFun();
         this.transferDataFun();
         this.drawChart();
-        //this.parseTime();
+        // this.parseTime();
         this.unixToDate();
     //     this.calculateLineWidth();
     //     this.addEventListener();
     }
 }
 export default MedicationChart;
+// ---------------------------------------------------------
+// http://localhost:6543/patients/KCEPT359MHZ/ one drugs
+
+// http://localhost:6543/patients/KCEPT708IJT/ three drugs
+// this.myConfig = {
+//     type: 'line',
+//     theme: 'light',
+//     plot: {
+//         lineWidth: 15,
+//         marker: {
+//             visible: false,
+//         },
+//     },
+//     globals: {
+//         shadow: false,
+//     },
+//     plotarea: {
+//         maskTolerance: 80,
+//         marginTop: 'dynamic',
+//         marginBottom: '50',
+//         marginLeft: 'dynamic',
+//         marginRight: 'dynamic',
+//     },
+//     scaleX: {
+//         zooming: true,
+//         placement: 'opposite',
+//         minValue: this.minDate,
+//         maxValue: this.maxDate,
+//         step: 'year',
+//         item: {
+//             visible : false,
+//         },
+//         guide: {
+//             lineWidth: '1px',
+//         },
+//         tick: {
+//             visible: false,
+//         },
+//         transform: {
+//             type: 'date',
+//             text: '%m-%d-%Y',
+//         },
+//     },
+//     scaleY: {
+//         itemsOverlap: true,
+//         labels: this.drugNames,
+//         offset: 25,
+//         mirrored: true,
+//         minValue: 0,
+//         maxValue: this.drugNames.length-1,
+//         step: 1,
+//         guide: {
+//             visible: true,
+//             lineWidth: 1,
+//             lineStyle: 'solid',
+//             rules: [
+//                 {
+//                     rule: '%v',
+//                     //rule: '%v % 2 === 0',
+//                     visible: false,
+//                 },
+//             ],
+//         },
+//         // minorTicks: 3,
+//         // minorTick: {
+//         //     visible: true,
+//         // },
+//         tick: {
+//             visible: false,
+//         },
+//         //maxTicks: this.scaleYIndex,
+//     },
+//     // series: this.transferDataFun(this.filterData),
+//     series: this.series,
+// };
