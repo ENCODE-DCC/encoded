@@ -23,3 +23,4 @@ Allow: /report/?type=Annotation$
 Allow: /report/?type=Annotation&encyclopedia_version=4$
 Allow: /matrix/?type=Annotation$
 Allow: /matrix/?type=Annotation&encyclopedia_version=4$
+Allow: /search/?type=AntibodyLot&status=released
