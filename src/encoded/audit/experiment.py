@@ -3227,8 +3227,11 @@ def audit_experiment_control(value, system, excluded_types):
         return
 
     # single cell RNA-seq in E4 do not require controls (ticket WOLD-6)
+    # single cell RNA-seq in E3 also do not require controls (ENCD-4984, WOLD-52)
     if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
-            check_award_condition(value, ["ENCODE4"]):
+            check_award_condition(value, [
+                "ENCODE4",
+                "ENCODE3"]):
         return
 
     # We do not want controls
