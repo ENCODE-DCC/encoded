@@ -55,6 +55,23 @@ def group_values_by_vital(request, vitals):
     return dict(values_by_key)
 
 
+def supportive_med_frequency(request, supportive_medication):
+    frequency_by_key = defaultdict(list)
+    supportive_meds = []
+    for path in supportive_medication:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        start_date = properties.get('start_date')
+        frequency_by_key[properties.get('name')].append(start_date)
+
+    for k, v in frequency_by_key.items():
+        med_freq = {}
+        med_freq['name'] = k
+        med_freq['start_date'] = min(v)
+        med_freq['frequency'] = len(v)
+        supportive_meds.append(med_freq)
+    return supportive_meds
+
+
 @collection(
      name='patients',
      unique_key='accession',
@@ -69,12 +86,14 @@ class Patient(Item):
     embedded = [
         'labs',
         'vitals',
-        'medications'
+        'medications',
+        'supportive_medications'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
         'medication': ('Medication', 'patient'),
+        'supportive_medication': ('SupportiveMedication', 'patient'),
     }
     set_status_up = [
     ]
@@ -113,6 +132,17 @@ class Patient(Item):
     def medications(self, request, medication):
         return paths_filtered_by_status(request, medication)
 
+    @calculated_property( schema={
+        "title": "Supportive Medications",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "SupportiveMedication",
+        },
+    })
+    def supportive_medications(self, request, supportive_medication):
+        return supportive_med_frequency(request, supportive_medication)
+
 
 @collection(
     name='lab-results',
@@ -150,6 +180,18 @@ class Medication(Item):
     embeded = []
 
 
+@collection(
+    name='supportive-medication',
+    properties={
+        'title': 'Supportive Medications',
+        'description': 'Supportive Medication results pages',
+    })
+class SupportiveMedication(Item):
+    item_type = 'supportive_medication'
+    schema = load_schema('encoded:schemas/supportive_medication.json')
+    embeded = []
+
+
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
     if request.has_permission('view_details'):
@@ -167,7 +209,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'medications']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'medications', 'supportive_medications']:
         try:
             filtered[key] = properties[key]
         except KeyError:
