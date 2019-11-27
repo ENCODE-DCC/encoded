@@ -92,7 +92,7 @@ class MedicationChart extends React.Component {
         size: '5px'
       },
       tooltip: {
-        text: "Diagnosis date: %kl",
+        text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
         'background-color': '#498ead'
       },
     }
@@ -108,7 +108,7 @@ class MedicationChart extends React.Component {
         size: '5px'
       },
       tooltip: {
-        text: "Deceased date: %kl",
+        text: "Deceased date:"+this.unixToDate(this.deceasedDate),
         'background-color': '#498ead'
       },
     }
@@ -147,7 +147,7 @@ class MedicationChart extends React.Component {
         placement: "opposite",
         minValue: this.diagnosisDate,
         maxValue: this.deceasedDate,
-        step: "day",
+        step: "month",
         guide: {
           lineWidth: "1px"
         },

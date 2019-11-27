@@ -97,14 +97,17 @@ class Patient extends React.Component {
                         <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
                     </PanelBody>
                 </Panel> }
-                <Panel>
-                    <PanelHeading>
-                        <h4>Medications over time</h4>
-                    </PanelHeading>
-                    <PanelBody>
-                        <MedicationChart chartId="medicationChart" data={context.medications} chartTitle="Medications results over time" ></MedicationChart>
-                    </PanelBody>
-                </Panel>
+
+                {Object.keys(context.medications).length ?
+                      (<Panel>
+                        <PanelHeading>
+                            <h4>Medications over time</h4>
+                        </PanelHeading>
+                        <PanelBody>
+                            <MedicationChart chartId="medicationChart" data={context.medications} chartTitle="Medications results over time" ></MedicationChart>
+                        </PanelBody>
+                    </Panel>)
+                  : null}
             </div>
         );
     }
