@@ -78,7 +78,7 @@ class MedicationChart extends React.Component {
     this.diagnosisDate = this.minDate - 6000 * 60 * 24 * 30;// hard code diagnosisDate with one month before.Should be replaced with a real one, set with milliseconds.
     this.deceasedDate = this.maxDate + 6000 * 60 * 24 * 30;// hare code diseasedDate with one month after, set with milliseconds.
     this.drugNames[0] = "diagnosisDate";// Set first item to 'diagnosisdate'
-    this.drugNames[this.scaleYIndex] = "deceasedDate";// Set last one to 'deceaseddate'.
+    this.drugNames[this.scaleYIndex] = "deceasedDate";// Set last one to 'deceasedDate'.
 
     let diagnosisMarker = {
       type: 'scatter',
@@ -189,7 +189,6 @@ class MedicationChart extends React.Component {
     this.filterDataFun();
     this.transformDataFun();
     this.drawChart();
-    this.unixToDate();
   }
 }
 export default MedicationChart;

@@ -25,7 +25,6 @@ class Patient extends React.Component {
         ];
 
         const crumbsReleased = (context.status === 'released');
-        console.log(context.medications);
         let hasLabs = false;
         let hasVitals = false;
         if (Object.keys(this.props.context.labs).length > 0) {
@@ -101,10 +100,10 @@ class Patient extends React.Component {
                 {Object.keys(context.medications).length ?
                       (<Panel>
                         <PanelHeading>
-                            <h4>Medications over time</h4>
+                            <h4>Medications Over Time</h4>
                         </PanelHeading>
                         <PanelBody>
-                            <MedicationChart chartId="medicationChart" data={context.medications} chartTitle="Medications results over time" ></MedicationChart>
+                            <MedicationChart chartId="medicationChart" data={context.medications} chartTitle="Medications Results Over Time" ></MedicationChart>
                         </PanelBody>
                     </Panel>)
                   : null}
