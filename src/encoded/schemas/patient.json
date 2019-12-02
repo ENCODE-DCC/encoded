@@ -93,6 +93,9 @@
         "radiation.treatment_intention" : {
           "title": "Radiation Treatment Intention"
         },
+        "medical_imaging.type" : {
+          "title": "Medical Imaging"
+        },
         "status": {
             "title": "Status"
         }

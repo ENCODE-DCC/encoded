@@ -22,6 +22,7 @@ ORDER = [
     'lab_results',
     'vital_results',
     'radiation',
+    'medical_imaging',
     'cart'
 ]
 
