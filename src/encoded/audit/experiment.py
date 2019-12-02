@@ -3231,7 +3231,9 @@ def audit_experiment_control(value, system, excluded_types):
     if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
             check_award_condition(value, [
                 "ENCODE4",
-                "ENCODE3"]):
+                "ENCODE3",
+                ]
+            ):
         return
 
     # We do not want controls
