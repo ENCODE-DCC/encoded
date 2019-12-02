@@ -167,6 +167,21 @@ def target_11_control(human):
     return item
 
 
+@pytest.fixture
+def target_12_recombinant(ctcf):
+    item = {
+        'investigated_as': [
+            'recombinant protein',
+            'chromatin remodeller',
+            'RNA binding protein'
+        ],
+        'genes': [ctcf['uuid']],
+        'modifications': [{'modification': 'eGFP'}],
+        'label': 'eGFP-CTCF'
+    }
+    return item
+
+
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -307,3 +322,15 @@ def test_target_upgrade_remove_control(
     )
     assert new_target['schema_version'] == '12'
     assert new_target['investigated_as'] == ['other context']
+
+
+def test_target_upgrade_remove_recombinant(
+    upgrader,
+    target_12_recombinant,
+):
+    new_target = upgrader.upgrade(
+        'target', target_12_recombinant, current_version='12', target_version='13'
+    )
+    assert new_target['schema_version'] == '13'
+    assert 'recombinant protein' not in new_target['investigated_as']
+    assert len(new_target['investigated_as']) != 0

@@ -79,13 +79,17 @@ def tag_target(testapp, organism):
 
 
 @pytest.fixture
-def recombinant_target(testapp, gene):
+def tag_antibody(testapp, award, lab, source, organism, tag_target):
     item = {
-        'genes': [gene['uuid']],
-        'label': 'eGFP-CTCF',
-        'investigated_as': ['recombinant protein', 'transcription factor']
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'source': source['uuid'],
+        'host_organism': organism['uuid'],
+        'targets': [tag_target['uuid']],
+        'product_id': 'eGFP',
+        'lot_id': '1'
     }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
+    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
@@ -977,38 +981,6 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing spikeins'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_not_tag_antibody(
-        testapp, base_experiment, base_replicate, organism, antibody_lot):
-    other_target = testapp.post_json(
-        '/target',
-        {'target_organism': organism['uuid'],
-            'label': 'eGFP-AVCD',
-            'investigated_as': ['recombinant protein']}).json['@graph'][0]
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'],
-                       {'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'not tagged antibody'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_target_tag_antibody(
-        testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
-    ha_target = testapp.post_json(
-        '/target',
-        {'target_organism': organism['uuid'],
-            'label': 'HA-ABCD',
-            'investigated_as': ['recombinant protein']}).json['@graph'][0]
-    base_antibody['targets'] = [tag_target['@id']]
-    tag_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    testapp.patch_json(base_replicate['@id'], {'antibody': tag_antibody['@id']})
-    testapp.patch_json(
-        base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'mismatched tag target'
                for error in collect_audit_errors(res))
 
 
@@ -3359,11 +3331,12 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
 def test_audit_experiment_missing_genetic_modification(
         testapp,
         base_experiment,
-        recombinant_target,
+        base_target,
         replicate_1_1,
         replicate_2_1,
         library_1,
         library_2,
+        tag_antibody,
         biosample_1,
         biosample_2,
         donor_1,
@@ -3376,10 +3349,16 @@ def test_audit_experiment_missing_genetic_modification(
                                             'donor': donor_2['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(
+        replicate_1_1['@id'],
+        {'library': library_1['@id'], 'antibody': tag_antibody['@id']}
+    )
+    testapp.patch_json(
+        replicate_2_1['@id'],
+        {'library': library_2['@id'], 'antibody': tag_antibody['@id']}
+    )
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'target': recombinant_target['@id']})
+                                                'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'inconsistent genetic modification tags' for error in collect_audit_errors(res))
@@ -3390,7 +3369,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
         construct_genetic_modification,
         gm_characterization,
         base_experiment,
-        recombinant_target,
+        base_target,
         replicate_1_1,
         library_1,
         biosample_1,
@@ -3402,7 +3381,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})  
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'target': recombinant_target['@id']})
+                                                'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'missing genetic modification characterization' for error in collect_audit_errors(res))
@@ -3418,7 +3397,7 @@ def test_audit_experiment_tagging_biosample_characterization(
         interference_genetic_modification,
         biosample_characterization,
         base_experiment,
-        recombinant_target,
+        base_target,
         replicate_1_1,
         replicate_2_1,
         library_1,
@@ -3443,7 +3422,7 @@ def test_audit_experiment_tagging_biosample_characterization(
     testapp.patch_json(base_experiment['@id'],
                        {'assay_term_name': 'ChIP-seq',
                         'award': award_encode4['@id'],
-                        'target': recombinant_target['@id']})
+                        'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing biosample characterization'
                for error in collect_audit_errors(res, ['WARNING']))
@@ -3487,11 +3466,11 @@ def test_audit_experiment_wrong_modification(
         testapp,
         base_experiment,
         base_target,
-        recombinant_target,
         replicate_1_1,
         replicate_2_1,
         library_1,
         library_2,
+        tag_antibody,
         biosample_1,
         biosample_2,
         donor_1,
@@ -3508,15 +3487,29 @@ def test_audit_experiment_wrong_modification(
                                             'donor': donor_2['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(
+        replicate_1_1['@id'],
+        {'library': library_1['@id'], 'antibody': tag_antibody['@id']}
+    )
+    testapp.patch_json(
+        replicate_2_1['@id'],
+        {'library': library_2['@id'], 'antibody': tag_antibody['@id']}
+    )
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [construct_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [construct_genetic_modification['@id']]})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'target': recombinant_target['@id']})
+                                                'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'inconsistent genetic modification tags' for error in collect_audit_errors(res))
+
+    testapp.patch_json(construct_genetic_modification['@id'],
+                       {'introduced_tags': [{'name': 'eGFP', 'location': 'internal'}]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'inconsistent genetic modification tags'
+        for error in collect_audit_errors(res)
+    )
 
 
 def test_audit_experiment_chip_seq_mapped_read_length(testapp,
@@ -3712,7 +3705,7 @@ def test_audit_experiment_tag_target(testapp, experiment, ctcf):
             'genes': [ctcf['uuid']],
             'modifications': [{'modification': 'eGFP'}],
             'label': 'eGFP-CTCF',
-            'investigated_as': ['recombinant protein']
+            'investigated_as': ['other context']
         }
     ).json['@graph'][0]
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq',
@@ -3731,7 +3724,7 @@ def test_audit_experiment_inconsist_mod_target(testapp, experiment, replicate,
             'genes': [ctcf['uuid']],
             'modifications': [{'modification': 'eGFP'}],
             'label': 'eGFP-CTCF',
-            'investigated_as': ['recombinant protein']
+            'investigated_as': ['other context']
         }
     ).json['@graph'][0]
     testapp.patch_json(

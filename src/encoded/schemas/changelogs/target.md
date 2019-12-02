@@ -1,5 +1,10 @@
 ## Changelog for target.json
 
+### Schema version 13
+
+* *investigated_as* enum list was modified. The following terms were removed:
+  - *recombinant protein*
+
 ### Schema version 12
 * *investigated_as* enum list was modified. The following terms were removed:
   - *control*

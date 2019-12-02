@@ -44,7 +44,7 @@ def tagged_target(testapp, gene):
         'genes': [gene['uuid']],
         'modifications': [{'modification': 'eGFP'}],
         'label': 'eGFP-CTCF',
-        'investigated_as': ['recombinant protein', 'transcription factor']
+        'investigated_as': ['transcription factor']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
