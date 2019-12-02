@@ -90,6 +90,7 @@
             "title": "Status",
             "type": "string",
             "default": "in progress",
+            "permission": "import_items",
             "enum" : [
                 "deleted",
                 "in progress",
