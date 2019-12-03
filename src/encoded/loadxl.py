@@ -46,6 +46,7 @@ ORDER = [
     'reference',
     'ucsc_browser_composite',
     'matched_set',
+    'single_cell_rna_series',
     'treatment_time_series',
     'treatment_concentration_series',
     'organism_development_series',
@@ -627,6 +628,9 @@ PHASE1_PIPELINES = {
     'ucsc_browser_composite': [
         remove_keys('related_files'),
     ],
+    'single_cell_rna_series': [
+        remove_keys('related_datasets'),
+    ],
     'treatment_time_series': [
         remove_keys('related_datasets'),
     ],
@@ -709,6 +713,9 @@ PHASE2_PIPELINES = {
     ],
     'ucsc_browser_composite': [
         skip_rows_missing_all_keys('related_files'),
+    ],
+    'single_cell_rna_series': [
+        skip_rows_missing_all_keys('related_datasets'),
     ],
     'treatment_time_series': [
         skip_rows_missing_all_keys('related_datasets'),

@@ -754,3 +754,16 @@ class ExperimentSeries(Series):
     })
     def biosample_summary(self, request, related_datasets):
         return request.select_distinct_values('biosample_summary', *related_datasets)
+
+
+@collection(
+    name='single-cell-rna-series',
+    unique_key='accession',
+    properties={
+        'title': "Single cell RNA series",
+        'description': 'A series that group single cell RNA experiments sharing a similar cell classification.',
+    })
+class SingleCellRnaSeries(Series):
+    item_type = 'single_cell_rna_series'
+    schema = load_schema('encoded:schemas/single_cell_rna_series.json')
+    embedded = Series.embedded

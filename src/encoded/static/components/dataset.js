@@ -1221,6 +1221,7 @@ const seriesComponents = {
     TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
     TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
     AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
+    SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {
