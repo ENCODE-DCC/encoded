@@ -8,8 +8,8 @@ class MedicationChart extends React.Component {
       "utc": true,
       "plotarea": {
         "adjust-layout": true
-      }
-
+      },
+      graphset: [],
     };
     this.filterData = [];
     this.dateRange = [];
@@ -60,6 +60,7 @@ class MedicationChart extends React.Component {
             visible: false
           },
         },
+        scales: "scaleX, scaleY",//set top x-Axis
         values: [[this.filterData[i].start, this.scaleYIndex], [this.filterData[i].end, this.scaleYIndex]],
         lineColor: '#29A2CC',
         marker: {
@@ -69,7 +70,6 @@ class MedicationChart extends React.Component {
           text: 'MedName:' + this.filterData[i].id + '<br> Start date:' + this.unixToDate(this.filterData[i].start) + '<br> End date:' + this.unixToDate(this.filterData[i].end),
 
         },
-        'data-dragging': true,
       };
       this.series.push(this.treatRange);
       this.drugNames[this.scaleYIndex] = this.filterData[i].id;
@@ -83,6 +83,7 @@ class MedicationChart extends React.Component {
     let diagnosisMarker = {
       type: 'scatter',
       values: [[this.diagnosisDate, 0]],
+      scales: "scaleX2, scaleY",//set bottom x-Axis
       marker: {
         type: 'triangle',
         angle: 90,
@@ -93,11 +94,12 @@ class MedicationChart extends React.Component {
       },
       tooltip: {
         text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
-        'background-color': '#498ead'
+        'background-color': '#8BC34A' // '#498ead'
       },
     }
     let deceasedMarker = {
       type: 'scatter',
+     scales: "scaleX2, scaleY",//set bottom x-Axis
       values: [[this.deceasedDate, this.scaleYIndex]],
       marker: {
         type: 'triangle',
@@ -108,8 +110,8 @@ class MedicationChart extends React.Component {
         size: '5px'
       },
       tooltip: {
-        text: "Deceased date:"+this.unixToDate(this.deceasedDate),
-        'background-color': '#498ead'
+        text: "Deceased date:" + this.unixToDate(this.deceasedDate),
+        'background-color': '#8BC34A'//'#498ead'
       },
     }
 
@@ -123,56 +125,88 @@ class MedicationChart extends React.Component {
   }
   drawChart() {
     this.myConfig = {
-      type: "mixed",
-      theme: 'light',
-      plot: {
-        alpha: 0.7,
-        lineWidth: 20,
+      graphset: [
+        {
+          type: "mixed",
+          theme: 'light',
+          plot: {
+            alpha: 0.7,
+            lineWidth: 20,
 
-      },
-      globals: {
-        shadow: false
-      },
-      plotarea: {
-        maskTolerance: 80,
-        marginTop: "dynamic",
-        marginBottom: "50",
-        marginLeft: "dynamic",
-        marginRight: "50",
-        backgroundColor: "#cde5fa",
-        alpha: 0.3
-      },
-      scaleX: {
-        zooming: true,
-        placement: "opposite",
-        minValue: this.diagnosisDate,
-        maxValue: this.deceasedDate,
-        step: "month",
-        guide: {
-          lineWidth: "1px"
-        },
-        tick: {
-          visible: false
-        },
-        transform: {
-          type: "date",
-          text: "%M-%d-%Y"
+          },
+          globals: {
+            shadow: false,
+          },
+          plotarea: {
+            "adjust-layout": true,
+            marginTop: "50",
+            marginBottom: "50",
+            marginLeft: "dynamic",
+            marginRight: "50",
+            backgroundColor: "#cde5fa",
+            alpha: 0.3
+          },
+          scaleX: {
+            zooming: true,
+            placement: "opposite",
+            minValue: this.diagnosisDate,
+            maxValue: this.deceasedDate,
+            step: 'month',
+            guide: {
+              lineWidth: "1px"
+            },
+            tick: {
+              visible: false,
+            },
+            transform: {
+              type: "date",
+              text: "%M-%d-%Y"
+            }
+          },
+          //set scroll bar for zoom-in scrolling
+          "scroll-x": {
+            "bar": {
+              "background-color": "#DCEDC8",
+              "alpha": 0.5
+            },
+            "handle": {
+              "background-color": "#8BC34A"
+            }
+          },
+          scaleX2: {
+            zooming: true,
+            placement: "default",
+            minValue: this.diagnosisDate,
+            maxValue: this.deceasedDate,
+            step: 'month',
+            guide: {
+              lineWidth: "1px"
+            },
+            tick: {
+              visible: false,
+            },
+            transform: {
+              type: "date",
+              text: "%M-%d-%Y"
+            },
+          },
+
+          scaleY: {
+            itemsOverlap: true,
+            labels: this.drugNames,
+            offset: 25,
+            mirrored: true,
+            maxValue: this.scaleYIndex,
+            step: 1,
+            guide: {
+              visible: true,
+              lineWidth: 1,
+              lineStyle: "solid",
+            }
+          },
+          series: this.series,
         }
-      },
-      scaleY: {
-        itemsOverlap: true,
-        labels: this.drugNames,
-        offset: 25,
-        mirrored: true,
-        maxValue: this.scaleYIndex,
-        step: 1,
-        guide: {
-          visible: true,
-          lineWidth: 1,
-          lineStyle: "solid",
-        }
-      },
-      series: this.series,
+      ]
     }
     this.chart = {
       id: this.props.chartId,
