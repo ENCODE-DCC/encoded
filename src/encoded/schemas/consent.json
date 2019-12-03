@@ -16,6 +16,16 @@
         "schema_version": {
             "default": "1"
         },
+        "consent_version": {
+            "default": "version3",
+            "title": "Overall Consent",
+            "type": "string",
+            "enum": [
+                "version1",
+                "version2",
+                "version3"
+            ]
+        },
 
         "patient": {
             "title": "Patient",
@@ -23,7 +33,7 @@
             "type": "string",
             "linkTo": "Patient"
         },
-        "overall_consent": {
+        "overall": {
             "title": "Overall Consent",
             "type": "string",
             "enum": [
@@ -31,7 +41,7 @@
                 "Agree"
             ]
         },
-        "consent_date": {
+        "date": {
             "title": "Consent Date",
             "description": "Date of consent.",
             "comment": "Date can be submitted as YYYY-MM-DD.",
@@ -75,13 +85,12 @@
         "hippa": {
             "title": "HIPPA",
             "type": "string",
-            "default": "Agree",
             "enum": [
                 "Refuse",
                 "Agree"
             ]
         },
-        "biopsyForResearh": {
+        "biopsyForResearch": {
             "title": "Biopsy For Research",
             "type": "string",
             "enum": [
@@ -93,25 +102,24 @@
     },
     "anyOf": [
         {
-                   
-            "required": ["patient",  "overall_consent", "consent_date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"]                
-            
+          "properties": {
+            "consent_version": { "const": "version1" }
+          },
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release"]
         },
         {
-                   
-            "required": ["patient",  "overall_consent", "consent_date", "future_contact", "future_research", "information_release", "genetic_information_release"]                
-            
+          "properties": {
+            "consent_version": { "const": "version2" }
+          },
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"]
         },
-
         {
-            
-           
-            
-               
-            "required": ["patient",  "overall_consent", "consent_date", "biopsyForResearh"]
-            
+          "properties": {
+            "consent_version": { "const": "version3" }
+          },
+          "required": ["consent_version", "patient", "overall", "date","biopsyForResearch"]
         }
-    ],
+      ],
     "facets": {
         "status": {
             "title": "Status"
