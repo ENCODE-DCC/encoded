@@ -69,12 +69,16 @@ class Patient(Item):
     embedded = [
         'labs',
         'vitals',
-        'consent'
+        'consent',
+        'radiation',
+        'medical_imaging'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
         'consent': ('Consent', 'patient'),
+        'radiation': ('Radiation', 'patient'),
+        'medical_imaging': ('MedicalImaging', 'patient'),
     }
     set_status_up = []
     set_status_down = []
@@ -100,6 +104,28 @@ class Patient(Item):
     })
     def vitals(self, request, vitals):
         return group_values_by_vital(request, vitals)
+
+    @calculated_property(schema={
+        "title": "Radiation Treatment",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Radiation"
+        },
+    })
+    def radiation(self, request, radiation):
+        return paths_filtered_by_status(request, radiation)
+
+    @calculated_property(schema={
+        "title": "Medical Imaging",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "MedicalImaging"
+        },
+    })
+    def medical_imaging(self, request, medical_imaging):
+        return paths_filtered_by_status(request, medical_imaging)
 
 
     @calculated_property(schema={
@@ -150,6 +176,42 @@ class Consent(Item):
     embeded = []
 
 
+@collection(
+    name='radiation',
+    properties={
+        'title': 'Radiation treatment',
+        'description': 'Radiation treatment results pages',
+    })
+class Radiation(Item):
+    item_type = 'radiation'
+    schema = load_schema('encoded:schemas/radiation.json')
+    embeded = []
+
+    @calculated_property(condition='dose', schema={
+        "title": "Dosage per Fraction",
+        "type": "number",
+    })
+    def dose_per_fraction(self, request, dose, fractions):
+        dose_per_fraction = dose/fractions
+        return dose_per_fraction
+
+
+@collection(
+    name='medical_imaging',
+    properties={
+        'title': 'Medical imaging',
+        'description': 'Medical imaging results pages',
+    })
+class MedicalImaging(Item):
+    item_type = 'medical-imaging'
+    schema = load_schema('encoded:schemas/medical_imaging.json')
+    embeded = []
+
+@property
+def __name__(self):
+    return self.name()
+
+
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
     if request.has_permission('view_details'):
@@ -167,7 +229,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
         try:
             filtered[key] = properties[key]
         except KeyError:

@@ -786,6 +786,22 @@
         "uuid": "41c729d0-f3ed-4d7c-b9fb-4cff87c92c04"
     },
     {
+        "email": "mingjiecn@gmail.com",
+        "first_name": "Mingjie",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Li",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "uuid": "bec25393-2ab7-4e84-abbf-7241b455093b"
+    },
+    {
         "email": "gabdank@stanford.edu",
         "first_name": "Idan",
         "groups": [

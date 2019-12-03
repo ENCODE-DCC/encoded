@@ -4,7 +4,7 @@
     "description": "Schema for describing the lab results.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "value_units", "value", "reference_flag"],
+    "required": ["lab", "value_units", "value", "reference_flag", "patient"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -13,6 +13,10 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/standard_status" }
     ],
+    "dependencies": {
+        "value": ["value_units"],
+        "value_units": ["value"]
+    },
     "properties": {
         "schema_version": {
             "default": "1"
