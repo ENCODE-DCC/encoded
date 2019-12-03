@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 8
 
-*quality_metric_of* was added as a required field
+* *quality_metric_of* was added as a required field
 
 ### Schema version 8
 
