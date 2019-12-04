@@ -67,7 +67,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "25"
+            "default": "26"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -96,9 +96,16 @@
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version",
-            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
-            "comment": "The model should be something like version 1.0",
-            "type": "string"
+            "description": " The version of the ENCODE encyclopedia to which this annotation belongs.",
+            "type": "string",
+            "enum": [
+                "ENCODE v1",
+                "ENCODE v2",
+                "ENCODE v3",
+                "ENCODE v4",
+                "ENCODE v5",
+                "Roadmap"
+            ]
         },
         "organism": {
             "title": "Organism",

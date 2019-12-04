@@ -495,3 +495,23 @@ def experiment_26_27(value, system):
 def experiment_27_28(value, system):
     #https://encodedcc.atlassian.net/browse/ENCD-4838
     value.pop('experiment_classification', None)
+
+
+@upgrade_step('annotation', '25', '26')
+def annotation_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4488
+    enc_ver = value.get('encyclopedia_version')
+    ver_dict = {
+        '1': 'ENCODE v1',
+        '2': 'ENCODE v2',
+        'ENCODE2': 'ENCODE v2',
+        '3': 'ENCODE v3',
+        '4': 'ENCODE v4',
+        '5': 'ENCODE v5',
+        'ROADMAP': 'Roadmap',
+    }
+    if enc_ver in ver_dict:
+        value['encyclopedia_version'] = ver_dict[enc_ver]
+    elif enc_ver == 'Blacklists':
+        value.pop('encyclopedia_version', None)
+    return

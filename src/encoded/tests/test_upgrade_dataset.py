@@ -304,6 +304,16 @@ def annotation_21(award, lab):
     }
 
 
+@pytest.fixture
+def annotation_25(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '25',
+        'encyclopedia_version': '1'
+    }
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -651,3 +661,10 @@ def test_upgrade_experiment_27_to_28(upgrader, experiment_27):
     assert experiment_27['schema_version'] == '28'
     assert 'experiment_classification' not in value
 
+
+def test_upgrade_annotation_25_to_26(upgrader, annotation_25):
+    value = upgrader.upgrade(
+        'annotation', annotation_25, current_version='25', target_version='26'
+    )
+    assert value['schema_version'] == '26'
+    assert value['encyclopedia_version'] == 'ENCODE v1'
