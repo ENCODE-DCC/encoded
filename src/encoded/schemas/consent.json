@@ -18,7 +18,7 @@
         },
         "consent_version": {
             "default": "version3",
-            "title": "Overall Consent",
+            "title": "Consent Version",
             "type": "string",
             "enum": [
                 "version1",
@@ -105,13 +105,13 @@
           "properties": {
             "consent_version": { "const": "version1" }
           },
-          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release"]
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"]
         },
         {
           "properties": {
             "consent_version": { "const": "version2" }
           },
-          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"]
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release"]
         },
         {
           "properties": {

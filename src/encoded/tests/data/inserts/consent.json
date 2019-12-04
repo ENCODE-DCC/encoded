@@ -3,14 +3,13 @@
         "future_contact": "Agree",
         "future_research": "Agree",
         "genetic_information_release": "Agree",
-        "hippa": "Agree",
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT359MHZ",
         "status": "released",
         "uuid": "5b5e70c7-2c04-473e-9f16-c3a0cd73a029",
-        "date": "1870-03-16",
-        "consent_version": "version1"
+        "date": "1872-06-16",
+        "consent_version": "version2"
     },
     {
         "future_contact": "Agree",
@@ -26,30 +25,22 @@
         "consent_version": "version1"
     },
     {
-        "future_contact": "Refuse",
-        "future_research": "Refuse",
-        "genetic_information_release": "Refuse",
-        "hippa": "Agree",
-        "information_release": "Agree",
+        "biopsyForResearch": "Agree",
         "overall": "Agree",
         "patient": "KCEPT026PGS",
         "status": "released",
         "uuid": "060cfb0d-334c-446b-8af6-f92d9accf499",
-        "date": "1870-03-16",
-        "consent_version": "version1"
+        "date": "1880-06-09",
+        "consent_version": "version3"
     },
     {
-        "future_contact": "Refuse",
-        "future_research": "Refuse",
-        "genetic_information_release": "Refuse",
-        "hippa": "Agree",
-        "information_release": "Refuse",
+        "biopsyForResearch": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT925TMI",
         "status": "released",
         "uuid": "90508437-ff87-478f-98fa-e3f5d5071f50",
-        "date": "1870-03-16",
-        "consent_version": "version1"
+        "date": "1883-11-05",
+        "consent_version": "version3"
     },
     {
         "future_contact": "Agree",
@@ -68,14 +59,13 @@
         "future_contact": "Agree",
         "future_research": "Refuse",
         "genetic_information_release": "Agree",
-        "hippa": "Agree",
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT873QVK",
         "status": "released",
         "uuid": "9d038791-ffe0-4f0b-a5e2-9de6770c8b59",
-        "date": "1870-03-16",
-        "consent_version": "version1"
+        "date": "1874-07-11",
+        "consent_version": "version2"
     },
     {
         "future_contact": "Agree",
