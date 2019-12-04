@@ -2821,8 +2821,6 @@ def audit_experiment_replicates_with_no_libraries(value, system, excluded_types)
 def audit_experiment_isogeneity(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-    if len(value['replicates']) < 2:
-        return
     if value.get('replication_type') is None:
         detail = ('In experiment {} the replication_type'
             ' cannot be determined'.format(
@@ -2830,6 +2828,8 @@ def audit_experiment_isogeneity(value, system, excluded_types):
             )
         )
         yield AuditFailure('undetermined replication_type', detail, level='INTERNAL_ACTION')
+    if len(value['replicates']) < 2:
+        return
 
     biosample_dict = {}
     biosample_age_set = set()
