@@ -5,7 +5,7 @@
         "genetic_information_release": "Agree",
         "information_release": "Agree",
         "overall": "Agree",
-        "patient": "KCEPT359MHZ",
+        "patient": "KCEPT708IJT",
         "status": "released",
         "uuid": "5b5e70c7-2c04-473e-9f16-c3a0cd73a029",
         "date": "1872-06-16",
@@ -87,10 +87,10 @@
         "hippa": "Agree",
         "information_release": "Refuse",
         "overall": "Agree",
-        "patient": "KCEPT240HMN",
+        "patient": "KCEPT802XRB",
         "status": "released",
         "uuid": "9c453714-67ab-4090-8f5c-bec5c64e24b4",
-        "date": "1870-03-16",
+        "date": "1870-09-19",
         "consent_version": "version1"
     },
     {
