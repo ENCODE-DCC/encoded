@@ -37,7 +37,6 @@
                 "investigated_as": {
                     "items": {
                         "enum": [
-                            "control",
                             "broad histone mark",
                             "chromatin remodeler",
                             "histone",
@@ -66,7 +65,6 @@
                 "investigated_as": {
                     "items": {
                         "enum": [
-                            "control",
                             "broad histone mark",
                             "chromatin remodeler",
                             "histone",
@@ -92,7 +90,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "dbxref": {
             "title": "External resources",
@@ -199,7 +197,6 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "control",
                     "broad histone mark",
                     "chromatin remodeler",
                     "histone",
