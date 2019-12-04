@@ -1,6 +1,5 @@
 ## Changelog for target.json
 
-
 ### Schema version 12
 * *investigated_as* enum list was modified. The following terms were removed:
   - *control*
