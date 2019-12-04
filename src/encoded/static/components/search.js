@@ -38,6 +38,7 @@ const types = {
     image: { title: 'Images' },
     matched_set: { title: 'Matched set series' },
     aggregate_series: { title: 'Aggregate series' },
+    single_cell_rna_series: { title: 'Single cell RNA series' },
     organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
@@ -67,6 +68,7 @@ const datasetTypes = {
     TreatmentConcentrationSeries: types.treatment_concentration_series.title,
     TreatmentTimeSeries: types.treatment_time_series.title,
     AggregateSeries: types.aggregate_series.title,
+    SingleCellRnaSeries: types.single_cell_rna_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
     FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
 };

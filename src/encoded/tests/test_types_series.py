@@ -12,6 +12,16 @@ def base_reference_epigenome(testapp, lab, award):
 
 
 @pytest.fixture
+def base_single_cell_series(testapp, lab, base_experiment, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'related_datasets': [base_experiment['@id']]
+    }
+    return testapp.post_json('/single_cell_rna_series', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def base_experiment(testapp, lab, award, cell_free):
     item = {
         'award': award['uuid'],
@@ -70,3 +80,9 @@ def test_assembly_from_related_datasets(testapp, base_reference_epigenome, base_
     testapp.patch_json(base_experiment['@id'], {'status': 'deleted'})
     res = testapp.get(base_reference_epigenome['@id'] + '@@index-data')
     assert res.json['object']['assembly'] == ['hg19']
+
+
+def test_assay_single_cell_rna_series(testapp, base_single_cell_series):
+    res = testapp.get(base_single_cell_series['@id'] + '@@index-data')
+    assert sorted(res.json['object']['assay_term_name']) == ["RNA-seq"]
+ 
