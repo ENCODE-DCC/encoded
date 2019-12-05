@@ -475,6 +475,13 @@ def audit_file_matching_md5sum(value, system):
         return
 
     for file in value.get('matching_md5sum'):
+        if file.get('uuid') == value.get('uuid'):
+            detail = ('File {} is listing itself as having '
+                'a matching md5 sum.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id'])
+                )
+            )
+            yield AuditFailure('inconsistent matching_md5sum', detail, level='ERROR')
         if file.get('md5sum') != value.get('md5sum'):
             detail = ('File {} is listed as having a matching md5 sum '
                 'as file {}, but the files have different md5 sums.'.format(
@@ -482,7 +489,7 @@ def audit_file_matching_md5sum(value, system):
                     audit_link(path_to_text(value['@id']), value['@id'])
                 )
             )
-            yield AuditFailure('incorrect matching_md5sum', detail, level='ERROR')
+            yield AuditFailure('inconsistent matching_md5sum', detail, level='ERROR')
         elif file.get('status') in checked_statuses:
             matching_files.append(file['@id'])
             matching_files_links = [audit_link(path_to_text(file), file) for file in matching_files]
@@ -504,8 +511,6 @@ def audit_file_matching_md5sum(value, system):
         )
     )
     yield AuditFailure('matching md5 sums', detail, level='WARNING')
-
-    return
 
 
 function_dispatcher = {
