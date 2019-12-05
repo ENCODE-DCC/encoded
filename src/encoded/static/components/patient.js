@@ -21,10 +21,15 @@ class Patient extends React.Component {
         showButton: false
       }
       this.handleClick = this.handleClick.bind(this);
+      this.topFunction = this.topFunction.bind(this);
     }
 
     handleClick(){
       this.setState("showButton", !this.state.showButton);
+    }
+    topFunction() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     }
     render() {
 
@@ -112,6 +117,7 @@ class Patient extends React.Component {
                 { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
                 { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
+                <button onClick={this.topFunction} id="scrollUpButton" title="Go to top">Top</button>
             </div>
         );
     }
