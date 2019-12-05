@@ -426,6 +426,8 @@ class CalculatedAssayTitle:
                         preferred_name = 'TF ChIP-seq'
             elif control_type and assay_term_name == 'eCLIP':
                 preferred_name = 'Control eCLIP'
+            elif control_type == 'control' and assay_term_name in ['MPRA', 'CRISPR screen', 'STARR-seq']:
+                preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
         return assay_term_name
 

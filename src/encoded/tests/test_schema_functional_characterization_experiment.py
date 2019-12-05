@@ -57,6 +57,12 @@ def test_functional_characterization_experiment_screen(testapp, functional_chara
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_screen, status=201)
 
 
+def test_functional_characterization_experiment_control(testapp, functional_characterization_experiment):
+    testapp.patch_json(functional_characterization_experiment['@id'], {'control_type': 'control'})
+    res = testapp.get(functional_characterization_experiment['@id']+'@@index-data')
+    assert res.json['object']['assay_title']=='Control STARR-seq'
+
+
 @pytest.mark.parametrize(
     'status',
     [
