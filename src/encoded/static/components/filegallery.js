@@ -1956,6 +1956,9 @@ function createFacetObject(propertyKey, fileList, filters) {
             let property = file[propertyKey];
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+                if (property === '') {
+                    return;
+                }
             }
             // We only want to look at files that are not in 'fileListFiltered'
             if (!(fileListFiltered.includes(file))) {
