@@ -1163,6 +1163,7 @@
                         "paternal variant calls",
                         "peaks",
                         "peaks and background as input for IDR",
+                        "personalized genome assembly",
                         "phased mapping",
                         "phased variant calls",
                         "plus strand signal of all reads",
@@ -1707,6 +1708,7 @@
         "sequence barcodes": "reference",
         "sequence adapters": "reference",
         "elements reference": "reference",
+        "personalized genome assembly": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
