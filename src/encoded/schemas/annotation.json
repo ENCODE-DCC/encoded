@@ -248,9 +248,6 @@
         "relevant_life_stage": {
             "title": "Life stage"
         },
-        "month_released": {
-            "title": "Month released"
-        },
         "software_used.software.name": {
             "title": "Software used"
         },

@@ -104,9 +104,6 @@
         "related_datasets.replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
         },
-        "month_released": {
-            "title": "Month released"
-        },
         "lab.title": {
             "title": "Lab"
         },

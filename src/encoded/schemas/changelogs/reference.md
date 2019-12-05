@@ -5,6 +5,7 @@
 * *functional elements* is added to the enums list of *reference_type* property
 * Added *MouseDevSeries* enum to *internal_tags*
 * *reference_type* was updated to include the enum *sequence adapters*
+* Removed *month_released* calculated property.
 
 ### Schema version 16
 

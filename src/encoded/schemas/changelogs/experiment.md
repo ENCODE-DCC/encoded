@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 28
 * Removed FCC *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen*, and *pooled clone sequencing* from Experiment schema. They are to be used only in FunctionalCharacterizationExperiment objects
+* Removed *month_released* calculated property.
 
 ### Schema version 28
 * Removed required property *experiment_classification*.
