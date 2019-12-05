@@ -1,6 +1,7 @@
 from snovault import (
     AuditFailure,
     audit_checker,
+    load_schema,
 )
 from .conditions import rfa
 from .formatter import (
@@ -56,21 +57,9 @@ def audit_antibody_characterization_target(value, system):
     target = value['target']
     # The following list should in sync with modification enum defined in the
     # target schema.
-    tags = [
-        '3xFLAG',
-        '6XHis',
-        'DsRed',
-        'eGFP',
-        'ER',
-        'FLAG',
-        'GFP',
-        'HA',
-        'mCherry',
-        'T2A',
-        'TRE',
-        'V5',
-        'YFP',
-    ]
+    tags = load_schema(
+        'encoded:schemas/target.json'
+    )['tag_modifications']['enum']
     is_tag = ({'tag', 'synthetic tag'} & set(target['investigated_as'])) or any(
         m['modification'] in tags for m in target.get('modifications', [])
     )

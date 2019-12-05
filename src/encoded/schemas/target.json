@@ -86,6 +86,24 @@
     "dependencies": {
         "modifications": ["genes"]
     },
+    "tag_modifications": {
+        "enum": [
+            "3xFLAG",
+            "6XHis",
+            "DsRed",
+            "eGFP",
+            "ER",
+            "FLAG",
+            "GFP",
+            "HA",
+            "mCherry",
+            "T2A",
+            "TagRFP",
+            "TRE",
+            "V5",
+            "YFP"
+        ]
+    },
     "properties": {
         "schema_version": {
             "default": "13"
@@ -140,28 +158,19 @@
                         "title": "Type of modification",
                         "description": "One specific modifications listed in the enum.",
                         "type": "string",
-                        "enum": [
-                            "3xFLAG",
-                            "6XHis",
-                            "DsRed",
-                            "eGFP",
-                            "ER",
-                            "FLAG",
-                            "GFP",
-                            "HA",
-                            "mCherry",
-                            "T2A",
-                            "TagRFP",
-                            "TRE",
-                            "V5",
-                            "YFP",
-                            "Methylation",
-                            "Monomethylation",
-                            "Dimethylation",
-                            "Trimethylation",
-                            "Acetylation",
-                            "Ubiquitination",
-                            "Phosphorylation"
+                        "oneOf": [
+                            { "$ref": "#/tag_modifications" },
+                            {
+                                "enum": [
+                                    "Methylation",
+                                    "Monomethylation",
+                                    "Dimethylation",
+                                    "Trimethylation",
+                                    "Acetylation",
+                                    "Ubiquitination",
+                                    "Phosphorylation"
+                                ]
+                            }
                         ]
                     },
                     "position": {
