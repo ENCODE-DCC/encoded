@@ -69,15 +69,26 @@ class Patient(Item):
     embedded = [
         'labs',
         'vitals',
+<<<<<<< HEAD
         'germline'
+=======
+        'consent',
+        'radiation',
+        'medical_imaging'
+>>>>>>> kce
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
+<<<<<<< HEAD
         'germline': ('Germline', 'patient')
+=======
+        'consent': ('Consent', 'patient'),
+        'radiation': ('Radiation', 'patient'),
+        'medical_imaging': ('MedicalImaging', 'patient'),
+>>>>>>> kce
     }
-    set_status_up = [
-    ]
+    set_status_up = []
     set_status_down = []
 
     @calculated_property( schema={
@@ -130,6 +141,41 @@ class Patient(Item):
         return germline_summary
 
 
+    @calculated_property(schema={
+        "title": "Radiation Treatment",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Radiation"
+        },
+    })
+    def radiation(self, request, radiation):
+        return paths_filtered_by_status(request, radiation)
+
+    @calculated_property(schema={
+        "title": "Medical Imaging",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "MedicalImaging"
+        },
+    })
+    def medical_imaging(self, request, medical_imaging):
+        return paths_filtered_by_status(request, medical_imaging)
+
+
+    @calculated_property(schema={
+        "title": "Consent",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Consent"
+        },
+    })
+    def consent(self, request, consent):
+        return paths_filtered_by_status(request, consent)
+
+
 @collection(
     name='lab-results',
     properties={
@@ -155,6 +201,7 @@ class VitalResult(Item):
 
 
 @collection(
+<<<<<<< HEAD
     name='germline',
     properties={
         'title': 'Germline Mutations',
@@ -166,6 +213,55 @@ class Germline(Item):
     embeded = []
 
 
+=======
+    name='consent',
+    properties={
+        'title': 'Consent',
+        'description': 'Consent results pages',
+    })
+class Consent(Item):
+    item_type = 'consent'
+    schema = load_schema('encoded:schemas/consent.json')
+    embeded = []
+
+
+@collection(
+    name='radiation',
+    properties={
+        'title': 'Radiation treatment',
+        'description': 'Radiation treatment results pages',
+    })
+class Radiation(Item):
+    item_type = 'radiation'
+    schema = load_schema('encoded:schemas/radiation.json')
+    embeded = []
+
+    @calculated_property(condition='dose', schema={
+        "title": "Dosage per Fraction",
+        "type": "number",
+    })
+    def dose_per_fraction(self, request, dose, fractions):
+        dose_per_fraction = dose/fractions
+        return dose_per_fraction
+
+
+@collection(
+    name='medical_imaging',
+    properties={
+        'title': 'Medical imaging',
+        'description': 'Medical imaging results pages',
+    })
+class MedicalImaging(Item):
+    item_type = 'medical-imaging'
+    schema = load_schema('encoded:schemas/medical_imaging.json')
+    embeded = []
+
+@property
+def __name__(self):
+    return self.name()
+
+
+>>>>>>> kce
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
     if request.has_permission('view_details'):
@@ -183,7 +279,11 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
+<<<<<<< HEAD
     for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary']:
+=======
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
+>>>>>>> kce
         try:
             filtered[key] = properties[key]
         except KeyError:
