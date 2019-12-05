@@ -69,24 +69,18 @@ class Patient(Item):
     embedded = [
         'labs',
         'vitals',
-<<<<<<< HEAD
-        'germline'
-=======
+        'germline',
         'consent',
         'radiation',
         'medical_imaging'
->>>>>>> kce
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
-<<<<<<< HEAD
-        'germline': ('Germline', 'patient')
-=======
+        'germline': ('Germline', 'patient'),
         'consent': ('Consent', 'patient'),
         'radiation': ('Radiation', 'patient'),
         'medical_imaging': ('MedicalImaging', 'patient'),
->>>>>>> kce
     }
     set_status_up = []
     set_status_down = []
@@ -201,7 +195,6 @@ class VitalResult(Item):
 
 
 @collection(
-<<<<<<< HEAD
     name='germline',
     properties={
         'title': 'Germline Mutations',
@@ -212,8 +205,7 @@ class Germline(Item):
     schema = load_schema('encoded:schemas/germline.json')
     embeded = []
 
-
-=======
+@collection(
     name='consent',
     properties={
         'title': 'Consent',
@@ -261,7 +253,6 @@ def __name__(self):
     return self.name()
 
 
->>>>>>> kce
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
     if request.has_permission('view_details'):
@@ -279,11 +270,8 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-<<<<<<< HEAD
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary']:
-=======
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
->>>>>>> kce
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'medical_imaging']:
+    # for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
         try:
             filtered[key] = properties[key]
         except KeyError:

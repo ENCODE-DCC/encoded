@@ -114,7 +114,7 @@ class Patient extends React.Component {
                 {
                     <GermlineTable data={context.germline} tableTitle="Germline mutation"></GermlineTable>
                 }
-              </div>
+              
                 { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
                 { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
