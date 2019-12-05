@@ -3,6 +3,7 @@
 ### Schema version 12
 * *investigated_as* enum list was modified. The following terms were removed:
   - *control*
+* *TagRFP* was added to the type of modifications enum list in *modifications* property.
 
 ### Schema version 11
 

@@ -1,6 +1,7 @@
 ## Changelog for genetic_modification.json
 
 ### Minor changes since schema version 8
+* *TagRFP* was added to the *introduced_tags* enum.
 * Added calculated property *perturbed* to indicate genetic modifications which cause genetic perturbations.
 * *donor* property was added to allow specification of the origin of the sheared genomic DNA elements or genomic DNA regions
 * *non-specific target control* was added to the *purpose* enum.
