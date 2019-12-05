@@ -19,6 +19,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "step_run": "eeb7cd3f-a10f-4405-99b6-58a00e3a3bf0",
+        "quality_metric_of": [ "582d6675-0b2e-4886-b43d-f6efa9033b37", "af5c17df-e5f0-44f9-997a-f9caef22be08" ],
         "lambda Sequences analysed in total": 410211284,
         "lambda Mapping efficiency": "0.60%",
         "lambda C methylated in CpG context": "0.30%",
