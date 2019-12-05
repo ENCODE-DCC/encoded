@@ -9,18 +9,12 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, SearchFilter } from './matrix';
+import { RowCategoryExpander, SearchFilter, MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { FacetList, ClearFilters, SearchControls } from './search';
 
 
 /** Number of subcategory items to show when subcategory isn't expanded. */
 const SUB_CATEGORY_SHORT_SIZE = 5;
-
-/**
- * Maximum number of selected items that can be visualized.
- * @constant
- */
-const VISUALIZE_LIMIT = 500;
 
 /** Audit matrix rowCategory colors. */
 const auditColors = ['#e0e000', '#ff8000', '#cc0700', '#a0a0a0'];
@@ -251,7 +245,7 @@ const convertAuditToDataTable = (context, expandedRowCategories, expanderClickHa
  * Render the title panel and list of experiment internal tags.
  */
 const MatrixHeader = ({ context }) => {
-    const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
 
     // Compose a type title for the page if only one type is included in the query string.
     // Currently, only one type is allowed in the query string or the server returns a 400, so this

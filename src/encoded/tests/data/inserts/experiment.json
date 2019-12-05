@@ -10,7 +10,7 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
-        "internal_tags":["DREAM", "ENTEx", "ENCORE"],
+        "internal_tags":["DREAM", "ENCORE"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
     },
@@ -765,5 +765,73 @@
         "date_released": "2019-05-09",
         "accession": "ENCSR808QCJ",
         "uuid": "1b85ee28-66f1-49ad-940d-ba22acf85e08"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCSR458AOS",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "8b39716c-b810-4a7a-81ea-6e5f41b3c103"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCSR459AOS",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "d7ed67c8-85ea-403a-b295-32d1278411cd"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCSR460AOS",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "db57b7e6-7366-41b6-b50d-b8c944342c34"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCSR856XLJ",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "1425296d-10bc-4d50-b071-2c019a711bfb"
     }
 ]

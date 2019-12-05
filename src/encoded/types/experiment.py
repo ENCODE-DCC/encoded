@@ -207,6 +207,17 @@ class Experiment(Dataset,
         },
     }
 
+    entex = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', ('target.label', 'no_target'), 'replicates.library.biosample.donor.sex', 'replicates.library.biosample.donor.accession'],
+            'label': 'Assay',
+        },
+    }
+
     audit = {
         'audit.ERROR.category': {
             'group_by': 'audit.ERROR.category',

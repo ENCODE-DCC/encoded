@@ -161,6 +161,7 @@ $row-data-header-width: 200px;
         }
 
         > td {
+            position: relative;
             width: $data-cell-width;
             padding: 0 !important;
             text-align: center;
@@ -392,6 +393,7 @@ $row-data-header-width: 200px;
 
     // Link to clear selected classifications (filters)
     @at-root #{&}__clear-classifications {
+        text-align: center;
         font-weight: normal;
     }
 }
@@ -520,6 +522,10 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+
+/**
+ * Styles specific to the reference-epigenome matrix.
+ */
 .matrix__content--reference-epigenome {
     display: block;
 
@@ -548,6 +554,10 @@ table.matrix th.group-all-groups-cell {
                     font-weight: normal;
                 }
             }
+        }
+
+        > td {
+            vertical-align: bottom;
         }
     }
 
@@ -585,6 +595,173 @@ table.matrix th.group-all-groups-cell {
         .btn {
             flex: 0 1 auto;
             margin: 0 2px;
+        }
+    }
+}
+
+
+/**
+ * Styles specific to the ENTEx matrix.
+ */
+$donor-cell-width: 30px;
+$donor-cell-height: 30px;
+$border-color: #e0e0e0;
+$donor-legend-short-string-width: 33px;
+
+/**
+ * Style info for each donor with format:
+ * css-suffix donor-color donor-text-color curve-direction
+ */
+$donor-styles:
+    male1 #e4bc52 #000 top-left,
+    female3 #879acd #fff top-right,
+    male2 #eed78c #000 bottom-left,
+    female4 #354b77 #fff bottom-right;
+
+
+.matrix__content--entex {
+    display: block;
+
+    .matrix__col-category-header {
+        > th {
+            width: $donor-cell-width - 1;
+            padding: 0;
+
+            > a {
+                width: $donor-cell-width;
+                line-height: $donor-cell-width;
+                font-weight: bold;
+
+                // Column subcategory links
+                &.sub {
+                    padding-top: 20px;
+                    font-weight: normal;
+                }
+            }
+        }
+    }
+
+    .matrix__row-data {
+        > th {
+            width: $donor-cell-width;
+            padding: 0;
+            border-left: none;
+
+            > a {
+                height: $donor-cell-height;
+                line-height: $donor-cell-height;
+            }
+
+            .subcategory-row-text {
+                white-space: nowrap;
+            }
+        }
+
+        > td {
+            width: $donor-cell-width - 1;
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+
+            > a {
+                width: $donor-cell-width;
+                height: $donor-cell-height;
+            }
+
+            &:last-of-type {
+                border-right: 1px solid $border-color;
+            }
+        }
+
+        @at-root #{&}--first {
+            > th {
+                border-top: 1px solid $border-color;
+            }
+
+            > td {
+                border-top: 1px solid $border-color;
+            }
+        }
+    }
+
+    // Displays donor-quadrant in the matrix itself.
+    .donor-cell {
+        display: flex;
+        flex-wrap: wrap;
+        width: $donor-cell-width;
+        height: $donor-cell-height;
+
+        .donor-quadrant {
+            flex: 0 0 50%;
+            height: 50%;
+        }
+    }
+
+    .matrix__entex-corner {
+        vertical-align: middle;
+    }
+
+    .donor-legend-row {
+        display: flex;
+        margin: 5px 10px;
+
+        @at-root #{&}__label {
+            flex: 1 0 auto;
+            margin-left: 5px;
+            line-height: $donor-cell-height;
+            white-space: nowrap;
+
+            > a {
+                display: inline-block;
+                width: calc(100% - #{$donor-legend-short-string-width});
+                padding-left: 10px;
+                padding-right: 10px;
+                line-height: $donor-cell-height;
+                text-align: center;
+                background-color: #f0f0f0;
+                border-top: 1px solid #e0e0e0;
+                border-right: 1px solid #e0e0e0;
+                border-bottom: 1px solid #e0e0e0;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
+            }
+        }
+
+        @at-root #{&}__short-string {
+            display: inline-block;
+            width: $donor-legend-short-string-width;
+            text-align: center;
+            line-height: $donor-cell-height;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+
+            @each $donor, $color, $textcolor, $curve in $donor-styles {
+                @at-root #{&}--#{$donor} {
+                    color: $textcolor;
+                    background-color: $color;
+                }
+            }
+        }
+
+        .donor-cell {
+            flex: 0 0 $donor-cell-width;
+            width: $donor-cell-width;
+        }
+    }
+
+    // Each quadrant of a donor cell, both in the matrix and the legend.
+    .donor-quadrant {
+        @each $donor, $color, $textcolor, $curve in $donor-styles {
+            &.donor-quadrant--#{$donor} {
+                border-#{$curve}-radius: $donor-cell-height / 2;
+                background-color: $color;
+
+                &.blank {
+                    background-color: #f0f0f0;
+                }
+            }
         }
     }
 }

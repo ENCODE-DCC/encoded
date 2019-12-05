@@ -9,7 +9,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { RowCategoryExpander, SearchFilter } from './matrix';
+import { RowCategoryExpander, SearchFilter, MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixInternalTags } from './objectutils';
 import { FacetList, ClearFilters, SearchControls } from './search';
 
@@ -19,13 +19,6 @@ import { FacetList, ClearFilters, SearchControls } from './search';
  * @constant
  */
 const SUB_CATEGORY_SHORT_SIZE = 5;
-
-
-/**
- * Maximum number of selected items that can be visualized.
- * @constant
- */
-const VISUALIZE_LIMIT = 500;
 
 
 /**
@@ -259,7 +252,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
  * Render the area above the facets and matrix content.
  */
 const MatrixHeader = ({ context }) => {
-    const visualizeDisabledTitle = context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
+    const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
 
     let clearButton;
     const parsedUrl = url.parse(context['@id'], true);
