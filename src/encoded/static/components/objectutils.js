@@ -622,7 +622,7 @@ export class ImageWithFallback extends React.Component {
         // IE11 has an issue where it frequently throws a "Permission denied" exception, when the image
         // exist. This workaround makes IE11 show either the image if it exist or the browser's
         // inbuilt no-image display
-        if (document && document.all !== undefined) {
+        if (!!window.MSInputMethodContext && !!document.documentMode) {
             return;
         }
 
