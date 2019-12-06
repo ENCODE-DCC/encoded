@@ -86,17 +86,24 @@ class Patient(Item):
     embedded = [
         'labs',
         'vitals',
+        'germline',
+        'consent',
+        'radiation',
+        'medical_imaging',
         'medications',
         'supportive_medications'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
+        'germline': ('Germline', 'patient'),
+        'consent': ('Consent', 'patient'),
+        'radiation': ('Radiation', 'patient'),
+        'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
         'supportive_medication': ('SupportiveMedication', 'patient'),
     }
-    set_status_up = [
-    ]
+    set_status_up = []
     set_status_down = []
 
     @calculated_property( schema={
@@ -120,6 +127,68 @@ class Patient(Item):
     })
     def vitals(self, request, vitals):
         return group_values_by_vital(request, vitals)
+
+    @calculated_property(schema={
+        "title": "Germline Mutations",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Germline"
+        },
+    })
+    def germline(self, request, germline):
+        return paths_filtered_by_status(request, germline)
+
+    @calculated_property(condition='germline', schema={
+        "title": "Positive Germline Mutations",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def germline_summary(self, request, germline):
+        germline_summary = []
+        for mutation in germline:
+            mutatation_object = request.embed(mutation, '@@object')
+            if mutatation_object['significance'] in ['Positive', 'Variant', 'Positive and Variant']:
+                mutation_summary = mutatation_object['target']
+                germline_summary.append(mutation_summary)
+        return germline_summary
+
+
+    @calculated_property(schema={
+        "title": "Radiation Treatment",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Radiation"
+        },
+    })
+    def radiation(self, request, radiation):
+        return paths_filtered_by_status(request, radiation)
+
+    @calculated_property(schema={
+        "title": "Medical Imaging",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "MedicalImaging"
+        },
+    })
+    def medical_imaging(self, request, medical_imaging):
+        return paths_filtered_by_status(request, medical_imaging)
+
+
+    @calculated_property(schema={
+        "title": "Consent",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Consent"
+        },
+    })
+    def consent(self, request, consent):
+        return paths_filtered_by_status(request, consent)
 
     @calculated_property( schema={
         "title": "Medications",
@@ -169,6 +238,65 @@ class VitalResult(Item):
 
 
 @collection(
+    name='germline',
+    properties={
+        'title': 'Germline Mutations',
+        'description': 'Germline Mutation results pages',
+    })
+class Germline(Item):
+    item_type = 'germline'
+    schema = load_schema('encoded:schemas/germline.json')
+    embeded = []
+
+@collection(
+    name='consent',
+    properties={
+        'title': 'Consent',
+        'description': 'Consent results pages',
+    })
+class Consent(Item):
+    item_type = 'consent'
+    schema = load_schema('encoded:schemas/consent.json')
+    embeded = []
+
+
+@collection(
+    name='radiation',
+    properties={
+        'title': 'Radiation treatment',
+        'description': 'Radiation treatment results pages',
+    })
+class Radiation(Item):
+    item_type = 'radiation'
+    schema = load_schema('encoded:schemas/radiation.json')
+    embeded = []
+
+    @calculated_property(condition='dose', schema={
+        "title": "Dosage per Fraction",
+        "type": "number",
+    })
+    def dose_per_fraction(self, request, dose, fractions):
+        dose_per_fraction = dose/fractions
+        return dose_per_fraction
+
+
+@collection(
+    name='medical_imaging',
+    properties={
+        'title': 'Medical imaging',
+        'description': 'Medical imaging results pages',
+    })
+class MedicalImaging(Item):
+    item_type = 'medical-imaging'
+    schema = load_schema('encoded:schemas/medical_imaging.json')
+    embeded = []
+
+@property
+def __name__(self):
+    return self.name()
+
+
+@collection(
     name='medication',
     properties={
         'title': 'Medications',
@@ -209,7 +337,8 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'medications', 'supportive_medications']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'medical_imaging', 'medications', 'supportive_medications']:
+    # for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
         try:
             filtered[key] = properties[key]
         except KeyError:

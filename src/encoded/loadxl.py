@@ -23,6 +23,10 @@ ORDER = [
     'supportive_medication',
     'lab_results',
     'vital_results',
+    'germline',
+    'consent',
+    'radiation',
+    'medical_imaging',
     'cart'
 ]
 

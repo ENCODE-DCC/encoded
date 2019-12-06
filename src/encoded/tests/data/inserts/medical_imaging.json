@@ -1,0 +1,162 @@
+[
+    {
+        "patient": "KCEPT318AXY",
+        "cpt": "CPT:74150",
+        "procedure_date": "1859-07-08",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "2d02b147-cb42-4801-86cc-b92f51b7c093"
+    },
+    {
+        "patient": "KCEPT318AXY",
+        "cpt": "CPT:78816",
+        "procedure_date": "1859-07-08",
+        "status": "released",
+        "type": "PET",
+        "uuid": "86f1f7ba-10de-4306-866d-d2f0d0147ffd"
+    },
+    {
+        "patient": "KCEPT802XRB",
+        "cpt": "CPT:74176",
+        "procedure_date": "1862-01-25",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "d0abcec2-6ed9-4732-9d56-93eafc9ac188"
+    },
+    {
+        "patient": "KCEPT708IJT",
+        "cpt": "CPT:74150",
+        "procedure_date": "1854-12-11",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "d251af99-ac3c-45f6-a912-3329b7af9ff8"
+    },
+    {
+        "patient": "KCEPT186NZW",
+        "cpt": "CPT:74178",
+        "procedure_date": "1827-07-07",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "7eaaffee-12b6-49cb-99e5-feae1cadbaa2"
+    },
+    {
+        "patient": "KCEPT026PGS",
+        "cpt": "CPT:74170",
+        "procedure_date": "1872-03-22",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "4ad1b576-5fdc-4190-bb40-f792489c2252"
+    },
+    {
+        "patient": "KCEPT139SOR",
+        "cpt": "CPT:74174",
+        "procedure_date": "1877-12-04",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "bcfae58e-4762-430a-9d33-39fce2759ceb"
+    },
+    {
+        "patient": "KCEPT873QVK",
+        "cpt": "CPT:74177",
+        "procedure_date": "1878-04-17",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "ae5acd42-abbe-4b50-90e7-5ce72c7025be"
+    },
+    {
+        "patient": "KCEPT396JUN",
+        "cpt": "CPT:74170",
+        "procedure_date": "1870-05-20",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "2d887f29-894f-4fb7-85ad-3f05819dc5c3"
+    },
+    {
+        "patient": "KCEPT398JLK",
+        "cpt": "CPT:74170",
+        "procedure_date": "1847-04-09",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "e3532d32-4094-464e-9e09-714bb0ead9f0"
+    },
+    {
+        "patient": "KCEPT805NRD",
+        "cpt": "CPT:74160",
+        "procedure_date": "1843-05-26",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "1fe1ed65-81e5-470f-a522-cd7d97a3ec78"
+    },
+    {
+        "patient": "KCEPT805NRD",
+        "cpt": "CPT:78815",
+        "procedure_date": "1844-03-18",
+        "status": "released",
+        "type": "PET",
+        "uuid": "bd0ea6a6-ac77-46c9-a16d-d03903763010"
+    },
+    {
+        "patient": "KCEPT692UHR",
+        "cpt": "CPT:74170",
+        "procedure_date": "1838-04-12",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "40e384ad-a821-4878-b656-1baf712db2de"
+    },
+    {
+        "patient": "KCEPT756AEN",
+        "cpt": "CPT:74170",
+        "procedure_date": "1853-09-19",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "ff2c840a-8cab-43a4-bbb6-3127bafb3906"
+    },
+    {
+        "patient": "KCEPT294KIZ",
+        "cpt": "CPT:74170",
+        "procedure_date": "1901-08-01",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "1e26610f-76a8-4297-90c3-480e74da024a"
+    },
+    {
+        "patient": "KCEPT021XWS",
+        "cpt": "CPT:74150",
+        "procedure_date": "1822-05-18",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "01c82a45-c506-4cae-9acb-c9433d8bad78"
+    },
+    {
+        "patient": "KCEPT480NBU",
+        "cpt": "CPT:74183",
+        "procedure_date": "1833-06-20",
+        "status": "released",
+        "type": "MR Abdomen",
+        "uuid": "15a40578-4af5-4e7d-b396-c9c2f8943f27"
+    },
+    {
+        "patient": "KCEPT480NBU",
+        "cpt": "CPT:74175",
+        "procedure_date": "1833-07-19",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "2387503a-cba8-475b-9d32-d02ba927ffeb"
+    },
+    {
+        "patient": "KCEPT359MHZ",
+        "cpt": "CPT:74160",
+        "procedure_date": "1860-03-27",
+        "status": "released",
+        "type": "CT Abdomen",
+        "uuid": "92688a8a-7ef3-4aa5-a00e-afb78731287a"
+    },
+    {
+        "patient": "KCEPT359MHZ",
+        "cpt": "CPT:74181",
+        "procedure_date": "1860-04-01",
+        "status": "released",
+        "type": "MR Abdomen",
+        "uuid": "16432126-ccc9-4f6e-ad13-7c5980a543d1"
+    }
+]

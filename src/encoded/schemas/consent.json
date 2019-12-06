@@ -1,0 +1,129 @@
+{
+    "title": "Consent",
+    "description": "Schema for submitting a consent.",
+    "id": "/profiles/consent.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": true,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/notes" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "consent_version": {
+            "default": "version3",
+            "title": "Consent Version",
+            "type": "string",
+            "enum": [
+                "version1",
+                "version2",
+                "version3"
+            ]
+        },
+
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the consent was for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "overall": {
+            "title": "Overall Consent",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        },
+        "date": {
+            "title": "Consent Date",
+            "description": "Date of consent.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "future_contact": {
+            "title": "Future Contact",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        },
+        "future_research": {
+            "title": "Future Research",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        },
+        "information_release": {
+            "title": "Information Release",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        },
+        "genetic_information_release": {
+            "title": "Genetic Information Release",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        },
+        "hippa": {
+            "title": "HIPPA",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        },
+        "biopsyForResearch": {
+            "title": "Biopsy For Research",
+            "type": "string",
+            "enum": [
+                "Refuse",
+                "Agree"
+            ]
+        }  
+      
+    },
+    "anyOf": [
+        {
+          "properties": {
+            "consent_version": { "const": "version1" }
+          },
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"]
+        },
+        {
+          "properties": {
+            "consent_version": { "const": "version2" }
+          },
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release"]
+        },
+        {
+          "properties": {
+            "consent_version": { "const": "version3" }
+          },
+          "required": ["consent_version", "patient", "overall", "date","biopsyForResearch"]
+        }
+      ],
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/consent.md"
+ }
