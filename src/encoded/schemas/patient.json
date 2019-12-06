@@ -87,6 +87,9 @@
         "race": {
             "title": "Race"
         },
+        "germline_summary": {
+            "title": "Germline Mutation"
+        },
         "radiation.site_general" : {
           "title": "Radiation Site"
         },
@@ -128,6 +131,8 @@
         "gender": 1.0,
         "ethnicity": 1.0,
         "race": 1.0,
+        "germline.target": 1.0,
+        "germline.significance": 1.0,
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0
     },
