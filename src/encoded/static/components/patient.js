@@ -36,7 +36,7 @@ class Patient extends React.Component {
             { id: 'Patients' },
             { id: <i>{context.accession}</i> },
         ];
-        console.log(context.germline);
+       // console.log(context.germline);
         const crumbsReleased = (context.status === 'released');
         let hasLabs = false;
         let hasVitals = false;
@@ -50,9 +50,8 @@ class Patient extends React.Component {
 
         if (Object.keys(this.props.context.radiation).length > 0) {
           hasRadiation = true;
-        };
-
-
+        }
+        
         const labsPanelBody = (
           <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
         );
@@ -111,13 +110,10 @@ class Patient extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                {
-                    <GermlineTable data={context.germline} tableTitle="Germline mutation"></GermlineTable>
-                }
-              
                 { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
                 { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
+                { <GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
             </div>
         );
     }

@@ -19,7 +19,7 @@ class GermlineTable extends React.Component {
     renderData() {
         if (!Array.isArray(this.props.data) || !this.props.data.length) {
             return (<SortTablePanel title={this.props.tableTitle}>
-                        <div className="table-body"><h5>Germline mutation data is not available!</h5></div>
+                        <div className="table-body"><h5>Germline mutation data is not available.</h5></div>
                     </SortTablePanel>
             );
         }
@@ -39,7 +39,7 @@ class GermlineTable extends React.Component {
             );
         }
         return (<SortTablePanel title={this.props.tableTitle}>
-                    <div className="table-body"><h5>No Positive for mutations!</h5></div>
+                    <div className="table-body"><h5>No positive for mutations.</h5></div>
                 </SortTablePanel>
          );
     }
