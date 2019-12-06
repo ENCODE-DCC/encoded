@@ -52,7 +52,7 @@ class Patient extends React.Component {
         if (Object.keys(this.props.context.radiation).length > 0) {
           hasRadiation = true;
         }
-        if (Object.keys(this.props.context.medication).length > 0) {
+        if (Object.keys(this.props.context.medications).length > 0) {
           hasMedication = true;
         }
 
@@ -66,7 +66,7 @@ class Patient extends React.Component {
           <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
         );
         const medicationPanelBody = (
-          <Medication chartId="medication" data={context.medication} chartTitle="RMedications Results Over Time"></Medication>
+          <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
         );
 
 
