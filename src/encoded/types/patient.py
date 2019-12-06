@@ -101,7 +101,7 @@ class Patient(Item):
         'radiation': ('Radiation', 'patient'),
         'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
-        'supportive_medication': ('SupportiveMedication', 'patient'),
+        'supportive_medication': ('SupportiveMedication', 'patient')
     }
     set_status_up = []
     set_status_down = []
@@ -291,10 +291,6 @@ class MedicalImaging(Item):
     schema = load_schema('encoded:schemas/medical_imaging.json')
     embeded = []
 
-@property
-def __name__(self):
-    return self.name()
-
 
 @collection(
     name='medication',
@@ -320,6 +316,11 @@ class SupportiveMedication(Item):
     embeded = []
 
 
+@property
+def __name__(self):
+    return self.name()
+
+
 @view_config(context=Patient, permission='view', request_method='GET', name='page')
 def patient_page_view(context, request):
     if request.has_permission('view_details'):
@@ -338,7 +339,6 @@ def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'medical_imaging', 'medications', 'supportive_medications']:
-    # for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
         try:
             filtered[key] = properties[key]
         except KeyError:
