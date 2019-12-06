@@ -36,7 +36,6 @@ class Patient extends React.Component {
             { id: 'Patients' },
             { id: <i>{context.accession}</i> },
         ];
-       // console.log(context.germline);
         const crumbsReleased = (context.status === 'released');
         let hasLabs = false;
         let hasVitals = false;
