@@ -8,15 +8,12 @@ import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
-<<<<<<< HEAD
 import PatientChart from "./PatientChart";
 import MedicationChart from './medicationChart';
-=======
 import GermlineTable from './germlineTable';
 import PatientChart from "./patientChart";
 import Radiation from "./radiation";
 import CollapsiblePanel from './collapsiblePanel';
->>>>>>> kce
 
 
 /* eslint-disable react/prefer-stateless-function */
