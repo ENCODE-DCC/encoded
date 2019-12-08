@@ -1,5 +1,8 @@
 /* eslint-disable linebreak-style */
 import React from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearchPlus } from "@fortawesome/free-solid-svg-icons";
+import { faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 
 class MedicationChart extends React.Component {
   constructor(props) {
@@ -22,16 +25,36 @@ class MedicationChart extends React.Component {
     this.drugNames = [];
     this.series = [];
     this.scaleYIndex = 0;
+    this.zoomIn = this.zoomIn.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
+
   }
   render() {
     return (
       <div className="flex-container" >
+        <div className="chart-menu" >
+                    <h4>Zoom in/zoom out buttons</h4>
+                    {/* <div className="chart-checkboxes pb-2"> {this.state.checkboxes}</div> */}
+                    {/* zoom in and out buttons */}
+                    <div className="pt-2" >
+                        <button className="mr-2"  onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x"/></button>
+                        <button onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x"/></button>
+                    </div>
+                </div>
         <div className="chart-main" >
           <div id={this.props.chartId} />
         </div>
       </div>
     );
   }
+  zoomIn() {
+    this.zingchart.exec(this.props.chartId, "zoomin", { zoomx: true, zoomy: false });
+}
+
+zoomOut() {
+    this.zingchart.exec(this.props.chartId, "zoomout", { zoomx: true, zoomy: false });
+
+}
   filterDataFun() {
     if (this.props.data.length > 0) {
       this.dateRange = this.props.data.map(i => ([i.start_date, i.end_date]));
@@ -137,6 +160,10 @@ class MedicationChart extends React.Component {
           globals: {
             shadow: false,
           },
+          zoom: {
+            shared: true
+        },
+
           plotarea: {
             "adjust-layout": true,
             marginTop: "50",
@@ -156,7 +183,7 @@ class MedicationChart extends React.Component {
               lineWidth: "1px"
             },
             tick: {
-              visible: false,
+              visible: true, //false,
             },
             transform: {
               type: "date",
@@ -183,7 +210,7 @@ class MedicationChart extends React.Component {
               lineWidth: "1px"
             },
             tick: {
-              visible: false,
+              visible: true,//with ticks
             },
             transform: {
               type: "date",
@@ -223,6 +250,8 @@ class MedicationChart extends React.Component {
     this.filterDataFun();
     this.transformDataFun();
     this.drawChart();
+    //this.zoomIn();
+   // this.zoomOut();
   }
 }
 export default MedicationChart;
