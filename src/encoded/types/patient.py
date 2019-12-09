@@ -201,7 +201,7 @@ class Patient(Item):
     def medications(self, request, medication):
         return paths_filtered_by_status(request, medication)
 
-    @calculated_property( schema={
+        @calculated_property( schema={
         "title": "Supportive Medications",
         "type": "array",
         "items": {

@@ -99,6 +99,11 @@
         "medical_imaging.type" : {
           "title": "Medical Imaging"
         },
+        "medications.name":{
+            "title":"Medication Name",
+        "subtitle": "Medication Name2"
+           
+        },
         "status": {
             "title": "Status"
         }
@@ -134,7 +139,8 @@
         "germline.target": 1.0,
         "germline.significance": 1.0,
         "radiation.site_general": 1.0,
-        "radiation.treatment_intention": 1.0
+        "radiation.treatment_intention": 1.0,
+        "medications.name":1.0
     },
     "changelog": "/profiles/changelogs/patient.md"
 }

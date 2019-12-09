@@ -33,14 +33,14 @@ class MedicationChart extends React.Component {
     return (
       <div className="flex-container" >
         <div className="chart-menu" >
-                    <h4>Zoom in/zoom out buttons</h4>
-                    {/* <div className="chart-checkboxes pb-2"> {this.state.checkboxes}</div> */}
-                    {/* zoom in and out buttons */}
-                    <div className="pt-2" >
-                        <button className="mr-2"  onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x"/></button>
-                        <button onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x"/></button>
-                    </div>
-                </div>
+          <h4>Zoom in/zoom out buttons</h4>
+          {/* <div className="chart-checkboxes pb-2"> {this.state.checkboxes}</div> */}
+          {/* zoom in and out buttons */}
+          <div className="pt-2" >
+            <button className="mr-2" onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x" /></button>
+            <button onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
+          </div>
+        </div>
         <div className="chart-main" >
           <div id={this.props.chartId} />
         </div>
@@ -49,12 +49,12 @@ class MedicationChart extends React.Component {
   }
   zoomIn() {
     this.zingchart.exec(this.props.chartId, "zoomin", { zoomx: true, zoomy: false });
-}
+  }
 
-zoomOut() {
+  zoomOut() {
     this.zingchart.exec(this.props.chartId, "zoomout", { zoomx: true, zoomy: false });
 
-}
+  }
   filterDataFun() {
     if (this.props.data.length > 0) {
       this.dateRange = this.props.data.map(i => ([i.start_date, i.end_date]));
@@ -100,8 +100,8 @@ zoomOut() {
     }
     this.diagnosisDate = this.minDate - 6000 * 60 * 24 * 30;// hard code diagnosisDate with one month before.Should be replaced with a real one, set with milliseconds.
     this.deceasedDate = this.maxDate + 6000 * 60 * 24 * 30;// hare code diseasedDate with one month after, set with milliseconds.
-    this.drugNames[0] = "diagnosisDate";// Set first item to 'diagnosisdate'
-    this.drugNames[this.scaleYIndex] = "deceasedDate";// Set last one to 'deceasedDate'.
+    this.drugNames[0] = "";//"diagnosisDate";// Set first item to 'diagnosisdate'
+    this.drugNames[this.scaleYIndex] = "";// "deceasedDate";// Set last one to 'deceasedDate'.
 
     let diagnosisMarker = {
       type: 'scatter',
@@ -119,10 +119,17 @@ zoomOut() {
         text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
         'background-color': '#8BC34A' // '#498ead'
       },
+      plot: {
+        'value-box': {
+          text: "Diagnosis Date",//"$%vK",
+          //placement: "right",
+          'font-color': "red"
+        },
+      }
     }
     let deceasedMarker = {
       type: 'scatter',
-     scales: "scaleX2, scaleY",//set bottom x-Axis
+      scales: "scaleX2, scaleY",//set bottom x-Axis
       values: [[this.deceasedDate, this.scaleYIndex]],
       marker: {
         type: 'triangle',
@@ -136,6 +143,13 @@ zoomOut() {
         text: "Deceased date:" + this.unixToDate(this.deceasedDate),
         'background-color': '#8BC34A'//'#498ead'
       },
+      plot: {
+        'value-box': {
+          text: "Diseased Date",//"$%vK",
+          //placement: "left",
+          'font-color': "red",
+        }
+      }
     }
 
     this.series.push(diagnosisMarker);
@@ -152,9 +166,28 @@ zoomOut() {
         {
           type: "mixed",
           theme: 'light',
+          "diagnosis-marker": this.diagnosisDate,
+          "deceased-marker": this.deceasedDate,
           plot: {
             alpha: 0.7,
             lineWidth: 20,
+            'value-box':
+            {
+              rules: [
+                {
+                  rule: '%this.diagnosisDate',
+                  text: "Diagnosis Date",
+                  placement: "right",
+                  'font-color': "red",
+                },
+                {
+                  rule: '% this.deceasedDate',
+                  text: "Deceased Date",
+                  placement: "left",
+                  'font-color': "red",
+                }
+              ]
+            }
 
           },
           globals: {
@@ -162,7 +195,7 @@ zoomOut() {
           },
           zoom: {
             shared: true
-        },
+          },
 
           plotarea: {
             "adjust-layout": true,
@@ -176,9 +209,9 @@ zoomOut() {
           scaleX: {
             zooming: true,
             placement: "opposite",
-            minValue: this.diagnosisDate,
-            maxValue: this.deceasedDate,
-            step: 'month',
+            minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
+            maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
+            step: 'day',//'month',
             guide: {
               lineWidth: "1px"
             },
@@ -192,20 +225,20 @@ zoomOut() {
           },
           //set scroll bar for zoom-in scrolling
           "scroll-x": {
-            "bar": {
-              "background-color": "#DCEDC8",
-              "alpha": 0.5
-            },
-            "handle": {
-              "background-color": "#8BC34A"
-            }
+            // "bar": {
+            //   "background-color": "#DCEDC8",
+            //   "alpha": 0.5
+            // },
+            // "handle": {
+            //   "background-color": "#8BC34A"
+            // }
           },
           scaleX2: {
             zooming: true,
             placement: "default",
-            minValue: this.diagnosisDate,
-            maxValue: this.deceasedDate,
-            step: 'month',
+            minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
+            maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
+            step: 'day',//'month',
             guide: {
               lineWidth: "1px"
             },
@@ -229,7 +262,11 @@ zoomOut() {
               visible: true,
               lineWidth: 1,
               lineStyle: "solid",
-            }
+            },
+            tick: {
+              visible: false,
+            },
+
           },
           series: this.series,
         }
@@ -251,7 +288,7 @@ zoomOut() {
     this.transformDataFun();
     this.drawChart();
     //this.zoomIn();
-   // this.zoomOut();
+    // this.zoomOut();
   }
 }
 export default MedicationChart;
