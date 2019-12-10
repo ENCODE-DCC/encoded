@@ -682,12 +682,14 @@ def _parse_args():
     parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
+        '--build-ami',
+        action='store_true',
+        help='Flag to indicate building for ami'
+    )
+    parser.add_argument(
         '--image-id',
-        default='ami-2133bc59',
-        help=(
-            "https://us-west-2.console.aws.amazon.com/ec2/home"
-            "?region=us-west-2#LaunchInstanceWizard:ami=ami-2133bc59"
-        )
+        default='demo',
+        help=('AWS AMI ID: [demo, es-cluster, fe-cluster, ami-id#]')
     )
     parser.add_argument(
         '--availability-zone',
@@ -711,7 +713,21 @@ def _parse_args():
         help="Size of disk. Allowed values 120, 200, and 500"
     )
     args = parser.parse_args()
-    # Default frontend, datanode, and datahead instance types
+    # Check AMI
+    ami_map = {
+        'demo': 'ami-034f2db581579bb43',
+        'es-cluster': None,
+        'fe-cluster': None,
+    }
+    # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20191002
+    default_ami = 'ami-06d51e91cea0dac8d'
+    if args.image_id in ami_map:
+        args.image_id = ami_map[args.image_id]
+        if args.build_ami:
+            # Default build ami id
+            args.image_id = default_ami
+    if not args.image_id:
+        args.image_id = default_ami
     if not args.instance_type:
         if args.es_elect or args.es_wait:
             # datanode
