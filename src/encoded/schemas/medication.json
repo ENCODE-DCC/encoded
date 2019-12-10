@@ -74,6 +74,12 @@
         "name": {
             "title": "Medication name"
         },
+        "start_date":{
+            "title":"Start date"
+        },
+        "end_date":{
+            "title":"End date"
+        },
         "status": {
             "title": "Status"
         }
