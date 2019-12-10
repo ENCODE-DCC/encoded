@@ -146,42 +146,16 @@ class Patient(Item):
     def radiation(self, request, radiation):
         return paths_filtered_by_status(request, radiation)
 
-    @calculated_property(condition='radiation', schema={
+    @calculated_property(define=True, schema={
         "title": "Radiation Treatment Summary",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
+        "type": "string",
     })
-    def radiation_summary(self, request, radiation):
-        radiation_summary = []
-        for treatment in radiation:    
-            treatment_summary = "Treatment Received"
-            radiation_summary .append(treatment_summary)
-        return radiation_summary 
-
-    @calculated_property(condition='patient', schema={
-        "title": "Radiation Treatment Summary 2",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def radiation_summary2(self, request, patient, radiation):
-        radiation_set = set()
-        for path in radiation:
-            properties = request.embed(path, '@@object?skip_calculated=true')
-            radiation_set.add(properties.get('patient'))
-        radiation_summary = []
-        for treatment in radiation:
-            treatment_object = request.embed(treatment, '@@object')  
-            if treatment_object['patient'] in radiation_set: 
-                treatment_summary = "Has radiation treatment"
-                radiation_summary .append(treatment_summary)
-            else:
-                treatment_summary = "No radiation treatment"
-                radiation_summary .append(treatment_summary)
-        return radiation_summary 
+    def radiation_summary(self, request, radiation=None):
+        if len(radiation) > 0:
+            radiation_summary = "Treatment Received"
+        else:
+            radiation_summary = "No Treatment Received"
+        return radiation_summary
 
     @calculated_property(schema={
         "title": "Medical Imaging",
