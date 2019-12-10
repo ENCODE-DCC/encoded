@@ -90,6 +90,12 @@
         "germline_summary": {
             "title": "Germline Mutation"
         },
+        "radiation_summary": {
+            "title": "Radiation Treatment Status"
+        },
+        "radiation_summary2": {
+            "title": "Radiation Treatment Summary 2"
+        },
         "radiation.site_general" : {
           "title": "Radiation Site"
         },
