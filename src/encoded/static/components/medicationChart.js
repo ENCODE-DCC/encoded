@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearchPlus } from "@fortawesome/free-solid-svg-icons";
+import { faSearchPlus, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 
 class MedicationChart extends React.Component {
@@ -33,18 +33,20 @@ class MedicationChart extends React.Component {
     return (
       <div className="flex-container" >
         <div className="chart-menu" >
-          <h4>Zoom in/zoom out buttons</h4>
-          {/* <div className="chart-checkboxes pb-2"> {this.state.checkboxes}</div> */}
-          {/* zoom in and out buttons */}
-          <div className="pt-2" >
-            <button className="mr-2" onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x" /></button>
-            <button onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
+          <div className="chartboxes pt-2" >
+            <div className="mb-2">
+              <button type="button" className="btn btn btn-danger" onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x" /></button>
+            </div>
+            <div className="mb-2">
+              <button type="button" className="btn btn-success" onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
+            </div>
           </div>
         </div>
         <div className="chart-main" >
-          <div id={this.props.chartId} />
+          <div id={this.props.chartId} ></div>
         </div>
       </div>
+
     );
   }
   zoomIn() {
@@ -93,6 +95,8 @@ class MedicationChart extends React.Component {
           text: 'MedName:' + this.filterData[i].id + '<br> Start date:' + this.unixToDate(this.filterData[i].start) + '<br> End date:' + this.unixToDate(this.filterData[i].end),
 
         },
+        "data-line-index": this.scaleYIndex,
+        'data-dragging': true,
       };
       this.series.push(this.treatRange);
       this.drugNames[this.scaleYIndex] = this.filterData[i].id;
@@ -101,7 +105,13 @@ class MedicationChart extends React.Component {
     this.diagnosisDate = this.minDate - 6000 * 60 * 24 * 30;// hard code diagnosisDate with one month before.Should be replaced with a real one, set with milliseconds.
     this.deceasedDate = this.maxDate + 6000 * 60 * 24 * 30;// hare code diseasedDate with one month after, set with milliseconds.
     this.drugNames[0] = "";//"diagnosisDate";// Set first item to 'diagnosisdate'
-    this.drugNames[this.scaleYIndex] = "";// "deceasedDate";// Set last one to 'deceasedDate'.
+    //this.drugNames[(this.scaleYIndex)] = "";// "deceasedDate";// Set last one to 'deceasedDate'.
+    this.drugNames[this.drugNames.length] = "";
+    console.log("drugName", this.drugNames);
+    console.log("YIndex", this.scaleYIndex);
+    console.log("series1", this.series);
+    //console.log("series1", this.treatRange[values]);
+
 
     let diagnosisMarker = {
       type: 'scatter',
@@ -113,19 +123,12 @@ class MedicationChart extends React.Component {
         backgroundColor: 'none',
         borderColor: '#D31E1E',
         borderWidth: '2px',
-        size: '5px'
+        size: '5px',
       },
       tooltip: {
         text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
-        'background-color': '#8BC34A' // '#498ead'
+        'background-color': 'green',//'#8BC34A' // '#498ead'
       },
-      plot: {
-        'value-box': {
-          text: "Diagnosis Date",//"$%vK",
-          //placement: "right",
-          'font-color': "red"
-        },
-      }
     }
     let deceasedMarker = {
       type: 'scatter',
@@ -137,23 +140,20 @@ class MedicationChart extends React.Component {
         backgroundColor: 'none',
         borderColor: '#D31E1E',
         borderWidth: '2px',
-        size: '5px'
+        size: '5px',
       },
+      "data-deceased-index": this.drugNames.length - 1,
       tooltip: {
         text: "Deceased date:" + this.unixToDate(this.deceasedDate),
-        'background-color': '#8BC34A'//'#498ead'
+        'background-color': 'green',//'#8BC34A'//'#498ead'
       },
-      plot: {
-        'value-box': {
-          text: "Diseased Date",//"$%vK",
-          //placement: "left",
-          'font-color': "red",
-        }
-      }
     }
 
     this.series.push(diagnosisMarker);
     this.series.push(deceasedMarker);
+    console.log("series2", this.series);
+    console.log("series2", this.series.values);
+
     return this.series;
   }
   unixToDate(unix) {
@@ -166,29 +166,35 @@ class MedicationChart extends React.Component {
         {
           type: "mixed",
           theme: 'light',
-          "diagnosis-marker": this.diagnosisDate,
-          "deceased-marker": this.deceasedDate,
           plot: {
             alpha: 0.7,
             lineWidth: 20,
-            'value-box':
-            {
+            'value-box': {
               rules: [
                 {
-                  rule: '%this.diagnosisDate',
-                  text: "Diagnosis Date",
+                  rule: "%v==0",
                   placement: "right",
-                  'font-color': "red",
+                  text: "Diagnosis Date",
+                  fontSize: "13px",
+                  fontFamily: "Georgia",
+                  fontWeight: "bold",
+                  fontColor: "black",
                 },
                 {
-                  rule: '% this.deceasedDate',
-                  text: "Deceased Date",
+                  rule: "%v==%data-deceased-index",
                   placement: "left",
-                  'font-color': "red",
+                  text: "Deceased Date",
+                  fontSize: "13px",
+                  fontFamily: "Georgia",
+                  fontWeight: "bold",
+                  fontColor: "black",
+                },
+                {
+                  rule: "%v==%data-line-index",
+                  visible: "false",
                 }
               ]
             }
-
           },
           globals: {
             shadow: false,
@@ -199,7 +205,7 @@ class MedicationChart extends React.Component {
 
           plotarea: {
             "adjust-layout": true,
-            marginTop: "50",
+            marginTop: "dynamic",
             marginBottom: "50",
             marginLeft: "dynamic",
             marginRight: "50",
@@ -208,22 +214,21 @@ class MedicationChart extends React.Component {
           },
           scaleX: {
             zooming: true,
-            placement: "opposite",
+            placement: "default",
             minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
             maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
-            step: 'day',//'month',
+            step: 'day',
             guide: {
               lineWidth: "1px"
             },
             tick: {
-              visible: true, //false,
+              visible: true, 
             },
             transform: {
               type: "date",
               text: "%M-%d-%Y"
             }
           },
-          //set scroll bar for zoom-in scrolling
           "scroll-x": {
             // "bar": {
             //   "background-color": "#DCEDC8",
@@ -235,15 +240,15 @@ class MedicationChart extends React.Component {
           },
           scaleX2: {
             zooming: true,
-            placement: "default",
+            placement: "opposite",
             minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
             maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
-            step: 'day',//'month',
+            step: 'day',
             guide: {
               lineWidth: "1px"
             },
             tick: {
-              visible: true,//with ticks
+              visible: true,
             },
             transform: {
               type: "date",
@@ -256,6 +261,7 @@ class MedicationChart extends React.Component {
             labels: this.drugNames,
             offset: 25,
             mirrored: true,
+            minValue: 0,
             maxValue: this.scaleYIndex,
             step: 1,
             guide: {
@@ -266,8 +272,8 @@ class MedicationChart extends React.Component {
             tick: {
               visible: false,
             },
-
           },
+
           series: this.series,
         }
       ]
@@ -287,8 +293,10 @@ class MedicationChart extends React.Component {
     this.filterDataFun();
     this.transformDataFun();
     this.drawChart();
-    //this.zoomIn();
-    // this.zoomOut();
   }
 }
 export default MedicationChart;
+// ---------------------------------------------------
+// http://localhost:6543/patients/KCEPT294KIZ/  5 drugs
+// http://localhost:6543/patients/KCEPT021XWS/ 1 drug
+// http://localhost:6543/patients/KCEPT708IJT/ 3 drugs
