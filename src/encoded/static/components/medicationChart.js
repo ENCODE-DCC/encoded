@@ -104,13 +104,8 @@ class MedicationChart extends React.Component {
     }
     this.diagnosisDate = this.minDate - 6000 * 60 * 24 * 30;// hard code diagnosisDate with one month before.Should be replaced with a real one, set with milliseconds.
     this.deceasedDate = this.maxDate + 6000 * 60 * 24 * 30;// hare code diseasedDate with one month after, set with milliseconds.
-    this.drugNames[0] = "";//"diagnosisDate";// Set first item to 'diagnosisdate'
-    //this.drugNames[(this.scaleYIndex)] = "";// "deceasedDate";// Set last one to 'deceasedDate'.
-    this.drugNames[this.drugNames.length] = "";
-    console.log("drugName", this.drugNames);
-    console.log("YIndex", this.scaleYIndex);
-    console.log("series1", this.series);
-    //console.log("series1", this.treatRange[values]);
+    this.drugNames[0] = "";// Set first item for 'diagnosis date', not show in YAxis
+    this.drugNames[this.drugNames.length] = "";//set last one for 'deceaced date', not show in YAxis.
 
 
     let diagnosisMarker = {
@@ -127,7 +122,7 @@ class MedicationChart extends React.Component {
       },
       tooltip: {
         text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
-        'background-color': 'green',//'#8BC34A' // '#498ead'
+        'background-color': 'green',
       },
     }
     let deceasedMarker = {
@@ -145,14 +140,12 @@ class MedicationChart extends React.Component {
       "data-deceased-index": this.drugNames.length - 1,
       tooltip: {
         text: "Deceased date:" + this.unixToDate(this.deceasedDate),
-        'background-color': 'green',//'#8BC34A'//'#498ead'
+        'background-color': 'green',
       },
     }
 
     this.series.push(diagnosisMarker);
     this.series.push(deceasedMarker);
-    console.log("series2", this.series);
-    console.log("series2", this.series.values);
 
     return this.series;
   }
@@ -230,13 +223,6 @@ class MedicationChart extends React.Component {
             }
           },
           "scroll-x": {
-            // "bar": {
-            //   "background-color": "#DCEDC8",
-            //   "alpha": 0.5
-            // },
-            // "handle": {
-            //   "background-color": "#8BC34A"
-            // }
           },
           scaleX2: {
             zooming: true,
@@ -296,7 +282,3 @@ class MedicationChart extends React.Component {
   }
 }
 export default MedicationChart;
-// ---------------------------------------------------
-// http://localhost:6543/patients/KCEPT294KIZ/  5 drugs
-// http://localhost:6543/patients/KCEPT021XWS/ 1 drug
-// http://localhost:6543/patients/KCEPT708IJT/ 3 drugs
