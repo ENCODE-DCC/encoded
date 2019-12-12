@@ -157,6 +157,47 @@ class Patient(Item):
             radiation_summary = "No Treatment Received"
         return radiation_summary
 
+    @calculated_property(condition='radiation', schema={
+        "title": "Dose per Fraction",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def dose_summary(self, request, radiation):
+        dose_summary = []
+        for treatment in radiation:
+            treatment_object = request.embed(treatment, '@@object')
+            if treatment_object['dose']/treatment_object['fractions'] < 2000:               
+                dose_summary.append("200 - 2000")
+            elif treatment_object['dose']/treatment_object['fractions'] < 4000:               
+                dose_summary.append("2000 - 4000")
+            else:
+                dose_summary.append("4000 - 6000")
+        return dose_summary
+
+    @calculated_property(condition='radiation', schema={
+        "title": "Radiation Fractions",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def fractions_summary(self, request, radiation):
+        fractions_summary = []
+        for treatment in radiation:
+            treatment_object = request.embed(treatment, '@@object')
+            if treatment_object['fractions'] < 5:               
+                fractions_summary.append("1 - 5")
+            elif treatment_object['fractions'] < 10:               
+                fractions_summary.append("5 - 10")
+            elif treatment_object['fractions'] < 15:               
+                fractions_summary.append("10 - 15")
+            else:
+                fractions_summary.append("15+")
+        return fractions_summary
+
+
     @calculated_property(schema={
         "title": "Medical Imaging",
         "type": "array",
@@ -281,7 +322,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'radiation_summary2', 'medical_imaging']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_summary', 'fractions_summary', 'medical_imaging']:
     # for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'radiation', 'medical_imaging']:
         try:
             filtered[key] = properties[key]

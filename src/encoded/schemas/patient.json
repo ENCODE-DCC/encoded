@@ -93,6 +93,12 @@
         "radiation_summary": {
             "title": "Radiation Treatment Status"
         },
+        "dose_summary": {
+            "title": "Radiation Dose per Fraction"
+        },
+        "fractions_summary": {
+            "title": "Radiation Fractions"
+        },
         "radiation.site_general" : {
           "title": "Radiation Site"
         },
