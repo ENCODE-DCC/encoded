@@ -5,6 +5,7 @@ import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import { CartToggle } from './cart';
 import * as globals from './globals';
+import { BrowserFeat } from './browserfeat';
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
@@ -622,7 +623,7 @@ export class ImageWithFallback extends React.Component {
         // IE11 has an issue where it frequently throws a "Permission denied" exception, when the image
         // exist. This workaround makes IE11 show either the image if it exist or the browser's
         // inbuilt no-image display
-        if (!!window.MSInputMethodContext && !!document.documentMode) {
+        if (BrowserFeat.getBrowserCaps('uaTrident')) {
             return;
         }
 
