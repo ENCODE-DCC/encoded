@@ -337,8 +337,7 @@ InputSuggest.defaultProps = {
 
 
 // URLS to work the SCREEN site, both for a suggestion list and searches.
-const screenSuggestionsUrl = 'https://api.wenglab.org/screenv10_python_beta/autows/suggestions';
-const screenSearchUrl = 'http://screen.encodeproject.org/api/autows/search';
+const screenSuggestionsUrl = 'https://api.wenglab.org/screen_v13/autows/suggestions';
 
 
 // Render the search form for SCREEN searches, including the search field, search buttons, and
@@ -361,7 +360,6 @@ class ScreenSearch extends React.Component {
         this.startDelayTimer = this.startDelayTimer.bind(this);
         this.searchTermChange = this.searchTermChange.bind(this);
         this.searchTermClick = this.searchTermClick.bind(this);
-        this.submitScreenSearch = this.submitScreenSearch.bind(this);
         this.termSelectHandler = this.termSelectHandler.bind(this);
         this.inputBlur = this.inputBlur.bind(this);
     }
@@ -422,24 +420,6 @@ class ScreenSearch extends React.Component {
         }
     }
 
-    submitScreenSearch() {
-        // Request search results from SCREEN.
-        fetch(screenSearchUrl, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                assembly: 'hg19',
-                userQuery: this.state.currSearchTerm,
-                uuid: '0',
-            }),
-        }).then(response => (
-            response.ok ? response.json() : null
-        ));
-    }
-
     termSelectHandler(term) {
         // Called when user clicks on a term in the drop-down suggestion list.
         this.setState({ currSearchTerm: term, suggestedSearchTerms: [] });
@@ -473,7 +453,7 @@ class ScreenSearch extends React.Component {
                                 <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
-                                <div className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></div>
+                                <div className="site-search__note">Hosted by <a href="http://screen.wenglab.org/">SCREEN</a></div>
                             </label>
                             <InputSuggest
                                 value={this.state.currSearchTerm}
@@ -487,8 +467,36 @@ class ScreenSearch extends React.Component {
                             />
                         </div>
                         <div className="site-search__submit">
-                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info btn-sm site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
-                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info btn-sm site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Human hg19 search"
+                                title="Human hg19 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen-v10.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}
+                            >
+                                Human hg19 <i className="icon icon-search" />
+                            </a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Human GRCh38 search"
+                                title="Human GRCh38 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=GRCh38`}
+                            >
+                                Human GRCh38<i className="icon icon-search" />
+                            </a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Mouse mm10 search"
+                                title="Mouse mm10 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}
+                            >
+                                Mouse mm10 <i className="icon icon-search" />
+                            </a>
                         </div>
                     </fieldset>
                 </form>
