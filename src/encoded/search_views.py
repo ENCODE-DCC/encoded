@@ -29,6 +29,7 @@ from snovault.elasticsearch.searches.fields import TitleResponseField
 from snovault.elasticsearch.searches.fields import TypeOnlyClearFiltersResponseField
 from snovault.elasticsearch.searches.fields import TypeResponseField
 from snovault.elasticsearch.searches.parsers import ParamsParser
+from snovault.elasticsearch.searches.responses import FieldedGeneratorResponse
 from snovault.elasticsearch.searches.responses import FieldedResponse
 
 
@@ -125,6 +126,24 @@ def searchv2_quick(context, request):
         ]
     )
     return fr.render()
+
+
+def search_generator(request):
+    '''
+    For internal use (no view). Like search_quick but returns raw generator
+    of search hits in @graph field.
+    '''
+    fgr = FieldedGeneratorResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            BasicSearchResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
+            )
+        ]
+    )
+    return fgr.render()
 
 
 @view_config(route_name='report', request_method='GET', permission='search')

@@ -200,6 +200,45 @@ def test_search_views_search_quick_view_specify_field(workbook, testapp):
     assert len(r.json['@graph'][0].keys()) == 2
 
 
+def test_search_generator(workbook, threadlocals, dummy_request):
+    from snovault.elasticsearch.searches.parsers import ParamsParser
+    from snovault.elasticsearch import ELASTIC_SEARCH
+    from elasticsearch import Elasticsearch
+    from types import GeneratorType
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=*&limit=all'
+    )
+    dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch(port=9201)
+    from encoded.search_views import search_generator
+    r = search_generator(dummy_request)
+    assert '@graph' in r
+    assert len(r.keys()) == 1
+    assert isinstance(r['@graph'], GeneratorType)
+    hits = [dict(h) for h in r['@graph']]
+    assert len(hits) > 800
+    assert '@id' in hits[0]
+
+
+def test_search_generator_field_specified(workbook, threadlocals, dummy_request):
+    from snovault.elasticsearch.searches.parsers import ParamsParser
+    from snovault.elasticsearch import ELASTIC_SEARCH
+    from elasticsearch import Elasticsearch
+    from types import GeneratorType
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&field=@id&limit=5'
+    )
+    dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch(port=9201)
+    from encoded.search_views import search_generator
+    r = search_generator(dummy_request)
+    assert '@graph' in r
+    assert len(r.keys()) == 1
+    assert isinstance(r['@graph'], GeneratorType)
+    hits = [dict(h) for h in r['@graph']]
+    assert len(hits) == 5
+    assert '@id' in hits[0]
+    assert len(hits[0].keys()) == 2
+
+
 def test_search_views_report_view(workbook, testapp):
     r = testapp.get(
         '/report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
