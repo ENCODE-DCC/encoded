@@ -64,10 +64,10 @@ const portal = {
             children: [
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
                 { id: 'sep-mm-1' },
-                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'http://screen.wenglab.org/' },
+                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'https://screen.wenglab.org/' },
                 { id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v4' },
                 { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=ENCODE+v4' },
-                { id: 'annotationmethods', title: 'Methods', url: 'http://screen.wenglab.org/index/about' },
+                { id: 'annotationmethods', title: 'Methods', url: 'https://screen.wenglab.org/index/about' },
             ],
         },
         {

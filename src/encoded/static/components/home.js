@@ -453,7 +453,7 @@ class ScreenSearch extends React.Component {
                                 <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
-                                <div className="site-search__note">Hosted by <a href="http://screen.wenglab.org/">SCREEN</a></div>
+                                <div className="site-search__note">Hosted by <a href="https://screen.wenglab.org/">SCREEN</a></div>
                             </label>
                             <InputSuggest
                                 value={this.state.currSearchTerm}
