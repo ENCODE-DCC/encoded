@@ -375,6 +375,7 @@
 
     @at-root #{&}__submit {
         display: flex;
+        flex-wrap: wrap;
 
         &-element {
             flex: 0 1 auto;
@@ -387,7 +388,7 @@
 
     @at-root #{&}__screen {
         a {
-            margin-right: 5px;
+            margin: 5px 5px 0 0;
 
             &:after {
                 content: "" !important;
