@@ -272,6 +272,9 @@ class SummaryData extends React.Component {
         const assayFacet = context.facets.find(facet => facet.field === 'assay_title');
         let assays = assayFacet ? assayFacet.terms : null;
 
+        const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
+        const filteredOutAssays = context.filters.filter(c => c.field === 'assay_title!');
+
         // Filter the assay list if any assay facets have been selected so that the assay graph will be
         // filtered accordingly. Find assay_title filters. Same applies to the lab filters.
         if (context.filters && context.filters.length > 0) {
@@ -305,8 +308,8 @@ class SummaryData extends React.Component {
         return (
             <div className="summary-content__data">
                 <div className="summary-content__snapshot">
-                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" /> : null}
-                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" /> : null}
+                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
+                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
                     {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} ident="status" /> : null}
                 </div>
                 <div className="summary-content__statistics">
