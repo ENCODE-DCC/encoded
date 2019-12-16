@@ -1,10 +1,40 @@
 Changes
 =======
-v93.1 (unreleased) snovault 1.0.38
+v94.0 (released) snovault 1.0.39
+---------------------------------------
+1.	ENCD-5002 Removed month_released from facet list for scRNA series (#3074)
+2.	ENCD-5001-SCREEN-link-updates (#3076)
+3.	ENCD-4994-fix-broken-img-tag-appearance-ie11 (#3073)
+4.	ENCD-4996-fix-IE-shading (#3075)
+5.	ENCD-4993-update-snovault-1.0.39
+6.	ENCD-4222 Implement ENTEx matrix (#3067)
+7.	ENCD-4882 Removed month_released property from Dataset and Page (#3049)
+8.	ENCD-4965-quality-metrics-now-required-property (#3064)
+9.	ENCD-4983-new-file-output_type-personalized-genome-assembly (#3065)
+10.	ENCD-4810 md5 self audit (#3063)
+11.	ENCD-4967-broken-E11-fixes (#3043)
+12.	ENCD-4812-award-link-embedded (#3069)
+13.	ENCD-4971-add-TagRFP-enum-GM (#3062)
+14.	ENCD-4972-calculate-FCC-control-assay-titles (#3061)
+15.	ENCD-4969 Update missing raw data in replicate audit (#3046)
+16.	ENCD-4922 single cell RNA series (#3066)
+17.	ENCD-4859-clarify-undetermined-replication-type-audit (#3059)
+18.	ENCD-4488-tighten-annotation-schema (#3045)	
+19.	ENCD-4984-add-ENCODE3-to-scRNA-without-controls (#3057)
+20.	ENCD-4942 remove control category of target (#3058)
+21.	ENCD-4872 open ENCODE4 antibody standards to ENCODE3 antibodies (#3022)
+22.	ENCD-4979-fix-reference-to-HTTPFound (#3060)
+23.	ENCD-4976 Remove scRNA-seq from RIN audit (#3056)
+24.	ENCD-4557-limit-reviewers-cannot-edit-characterization (#3054)
+25.	ENCD-4974-cricket-typo-fixes (#3048)
+26.	ENCD-4966-remove-default-replicate (#3047)
+27.	ENCD-4980-upgrade-pip-circleci (#3053)
+
+v93.1 (released) snovault 1.0.38
 ---------------------------------------
 1. ENCD-4978 update bcrypt and pip3 (#3051)
 
-v93.0 (unreleased) snovault 1.0.38
+v93.0 (released) snovault 1.0.38
 ---------------------------------------
 1.	ENCD-4970 Make reference-epignome cells render on IE11 (#3041)
 2.	ENCD-4973-raw-schema (#3042)
