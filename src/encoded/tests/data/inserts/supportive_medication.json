@@ -1,0 +1,23 @@
+[
+    {
+        "start_date": "1855-01-10",
+        "patient": "KCEPT708IJT",
+        "name": "Denosumab",
+        "status": "released",
+        "uuid": "7fb48024-afbe-4edc-be7f-60f8d189460d"
+    },
+    {
+        "start_date": "1855-05-30",
+        "patient": "KCEPT708IJT",
+        "name": "Denosumab",
+        "status": "released",
+        "uuid": "2ec4db55-f604-4b3c-8490-58932fc5b544"
+    },
+    {
+        "start_date": "1822-07-06",
+        "patient": "KCEPT021XWS",
+        "name": "Zoledronic Acid",
+        "status": "released",
+        "uuid": "17fa61bd-df96-42d4-bbce-5f9a387bbe79"
+    }
+]

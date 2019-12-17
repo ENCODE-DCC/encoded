@@ -8,6 +8,7 @@ import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
+import MedicationChart from './medicationChart';
 import GermlineTable from './germlineTable';
 import PatientChart from "./patientChart";
 import Radiation from "./radiation";
@@ -40,6 +41,7 @@ class Patient extends React.Component {
         let hasLabs = false;
         let hasVitals = false;
         let hasRadiation = false;
+        let hasMedication = false;
         if (Object.keys(this.props.context.labs).length > 0) {
             hasLabs = true;
         }
@@ -50,7 +52,10 @@ class Patient extends React.Component {
         if (Object.keys(this.props.context.radiation).length > 0) {
           hasRadiation = true;
         }
-        
+        if (Object.keys(this.props.context.medications).length > 0) {
+          hasMedication = true;
+        }
+
         const labsPanelBody = (
           <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
         );
@@ -60,6 +65,10 @@ class Patient extends React.Component {
         const radiationPanelBody = (
           <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
         );
+        const medicationPanelBody = (
+          <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
+        );
+
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -112,6 +121,7 @@ class Patient extends React.Component {
                 { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
                 { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
+                { hasMedication && <CollapsiblePanel  panelId="myPanelId4"  title = "Medications Results Over Time" content = {medicationPanelBody}/> }
                 { <GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
             </div>
         );

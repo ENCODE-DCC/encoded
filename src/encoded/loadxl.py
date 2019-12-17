@@ -19,6 +19,8 @@ ORDER = [
     'image',
     'page',
     'patient',
+    'medication',
+    'supportive_medication',
     'lab_results',
     'vital_results',
     'germline',
