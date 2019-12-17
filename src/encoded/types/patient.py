@@ -167,6 +167,58 @@ class Patient(Item):
     def radiation(self, request, radiation):
         return paths_filtered_by_status(request, radiation)
 
+    @calculated_property(define=True, schema={
+        "title": "Radiation Treatment Summary",
+        "type": "string",
+    })
+    def radiation_summary(self, request, radiation=None):
+        if len(radiation) > 0:
+            radiation_summary = "Treatment Received"
+        else:
+            radiation_summary = "No Treatment Received"
+        return radiation_summary
+
+    @calculated_property(condition='radiation', schema={
+        "title": "Dose per Fraction",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def dose_range(self, request, radiation):
+        dose_range = []
+        for treatment in radiation:
+            treatment_object = request.embed(treatment, '@@object')
+            if treatment_object['dose']/treatment_object['fractions'] < 2000:               
+                dose_range.append("200 - 2000")
+            elif treatment_object['dose']/treatment_object['fractions'] < 4000:               
+                dose_range.append("2000 - 4000")
+            else:
+                dose_range.append("4000 - 6000")
+        return dose_range
+
+    @calculated_property(condition='radiation', schema={
+        "title": "Radiation Fractions",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def fractions_range(self, request, radiation):
+        fractions_range = []
+        for treatment in radiation:
+            treatment_object = request.embed(treatment, '@@object')
+            if treatment_object['fractions'] < 5:               
+                fractions_range.append("1 - 5")
+            elif treatment_object['fractions'] < 10:               
+                fractions_range.append("5 - 10")
+            elif treatment_object['fractions'] < 15:               
+                fractions_range.append("10 - 15")
+            else:
+                fractions_range.append("15 and up")
+        return fractions_range
+
+
     @calculated_property(schema={
         "title": "Medical Imaging",
         "type": "array",
@@ -338,7 +390,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'medical_imaging', 'medications', 'supportive_medications']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging']:
         try:
             filtered[key] = properties[key]
         except KeyError:

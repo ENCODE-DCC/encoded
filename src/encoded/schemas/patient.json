@@ -90,6 +90,15 @@
         "germline_summary": {
             "title": "Germline Mutation"
         },
+        "radiation_summary": {
+            "title": "Radiation Treatment Status"
+        },
+        "dose_range": {
+            "title": "Radiation Dose per Fraction"
+        },
+        "fractions_range": {
+            "title": "Radiation Fractions"
+        },
         "radiation.site_general" : {
           "title": "Radiation Site"
         },
