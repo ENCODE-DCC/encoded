@@ -93,10 +93,10 @@
         "radiation_summary": {
             "title": "Radiation Treatment Status"
         },
-        "dose_summary": {
+        "dose_range": {
             "title": "Radiation Dose per Fraction"
         },
-        "fractions_summary": {
+        "fractions_range": {
             "title": "Radiation Fractions"
         },
         "radiation.site_general" : {
