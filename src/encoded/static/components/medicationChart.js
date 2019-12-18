@@ -35,10 +35,10 @@ class MedicationChart extends React.Component {
         <div className="chart-menu" >
           <div className="chartboxes pt-2" >
             <div className="mb-2">
-              <button type="button" className="btn btn btn-danger" onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} size="2x" /></button>
+              <button type="button" onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} background-color="#cde5fa" size="2x" /></button>
             </div>
             <div className="mb-2">
-              <button type="button" className="btn btn-success" onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
+              <button type="button" onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
             </div>
           </div>
         </div>
@@ -60,14 +60,46 @@ class MedicationChart extends React.Component {
   filterDataFun() {
     if (this.props.data.length > 0) {
       this.dateRange = this.props.data.map(i => ([i.start_date, i.end_date]));
-      let dateRangeSort = ([].concat(...this.dateRange)).sort();
+      let dateRangeSort =[...new Set(([].concat(...this.dateRange)).sort())] ;
+      console.log("dateRangeSort",dateRangeSort)
+      let data1=[];
+      let sortedData=[];
+      // let startDateArray = this.props.data.map(i => (i.start_date)).sort();
+      // console.log(startDateArray);
+      for (let j = 0; j < dateRangeSort.length; j++) {
+        
+        let dataPoints = this.props.data.filter(i => { return i.start_date === dateRangeSort[j] });
+        data1.push(dataPoints);
+        sortedData=[...new Set([].concat(...data1))];
+        
+      }
+      console.log("data1",data1);
+      console.log("sortedData",sortedData);
       this.minDate = Date.parse(dateRangeSort[0]);// change time to milliseconds
       this.maxDate = Date.parse(dateRangeSort[dateRangeSort.length - 1]);// change time to milliseconds
-      this.filterData = this.props.data.map(i => ({
+      //sorting data according to startDate:
+     
+      
+
+      
+      //   for (let j = 0; j < allDates.length; j++) {
+      //     let currentDate = allDates[j];
+      //     let dataPoints = filteredData.filter(i => { return i.date === currentDate });
+      //     if (dataPoints.length > 0) {
+      //         values.push([allDatesUnix[j], dataPoints[0].value]);
+      //     }
+      //     else {
+      //         values.push([allDatesUnix[j], null]);
+      //     }
+      // }
+
+      this.filterData = sortedData.map(i => ({
         start: i.start_date,
         end: i.end_date,
         id: i.name,
       }));
+      
+      console.log("filterData",this.filterData);
     }
   }
   transformDataFun() {
@@ -80,7 +112,7 @@ class MedicationChart extends React.Component {
       this.treatRange = {
         type: 'line',
         plot: {
-          lineWidth: 20,
+          lineWidth: 15,
           marker: {
             visible: false
           },
@@ -202,7 +234,7 @@ class MedicationChart extends React.Component {
             marginBottom: "50",
             marginLeft: "dynamic",
             marginRight: "50",
-            backgroundColor: "#cde5fa",
+            backgroundColor: "#cde5fa",//"#cde5fa"  blue
             alpha: 0.3
           },
           scaleX: {
@@ -215,7 +247,7 @@ class MedicationChart extends React.Component {
               lineWidth: "1px"
             },
             tick: {
-              visible: true, 
+              visible: true,
             },
             transform: {
               type: "date",
