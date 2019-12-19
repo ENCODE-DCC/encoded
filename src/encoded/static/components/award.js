@@ -1802,18 +1802,8 @@ export const ExperimentDate = (props, context) => {
 
     let accumulatedDataReleased = [];
     let date = [];
-    const advancedQuery = queryString.parse(context.location_href).advancedQuery;
-    const dateRangeString = _.isEmpty(advancedQuery) ? null : advancedQuery.split('date_released');
-    let dateRange = null;
-
-    if (dateRangeString) {
-        dateRange = dateRangeString
-            .find(d => !!d)
-            .replace(':', '')
-            .replace('[', '')
-            .replace(']', '')
-            .split('TO');
-    }
+    const dateRange = queryString.parse(experiments['@id']).advancedQuery;
+    const dates = dateRange ? dateRange.match(/\d{4}-\d{1,2}-\d{1,2}/gi) : null;
 
     if (releasedDates.length > 0) {
         const sortedreleasedTerms = consolidateSortedDates(sortTerms(releasedDates));
@@ -1822,9 +1812,9 @@ export const ExperimentDate = (props, context) => {
         let awardStartDate;
         let awardEndDate = null;
 
-        if (dateRange) {
-            awardStartDate = dayjs(dateRange[0]).format('YYYY-MM').toString();
-            awardEndDate = dayjs(dateRange[1]).format('YYYY-MM').toString();
+        if (dates) {
+            awardStartDate = dayjs(dates[0]).format('YYYY-MM').toString();
+            awardEndDate = dayjs(dates[1]).format('YYYY-MM').toString();
         } else if (award && award.start_date) {
             awardStartDate = dayjs(award.start_date).format('YYYY-MM');
         } else {
@@ -1866,10 +1856,6 @@ ExperimentDate.defaultProps = {
     award: null,
     panelCss: '',
     panelHeadingCss: '',
-};
-
-ExperimentDate.contextTypes = {
-    location_href: PropTypes.string,
 };
 
 
