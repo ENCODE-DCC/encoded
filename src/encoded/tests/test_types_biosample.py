@@ -163,6 +163,52 @@ def test_biosample_summary_construct(testapp,
         'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
 
 
+def test_biosample_summary_construct_2(
+    testapp,
+    human,
+    human_donor,
+    biosample_1,
+    liver
+):
+    testapp.patch_json(human_donor['@id'], {
+        'age': '31',
+        'age_units': 'year',
+        'life_stage': 'adult',
+        'sex': 'female'
+        })
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': human_donor['@id'],
+        'biosample_ontology': liver['uuid'],
+        'organism': human['@id']
+        })
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Homo sapiens female adult (31 years) liver tissue')
+
+
+def test_biosample_summary_construct_3(
+    testapp,
+    human,
+    human_donor,
+    biosample_1,
+    liver
+):
+    testapp.patch_json(human_donor['@id'], {
+        'age': '1',
+        'age_units': 'month',
+        'life_stage': 'child',
+        'sex': 'female'
+        })
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': human_donor['@id'],
+        'biosample_ontology': liver['uuid'],
+        'organism': human['@id']
+        })
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Homo sapiens female child (1 month) liver tissue')
+
+
 def test_perturbed_gm(
     testapp,
     biosample_1,
