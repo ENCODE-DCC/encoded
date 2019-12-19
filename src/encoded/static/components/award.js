@@ -1757,7 +1757,7 @@ const consolidateSortedDates = (dateTerms) => {
 
 
 // Overall component to render the cumulative line chart
-export const ExperimentDate = (props, context) => {
+export const ExperimentDate = (props) => {
     const { experiments, award, panelCss, panelHeadingCss } = props;
     let releasedDates = [];
     let deduplicatedreleased = {};
@@ -2010,7 +2010,7 @@ class CumulativeGraph extends React.Component {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
-            const xticksBallParkCount = 24; // ballpark number desired x-axis ticks
+            const xticksBallParkCount = 25; // ballpark number desired x-axis ticks
             const monthReleasedLength = monthReleased.length;
             const lastxAxisIndex = monthReleasedLength - 1;
             const xticks = monthReleasedLength < xticksBallParkCount ? 1 : Math.floor(monthReleasedLength / xticksBallParkCount);
