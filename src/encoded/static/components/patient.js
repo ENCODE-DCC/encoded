@@ -8,6 +8,8 @@ import { DisplayAsJson } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
+import MedicationChart from './medicationChart';
+import GermlineTable from './germlineTable';
 import PatientChart from "./patientChart";
 import Radiation from "./radiation";
 import CollapsiblePanel from './collapsiblePanel';
@@ -56,23 +58,24 @@ class Patient extends React.Component {
             { id: 'Patients' },
             { id: <i>{context.accession}</i> },
         ];
-
         const crumbsReleased = (context.status === 'released');
-
         let hasLabs = false;
         let hasVitals = false;
         let hasRadiation = false;
+        let hasMedication = false;
         if (Object.keys(this.props.context.labs).length > 0) {
-          hasLabs = true;
-        };
+            hasLabs = true;
+        }
         if (Object.keys(this.props.context.vitals).length > 0) {
-          hasVitals = true;
-        };
+            hasVitals = true;
+        }
 
         if (Object.keys(this.props.context.radiation).length > 0) {
           hasRadiation = true;
-        };
-
+        }
+        if (Object.keys(this.props.context.medications).length > 0) {
+          hasMedication = true;
+        }
 
         const labsPanelBody = (
           <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
@@ -83,16 +86,22 @@ class Patient extends React.Component {
         const radiationPanelBody = (
           <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
         );
+        const medicationPanelBody = (
+          <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
+        );
+
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                 <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+                <script src="http://cdn.zingchart.com/modules/zingchart-grid.min.js"></script>
                 <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Patient" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
+
                     </div>
                 </header>
 
@@ -133,8 +142,9 @@ class Patient extends React.Component {
                 { hasLabs && <CollapsiblePanel  panelId="myPanelId1" title="Lab Results Over Time" content = {labsPanelBody}/>}
                 { hasVitals && <CollapsiblePanel  panelId="myPanelId2"  title="Vital Results Over Time" content = {vitalsPanelBody}/>}
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
+                { hasMedication && <CollapsiblePanel  panelId="myPanelId4"  title = "Medications Results Over Time" content = {medicationPanelBody}/> }
+                { <GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
                 <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x"/></button>
-                
             </div>
         );
     }

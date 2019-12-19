@@ -61,3 +61,22 @@
 .mb-2 {
     margin-bottom: 10px;
 }
+.table-area {
+    height: 100px;
+}
+.table-body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+  }
+   
+.table-container {
+    height: 100%;
+    width: 100%;
+    min-height: 100px;
+  }
+   
+.zc-ref {
+    display: none;
+  }
