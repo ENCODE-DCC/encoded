@@ -3932,6 +3932,59 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
         yield AuditFailure('missing nih_institutional_certification', detail, level='ERROR')
 
 
+def audit_experiment_eclip_queried_RNP_size_range(value, system, excluded_types):
+    '''
+    Check if libraries of eCLIP experiment and its control have matching queried_RNP_size_range.
+    '''
+    if value.get('assay_term_name') != 'eCLIP':
+        return
+
+    experiment_size_range = set()
+    control_size_range = set()
+    control_accessions = []
+
+    for rep in value['replicates']:
+        if rep.get('status') not in excluded_types and 'library' in rep:
+            lib = rep.get('library', {})
+            if 'queried_RNP_size_range' in lib:
+                experiment_size_range.add(lib['queried_RNP_size_range'])
+            else:
+                detail = ('Libraries of experiment {} are missing specification'
+                    ' of queried_RNP_size_range'.format(
+                        audit_link(path_to_text(value['@id']), value['@id'])
+                    )
+                )
+                yield AuditFailure('missing queried_RNP_size_range', detail, level='ERROR')
+
+    if 'possible_controls' in value:
+        for control in value.get('possible_controls'):
+            control_accessions.append(audit_link(path_to_text(control['@id']), control['@id']))
+            for rep in control['replicates']:
+                if rep.get('status') not in excluded_types and 'library' in rep:
+                    lib = rep.get('library', {})
+                    if 'queried_RNP_size_range' in lib:
+                        control_size_range.add(lib['queried_RNP_size_range'])
+
+    if not experiment_size_range:
+        experiment_size_range = 'none'
+    else:
+        experiment_size_range = ', '.join(experiment_size_range)
+    if not control_size_range:
+        control_size_range = 'none'
+    else:
+        control_size_range = ', '.join(control_size_range)
+
+    if experiment_size_range != control_size_range:
+        detail = ('Libraries of experiment {} have queried_RNP_size_range of {},'
+            ' but the libraries of its control experiment {} have queried_RNP_size_range of {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                experiment_size_range,
+                ', '.join(control_accessions),
+                control_size_range
+            )
+        )
+        yield AuditFailure('inconsistent queried_RNP_size_range', detail, level='ERROR')
+
 
 #######################
 # utilities
@@ -4532,6 +4585,7 @@ function_dispatcher_without_files = {
     'audit_spikeins': audit_experiment_spikeins,
     'audit_nih_consent': audit_experiment_nih_institutional_certification,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
+    'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range
 }
 
 function_dispatcher_with_files = {
@@ -4584,6 +4638,7 @@ function_dispatcher_with_files = {
         'possible_controls.target',
         'possible_controls.replicates',
         'possible_controls.replicates.antibody',
+        'possible_controls.replicates.library',
         'contributing_files',
         'contributing_files.quality_metrics',
         'original_files',

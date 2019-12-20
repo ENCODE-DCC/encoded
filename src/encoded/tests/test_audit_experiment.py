@@ -3836,3 +3836,44 @@ def test_audit_experiment_chip_seq_control_target_failures(
         error['category'] != 'unexpected target of control experiment'
         for error in collect_audit_errors(res)
     )
+
+
+def test_audit_experiment_missing_queried_RNP_size_range(
+    testapp,
+    base_experiment,
+    replicate_1_1,
+    library_1
+):
+    testapp.patch_json(base_experiment['@id'], {
+        'assay_term_name': 'eCLIP'
+        })
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing queried_RNP_size_range'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_inconsistent_queried_RNP_size_range(
+    testapp,
+    base_experiment,
+    experiment,
+    replicate_1_1,
+    replicate_2_1,
+    library_1,
+    library_2
+):
+    testapp.patch_json(base_experiment['@id'], {
+        'assay_term_name': 'eCLIP',
+        'possible_controls': [experiment['@id']]
+        })
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'eCLIP'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {
+        'library': library_2['@id'],
+        'experiment': experiment['@id']
+        })
+    testapp.patch_json(library_1['@id'], {'queried_RNP_size_range': '150-200'})
+    testapp.patch_json(library_2['@id'], {'queried_RNP_size_range': '200-400'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent queried_RNP_size_range'
+               for error in collect_audit_errors(res))
