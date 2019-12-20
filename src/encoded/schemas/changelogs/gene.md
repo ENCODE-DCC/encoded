@@ -6,6 +6,7 @@
 
 ### Minor changes since schema version 1
 
+* Added *locations*, which specifies the chromosome and genomic coordinates of the gene.
 * *dbxrefs* was set to have a minimum of 1.
 
 ### Schema version 1

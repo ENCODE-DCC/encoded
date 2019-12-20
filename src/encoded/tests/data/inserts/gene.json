@@ -502,5 +502,15 @@
     "organism": "human",
     "status": "released",
     "symbol": "CXXC1",
-    "synonyms": ["2410002I16Rik", "5830420C16Rik", "CFP1", "CGBP", "HsT2645", "PCCX1", "PHF18", "SPP1", "ZCGPC1", "hCGBP"]
+    "synonyms": ["2410002I16Rik", "5830420C16Rik", "CFP1", "CGBP", "HsT2645", "PCCX1", "PHF18", "SPP1", "ZCGPC1", "hCGBP"],
+    "locations": [{
+        "assembly": "GRCh38",
+        "chromosome": "chr18",
+        "start": 50282343,
+        "end": 50288322
+    }, {"assembly": "hg19",
+        "chromosome": "chr18",
+        "start": 47808713,
+        "end": 47814692
+    }]
 }]
