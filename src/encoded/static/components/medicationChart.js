@@ -35,10 +35,10 @@ class MedicationChart extends React.Component {
         <div className="chart-menu" >
           <div className="chartboxes pt-2" >
             <div className="mb-2">
-              <button type="button" onClick={this.zoomIn} title="Zoom in" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} background-color="#cde5fa" size="2x" /></button>
+              <button type="button"  onClick={this.zoomIn} title="Zoom in" className="btn-zoom" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} background-color="#cde5fa" size="2x" /></button>
             </div>
             <div className="mb-2">
-              <button type="button" onClick={this.zoomOut} title="Zoom out" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
+              <button type="button"  onClick={this.zoomOut} title="Zoom out" className="btn-zoom" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@ class MedicationChart extends React.Component {
       this.treatRange = {
         type: 'line',
         plot: {
-          lineWidth: 15,
+          lineWidth: 20,
           marker: {
             visible: false
           },
@@ -151,6 +151,7 @@ class MedicationChart extends React.Component {
         borderColor: '#D31E1E',
         borderWidth: '2px',
         size: '5px',
+        offsetY: -5
       },
       tooltip: {
         text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
@@ -168,6 +169,7 @@ class MedicationChart extends React.Component {
         borderColor: '#D31E1E',
         borderWidth: '2px',
         size: '5px',
+        offsetY: 5
       },
       "data-deceased-index": this.drugNames.length - 1,
       tooltip: {
@@ -204,6 +206,7 @@ class MedicationChart extends React.Component {
                   fontFamily: "Georgia",
                   fontWeight: "bold",
                   fontColor: "black",
+                  offsetY: -5
                 },
                 {
                   rule: "%v==%data-deceased-index",
@@ -213,6 +216,7 @@ class MedicationChart extends React.Component {
                   fontFamily: "Georgia",
                   fontWeight: "bold",
                   fontColor: "black",
+                  offsetY: 5
                 },
                 {
                   rule: "%v==%data-line-index",

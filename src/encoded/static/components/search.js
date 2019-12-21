@@ -1214,10 +1214,14 @@ class Facet extends React.Component {
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => obj.key);
-        } else {
+        }
+            else if(field.match('range')){
+                terms=_.sortBy(unsortedTerms, obj=>parseInt(obj.key.match(/\d+/)));
+            }
+        else {
             terms = unsortedTerms;
         }
-
+      
         const moreTerms = terms.slice(5);
         const TermComponent = field === 'type' ? TypeTerm : Term;
         const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
