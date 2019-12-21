@@ -217,7 +217,7 @@ export const dbxrefPrefixMap = {
         pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
     },
     '4DN': {
-        pattern: 'https://www.data.4dnucleome.org/experiment-set-replicates/{0}',
+        pattern: 'https://data.4dnucleome.org/experiment-set-replicates/{0}',
     },
 };
 
