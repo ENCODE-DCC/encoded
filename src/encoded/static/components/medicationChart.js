@@ -61,11 +61,8 @@ class MedicationChart extends React.Component {
     if (this.props.data.length > 0) {
       this.dateRange = this.props.data.map(i => ([i.start_date, i.end_date]));
       let dateRangeSort =[...new Set(([].concat(...this.dateRange)).sort())] ;
-      console.log("dateRangeSort",dateRangeSort)
       let data1=[];
       let sortedData=[];
-      // let startDateArray = this.props.data.map(i => (i.start_date)).sort();
-      // console.log(startDateArray);
       for (let j = 0; j < dateRangeSort.length; j++) {
         
         let dataPoints = this.props.data.filter(i => { return i.start_date === dateRangeSort[j] });
@@ -73,33 +70,14 @@ class MedicationChart extends React.Component {
         sortedData=[...new Set([].concat(...data1))];
         
       }
-      console.log("data1",data1);
-      console.log("sortedData",sortedData);
       this.minDate = Date.parse(dateRangeSort[0]);// change time to milliseconds
       this.maxDate = Date.parse(dateRangeSort[dateRangeSort.length - 1]);// change time to milliseconds
-      //sorting data according to startDate:
-     
-      
-
-      
-      //   for (let j = 0; j < allDates.length; j++) {
-      //     let currentDate = allDates[j];
-      //     let dataPoints = filteredData.filter(i => { return i.date === currentDate });
-      //     if (dataPoints.length > 0) {
-      //         values.push([allDatesUnix[j], dataPoints[0].value]);
-      //     }
-      //     else {
-      //         values.push([allDatesUnix[j], null]);
-      //     }
-      // }
-
       this.filterData = sortedData.map(i => ({
         start: i.start_date,
         end: i.end_date,
         id: i.name,
       }));
       
-      console.log("filterData",this.filterData);
     }
   }
   transformDataFun() {

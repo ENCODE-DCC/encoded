@@ -217,39 +217,28 @@ class Patient(Item):
             date_format="%Y-%m-%d"
             start_date=datetime.strptime(medication_object['start_date'],date_format )
             end_date=datetime.strptime(medication_object['end_date'],date_format )
-            # medication_duration=math.ceil((end_date-start_date).days/30)
             medication_duration=(end_date-start_date).days/30
 
             medication_range=[] 
             if 0<=medication_duration<3:
-                # duration_list_item="1-3 month"
                 medication_range.append("0-3 months")
             elif 3<=medication_duration<6:
-                # duration_list_item="3-6 month"
                 medication_range.append("3-6 months")
             elif 6<=medication_duration<9:
-                # duration_list_item="6-9 month"
                 medication_range.append("6-9 months")  
             elif 9<=medication_duration<12:
-                # duration_list_item="9-12 month"
                 medication_range.append("9-12 months")
             elif 12<=medication_duration<18:
-                # duration_list_item="12-18 month"
                 medication_range.append("12-18 months")
             elif 18<=medication_duration<24:
-                # duration_list_item="18-24 month"
                 medication_range.append("18-24 months")
             elif 24<=medication_duration<30:
-                # duration_list_item="24-30 month"
                 medication_range.append("24-30 months")
             elif 30<=medication_duration<36:
-                # duration_list_item="30-36 month"
                 medication_range.append("30-36 months")
             elif 36<=medication_duration<48:
-                # duration_list_item="36-48 month"
                 medication_range.append("36-48 months")
             else :
-            #     # duration_list_item="48+"
                 medication_range.append("48+ months") 
         return medication_range 
 
