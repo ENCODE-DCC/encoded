@@ -94,6 +94,7 @@ class Patient extends React.Component {
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
+                <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script>
                 <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
                 <script src="http://cdn.zingchart.com/modules/zingchart-grid.min.js"></script>
                 <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
