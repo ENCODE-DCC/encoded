@@ -27,7 +27,9 @@ ORDER = [
     'consent',
     'radiation',
     'medical_imaging',
-    'cart'
+    'cart',
+    'biospecimen'
+
 ]
 
 IS_ATTACHMENT = [
