@@ -15,9 +15,6 @@
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/uuid"}
     ],
-    "dependencies": {
-
-    },
     "properties": {
         "schema_version": {
             "default": "1"
