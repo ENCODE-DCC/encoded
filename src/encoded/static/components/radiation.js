@@ -24,6 +24,11 @@ class Radiation extends React.Component {
       }
       return false;
     }
+    compare(a, b){
+      if (a.start > b.start) return 1;
+      if (a.start < b.start) return -1;
+      return 0;
+    }
     filterData(dataPoint, ganttData){
       for (let i = 0; i < ganttData.length; i++) {
         if (ganttData[i].id === dataPoint.id && ganttData[i].start === dataPoint.start) {
@@ -93,7 +98,8 @@ class Radiation extends React.Component {
       var projectNames = [];
       var seriesData = [];
     	var scaleYIndex = 2;
-
+      ganttData.sort(compare);
+      
       for(var i = 0; i < ganttData.length; i++){
 
         if (projectNames.indexOf(ganttData[i].id) == -1) {
