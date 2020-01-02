@@ -2,7 +2,7 @@
     {
         "internal_ID":"nisiad",
         "openspecimen_ID":"nulla ",
-        "donor":"KCEPT708IJT",
+        "patient":"KCEPT708IJT",
         "collection_date":"1941-02-16",
         "collection_type":"solid tissue",
         "processing_type":"zenograft",
@@ -16,7 +16,7 @@
     {
         "internal_ID":"quiscillum",
         "openspecimen_ID":"minimcommodo",
-        "donor":"KCEPT708IJT",
+        "patient":"KCEPT708IJT",
         "collection_date":"1982-06-20",
         "collection_type":"solid tissue",
         "processing_type":"FFPE",
@@ -30,7 +30,7 @@
     {
         "internal_ID":"deserunt",
         "openspecimen_ID":"veniam",
-        "donor":"KCEPT026PGS",
+        "patient":"KCEPT026PGS",
         "collection_date":"2003-11-09",
         "collection_type":"ascites fluid",
         "processing_type":"FF",
@@ -42,7 +42,7 @@
     {
         "internal_ID":"reprehenderit",
         "openspecimen_ID":"et",
-        "donor":"KCEPT925TMI",
+        "patient":"KCEPT925TMI",
         "collection_date":"1991-08-20",
         "collection_type":"solid tissue",
         "processing_type":"DMSO",
@@ -56,7 +56,7 @@
     {
         "internal_ID":"doaliqua",
         "openspecimen_ID":"inmagnaident",
-        "donor":"KCEPT480NBU",
+        "patient":"KCEPT480NBU",
         "collection_date":"1990-01-13",
         "collection_type":"blood",
         "processing_type":"blood",
@@ -67,7 +67,7 @@
     {
         "internal_ID":"sintanimau",
         "openspecimen_ID":"Duissint",
-        "donor":"KCEPT873QVK",
+        "patient":"KCEPT873QVK",
         "collection_date":"2012-06-15",
         "collection_type":"solid tissue",
         "processing_type":"DMSO",
@@ -81,7 +81,7 @@
     {
         "internal_ID":"nostrudquiu",
         "openspecimen_ID":"sitani",
-        "donor":"KCEPT802XRB",
+        "patient":"KCEPT802XRB",
         "collection_date":"2005-02-04",
         "collection_type":"solid tissue",
         "processing_type":"FF",
@@ -95,7 +95,7 @@
     {
         "internal_ID":"laborumincidid",
         "openspecimen_ID":"exercitation",
-        "donor":"KCEPT802XRB",
+        "patient":"KCEPT802XRB",
         "collection_date":"1980-03-15",
         "collection_type":"solid tissue",
         "processing_type":"zenograft",
@@ -110,7 +110,7 @@
     {
         "internal_ID":"aute",
         "openspecimen_ID":"dolore",
-        "donor":"KCEPT186NZW",
+        "patient":"KCEPT186NZW",
         "collection_date":"1997-08-16",
         "collection_type":"solid tissue",
         "processing_type":"FF",
@@ -124,7 +124,7 @@
     {
         "internal_ID":"utminimsed",
         "openspecimen_ID":"ut",
-        "donor":"KCEPT139SOR",
+        "patient":"KCEPT139SOR",
         "collection_date":"2013-02-09",
         "collection_type":"solid tissue",
         "processing_type":"FF",
@@ -137,8 +137,8 @@
     },
     {
         "internal_ID":"officia consequat ut nisi",
-        "openspecimen_ID":"KCEPT873QVK",
-        "donor":"qui",
+        "openspecimen_ID":"qui",
+        "patient":"KCEPT873QVK",
         "collection_date":"1976-03-28",
         "collection_type":"solid tissue",
         "processing_type":"FF",
