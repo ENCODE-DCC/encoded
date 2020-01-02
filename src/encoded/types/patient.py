@@ -91,8 +91,7 @@ class Patient(Item):
         'radiation',
         'medical_imaging',
         'medications',
-        'supportive_medications'
-    ]
+        'supportive_medications'    ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
@@ -101,7 +100,8 @@ class Patient(Item):
         'radiation': ('Radiation', 'patient'),
         'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
-        'supportive_medication': ('SupportiveMedication', 'patient')
+        'supportive_medication': ('SupportiveMedication', 'patient'),
+        'biospecimen': ('Biospecimen', 'patient')
     }
     set_status_up = []
     set_status_down = []
@@ -189,9 +189,9 @@ class Patient(Item):
         dose_range = []
         for treatment in radiation:
             treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['dose']/treatment_object['fractions'] < 2000:               
+            if treatment_object['dose']/treatment_object['fractions'] < 2000:
                 dose_range.append("200 - 2000")
-            elif treatment_object['dose']/treatment_object['fractions'] < 4000:               
+            elif treatment_object['dose']/treatment_object['fractions'] < 4000:
                 dose_range.append("2000 - 4000")
             else:
                 dose_range.append("4000 - 6000")
@@ -208,11 +208,11 @@ class Patient(Item):
         fractions_range = []
         for treatment in radiation:
             treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['fractions'] < 5:               
+            if treatment_object['fractions'] < 5:
                 fractions_range.append("1 - 5")
-            elif treatment_object['fractions'] < 10:               
+            elif treatment_object['fractions'] < 10:
                 fractions_range.append("5 - 10")
-            elif treatment_object['fractions'] < 15:               
+            elif treatment_object['fractions'] < 15:
                 fractions_range.append("10 - 15")
             else:
                 fractions_range.append("15 and up")
@@ -263,6 +263,18 @@ class Patient(Item):
     })
     def supportive_medications(self, request, supportive_medication):
         return supportive_med_frequency(request, supportive_medication)
+
+
+    @calculated_property(schema={
+        "title": "Biospecimen",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Biospecimen"
+        },
+    })
+    def biospecimen(self, request, biospecimen):
+        return paths_filtered_by_status(request, biospecimen)
 
 
 @collection(
@@ -390,7 +402,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'biospecimen']:
         try:
             filtered[key] = properties[key]
         except KeyError:

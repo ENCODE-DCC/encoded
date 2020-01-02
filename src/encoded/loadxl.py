@@ -19,6 +19,7 @@ ORDER = [
     'image',
     'page',
     'patient',
+    'biospecimen',
     'medication',
     'supportive_medication',
     'lab_results',
@@ -28,8 +29,6 @@ ORDER = [
     'radiation',
     'medical_imaging',
     'cart',
-    'biospecimen'
-
 ]
 
 IS_ATTACHMENT = [
@@ -569,6 +568,9 @@ PHASE1_PIPELINES = {
     ],
     'treatment': [
         remove_keys('biosamples_used')
+    ],
+    'biospecimen': [
+        remove_keys('originated_from')
     ]
 
 }
@@ -653,6 +655,9 @@ PHASE2_PIPELINES = {
     ],
     'treatment': [
         skip_rows_missing_all_keys('biosamples_used')
+    ],
+    'biospecimen': [
+        skip_rows_missing_all_keys('originated_from')
     ]
 }
 

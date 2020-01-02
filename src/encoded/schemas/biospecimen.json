@@ -9,7 +9,6 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/submitted"},
-        {"$ref": "mixins.json#/attribution"},
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/accession"},
@@ -163,9 +162,6 @@
     "boost_values": {
         "accession": 1.0,
         "patient.accession": 1.0,
-        "lab.institute_name": 1.0,
-        "lab.institute_label": 1.0,
-        "lab.title": 1.0,
         "openspecimen_ID": 1.0,
         "internal_ID": 1.0,
         "anatomic_site": 1.0

@@ -22,10 +22,10 @@ class Biospecimen(Item):
     schema = load_schema('encoded:schemas/biospecimen.json')
     name_key = 'accession'
     rev = {
+        'parent_of': ('Biospecimen', 'originated_from'),
     }
     embedded = [
         'patient',
-        'originated_from',
     ]
     audit_inherit = [
     ]
