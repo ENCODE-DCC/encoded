@@ -25,12 +25,10 @@ class Biospecimen(Item):
         'parent_of': ('Biospecimen', 'originated_from'),
     }
     embedded = [
-        'patient',
     ]
     audit_inherit = [
     ]
     set_status_up = [
-        'patient',
         'originated_from',
     ]
     set_status_down = []

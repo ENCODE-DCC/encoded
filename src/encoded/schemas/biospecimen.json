@@ -161,7 +161,7 @@
     },
     "boost_values": {
         "accession": 1.0,
-        "patient.accession": 1.0,
+        "patient": 1.0,
         "openspecimen_ID": 1.0,
         "internal_ID": 1.0,
         "anatomic_site": 1.0
