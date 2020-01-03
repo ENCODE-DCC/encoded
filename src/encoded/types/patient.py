@@ -20,6 +20,8 @@ from .base import (
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
 from collections import defaultdict
+from datetime import datetime
+import math
 
 
 ONLY_ADMIN_VIEW_DETAILS = [
@@ -252,6 +254,45 @@ class Patient(Item):
     })
     def medications(self, request, medication):
         return paths_filtered_by_status(request, medication)
+    
+    @calculated_property(condition='medication', schema={
+        "title": "Medication duration",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def medication_range(self, request, medication):
+        
+        for object in medication:
+            medication_object = request.embed(object, '@@object')
+            date_format="%Y-%m-%d"
+            start_date=datetime.strptime(medication_object['start_date'],date_format )
+            end_date=datetime.strptime(medication_object['end_date'],date_format )
+            medication_duration=(end_date-start_date).days/30
+
+            medication_range=[] 
+            if 0<=medication_duration<3:
+                medication_range.append("0-3 months")
+            elif 3<=medication_duration<6:
+                medication_range.append("3-6 months")
+            elif 6<=medication_duration<9:
+                medication_range.append("6-9 months")  
+            elif 9<=medication_duration<12:
+                medication_range.append("9-12 months")
+            elif 12<=medication_duration<18:
+                medication_range.append("12-18 months")
+            elif 18<=medication_duration<24:
+                medication_range.append("18-24 months")
+            elif 24<=medication_duration<30:
+                medication_range.append("24-30 months")
+            elif 30<=medication_duration<36:
+                medication_range.append("30-36 months")
+            elif 36<=medication_duration<48:
+                medication_range.append("36-48 months")
+            else :
+                medication_range.append("48+ months") 
+        return medication_range 
 
     @calculated_property( schema={
         "title": "Supportive Medications",
@@ -260,7 +301,8 @@ class Patient(Item):
             "type": "string",
             "linkTo": "SupportiveMedication",
         },
-    })
+        })
+
     def supportive_medications(self, request, supportive_medication):
         return supportive_med_frequency(request, supportive_medication)
 
@@ -402,7 +444,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'biospecimen']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications', 'biospecimen']:
         try:
             filtered[key] = properties[key]
         except KeyError:

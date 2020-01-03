@@ -13,7 +13,8 @@ import GermlineTable from './germlineTable';
 import PatientChart from "./patientChart";
 import Radiation from "./radiation";
 import CollapsiblePanel from './collapsiblePanel';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
@@ -22,11 +23,31 @@ class Patient extends React.Component {
       this.state= {
         showButton: false
       }
-      this.handleClick = this.handleClick.bind(this);
+      this.topFunction = this.topFunction.bind(this);
+      this.listenToScroll = this.listenToScroll.bind(this);
     }
 
-    handleClick(){
-      this.setState("showButton", !this.state.showButton);
+    topFunction() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+
+    listenToScroll() {
+      let mybutton = document.getElementById("scrollUpButton");
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+ 
+    }
+
+    componentDidMount() {
+      window.addEventListener('scroll', this.listenToScroll)
+    }
+    
+    componentWillUnmount() {
+      window.removeEventListener('scroll', this.listenToScroll)
     }
     render() {
 
@@ -73,6 +94,7 @@ class Patient extends React.Component {
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
+                <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script>
                 <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
                 <script src="http://cdn.zingchart.com/modules/zingchart-grid.min.js"></script>
                 <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
@@ -123,6 +145,7 @@ class Patient extends React.Component {
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
                 { hasMedication && <CollapsiblePanel  panelId="myPanelId4"  title = "Medications Results Over Time" content = {medicationPanelBody}/> }
                 { <GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
+                <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x"/></button>
             </div>
         );
     }
