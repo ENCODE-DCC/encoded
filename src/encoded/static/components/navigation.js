@@ -217,7 +217,7 @@ const Search = (props, context) => {
                     className="form-control search-query"
                     id="navbar-search"
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search, e.g. patient, bone"
                     name="searchTerm"
                     defaultValue={searchTerm}
                     key={searchTerm}

@@ -116,8 +116,10 @@ $brand-info: #4F689E;
         "encoded/modules/blocks",
         "encoded/modules/layout-editor",
         "encoded/modules/schema",
-        "encoded/modules/faq";
-@import "encoded/modules/patientChart";
+        "encoded/modules/faq",
+        "encoded/modules/patientChart",
+        "encoded/modules/scrollUpButton";
+
 
 @import "encoded/state";
 @import "encoded/theme";
@@ -130,4 +132,23 @@ $brand-info: #4F689E;
 #walkme-player {
     right: 0px !important;
 }
+/*
+#scrollUpButton {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    border: none;
+    outline: none;
+    background-color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    opacity: .7;
+  }
+  
+  #scrollUpButton:hover {
+    background-color: #555;
+  }
+  */
 
