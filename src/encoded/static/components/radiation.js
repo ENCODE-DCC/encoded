@@ -106,22 +106,14 @@ class Radiation extends React.Component {
       datesUnix.push(startDateUnix);
     }
 
-<<<<<<< HEAD
       var projectNames = [];
       var seriesData = [];
-    	var scaleYIndex = 2;
+      var scaleYIndex = 2;
       ganttData.sort((a, b) => a.start - b.start);
       
-      for(var i = 0; i < ganttData.length; i++){
-=======
-    let minDateUnix = Math.min(...datesUnix) - 60000 * 60 * 24 * 30;
-    let maxDateUnix = Math.max(...datesUnix) + 60000 * 60 * 24 * 30;
+      let minDateUnix = Math.min(...datesUnix) - 60000 * 60 * 24 * 30;
+      let maxDateUnix = Math.max(...datesUnix) + 60000 * 60 * 24 * 30;
 
->>>>>>> kce
-
-    var projectNames = [];
-    var seriesData = [];
-    var scaleYIndex = 2;
 
     for (var i = 0; i < ganttData.length; i++) {
 
