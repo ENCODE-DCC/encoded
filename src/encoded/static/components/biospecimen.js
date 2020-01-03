@@ -5,6 +5,7 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
+import { PanelLookup } from './objectutils';
 
 class Biospecimen extends React.Component {
     constructor(props) {
