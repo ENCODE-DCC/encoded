@@ -35,6 +35,7 @@ class Radiation extends React.Component {
         return true;
       }
     }
+    return false;
   }
   filterData(dataPoint, ganttData) {
     for (let i = 0; i < ganttData.length; i++) {
@@ -49,8 +50,6 @@ class Radiation extends React.Component {
           ganttData[i].end = Math.max(ganttData[i].end, dataPoint.end);
           ganttData[i].endDate = new Date(ganttData[i].end - 60000 * 60 * 24);
         }
-      return false;
-
       }
     }
   }
