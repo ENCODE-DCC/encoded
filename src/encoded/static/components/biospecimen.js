@@ -69,3 +69,4 @@ class Biospecimen extends React.Component {
         )
     }
 }
+globals.contentViews.register(Biospecimen, 'Biospecimen');
