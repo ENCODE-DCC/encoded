@@ -64,6 +64,11 @@ class Biospecimen extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
+                {context.patient ?
+                    <div>
+                        {PanelLookup({ context: context.patient, biospecimen: context })}
+                    </div>
+                : null}
 
             </div>
         )
