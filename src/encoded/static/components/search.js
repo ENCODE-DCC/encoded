@@ -1219,7 +1219,7 @@ class Facet extends React.Component {
         } else {
             terms = unsortedTerms;
         }
-
+      
         const moreTerms = terms.slice(5);
         const TermComponent = field === 'type' ? TypeTerm : Term;
         const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);

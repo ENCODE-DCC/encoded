@@ -74,6 +74,7 @@
         "name": {
             "title": "Medication name"
         },
+       
         "status": {
             "title": "Status"
         }

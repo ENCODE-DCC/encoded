@@ -1,5 +1,8 @@
 /* eslint-disable linebreak-style */
 import React from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearchPlus, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 
 class MedicationChart extends React.Component {
   constructor(props) {
@@ -22,27 +25,59 @@ class MedicationChart extends React.Component {
     this.drugNames = [];
     this.series = [];
     this.scaleYIndex = 0;
+    this.zoomIn = this.zoomIn.bind(this);
+    this.zoomOut = this.zoomOut.bind(this);
+
   }
   render() {
     return (
       <div className="flex-container" >
+        <div className="chart-menu" >
+          <div className="chartboxes pt-2" >
+            <div className="mb-2">
+              <button type="button"  onClick={this.zoomIn} title="Zoom in" className="btn-zoom" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} background-color="#cde5fa" size="2x" /></button>
+            </div>
+            <div className="mb-2">
+              <button type="button"  onClick={this.zoomOut} title="Zoom out" className="btn-zoom" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
+            </div>
+          </div>
+        </div>
         <div className="chart-main" >
-          <div id={this.props.chartId} />
+          <div id={this.props.chartId} ></div>
         </div>
       </div>
+
     );
+  }
+  zoomIn() {
+    this.zingchart.exec(this.props.chartId, "zoomin", { zoomx: true, zoomy: false });
+  }
+
+  zoomOut() {
+    this.zingchart.exec(this.props.chartId, "zoomout", { zoomx: true, zoomy: false });
+
   }
   filterDataFun() {
     if (this.props.data.length > 0) {
       this.dateRange = this.props.data.map(i => ([i.start_date, i.end_date]));
-      let dateRangeSort = ([].concat(...this.dateRange)).sort();
+      let dateRangeSort =[...new Set(([].concat(...this.dateRange)).sort())] ;
+      let data1=[];
+      let sortedData=[];
+      for (let j = 0; j < dateRangeSort.length; j++) {
+        
+        let dataPoints = this.props.data.filter(i => { return i.start_date === dateRangeSort[j] });
+        data1.push(dataPoints);
+        sortedData=[...new Set([].concat(...data1))];
+        
+      }
       this.minDate = Date.parse(dateRangeSort[0]);// change time to milliseconds
       this.maxDate = Date.parse(dateRangeSort[dateRangeSort.length - 1]);// change time to milliseconds
-      this.filterData = this.props.data.map(i => ({
+      this.filterData = sortedData.map(i => ({
         start: i.start_date,
         end: i.end_date,
         id: i.name,
       }));
+      
     }
   }
   transformDataFun() {
@@ -70,6 +105,8 @@ class MedicationChart extends React.Component {
           text: 'MedName:' + this.filterData[i].id + '<br> Start date:' + this.unixToDate(this.filterData[i].start) + '<br> End date:' + this.unixToDate(this.filterData[i].end),
 
         },
+        "data-line-index": this.scaleYIndex,
+        'data-dragging': true,
       };
       this.series.push(this.treatRange);
       this.drugNames[this.scaleYIndex] = this.filterData[i].id;
@@ -77,8 +114,9 @@ class MedicationChart extends React.Component {
     }
     this.diagnosisDate = this.minDate - 6000 * 60 * 24 * 30;// hard code diagnosisDate with one month before.Should be replaced with a real one, set with milliseconds.
     this.deceasedDate = this.maxDate + 6000 * 60 * 24 * 30;// hare code diseasedDate with one month after, set with milliseconds.
-    this.drugNames[0] = "diagnosisDate";// Set first item to 'diagnosisdate'
-    this.drugNames[this.scaleYIndex] = "deceasedDate";// Set last one to 'deceasedDate'.
+    this.drugNames[0] = "";// Set first item for 'diagnosis date', not show in YAxis
+    this.drugNames[this.drugNames.length] = "";//set last one for 'deceaced date', not show in YAxis.
+
 
     let diagnosisMarker = {
       type: 'scatter',
@@ -90,16 +128,17 @@ class MedicationChart extends React.Component {
         backgroundColor: 'none',
         borderColor: '#D31E1E',
         borderWidth: '2px',
-        size: '5px'
+        size: '5px',
+        offsetY: -5
       },
       tooltip: {
         text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
-        'background-color': '#8BC34A' // '#498ead'
+        'background-color': 'green',
       },
     }
     let deceasedMarker = {
       type: 'scatter',
-     scales: "scaleX2, scaleY",//set bottom x-Axis
+      scales: "scaleX2, scaleY",//set bottom x-Axis
       values: [[this.deceasedDate, this.scaleYIndex]],
       marker: {
         type: 'triangle',
@@ -107,16 +146,19 @@ class MedicationChart extends React.Component {
         backgroundColor: 'none',
         borderColor: '#D31E1E',
         borderWidth: '2px',
-        size: '5px'
+        size: '5px',
+        offsetY: 5
       },
+      "data-deceased-index": this.drugNames.length - 1,
       tooltip: {
         text: "Deceased date:" + this.unixToDate(this.deceasedDate),
-        'background-color': '#8BC34A'//'#498ead'
+        'background-color': 'green',
       },
     }
 
     this.series.push(diagnosisMarker);
     this.series.push(deceasedMarker);
+
     return this.series;
   }
   unixToDate(unix) {
@@ -132,58 +174,81 @@ class MedicationChart extends React.Component {
           plot: {
             alpha: 0.7,
             lineWidth: 20,
-
+            'value-box': {
+              rules: [
+                {
+                  rule: "%v==0",
+                  placement: "right",
+                  text: "Diagnosis Date",
+                  fontSize: "13px",
+                  fontFamily: "Georgia",
+                  fontWeight: "bold",
+                  fontColor: "black",
+                  offsetY: -5
+                },
+                {
+                  rule: "%v==%data-deceased-index",
+                  placement: "left",
+                  text: "Deceased Date",
+                  fontSize: "13px",
+                  fontFamily: "Georgia",
+                  fontWeight: "bold",
+                  fontColor: "black",
+                  offsetY: 5
+                },
+                {
+                  rule: "%v==%data-line-index",
+                  visible: "false",
+                }
+              ]
+            }
           },
           globals: {
             shadow: false,
           },
+          zoom: {
+            shared: true
+          },
+
           plotarea: {
             "adjust-layout": true,
-            marginTop: "50",
+            marginTop: "dynamic",
             marginBottom: "50",
             marginLeft: "dynamic",
             marginRight: "50",
-            backgroundColor: "#cde5fa",
+            backgroundColor: "#cde5fa",//"#cde5fa"  blue
             alpha: 0.3
           },
           scaleX: {
             zooming: true,
-            placement: "opposite",
-            minValue: this.diagnosisDate,
-            maxValue: this.deceasedDate,
-            step: 'month',
+            placement: "default",
+            minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
+            maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
+            step: 'day',
             guide: {
               lineWidth: "1px"
             },
             tick: {
-              visible: false,
+              visible: true,
             },
             transform: {
               type: "date",
               text: "%M-%d-%Y"
             }
           },
-          //set scroll bar for zoom-in scrolling
           "scroll-x": {
-            "bar": {
-              "background-color": "#DCEDC8",
-              "alpha": 0.5
-            },
-            "handle": {
-              "background-color": "#8BC34A"
-            }
           },
           scaleX2: {
             zooming: true,
-            placement: "default",
-            minValue: this.diagnosisDate,
-            maxValue: this.deceasedDate,
-            step: 'month',
+            placement: "opposite",
+            minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
+            maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
+            step: 'day',
             guide: {
               lineWidth: "1px"
             },
             tick: {
-              visible: false,
+              visible: true,
             },
             transform: {
               type: "date",
@@ -196,14 +261,19 @@ class MedicationChart extends React.Component {
             labels: this.drugNames,
             offset: 25,
             mirrored: true,
+            minValue: 0,
             maxValue: this.scaleYIndex,
             step: 1,
             guide: {
               visible: true,
               lineWidth: 1,
               lineStyle: "solid",
-            }
+            },
+            tick: {
+              visible: false,
+            },
           },
+
           series: this.series,
         }
       ]
