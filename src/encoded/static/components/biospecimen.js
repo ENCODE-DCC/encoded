@@ -65,14 +65,16 @@ class Biospecimen extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                {context.donor ?
+                {context.patient ?
                     <div>
-                        {PanelLookup({ context: context.donor, biospecimen: context })}
+                        {PanelLookup({ context: context.patient, biospecimen: context })}
                     </div>
                 : null}
+
 
             </div>
         )
     }
 }
+
 globals.contentViews.register(Biospecimen, 'Biospecimen');

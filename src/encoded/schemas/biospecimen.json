@@ -26,21 +26,24 @@
             "description": "ID used in OpenSpecimen to identify this biospecimen",
             "comment": "Only admins are allowed to set or update this value.",
             "type": "string",
-            "permission": "import_items"
+            "permission": "import_items",
+            "uniqueKey": true
         },
         "internal_ID": {
             "title": "Internal ID",
             "description": "ID used internally to identify this biospecimen.",
             "comment": "Only admins are allowed to set or update this value.",
             "type": "string",
-            "permission": "import_items"
+            "permission": "import_items",
+            "uniqueKey": true
         },
         "patient": {
-            "title": "Donor",
+            "title": "Patient",
             "description": "The patient the biospecimen was originated from.",
             "comment": "See patient.json for available identifiers.",
             "type": "string",
-            "linkTo": "Patient"
+            "linkTo": "Patient",
+            "permission": "import_items"
         },
         "collection_date": {
             "title": "Collection Date",

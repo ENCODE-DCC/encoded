@@ -32,11 +32,3 @@ class Biospecimen(Item):
         'originated_from',
     ]
     set_status_down = []
-
-
-    @calculated_property(schema={
-        "title": "Donor",
-        "type": "string",
-        })
-    def donor(self, request, patient):
-        return request.embed(patient, '@@object?skip_calculated=true')

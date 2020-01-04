@@ -254,7 +254,7 @@ class Patient(Item):
     })
     def medications(self, request, medication):
         return paths_filtered_by_status(request, medication)
-    
+
     @calculated_property(condition='medication', schema={
         "title": "Medication duration",
         "type": "array",
@@ -263,7 +263,7 @@ class Patient(Item):
         },
     })
     def medication_range(self, request, medication):
-        
+
         for object in medication:
             medication_object = request.embed(object, '@@object')
             date_format="%Y-%m-%d"
@@ -271,13 +271,13 @@ class Patient(Item):
             end_date=datetime.strptime(medication_object['end_date'],date_format )
             medication_duration=(end_date-start_date).days/30
 
-            medication_range=[] 
+            medication_range=[]
             if 0<=medication_duration<3:
                 medication_range.append("0-3 months")
             elif 3<=medication_duration<6:
                 medication_range.append("3-6 months")
             elif 6<=medication_duration<9:
-                medication_range.append("6-9 months")  
+                medication_range.append("6-9 months")
             elif 9<=medication_duration<12:
                 medication_range.append("9-12 months")
             elif 12<=medication_duration<18:
@@ -291,8 +291,8 @@ class Patient(Item):
             elif 36<=medication_duration<48:
                 medication_range.append("36-48 months")
             else :
-                medication_range.append("48+ months") 
-        return medication_range 
+                medication_range.append("48+ months")
+        return medication_range
 
     @calculated_property( schema={
         "title": "Supportive Medications",
@@ -444,7 +444,8 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications', 'biospecimen']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+                'medications','medication_range', 'supportive_medications', 'biospecimen']:
         try:
             filtered[key] = properties[key]
         except KeyError:
