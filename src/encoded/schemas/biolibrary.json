@@ -1,11 +1,11 @@
 {
-    "title": "Bio-library",
+    "title": "Library",
     "description": "Schema for submitting a molecular library.",
-    "id": "/profiles/library.json",
+    "id": "/profiles/biolibrary.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "internal_ID", "donor", "biosample", "nucleic_acid_term_name"],
-    "identifyingProperties": ["uuid","accession", "aliases"],
+    "required": [ "internal_ID", "biospecimen", "nucleic_acid_term_name"],
+    "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -13,8 +13,11 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/submitted" }
- 
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" },
+        { "$ref": "mixins.json#/documents" },
     ],
     "facets": {
         "status": {
@@ -23,7 +26,9 @@
     },
     "dependencies": {
         "nucleic_acid_quantity_units": ["nucleic_acid_starting_quantity"],
-        "nucleic_acid_quantity": ["nucleic_acid_starting_quantity_units"]
+        "nucleic_acid_quantity": ["nucleic_acid_starting_quantity_units"],
+        "source": ["sequencing_ID"],
+        "sequencing_ID": ["source"]
     },
     "properties": {
         "schema_version": {
@@ -38,57 +43,23 @@
             "comment": "Only admins are allowed to set or update this value.",
             "type": "string"
         },
-        "donor": {
-            "title": "Donor",
-            "description": "The patient the biospecimen was originated from.",
-            "comment": "See patient.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Patient"
-        },
-        "biosample": {
+        "biospecimen": {
             "title": "biospecimen",
             "description": "The biospecimen that nucleic acid was isolated from to generate the library.",
             "comment": "See biospecimen.json for available identifiers.",
             "type": "string",
-            "linkTo": "biospecimen"
+            "linkTo": "Biospecimen"
         },
-        "type_of_analysis": {
-            "title": "Type of analysis",
-            "description": "The biospecimen that nucleic acid was isolated from to generate the library.",
-            "comment": "See biospecimen.json for available identifiers.",
-            "type": "string",
-            "enum": [
-                "Exome",
-                "Targted Sequencing",
-                "WES",
-                "WGS",
-                "RNAseq",
-                "Nanostring Gene Panel"
-            ]
-        },
-
         "nucleic_acid_term_name": {
             "title": "Library material",
             "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
             "enum": [
                 "DNA",
-                "miRNA",
                 "polyadenylated mRNA",
-                "protein",
                 "RNA"
             ]
         },
-        "260/280": {
-
-        },
-        "260/230": {
-
-        },
-        "nucleic_acid_concentration": {
-
-        },
-
         "nucleic_acid_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
@@ -108,86 +79,74 @@
                 "µg"
             ]
         },
- 
+        "dna_integrity_number": {
+            "title": "DNA integrity number",
+            "description": "The DNA integrity number (DIN) value.",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+        },
+        "rna_integrity_number": {
+            "title": "RNA integrity number",
+            "description": "The RNA integrity number (RIN) value.",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+        },
         "date_sent":{
             "title": "Date sent",
             "description": "The date that the nucleic acid was sent for sequencing.",
             "type": "string",
-            "format": "date"            
+            "format": "date"
         },
         "sequencing_ID": {
             "title": "Sequecing ID",
             "description": "Sequecing ID from the company.",
             "type": "string"
         },
-        "company": {
-            "title": "Company name",
-            "description": "The name of the Company that is resposible for the sequencing",
-            "type": "string"
+        "construction_platform": {
+            "title": "Platform",
+            "description": "The device used to construct the library.",
+            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
+            "type": "string",
+            "linkTo": "Platform"
         },
-        "sequencing_system": {
-            "title": "Name of sequencing system",
-            "description": "The sequencing system used to construct the library.",
-            "type": "string"
+        "source": {
+            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
-        "gene_expression_platform": {
-            "title": "Gene expression platform",
-            "type": "string"
-        },
-        "SNP_array_platform": {
-            "title": "SNP array platform",
-            "type": "string"
-        },
-        "published": {
-            "title": "Is it published?",
-            "type": "string" ,
-            "enum": [
-                "yes",
-                "no"
-            ]
-        },
-        "publication_link": {
-            "title": "Publication link",
-            "type": "string"
-        },
-        "cnv_file_path": {
-            "title": "CNV file path",
-            "type": "string"
-        },
-        "exome_coverage_normal": {
-            "title": "Exome coverage for normal",
-            "type": "string"
-        },
-        "exome_coverage_tumor": {
-            "title": "Exome coverage for tumor",
-            "type": "string"
-        },
-        "expression_file_path": {
-            "title": "Expression file path",
-            "type": "string"
-        },
-        "matched_mutation_file_path": {
-            "title": "Matched mutation file path",
-            "type": "string"
-        },
-        "unmatched_mutation_file_path": {
-            "title": "Unmatched mutation file path",
-            "type": "string"
-        },
-        "fastq_file_path": {
-            "title": "FASTQ file path",
-            "type": "string"
-        }
-
-
     },
-
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "award": {
+            "title": "Award"
+        },
+        "lab": {
+            "title": "Lab"
+        },
+        "biospecimen.processing_type": {
+            "title": "Processing Type"
+        },
+        "biospecimen.anatomic_site": {
+            "title": "Anatomic Site"
+        },
+        "biospecimen.tissue_type": {
+            "title": "Tisue Type"
+        },
+        "biospecimen.processing_type": {
+            "title": "Processing Type"
+        },
+        "nucleic_acid_term_name": {
+            "title": "Library material"
+        }
+    },
     "boost_values": {
         "accession": 1.0,
         "internal_ID": 1.0,
         "biospecimen.accession": 1.0,
-        "patient.accession": 1.0
-
+        "biospecimen.patient": 1.0,
+        "sequencing_ID": 1.0
     },
     "changelog": "/profiles/changelogs/biolibrary.md"
 }
