@@ -1,0 +1,95 @@
+{
+    "title": "Surgery",
+    "description": "Schema for surgery embedded in portal pages",
+    "id": "/profiles/surgery.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "patient", "date", "surgery_type" ],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/standard_status"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the lab was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "date": {
+            "title": "Surgery date",
+            "description": "Date of surgery.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "surgery_type": {
+            "title": "Surgery procedure",
+            "description": "The surgery procedures conducted",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "Ablation",
+                    "Nephrectomy",
+                    "Metastectomy"
+                ]
+            }
+        },
+        "nephrectomy_details": {
+            "title": "Nephrectomy details",
+            "description": "Further details of Neprhectomy",
+            "type": "object",
+            "permission": "import_items",
+            "additionalProperties": false,
+            "required": ["type", "approach", "robotic_assist", "location" ],
+            "properties": {
+              "type": {
+                  "title": "Neprhectomy type",
+                  "type": "string",
+                  "enum": [
+                      "Partial",
+                      "Total"
+                  ]
+              },
+              "approach": {
+                  "title": "Neprhectomy Approach",
+                  "type": "string",
+                  "enum": [
+                      "Laparoscopic",
+                      "Open"
+                  ]
+              },
+              "robotic_assist": {
+                  "title": "Robotic Assit",
+                  "type": "boolean"
+              },
+              "location": {
+                  "title": "Neprhectomy Location",
+                  "type": "string",
+                  "enum": [
+                      "UTSW",
+                      "UTSWCopath",
+                      "Parkland",
+                      "Outside"
+                  ]
+              }
+            }
+        }
+    },
+    "boost_values": {
+        "patient": 1.0,
+        "surgery_type": 1.0
+    },
+    "changelog": "/profiles/changelogs/surgery.md"
+}

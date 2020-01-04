@@ -1,0 +1,158 @@
+[
+    {
+        "patient": "KCEPT359MHZ",
+        "date": "1860-06-03",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Open",
+          "robotic_assist": true,
+          "location": "UTSW"
+        },
+        "uuid": "41692393-f1f3-4797-9043-989c96a9621c"
+    },
+    {
+        "patient": "KCEPT708IJT",
+        "date": "1855-01-03",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Total",
+          "approach": "Open",
+          "robotic_assist": true,
+          "location": "UTSW"
+        },
+        "uuid": "717612f1-0fb7-411b-a8b3-b045e252d098"
+    },
+    {
+        "patient": "KCEPT480NBU",
+        "date": "1833-08-05",
+        "surgery_type": ["Nephrectomy", "Ablation"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Laparoscopic",
+          "robotic_assist": false,
+          "location": "Parkland"
+        },
+        "uuid": "4fbe65c9-ca7e-4f0c-a331-f08706d755bd"
+    },
+    {
+        "patient": "KCEPT802XRB",
+        "date": "1862-02-03",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Laparoscopic",
+          "robotic_assist": false,
+          "location": "UTSW"
+        },
+        "uuid": "7208400e-7f60-468a-a481-1c4a800af076"
+    },
+    {
+        "patient": "KCEPT186NZW",
+        "date": "1827-08-03",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Total",
+          "approach": "Open",
+          "robotic_assist": false,
+          "location": "UTSW"
+        },
+        "uuid": "2e7e12db-a655-4d38-b1c0-8424f52de629"
+    },
+    {
+        "patient": "KCEPT139SOR",
+        "date": "1877-12-16",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Total",
+          "approach": "Laparoscopic",
+          "robotic_assist": false,
+          "location": "UTSW"
+        },
+        "uuid": "b0524648-e2e1-4f3b-81bd-cad5c4cfe228"
+    },
+    {
+        "patient": "KCEPT021XWS",
+        "date": "1822-05-24",
+        "surgery_type": ["Nephrectomy", "Ablation"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Laparoscopic",
+          "robotic_assist": false,
+          "location": "UTSW"
+        },
+        "uuid": "186d7d47-e86d-4a28-9771-4179321585b9"
+    },
+    {
+        "patient": "KCEPT692UHR",
+        "date": "1838-05-11",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Open",
+          "robotic_assist": true,
+          "location": "UTSW"
+        },
+        "uuid": "1bee6b5d-ecaf-48ee-bca5-45a27938f4f1"
+    },
+    {
+        "patient": "KCEPT294KIZ",
+        "date": "1901-08-14",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Total",
+          "approach": "Open",
+          "robotic_assist": false,
+          "location": "UTSW"
+        },
+        "uuid": "bf2b0628-2d9b-4e17-b7de-1bd545ca5a8f"
+    },
+    {
+        "patient": "KCEPT398JLK",
+        "date": "1847-04-20",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Laparoscopic",
+          "robotic_assist": false,
+          "location": "UTSW"
+        },
+        "uuid": "2ce209cb-2ccf-49c1-9971-9c96414f42be"
+    },
+    {
+        "patient": "KCEPT756AEN",
+        "date": "1853-10-31",
+        "surgery_type": ["Nephrectomy", "Ablation"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Laparoscopic",
+          "robotic_assist": true,
+          "location": "UTSW"
+        },
+        "uuid": "a68f696a-e78e-4c92-86ae-ea23b91db76e"
+    },
+    {
+        "patient": "KCEPT396JUN",
+        "date": "1870-06-11",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Total",
+          "approach": "Laparoscopic",
+          "robotic_assist": true,
+          "location": "UTSW"
+        },
+        "uuid": "6a256daa-f6ed-417a-8fef-eb59c7dd81a2"
+    },
+    {
+        "patient": "KCEPT318AXY",
+        "date": "1859-08-01",
+        "surgery_type": ["Nephrectomy"],
+        "nephrectomy_details": {
+          "type":"Partial",
+          "approach": "Laparoscopic",
+          "robotic_assist": true,
+          "location": "UTSW"
+        },
+        "uuid": "215e5029-1325-4b12-af47-038cb5e9de54"
+    }
+]
