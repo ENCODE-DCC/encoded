@@ -127,10 +127,10 @@
             "uniqueItems": true,
             "items": {
                 "title": "Reference",
-                "description": "Dataset that contain reference file listing the elements being characterized in this functional characterization experiment.",
-                "comment": "See reference.json for a list of available identifiers.",
+                "description": "Dataset that contain reference file or annotation listing the elements being characterized in this functional characterization experiment.",
+                "comment": "See reference.json or annotation.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "Reference"
+                "linkTo": ["Reference", "Annotation"]
             }
         },
         "elements_mapping": {
