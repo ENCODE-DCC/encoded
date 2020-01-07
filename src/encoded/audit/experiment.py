@@ -880,7 +880,7 @@ def check_experiment_rna_seq_standards(value,
     }
 
     for f in fastq_files:
-        if pipeline_title not in ['Long read RNA-seq pipeline']:
+        if pipeline_title not in ['Long read RNA-seq pipeline', 'microRNA-seq pipeline']:
             yield from check_file_read_length_rna(f, 50,
                                                   pipeline_title,
                                                   assay_term_name,
@@ -962,6 +962,7 @@ def check_experiment_rna_seq_standards(value,
     elif pipeline_title == 'microRNA-seq pipeline':
         yield from check_experiment_micro_rna_standards(
             value,
+            fastq_files,
             alignment_files,
             gene_quantifications,
             desired_assembly,
@@ -1318,6 +1319,7 @@ def check_experiment_cage_rampage_standards(experiment,
 
 def check_experiment_micro_rna_standards(
     experiment,
+    fastq_files,
     alignment_files,
     gene_quantifications,
     desired_assembly,
@@ -1329,6 +1331,13 @@ def check_experiment_micro_rna_standards(
     upper_limit_expressed_mirnas,
     lower_limit_expressed_mirnas,
 ):
+    # Audit read length
+    minimum_threshold = 30 
+    for f in fastq_files:
+        yield from check_file_read_length_rna(f, minimum_threshold,
+                                                  'microRNA-seq pipeline',
+                                                  experiment['assay_term_name'],
+                                                  '/microrna/microrna-seq/')
     # Gather metrics
     quantification_metrics = get_metrics(
         gene_quantifications,
