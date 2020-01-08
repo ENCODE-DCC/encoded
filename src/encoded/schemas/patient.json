@@ -114,6 +114,22 @@
         "medication_range":{
             "title":"Medication Duration"
         },
+        "biospecimen.collection_type": {
+            "title": "Biospecimen Collection Type"
+        },
+        "biospecimen.processing_type": {
+            "title": "Biospecimen Processing Type"
+        },
+        "biospecimen.tissue_type": {
+            "title": "Biospecimen Tissue Type"
+        },
+        "biospecimen.anatomic_site": {
+            "title": "Biospecimen Anatomic Site"
+        },
+        "biospecimen.distributed": {
+            "title": "Biospecimen Distribution Status"
+        },
+
         "status": {
             "title": "Status"
         }
