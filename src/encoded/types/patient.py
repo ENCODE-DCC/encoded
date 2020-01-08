@@ -93,7 +93,8 @@ class Patient(Item):
         'radiation',
         'medical_imaging',
         'medications',
-        'supportive_medications'    ]
+        'supportive_medications',
+        'biospecimen'    ]
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
@@ -419,6 +420,17 @@ class Medication(Item):
 class SupportiveMedication(Item):
     item_type = 'supportive_medication'
     schema = load_schema('encoded:schemas/supportive_medication.json')
+    embeded = []
+
+@collection(
+    name='biospecimen',
+    properties={
+        'title': 'Biospecimens',
+        'description': 'Biospecimen results pages',
+    })
+class Biospecimen(Item):
+    item_type = 'biospecimen'
+    schema = load_schema('encoded:schemas/biospecimen.json')
     embeded = []
 
 

@@ -15,6 +15,7 @@ import Radiation from "./radiation";
 import CollapsiblePanel from './collapsiblePanel';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
+import BiospecimenTable from "./biospecimenTable";
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
@@ -63,6 +64,7 @@ class Patient extends React.Component {
         let hasVitals = false;
         let hasRadiation = false;
         let hasMedication = false;
+        let hasBiospecimen = false;
         if (Object.keys(this.props.context.labs).length > 0) {
             hasLabs = true;
         }
@@ -75,6 +77,9 @@ class Patient extends React.Component {
         }
         if (Object.keys(this.props.context.medications).length > 0) {
           hasMedication = true;
+        }
+        if (Object.keys(this.props.context.biospecimen).length > 0) {
+          hasBiospecimen = true;
         }
 
         const labsPanelBody = (
@@ -145,6 +150,7 @@ class Patient extends React.Component {
                 { hasRadiation && <CollapsiblePanel  panelId="myPanelId3"  title = "Radiation History" content = {radiationPanelBody}/> }
                 { hasMedication && <CollapsiblePanel  panelId="myPanelId4"  title = "Medications Results Over Time" content = {medicationPanelBody}/> }
                 { <GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
+                { hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
                 <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x"/></button>
             </div>
         );
