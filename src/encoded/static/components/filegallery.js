@@ -1923,6 +1923,9 @@ function createFacetObject(propertyKey, fileList, filters) {
             let property = file[propertyKey];
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+                if (property === '') {
+                    return;
+                }
             }
             if (facetObject[property]) {
                 facetObject[property] += 1;
@@ -1937,6 +1940,9 @@ function createFacetObject(propertyKey, fileList, filters) {
             let property = file[propertyKey];
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+                if (property === '') {
+                    return;
+                }
             }
             if (facetObject[property]) {
                 facetObject[property] += 1;
@@ -1950,6 +1956,9 @@ function createFacetObject(propertyKey, fileList, filters) {
             let property = file[propertyKey];
             if (propertyKey === 'biological_replicates') {
                 property = (file.biological_replicates ? file.biological_replicates.sort((a, b) => a - b).join(', ') : '');
+                if (property === '') {
+                    return;
+                }
             }
             // We only want to look at files that are not in 'fileListFiltered'
             if (!(fileListFiltered.includes(file))) {
@@ -2031,7 +2040,7 @@ function computeAssemblyAnnotationValue(assembly, annotation) {
 }
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2055,7 +2064,10 @@ const TabPanelFacets = (props) => {
     // Create objects for non-Assembly facets
     const fileType = createFacetObject('file_type', fileList, filters);
     const outputType = createFacetObject('output_type', fileList, filters);
-    const replicate = createFacetObject('biological_replicates', fileList, filters);
+    let replicate;
+    if (experimentType !== 'Annotation') {
+        replicate = createFacetObject('biological_replicates', fileList, filters);
+    }
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
@@ -2073,7 +2085,9 @@ const TabPanelFacets = (props) => {
             : null }
             <FileFacet facetTitle={'File format'} facetObject={fileType} filterFiles={filterFiles} facetKey={'file_type'} selectedFilters={filters} currentTab={currentTab} />
             <FileFacet facetTitle={'Output type'} facetObject={outputType} filterFiles={filterFiles} facetKey={'output_type'} selectedFilters={filters} currentTab={currentTab} />
-            <FileFacet facetTitle={'Replicates'} facetObject={replicate} filterFiles={filterFiles} facetKey={'biological_replicates'} selectedFilters={filters} currentTab={currentTab} />
+            {replicate ?
+                <FileFacet facetTitle={'Replicates'} facetObject={replicate} filterFiles={filterFiles} facetKey={'biological_replicates'} selectedFilters={filters} currentTab={currentTab} />
+            : null}
         </div>
     );
 };
@@ -2086,6 +2100,7 @@ TabPanelFacets.propTypes = {
     filterFiles: PropTypes.func.isRequired,
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
+    experimentType: PropTypes.string.isRequired,
 };
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
@@ -2098,6 +2113,8 @@ class FileGalleryRendererComponent extends React.Component {
         const loggedIn = !!(context.session && context.session['auth.userid']);
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
         const datasetFiles = props.data ? props.data['@graph'] : [];
+
+        this.experimentType = props.context['@type'][0];
 
         // Initialize React state variables.
         this.state = {
@@ -2566,6 +2583,7 @@ class FileGalleryRendererComponent extends React.Component {
                             filterFiles={this.filterFiles}
                             toggleFacets={this.toggleFacets}
                             clearFileFilters={this.clearFileFilters}
+                            experimentType={this.experimentType}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
