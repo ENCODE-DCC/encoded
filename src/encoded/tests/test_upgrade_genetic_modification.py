@@ -178,6 +178,17 @@ def genetic_modification_7_multiple_reagents(lab, award, crispr):
     }
 
 
+@pytest.fixture
+def genetic_modification_8(lab, award):
+    return {
+        'purpose': 'analysis',
+        'category': 'interference',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        "method": "CRISPR",
+    }
+
+
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
                              current_version='1', target_version='2')
@@ -261,3 +272,10 @@ def test_genetic_modification_upgrade_7_8(upgrader, genetic_modification_7_inval
         assert 'addgene' in reagent['source']
         assert 'url' in reagent
 """
+
+
+def test_genetic_modification_upgrade_8_9(upgrader, genetic_modification_8):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_8,
+                             current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert value.get('purpose') == 'characterization'
