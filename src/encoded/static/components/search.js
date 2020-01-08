@@ -576,6 +576,57 @@ const Patient = auditDecor(PatientComponent);
 
 globals.listingViews.register(Patient, 'Patient');
 
+/* eslint-disable react/prefer-stateless-function */
+class BiospecimenComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        const tissueType = (result.tissue_type && result.collection_type == 'solid tissue') ? ` ${result.tissue_type}` : '';
+        const anatomicSite = (result.anatomic_site && result.collection_type == 'solid tissue') ? ` ${result.anatomic_site}` : '';
+
+        return (
+          <li>
+              <div className="clearfix">
+                  <PickerActions {...this.props} />
+                  <div className="pull-right search-meta">
+                      <p className="type meta-title">Biospecimen</p>
+                      <p className="type">{` ${result.accession}`}</p>
+                      
+                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                  </div>
+                  <div className="accession">
+                      <a href={result['@id']}>
+                          {`${result.accession} `}
+                         
+                      </a>
+                  </div>
+                  <div className="data-row">
+                      <div><strong>Collection type: </strong>{result.collection_type}</div>
+                      <div><strong>Processing type: </strong>{result.processing_type}</div>
+                      { tissueType != '' && <div><strong>Tissue type: </strong>{tissueType}</div> }
+                      { anatomicSite != '' && <div><strong>Anotomic type: </strong>{anatomicSite}</div> }
+                  </div>
+              </div>
+              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+          </li>
+        );
+    }
+    
+}
+/* eslint-enable react/prefer-stateless-function */
+
+BiospecimenComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Biosample search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiospecimenComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biospecimen = auditDecor(BiospecimenComponent);
+
+globals.listingViews.register(Biospecimen, 'Biospecimen');
 
 const Image = (props) => {
     const result = props.context;
