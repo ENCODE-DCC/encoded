@@ -87,6 +87,25 @@
             }
         }
     },
+    "allOf": [
+        {
+          "properties": {
+            "surgery_type": { "const": "Nephrectomy" }
+          },
+          "required": ["nephrectomy_details"]
+        },
+        {
+            "properties": {
+              "nephrectomy_details": { "const": "type" }
+            },
+            "required": ["type"]
+          }
+    ],
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
     "boost_values": {
         "patient": 1.0,
         "surgery_type": 1.0

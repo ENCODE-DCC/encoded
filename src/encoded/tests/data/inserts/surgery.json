@@ -24,9 +24,21 @@
         "uuid": "717612f1-0fb7-411b-a8b3-b045e252d098"
     },
     {
+      "patient": "KCEPT708IJT",
+      "date": "1860-04-03",
+      "surgery_type": ["Metastectomy"],
+      "nephrectomy_details": {
+        "type":"Partial",
+        "approach": "Open",
+        "robotic_assist": true,
+        "location": "Parkland"
+      },
+      "uuid": "7807ad0f-32f3-475a-a544-00014f2acc15"
+  },
+    {
         "patient": "KCEPT480NBU",
-        "date": "1833-08-05",
-        "surgery_type": ["Nephrectomy", "Ablation"],
+        "date": "1836-05-08",
+        "surgery_type": ["Nephrectomy"],
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -35,6 +47,18 @@
         },
         "uuid": "4fbe65c9-ca7e-4f0c-a331-f08706d755bd"
     },
+    {
+      "patient": "KCEPT480NBU",
+      "date": "1833-08-05",
+      "surgery_type": [ "Ablation"],
+      "nephrectomy_details": {
+        "type":"Partial",
+        "approach": "Laparoscopic",
+        "robotic_assist": false,
+        "location": "Parkland"
+      },
+      "uuid": "9f85a354-f0af-4e0c-ab13-c0171655e328"
+  },
     {
         "patient": "KCEPT802XRB",
         "date": "1862-02-03",
@@ -47,6 +71,31 @@
         },
         "uuid": "7208400e-7f60-468a-a481-1c4a800af076"
     },
+    {
+      "patient": "KCEPT802XRB",
+      "date": "1862-02-03",
+      "surgery_type": ["Ablation"],
+      "nephrectomy_details": {
+        "type":"Partial",
+        "approach": "Laparoscopic",
+        "robotic_assist": false,
+        "location": "UTSW"
+      },
+      "uuid": "962d7434-4bfc-46fe-b0ee-918df1628e6c"
+  },
+
+  {
+    "patient": "KCEPT802XRB",
+    "date": "1862-02-03",
+    "surgery_type": ["Metastectomy"],
+    "nephrectomy_details": {
+      "type":"Partial",
+      "approach": "Laparoscopic",
+      "robotic_assist": false,
+      "location": "UTSW"
+    },
+    "uuid": "dfc7df5b-383a-4413-9bed-62c3f1cfd1cc"
+},
     {
         "patient": "KCEPT186NZW",
         "date": "1827-08-03",
@@ -74,7 +123,7 @@
     {
         "patient": "KCEPT021XWS",
         "date": "1822-05-24",
-        "surgery_type": ["Nephrectomy", "Ablation"],
+        "surgery_type": ["Ablation"],
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -98,7 +147,7 @@
     {
         "patient": "KCEPT294KIZ",
         "date": "1901-08-14",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": ["Metastectomy"],
         "nephrectomy_details": {
           "type":"Total",
           "approach": "Open",
@@ -122,7 +171,7 @@
     {
         "patient": "KCEPT756AEN",
         "date": "1853-10-31",
-        "surgery_type": ["Nephrectomy", "Ablation"],
+        "surgery_type": ["Ablation"],
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
