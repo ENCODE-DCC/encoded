@@ -42,8 +42,7 @@
             "description": "The patient the biospecimen was originated from.",
             "comment": "See patient.json for available identifiers.",
             "type": "string",
-            "linkTo": "Patient",
-            "permission": "import_items"
+            "linkTo": "Patient"
         },
         "collection_date": {
             "title": "Collection Date",
@@ -159,6 +158,36 @@
         "anatomic_site": {
             "title": "Biospecimen Anatomic Site"
 
+        }
+
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "internal_ID": {
+            "title": "Internal ID"
+        },
+        "openspecimen_ID": {
+            "title": "OpenSpecimen ID"
+        },
+        "patient.accession": {
+            "title": "Patient"
+        },
+        "collection_type": {
+            "title": "Collection Type"
+        },
+        "processing_type": {
+            "title": "Processing Type"
+        },
+        "tissue_type": {
+            "title": "Tissue Type"
+        },
+        "anatomic_site": {
+            "title": "Anatomic Site"
+        },
+        "distributed": {
+            "title": "Distributed?"
         }
 
     },
