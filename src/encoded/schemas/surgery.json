@@ -51,7 +51,7 @@
         "surgery_type": {
             "title": "Surgery procedure",
             "description": "The surgery procedures conducted",
-            "type": "array",
+            "type": "string",
             "uniqueItems": true,
             "items": {
                 "type": "string",

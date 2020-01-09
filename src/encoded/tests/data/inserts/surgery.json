@@ -2,7 +2,7 @@
     {
         "patient": "KCEPT359MHZ",
         "date": "1860-06-03",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Open",
@@ -14,7 +14,7 @@
     {
         "patient": "KCEPT708IJT",
         "date": "1855-01-03",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Total",
           "approach": "Open",
@@ -26,7 +26,7 @@
     {
       "patient": "KCEPT708IJT",
       "date": "1860-04-03",
-      "surgery_type": ["Metastectomy"],
+      "surgery_type": "Metastectomy",
       "nephrectomy_details": {
         "type":"Partial",
         "approach": "Open",
@@ -38,7 +38,7 @@
     {
         "patient": "KCEPT480NBU",
         "date": "1836-05-08",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -50,7 +50,7 @@
     {
       "patient": "KCEPT480NBU",
       "date": "1833-08-05",
-      "surgery_type": [ "Ablation"],
+      "surgery_type": "Ablation",
       "nephrectomy_details": {
         "type":"Partial",
         "approach": "Laparoscopic",
@@ -62,7 +62,7 @@
     {
         "patient": "KCEPT802XRB",
         "date": "1862-02-03",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -74,7 +74,7 @@
     {
       "patient": "KCEPT802XRB",
       "date": "1862-02-03",
-      "surgery_type": ["Ablation"],
+      "surgery_type": "Ablation",
       "nephrectomy_details": {
         "type":"Partial",
         "approach": "Laparoscopic",
@@ -87,7 +87,7 @@
   {
     "patient": "KCEPT802XRB",
     "date": "1862-02-03",
-    "surgery_type": ["Metastectomy"],
+    "surgery_type": "Metastectomy",
     "nephrectomy_details": {
       "type":"Partial",
       "approach": "Laparoscopic",
@@ -99,7 +99,7 @@
     {
         "patient": "KCEPT186NZW",
         "date": "1827-08-03",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Total",
           "approach": "Open",
@@ -111,7 +111,7 @@
     {
         "patient": "KCEPT139SOR",
         "date": "1877-12-16",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Total",
           "approach": "Laparoscopic",
@@ -123,7 +123,7 @@
     {
         "patient": "KCEPT021XWS",
         "date": "1822-05-24",
-        "surgery_type": ["Ablation"],
+        "surgery_type": "Ablation",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -135,7 +135,7 @@
     {
         "patient": "KCEPT692UHR",
         "date": "1838-05-11",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Open",
@@ -147,7 +147,7 @@
     {
         "patient": "KCEPT294KIZ",
         "date": "1901-08-14",
-        "surgery_type": ["Metastectomy"],
+        "surgery_type": "Metastectomy",
         "nephrectomy_details": {
           "type":"Total",
           "approach": "Open",
@@ -159,7 +159,7 @@
     {
         "patient": "KCEPT398JLK",
         "date": "1847-04-20",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -171,7 +171,7 @@
     {
         "patient": "KCEPT756AEN",
         "date": "1853-10-31",
-        "surgery_type": ["Ablation"],
+        "surgery_type": "Ablation",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
@@ -183,7 +183,7 @@
     {
         "patient": "KCEPT396JUN",
         "date": "1870-06-11",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Total",
           "approach": "Laparoscopic",
@@ -195,7 +195,7 @@
     {
         "patient": "KCEPT318AXY",
         "date": "1859-08-01",
-        "surgery_type": ["Nephrectomy"],
+        "surgery_type": "Nephrectomy",
         "nephrectomy_details": {
           "type":"Partial",
           "approach": "Laparoscopic",
