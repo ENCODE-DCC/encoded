@@ -332,17 +332,6 @@ class Patient(Item):
                     surgery_summary = "No Treatment Received"
             return surgery_summary
 
-# @calculated_property(define=True, schema={
-#         "title": "Radiation Treatment Summary",
-#         "type": "string",
-#     })
-#     def radiation_summary(self, request, radiation=None):
-#         if len(radiation) > 0:
-#             radiation_summary = "Treatment Received"
-#         else:
-#             radiation_summary = "No Treatment Received"
-#         return radiation_summary
-
 @collection(
     name='lab-results',
     properties={
