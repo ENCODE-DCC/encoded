@@ -6,11 +6,11 @@
 
 ## Setting Up Your Environment
 
-These are the primary software versions used in production, and you should be able to use them locally:
-- Python 3.4.3
+These are the primary software versions used in production, but many of them are out of date for local Mac installs:
+- Python 3.4.3 (no longer works on OSX 10.15.x "Catalina")
 - Node 10
-- Elasticsearch 5.4 (or later?)
-- Java VM 1.8
+- Elasticsearch 5.x (debian stable)
+- Java VM 11 (also works on 1.8)
 - Ubuntu 14.04
 
 ### **0. Xcode for Mac OS build tools**  
@@ -29,9 +29,11 @@ These are the primary software versions used in production, and you should be ab
 
 ### **2. (Mac) Install or update other dependencies:**
 
+#### **2.1 Low level dependencies: (tested on 10.15 Catalina)**
+
 ```bash
 brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
-brew install freetype libjpeg libtiff littlecms webp # chromedriver temporarily broken
+brew install freetype libjpeg libtiff littlecms webp libyaml zlib
 brew tap petere/postgresql
 brew install postgresql@9.3
 brew link --force postgresql@9.3
