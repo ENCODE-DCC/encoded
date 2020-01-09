@@ -510,6 +510,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </React.Fragment>
                             : null}
 
+                            {context.target ?
+                                <React.Fragment>
+                                    <div data-test="target">
+                                        <dt>Target</dt>
+                                        <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                    </div>
+                                    {context.target_expression_percentile !== undefined ?
+                                        <div data-test="target-perc">
+                                            <dt>Target expression percentile</dt>
+                                            <dd>{context.target_expression_percentile}th</dd>
+                                        </div>
+                                    : null}
+                                </React.Fragment>
+                            : null}
+
                             {context.control_type ?
                                 <div data-test="control_type">
                                     <dt>Control type</dt>
