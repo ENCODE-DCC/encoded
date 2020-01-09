@@ -437,11 +437,14 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // Retrieve reference to the registered facet title component for this facet.
     const TitleComponent = FacetRegistry.Title.lookup(facet.field);
 
+    // Filter out terms with a zero doc_count, as seen in region-search results.
+    const significantTerms = facet.terms.filter(term => term.doc_count > 0);
+
     // Filter the list of facet terms to those allowed by the optional typeahead field. Memoize the
     // resulting list to avoid needlessly rerendering the facet-term list that can get very long.
     const filteredTerms = React.useMemo(() => (
         facet.type === 'typeahead' ?
-            facet.terms.filter(
+            significantTerms.filter(
                 (term) => {
                     if (term.doc_count > 0) {
                         const termKey = sanitizedString(term.key);
@@ -454,8 +457,8 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                     return null;
                 }
             )
-        : facet.terms
-    ), [facet.terms, facet.type, typeaheadTerm]);
+        : significantTerms
+    ), [significantTerms, facet.type, typeaheadTerm]);
 
     // Called to set the top and bottom shading for scrollable facets based on where the user has
     // scrolled the facet as well as its height. This function needs memoization as new instances
