@@ -2017,8 +2017,7 @@ class CumulativeGraph extends React.Component {
             const dateValues = [];
             const totals = [];
 
-            // eslint-disable-next-line no-plusplus
-            for (let i = 0; i < monthReleasedLength; i++) {
+            for (let i = 0; i < monthReleasedLength; i += 1) {
                 if (i % xticks === 0 || i === lastxAxisIndex) {
                     const y = releaseddatavalue[i];
                     const x = monthReleased[i];
