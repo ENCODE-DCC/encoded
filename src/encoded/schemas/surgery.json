@@ -4,14 +4,28 @@
     "id": "/profiles/surgery.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "patient", "date", "surgery_type" ],
-    "identifyingProperties": ["uuid"],
+    "required": [
+        "patient",
+        "date",
+        "surgery_type"
+    ],
+    "identifyingProperties": [
+        "uuid"
+    ],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/standard_status"}
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        },
+        {
+            "$ref": "mixins.json#/submitted"
+        },
+        {
+            "$ref": "mixins.json#/standard_status"
+        }
     ],
     "properties": {
         "schema_version": {
@@ -29,7 +43,9 @@
             "comment": "Date can be submitted as YYYY-MM-DD.",
             "type": "string",
             "anyOf": [
-                {"format": "date"}
+                {
+                    "format": "date"
+                }
             ]
         },
         "surgery_type": {
@@ -52,7 +68,12 @@
             "type": "object",
             "permission": "import_items",
             "additionalProperties": false,
-            "required": ["type", "approach", "robotic_assist", "location" ],
+            "required": [
+                "type",
+                "approach",
+                "robotic_assist",
+                "location"
+            ],
             "properties": {
               "type": {
                   "title": "Neprhectomy type",
@@ -87,28 +108,46 @@
             }
         }
     },
+
     "allOf": [
         {
-          "properties": {
-            "surgery_type": { "const": "Nephrectomy" }
-          },
-          "required": ["nephrectomy_details"]
-        },
-        {
             "properties": {
-              "nephrectomy_details": { "const": "type" }
+                "surgery_type": {
+                    "const": "Nephrectomy"
+                }
             },
-            "required": ["type"]
-          }
+            "required": [
+                "nephrectomy_details"
+            ]
+        }
     ],
+    
+
     "facets": {
+        "surgery_type": {
+            "title": "Surgery Procedure"
+        },
+        
+        "nephrectomy_details.type": {
+            "title": "Nephrectomy Type"
+        },
+        "nephrectomy_details.approach": {
+            "title": "Nephrectomy Approach"
+        },
+        "nephrectomy_details.robotic_assist": {
+            "title": "Nephrectomy Robotic Assist"
+        },
+        "nephrectomy_details.location": {
+            "title": "Nephrectomy Location"
+        },
         "status": {
             "title": "Status"
         }
     },
     "boost_values": {
         "patient": 1.0,
-        "surgery_type": 1.0
+        "surgery_type": 1.0,
+        "nephrectomy_details": 1.0
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }

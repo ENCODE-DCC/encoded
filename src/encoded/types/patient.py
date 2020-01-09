@@ -321,6 +321,27 @@ class Patient(Item):
     def surgery(self, request, surgery):
         return paths_filtered_by_status(request, surgery)
 
+    @calculated_property(define=True, schema={
+            "title": "Surgery Treatment Summary",
+            "type": "string",
+        })
+    def surgery_summary(self, request, surgery=None):
+            if len(surgery) > 0:
+                surgery_summary = "Treatment Received"
+            else:
+                    surgery_summary = "No Treatment Received"
+            return surgery_summary
+
+# @calculated_property(define=True, schema={
+#         "title": "Radiation Treatment Summary",
+#         "type": "string",
+#     })
+#     def radiation_summary(self, request, radiation=None):
+#         if len(radiation) > 0:
+#             radiation_summary = "Treatment Received"
+#         else:
+#             radiation_summary = "No Treatment Received"
+#         return radiation_summary
 
 @collection(
     name='lab-results',
@@ -458,7 +479,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications','surgery_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:
