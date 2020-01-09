@@ -16,6 +16,20 @@ $row-data-header-width: 200px;
 }
 
 
+// Reusable styles for the left-most non-scrolling column.
+%sticky-column {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    background-color: #fff;
+    border-radius: 0;
+    z-index: 1;
+
+    &:after {
+        @include matrix-freeze-shadow;
+    }
+}
+
 // Applied to all matrix <table>
 .matrix {
     border-collapse: separate;
@@ -114,16 +128,7 @@ $row-data-header-width: 200px;
         }
 
         > td {
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
-            background-color: #fff;
-            border-radius: 0;
-            z-index: 1;
-
-            &:after {
-                @include matrix-freeze-shadow;
-            }
+            @extend %sticky-column;
         }
     }
 
@@ -134,13 +139,9 @@ $row-data-header-width: 200px;
             width: $row-data-header-width;
             text-align: right;
             border-left: 1px solid #f0f0f0;
-            background-color: #fff;
-            z-index: 1;
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
             font-size: 1rem;
             border-bottom: 1px solid #fff;
+            @extend %sticky-column;
 
             &:after {
                 @include matrix-freeze-shadow;
@@ -199,14 +200,7 @@ $row-data-header-width: 200px;
             }
 
             &:first-child {
-                position: -webkit-sticky;
-                position: sticky;
-                left: 0;
-                z-index: 1; // For focus outline
-
-                &:after {
-                    @include matrix-freeze-shadow;
-                }
+                @extend %sticky-column;
 
                 button {
                     margin-left: 5px;
@@ -238,17 +232,9 @@ $row-data-header-width: 200px;
     @at-root #{&}__row-category {
         > th {
             white-space: nowrap;
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
-            background-color: #fff;
-            z-index: 1;
+            @extend %sticky-column;
             text-align: left;
             font-size: 1.1rem;
-
-            &:after {
-                @include matrix-freeze-shadow();
-            }
 
             > div {
                 display: flex;
@@ -620,13 +606,14 @@ $donor-styles:
     male2 #eed78c #000 bottom-left,
     female4 #354b77 #fff bottom-right;
 
+$divider-color: #000; // Color of dividers between assays with targets
 
 .matrix__content--entex {
     display: block;
 
     .matrix__col-category-header {
         > th {
-            width: $donor-cell-width - 1;
+            width: $donor-cell-width;
             padding: 0;
 
             > a {
@@ -636,10 +623,36 @@ $donor-styles:
 
                 // Column subcategory links
                 &.sub {
-                    padding-top: 20px;
                     font-weight: normal;
                 }
+
+                &:hover {
+                    background-color: transparent;
+                }
             }
+
+            // Base of labels for assays with targets in header
+            &.category-base {
+                border-top: 3px solid $divider-color;
+            }
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
+
+    // Header containing titles for assays with targets
+    .matrix__col-category-targetassay-header {
+        > th.matrix__col-category-targetassay {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+
+        // Left-most non-scrolling column
+        > td.matrix__col-category-targetassay-corner {
+            @extend %sticky-column;
         }
     }
 
@@ -671,6 +684,11 @@ $donor-styles:
 
             &:last-of-type {
                 border-right: 1px solid $border-color;
+            }
+
+            // Cells on the left-most target under a parent assay
+            &.cell-divider {
+                border-left-color: $divider-color;
             }
         }
 
@@ -738,6 +756,8 @@ $donor-styles:
             border-top: 1px solid #e0e0e0;
             border-bottom: 1px solid #e0e0e0;
             border-left: 1px solid #e0e0e0;
+            font-family: Menlo, Courier, sans-serif;
+            letter-spacing: 0.2rem;
 
             @each $donor, $color, $textcolor, $curve in $donor-styles {
                 @at-root #{&}--#{$donor} {
@@ -765,5 +785,22 @@ $donor-styles:
                 }
             }
         }
+    }
+}
+
+
+// Dividers for assay/target header and table cells.
+.matrix__row-data > td,
+.matrix__row-data > td:last-of-type,
+.matrix__col-category-header > th {
+    // Dividers on left edge of targets with assays in header.
+    &.divider--start {
+        border-left: 1px solid $divider-color;
+    }
+
+    // Dividers on right edge of targets with assays in header. Only needed for targets
+    // at right edge of matrix, or before an assay column without targets.
+    &.divider--end {
+        border-right: 1px solid $divider-color;
     }
 }

@@ -10,7 +10,7 @@ import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { matrixAssaySortOrder, MATRIX_VISUALIZE_LIMIT, RowCategoryExpander, SearchFilter } from './matrix';
+import { MATRIX_VISUALIZE_LIMIT, RowCategoryExpander, SearchFilter } from './matrix';
 import { MatrixInternalTags } from './objectutils';
 import { SearchControls } from './search';
 
@@ -27,6 +27,24 @@ const ROW_CATEGORY = 'biosample_ontology.classification';
 const ROW_SUBCATEGORY = 'biosample_ontology.term_name';
 const COL_CATEGORY = 'assay_title';
 const COL_SUBCATEGORY = 'target.label';
+
+
+const matrixAssaySortOrder = [
+    'polyA plus RNA-seq',
+    'total RNA-seq',
+    'small RNA-seq',
+    'microRNA-seq',
+    'microRNA counts',
+    'RNA microarray',
+    'DNase-seq',
+    'ATAC-seq',
+    'WGBS',
+    'RRBS',
+    'MeDIP-seq',
+    'MRE-seq',
+    'TF ChIP-seq',
+    'Histone ChIP-seq',
+];
 
 
 /**

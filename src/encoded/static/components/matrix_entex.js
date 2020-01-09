@@ -6,7 +6,7 @@ import { svgIcon } from '../libs/svg-icons';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { matrixAssaySortOrder, MATRIX_VISUALIZE_LIMIT, SearchFilter } from './matrix';
+import { MATRIX_VISUALIZE_LIMIT, SearchFilter } from './matrix';
 import { MatrixInternalTags } from './objectutils';
 import { SearchControls } from './search';
 
@@ -28,6 +28,29 @@ const collapsedAssays = [
 ];
 
 /**
+ * Order in which assay_titles should appear along the horizontal axis of the matrix. Anything not
+ * included gets sorted after these.
+ */
+const matrixAssaySortOrder = [
+    'total RNA-seq',
+    'RAMPAGE',
+    'long read RNA-seq',
+    'small RNA-seq',
+    'microRNA-seq',
+    'microRNA counts',
+    'ATAC-seq',
+    'DNase-seq',
+    'WGBS',
+    'DNAme array',
+    'TF ChIP-seq',
+    'Histone ChIP-seq',
+    'eCLIP',
+    'Hi-C',
+    'genotyping HTS',
+    'genotyping array',
+];
+
+/**
  * Defines the accessions and other associated display information for each of the four ENTEx
  * donors. The [top-left, top-right, bottom-left, bottom-right] cell render order dictates the
  * order in this array. The properties mean:
@@ -41,25 +64,25 @@ const entexDonors = [
         accession: 'ENCDO845WKR',
         cssSuffix: 'male1',
         voice: 'Male 1',
-        legendText: '\u2642 1',
+        legendText: '\u26421',
     },
     {
         accession: 'ENCDO793LXB',
         cssSuffix: 'female3',
         voice: 'Female 3',
-        legendText: '\u2640 3',
+        legendText: '\u26403',
     },
     {
         accession: 'ENCDO451RUA',
         cssSuffix: 'male2',
         voice: 'Male 2',
-        legendText: '\u2642 2',
+        legendText: '\u26422',
     },
     {
         accession: 'ENCDO271OUW',
         cssSuffix: 'female4',
         voice: 'Female 4',
-        legendText: '\u2640 4',
+        legendText: '\u26404',
     },
 ];
 
@@ -106,24 +129,36 @@ const DonorLegend = () => (
  * in the matrix. Any determination of column order or inclusion/exclusion happens in this
  * function. Do not rely on the order of the keys. The resulting object has the form:
  * {
- *   'cat1': {col: 0, category: 'cat1', hasSubcategories: true},
+ *   'cat1': {col: 0, category: 'cat1'},
  *   'cat1|subcat1': {col: 1, category: 'cat1', subcategory: 'subcat1'},
  *   'cat1|subcat2': {col: 2, category: 'cat1', subcategory: 'subcat2'},
- *   'cat3': {col: 5, category: 'cat3', hasSubcategories: false},
- *   'cat2': {col: 3, category: 'cat2', hasSubcategories: true},
+ *   'cat3': {col: 5, category: 'cat3'},
+ *   'cat2': {col: 3, category: 'cat2'},
  *   'cat2|subcat3': {col: 4, category: 'cat2', subcategory: 'subcat3'},
  *   ...
  * }
- * TODO: Convert the reference-epigenome matrix to use the same no_targets method we use in the
- * ENTEx matrix, allowing us to share this function between the two matrix implementations.
+ *
+ * To generate the assay labels that group columns of targets, generate an array of assays
+ * to help render the table row that contains these assay labels. These labels exist in column
+ * order, with null entries for assays with no child targets, and an object for assays with
+ * child targets, each containing the starting column for the assay label, the assay's label
+ * itself, and the number of child targets it has.
+ * [
+ *     null,
+ *     null,
+ *     {col: 2, category: 'cat1', subcategoryCount: 3},
+ *     {col: 6, category: 'cat2', subcategoryCount: 0},
+ *     null,
+ * ]
  * @param {object} context ENTEx matrix data
  *
- * @return {object} Keyed column header information
+ * @return {object} Column map object and target assay array.
  */
 const generateColMap = (context) => {
     const colCategory = context.matrix.x.group_by[0];
     const colSubcategory = context.matrix.x.group_by[1][0];
     const colMap = {};
+    let targetAssays = [];
     let colIndex = 0;
 
     // Sort column categories according to a specified order, with any items not specified sorted
@@ -134,18 +169,27 @@ const generateColMap = (context) => {
         return sortIndex >= 0 ? sortIndex : colCategoryBuckets.length;
     });
 
-    // Loop to construct the `colMap object.
+    // Loop to construct the `colMap` object and `targetAssays` array.
     sortedColCategoryBuckets.forEach((colCategoryBucket) => {
         if (!excludedAssays.includes(colCategoryBucket.key)) {
             const colSubcategoryBuckets = colCategoryBucket[colSubcategory].buckets;
 
             // Add the mapping of "assay" key string to column index.
-            colMap[colCategoryBucket.key] = {
-                col: colIndex,
-                category: colCategoryBucket.key,
-                hasSubcategories: colSubcategoryBuckets.length > 0 && colSubcategoryBuckets[0].key !== 'no_target',
-            };
-            colIndex += 1;
+            if (!(colSubcategoryBuckets.length > 0 && colSubcategoryBuckets[0].key !== 'no_target')) {
+                // Assay doesn't have subcategories, so render the assay label into the column
+                // header.
+                colMap[colCategoryBucket.key] = {
+                    col: colIndex,
+                    category: colCategoryBucket.key,
+                };
+                targetAssays.push(null);
+                colIndex += 1;
+            } else {
+                // Assay has subcategories, so generate information so we know how many columns the
+                // assay's label should take up and which column it starts at so we can render the
+                // assay label across several target columns.
+                targetAssays.push({ col: colIndex, category: colCategoryBucket.key, subcategoryCount: colSubcategoryBuckets.length });
+            }
 
             // Add the mapping of "assay|target" key string to column index for those assays that
             // have targets and don't collapse their targets. A target of "no_target" means the
@@ -164,15 +208,14 @@ const generateColMap = (context) => {
             }
         }
     });
-    return colMap;
+
+    // If targetAssays only contains nulls, then just empty it so we can skip the targetAssay row.
+    if (!targetAssays.some(assay => assay !== null)) {
+        targetAssays = [];
+    }
+
+    return { colMap, targetAssays };
 };
-
-
-/**
- * Display a disabled cell in the matrix. Used to reduce a bit of code per cell when matrices can
- * be very large.
- */
-const DisabledCell = () => <div className="matrix__disabled-cell" />;
 
 
 /**
@@ -210,6 +253,10 @@ DonorCell.propTypes = {
 };
 
 
+// Keep this constant in sync with $donor-cell-width in _matrix.scss.
+const DONOR_CELL_WIDTH = 30;
+
+
 /**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
  * for the matrix. This is a shim between the incoming matrix data and the object <DataTable>
@@ -226,44 +273,95 @@ const convertContextToDataTable = (context) => {
     const cellSubcategory = context.matrix.x.group_by[3];
     const rowCategory = context.matrix.y.group_by[0];
     const rowSubcategory = context.matrix.y.group_by[1];
+    const rowKeys = [];
+    const headerRows = [];
 
     // Generate the mapping of column categories and subcategories.
-    const colMap = generateColMap(context);
+    const { colMap, targetAssays } = generateColMap(context);
     const colCount = Object.keys(colMap).length;
 
     // Convert column map to an array of column map values sorted by column number for displaying
     // in the matrix header.
     const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
 
-    // Generate array of names of assays that have targets and don't collapse their targets, for
-    // rendering those columns as disabled.
-    const colCategoriesWithSubcategories = Object.keys(colMap).filter(colCategoryName => colMap[colCategoryName].hasSubcategories && !collapsedAssays.includes(colCategoryName));
+    // Generate the matrix header row labels for the assays with targets. Need a max-width inline
+    // style so that wide labels don't make the target columns expand.
+    let targetAssayHeader;
+    if (targetAssays.length > 0) {
+        targetAssayHeader = [{ css: 'matrix__col-category-targetassay-corner' }].concat(targetAssays.map(((targetAssayElement) => {
+            if (targetAssayElement) {
+                // Add cell with assay title and span for the number of targets it has.
+                const categoryQuery = `${colCategory}=${encoding.encodedURIComponent(targetAssayElement.category)}`;
+                return {
+                    header: <a href={`${context.search_base}&${categoryQuery}`}>{targetAssayElement.category} <div className="sr-only">{targetAssayElement.category}</div></a>,
+                    colSpan: targetAssayElement.subcategoryCount,
+                    css: 'matrix__col-category-targetassay',
+                    style: { maxWidth: DONOR_CELL_WIDTH * targetAssayElement.subcategoryCount },
+                };
+            }
+
+            // Render empty cell for assays with no targets.
+            return { header: null };
+        })));
+
+        // Add the key and row content for the target assay labels.
+        rowKeys.push('target-assay-categories');
+        headerRows.push({ rowContent: targetAssayHeader, css: 'matrix__col-category-targetassay-header' });
+    }
 
     // Generate the hierarchical top-row sideways header label cells. The first cell has the
     // legend for the cell data. At the end of this loop, rendering `{header}` shows this header
     // row. The `sortedCols` array gets mutated in this loop, acquiring a `query` property in each
-    // of its objects that gets used later to generate cell hrefs.
+    // of its objects that gets used later to generate cell hrefs. Also generate a boolean array
+    // of columns that indicate which ones need to have dividers rendered for columns of assays
+    // with targets.
+    let prevCategory;
+    let prevSubcategory;
+    const dividerCss = [];
     const header = [
         { content: <DonorLegend />, css: 'matrix__entex-corner' },
     ].concat(sortedCols.map((colInfo) => {
+        // Determine the CSS classes for the dividers in the columns of assay and target labels.
+        const dividerCssAccumulator = [];
+        if ((colInfo.category !== prevCategory) && (prevSubcategory || colInfo.subcategory)) {
+            // Need divider on left edge of start of assays with targets.
+            dividerCssAccumulator.push('divider--start');
+        }
+        if (colInfo.subcategory && colInfo.col === sortedCols.length - 1) {
+            // Need divider on right edge if subcategory column is at right edge of matrix.
+            dividerCssAccumulator.push('divider--end');
+        }
+        dividerCss[colInfo.col] = dividerCssAccumulator.join(' ');
+        prevCategory = colInfo.category;
+        prevSubcategory = colInfo.subcategory;
+
         const categoryQuery = `${colCategory}=${encoding.encodedURIComponent(colInfo.category)}`;
         if (!colInfo.subcategory) {
             // Add the category column links.
             colInfo.query = categoryQuery;
-            return { header: <a href={`${context.search_base}&${categoryQuery}`}>{colInfo.category} <div className="sr-only">{context.matrix.x.label}</div></a> };
+            return {
+                header: <a href={`${context.search_base}&${categoryQuery}`}>{colInfo.category} <div className="sr-only">{context.matrix.x.label}</div></a>,
+                css: dividerCss[colInfo.col],
+            };
         }
 
-        // Add the subcategory column links.
+        // Add the subcategory column links and column dividers when the category changes as we go
+        // left to right across the columns.
         const subCategoryQuery = `${colSubcategory}=${encoding.encodedURIComponent(colInfo.subcategory)}`;
         colInfo.query = `${categoryQuery}&${subCategoryQuery}`;
-        return { header: <a className="sub" href={`${context.search_base}&${categoryQuery}&${subCategoryQuery}`}>{colInfo.subcategory} <div className="sr-only">target for {colInfo.category} {context.matrix.x.label} </div></a> };
+        return {
+            header: <a className="sub" href={`${context.search_base}&${categoryQuery}&${subCategoryQuery}`}>{colInfo.subcategory} <div className="sr-only">target for {colInfo.category} {context.matrix.x.label} </div></a>,
+            css: `category-base${dividerCss[colInfo.col] ? ` ${dividerCss[colInfo.col]}` : ''}`,
+        };
     }));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
     // hierarchy gets referred to here as "rowCategory" and the lower level gets referred to as
     // "rowSubcategory." Both these types of rows get collected into `dataTable` which gets passed
     // to <DataTable>. Also generate an array of React keys to use with <DataTable>.
-    const rowKeys = ['column-categories'];
+    rowKeys.push('column-categories');
+    headerRows.push({ rowContent: header, css: 'matrix__col-category-header' });
+    const rowKeysInitialLength = rowKeys.length;
     const rowCategoryBuckets = context.matrix.y[rowCategory].buckets;
 
     const dataTable = rowCategoryBuckets.reduce((accumulatingTable, rowCategoryBucket, rowCategoryIndex) => {
@@ -271,14 +369,18 @@ const convertContextToDataTable = (context) => {
         // under it.
         const rowSubcategoryBuckets = rowCategoryBucket[rowSubcategory].buckets;
         const rowCategoryQuery = `${rowCategory}=${encoding.encodedURIComponent(rowCategoryBucket.key)}`;
-        rowKeys[rowCategoryIndex + 1] = rowCategoryBucket.key;
+        rowKeys[rowCategoryIndex + rowKeysInitialLength] = rowCategoryBucket.key;
 
         const cells = Array(colCount);
         const subcategoryRows = rowSubcategoryBuckets.map((rowSubcategoryBucket, rowSubcategoryIndex) => {
             const subCategoryQuery = `${rowSubcategory}=${encoding.encodedURIComponent(rowSubcategoryBucket.key)}`;
 
             // Each biosample term name's row reuses the same `cells` array of cell components.
-            cells.fill(null);
+            // Until we fill it with actual data below, we initialize the row with empty cells,
+            // with a CSS class to render a divider for columns of assays with targets.
+            dividerCss.forEach((divider, colIndex) => {
+                cells[colIndex] = { css: divider };
+            });
             rowSubcategoryBucket[colCategory].buckets.forEach((rowSubcategoryColCategoryBucket) => {
                 // Skip any excluded assay columns.
                 if (!excludedAssays.includes(rowSubcategoryColCategoryBucket.key)) {
@@ -309,6 +411,7 @@ const convertContextToDataTable = (context) => {
                                         />
                                     </a>
                                 ),
+                                css: dividerCss[colIndex],
                             };
                         } else {
                             // Assay has non-collapsed targets, so render the donor cell for the
@@ -327,16 +430,11 @@ const convertContextToDataTable = (context) => {
                                         />
                                     </a>
                                 ),
+                                css: dividerCss[colIndex],
                             };
                         }
                     });
                 }
-            });
-
-            // Show assay columns as disabled (i.e. nothing to see here) if those columns have
-            // target columns.
-            colCategoriesWithSubcategories.forEach((colCategoryName) => {
-                cells[colMap[colCategoryName].col] = { content: <DisabledCell /> };
             });
 
             // Add a single term-name row's data and left header to the matrix.
@@ -357,7 +455,7 @@ const convertContextToDataTable = (context) => {
 
         // Continue adding rendered rows to the matrix.
         return accumulatingTable.concat(subcategoryRows);
-    }, [{ rowContent: header, css: 'matrix__col-category-header' }]);
+    }, headerRows);
     return { dataTable, rowKeys };
 };
 
