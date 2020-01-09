@@ -34,26 +34,20 @@ These are the primary software versions used in production, but many of them are
 ```bash
 brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
 brew install freetype libjpeg libtiff littlecms webp libyaml zlib
-brew tap petere/postgresql
-brew install postgresql@9.3
-brew link --force postgresql@9.3
-brew install --force node@10
-brew link node@10 --force
+```
+#### **2.2 Higher level dependencies
+```bash
+brew install postgresql@11 
+brew tap homebrew/cask-versions
+brew cask install chromedriver (can also get from https://chromedriver.chromium.org/downloads)
+brew cask install adoptopenjdk/openjdk/adoptopenjdk8
 brew cask install java8
 brew install elasticsearch@5.6
-pip3 install typing
 ```
->:star: _Note_: Elasticsearch 1.7 does not work with Java 9
->:star: _Note_: To unlink elasticsearch 1.7 and install elasticsearch 5.6
->- `brew search elasticsearch`
->- `brew install elasticsearch@5.6`
->- `brew unlink elasticsearch@1.7 && brew link elasticsearch@5.6 --force`
+>:star: _Note_: In most cases with brew options you will need to export the correct versions in your path as instructed by homebrew; e.g.:
+`  echo 'export PATH="/usr/local/opt/elasticsearch@5.6/bin:$PATH"' >> ~/.bash_profile `
 
-
->:star: _Note_: Brew cannot find java8
->- `brew tap caskroom/versions # lookup more versions`
->- `brew cask search java # java8 now in list`
->- `brew cask install java8`
+>:star: _Note_: Note you must be pretty careful with prior installs of Elasticsearch as they share config directories.
 
 >:star: _Note_: This additional step is required for new macOS Sierra installations
 >- `brew cask install Caskroom/cask/xquartz`
@@ -63,20 +57,12 @@ pip3 install typing
 >- `nvm install 10`
 >- `nvm use 10`
 >
->:star: _Note_: **Node version mangement with homebrew**: Switching node versions with homebrew (which is not package manager but not a typical version manager) is possible but is not as flexbible for this purpose, e.g.:
->- `brew install node@7`
->- `brew unlink node@6 && brew link --overwrite --force node@7`
->- `node --version`
->- `brew unlink node@7 && brew link --overwrite --force node@6`
->- `node --version`
-
->:warning: _Note_: The current version of chromedriver doesn’t allow our BDD tests to pass, so you must install the earlier 2.33 version.
->
-> Visit <https://chromedriver.storage.googleapis.com/index.html?path=2.33/> and download chromedriver_mac64.zip to your Downloads folder. Then move the file to /usr/local/bin. Verify you have the correct version installed by then entering:
->
->- `chromedriver --version`
->
-> It should show, among other things, that you’re running chromedriver 2.33.
+>:star: _Note_: **Node version mangement with n**: S
+```bash
+brew install n (node version manager)
+n 10.14.0 (set node version to 10.14.0)
+ node --version
+```
 
 >:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):
 >- `rm -rf encoded/eggs` (then re-run buildout below)
