@@ -2013,7 +2013,20 @@ class CumulativeGraph extends React.Component {
             const xticksBallParkCount = 25; // ballpark number desired x-axis ticks
             const monthReleasedLength = monthReleased.length;
             const lastxAxisIndex = monthReleasedLength - 1;
-            const xticks = monthReleasedLength < xticksBallParkCount ? 1 : Math.floor(monthReleasedLength / xticksBallParkCount);
+            const xticks = monthReleasedLength < xticksBallParkCount ? 1 : Math.ceil(monthReleasedLength / xticksBallParkCount);
+            const dateValues = [];
+            const totals = [];
+
+            // eslint-disable-next-line no-plusplus
+            for (let i = 0; i < monthReleasedLength; i++) {
+                if (i % xticks === 0 || i === lastxAxisIndex) {
+                    const y = releaseddatavalue[i];
+                    const x = monthReleased[i];
+
+                    dateValues.push(x);
+                    totals.push(y);
+                }
+            }
 
             this.chart = new Chart(ctx, {
                 type: 'line',
@@ -2039,12 +2052,7 @@ class CumulativeGraph extends React.Component {
                         xAxes: [{
                             ticks: {
                                 autoSkip: false,
-                                callback: function callback(value, index) {
-                                    if (index % xticks === 0 || index === lastxAxisIndex) {
-                                        return value;
-                                    }
-                                    return null;
-                                },
+                                maxTicksLimit: 25,
                             },
                         }],
                         yAxes: [{
@@ -2053,10 +2061,10 @@ class CumulativeGraph extends React.Component {
                     },
                 },
                 data: {
-                    labels: monthReleased,
+                    labels: dateValues,
                     datasets: [{
                         label: 'Released',
-                        data: releaseddatavalue,
+                        data: totals,
                         backgroundColor: '#538235',
                     }],
                 },
