@@ -150,7 +150,7 @@ for (let i = 0; i < ganttData.length; i++) {
         y1: yLabels.indexOf(ganttData[i].id) + 0.4,
         line: {width: 0}, 
       type: 'rect', 
-      xref: 'x', 
+      xref: 'x2', 
       yref: 'y', 
       opacity: 1, 
       fillcolor: '#29A2CC'
@@ -207,7 +207,13 @@ data = data.concat(hoverData);
 let layout = {
     
   height: (scaleYIndex+ 2)*100, 
-  
+  margin: {
+                
+    r: 20,
+    b: 20,
+    t: 60,
+    pad: 4
+  },
   xaxis: {
     type: 'date', 
     showgrid: true, 
@@ -220,7 +226,8 @@ let layout = {
   xaxis2: {
     type: 'date', 
     side: 'top',
-   
+    anchor: 'y', 
+    overlaying: 'x',
     showgrid: true, 
     zeroline: false, 
     showline: true,
@@ -236,7 +243,8 @@ let layout = {
     ticktext: yLabels, 
     zeroline: false, 
     showline: true,
-    automargin: true
+    automargin: true,
+    fixedrange: true
     
   }, 
  
