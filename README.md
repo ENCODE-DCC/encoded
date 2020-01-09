@@ -35,7 +35,7 @@ These are the primary software versions used in production, but many of them are
 brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
 brew install freetype libjpeg libtiff littlecms webp libyaml zlib
 ```
-#### **2.2 Higher level dependencies
+#### **2.2 Higher level dependencies (tested on 10.15 Catalina) **
 ```bash
 brew install postgresql@11 
 brew tap homebrew/cask-versions
@@ -44,7 +44,7 @@ brew cask install adoptopenjdk/openjdk/adoptopenjdk8
 brew cask install java8
 brew install elasticsearch@5.6
 ```
->:star: _Note_: In most cases with brew options you will need to export the correct versions in your path as instructed by homebrew; e.g.:
+>:warning: _Note_: In most cases with brew options you will need to export the correct versions in your path as instructed by homebrew; e.g.:
 `  echo 'export PATH="/usr/local/opt/elasticsearch@5.6/bin:$PATH"' >> ~/.bash_profile `
 
 >:star: _Note_: Note you must be pretty careful with prior installs of Elasticsearch as they share config directories.
@@ -57,12 +57,10 @@ brew install elasticsearch@5.6
 >- `nvm install 10`
 >- `nvm use 10`
 >
->:star: _Note_: **Node version mangement with n**: S
-```bash
-brew install n (node version manager)
-n 10.14.0 (set node version to 10.14.0)
- node --version
-```
+>:star: _Note_: **Node version mangement with n**: 
+>- `brew install n (node version manager)`
+>- `n 10.14.0 (set node version to 10.14.0)`
+>- `node --version`
 
 >:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):
 >- `rm -rf encoded/eggs` (then re-run buildout below)
@@ -72,12 +70,12 @@ n 10.14.0 (set node version to 10.14.0)
 
 
 ### **3. Python**  
-Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but works with 3.5.x):
+Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3 or 3.5.x** :
+>:warning: _Note_: Mac OS X 10.15.x Catalina does not work well with 3.4, we recommend 3.5.x
 
- - For local development on a Mac, follow the steps below.  For Linux use apt-get or yum as your Linux flavor demands.  You can consult cloud-config.yml for other steps.
+ - For local development on a Mac, follow the steps below.  For Linux SEE NEW README
 
-- _Note_: Production is currently using the versions above thus your primary development should always work on that version, and you should test that your code works on versions that will be used in production.
-
+- _Note_: Production is currently using Python 3.4.3!
 - Linux: apt-get install python3.4-dev or equivalent
     
 **Mac OSX Python install instructions**  
@@ -92,13 +90,13 @@ The Python version management tool `pyenv` is very useful.
 **Install `pyenv` and set the default versions:**
 ```bash 
 brew install pyenv
-pyenv install 3.4.3
+pyenv install 3.4.3 // or pyenv install 3.5.9
 pyenv install 2.7.13
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
 echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile
 echo 'eval "$(pyenv init -)"' >> ~/.bash_profile
-echo 'eval "pyenv shell 2.7.13 3.4.3"' >> ~/.bash_profile
-source ~/.bash_profile
+echo 'eval "pyenv shell 2.7.13 3.4.3"' >> ~/.bash_profile  // or echo 'eval "pyenv shell 2.7.13 3.5.9"' >> ~/.bash_profile
+. ~/.bash_profile
 ```
 
 >:star: _Note: Migrating `pyenv` Python packages_  
@@ -117,10 +115,17 @@ source ~/.bash_profile
 
 **Set the correct Python for the current directory:**
 ```bash
-pyenv local 3.4.3
+pyenv local 3.4.3 // or pyenv local 3.5.9
 ```
 
-### **4. Run buildout:**
+#### **3.1 Mac OSX 10.15 Catalina issues:**
+see: (https://holgr.com/python-3-in-macos-catalina-fixing-the-abort-trap/):
+```bash
+ln -s /usr/local/Cellar/openssl@1.1/1.1.1d/lib/libcrypto.dylib /usr/local/lib/libcrypto.dylib
+ln -s /usr/local/Cellar/openssl@1.1/1.1.1d/lib/libssl.dylib /usr/local/lib/libssl.dylib
+```
+
+### **4. Run buildout: in git cloned directory**
 
 - `pip3 install -U zc.buildout setuptools`
 - `pyenv rehash`
@@ -305,10 +310,10 @@ Go to the Visual Studio Code marketplace and install these extensions:
 
 **Versions**
 
-- `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x)_
-- `node --version`  _returns `v10.15.0`  (or variant like  v6.x.y)_
-- `elasticsearch -v` _returns `Version: 1.7.6` (or variant like  Version: 1.7.x)_
-- `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)_ 
+- `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x, or 3.5)_
+- `node --version`  _returns `v10.15.0`  (or variant like  v10.x.y)_
+- `elasticsearch -v` _returns `Version: 5.6.16` (or variant like  Version: 5.6.x)_
+- `postgres --version` _returns `postgres (PostgreSQL) 11.6` (or variant like 11.x.y, 9.3 is also supported)_ 
 
 
 **Linting check**
