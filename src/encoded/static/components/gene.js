@@ -10,96 +10,103 @@ import { RelatedItems } from './item';
 import { ExperimentTable } from './typeutils';
 
 
-const Gene = (props) => {
-    const context = props.context;
-    const itemClass = globals.itemClass(context, 'view-detail key-value');
+class Gene extends React.Component {
+    constructor() {
+        super();
+        console.log('');
+    }
 
-    // Set up breadcrumbs
-    const crumbs = [
-        { id: 'Genes' },
-        {
-            id: <i>{context.organism.scientific_name}</i>,
-            query: `organism.scientific_name=${context.organism.scientific_name}`,
-            tip: `${context.organism.scientific_name}`,
-        },
-    ];
+    render() {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-detail key-value');
 
-    const crumbsReleased = (context.status === 'released');
+        // Set up breadcrumbs
+        const crumbs = [
+            { id: 'Genes' },
+            {
+                id: <i>{context.organism.scientific_name}</i>,
+                query: `organism.scientific_name=${context.organism.scientific_name}`,
+                tip: `${context.organism.scientific_name}`,
+            },
+        ];
 
-    return (
-        <div className={globals.itemClass(context, 'view-item')}>
-            <header>
-                <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
-                <ItemAccessories item={context} />
-            </header>
+        const crumbsReleased = (context.status === 'released');
 
-            <div className="panel">
-                <dl className={itemClass}>
-                    {/* TODO link to NCBI Entrez page? */}
-                    <div data-test="gendid">
-                        <dt>Entrez GeneID</dt>
-                        <dd>
-                            <a href={dbxrefHref('GeneID', context.geneid)}>{context.geneid}</a>
-                        </dd>
-                    </div>
+        return (
+            <div className={globals.itemClass(context, 'view-item')}>
+                <header>
+                    <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
+                    <ItemAccessories item={context} />
+                </header>
 
-                    {/* TODO link to NADB page? */}
-                    <div data-test="symbol">
-                        <dt>Gene symbol</dt>
-                        <dd>{context.symbol}</dd>
-                    </div>
-
-                    {context.name ?
-                        <div data-test="name">
-                            <dt>Official gene name</dt>
-                            <dd>{context.name}</dd>
-                        </div>
-                    : null}
-
-                    {context.synonyms ?
-                      <div data-test="synonyms">
-                          <dt>Synonyms</dt>
-                          <dd>
-                              <ul>
-                                  {context.synonyms.map(synonym =>
-                                      <li key={synonym}>
-                                          <span>{synonym}</span>
-                                      </li>
-                                  )}
-                              </ul>
-                          </dd>
-                      </div>
-                    : null}
-
-                    <div data-test="external">
-                        <dt>External resources</dt>
-                        <dd>
-                            {context.dbxrefs.length > 0 ?
-                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
-                            : <em>None submitted</em> }
-                        </dd>
-                    </div>
-
-                    {context.go_annotations && context.go_annotations.length > 0 ?
-                        <div data-test="go_ids">
-                            <dt>Gene Ontology</dt>
+                <div className="panel">
+                    <dl className={itemClass}>
+                        {/* TODO link to NCBI Entrez page? */}
+                        <div data-test="gendid">
+                            <dt>Entrez GeneID</dt>
                             <dd>
-                                <DbxrefList context={context} dbxrefs={context.go_annotations.map(goAnnotation => goAnnotation.go_id)} />
+                                <a href={dbxrefHref('GeneID', context.geneid)}>{context.geneid}</a>
                             </dd>
                         </div>
-                    : null}
-                </dl>
-            </div>
 
-            <RelatedItems
-                title={`Experiments targeting gene ${context.symbol}`}
-                url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
-                Component={ExperimentTable}
-            />
-        </div>
-    );
-};
+                        {/* TODO link to NADB page? */}
+                        <div data-test="symbol">
+                            <dt>Gene symbol</dt>
+                            <dd>{context.symbol}</dd>
+                        </div>
+
+                        {context.name ?
+                            <div data-test="name">
+                                <dt>Official gene name</dt>
+                                <dd>{context.name}</dd>
+                            </div>
+                        : null}
+
+                        {context.synonyms ?
+                          <div data-test="synonyms">
+                              <dt>Synonyms</dt>
+                              <dd>
+                                  <ul>
+                                      {context.synonyms.map(synonym =>
+                                          <li key={synonym}>
+                                              <span>{synonym}</span>
+                                          </li>
+                                      )}
+                                  </ul>
+                              </dd>
+                          </div>
+                        : null}
+
+                        <div data-test="external">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxrefs.length > 0 ?
+                                    <DbxrefList context={context} dbxrefs={context.dbxrefs} />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+
+                        {context.go_annotations && context.go_annotations.length > 0 ?
+                            <div data-test="go_ids">
+                                <dt>Gene Ontology</dt>
+                                <dd>
+                                    <DbxrefList context={context} dbxrefs={context.go_annotations.map(goAnnotation => goAnnotation.go_id)} />
+                                </dd>
+                            </div>
+                        : null}
+                    </dl>
+                </div>
+
+                <RelatedItems
+                    title={`Experiments targeting gene ${context.symbol}`}
+                    url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+            </div>
+        );
+    }
+}
 
 Gene.propTypes = {
     context: PropTypes.object, // Target object to display
