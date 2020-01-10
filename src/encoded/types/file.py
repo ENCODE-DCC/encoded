@@ -36,10 +36,10 @@ import json
 import pytz
 import time
 
-from encoded.types.utils import ensure_list
-from encoded.types.utils import take_one_or_return_none
-from encoded.types.utils import try_to_get_field_from_item_with_skip_calculated_first
 from encoded.upload_credentials import UploadCredentials
+from snovault.util import ensure_list_and_filter_none
+from snovault.util import take_one_or_return_none
+from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
 def show_upload_credentials(request=None, context=None, status=None):
@@ -493,7 +493,7 @@ class File(Item):
     )
     def assay_term_name(self, request, dataset):
         return take_one_or_return_none(
-            ensure_list(
+            ensure_list_and_filter_none(
                 try_to_get_field_from_item_with_skip_calculated_first(
                     request,
                     'assay_term_name',
@@ -514,7 +514,7 @@ class File(Item):
     )
     def biosample_ontology(self, request, dataset):
         return take_one_or_return_none(
-            ensure_list(
+            ensure_list_and_filter_none(
                 try_to_get_field_from_item_with_skip_calculated_first(
                     request,
                     'biosample_ontology',
@@ -535,7 +535,7 @@ class File(Item):
     )
     def target(self, request, dataset):
         return take_one_or_return_none(
-            ensure_list(
+            ensure_list_and_filter_none(
                 try_to_get_field_from_item_with_skip_calculated_first(
                     request,
                     'target',
