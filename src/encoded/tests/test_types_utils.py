@@ -1,37 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def fastq_no_replicate(award, experiment, lab, platform1):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'file_format': 'fastq',
-        'platform': platform1['@id'],
-        'file_size': 23242,
-        'run_type': 'paired-ended',
-        'paired_end': '1',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-
-
-@pytest.fixture
-def fastq(fastq_no_replicate, replicate):
-    item = fastq_no_replicate.copy()
-    item['replicate'] = replicate['@id']
-    return item
-
-
-@pytest.fixture
-def fastq_pair_1(fastq):
-    item = fastq.copy()
-    item['paired_end'] = '1'
-    return item
-
-
 def test_types_utils_ensure_list():
     from encoded.types.utils import ensure_list
     assert ensure_list('abc') == ['abc']

@@ -11,30 +11,6 @@ def test_replaced_file_not_uniqued(testapp, file):
     testapp.get('/md5:{md5sum}'.format(**file), status=404)
 
 
-@pytest.fixture
-def fastq_no_replicate(award, experiment, lab, platform1):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'file_format': 'fastq',
-        'platform': platform1['@id'],
-        'file_size': 23242,
-        'run_type': 'paired-ended',
-        'paired_end': '1',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-
-
-@pytest.fixture
-def fastq(fastq_no_replicate, replicate):
-    item = fastq_no_replicate.copy()
-    item['replicate'] = replicate['@id']
-    return item
-
-
 def test_file_post_fastq_no_replicate(testapp, fastq_no_replicate):
     testapp.post_json('/file', fastq_no_replicate, status=422)
 
@@ -99,13 +75,6 @@ def file(testapp, award, experiment, lab, replicate):
     }
     res = testapp.post_json('/file', item)
     return res.json['@graph'][0]
-
-
-@pytest.fixture
-def fastq_pair_1(fastq):
-    item = fastq.copy()
-    item['paired_end'] = '1'
-    return item
 
 
 @pytest.fixture
