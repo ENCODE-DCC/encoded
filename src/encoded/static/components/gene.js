@@ -34,19 +34,20 @@ class Gene extends React.Component {
                 uniprotIDs.push(dbxref);
             }
         });
-        (nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(goID => fetch(
+        const validGOs = [];
+        Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(goID => fetch(
             this.baseGOUrl.concat(goID), {
                 method: 'HEAD',
             }
         ).then((response) => {
             if (response.ok) {
-                const newGOids = this.state.goIDs;
-                newGOids.push('GOGene:'.concat(goID));
-                this.setState({
-                    goIDs: newGOids,
-                });
+                validGOs.push('GOGene:'.concat(goID));
             }
-        }));
+        }))).then(() => {
+            this.setState({
+                goIDs: validGOs,
+            });
+        });
     }
 
     render() {
