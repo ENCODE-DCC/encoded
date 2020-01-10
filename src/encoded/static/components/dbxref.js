@@ -210,6 +210,9 @@ export const dbxrefPrefixMap = {
     GO: {
         pattern: 'http://amigo.geneontology.org/amigo/term/GO:{0}',
     },
+    GOGene: {
+        pattern: 'http://amigo.geneontology.org/amigo/gene_product/{0}',
+    },
     'IMGT/GENE-DB': {
         pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
     },

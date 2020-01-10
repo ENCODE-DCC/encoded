@@ -13,7 +13,40 @@ import { ExperimentTable } from './typeutils';
 class Gene extends React.Component {
     constructor() {
         super();
-        console.log('');
+
+        this.state = {
+            goIDs: [],
+        };
+        this.baseGOUrl = 'http://amigo.geneontology.org/amigo/gene_product/';
+    }
+
+    componentDidMount() {
+        const nadbIDs = [];
+        const uniprotIDs = [];
+        this.props.context.dbxrefs.forEach((dbxref) => {
+            if (dbxref.startsWith('WormBase:WBGene')) {
+                nadbIDs.push(dbxref.replace('WormBase:', 'WB:'));
+            } else if (dbxref.startsWith('FlyBase:FBgn')) {
+                nadbIDs.push(dbxref.replace('FlyBase:', 'FB:'));
+            } else if (dbxref.startsWith('MGI:')) {
+                nadbIDs.push('MGI:'.concat(dbxref));
+            } else if (dbxref.startsWith('UniProtKB:')) {
+                uniprotIDs.push(dbxref);
+            }
+        });
+        (nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(goID => fetch(
+            this.baseGOUrl.concat(goID), {
+                method: 'HEAD',
+            }
+        ).then((response) => {
+            if (response.ok) {
+                const newGOids = this.state.goIDs;
+                newGOids.push('GOGene:'.concat(goID));
+                this.setState({
+                    goIDs: newGOids,
+                });
+            }
+        }));
     }
 
     render() {
@@ -87,11 +120,11 @@ class Gene extends React.Component {
                             </dd>
                         </div>
 
-                        {context.go_annotations && context.go_annotations.length > 0 ?
+                        {this.state.goIDs.length > 0 ?
                             <div data-test="go_ids">
                                 <dt>Gene Ontology</dt>
                                 <dd>
-                                    <DbxrefList context={context} dbxrefs={context.go_annotations.map(goAnnotation => goAnnotation.go_id)} />
+                                    <DbxrefList context={context} dbxrefs={this.state.goIDs} />
                                 </dd>
                             </div>
                         : null}
