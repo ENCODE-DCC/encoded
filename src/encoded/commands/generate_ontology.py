@@ -178,7 +178,8 @@ assay_slims = {
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
     'OBI:0000845': 'RNA structure',
-    'NTR:0000516': 'Functional characterization'
+    'NTR:0000516': 'Functional characterization',
+    'OBI:0002144': 'DNA sequencing'
 }
 
 slim_shims = {
