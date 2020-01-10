@@ -880,7 +880,7 @@ def check_experiment_rna_seq_standards(value,
     }
 
     for f in fastq_files:
-        if pipeline_title not in ['Long read RNA-seq pipeline']:
+        if pipeline_title not in ['Long read RNA-seq pipeline', 'microRNA-seq pipeline']:
             yield from check_file_read_length_rna(f, 50,
                                                   pipeline_title,
                                                   assay_term_name,
@@ -962,10 +962,13 @@ def check_experiment_rna_seq_standards(value,
     elif pipeline_title == 'microRNA-seq pipeline':
         yield from check_experiment_micro_rna_standards(
             value,
+            fastq_files,
             alignment_files,
+            pipeline_title,
             gene_quantifications,
             desired_assembly,
             desired_annotation,
+            standards_links[pipeline_title],
             upper_limit_reads_mapped=5000000,
             lower_limit_reads_mapped=3000000,
             upper_limit_spearman=0.85,
@@ -990,7 +993,6 @@ def check_experiment_rna_seq_standards(value,
             lower_limit_genes_detected=4000,
         )
     return
-
 
 def check_experiment_wgbs_encode3_standards(experiment,
                                             files_structure,
@@ -1318,17 +1320,27 @@ def check_experiment_cage_rampage_standards(experiment,
 
 def check_experiment_micro_rna_standards(
     experiment,
+    fastq_files,
     alignment_files,
+    pipeline_title,
     gene_quantifications,
     desired_assembly,
     desired_annotation,
+    standards_links,
     upper_limit_reads_mapped,
     lower_limit_reads_mapped,
     upper_limit_spearman,
     lower_limit_spearman,
     upper_limit_expressed_mirnas,
-    lower_limit_expressed_mirnas,
+    lower_limit_expressed_mirnas
 ):
+    # Audit read length
+    minimum_threshold = 30 
+    for f in fastq_files:
+        yield from check_file_read_length_rna(f, minimum_threshold,
+                                                  pipeline_title,
+                                                  experiment['assay_term_name'],
+                                                  standards_links)
     # Gather metrics
     quantification_metrics = get_metrics(
         gene_quantifications,
