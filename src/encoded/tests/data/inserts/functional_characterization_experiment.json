@@ -74,5 +74,21 @@
         "elements_references": ["ENCSR001REF"],
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "uuid": "5a1d5a51-e62d-48b9-a1bd-1d1915247341"
+    },
+    {
+        "_test": "mpra",
+        "accession": "ENCSR333MPR",
+        "assay_term_name": "MPRA",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "MPRA experiment with annotation elements_references",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "date_submitted": "2015-01-20",
+        "date_released": "2016-01-01",
+        "elements_mapping": "ENCSR212POL",
+        "elements_references": ["ENCSR848CFY"],
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "392ac214-317b-11ea-aec2-2e728ce88125"
     }
 ]
