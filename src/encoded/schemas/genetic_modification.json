@@ -97,6 +97,19 @@
                 {
                     "properties": {
                         "purpose": {
+                            "enum": ["characterization"]
+                        },
+                        "method": {
+                            "enum": ["transduction"]
+                        },
+                        "category": {
+                            "enum": ["insertion"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "purpose": {
                             "enum": ["expression"]
                         }
                     },
@@ -449,7 +462,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "GM"
