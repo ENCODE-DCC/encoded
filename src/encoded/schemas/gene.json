@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "geneid": {
             "title": "NCBI Entrez GeneID",
@@ -78,47 +78,6 @@
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
                 "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(FlyBase:FBgn\\d+)|(WormBase:WBGene\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_\\d+))$"
-            },
-            "permission": "import_items"
-        },
-        "go_annotations": {
-            "title": "Gene ontology annotations",
-            "descrption": "Gene ontology annotations of the gene, including all three aspects: Biological Process, Cellular Component, and Molecular Function.",
-            "comment": "Data imported from the Gene Ontology Consortium.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Gene Ontology annotation",
-                "description": "A gene ontology annotation of the gene function.",
-                "type": "object",
-                "required": ["go_id", "go_name", "go_evidence_code", "go_aspect"],
-                "properties": {
-                    "go_id": {
-                        "title": "GO term identifier",
-                        "description": "GO ID of the annotation in the format of \"GO:xxxxxxx\"",
-                        "type": "string",
-                        "pattern": "^(GO:\\d+)$"
-                    },
-                    "go_name": {
-                        "title": "GO term name",
-                        "description": "GO term name of the annotation.",
-                        "type": "string"
-                    },
-                    "go_evidence_code": {
-                        "title": "GO evidence code",
-                        "description": "An evidence code indicating how this GO annotation is supported.",
-                        "type": "string",
-                        "pattern": "^([A-Z]{2,3})$"
-                    },
-                    "go_aspect": {
-                        "title": "GO annotation category",
-                        "description": "The namespace or ontology to which the GO annotation belongs.",
-                        "comment": "One of P (biological process), F (molecular function) or C (cellular component).",
-                        "type": "string",
-                        "enum": ["P", "F", "C"]
-                    }
-                }
             },
             "permission": "import_items"
         },
