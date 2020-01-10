@@ -14,6 +14,7 @@ class BiospecimenTable extends React.Component {
             const germlineTableColumns = {
                 accession: {
                     title: 'Accession',
+                    display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
                 },
                 openspecimen_ID: {
                     title: 'OpenSpecimen ID',
