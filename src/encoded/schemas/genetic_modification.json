@@ -86,24 +86,11 @@
                         "purpose": {
                             "enum": ["characterization"]
                         },
-                        "method": {
-                            "enum": ["CRISPR"]
-                        },
                         "category": {
                             "enum": ["interference", "activation"]
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "purpose": {
-                            "enum": ["characterization"]
                         },
                         "method": {
-                            "enum": ["transduction"]
-                        },
-                        "category": {
-                            "enum": ["insertion"]
+                            "enum": ["CRISPR"]
                         }
                     }
                 },
@@ -121,11 +108,29 @@
                             "required": ["introduced_gene"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["characterization"]
+                        },
+                        "method": {
+                            "enum": ["transduction"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": ["introduced_sequence"]
+                        },
+                        {
+                            "required": ["introduced_gene"]
+                        }
+                    ]
                 }
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
                     "oneOf": [
