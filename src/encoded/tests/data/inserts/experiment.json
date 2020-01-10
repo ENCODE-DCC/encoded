@@ -75,7 +75,8 @@
         "dbxrefs": [
             "UCSC-ENCODE-mm9:wgEncodeEM002004",
             "GEO:GSM798327",
-            "GEO:GSE32218"
+            "GEO:GSE32218",
+            "4DN:4DNESUCQ2Q6H"
         ],
         "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
         "documents": [
