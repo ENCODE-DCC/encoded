@@ -2052,6 +2052,8 @@ class CumulativeGraph extends React.Component {
                             ticks: {
                                 autoSkip: false,
                                 maxTicksLimit: 25,
+                                maxRotation: 45,
+                                minRotation: 45,
                             },
                         }],
                         yAxes: [{
