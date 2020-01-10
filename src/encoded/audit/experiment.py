@@ -3941,6 +3941,7 @@ def audit_experiment_eclip_queried_RNP_size_range(value, system, excluded_types)
 
     experiment_size_range = set()
     control_size_range = set()
+    details = []
     control_accessions = []
 
     for rep in value['replicates']:
@@ -3949,38 +3950,54 @@ def audit_experiment_eclip_queried_RNP_size_range(value, system, excluded_types)
             if 'queried_RNP_size_range' in lib:
                 experiment_size_range.add(lib['queried_RNP_size_range'])
             else:
-                detail = ('Libraries of experiment {} are missing specification'
-                    ' of queried_RNP_size_range'.format(
-                        audit_link(path_to_text(value['@id']), value['@id'])
+                details.append(
+                    'Library {} is missing specification of queried_RNP_size_range.'.format(
+                        audit_link(path_to_text(lib['@id']), lib['@id'])
                     )
                 )
-                yield AuditFailure('missing queried_RNP_size_range', detail, level='ERROR')
 
-    if 'possible_controls' in value:
-        for control in value.get('possible_controls'):
-            control_accessions.append(audit_link(path_to_text(control['@id']), control['@id']))
-            for rep in control['replicates']:
-                if rep.get('status') not in excluded_types and 'library' in rep:
-                    lib = rep.get('library', {})
-                    if 'queried_RNP_size_range' in lib:
-                        control_size_range.add(lib['queried_RNP_size_range'])
+    for control in value.get('possible_controls'):
+        control_accessions.append(audit_link(path_to_text(control['@id']), control['@id']))
+        for rep in control['replicates']:
+            if rep.get('status') not in excluded_types and 'library' in rep:
+                lib = rep.get('library', {})
+                if 'queried_RNP_size_range' in lib:
+                    control_size_range.add(lib['queried_RNP_size_range'])
+                else:
+                    details.append(
+                        'Library {} is missing specification of queried_RNP_size_range.'.format(
+                            audit_link(path_to_text(lib['@id']), lib['@id'])
+                        )
+                    )
 
-    if not experiment_size_range:
-        experiment_size_range = 'none'
-    else:
-        experiment_size_range = ', '.join(experiment_size_range)
-    if not control_size_range:
-        control_size_range = 'none'
-    else:
-        control_size_range = ', '.join(control_size_range)
+    if details:
+        for detail in details:
+            yield AuditFailure('missing queried_RNP_size_range', detail, level='ERROR')
+        return
 
-    if experiment_size_range != control_size_range:
-        detail = ('Libraries of experiment {} have queried_RNP_size_range of {},'
-            ' but the libraries of its control experiment {} have queried_RNP_size_range of {}.'.format(
+    if len(experiment_size_range) > 1 or len(control_size_range) > 1:
+        if len(experiment_size_range) > 1:
+            detail = 'Libraries of experiment {} have mixed queried_RNP_size_range values of {}.'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
-                experiment_size_range,
+                ', '.join(experiment_size_range)
+            )
+            yield AuditFailure('mixed queried_RNP_size_range', detail, level='ERROR')
+
+        if len(control_size_range) > 1:
+            detail = 'Libraries of control experiment(s) {} have mixed queried_RNP_size_range values of {}.'.format(
                 ', '.join(control_accessions),
-                control_size_range
+                ', '.join(control_size_range)
+            )
+            yield AuditFailure('mixed queried_RNP_size_range', detail, level='ERROR')
+        return
+
+    if experiment_size_range != control_size_range and value['possible_controls']:
+        detail = ('Libraries of experiment {} have queried_RNP_size_range of {},'
+            ' but the libraries of its control experiment(s) {} have queried_RNP_size_range of {}.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(experiment_size_range),
+                ', '.join(control_accessions),
+                ', '.join(control_size_range)
             )
         )
         yield AuditFailure('inconsistent queried_RNP_size_range', detail, level='ERROR')
