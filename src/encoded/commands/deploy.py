@@ -4,22 +4,19 @@ Encoded Application AWS Deployment Helper
 - SpotClient was removed in EPIC-ENCD-4716/ENCD-4688-remove-unused-code-from-deploy.
 """
 import argparse
-import datetime
 import getpass
 import io
 import re
 import subprocess
 import sys
-import time
 
-from base64 import b64encode
 from difflib import Differ
 from os.path import expanduser
 
 import boto3
 
 
-def nameify(in_str):
+def _nameify(in_str):
     name = ''.join(
         c if c.isalnum() else '-'
         for c in in_str.lower()
@@ -47,7 +44,7 @@ def _short_name(long_name):
     return result[:9].lower()
 
 
-def tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
+def _tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
     tags = [
         {'Key': 'Name', 'Value': tag_data['name']},
         {'Key': 'branch', 'Value': tag_data['branch']},
@@ -74,12 +71,8 @@ def _write_str_to_file(filepath, str_data):
     with io.open(filepath, 'w') as file_handler:
         return file_handler.write(str_data)
 
-def _write_str_to_file(filepath, str_data):
-    with io.open(filepath, 'w') as file_handler:
-        return file_handler.write(str_data)
 
-
-def read_ssh_key(identity_file):
+def _read_ssh_key(identity_file):
     ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
     fingerprint = subprocess.check_output(
         ssh_keygen_args
@@ -112,8 +105,8 @@ def _get_bdm(main_args):
     ]
 
 
-def get_user_data(commit, config_yaml, data_insert, main_args):
-    ssh_pub_key = read_ssh_key(main_args.identity_file)
+def _get_user_data(config_yaml, data_insert, main_args):
+    ssh_pub_key = _read_ssh_key(main_args.identity_file)
     if not ssh_pub_key:
         print(
             "WARNING: User is not authorized with ssh access to "
@@ -159,9 +152,8 @@ def _get_instances_tag_data(main_args):
         if tag_output == main_args.branch:
             is_tag = True
     is_branch = False
-    if subprocess.check_output(
-            ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
-        ).strip():
+    git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
+    if subprocess.check_output(git_cmd).strip():
         is_branch = True
     if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
@@ -169,7 +161,7 @@ def _get_instances_tag_data(main_args):
     instances_tag_data['username'] = getpass.getuser()
     if instances_tag_data['name'] is None:
         instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
-        instances_tag_data['name'] = nameify(
+        instances_tag_data['name'] = _nameify(
             '%s-%s-%s' % (
                 instances_tag_data['short_name'],
                 instances_tag_data['commit'],
@@ -203,7 +195,7 @@ def _get_ec2_client(main_args, instances_tag_data):
 
 def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     master_user_data = None
-    cc_dir='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
+    cc_dir = '/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
     git_remote = 'origin' if not is_tag else 'tags'
     if main_args.es_wait or main_args.es_elect:
         # Data node clusters
@@ -220,7 +212,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             'GIT_REPO': main_args.git_repo,
             'JVM_GIGS': main_args.jvm_gigs,
         }
-        user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
+        user_data = _get_user_data(config_yaml, data_insert, main_args)
         # Additional head node
         if main_args.es_wait and main_args.node_name is None:
             master_data_insert = {
@@ -233,8 +225,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'GIT_REPO': main_args.git_repo,
                 'JVM_GIGS': main_args.jvm_gigs,
             }
-            master_user_data = get_user_data(
-                instances_tag_data['commit'],
+            master_user_data = _get_user_data(
                 config_yaml,
                 master_data_insert,
                 main_args,
@@ -272,7 +263,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'JVM_GIGS': main_args.jvm_gigs,
                 'ES_OPT_FILENAME': 'es-demo.yml',
             })
-        user_data = get_user_data(instances_tag_data['commit'], config_yaml, data_insert, main_args)
+        user_data = _get_user_data(config_yaml, data_insert, main_args)
     run_args = {
         'count': count,
         'iam_role': iam_role,
@@ -287,7 +278,6 @@ def _get_instance_output(
         instances_tag_data,
         attach_dm=False,
         given_name=None,
-        is_production=False,
 ):
     hostname = '{}.{}.encodedcc.org'.format(
         instances_tag_data['id'],
@@ -314,9 +304,17 @@ def _get_instance_output(
     return output_list
 
 
-def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
+def _wait_and_tag_instances(
+        main_args,
+        run_args,
+        instances_tag_data,
+        instances,
+        cluster_master=False
+):
     tmp_name = instances_tag_data['name']
-    instances_tag_data['domain'] = 'production' if main_args.profile_name == 'production' else 'instance'
+    instances_tag_data['domain'] = 'instance'
+    if main_args.profile_name == 'production':
+        instances_tag_data['domain'] = 'production'
     output_list = []
     is_cluster_master = False
     is_cluster = False
@@ -355,9 +353,9 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, 
                 )
             )
         instance.wait_until_exists()
-        tag_ec2_instance(
-            instance, instances_tag_data, 
-            (main_args.es_wait or main_args.es_elect), 
+        _tag_ec2_instance(
+            instance, instances_tag_data,
+            (main_args.es_wait or main_args.es_elect),
             main_args.cluster_name,
         )
     return output_list
@@ -368,7 +366,7 @@ def _get_cloud_config_yaml(main_args):
     This will return a config yaml file built from a template and template parts
     - There will still be run variables in the template.
     """
-    branch = main_args.branch
+    # pylint: disable=too-many-locals, too-many-return-statements
     cluster_name = main_args.cluster_name
     conf_dir = main_args.conf_dir
     diff_configs = main_args.diff_configs
@@ -377,7 +375,7 @@ def _get_cloud_config_yaml(main_args):
     postgres_version = main_args.postgres_version
     save_config_name = main_args.save_config_name
     use_prebuilt_config = main_args.use_prebuilt_config
-       
+
     def _diff_configs(config_one, config_two):
         results = list(
             Differ().compare(
@@ -399,12 +397,12 @@ def _get_cloud_config_yaml(main_args):
             'prebuilt-config-yamls',
             use_prebuilt_config
         )
-        return  _read_file_as_utf8(read_config_path)
+        return _read_file_as_utf8(read_config_path)
 
     def _build_config_template(build_type):
         template_path = "{}/{}/{}.yml".format(conf_dir, 'config-build-files', build_type)
         built_config_template = _read_file_as_utf8(template_path)
-        replace_vars = set(re.findall('\%\((.*)\)s', built_config_template))
+        replace_vars = set(re.findall(r'\%\((.*)\)s', built_config_template))
         # Replace cc parts vars in template.  Run vars are in cc-parts.
         template_parts_dir = "{}/{}/{}".format(conf_dir, 'config-build-files', 'cc-parts')
         cc_parts_insert = {}
@@ -439,20 +437,20 @@ def _get_cloud_config_yaml(main_args):
     # Determine config build method
     if use_prebuilt_config and not diff_configs:
         # Read a prebuilt config file from local dir and use for deployment
-        prebuilt_config_template =  _get_prebuild_config_template()
+        prebuilt_config_template = _get_prebuild_config_template()
         if prebuilt_config_template:
             return prebuilt_config_template, None, build_type
-        return None, None, built_type
+        return None, None, build_type
     # Build config from template using cc-parts
     config_template = _build_config_template(build_type)
     if diff_configs:
         # Read a prebuilt config file from local dir and use for diff
-        prebuilt_config_template =  _get_prebuild_config_template()
+        prebuilt_config_template = _get_prebuild_config_template()
         print('Diffing')
-        _diff_configs(config_template, prebuilt_config_template) 
+        _diff_configs(config_template, prebuilt_config_template)
         print('Diff Done')
         return config_template, None, build_type
-    elif save_config_name:
+    if save_config_name:
         # Having write_file_path set will not deploy
         # After creating a new config rerun
         #  with use_prebuilt_config=subpath/config_name
@@ -474,8 +472,8 @@ def _write_config_to_file(build_config, build_path, build_type):
     config_name = ''
     for index, arg in enumerate(sys.argv):
         if arg == '--save-config-name':
-            config_name = sys.argv[index+1]
-            deployment_args.extend(sys.argv[index+2:])
+            config_name = sys.argv[index + 1]
+            deployment_args.extend(sys.argv[index + 2:])
             break
         deployment_args.append(arg)
     deploy_cmd = ' '.join(deployment_args)
@@ -490,7 +488,8 @@ def _write_config_to_file(build_config, build_path, build_type):
 
 
 def main():
-    main_args = parse_args()
+    """Entry point for deployment"""
+    main_args = _parse_args()
     build_config, build_path, build_type = _get_cloud_config_yaml(main_args)
     if main_args.diff_configs:
         # instances_tag_data, is_tag = _get_instances_tag_data(main_args)
@@ -555,34 +554,18 @@ def main():
             },
         )
         output_list = _wait_and_tag_instances(
-            main_args, 
-            run_args, 
-            instances_tag_data, 
-            instances, 
+            main_args,
+            run_args,
+            instances_tag_data,
+            instances,
             cluster_master=True,
         )
         for output in output_list:
             print(output)
 
 
-def parse_args():
-
-    def check_region_index(value):
-        lower_value = value.lower()
-        allowed_values = [
-            'true', 't',
-            'false', 'f'
-        ]
-        if value.lower() not in allowed_values:
-            raise argparse.ArgumentTypeError(
-                "Noncase sensitive argument '%s' is not in [%s]." % (
-                    str(value),
-                    ', '.join(allowed_values),
-                )
-            )
-        if lower_value[0] == 't':
-            return 'True'
-        return 'False'
+def _parse_args():
+    # pylint: disable=too-many-branches, too-many-statements
 
     def check_volume_size(value):
         allowed_values = ['120', '200', '500']
@@ -596,7 +579,7 @@ def parse_args():
         return value
 
     def hostname(value):
-        if value != nameify(value):
+        if value != _nameify(value):
             raise argparse.ArgumentTypeError(
                 "%r is an invalid hostname, only [a-z0-9] and hyphen allowed." % value)
         return value
@@ -609,25 +592,33 @@ def parse_args():
     parser.add_argument('--candidate', action='store_true', help="Prod candidate Flag")
     parser.add_argument('--release-candidate', action='store_true', help="RC Flag")
     parser.add_argument(
-        '--test', 
-        action='store_const', 
-        default='demo', 
-        const='test', 
+        '--test',
+        action='store_const',
+        default='demo',
+        const='test',
         dest='role',
         help="Set role"
     )
     parser.add_argument(
-        '--git-repo', 
+        '--git-repo',
         default='https://github.com/ENCODE-DCC/encoded.git',
         help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git"
     )
-    
+
     # User Data Yamls
     parser.add_argument('--app-workers', default='6', help="Apache config app workers")
-    parser.add_argument('--conf-dir', default='./cloud-config', help="Location of cloud build config")
-    parser.add_argument('--diff-configs', action='store_true', help="Diff new build config against prebuilt.")
     parser.add_argument(
-        '--save-config-name', 
+        '--conf-dir',
+        default='./cloud-config',
+        help="Location of cloud build config"
+    )
+    parser.add_argument(
+        '--diff-configs',
+        action='store_true',
+        help="Diff new build config against prebuilt."
+    )
+    parser.add_argument(
+        '--save-config-name',
         default=None,
         help=(
             "Output cloud config to file. "
@@ -648,8 +639,8 @@ def parse_args():
         help="ssh identity file path"
     )
     parser.add_argument(
-        '--batchupgrade-vars', 
-        nargs=4, 
+        '--batchupgrade-vars',
+        nargs=4,
         default=['1000', '1', '16', '1'],
         help=(
             "Set batchupgrade vars for demo only "
@@ -657,29 +648,38 @@ def parse_args():
             "Where the args are batchsize, chunksize, processes, and maxtasksperchild"
         )
     )
-    
+
     # Cluster
-    parser.add_argument('--es-elect', action='store_true', help="Create es nodes electing head node.")
+    parser.add_argument(
+        '--es-elect',
+        action='store_true',
+        help="Create es nodes electing head node."
+    )
     parser.add_argument('--es-wait', action='store_true', help="Create es nodes and head node.")
     parser.add_argument('--cluster-name', default=None, type=hostname, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=5, help="Elasticsearch cluster size")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
-    parser.add_argument('--node-name', default=None, type=hostname, help="Name of single node to add to already existing cluster")
+    parser.add_argument(
+        '--node-name',
+        default=None,
+        type=hostname,
+        help="Name of single node to add to already existing cluster"
+    )
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
-  
+
     # Database
     parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
     parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
-    
-    # AWS 
+
+    # AWS
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
-        '--image-id', 
+        '--image-id',
         default='ami-2133bc59',
         help=(
             "https://us-west-2.console.aws.amazon.com/ec2/home"
@@ -687,12 +687,12 @@ def parse_args():
         )
     )
     parser.add_argument(
-        '--availability-zone', 
+        '--availability-zone',
         default='us-west-2a',
         help="Set EC2 availabilty zone"
     )
     parser.add_argument(
-        '--instance-type', 
+        '--instance-type',
         default=None,
         help=(
             "Leave empty for default. "
@@ -702,8 +702,8 @@ def parse_args():
         )
     )
     parser.add_argument(
-        '--volume-size', 
-        default=200, 
+        '--volume-size',
+        default=200,
         type=check_volume_size,
         help="Size of disk. Allowed values 120, 200, and 500"
     )
@@ -730,8 +730,10 @@ def parse_args():
             )
         # Elect clusters must have size of 4 or 5 due to
         # hard coded discovery size in es-cluster-elect.yml
-        if (args.node_name is None and args.es_elect and
-            (int(args.cluster_size) < 4 or int(args.cluster_size) > 5)
+        if (
+                args.node_name is None and args.es_elect and (
+                    int(args.cluster_size) < 4 or int(args.cluster_size) > 5
+                )
         ):
             raise ValueError(
                 '--es-elect cluster must have a size of 4 or 5 '
