@@ -151,7 +151,7 @@ export const dbxrefPrefixMap = {
         ),
     },
     RefSeq: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
+        pattern: 'https://www.ncbi.nlm.nih.gov/nuccore/{0}',
     },
     JAX: {
         pattern: 'https://www.jax.org/strain/{0}',
