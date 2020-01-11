@@ -17,7 +17,7 @@ class Gene extends React.Component {
         this.state = {
             goIDs: [],
         };
-        this.baseGOUrl = 'http://amigo.geneontology.org/amigo/gene_product/';
+        this.baseGOUrl = 'http://api.geneontology.org/api/bioentity/gene/{0}/function';
     }
 
     componentDidMount() {
@@ -36,11 +36,16 @@ class Gene extends React.Component {
         });
         const validGOs = [];
         Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(goID => fetch(
-            this.baseGOUrl.concat(goID), {
-                method: 'HEAD',
+            this.baseGOUrl.replace(/\{0\}/g, goID), {
+                method: 'GET',
             }
         ).then((response) => {
             if (response.ok) {
+                return response.json();
+            }
+            return { numFound: 0 };
+        }).then((annotation) => {
+            if (annotation.numFound) {
                 validGOs.push('GOGene:'.concat(goID));
             }
         }))).then(() => {
