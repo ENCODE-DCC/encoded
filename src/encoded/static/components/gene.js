@@ -34,23 +34,25 @@ class Gene extends React.Component {
                 uniprotIDs.push(dbxref);
             }
         });
-        const validGOs = [];
-        Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(goID => fetch(
-            this.baseGOUrl.replace(/\{0\}/g, goID), {
-                method: 'GET',
-            }
-        ).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return { numFound: 0 };
-        }).then((annotation) => {
-            if (annotation.numFound) {
-                validGOs.push('GOGene:'.concat(goID));
-            }
-        }))).then(() => {
+        Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(
+            goID => fetch(
+                this.baseGOUrl.replace(/\{0\}/g, goID), {
+                    method: 'GET',
+                }
+            ).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                return { numFound: 0 };
+            }).then((annotation) => {
+                if (annotation.numFound) {
+                    return goID;
+                }
+                return Promise.resolve(null);
+            })
+        )).then((validGOs) => {
             this.setState({
-                goIDs: validGOs,
+                goIDs: validGOs.filter(validGO => validGO !== null).map(goID => 'GOGene:'.concat(goID)),
             });
         });
     }
