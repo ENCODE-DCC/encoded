@@ -35,7 +35,7 @@ class Gene extends React.Component {
             }
         });
         Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(
-            goID => fetch(
+            goID => this.context.fetch(
                 this.baseGOUrl.replace(/\{0\}/g, goID), {
                     method: 'GET',
                 }
@@ -155,6 +155,10 @@ Gene.propTypes = {
 
 Gene.defaultProps = {
     context: null,
+};
+
+Gene.contextTypes = {
+    fetch: PropTypes.func,
 };
 
 globals.contentViews.register(Gene, 'Gene');
