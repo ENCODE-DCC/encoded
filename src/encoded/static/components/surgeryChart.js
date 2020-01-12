@@ -25,16 +25,11 @@ class SurgeryChart extends React.Component {
     drawChart() {
         let dataPoints = [];
         dataPoints = this.props.data.map(i => { return ([Date.parse(i.date),i.date, i.surgery_type, i.nephrectomy_details]) });
-        console.log("dataPoints", dataPoints);
         dataPoints.sort((a, b) => (a[0] - b[0]));
-        console.log("dataPoints1", dataPoints);
         let sortedDate = dataPoints.map(i => i[0]);
-        console.log(sortedDate);
 
         let minDate = Math.min(...sortedDate);
         let maxDate = Math.max(...sortedDate);
-        console.log(minDate);
-        console.log(maxDate);
 
         let data = [];
         let traceData = {};
@@ -73,7 +68,7 @@ class SurgeryChart extends React.Component {
                             target: 'Ablation', value: {
                                 marker: {
                                     color: 'green',
-                                    symbol: 'square',//'triangle-right','star-diamond',
+                                    symbol: 'square',
                                     size: '16'
                                 }
                             }
@@ -88,12 +83,9 @@ class SurgeryChart extends React.Component {
         var layout = {
 
             autosize: true,
-            // width:500,
             height:300,
             xaxis: {
                 range: [minDate - 600000 * 60 * 24 * 30, maxDate + 600000 * 60 * 24 * 30],
-                // step:months,
-                // dx: 5,
                 showgrid: true,
                 showline: true,
             },
