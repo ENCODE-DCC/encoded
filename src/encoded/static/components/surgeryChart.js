@@ -1,4 +1,6 @@
 import React from 'react';
+import { faCalendarDay } from '@fortawesome/free-solid-svg-icons';
+import { months } from 'moment';
 
 class SurgeryChart extends React.Component {
     constructor(props) {
@@ -21,70 +23,84 @@ class SurgeryChart extends React.Component {
     }
 
     drawChart() {
-        let date = this.props.data.map(i => i.date).sort();
-        let minDate = Date.parse(date[0]);// change time to milliseconds
-      let maxDate = Date.parse(date[date.length - 1]);// change time to milliseconds
-        let filteredData = [];
-        for (let j = 0; j < date.length; j++) {
-            let dataPoints = this.props.data.filter(i => i.date === date[j]).map(i => { return [i.date, i.surgery_type, i.nephrectomy_details] }).flat();
-            filteredData.push(dataPoints);
-            filteredData.flat();
+        let dataPoints = [];
+        dataPoints = this.props.data.map(i => { return ([Date.parse(i.date),i.date, i.surgery_type, i.nephrectomy_details]) });
+        console.log("dataPoints", dataPoints);
+        dataPoints.sort((a, b) => (a[0] - b[0]));
+        console.log("dataPoints1", dataPoints);
+        let sortedDate = dataPoints.map(i => i[0]);
+        console.log(sortedDate);
 
-            var data = [];
-            for (let i = 0; i < filteredData.length; i++) {
+        let minDate = Math.min(...sortedDate);
+        let maxDate = Math.max(...sortedDate);
+        console.log(minDate);
+        console.log(maxDate);
 
-                var traceData = {};
-                traceData = {
-                    type: 'scatter',
-                    x: [filteredData[i][0]],
-                    y: [filteredData[i][1]],
-                    mode: 'markers+text',
-                    text: filteredData[i][1],
-                    textposition: "right",
-                    hoverinfo: "text",
-                    hovertemplate: "Approach:" + filteredData[i][2].approach + "<br>Location:" + filteredData[i][2].location + "<br>Type:" + filteredData[i][2].type + "<br>RoboticAssist:" + filteredData[i][2].robotic_assist+"<extra></extra>",
-                    transforms: [{
-                        type: 'groupby',
-                        groups: [filteredData[i][1]],
-                        styles: [
-                            {
-                                target: 'Nephrectomy', value: {
-                                    marker: {
-                                        color: 'blue',
-                                        symbol: 'diamond',
-                                        size: '16'
-                                    }
+        let data = [];
+        let traceData = {};
+        for (let i = 0; i < dataPoints.length; i++) {
+            traceData = {
+                type: 'scatter',
+                x: [dataPoints[i][1]],
+                y: [dataPoints[i][2]],
+                mode: 'markers+text',
+                text: dataPoints[i][2],
+                textposition: "right",
+                hovertemplate: "Approach: " + dataPoints[i][3].approach +"<br>Location: " + dataPoints[i][3].location + "<br>Type: " + dataPoints[i][3].type + "<br>Robotic Assist: " + dataPoints[i][3].robotic_assist + "<extra></extra>",
+                transforms: [{
+                    type: 'groupby',
+                    groups: [dataPoints[i][2]],
+                    styles: [
+                        {
+                            target: 'Nephrectomy', value: {
+                                marker: {
+                                    color: 'blue',
+                                    symbol: 'diamond',
+                                    size: '16'
                                 }
-                            },
-                            {
-                                target: 'Metastectomy', value: {
-                                    marker: {
-                                        color: 'red',
-                                        symbol: 'circle',
-                                        size: '16'
-                                    }
+                            }
+                        },
+                        {
+                            target: 'Metastectomy', value: {
+                                marker: {
+                                    color: 'red',
+                                    symbol: 'circle',
+                                    size: '16'
                                 }
-                            },
-                        ],
-                    }],
-
-                }
-                data.push(traceData);
+                            }
+                        },
+                        {
+                            target: 'Ablation', value: {
+                                marker: {
+                                    color: 'green',
+                                    symbol: 'square',//'triangle-right','star-diamond',
+                                    size: '16'
+                                }
+                            }
+                        },
+                    ],
+                }],
             }
+            data.push(traceData);
+
         }
 
         var layout = {
 
             autosize: true,
+            // width:500,
+            height:300,
             xaxis: {
-                range: [minDate-600000 * 60 * 24 * 30, maxDate+600000 * 60 * 24 * 30],
-                dx: 5,
-                showgrid: false,
+                range: [minDate - 600000 * 60 * 24 * 30, maxDate + 600000 * 60 * 24 * 30],
+                // step:months,
+                // dx: 5,
+                showgrid: true,
                 showline: true,
             },
             yaxis: {
                 zeroline: false,
                 showline: true,
+                showgrid: true,
                 fixedrange: true
             },
             margin: {
@@ -92,14 +108,14 @@ class SurgeryChart extends React.Component {
                 r: 40,
                 b: 50,
                 t: 20,
-                pad:4
+                pad: 4
             },
             font: {
                 family: "Roboto,sans-serif",
-                size:16,
-              },
+                size: 16,
+            },
             hovermode: 'closest',
-            showlegend:false
+            showlegend: false,
         };
 
         this.plotly.plot(this.props.chartId, data, layout, this.plotlyConfig);
