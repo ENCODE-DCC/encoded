@@ -103,10 +103,8 @@
             "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
             "type": "string",
             "linkTo": "Platform"
-        },
-        "source": {
-            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         }
+
     },
     "columns": {
         "accession": {
