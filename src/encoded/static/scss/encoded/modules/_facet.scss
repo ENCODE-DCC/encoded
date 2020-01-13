@@ -107,9 +107,15 @@
         ul {
             margin: 0 2px 0 0;
             padding: 3px 0 3px 3px;
-            max-height: 200px;
+            max-height: 95px;
             flex: 1 1 auto;
             overflow-y: scroll;
+        }
+
+        @at-root #{&}--typeahead {
+            ul {
+                max-height: 200px;
+            }
         }
     }
 

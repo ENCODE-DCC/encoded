@@ -520,7 +520,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
             <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
             <SelectedFilters selectedTerms={relevantFilters} />
             {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-            <div className="facet__content">
+            <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
                 <ul onScroll={handleScroll} ref={scrollingElement}>
                     <FacetTerms
                         facet={facet}
