@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import url from 'url';
 import QueryString from '../../libs/query_string';
 import FacetRegistry from './registry';
@@ -233,7 +234,7 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
         if (negatedFilter) {
             filterField = filterField.slice(0, -1);
         }
-        const selected = filterField === facet.field && filter.term === term.key;
+        const selected = filterField === facet.field && filter.term === term.key.toString();
         if (selected) {
             negated = negatedFilter;
         }
@@ -440,11 +441,18 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // Filter out terms with a zero doc_count, as seen in region-search results.
     const significantTerms = facet.terms.filter(term => term.doc_count > 0);
 
+    // Sort numerical terms by value not by frequency
+    // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
+    // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
+    const numericalTest = a => !isNaN(a.key);
+    // For straightforward numerical facets, just sort by value
+    const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, obj => obj.key) : significantTerms;
+
     // Filter the list of facet terms to those allowed by the optional typeahead field. Memoize the
     // resulting list to avoid needlessly rerendering the facet-term list that can get very long.
     const filteredTerms = React.useMemo(() => (
         facet.type === 'typeahead' ?
-            significantTerms.filter(
+            processedTerms.filter(
                 (term) => {
                     if (term.doc_count > 0) {
                         const termKey = sanitizedString(term.key);
@@ -457,8 +465,8 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                     return null;
                 }
             )
-        : significantTerms
-    ), [significantTerms, facet.type, typeaheadTerm]);
+        : processedTerms
+    ), [processedTerms, facet.type, typeaheadTerm]);
 
     // Called to set the top and bottom shading for scrollable facets based on where the user has
     // scrolled the facet as well as its height. This function needs memoization as new instances
