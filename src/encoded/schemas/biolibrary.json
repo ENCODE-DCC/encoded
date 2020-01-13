@@ -1,5 +1,5 @@
 {
-    "title": "Library",
+    "title": "Biolibrary",
     "description": "Schema for submitting a molecular library.",
     "id": "/profiles/biolibrary.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -11,13 +11,8 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/documents" }
+        { "$ref": "mixins.json#/submitted" }
     ],
     "facets": {
         "status": {
@@ -103,8 +98,11 @@
             "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
             "type": "string",
             "linkTo": "Platform"
+        },
+        "source": {
+            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA).",
+            "type": "string"
         }
-
     },
     "columns": {
         "accession": {
