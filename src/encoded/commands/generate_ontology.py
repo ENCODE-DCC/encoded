@@ -539,6 +539,19 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0000536": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "PRO-cap",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "PRO-cap",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 
