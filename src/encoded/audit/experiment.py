@@ -3179,24 +3179,7 @@ def audit_experiment_target(value, system, excluded_types):
                 unique_antibody_target.add(label)
                 for investigated_as in antibody_target['investigated_as']:
                     unique_investigated_as.add(investigated_as)
-            if 'recombinant protein' in target['investigated_as']:
-                prefix = target['label'].split('-')[0]
-                if ('tag' not in unique_investigated_as
-                    and 'synthetic tag' not in unique_investigated_as):
-                    detail = ('Antibody {} is not to tagged protein'.format(
-                        audit_link(path_to_text(antibody['@id']), antibody['@id'])
-                        )
-                    )
-                    yield AuditFailure('not tagged antibody', detail, level='ERROR')
-                else:
-                    if prefix not in unique_antibody_target:
-                        detail = ('{} is not found in target for {}'.format(
-                            prefix,
-                            audit_link(path_to_text(antibody['@id']), antibody['@id'])
-                            )
-                        )
-                        yield AuditFailure('mismatched tag target', detail, level='ERROR')
-            elif ('tag' not in unique_investigated_as
+            if ('tag' not in unique_investigated_as
                   and 'synthetic tag' not in unique_investigated_as):
                 # Target matching for tag antibody is only between antibody and
                 # genetic modification within replicate after ENCD-4425.
@@ -3814,53 +3797,61 @@ def audit_RNA_library_RIN(value, system, excluded_types):
                 yield AuditFailure('missing RIN', detail, level='INTERNAL_ACTION')
 
 
-# if experiment target is recombinant protein, the biosamples should have at
-# least one GM in the applied_modifications that is an insert with tagging purpose
-# and a target that matches experiment target
+# ENCD-4655: if the experiment uses a tag antibody and its target is not tag,
+# its biosamples should have at least one GM with matched introduced_tags in
+# the applied_modifications.
 def audit_missing_modification(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if 'target' not in value:
+    if (
+        'target' not in value
+        or 'tag' in value['target']['investigated_as']
+        or 'synthetic tag' in value['target']['investigated_as']
+    ):
         return
 
-    '''
-    The audit does not cover whether or not the biosamples in possible_controls also
-    have the same construct. In some cases, they legitimately don't, e.g. HEK-ZNFs
-    '''
-    target = value['target']
-    if 'recombinant protein' not in target['investigated_as']:
-        return
-    else:
-        biosamples = get_biosamples(value)
-        missing_construct = list()
-
-        for biosample in biosamples:
-            if biosample.get('applied_modifications'):
-                match_flag = False
-                for modification in biosample.get('applied_modifications'):
-                    if modification.get('modified_site_by_target_id'):
-                        gm_target = modification.get(
-                            'modified_site_by_target_id')
-                        if modification.get('purpose') == 'tagging' and \
-                           gm_target['@id'] == target['@id']:
-                            match_flag = True
-                if not match_flag:
-                    missing_construct.append(biosample)
-            else:
-                missing_construct.append(biosample)
-
-        if missing_construct:
-            for b in missing_construct:
-                detail = ('Recombinant protein target {} requires '
-                    'a genetic modification associated with the biosample {} '
-                    'to specify the relevant tagging details.'.format(
-                        audit_link(path_to_text(target['@id']), target['@id']),
-                        audit_link(path_to_text(b['@id']), b['@id'])
-                    )
+    for rep in value['replicates']:
+        antibody = rep.get('antibody', {})
+        ab_tags = {
+            target['label']
+            for target in antibody.get('targets', [])
+            if {'tag', 'synthetic tag'} & set(target['investigated_as'])
+        }
+        if not ab_tags:
+            continue
+        biosample = rep.get('library', {}).get('biosample')
+        if not biosample:
+            continue
+        tags = {
+            tag['name']
+            for mod in biosample.get('applied_modifications', [])
+            for tag in mod.get('introduced_tags', [])
+            if tag.get('name')
+        }
+        if not (ab_tags & tags):
+            detail = (
+                '{} uses antibody {} targeting {} yet its biosample {} has no '
+                'genetic modifications tagging the target.'.format(
+                    audit_link(
+                        'Replication {}_{}'.format(
+                            rep['biological_replicate_number'],
+                            rep['technical_replicate_number']
+                        ),
+                        rep['@id']
+                    ),
+                    audit_link(path_to_text(antibody['@id']), antibody['@id']),
+                    ', '.join(ab_tags),
+                    audit_link(
+                        path_to_text(biosample['@id']), biosample['@id']
+                    ),
                 )
-                yield AuditFailure('inconsistent genetic modification tags', detail, level='ERROR')
-    return
+            )
+            yield AuditFailure(
+                'inconsistent genetic modification tags',
+                detail,
+                level='ERROR'
+            )
 
 
 def audit_experiment_mapped_read_length(value, system, files_structure):

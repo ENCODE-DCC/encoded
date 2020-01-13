@@ -211,3 +211,13 @@ def target_11_12(value, system):
         value['investigated_as'].remove('control')
         if not value['investigated_as']:
             value['investigated_as'].append('other context')
+
+
+@upgrade_step('target', '12', '13')
+def target_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4655
+    # investigated_as is required for target objects
+    if 'recombinant protein' in value['investigated_as']:
+        value['investigated_as'].remove('recombinant protein')
+        if not value['investigated_as']:
+            value['investigated_as'].append('other context')
