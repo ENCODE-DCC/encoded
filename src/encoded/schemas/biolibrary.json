@@ -4,7 +4,7 @@
     "id": "/profiles/biolibrary.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "internal_ID", "biospecimen", "nucleic_acid_term_name"],
+    "required": ["biospecimen", "nucleic_acid_term_name"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -17,7 +17,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "facets": {
         "status": {
@@ -79,16 +79,9 @@
                 "µg"
             ]
         },
-        "dna_integrity_number": {
-            "title": "DNA integrity number",
-            "description": "The DNA integrity number (DIN) value.",
-            "type": "number",
-            "minimum": 1,
-            "maximum": 10
-        },
-        "rna_integrity_number": {
-            "title": "RNA integrity number",
-            "description": "The RNA integrity number (RIN) value.",
+        "nucleic_acid_integrity_number": {
+            "title": "DNA/RNA integrity number",
+            "description": "The DNA/RNA integrity number (DIN/RIN) value.",
             "type": "number",
             "minimum": 1,
             "maximum": 10
@@ -113,7 +106,7 @@
         },
         "source": {
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
-        },
+        }
     },
     "columns": {
         "accession": {
@@ -125,8 +118,8 @@
         "lab": {
             "title": "Lab"
         },
-        "biospecimen.processing_type": {
-            "title": "Processing Type"
+        "biospecimen.collection_type": {
+            "title": "Collection Type"
         },
         "biospecimen.anatomic_site": {
             "title": "Anatomic Site"

@@ -22,6 +22,8 @@ ORDER = [
     'biospecimen',
     'medication',
     'supportive_medication',
+    'platform',
+    'biolibrary'
     'lab_results',
     'vital_results',
     'germline',
