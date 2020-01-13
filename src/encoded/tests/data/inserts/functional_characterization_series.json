@@ -1,0 +1,17 @@
+[
+	{
+        "_test": "functional characterization series",
+				"accession": "ENCSR000FCS",
+        "award": "ENCODE2",
+        "description": "MPRA experiments series.",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR222MPR",
+            "/experiments/ENCSR333MPR"
+        ],
+        "uuid": "cc54569d-6a9c-4c47-bd85-9f406a0ddbbc",
+        "date_released": "2020-01-10"
+    }
+]
