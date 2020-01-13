@@ -4,7 +4,7 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "distributed"],
+    "required": [ "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -70,8 +70,21 @@
                 "FFPE",
                 "zenograft",
                 "DMSO",
-                "blood"
+                "blood",
+                "cell line"
             ]
+        },
+        "host": {
+            "title": "Host",
+            "description": "A biospecimen that was hosting this biosample.",
+            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation.",
+            "type": "string",
+            "default": "Human",
+            "enum": [
+                "Human",
+                "Mouse"
+            ]
+
         },
         "originated_from": {
             "title": "Originated from",
@@ -112,6 +125,24 @@
                 "thrombus"
             ]
         },
+        "primary_site": {
+            "title": "Primary Site",
+            "type": "string",
+            "enum": [
+                "kidney",
+                "abdominal Wall",
+                "adrenal",
+                "bone",
+                "brain",
+                "liver",
+                "lung",
+                "lymph node",
+                "pancreas",
+                "peritoneum",
+                "Retroperitoneal mass",
+                "thrombus"
+            ]
+        },
         "distributed": {
             "title": "Distributed?",
             "type": "string",
@@ -131,7 +162,7 @@
                     "enum": ["solid tissue"]
                 }
             },
-            "required": ["path_ID", "tissue_type", "anatomic_site"]
+            "required": ["tissue_type", "anatomic_site", "primary_site"]
         },
         {
             "properties": {

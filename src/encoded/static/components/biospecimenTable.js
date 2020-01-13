@@ -31,6 +31,12 @@ class BiospecimenTable extends React.Component {
                 anatomic_site: {
                     title: 'Anatomic site',
                 },
+                primary_site: {
+                    title: "Primary site",
+                },
+                host: {
+                    title: "Host",
+                },
                 distributed: {
                     title: 'Distributed?',
                 },
