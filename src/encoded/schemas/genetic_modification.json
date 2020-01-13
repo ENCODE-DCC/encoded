@@ -70,14 +70,27 @@
                     ],
                     "properties": {
                         "purpose": {
-                                "enum": ["repression", "activation", "overexpression", "characterization", "screening"]
+                                "enum": ["repression", "characterization"]
                         }
                     }
                 },
                 {
                     "properties": {
                         "purpose": {
-                            "enum": ["analysis", "non-specific target control"]
+                            "enum": ["non-specific target control"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["characterization"]
+                        },
+                        "category": {
+                            "enum": ["interference", "activation"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR"]
                         }
                     }
                 },
@@ -95,11 +108,29 @@
                             "required": ["introduced_gene"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["characterization"]
+                        },
+                        "method": {
+                            "enum": ["transduction"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": ["introduced_sequence"]
+                        },
+                        {
+                            "required": ["introduced_gene"]
+                        }
+                    ]
                 }
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
                     "oneOf": [
@@ -193,6 +224,19 @@
                         },
                         "purpose": {
                             "enum": ["non-specific target control"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["interference", "activation"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR"]
+                        },
+                        "purpose": {
+                            "enum": ["characterization"]
                         }
                     }
                 },
@@ -423,7 +467,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "GM"
@@ -468,7 +512,8 @@
                 "insertion",
                 "mutagenesis",
                 "replacement",
-                "episome"
+                "episome",
+                "activation"
             ]
         },
         "purpose":{
@@ -476,14 +521,10 @@
             "description": "The purpose of the genetic modification.",
             "type": "string",
             "enum": [
-                "activation",
-                "analysis",
                 "non-specific target control",
-                "overexpression",
                 "repression",
                 "tagging",
                 "characterization",
-                "screening",
                 "expression"
             ]
         },
