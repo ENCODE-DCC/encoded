@@ -11,6 +11,7 @@ import { ProjectBadge } from './image';
 import { ItemAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
+import queryString from 'query-string';
 import Status from './status';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
@@ -380,10 +381,11 @@ export class LabChart extends React.Component {
     }
 
     render() {
-        const { labs, ident } = this.props;
+        const { labs, ident, filteredOutLabs } = this.props;
+        const filteredLabNames = filteredOutLabs ? filteredOutLabs.map(l => l.term) : [];
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = labs.filter(term => term.doc_count);
+        // Filter out lab information with zero doc_count and filtered out via facets.
+        this.relevantData = labs.filter(term => term.doc_count && !filteredLabNames.includes(term.key));
 
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${labChartId}-${ident}`;
@@ -413,12 +415,14 @@ LabChart.propTypes = {
     labs: PropTypes.array.isRequired, // Array of labs facet data
     linkUri: PropTypes.string.isRequired, // Base URI for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    filteredOutLabs: PropTypes.array,
     objectQuery: PropTypes.string,
 };
 
 LabChart.defaultProps = {
     award: null,
     objectQuery: '',
+    filteredOutLabs: [],
 };
 
 LabChart.contextTypes = {
@@ -504,10 +508,11 @@ export class CategoryChart extends React.Component {
     }
 
     render() {
-        const { categoryData, title, ident } = this.props;
+        const { categoryData, title, ident, filteredOutAssays } = this.props;
+        const filteredOutAssayTitles = filteredOutAssays ? filteredOutAssays.map(a => a.term) : [];
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = categoryData.filter(term => term.doc_count);
+        // Filter out category data with zero doc_count and filtered via facet.
+        this.relevantData = categoryData.filter(term => term.doc_count && !filteredOutAssayTitles.includes(term.key));
 
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
@@ -539,12 +544,14 @@ CategoryChart.propTypes = {
     linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    filteredOutAssays: PropTypes.array,
     objectQuery: PropTypes.string,
 };
 
 CategoryChart.defaultProps = {
     award: null,
     objectQuery: '',
+    filteredOutAssays: [],
 };
 
 CategoryChart.contextTypes = {
@@ -1686,11 +1693,12 @@ MilestonesTable.propTypes = {
  * @param {string} startDateText - First date to appear in new array in YYYY-MM format
  * @return {array} - New array with `sortedDateTerms` data plus 0 entries in between given months.
  */
-const fillDates = (sortedDateTerms, startDateText) => {
+const fillDates = (sortedDateTerms, startDateText, awardEndDate) => {
     // The new array limits go between `startDate` and the current date.
     const startingDate = dayjs(startDateText, 'YYYY-MM');
     const endingDate = dayjs();
     const monthCount = endingDate.diff(startingDate, 'months') + 1;
+    const awardFinalDate = dayjs(awardEndDate);
 
     // For every possible month, generate a new array entry, filling in the doc_count with
     // matching data from `sortedDateTerms`, or 0 if `sortedDateTerms` has no matching month.
@@ -1712,6 +1720,11 @@ const fillDates = (sortedDateTerms, startDateText) => {
 
         // Move to the next month..
         currentDate = currentDate.add(1, 'month');
+
+        if (currentDate.isAfter(awardFinalDate)) {
+            break;
+        }
+
         currentMonthText = currentDate.format('YYYY-MM');
     }
     return filledDateArray;
@@ -1789,18 +1802,26 @@ export const ExperimentDate = (props) => {
 
     let accumulatedDataReleased = [];
     let date = [];
+    const dateRange = queryString.parse(experiments['@id']).advancedQuery;
+    const dates = dateRange ? dateRange.match(/\d{4}-\d{1,2}-\d{1,2}/gi) : null;
+
     if (releasedDates.length > 0) {
         const sortedreleasedTerms = consolidateSortedDates(sortTerms(releasedDates));
 
         // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
         let awardStartDate;
-        if (award && award.start_date) {
+        let awardEndDate = null;
+
+        if (dates) {
+            awardStartDate = dayjs(dates[0]).format('YYYY-MM').toString();
+            awardEndDate = dayjs(dates[1]).format('YYYY-MM').toString();
+        } else if (award && award.start_date) {
             awardStartDate = dayjs(award.start_date).format('YYYY-MM');
         } else {
             const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
             awardStartDate = releasedIndex > -1 ? sortedreleasedTerms[releasedIndex].key : sortedreleasedTerms[sortedreleasedTerms.length - 1];
         }
-        deduplicatedreleased = fillDates(sortedreleasedTerms, awardStartDate);
+        deduplicatedreleased = fillDates(sortedreleasedTerms, awardStartDate, awardEndDate);
 
         // Create an array of dates.
         date = deduplicatedreleased.map(dateTerm => dayjs(dateTerm.key).format('MMM YYYY'));
@@ -1989,6 +2010,22 @@ class CumulativeGraph extends React.Component {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
+            const xticksBallParkCount = 25; // ballpark number desired x-axis ticks
+            const monthReleasedLength = monthReleased.length;
+            const lastxAxisIndex = monthReleasedLength - 1;
+            const xticks = monthReleasedLength < xticksBallParkCount ? 1 : Math.ceil(monthReleasedLength / xticksBallParkCount);
+            const dateValues = [];
+            const totals = [];
+
+            for (let i = 0; i < monthReleasedLength; i += 1) {
+                if (i % xticks === 0 || i === lastxAxisIndex) {
+                    const y = releaseddatavalue[i];
+                    const x = monthReleased[i];
+
+                    dateValues.push(x);
+                    totals.push(y);
+                }
+            }
 
             this.chart = new Chart(ctx, {
                 type: 'line',
@@ -2013,8 +2050,10 @@ class CumulativeGraph extends React.Component {
                     scales: {
                         xAxes: [{
                             ticks: {
-                                autoSkip: true,
-                                maxTicksLimit: 25, // sets maximum number of x-axis labels
+                                autoSkip: false,
+                                maxTicksLimit: 25,
+                                maxRotation: 45,
+                                minRotation: 45,
                             },
                         }],
                         yAxes: [{
@@ -2023,10 +2062,10 @@ class CumulativeGraph extends React.Component {
                     },
                 },
                 data: {
-                    labels: monthReleased,
+                    labels: dateValues,
                     datasets: [{
                         label: 'Released',
-                        data: releaseddatavalue,
+                        data: totals,
                         backgroundColor: '#538235',
                     }],
                 },
