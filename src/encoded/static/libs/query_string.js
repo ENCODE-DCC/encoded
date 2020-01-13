@@ -55,10 +55,9 @@ class QueryString {
                 // set the `negative` property in `queryElement` and strip the "!" from the key.
                 const queryElement = {};
                 const keyValue = element.split('=');
-                const negative = keyValue[0].slice(-1) === '!';
-                const key = negative ? keyValue[0].slice(0, -1) : keyValue[0];
-                queryElement[key] = queryEncoding.decodedURIComponent(keyValue[1]);
-                queryElement.negative = negative;
+                const negationMatch = keyValue[0].match(/(.*?)(%21|!)*$/);
+                queryElement[negationMatch[1]] = queryEncoding.decodedURIComponent(keyValue[1]);
+                queryElement.negative = negationMatch[2] === '%21' || negationMatch[2] === '!';
                 return queryElement;
             });
         } else {

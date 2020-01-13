@@ -126,6 +126,9 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
         }
     }
 
+    // Sort yes/no facet terms into yes - no order.
+    const sortedTerms = _(facet.terms.filter(term => term.doc_count > 0)).sortBy(term => ['yes', 'no'].indexOf(term.key));
+
     // We have to build the new query string unless the user clicked the "either" radio button,
     // which uses the `remove` link from the relevant filter. This callback gets memoized to avoid
     // needlessly rerendering this component, and its dependencies should normally not change until
@@ -152,7 +155,7 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
         <fieldset className="facet">
             <legend>{facet.title}</legend>
             <div className="facet__content--exists">
-                {facet.terms.map(term => (
+                {sortedTerms.map(term => (
                     <div key={term.key} className="facet__radio">
                         <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
                         <label htmlFor={term.key}>
