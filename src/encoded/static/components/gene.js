@@ -45,7 +45,7 @@ class Gene extends React.Component {
                 }
                 return { numFound: 0 };
             }).then((annotation) => {
-                if (annotation.numFound) {
+                if (annotation.numFound > 0) {
                     return goID;
                 }
                 return Promise.resolve(null);
