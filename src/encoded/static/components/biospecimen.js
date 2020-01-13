@@ -47,7 +47,20 @@ class Biospecimen extends React.Component {
                             <dt>OpenSpecimen ID</dt>
                             <dd>{context.openspecimen_ID}</dd>
                         </div>
+                        <div data-test="internal_ID">
+                            <dt>Internal ID</dt>
+                            <dd>{context.internal_ID}</dd>
+                        </div>
 
+                        <div data-test="patient">
+                            <dt>Patient</dt>
+                            <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
+                            
+                        </div>
+                        <div data-test="collection_date">
+                            <dt>Collection Date</dt>
+                            <dd>{context.collection_date}</dd>
+                        </div>
                         <div data-test="collection_type">
                             <dt>Collection Type</dt>
                             <dd>{context.collection_type}</dd>
@@ -57,6 +70,30 @@ class Biospecimen extends React.Component {
                             <dt>Processing Type</dt>
                             <dd>{context.processing_type}</dd>
                         </div>
+                        <div data-test="host">
+                            <dt>Host</dt>
+                            <dd>{context.host}</dd>
+                        </div>
+                        {context.originated_from && <div data-test="originated_from">
+                            <dt>Originated From</dt>
+                            <dd>{context.originated_from}</dd>
+                        </div>}
+                        {context.path_ID && <div data-test="path_ID">
+                            <dt>Path Report</dt>
+                            <dd>{context.path_ID}</dd>
+                        </div>}
+                        {context.tissue_type && <div data-test="tissue_type">
+                            <dt>Tissue Type</dt>
+                            <dd>{context.tissue_type}</dd>
+                        </div>}
+                        {context.anatomic_site && <div data-test="anatomic_site">
+                            <dt>Anatomic Site</dt>
+                            <dd>{context.anatomic_site}</dd>
+                        </div>}
+                        {context.primary_site && <div data-test="primary_site">
+                            <dt>Primary Site</dt>
+                            <dd>{context.primary_site}</dd>
+                        </div>}
 
                         <div data-test="distributed">
                             <dt>Distributed</dt>
@@ -65,11 +102,10 @@ class Biospecimen extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                {context.patient ?
+                {false && 
                     <div>
                         {PanelLookup({ context: context.patient, biospecimen: context })}
-                    </div>
-                : null}
+                    </div>}
 
 
             </div>
