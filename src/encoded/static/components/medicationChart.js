@@ -42,22 +42,15 @@ class MedicationChart extends React.Component {
 
     let dataPoints = [];
     dataPoints = this.props.data.map(i => { return ([Date.parse(i.start_date), Date.parse(i.end_date), i.start_date, i.end_date, i.name]) });
-    console.log("dataPoints", dataPoints);
     let sortedDataPoints = dataPoints.sort((a, b) => (a[0] - b[0]));
-    console.log("dataPoints1", sortedDataPoints);
     //Get xRange from dateRange.
     let sortedDateUnix = sortedDataPoints.map(i => { return [i[0], i[1]] }).flat();
-    console.log("sortedDateUnix", sortedDateUnix);
     let minDateUnix = Math.min(...sortedDateUnix);
     let maxDateUnix = Math.max(...sortedDateUnix);
 
-    console.log(minDateUnix);
-    console.log(maxDateUnix);
     let minDate = this.unixToDate(minDateUnix);
     let maxDate = this.unixToDate(maxDateUnix);
-    console.log(minDate);
-    console.log(maxDate);
-
+// for medication ganttChart :
     let traceData = [];
     let trace1 = {};
     let yIndex = 1;
@@ -65,17 +58,20 @@ class MedicationChart extends React.Component {
     let tickvalArray = [];
     for (let i = 0; i < sortedDataPoints.length; i++) {
       trace1 = {
-        // type:"line",
-        // name:'',
         x: [sortedDataPoints[i][2], sortedDataPoints[i][3]],
         y: [yIndex, yIndex],
         mode: 'lines',
         line: { width: 20, color: '#29A2CC' },
         ticktext: sortedDataPoints[i][4],
-        // text: dataPoints[i][2],
-        // textposition: "right",
         showlegend: false,
         hovertemplate: "MedName: " + sortedDataPoints[i][4] + "<br>Start date: " + sortedDataPoints[i][2] + "<br>End date: " + sortedDataPoints[i][3] + "<extra></extra>",
+        hoverlabel: {
+          bgcolor: '#29A2CC',
+          font: { color: 'white' },
+          bordercolor: "#29A2CC",
+          borderwidth: 0,
+          borderpad: 5,
+        },
         xaxis: 'x1',
         yaxis: 'y1'
       }
@@ -84,8 +80,6 @@ class MedicationChart extends React.Component {
       traceData.push(trace1);
       yIndex += 1;
     };
-    console.log("drugNames", drugNames);
-    console.log("tickvalsArray", tickvalArray);
     //for Diagnosis marker:
     let trace2 = {};
     trace2 = {
@@ -100,7 +94,7 @@ class MedicationChart extends React.Component {
       },
       text: 'Diagnosis date',
       textfont: {
-        family: "Georgia",//'sans serif'
+        family: "Georgia",
         size: 16,
         color: "black"
       },
@@ -108,10 +102,6 @@ class MedicationChart extends React.Component {
       showlegend: false,
       hovertemplate: "Diagnosis date: " + minDate + "<extra></extra>",
       xaxis: 'x2',
-      // yaxis:'y2'
-      // xanchor: 'bottom',
-      // mirror:'true',
-
     };
     //for deceaced marker:
     let trace3 = {};
@@ -136,31 +126,21 @@ class MedicationChart extends React.Component {
       showlegend: false,
       hovertemplate: 'Diagnosis date: ' + maxDate + '<extra></extra>',
       xaxis: 'x2',
-      // yaxis:'y2'
     };
     traceData.push(trace2);
     traceData.push(trace3);
-    // drugNames.push("Diagnosis Date");
-    // console.log(data);
     var layout = {
       autosize: true,
-      // width: 800,
       height: 300,
       xaxis: {
         type: 'date',
         range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
-        // domain: [0, 0.45],
         anchor: 'x1',
         side: 'bottom',
-        // step:'month',
-        // dx: 5,
-        // dtick:'1000*60*60*24*30*12*3',
         showgrid: true,
         showline: true,
-        // zeroline: false,
       },
       yaxis: {
-        // range:[0,yAxis*1.05],
         tickmode: 'array',
         tickvals: tickvalArray,
         ticktext: drugNames,
@@ -172,22 +152,16 @@ class MedicationChart extends React.Component {
       xaxis2: {
         type: 'date',
         range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
-        // anchor: 'y1', 
         overlaying: 'x1',
-        // dx:'date',
-        // domain: [0, 0.45],
         anchor: 'x2',
         side: 'top',
         showline: true,
       },
       font: {
         family: "Georgia",
-        fontweight:"bold",
+        fontweight: "bold",
         size: 16,
-    },
-      // yaxis2:{
-      //   anchor:'y2'
-      // }
+      },
       margin: {
         l: 150,
         r: 40,
@@ -198,7 +172,6 @@ class MedicationChart extends React.Component {
       hovermode: 'closest',
     };
 
-    // var data1 = [trace0, trace1, trace2];
     this.plotly.plot(this.props.chartId, traceData, layout, this.plotlyConfig);
 
 
