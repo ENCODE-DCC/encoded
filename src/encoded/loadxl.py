@@ -20,6 +20,8 @@ ORDER = [
     'page',
     'patient',
     'biospecimen',
+    'platform',
+    'biolibrary',
     'medication',
     'supportive_medication', 
     'lab_results',

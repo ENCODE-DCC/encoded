@@ -1,16 +1,16 @@
 [
     {
-        "biospecimen": "KCELB718IJT",
+        "biospecimen": "29bf20ad-7942-44d3-9d89-53febc8829fc",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "uuid": "e6f6c49d-89d4-4adb-baa4-38c103b1583c",
-        "accession": "KCEBS000AAA"
+        "accession": "KCELB012FAA"
     },
     {
-        "biospecimen": "KCELB120AAA",
+        "biospecimen": "170be0f2-6b5c-4b93-ba65-bedadbfe917f",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "873440f2-13a2-4564-a127-3c88c9a33c8e",
-        "accession": "KCEBS000AAA"
+        "accession": "KCELB038EAA"
     }
 ]

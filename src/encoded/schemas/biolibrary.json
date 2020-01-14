@@ -100,6 +100,7 @@
             "linkTo": "Platform"
         },
         "source": {
+            "title": "Source",
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA).",
             "type": "string"
         }
@@ -108,12 +109,7 @@
         "accession": {
             "title": "Accession"
         },
-        "award": {
-            "title": "Award"
-        },
-        "lab": {
-            "title": "Lab"
-        },
+        
         "biospecimen.collection_type": {
             "title": "Collection Type"
         },
