@@ -35,7 +35,7 @@ class MedicationChart extends React.Component {
   }
   unixToDate(unix) {
     var date = new Date(unix);
-    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+    return (date.getMonth() + 1) + "-" + date.getDate() + "-" + date.getFullYear();
   }
 
   drawChart() {
@@ -50,7 +50,7 @@ class MedicationChart extends React.Component {
 
     let minDate = this.unixToDate(minDateUnix);
     let maxDate = this.unixToDate(maxDateUnix);
-// for medication ganttChart :
+    // for medication ganttChart :
     let traceData = [];
     let trace1 = {};
     let yIndex = 1;
