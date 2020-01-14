@@ -200,6 +200,11 @@ Indexing will then proceed in a background thread similar to the production setu
 
   `./node_modules/.bin/jest`
 
+> :star: _Note_: homebrew elasticsearch@5.6 on Mac OSX 10.15 (Catalina) seems to (sometimes) require 4g of RAM; edit the HEAP section of /usr/local/etc/elasticsearch/jvm.options with:
+> -Xms4g
+> -Xmx4g
+
+
 - **Test ALL the things!**
   
   `bin/test -v -v --splinter-webdriver chrome && npm test`
