@@ -53,7 +53,7 @@ def workbook(request, app):
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir, log_level=log_level)
 
-    testapp.post_json('/index', {})
+    testapp.post_json('/index', {'is_testing_full': True})
     yield
     # XXX cleanup
 
