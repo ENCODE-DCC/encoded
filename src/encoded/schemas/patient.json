@@ -120,6 +120,9 @@
         "surgery.surgery_type": {
             "title": "Surgery Procedure"
         },
+        "surgery.hospital_location": {
+            "title": "Surgery Hospital Location"
+        },
         "surgery.nephrectomy_details.type": {
             "title": "Surgery General Type"
         },
@@ -128,9 +131,6 @@
         },
         "surgery.nephrectomy_details.robotic_assist": {
             "title": "Surgery Robotic Assist"
-        },
-        "surgery.nephrectomy_details.location": {
-            "title": "Surgery Hospital Location"
         },
         "status": {
             "title": "Status"

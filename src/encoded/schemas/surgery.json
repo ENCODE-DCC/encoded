@@ -53,15 +53,25 @@
             "description": "The surgery procedures conducted",
             "type": "string",
             "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "enum": [
+            "enum": [
                     "Ablation",
                     "Nephrectomy",
                     "Metastectomy"
                 ]
-            }
+           
         },
+        "hospital_location": {
+            "title": "Surgery hospital Location",
+            "type": "string",
+            "enum": [
+                "UTSW",
+                "UTSWCopath",
+                "Parkland",
+                "Outside",
+                "Not available"
+            ]
+        },
+
         "nephrectomy_details": {
             "title": "Nephrectomy details",
             "description": "Further details of Neprhectomy",
@@ -71,8 +81,7 @@
             "required": [
                 "type",
                 "approach",
-                "robotic_assist",
-                "location"
+                "robotic_assist"
             ],
             "properties": {
               "type": {
@@ -94,16 +103,6 @@
               "robotic_assist": {
                   "title": "Robotic Assit",
                   "type": "boolean"
-              },
-              "location": {
-                  "title": "Neprhectomy Location",
-                  "type": "string",
-                  "enum": [
-                      "UTSW",
-                      "UTSWCopath",
-                      "Parkland",
-                      "Outside"
-                  ]
               }
             }
         }
@@ -127,19 +126,19 @@
         "surgery_type": {
             "title": "Surgery Procedure"
         },
-        
-        "nephrectomy_details.type": {
-            "title": "Surgery General Type"
-        },
-        "nephrectomy_details.approach": {
-            "title": "Surgery General Approach"
-        },
-        "nephrectomy_details.robotic_assist": {
-            "title": "Surgery Robotic Assist"
-        },
-        "nephrectomy_details.location": {
+        "hospital_location": {
             "title": "Surgery Hospital Location"
         },
+        "nephrectomy_details.type": {
+            "title": "Nephrectomy Type"
+        },
+        "nephrectomy_details.approach": {
+            "title": " Nephrectomy Approach"
+        },
+        "nephrectomy_details.robotic_assist": {
+            "title": "Nephrectomy Robotic Assist"
+        },
+        
         "status": {
             "title": "Status"
         }

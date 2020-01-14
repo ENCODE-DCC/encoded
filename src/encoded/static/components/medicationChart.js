@@ -141,6 +141,7 @@ class MedicationChart extends React.Component {
         showline: true,
       },
       yaxis: {
+        autorange: "reversed",
         tickmode: 'array',
         tickvals: tickvalArray,
         ticktext: drugNames,
