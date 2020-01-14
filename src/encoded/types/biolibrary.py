@@ -11,11 +11,11 @@ import re
 
 
 @collection(
-    name='biolibrary',
+    name='biolibraries',
     unique_key='accession',
     properties={
-        'title': 'Biolibrary',
-        'description': 'biolibrary used or available',
+        'title': 'Biolibraries',
+        'description': 'Biolibraries used or available',
     })
 class Biolibrary(Item):
     item_type = 'biolibrary'
