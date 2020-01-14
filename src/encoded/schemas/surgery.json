@@ -129,16 +129,16 @@
         },
         
         "nephrectomy_details.type": {
-            "title": "General Type"
+            "title": "Surgery General Type"
         },
         "nephrectomy_details.approach": {
-            "title": "General Approach"
+            "title": "Surgery General Approach"
         },
         "nephrectomy_details.robotic_assist": {
-            "title": "Robotic Assist"
+            "title": "Surgery Robotic Assist"
         },
         "nephrectomy_details.location": {
-            "title": "Hospital Location"
+            "title": "Surgery Hospital Location"
         },
         "status": {
             "title": "Status"

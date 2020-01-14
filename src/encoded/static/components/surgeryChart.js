@@ -1,6 +1,4 @@
 import React from 'react';
-import { faCalendarDay } from '@fortawesome/free-solid-svg-icons';
-import { months } from 'moment';
 
 class SurgeryChart extends React.Component {
     constructor(props) {

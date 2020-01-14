@@ -1,47 +1,31 @@
 /* eslint-disable linebreak-style */
 import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearchPlus, faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import { faSearchMinus } from "@fortawesome/free-solid-svg-icons";
+
 
 class MedicationChart extends React.Component {
   constructor(props) {
     super(props);
-    this.myConfig = {
-      "utc": true,
-      "plotarea": {
-        "adjust-layout": true
-      },
-      graphset: [],
-    };
-    this.filterData = [];
-    this.dateRange = [];
-    this.minDate = 0;
-    this.maxDate = 0;
-    this.diagnosisDate = 0;
-    this.deceasedDate = 0;
-    this.chart = {};
-    this.treatRange = {};
-    this.drugNames = [];
-    this.series = [];
-    this.scaleYIndex = 0;
-    this.zoomIn = this.zoomIn.bind(this);
-    this.zoomOut = this.zoomOut.bind(this);
+    this.plotlyConfig = {
+      displayModeBar: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: [
+        "sendDataToCloud",
+        "editInChartStudio",
+        "select2d",
+        "lasso2d",
+        "hoverClosestCartesian",
+        "hoverCompareCartesian",
+        "toggleSpikelines",
+        "autoScale2d"
+      ],
+      responsive: true
+    }
 
   }
   render() {
     return (
       <div className="flex-container" >
-        <div className="chart-menu" >
-          <div className="chartboxes pt-2" >
-            <div className="mb-2">
-              <button type="button"  onClick={this.zoomIn} title="Zoom in" className="btn-zoom" aria-label="Zoom in"><FontAwesomeIcon icon={faSearchPlus} background-color="#cde5fa" size="2x" /></button>
-            </div>
-            <div className="mb-2">
-              <button type="button"  onClick={this.zoomOut} title="Zoom out" className="btn-zoom" aria-label="Zoom out"><FontAwesomeIcon icon={faSearchMinus} size="2x" /></button>
-            </div>
-          </div>
-        </div>
+
         <div className="chart-main" >
           <div id={this.props.chartId} ></div>
         </div>
@@ -49,250 +33,182 @@ class MedicationChart extends React.Component {
 
     );
   }
-  zoomIn() {
-    this.zingchart.exec(this.props.chartId, "zoomin", { zoomx: true, zoomy: false });
-  }
-
-  zoomOut() {
-    this.zingchart.exec(this.props.chartId, "zoomout", { zoomx: true, zoomy: false });
-
-  }
-  filterDataFun() {
-    if (this.props.data.length > 0) {
-      this.dateRange = this.props.data.map(i => ([i.start_date, i.end_date]));
-      let dateRangeSort =[...new Set(([].concat(...this.dateRange)).sort())] ;
-      let data1=[];
-      let sortedData=[];
-      for (let j = 0; j < dateRangeSort.length; j++) {
-        
-        let dataPoints = this.props.data.filter(i => { return i.start_date === dateRangeSort[j] });
-        data1.push(dataPoints);
-        sortedData=[...new Set([].concat(...data1))];
-        
-      }
-      this.minDate = Date.parse(dateRangeSort[0]);// change time to milliseconds
-      this.maxDate = Date.parse(dateRangeSort[dateRangeSort.length - 1]);// change time to milliseconds
-      this.filterData = sortedData.map(i => ({
-        start: i.start_date,
-        end: i.end_date,
-        id: i.name,
-      }));
-      
-    }
-  }
-  transformDataFun() {
-    this.series = [];
-    this.scaleYIndex = 1;// leave the first item for diagnosis date. Else will set this.scaleYIndex = 0;
-    for (let i = 0; i < this.filterData.length; i++) {
-      this.filterData[i].start = Date.parse(this.filterData[i].start);
-      this.filterData[i].end = Date.parse(this.filterData[i].end);
-
-      this.treatRange = {
-        type: 'line',
-        plot: {
-          lineWidth: 20,
-          marker: {
-            visible: false
-          },
-        },
-        scales: "scaleX, scaleY",//set top x-Axis
-        values: [[this.filterData[i].start, this.scaleYIndex], [this.filterData[i].end, this.scaleYIndex]],
-        lineColor: '#29A2CC',
-        marker: {
-          visible: false
-        },
-        tooltip: {
-          text: 'MedName:' + this.filterData[i].id + '<br> Start date:' + this.unixToDate(this.filterData[i].start) + '<br> End date:' + this.unixToDate(this.filterData[i].end),
-
-        },
-        "data-line-index": this.scaleYIndex,
-        'data-dragging': true,
-      };
-      this.series.push(this.treatRange);
-      this.drugNames[this.scaleYIndex] = this.filterData[i].id;
-      this.scaleYIndex += 1;
-    }
-    this.diagnosisDate = this.minDate - 6000 * 60 * 24 * 30;// hard code diagnosisDate with one month before.Should be replaced with a real one, set with milliseconds.
-    this.deceasedDate = this.maxDate + 6000 * 60 * 24 * 30;// hare code diseasedDate with one month after, set with milliseconds.
-    this.drugNames[0] = "";// Set first item for 'diagnosis date', not show in YAxis
-    this.drugNames[this.drugNames.length] = "";//set last one for 'deceaced date', not show in YAxis.
-
-
-    let diagnosisMarker = {
-      type: 'scatter',
-      values: [[this.diagnosisDate, 0]],
-      scales: "scaleX2, scaleY",//set bottom x-Axis
-      marker: {
-        type: 'triangle',
-        angle: 90,
-        backgroundColor: 'none',
-        borderColor: '#D31E1E',
-        borderWidth: '2px',
-        size: '5px',
-        offsetY: -5
-      },
-      tooltip: {
-        text: "Diagnosis date: " + this.unixToDate(this.diagnosisDate),
-        'background-color': 'green',
-      },
-    }
-    let deceasedMarker = {
-      type: 'scatter',
-      scales: "scaleX2, scaleY",//set bottom x-Axis
-      values: [[this.deceasedDate, this.scaleYIndex]],
-      marker: {
-        type: 'triangle',
-        angle: -90,
-        backgroundColor: 'none',
-        borderColor: '#D31E1E',
-        borderWidth: '2px',
-        size: '5px',
-        offsetY: 5
-      },
-      "data-deceased-index": this.drugNames.length - 1,
-      tooltip: {
-        text: "Deceased date:" + this.unixToDate(this.deceasedDate),
-        'background-color': 'green',
-      },
-    }
-
-    this.series.push(diagnosisMarker);
-    this.series.push(deceasedMarker);
-
-    return this.series;
-  }
   unixToDate(unix) {
     var date = new Date(unix);
     return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
   }
+
   drawChart() {
-    this.myConfig = {
-      graphset: [
-        {
-          type: "mixed",
-          theme: 'light',
-          plot: {
-            alpha: 0.7,
-            lineWidth: 20,
-            'value-box': {
-              rules: [
-                {
-                  rule: "%v==0",
-                  placement: "right",
-                  text: "Diagnosis Date",
-                  fontSize: "13px",
-                  fontFamily: "Georgia",
-                  fontWeight: "bold",
-                  fontColor: "black",
-                  offsetY: -5
-                },
-                {
-                  rule: "%v==%data-deceased-index",
-                  placement: "left",
-                  text: "Deceased Date",
-                  fontSize: "13px",
-                  fontFamily: "Georgia",
-                  fontWeight: "bold",
-                  fontColor: "black",
-                  offsetY: 5
-                },
-                {
-                  rule: "%v==%data-line-index",
-                  visible: "false",
-                }
-              ]
-            }
-          },
-          globals: {
-            shadow: false,
-          },
-          zoom: {
-            shared: true
-          },
 
-          plotarea: {
-            "adjust-layout": true,
-            marginTop: "dynamic",
-            marginBottom: "50",
-            marginLeft: "dynamic",
-            marginRight: "50",
-            backgroundColor: "#cde5fa",//"#cde5fa"  blue
-            alpha: 0.3
-          },
-          scaleX: {
-            zooming: true,
-            placement: "default",
-            minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
-            maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
-            step: 'day',
-            guide: {
-              lineWidth: "1px"
-            },
-            tick: {
-              visible: true,
-            },
-            transform: {
-              type: "date",
-              text: "%M-%d-%Y"
-            }
-          },
-          "scroll-x": {
-          },
-          scaleX2: {
-            zooming: true,
-            placement: "opposite",
-            minValue: this.diagnosisDate - 6000 * 60 * 24 * 180,
-            maxValue: this.deceasedDate + 6000 * 60 * 24 * 180,
-            step: 'day',
-            guide: {
-              lineWidth: "1px"
-            },
-            tick: {
-              visible: true,
-            },
-            transform: {
-              type: "date",
-              text: "%M-%d-%Y"
-            },
-          },
+    let dataPoints = [];
+    dataPoints = this.props.data.map(i => { return ([Date.parse(i.start_date), Date.parse(i.end_date), i.start_date, i.end_date, i.name]) });
+    console.log("dataPoints", dataPoints);
+    let sortedDataPoints = dataPoints.sort((a, b) => (a[0] - b[0]));
+    console.log("dataPoints1", sortedDataPoints);
+    //Get xRange from dateRange.
+    let sortedDateUnix = sortedDataPoints.map(i => { return [i[0], i[1]] }).flat();
+    console.log("sortedDateUnix", sortedDateUnix);
+    let minDateUnix = Math.min(...sortedDateUnix);
+    let maxDateUnix = Math.max(...sortedDateUnix);
 
-          scaleY: {
-            itemsOverlap: true,
-            labels: this.drugNames,
-            offset: 25,
-            mirrored: true,
-            minValue: 0,
-            maxValue: this.scaleYIndex,
-            step: 1,
-            guide: {
-              visible: true,
-              lineWidth: 1,
-              lineStyle: "solid",
-            },
-            tick: {
-              visible: false,
-            },
-          },
+    console.log(minDateUnix);
+    console.log(maxDateUnix);
+    let minDate = this.unixToDate(minDateUnix);
+    let maxDate = this.unixToDate(maxDateUnix);
+    console.log(minDate);
+    console.log(maxDate);
 
-          series: this.series,
-        }
-      ]
-    }
-    this.chart = {
-      id: this.props.chartId,
-      data: this.myConfig,
-      width: '100%',
+    let traceData = [];
+    let trace1 = {};
+    let yIndex = 1;
+    let drugNames = [];
+    let tickvalArray = [];
+    for (let i = 0; i < sortedDataPoints.length; i++) {
+      trace1 = {
+        // type:"line",
+        // name:'',
+        x: [sortedDataPoints[i][2], sortedDataPoints[i][3]],
+        y: [yIndex, yIndex],
+        mode: 'lines',
+        line: { width: 20, color: '#29A2CC' },
+        ticktext: sortedDataPoints[i][4],
+        // text: dataPoints[i][2],
+        // textposition: "right",
+        showlegend: false,
+        hovertemplate: "MedName: " + sortedDataPoints[i][4] + "<br>Start date: " + sortedDataPoints[i][2] + "<br>End date: " + sortedDataPoints[i][3] + "<extra></extra>",
+        xaxis: 'x1',
+        yaxis: 'y1'
+      }
+      drugNames.push(sortedDataPoints[i][4]);
+      tickvalArray.push(yIndex);
+      traceData.push(trace1);
+      yIndex += 1;
     };
-    this.chart.height = this.scaleYIndex * 75;
-    this.zingchart.render(this.chart);
+    console.log("drugNames", drugNames);
+    console.log("tickvalsArray", tickvalArray);
+    //for Diagnosis marker:
+    let trace2 = {};
+    trace2 = {
+      type: 'scatter',
+      x: [minDateUnix],
+      y: [0],
+      mode: 'markers+text',
+      marker: {
+        symbol: 'triangle-right',
+        color: 'red',
+        size: 16
+      },
+      text: 'Diagnosis date',
+      textfont: {
+        family: "Georgia",//'sans serif'
+        size: 16,
+        color: "black"
+      },
+      textposition: 'right',
+      showlegend: false,
+      hovertemplate: "Diagnosis date: " + minDate + "<extra></extra>",
+      xaxis: 'x2',
+      // yaxis:'y2'
+      // xanchor: 'bottom',
+      // mirror:'true',
+
+    };
+    //for deceaced marker:
+    let trace3 = {};
+    trace3 = {
+      type: 'scatter',
+      x: [maxDateUnix],
+      y: [yIndex],
+
+      mode: 'markers+text',
+      marker: {
+        symbol: 'triangle-left',
+        color: 'red',
+        size: 16
+      },
+      text: 'Deceaced date',
+      textfont: {
+        family: "Georgia",
+        size: 16,
+        color: "black"
+      },
+      textposition: 'left',
+      showlegend: false,
+      hovertemplate: 'Diagnosis date: ' + maxDate + '<extra></extra>',
+      xaxis: 'x2',
+      // yaxis:'y2'
+    };
+    traceData.push(trace2);
+    traceData.push(trace3);
+    // drugNames.push("Diagnosis Date");
+    // console.log(data);
+    var layout = {
+      autosize: true,
+      // width: 800,
+      height: 300,
+      xaxis: {
+        type: 'date',
+        range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
+        // domain: [0, 0.45],
+        anchor: 'x1',
+        side: 'bottom',
+        // step:'month',
+        // dx: 5,
+        // dtick:'1000*60*60*24*30*12*3',
+        showgrid: true,
+        showline: true,
+        // zeroline: false,
+      },
+      yaxis: {
+        // range:[0,yAxis*1.05],
+        tickmode: 'array',
+        tickvals: tickvalArray,
+        ticktext: drugNames,
+        zeroline: false,
+        showline: true,
+        showgrid: true,
+        fixedrange: true
+      },
+      xaxis2: {
+        type: 'date',
+        range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
+        // anchor: 'y1', 
+        overlaying: 'x1',
+        // dx:'date',
+        // domain: [0, 0.45],
+        anchor: 'x2',
+        side: 'top',
+        showline: true,
+      },
+      font: {
+        family: "Georgia",
+        fontweight:"bold",
+        size: 16,
+    },
+      // yaxis2:{
+      //   anchor:'y2'
+      // }
+      margin: {
+        l: 150,
+        r: 40,
+        b: 50,
+        t: 50,
+        pad: 4
+      },
+      hovermode: 'closest',
+    };
+
+    // var data1 = [trace0, trace1, trace2];
+    this.plotly.plot(this.props.chartId, traceData, layout, this.plotlyConfig);
+
+
   }
 
   componentDidMount() {
-    this.zingchart = window.zingchart;
+    this.plotly = window.Plotly;
     this.moment = window.moment;
-    this.filterDataFun();
-    this.transformDataFun();
     this.drawChart();
+    this.unixToDate();
   }
 }
 export default MedicationChart;
