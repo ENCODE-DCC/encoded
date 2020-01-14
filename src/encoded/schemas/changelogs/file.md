@@ -1,7 +1,8 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 16
-* *output_type* list was updated to include the enum *personalized genome assembly*
+* *output_type* list was updated to include the enum *personalized genome assembly* and *index reads*
+* *index_of* list property was added to allow specification of FASTQ files that are linked to the index file
 
 ### Schema version 16
 

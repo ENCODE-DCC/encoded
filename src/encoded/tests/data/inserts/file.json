@@ -552,6 +552,28 @@
     },
     {
         "_project": "encode3",
+        "accession": "ENCFF001IND",
+        "file_size": 20,
+        "award": "U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-07-19T16:46:18.670068+00:00",
+        "file_format": "fastq",
+        "lab":"j-michael-cherry",
+        "md5sum": "7ced82e74cea82a4787493c2f640ba82",
+        "output_type": "index reads",
+        "read_length": 58,
+        "index_of": [
+            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
+        ],
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "status": "in progress",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R2_001.index.fastq.gz",
+        "uuid": "a7b5397a-45df-4215-91e1-11cda037ceaa"
+    },
+    {
+        "_project": "encode3",
         "accession": "ENCFF001RCU",
         "file_size": 20,
         "award":"U41HG006992",

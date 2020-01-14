@@ -224,6 +224,17 @@
                 }
             }
         },
+        "index_of": {
+            "comment": "Only fastq files can have index_of specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
+                "output_type": {
+                    "enum": ["index reads"]
+                }
+            }
+        },
         "read_structure": {
             "comment": "Only fastq files can have read_structure specified.",
             "properties": {
@@ -290,7 +301,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
                     "properties": {
@@ -379,10 +390,18 @@
                     }
                 },
                 {
+                    "required": ["index_of"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations"]
                             }
                         }
                     }
@@ -396,6 +415,13 @@
                         "properties": {
                             "output_type": {
                                 "enum": ["reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["index reads"]
                             }
                         }
                     },
@@ -569,6 +595,7 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
+                                        "index reads",
                                         "rejected reads",
                                         "raw data",
                                         "reporter code counts"                                        
@@ -624,6 +651,7 @@
                                             "idat green channel",
                                             "idat red channel",
                                             "intensity values",
+                                            "index reads",
                                             "reads",
                                             "rejected reads",
                                             "raw data",
@@ -1113,6 +1141,19 @@
                 }
             }
         },
+        "index_of": {
+            "title": "Index of",
+            "description": "The files this index file is relevant for.",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
         "output_type": {
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
@@ -1151,6 +1192,7 @@
                         "hotspots",
                         "idat green channel",
                         "idat red channel",
+                        "index reads",
                         "intensity values",
                         "IDR ranked peaks",
                         "IDR thresholded peaks",
@@ -1591,6 +1633,7 @@
         "idat red channel": "raw data",
         "intensity values": "raw data",
         "reads": "raw data",
+        "index reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
