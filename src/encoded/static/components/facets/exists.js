@@ -5,9 +5,9 @@ import FacetRegistry from './registry';
 
 
 /**
- * The nih_institutional_certification facet field renders an "exists" facet.
+ * The Publication datasets.accession facet field renders an "exists" facet.
  */
-const NihInstitutionalCertificationFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => (
+const ExistsFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => (
     <DefaultExistsFacet
         facet={facet}
         results={results}
@@ -18,7 +18,7 @@ const NihInstitutionalCertificationFacet = ({ facet, results, mode, relevantFilt
     />
 );
 
-NihInstitutionalCertificationFacet.propTypes = {
+ExistsFacet.propTypes = {
     /** Relevant `facet` object from `facets` array in `results` */
     facet: PropTypes.object.isRequired,
     /** Complete search-results object */
@@ -33,9 +33,10 @@ NihInstitutionalCertificationFacet.propTypes = {
     queryString: PropTypes.string,
 };
 
-NihInstitutionalCertificationFacet.defaultProps = {
+ExistsFacet.defaultProps = {
     mode: '',
     queryString: '',
 };
 
-FacetRegistry.Facet.register('nih_institutional_certification', NihInstitutionalCertificationFacet);
+FacetRegistry.Facet.register('datasets.accession', ExistsFacet);
+FacetRegistry.Facet.register('nih_institutional_certification', ExistsFacet);

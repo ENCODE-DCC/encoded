@@ -10,10 +10,9 @@ import FacetRegistry from './registry';
 import { DefaultFacet, DefaultTitle, DefaultTerm, DefaultTermName } from './defaults';
 // Custom facet-renderer modules imported here. Keep them alphabetically sorted.
 import './audit';
-import './datasets_accession';
 import './date_selector';
+import './exists';
 import './internal_status';
-import './nih_institutional_certification';
 import './organism';
 import './status';
 import './type';
@@ -56,7 +55,8 @@ export default FacetRegistry;
  *
  *   mode (optional) - Indicates any special display modes, e.g. "picker".
  *
- *   relevantFilters - Array of search-result filter entries relevant to `facet`.
+ *   relevantFilters - Filters selected by the user corresponding to the facet given in the
+ *   `facet` property.
  *
  *   pathname - Search results path without query-string portion, e.g. "/search/" or "/matrix/".
  *
@@ -142,4 +142,12 @@ export default FacetRegistry;
  *
  *   Registration method:
  *   FacetRegistry.TermName.register(<facet field>, <React component to render this term name>);
+ *
+ * Organization
+ * Generally, each type of facet should be implemented in its own file and included above. However,
+ * if all a custom facet does is call something in defaults.js, then that can go into a file shared
+ * by all facets that only call that same default facet. For example, all facets that simply render
+ * a basic "exists" facet should all share one file. If a facet calls a default facet renderer but
+ * alters it in some way (e.g. the facet might appear only under certain conditions), then it might
+ * be best put that custom facet and its registration into its own file.
  */

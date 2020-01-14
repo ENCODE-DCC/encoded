@@ -664,7 +664,7 @@ TextFilter.propTypes = {
 };
 
 
-// Displays the entire list of facets. It contains a number of <Facet> cmoponents.
+// Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
     const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
     if (facets.length === 0 && mode !== 'picker') {
@@ -673,7 +673,7 @@ export const FacetList = (props) => {
 
     const parsedUrl = context && context['@id'] && url.parse(context['@id']);
 
-    // See if we need the Clear Filters link or not. context.clear_filters.
+    // See if we need the Clear filters link based on combinations of query-string parameters.
     let clearButton = false;
     const searchQuery = parsedUrl && parsedUrl.search;
     if (!supressTitle && searchQuery) {
