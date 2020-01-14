@@ -2,7 +2,7 @@
 # Run batchupgrade
 # encoded user
 # apt deps:
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 env_ini=$1
 batchsize=$2
 chunksize=$3

@@ -3,8 +3,7 @@
 # build user
 # apt deps:
 #       virtualenv
-
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 DEPLOY_SCRIPT_DIR='cloud-config/deploy-run-scripts'
 mkdir /opt/cloudwatchmon
 chown build:build /opt/cloudwatchmon

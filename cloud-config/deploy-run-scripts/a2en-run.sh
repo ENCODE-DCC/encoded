@@ -2,7 +2,7 @@
 # Setup stuff after other installs
 # root user
 # apt deps:
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 a2enmod headers
 a2enmod proxy_http
 a2enmod rewrite

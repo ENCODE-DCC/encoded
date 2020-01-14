@@ -3,7 +3,7 @@
 # root user
 # apt deps:
 #	redis-server
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 REDIS_PORT=$1
 
 # Backup default redis config
