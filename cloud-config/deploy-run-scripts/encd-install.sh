@@ -2,7 +2,7 @@
 # Setup encoded app
 # encoded user
 # apt deps:
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 GIT_REPO="$1"
 GIT_REMOTE="$2"
 GIT_BRANCH="$3"

@@ -4,7 +4,7 @@
 # ubuntu user
 # apt deps:
 # 	awscli
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 S3_AUTH_KEYS=$1
 
 # Add team ssh public keys from s3

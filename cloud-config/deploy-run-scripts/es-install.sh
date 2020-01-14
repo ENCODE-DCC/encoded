@@ -4,7 +4,7 @@
 # apt deps:
 #   java
 #   elasticsearch with apt_source and key
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 CLUSTER_NAME="$1"
 JVM_GIGS="$2"
 ES_OPT_FILENAME="$3"

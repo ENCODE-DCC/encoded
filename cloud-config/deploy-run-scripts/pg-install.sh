@@ -7,7 +7,7 @@
 #   postgresql-9.3 or 11
 #   python2.7-dev 3.4 # wal-e
 #   lzop # wal-e
-
+echo -e "\n**** ENCDINSTALL $(basename $0) ****"
 
 ### Arguments
 standby_mode="$1"
