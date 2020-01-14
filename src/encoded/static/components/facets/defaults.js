@@ -557,7 +557,7 @@ DefaultTitle.propTypes = {
  * Default component to render the name of a term within the default term component.
  */
 export const DefaultTermName = ({ term }) => (
-    <div className="facet-term__text">{term.key}</div>
+    <span>{term.key}</span>
 );
 
 DefaultTermName.propTypes = {
@@ -621,16 +621,18 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
     return (
         <li className="facet-term">
             <a href={href} onClick={href ? onFilter : null} className={`facet-term__item${termCss}`}>
-                <TermNameComponent
-                    termName={term.key}
-                    selected={!!selectedTermFilter}
-                    term={term}
-                    facet={facet}
-                    results={results}
-                    mode={mode}
-                    pathname={pathname}
-                    queryString={queryString}
-                />
+                <div className="facet-term__text">
+                    <TermNameComponent
+                        termName={term.key}
+                        selected={!!selectedTermFilter}
+                        term={term}
+                        facet={facet}
+                        results={results}
+                        mode={mode}
+                        pathname={pathname}
+                        queryString={queryString}
+                    />
+                </div>
                 {negated ? null : <div className="facet-term__count">{term.doc_count}</div>}
                 {(selectedTermFilter || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
             </a>
