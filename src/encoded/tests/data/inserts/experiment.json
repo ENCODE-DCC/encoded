@@ -834,5 +834,18 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1425296d-10bc-4d50-b071-2c019a711bfb"
+    },
+    {
+        "_test": "PRO-cap example",
+        "accession": "ENCSR999PRO",
+        "assay_term_name": "PRO-cap",
+        "award": "U54HG007004",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "robert-waterston",
+        "status": "released",
+        "date_submitted": "2019-01-01",
+        "date_released": "2020-01-13",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "a3e8514c-3668-11ea-978f-2e728ce88125"
     }
 ]
