@@ -123,28 +123,12 @@
         "award": "U54HG007004",
         "annotation_type": "consensus DNase hypersensitivity sites",
         "description": "Conservative DHSs",
-        "encyclopedia_version": "ENCODE v3",
+        "encyclopedia_version": "ENCODE v6",
         "lab": "j-michael-cherry",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "organism": "human",
         "uuid": "24634bd4-68f9-4fd9-8144-e27580d78cf4",
         "date_released": "2019-05-20"
-    },
-    {
-        "_test": "encyclopedia",
-        "accession": "ENCSR293MID",
-        "award": "U54HG007004",
-        "annotation_type": "imputation",
-        "description": "ENCODE Annotations v6",
-        "encyclopedia_version": "ENCODE v6",
-        "targets": [],
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "organism": "human",
-        "uuid": "a625bb6b-47fd-445a-85bd-c3beb0a350a3",
-        "related_files": [],
-        "date_released": "2018-04-10"
     }
 ]
