@@ -752,6 +752,14 @@
         "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
+        "analyses": [
+            {
+                "files": ["ENCFF003MRN", "ENCFF005MRN"]
+            },
+            {
+                "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"]
+            }
+        ],
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
     },
     {
