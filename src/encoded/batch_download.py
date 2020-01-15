@@ -11,7 +11,7 @@ from urllib.parse import (
     urlencode,
     quote,
 )
-from encoded.search_views import search
+from encoded.search_views import search_generator
 import csv
 import io
 import json
@@ -641,7 +641,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in search(context, request).json['@graph']:
+        for item in search_generator(request)['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 
