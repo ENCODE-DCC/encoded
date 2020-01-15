@@ -1,4 +1,3 @@
-package_upgrade: true
 packages:
 - awscli
 - git
@@ -21,5 +20,18 @@ packages:
 - python3-dev
 - python3-venv
 - zlib1g-dev
+# redis
+- redis-server
+# wal-e
+- lzop
 # # unknown - Leaving these here for a bit just in case
+# - graphviz
+# - libevent-dev
+# - libmagic-dev
+# - libxml2-dev
+# - libxslt1-dev
+# - ntp
+# - pv
+# - ruby-dev
+# - update-notifier-common
 # - bsd-mailx

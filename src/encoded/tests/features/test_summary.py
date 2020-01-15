@@ -8,12 +8,6 @@ pytestmark = [
     pytest.mark.usefixtures('workbook'),
 ]
 
-
-def test_summaryview(testapp, workbook):
-    res = testapp.get('/summary/?type=Experiment&status=released')
-    assert res.json['summary']
-
-
 scenarios(
     'summary.feature',
     strict_gherkin=False,

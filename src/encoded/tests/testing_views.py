@@ -280,13 +280,13 @@ def testing_retry(context, request):
     from transaction.interfaces import TransientError
 
     model = context.model
-    attempt = request.environ.get('retry.attempt')
+    attempt = request.environ.get('retry.attempts')
 
     if attempt == 0:
         raise TransientError()
 
     return {
-        'retry.attempt': attempt,
+        'retry.attempts': attempt,
         'detached': inspect(model).detached,
     }
 

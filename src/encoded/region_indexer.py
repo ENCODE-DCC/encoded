@@ -4,6 +4,7 @@ import gzip
 import csv
 import logging
 import collections
+import certifi
 import json
 import requests
 import os
@@ -622,7 +623,10 @@ class RegionIndexer(Indexer):
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
         urllib3.disable_warnings()
-        http = urllib3.PoolManager()
+        http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',
+            ca_certs=certifi.where()
+        )
         r = http.request('GET', href)
         if r.status != 200:
             log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))

@@ -2,6 +2,83 @@
 Encoded Application AWS Deployment Helper
 
 - SpotClient was removed in EPIC-ENCD-4716/ENCD-4688-remove-unused-code-from-deploy.
+
+# Creating private AMIs
+
+### Demos
+    $ bin/deploy --name encdbuildami-demo --build-ami
+    $ python ./cloud-config/create-ami.py $username demo $encd_instance_id
+
+### Es Nodes: Creates a master and data node
+    $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami
+    # Tail the logs until the machine(s) reboot
+    # data node
+    $ python ./cloud-config/create-ami.py $username es-wait-node $encd_instance_id
+    # head node
+    $ python ./cloud-config/create-ami.py $username es-wait-head $encd_instance_id
+
+### Es Nodes: Creates data nodes with elected master (TBD)
+    $ bin/deploy --cluster-name encdbuildami-es-elect --es-elect --build-ami
+    # Tail the logs until the machine reboots
+    $ python create-ami.py $username es-elect $encd_instance_id
+
+### Frontend to go with es nodes
+    $ bin/deploy --cluster-name encdbuildami-frontend --build-ami
+    # Tail the logs until the machine reboots
+    $ python ./cloud-config/create-ami.py $username frontend $encd_instance_id
+
+
+### Add the ami-ids to the deploy.sh in the ami_map var in _parse_args function
+    * add the code and push to remote
+
+# Deploying with prebuilt AMIs
+### Demos
+    $ bin/deploy -n test-encdami-demo
+### Es Nodes: Creates a master and data node
+    $ bin/deploy --cluster-name test-encdami-eswait --es-wait
+### Frontend to go with es nodes
+    $ bin/deploy --cluster-name test-encdami-eswait --es-ip $es_head_ip
+
+### Es Nodes: Creates data nodes with elected master
+    $ bin/deploy --cluster-name test-encdami-eselect --es-elect
+
+### Test demo, elect, and wait clusters like you would with an ENCD ticket
+
+
+Ex) Build a new ami and deploy a demo
+1. Demo: the --build-ami argument sets the aws image to base ubbuntu 18
+    $ bin/deploy encd-demo-ami --build-ami -n
+    # ssh on and watch cloud-init-output.log for errors.
+    # Once completed, and the machine rebooted, contintue to next step.
+2. Go to aws console and create an image from the instance
+3. Once completed,
+    * terminate the ami ec2 instance
+    * create tags for the ami image, with started-by your-name, desc like buildtype and date
+    * copy the the-image-ami-id to use to build a demo instance
+3. Create a demo with the-image-ami-id, ex) ami-03d883df2ca6cbaf9
+    $ bin/deploy -n encd-demo-test --use-prebuilt-config 20200129-u18-demo --image-id ami-03d883df2ca6cbaf9
+    # QA the demo, as a PR that updates the AMI in the deploy.py
+
+Ex) How to use this script to build a new config files, like the Ubuntu 18/Python 3.7 update
+1. Copy a demo prebuilt yaml in encoded/cloud-config/prebuilt-config-yamls
+    $ cp 20190923-pg11-demo.yml 20191112-pg11-u18-demo.yml
+2. Deploy use the new prebuilt yaml from encoded/
+    $ bin/deploy --use-prebuilt-config 20191112-pg11-u18-demo
+3. Update the prebuilt yaml by hand with necessary changes.
+4. Repeat 2. and 3. until the update is complete.
+5. Make a new template in encoded/cloud-config/config-build-files/
+    $ cp pg11-demo.yml u18-demo.yml
+6. Create a new set of files in encoded/cloud-config/config-build-files/cc-parts
+    to be used in u18-demo.yml template.  Examine older templates to see how.
+7. Diff the compiled yml with the manual yml.  Fix any differences.
+8. Save the compiled yml to prebuilt using today's date
+    $ bin/deploy --save-config-name 20200129
+9. Remove the manualy prebuilt, we'll keep the compiled version
+10. Deploy the new prebuilt as in step two.
+11. Make templates in encoded/cloud-config/config-build-files/ for es nodes and frontend.
+    Try to reused the demo cc-parts is possible.  Make new ones for es or frontend if needed.
+
+
 """
 import argparse
 import getpass
@@ -9,6 +86,8 @@ import io
 import re
 import subprocess
 import sys
+import copy
+from time import sleep
 
 from difflib import Differ
 from os.path import expanduser
@@ -74,10 +153,10 @@ def _write_str_to_file(filepath, str_data):
 
 def _read_ssh_key(identity_file):
     ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
-    fingerprint = subprocess.check_output(
+    finger_id = subprocess.check_output(
         ssh_keygen_args
     ).decode('utf-8').strip()
-    if fingerprint:
+    if finger_id:
         with open(identity_file, 'r') as key_file:
             ssh_pub_key = key_file.readline().strip()
             return ssh_pub_key
@@ -123,7 +202,6 @@ def _get_user_data(config_yaml, data_insert, main_args):
         auth_type=auth_type,
     )
     data_insert['S3_AUTH_KEYS'] = auth_keys_dir
-    data_insert['REDIS_PORT'] = main_args.redis_port
     user_data = config_yaml % data_insert
     return user_data
 
@@ -195,36 +273,51 @@ def _get_ec2_client(main_args, instances_tag_data):
 
 def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     master_user_data = None
-    cc_dir = '/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
     git_remote = 'origin' if not is_tag else 'tags'
+    data_insert = {
+        'APP_WORKERS': 'notused',
+        'BATCHUPGRADE_VARS': 'notused',
+        'BUILD_TYPE': 'NONE',
+        'COMMIT': instances_tag_data['commit'],
+        'CC_DIR': '/home/ubuntu/encoded/cloud-config/deploy-run-scripts',
+        'CLUSTER_NAME': 'NONE',
+        'ES_IP': main_args.es_ip,
+        'ES_PORT': main_args.es_port,
+        'ES_OPT_FILENAME': 'notused',
+        'FULL_BUILD': main_args.full_build,
+        'GIT_BRANCH': main_args.branch,
+        'GIT_REMOTE': git_remote,
+        'GIT_REPO': main_args.git_repo,
+        'HOME': '/srv/encoded',
+        'INSTALL_TAG': 'encd-install',
+        'JVM_GIGS': 'notused',
+        'PG_VERSION': main_args.postgres_version,
+        'PY3_PATH': '/usr/bin/python3.6',
+        'REDIS_PORT': main_args.redis_port,
+        'REGION_INDEX': str(main_args.region_indexer),
+        'ROLE': main_args.role,
+        'S3_AUTH_KEYS': 'addedlater',
+        'WALE_S3_PREFIX': main_args.wale_s3_prefix,
+    }
     if main_args.es_wait or main_args.es_elect:
         # Data node clusters
         count = int(main_args.cluster_size)
         security_groups = ['elasticsearch-https']
         iam_role = main_args.iam_role_es
         es_opt = 'es-cluster-wait.yml' if main_args.es_wait else 'es-cluster-elect.yml'
-        data_insert = {
-            'CC_DIR': cc_dir,
+        data_insert.update({
+            'BUILD_TYPE': 'encd-es-build',
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_OPT_FILENAME': es_opt,
-            'GIT_BRANCH': main_args.branch,
-            'GIT_REMOTE': git_remote,
-            'GIT_REPO': main_args.git_repo,
             'JVM_GIGS': main_args.jvm_gigs,
-        }
+        })
         user_data = _get_user_data(config_yaml, data_insert, main_args)
         # Additional head node
         if main_args.es_wait and main_args.node_name is None:
-            master_data_insert = {
-                'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
-                'CC_DIR': cc_dir,
-                'CLUSTER_NAME': main_args.cluster_name,
+            master_data_insert = copy.copy(data_insert)
+            master_data_insert.update({
                 'ES_OPT_FILENAME': 'es-cluster-head.yml',
-                'GIT_BRANCH': main_args.branch,
-                'GIT_REMOTE': git_remote,
-                'GIT_REPO': main_args.git_repo,
-                'JVM_GIGS': main_args.jvm_gigs,
-            }
+            })
             master_user_data = _get_user_data(
                 config_yaml,
                 master_data_insert,
@@ -235,31 +328,21 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         security_groups = ['ssh-http-https']
         iam_role = main_args.iam_role
         count = 1
-        data_insert = {
+        data_insert.update({
             'APP_WORKERS': main_args.app_workers,
             'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
-            'CC_DIR': cc_dir,
-            'COMMIT': instances_tag_data['commit'],
-            'CLUSTER_NAME': 'NONE',
-            'ES_IP': main_args.es_ip,
-            'ES_PORT': main_args.es_port,
-            'GIT_BRANCH': main_args.branch,
-            'GIT_REMOTE': git_remote,
-            'GIT_REPO': main_args.git_repo,
-            'PG_VERSION': main_args.postgres_version,
-            'REDIS_IP': main_args.redis_ip,
-            'REDIS_PORT': main_args.redis_port,
             'REGION_INDEX': str(main_args.region_indexer),
             'ROLE': main_args.role,
-            'WALE_S3_PREFIX': main_args.wale_s3_prefix,
-        }
+        })
         if main_args.cluster_name:
             data_insert.update({
+                'BUILD_TYPE': 'encd-frontend-build',
                 'CLUSTER_NAME': main_args.cluster_name,
                 'REGION_INDEX': 'True',
             })
         else:
             data_insert.update({
+                'BUILD_TYPE': 'encd-demo-build',
                 'JVM_GIGS': main_args.jvm_gigs,
                 'ES_OPT_FILENAME': 'es-demo.yml',
             })
@@ -277,36 +360,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     return run_args
 
 
-def _get_instance_output(
-        instances_tag_data,
-        attach_dm=False,
-        given_name=None,
-):
-    hostname = '{}.{}.encodedcc.org'.format(
-        instances_tag_data['id'],
-        instances_tag_data['domain'],
-    )
-    name_to_use = given_name if given_name else instances_tag_data['short_name']
-    suffix = '-dm' if attach_dm else ''
-    skip_https_ssh = False
-    if suffix == '-dm':
-        name_to_use = name_to_use.replace('-data', 'd')
-        skip_https_ssh = True
-    else:
-        name_to_use = name_to_use.replace('-master', 'm')
-    domain = 'demo'
-    if instances_tag_data['domain'] == 'production':
-        domain = 'production'
-    output_list = [
-        'Host %s.*' % name_to_use,
-        '  Hostname %s' % hostname,
-    ]
-    if not skip_https_ssh:
-        output_list.append('  # https://%s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
-        output_list.append('  # ssh ubuntu@%s' % hostname)
-    return output_list
-
-
 def _wait_and_tag_instances(
         main_args,
         run_args,
@@ -318,50 +371,66 @@ def _wait_and_tag_instances(
     instances_tag_data['domain'] = 'instance'
     if main_args.profile_name == 'production':
         instances_tag_data['domain'] = 'production'
-    output_list = []
+    ssh_host_name = None
     is_cluster_master = False
     is_cluster = False
-    if (main_args.es_wait or main_args.es_elect) and run_args['count'] > 1:
+    if (main_args.es_wait or main_args.es_elect) and run_args['count'] >= 1:
         if cluster_master and run_args['master_user_data']:
             is_cluster_master = True
         else:
             is_cluster = True
-    created_cluster_master = False
+    # Wait for one instance to start running + a little more
+    instances[0].wait_until_running()
+    sleep(30)
+    instances_info = {}
     for i, instance in enumerate(instances):
+        info_type = 'unknown'
+        # Reload to get new data
+        instance.load()
         instances_tag_data['name'] = tmp_name
         instances_tag_data['id'] = instance.id
+        instances_tag_data['url'] = 'None'
         if is_cluster_master:
-            instances_tag_data['name'] = "{}datamaster".format(tmp_name[0:-1])
+            info_type = 'cluster_master'
+            instances_tag_data['name'] = "{}master".format(tmp_name[0:-1])
         elif is_cluster:
+            info_type = 'cluster_node_{}'.format(i)
             instances_tag_data['name'] = "{}-data{}".format(tmp_name, i)
         if main_args.node_name:
+            # override default node name
+            # This is to add a node to a preexisting cluster since there is a name check
             instances_tag_data['name'] = main_args.node_name
-        if is_cluster_master or (is_cluster and not created_cluster_master):
-            created_cluster_master = True
-            output_list.extend(_get_instance_output(
-                instances_tag_data,
-                attach_dm=True,
-                given_name=main_args.name,
-            ))
-            # For data node 0
-            if is_cluster:
-                output_list.append('  # Data Node %d: %s' % (i, instance.id))
-        elif is_cluster:
-            output_list.append('  # Data Node %d: %s' % (i, instance.id))
-        elif not is_cluster:
-            output_list.extend(
-                _get_instance_output(
-                    instances_tag_data,
-                    given_name=main_args.name,
-                )
-            )
-        instance.wait_until_exists()
+        url = None 
+        if not is_cluster and not cluster_master:
+            # Demos and frontends
+            if instances_tag_data['domain'] == 'production':
+                info_type = 'frontend'
+                url = 'http://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'production')
+            else:
+                info_type = 'demo'
+                url = 'https://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'demo')
+        if url:
+            instances_tag_data['url'] = url
+        # Set Tags
         _tag_ec2_instance(
             instance, instances_tag_data,
             (main_args.es_wait or main_args.es_elect),
             main_args.cluster_name,
         )
-    return output_list
+        # Create return info
+        instances_info[info_type] = {
+            'instance_id_domain': "{}.{}.encodedcc.org".format(
+                instance.id,
+                instances_tag_data['domain'],
+            ),
+            'instance_id': instance.id,
+            'public_dns': instance.public_dns_name,
+            'private_ip': instance.private_ip_address,
+            'name': instances_tag_data['name'],
+            'url': url,
+            'username': instances_tag_data['username'],
+        }
+    return instances_info
 
 
 def _get_cloud_config_yaml(main_args):
@@ -430,13 +499,15 @@ def _get_cloud_config_yaml(main_args):
         return None, None, None
     # Determine type of build from arguments
     # - es-nodes builds will overwrite the postgres version
-    build_type = 'demo'
+    build_type = 'u18-demo'
     if es_elect or es_wait:
-        build_type = 'es-nodes'
+        build_type = 'u18-es-nodes'
     elif cluster_name:
-        build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
-    else:
-        build_type = 'pg{}-{}'.format(postgres_version.replace('.', ''), build_type)
+        build_type = 'u18-frontend'
+    # elif cluster_name:
+    #     build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
+    # else:
+    #     build_type = 'pg{}-{}'.format(postgres_version.replace('.', ''), build_type)
     # Determine config build method
     if use_prebuilt_config and not diff_configs:
         # Read a prebuilt config file from local dir and use for deployment
@@ -506,8 +577,9 @@ def main():
         _write_config_to_file(build_config, build_path, build_type)
         sys.exit(0)
     # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
-    print('# Deploying %s' % build_type)
-    print("# $ {}".format(' '.join(sys.argv)))
+    print('\nDeploying %s' % build_type)
+    print("$ {}".format(' '.join(sys.argv)))
+    print('Waiting for instance(s) to start running')
     instances_tag_data, is_tag = _get_instances_tag_data(main_args)
     if instances_tag_data is None:
         sys.exit(10)
@@ -535,17 +607,14 @@ def main():
         },
         KeyName=run_args['key-pair-name'],
     )
-    output_list = _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
-    for output in output_list:
-        print(output)
-    output_list = []
+    instances_info = _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
     # Create aws es_wait frontend instance
     if main_args.es_wait and run_args.get('master_user_data'):
         instances = ec2_client.create_instances(
-            ImageId='ami-2133bc59',
+            ImageId=main_args.eshead_image_id,
             MinCount=1,
             MaxCount=1,
-            InstanceType='c5.9xlarge',
+            InstanceType=main_args.eshead_instance_type,
             SecurityGroups=['ssh-http-https'],
             UserData=run_args['master_user_data'],
             BlockDeviceMappings=bdm,
@@ -558,15 +627,102 @@ def main():
             },
             KeyName=run_args['key-pair-name'],
         )
-        output_list = _wait_and_tag_instances(
-            main_args,
-            run_args,
-            instances_tag_data,
-            instances,
-            cluster_master=True,
+        instances_info.update(
+            _wait_and_tag_instances(
+                main_args,
+                run_args,
+                instances_tag_data,
+                instances,
+                cluster_master=True,
+            )
         )
-        for output in output_list:
-            print(output)
+    # Displays deployment output
+    print('')
+    tail_cmd = " 'tail -f /var/log/cloud-init-output.log'"
+    helper_vars = []
+    if 'demo' in instances_info:
+        instance_info = instances_info['demo']
+        if main_args.build_ami:
+            print('AMI Build: Demo deploying:', instance_info['name'])
+            print('instance_id:', instance_info['instance_id'])
+            print(
+                'After it builds, create the ami: '
+                "python ./cloud-config/create-ami.py {} demo {}".format(
+                    instances_tag_data['username'],
+                    instance_info['instance_id'],
+                )
+            )
+        else:
+            print('Deploying Demo:', instance_info['url'])
+            print('url:', instance_info['name'])
+            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+    elif 'cluster_master' in instances_info and main_args.es_wait:
+        instance_info = instances_info['cluster_master']
+        if main_args.build_ami:
+            print('AMI Build: Wait ES cluster deploying:', instance_info['name'])
+            print('instance_id:', instance_info['instance_id'])
+            arg_name = 'es-wait-head'
+            if main_args.es_elect:
+                arg_name = 'es-elect'
+            print(
+                'After it builds, create the ami: '
+                "python ./cloud-config/create-ami.py {} {} {}".format(
+                    instances_tag_data['username'],
+                    arg_name,
+                    instance_info['instance_id'],
+                )
+            )
+        else:
+            print('Deploying Head ES Node:', instance_info['name'])
+            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+            print(" --es-ip {}".format(instance_info['private_ip']))
+        print("Es head ssh:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+        print('')
+        helper_vars.append("datam='{}'".format(instance_info['instance_id']))
+        for index in range(main_args.cluster_size):
+            str_index = str(index)
+            key_name = 'cluster_node_' + str_index
+            node_info = instances_info[key_name]
+            helper_vars.append("data{}='{}'  # {}".format(index, node_info['instance_id'], key_name))
+            if index == 0:
+                if main_args.build_ami and main_args.es_wait:
+                    print(
+                        'After it builds, create the ami: '
+                        "python ./cloud-config/create-ami.py {} es-wait-node {}".format(
+                            instances_tag_data['username'],
+                            instance_info['instance_id'],
+                        )
+                    )
+                print("ES node{} ssh:\n ssh ubuntu@{}{}".format(index, instance_info['public_dns'], tail_cmd))
+            else:
+                print("ES node{} ssh:\n ssh ubuntu@{}".format(index, instance_info['public_dns']))
+    elif 'frontend' in instances_info:
+        instance_info = instances_info['frontend']
+        if main_args.build_ami:
+            print('AMI Build: Frontend deploying:', instance_info['name'])
+            print('instance_id:', instance_info['instance_id'])
+            print(
+                'After it builds, create the ami: '
+                "python ./cloud-config/create-ami.py {} frontend {}".format(
+                    instances_tag_data['username'],
+                    instance_info['instance_id'],
+                )
+            )
+        else:
+            print('Deploying Frontend:', instance_info['name'])
+            print('url:', instance_info['url'])
+            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+        helper_vars.append("frontend{}='{}'".format(index, node_info['instance_id']))
+    else:
+        print('Warning: Unknown instance info')
+        print(instances_info)
+    if main_args.role == 'candidate' or main_args.build_ami:
+        print('')
+        # helps vars for release and building amis
+        for helper_var in helper_vars:
+            print(helper_var)
 
 
 def _parse_args():
@@ -689,9 +845,17 @@ def _parse_args():
         help='Flag to indicate building for ami'
     )
     parser.add_argument(
+        '--full-build',
+        action='store_true',
+        help='Flag to indicate building without an ami'
+    )
+    parser.add_argument(
         '--image-id',
-        default='demo',
-        help=('AWS AMI ID: [demo, es-cluster, fe-cluster, ami-id#]')
+        help=('Demo, Frontend, and es data node override default image ami')
+    )
+    parser.add_argument(
+        '--eshead-image-id',
+        help=('ES head node override default image ami')
     )
     parser.add_argument(
         '--availability-zone',
@@ -700,13 +864,11 @@ def _parse_args():
     )
     parser.add_argument(
         '--instance-type',
-        default=None,
-        help=(
-            "Leave empty for default. "
-            "Frontend default: c5.9xlarge. "
-            "Datanode default: m5.xlarge. "
-            "DataHead default: c5.9xlarge. "
-        )
+        help=('Demo, Frontend, and es data node override default image ami')
+    )
+    parser.add_argument(
+        '--eshead-instance-type',
+        help=('ES head node override default image ami')
     )
     parser.add_argument(
         '--volume-size',
@@ -715,26 +877,45 @@ def _parse_args():
         help="Size of disk. Allowed values 120, 200, and 500"
     )
     args = parser.parse_args()
-    # Check AMI
+    # Set AMI per build type
     ami_map = {
-        'demo': 'ami-034f2db581579bb43',
-        'es-cluster': None,
-        'fe-cluster': None,
+        # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
+        'default': 'ami-0d1cd67c26f5fca19',
+        # Private AMIs: Add comments to each build
+        #  Es builds were on 2020-02-13 for v96rc2
+        'demo': 'ami-0cde27eafd2dd7059',
+        #  FE/ES builds were on 2020-02-10 for v96rc1, only for wait clusters
+        'es-node-cluster': 'ami-0cebaae3c1c4e791c',
+        'es-head-cluster': 'ami-0cc21309093b53144',
+        'fe-cluster': 'ami-0865885ed5b96cec9',
     }
-    # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20191002
-    default_ami = 'ami-06d51e91cea0dac8d'
-    if args.image_id in ami_map:
-        args.image_id = ami_map[args.image_id]
-        if args.build_ami:
-            # Default build ami id
-            args.image_id = default_ami
     if not args.image_id:
-        args.image_id = default_ami
+        # Select ami by build type.  
+        if args.build_ami or args.full_build:
+            # Building new amis or making full builds from scratch
+            # should start from base ubutnu image
+            args.image_id = ami_map['default']
+            args.eshead_image_id = ami_map['default']
+            # We only need one es node to make an ami
+            args.cluster_size = 1
+        elif args.cluster_name:
+            # Cluster builds have three prebuilt priviate amis
+            if args.es_wait or args.es_elect:
+                args.image_id = ami_map['es-node-cluster']
+                args.eshead_image_id = ami_map['es-head-cluster']
+            else:
+                args.image_id = ami_map['fe-cluster']
+        else:
+            args.image_id = ami_map['demo']
+    else:
+        args.image_id = ami_map['default']
+    # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
             # datanode
-            # - wait dataheads are defaulted in main
             args.instance_type = 'm5.xlarge'
+            # Head node
+            args.eshead_instance_type = 'c5.9xlarge'
         else:
             # frontend
             args.instance_type = 'c5.9xlarge'
@@ -770,7 +951,7 @@ def _parse_args():
     # - 'rc' role is for Release-Candidate QA testing and
     # is the same as 'demo' except batchupgrade will be skipped during deployment.
     # This better mimics production but require a command be run after deployment.
-    # - 'candidate' role is for production release that potential can
+    # - 'candidate' role is for production release that potentially can
     # connect to produciton data.
     if not args.role == 'test':
         if args.release_candidate:
