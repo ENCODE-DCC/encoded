@@ -3,6 +3,7 @@
 # ubuntu user
 # apt deps:
 echo -e "\n**** ENCDINSTALL $(basename $0) ****"
+
 # Manually install java
 sudo -u ubuntu aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/encd-tars ~ubuntu/encd-tars
 sudo mkdir -p /usr/lib/jvm

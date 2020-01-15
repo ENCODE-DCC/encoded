@@ -44,7 +44,7 @@ WALE_ENV=
 WALE_REQS='/home/ubuntu/encoded/wal-e-requirements.txt'
 if [ $python_version -eq 3 ]; then
     WALE_DIR='/opt/pg-wal-e'
-    WALE_VENV="$WALE_DIR/.py343-wal-e"
+    WALE_VENV="$WALE_DIR/.pyenv-wal-e"
     WALE_BIN="$WALE_VENV/bin"
     WALE_ENV='/etc/wal-e.d/env'
     WALE_REQS='/home/ubuntu/encoded/wal-e-requirements-py3.txt'
@@ -74,6 +74,11 @@ function append_with_user {
 sudo -u root mkdir /var/lib/postgresql/.aws
 sudo -u root cp /home/ubuntu/pg-aws-keys/* ~postgres/.aws/
 sudo -u root chown -R postgres:postgres /var/lib/postgresql/.aws/
+
+# Add ssh keys to postgres user
+sudo -u postgres mkdir /var/lib/postgresql/.ssh
+sudo -u root cp /home/ubuntu/.ssh/authorized_keys2 /var/lib/postgresql/.ssh/authorized_keys2
+sudo -u root chown -R postgres:postgres /var/lib/postgresql/.ssh/
 
 ## Copy pg confs from encoded repo to pg conf dir
 for filename in 'custom.conf' 'demo.conf' 'master.conf' 'recovery.conf'; do
@@ -174,7 +179,8 @@ if [ $python_version -eq 3 ]; then
     sudo -u root cp "$WALE_REQS" "$WALE_DIR/wal-e-requirements.txt"
     sudo -u root chown postgres:postgres "$WALE_DIR/wal-e-requirements.txt"
     sudo -H -u postgres python3 -m venv "$WALE_VENV"
-    sudo -H -u postgres "$WALE_BIN/pip" install pip setuptools==43 boto awscli --upgrade
+    sudo -H -u postgres "$WALE_BIN/pip" install pip setuptools --upgrade
+    sudo -H -u postgres "$WALE_BIN/pip" install awscli boto PyYAML==5.2
     sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_DIR/wal-e-requirements.txt"
     sudo -u postgres git clone https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
     sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"

@@ -4,10 +4,17 @@
 # apt deps:
 #       virtualenv
 echo -e "\n**** ENCDINSTALL $(basename $0) ****"
-DEPLOY_SCRIPT_DIR='cloud-config/deploy-run-scripts'
-mkdir /opt/cloudwatchmon
-chown build:build /opt/cloudwatchmon
-cd /opt/cloudwatchmon
-cp ~ubuntu/encoded/$DEPLOY_SCRIPT_DIR/cloudwatchmon-requirements.txt cloudwatchmon-requirements.txt
-sudo -u build virtualenv --python=python2.7 ./
-sudo -u build /opt/cloudwatchmon/bin/pip install -r cloudwatchmon-requirements.txt
+
+DEPLOY_SCRIPT_DIR='/home/ubuntu/encoded/cloud-config/deploy-run-scripts'
+
+CLOUDWATCHMON_HOME='/opt/cloudwatchmon'
+CLOUDWATCHMON_REQS='cloudwatchmon-requirements.txt'
+CLOUDWATCHMON_VENV="$CLOUDWATCHMON_HOME/.cwm-pyenv"
+
+mkdir "$CLOUDWATCHMON_HOME"
+cp "$DEPLOY_SCRIPT_DIR/$CLOUDWATCHMON_REQS" "$CLOUDWATCHMON_HOME/$CLOUDWATCHMON_REQS"
+chown build:build "$CLOUDWATCHMON_HOME"
+chown build:build "$CLOUDWATCHMON_HOME/$CLOUDWATCHMON_REQS"
+sudo -H -u build python3 -m venv "$CLOUDWATCHMON_VENV"
+sudo -H -u build "$CLOUDWATCHMON_VENV/bin/pip" --no-cache-dir install --upgrade pip setuptools
+sudo -H -u build "$CLOUDWATCHMON_VENV/bin/pip" --no-cache-dir install -r "$CLOUDWATCHMON_HOME/$CLOUDWATCHMON_REQS"

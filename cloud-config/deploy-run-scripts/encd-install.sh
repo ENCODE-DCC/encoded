@@ -3,30 +3,30 @@
 # encoded user
 # apt deps:
 echo -e "\n**** ENCDINSTALL $(basename $0) ****"
-GIT_REPO="$1"
-GIT_REMOTE="$2"
-GIT_BRANCH="$3"
-ROLE="$4"
-ES_IP="$5"
-ES_PORT="$6"
-REGION_INDEX="$7"
-APP_WORKERS="$8"
 
-git_uri="$GIT_REMOTE/$GIT_BRANCH"
+ROLE="$1"
+ES_IP="$2"
+ES_PORT="$3"
+REGION_INDEX="$4"
+APP_WORKERS="$5"
 
+encd_pybin='/srv/encoded/.pyvenv/bin'
 encd_home='/srv/encoded'
-mkdir "$encd_home"
-chown encoded:encoded "$encd_home"
 cd "$encd_home"
-sudo -u encoded git clone "$GIT_REPO" .
-sudo -u encoded git checkout -b "$GIT_BRANCH" "$git_uri"
-sudo pip3 install --upgrade pip
-sudo pip3 install -U zc.buildout setuptools redis
-sudo -u encoded buildout bootstrap
+sudo -u encoded "$encd_pybin/buildout" bootstrap
 sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c "$ROLE".cfg buildout:es-ip="$ES_IP" buildout:es-port="$ES_PORT"
+
+# Add aws keys to encoded user
 sudo -u encoded mkdir /srv/encoded/.aws
 sudo -u root cp /home/ubuntu/encd-aws-keys/* /srv/encoded/.aws/
 sudo -u root chown -R encoded:encoded ~encoded/.aws
+
+# Add ssh keys to encoded user
+sudo -u encoded mkdir /srv/encoded/.ssh
+sudo -u root cp /home/ubuntu/.ssh/authorized_keys2 /srv/encoded/.ssh/authorized_keys2
+sudo -u root chown -R encoded:encoded /srv/encoded/.ssh/authorized_keys2
+
+# Wait for psql
 until sudo -u postgres psql postgres -c ""; do sleep 10; done
 sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 sudo -u encoded bin/create-mapping production.ini --app-name app
