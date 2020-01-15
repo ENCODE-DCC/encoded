@@ -1,5 +1,9 @@
 ## Changelog for gene.json
 
+### Schema version 2
+
+* Remove *go_annotations*.
+
 ### Minor changes since schema version 1
 
 * *dbxrefs* was set to have a minimum of 1.
