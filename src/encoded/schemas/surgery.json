@@ -12,7 +12,6 @@
     "identifyingProperties": [
         "uuid"
     ],
-    "additionalProperties": false,
     "mixinProperties": [
         {
             "$ref": "mixins.json#/schema_version"
@@ -52,7 +51,6 @@
             "title": "Surgery procedure",
             "description": "The surgery procedures conducted",
             "type": "string",
-            "uniqueItems": true,
             "enum": [
                     "Ablation",
                     "Nephrectomy",
@@ -70,57 +68,67 @@
                 "Outside",
                 "Not available"
             ]
-        },
+        }
 
+    },
+
+"if":{
+    "properties":{ "surgery_type": { "const": "Nephrectomy"  } }
+},
+"then":{ 
+    "properties":
+    {
+        
         "nephrectomy_details": {
             "title": "Nephrectomy details",
             "description": "Further details of Neprhectomy",
             "type": "object",
             "permission": "import_items",
-            "additionalProperties": false,
             "required": [
                 "type",
                 "approach",
                 "robotic_assist"
             ],
             "properties": {
-              "type": {
-                  "title": "Neprhectomy type",
-                  "type": "string",
-                  "enum": [
-                      "Partial",
-                      "Total"
-                  ]
-              },
-              "approach": {
-                  "title": "Neprhectomy Approach",
-                  "type": "string",
-                  "enum": [
-                      "Laparoscopic",
-                      "Open"
-                  ]
-              },
-              "robotic_assist": {
-                  "title": "Robotic Assit",
-                  "type": "boolean"
-              }
+                "type": {
+                    "title": "Neprhectomy type",
+                    "type": "string",
+                    "enum": [
+                        "Partial",
+                        "Total"
+                    ]
+                },
+                "approach": {
+                    "title": "Neprhectomy Approach",
+                    "type": "string",
+                    "enum": [
+                        "Laparoscopic",
+                        "Open"
+                    ]
+                },
+                "robotic_assist": {
+                    "title": "Robotic Assit",
+                    "type": "boolean"
+                }
             }
         }
     },
+    "required":["nephrectomy_details"]
 
-    "allOf": [
-        {
-            "properties": {
-                "surgery_type": {
-                    "const": "Nephrectomy"
-                }
-            },
-            "required": [
-                "nephrectomy_details"
+},
+"else":{
+    "properties": {
+        "surgery_type": {
+            "type": "string",
+            "enum": [
+                "Ablation",
+                "Nephrectomy",
+                "Metastectomy"
             ]
         }
-    ],
-    
+    }
+},
+
 
     "facets": {
         "surgery_type": {
@@ -129,15 +137,6 @@
         "hospital_location": {
             "title": "Surgery Hospital Location"
         },
-        "nephrectomy_details.type": {
-            "title": "Nephrectomy Type"
-        },
-        "nephrectomy_details.approach": {
-            "title": " Nephrectomy Approach"
-        },
-        "nephrectomy_details.robotic_assist": {
-            "title": "Nephrectomy Robotic Assist"
-        },
         
         "status": {
             "title": "Status"
@@ -145,8 +144,7 @@
     },
     "boost_values": {
         "patient": 1.0,
-        "surgery_type": 1.0,
-        "nephrectomy_details": 1.0
+        "surgery_type": 1.0
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }
