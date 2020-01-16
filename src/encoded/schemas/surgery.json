@@ -111,15 +111,7 @@
             "properties": {
               "surgery_type": { "const": "Nephrectomy" },
               "nephrectomy_details": {
-                "title": "Nephrectomy details",
-                "description": "Further details of Nephrectomy",
                 "type": "object",
-                "permission": "import_items",
-                "required": [
-                    "type",
-                    "approach",
-                    "robotic_assist"
-                ],
                 "properties": {
                     "type": {
                         "title": "Neprhectomy type",
