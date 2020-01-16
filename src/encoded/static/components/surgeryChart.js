@@ -21,69 +21,109 @@ class SurgeryChart extends React.Component {
     }
 
     drawChart() {
-        let dataPoints = [];
-        dataPoints = this.props.data.map(i => { return ([Date.parse(i.date),i.date, i.surgery_type, i.nephrectomy_details]) });
-        dataPoints.sort((a, b) => (a[0] - b[0]));
-        let sortedDate = dataPoints.map(i => i[0]);
+        var nephDataPoints = [];
+        var ablaDataPoints = [];
+        var metDataPoints = [];
+        nephDataPoints = this.props.data.filter(i => { return i.surgery_type === "Nephrectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location, i.nephrectomy_details] });
+        nephDataPoints.sort((a, b) => a[0] - b[0]);
+        console.log("neph", nephDataPoints);
 
-        let minDate = Math.min(...sortedDate);
-        let maxDate = Math.max(...sortedDate);
+        ablaDataPoints = this.props.data.filter(i => { return i.surgery_type === "Ablation" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location] });
+        ablaDataPoints.sort((a, b) => a[0] - b[0]);
+        console.log("Ablation", ablaDataPoints);
+
+        metDataPoints = this.props.data.filter(i => { return i.surgery_type === "Metastectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location] });
+        metDataPoints.sort((a, b) => a[0] - b[0]);
+        console.log("Met", metDataPoints);
+        //get date range for xaxis
+        let sortedDateUnix = [];
+        sortedDateUnix = this.props.data.map(i => { return Date.parse(i.date) });
+        sortedDateUnix.sort((a, b) => a - b);
+        console.log("sortedDate", sortedDateUnix);
+
+        let minDateUnix = sortedDateUnix[0];
+        let maxDateUnix = sortedDateUnix[sortedDateUnix.length - 1];
+        // let minDate=Math.min(...sortedDate);
+        // let maxDate=Math.max(...sortedDate);
+
+        // // minDate=new Date(minDate);
+        console.log(minDateUnix);
+        console.log(maxDateUnix);
+        // let yArray=dataPoints.map(i=>i[1]);
+        // let yAxis=yArray.length;
+        // console.log(yArray);
+        // console.log(yAxis);
 
         let data = [];
-        let traceData = {};
-        for (let i = 0; i < dataPoints.length; i++) {
-            traceData = {
-                type: 'scatter',
-                x: [dataPoints[i][1]],
-                y: [dataPoints[i][2]],
-                mode: 'markers+text',
-                text: dataPoints[i][2],
-                textposition: "right",
-                hovertemplate: "Approach: " + dataPoints[i][3].approach +"<br>Location: " + dataPoints[i][3].location + "<br>Type: " + dataPoints[i][3].type + "<br>Robotic Assist: " + dataPoints[i][3].robotic_assist + "<extra></extra>",
-                transforms: [{
-                    type: 'groupby',
-                    groups: [dataPoints[i][2]],
-                    styles: [
-                        {
-                            target: 'Nephrectomy', value: {
-                                marker: {
-                                    color: 'blue',
-                                    symbol: 'diamond',
-                                    size: '16'
-                                }
-                            }
-                        },
-                        {
-                            target: 'Metastectomy', value: {
-                                marker: {
-                                    color: 'red',
-                                    symbol: 'circle',
-                                    size: '16'
-                                }
-                            }
-                        },
-                        {
-                            target: 'Ablation', value: {
-                                marker: {
-                                    color: 'green',
-                                    symbol: 'square',
-                                    size: '16'
-                                }
-                            }
-                        },
-                    ],
-                }],
-            }
-            data.push(traceData);
+        let traceNeph = {};
+        if (nephDataPoints.length > 0) {
+            for (let i = 0; i < nephDataPoints.length; i++) {
+                traceNeph = {
+                    type: 'scatter',
+                    x: [nephDataPoints[i][1]],
+                    y: [nephDataPoints[i][2]],
+                    mode: 'markers',
+                    marker: {
+                        color: 'blue',
+                        symbol: 'diamond',
+                        size: '16'
+                    },
+                    text: nephDataPoints[i][2],
+                    textposition: "right",
+                    hovertemplate: "Hospital location: " + nephDataPoints[i][3] + "<br>Neph type: " + nephDataPoints[i][4].type + "<br>Neph approach: " + nephDataPoints[i][4].approach + "<br>Robotic Assist: " + nephDataPoints[i][4].robotic_assist + "<extra></extra>"
+                };
+                data.push(traceNeph);
+            };
+        };
 
+        let traceMet = {};
+        if (metDataPoints.length > 0) {
+            for (let i = 0; i < metDataPoints.length; i++) {
+                traceMet = {
+                    type: 'scatter',
+                    x: [metDataPoints[i][1]],
+                    y: [metDataPoints[i][2]],
+                    mode: 'markers',
+                    marker: {
+                        color: 'red',
+                        symbol: 'circle',
+                        size: '16'
+                    },
+                    text: metDataPoints[i][2],
+                    textposition: "right",
+                    hovertemplate: "Hospital location: " + metDataPoints[i][3] + "<extra></extra>"
+                };
+                data.push(traceMet);
+            };
         }
 
+        let traceAbla = {};
+        if (ablaDataPoints.length > 0) {
+            for (let i = 0; i < ablaDataPoints.length; i++) {
+                traceAbla = {
+                    type: 'scatter',
+                    x: [ablaDataPoints[i][1]],
+                    y: [ablaDataPoints[i][2]],
+                    mode: 'markers',
+                    // mode: 'markers',
+                    marker: {
+                        color: 'green',
+                        symbol: 'square',
+                        size: '16'
+                    },
+                    text: ablaDataPoints[i][2],
+                    textposition: "right",
+                    hovertemplate: "Hospital location: " + ablaDataPoints[i][3] + "<extra></extra>"
+                };
+                data.push(traceAbla);
+            };
+        };
         var layout = {
 
             autosize: true,
-            height:300,
+            height: 300,
             xaxis: {
-                range: [minDate - 600000 * 60 * 24 * 30, maxDate + 600000 * 60 * 24 * 30],
+                range: [minDateUnix - 600000 * 60 * 24 * 30, maxDateUnix + 600000 * 60 * 24 * 30],
                 showgrid: true,
                 showline: true,
             },
@@ -101,7 +141,7 @@ class SurgeryChart extends React.Component {
                 pad: 4
             },
             font: {
-                family: "Roboto,sans-serif",
+                family: "Georgia",
                 size: 16,
             },
             hovermode: 'closest',
