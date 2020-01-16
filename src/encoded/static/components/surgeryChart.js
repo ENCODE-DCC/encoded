@@ -26,33 +26,20 @@ class SurgeryChart extends React.Component {
         var metDataPoints = [];
         nephDataPoints = this.props.data.filter(i => { return i.surgery_type === "Nephrectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location, i.nephrectomy_details] });
         nephDataPoints.sort((a, b) => a[0] - b[0]);
-        console.log("neph", nephDataPoints);
 
         ablaDataPoints = this.props.data.filter(i => { return i.surgery_type === "Ablation" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location] });
         ablaDataPoints.sort((a, b) => a[0] - b[0]);
-        console.log("Ablation", ablaDataPoints);
 
         metDataPoints = this.props.data.filter(i => { return i.surgery_type === "Metastectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location] });
         metDataPoints.sort((a, b) => a[0] - b[0]);
-        console.log("Met", metDataPoints);
-        //get date range for xaxis
+        
         let sortedDateUnix = [];
         sortedDateUnix = this.props.data.map(i => { return Date.parse(i.date) });
         sortedDateUnix.sort((a, b) => a - b);
-        console.log("sortedDate", sortedDateUnix);
 
         let minDateUnix = sortedDateUnix[0];
         let maxDateUnix = sortedDateUnix[sortedDateUnix.length - 1];
-        // let minDate=Math.min(...sortedDate);
-        // let maxDate=Math.max(...sortedDate);
 
-        // // minDate=new Date(minDate);
-        console.log(minDateUnix);
-        console.log(maxDateUnix);
-        // let yArray=dataPoints.map(i=>i[1]);
-        // let yAxis=yArray.length;
-        // console.log(yArray);
-        // console.log(yAxis);
 
         let data = [];
         let traceNeph = {};
@@ -105,7 +92,6 @@ class SurgeryChart extends React.Component {
                     x: [ablaDataPoints[i][1]],
                     y: [ablaDataPoints[i][2]],
                     mode: 'markers',
-                    // mode: 'markers',
                     marker: {
                         color: 'green',
                         symbol: 'square',
