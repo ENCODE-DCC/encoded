@@ -5,3 +5,4 @@
 * Added *control_type*
 * Removed *month_released* calculated property.
 * Added *target_expression_percentile* property.
+* Added *related_series* property.

@@ -760,3 +760,16 @@ class SingleCellRnaSeries(Series):
     item_type = 'single_cell_rna_series'
     schema = load_schema('encoded:schemas/single_cell_rna_series.json')
     embedded = Series.embedded
+
+
+@collection(
+    name='functional-characterization-series',
+    unique_key='accession',
+    properties={
+        'title': "Functional characterization series",
+        'description': 'A series that group functional characterization experiments which should be analyzed and interpreted together.',
+    })
+class FunctionalCharacterizationSeries(Series):
+    item_type = 'functional_characterization_series'
+    schema = load_schema('encoded:schemas/functional_characterization_series.json')
+    embedded = Series.embedded
