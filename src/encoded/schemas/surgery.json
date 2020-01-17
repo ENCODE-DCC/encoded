@@ -27,6 +27,49 @@
             "$ref": "mixins.json#/standard_status"
         }
     ],
+    "dependencies": {
+      "nephrectomy_details":  {
+          "comment":"Nephrectomy details required if surgery type is nephrectomy.",
+          "properties": {
+              "surgery_type": {
+                  "enum": ["Nephrectomy"]
+              }
+          }
+      },
+      "surgery_type":  {
+          "oneOf": [
+              {
+                  "properties": {
+                      "required": ["nephrectomy_details"],
+                      "surgery_type": {
+                          "enum": ["Nephrectomy"]
+                      }
+                  }
+              },
+              {
+                  "not": {
+                      "oneOf": [
+                          {
+                              "required": ["nephrectomy_details"],
+                              "properties": {
+                                  "surgery_type": {
+                                      "enum": ["Ablation", "Metastectomy"]
+                                  }
+                              }
+                          },
+                          {
+                              "properties": {
+                                  "surgery_type": {
+                                      "enum": ["Nephrectomy"]
+                                  }
+                              }
+                          }
+                      ]
+                  }
+              }
+          ]
+      }
+    },
     "properties": {
         "schema_version": {
             "default": "1"
@@ -57,7 +100,7 @@
                     "Nephrectomy",
                     "Metastectomy"
                 ]
-           
+
         },
         "hospital_location": {
             "title": "Surgery hospital Location",
@@ -103,58 +146,8 @@
                 }
             }
         }
-        
+
     },
-
-    "anyOf": [
-        {
-            "properties": {
-              "surgery_type": { "const": "Nephrectomy" },
-              "nephrectomy_details": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "title": "Neprhectomy type",
-                        "type": "string",
-                        "enum": [
-                            "Partial",
-                            "Total"
-                        ]
-                    },
-                    "approach": {
-                        "title": "Neprhectomy Approach",
-                        "type": "string",
-                        "enum": [
-                            "Laparoscopic",
-                            "Open"
-                        ]
-                    },
-                    "robotic_assist": {
-                        "title": "Robotic Assit",
-                        "type": "boolean"
-                    }
-                }
-            }
-
-            },
-            "required": ["patient","date","surgery_type","hospital_location","nephrectomy_details"]
-          },
-          {
-              "properties": {
-                "surgery_type": { "const": "Metastectomy" }
-              },
-              "required": ["patient","date","surgery_type","hospital_location"]
-            }, 
-            {
-              "properties": {
-                "surgery_type": { "const": "Ablation" }
-              },
-              "required": ["patient","date","surgery_type","hospital_location"]
-            }
-        
-        ],
-
-
     "facets": {
         "surgery_type": {
             "title": "Surgery Procedure"
