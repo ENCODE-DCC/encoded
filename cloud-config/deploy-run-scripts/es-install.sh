@@ -11,6 +11,7 @@ JVM_GIGS="$2"
 ES_OPT_FILENAME="$3"
 ONLY_RESTART_ES="$4"
 
+# Install es and add to boot service
 if [ ! "$ONLY_RESTART_ES" == 'yes' ]; then
     opts_src='/home/ubuntu/encoded/cloud-config/deploy-run-scripts/conf-es'
     opts_dest='/etc/elasticsearch'
@@ -52,11 +53,13 @@ if [ ! "$ONLY_RESTART_ES" == 'yes' ]; then
     copy_with_permission "$opts_src/$es_opts_filename" "$opts_dest/elasticsearch.yml"
 
     # Setup/Restart
-    update-rc.d elasticsearch defaults
+    sudo /bin/systemctl enable elasticsearch.service
     sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
 fi
+
+# start es and wait for yellow or green
 while true; do
-    service elasticsearch start
+    sudo systemctl start elasticsearch.service
     es_status="$(curl -fsSL 'localhost:9201/_cat/health?h=status')"
     echo "ES Cluster Status: $es_status"
     if [ "$es_status" == 'yellow' ] || [ "$es_status" == 'green' ]; then
