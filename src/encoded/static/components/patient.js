@@ -88,7 +88,6 @@ class Patient extends React.Component {
     );
     const vitalsPanelBody = (
       <PatientChart chartId="vitalChart" data={context.vitals} ></PatientChart>
-      // <PatientChart chartId="vitalChart" data={context.vitals} chartTitle="Vital Results Over Time"></PatientChart>
     );
     const radiationPanelBody = (
       <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
