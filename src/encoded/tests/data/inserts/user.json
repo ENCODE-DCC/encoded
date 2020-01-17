@@ -786,6 +786,22 @@
         "uuid": "41c729d0-f3ed-4d7c-b9fb-4cff87c92c04"
     },
     {
+        "email": "guillaume.jim@gmail.com",
+        "first_name": "Guillaume",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Jimenez",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "uuid": "07713b7e-f71b-4a69-8fab-ab73896684d9"
+    },
+    {
         "email": "mingjiecn@gmail.com",
         "first_name": "Mingjie",
         "groups": [

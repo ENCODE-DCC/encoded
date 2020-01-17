@@ -93,7 +93,8 @@ class Patient(Item):
         'radiation',
         'medical_imaging',
         'medications',
-        'supportive_medications'
+        'supportive_medications',
+        'surgery'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
@@ -103,7 +104,8 @@ class Patient(Item):
         'radiation': ('Radiation', 'patient'),
         'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
-        'supportive_medication': ('SupportiveMedication', 'patient')
+        'supportive_medication': ('SupportiveMedication', 'patient'),
+        'surgery': ('Surgery', 'patient')
     }
     set_status_up = []
     set_status_down = []
@@ -191,9 +193,9 @@ class Patient(Item):
         dose_range = []
         for treatment in radiation:
             treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['dose']/treatment_object['fractions'] < 2000:               
+            if treatment_object['dose']/treatment_object['fractions'] < 2000:
                 dose_range.append("200 - 2000")
-            elif treatment_object['dose']/treatment_object['fractions'] < 4000:               
+            elif treatment_object['dose']/treatment_object['fractions'] < 4000:
                 dose_range.append("2000 - 4000")
             else:
                 dose_range.append("4000 - 6000")
@@ -210,11 +212,11 @@ class Patient(Item):
         fractions_range = []
         for treatment in radiation:
             treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['fractions'] < 5:               
+            if treatment_object['fractions'] < 5:
                 fractions_range.append("1 - 5")
-            elif treatment_object['fractions'] < 10:               
+            elif treatment_object['fractions'] < 10:
                 fractions_range.append("5 - 10")
-            elif treatment_object['fractions'] < 15:               
+            elif treatment_object['fractions'] < 15:
                 fractions_range.append("10 - 15")
             else:
                 fractions_range.append("15 and up")
@@ -254,7 +256,7 @@ class Patient(Item):
     })
     def medications(self, request, medication):
         return paths_filtered_by_status(request, medication)
-    
+
     @calculated_property(condition='medication', schema={
         "title": "Medication duration",
         "type": "array",
@@ -263,7 +265,7 @@ class Patient(Item):
         },
     })
     def medication_range(self, request, medication):
-        
+
         for object in medication:
             medication_object = request.embed(object, '@@object')
             date_format="%Y-%m-%d"
@@ -271,13 +273,13 @@ class Patient(Item):
             end_date=datetime.strptime(medication_object['end_date'],date_format )
             medication_duration=(end_date-start_date).days/30
 
-            medication_range=[] 
+            medication_range=[]
             if 0<=medication_duration<3:
                 medication_range.append("0-3 months")
             elif 3<=medication_duration<6:
                 medication_range.append("3-6 months")
             elif 6<=medication_duration<9:
-                medication_range.append("6-9 months")  
+                medication_range.append("6-9 months")
             elif 9<=medication_duration<12:
                 medication_range.append("9-12 months")
             elif 12<=medication_duration<18:
@@ -291,8 +293,8 @@ class Patient(Item):
             elif 36<=medication_duration<48:
                 medication_range.append("36-48 months")
             else :
-                medication_range.append("48+ months") 
-        return medication_range 
+                medication_range.append("48+ months")
+        return medication_range
 
     @calculated_property( schema={
         "title": "Supportive Medications",
@@ -305,6 +307,30 @@ class Patient(Item):
 
     def supportive_medications(self, request, supportive_medication):
         return supportive_med_frequency(request, supportive_medication)
+
+
+    @calculated_property( schema={
+        "title": "Surgeries",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Surgery",
+        },
+    })
+
+    def surgery(self, request, surgery):
+        return paths_filtered_by_status(request, surgery)
+
+    @calculated_property(define=True, schema={
+            "title": "Surgery Treatment Summary",
+            "type": "string",
+        })
+    def surgery_summary(self, request, surgery=None):
+            if len(surgery) > 0:
+                surgery_summary = "Treatment Received"
+            else:
+                    surgery_summary = "No Treatment Received"
+            return surgery_summary
 
 @collection(
     name='lab-results',
@@ -409,6 +435,17 @@ class SupportiveMedication(Item):
     embeded = []
 
 
+@collection(
+    name='surgery',
+    properties={
+        'title': 'Surgeries',
+        'description': 'Surgeries results pages',
+    })
+class Surgery(Item):
+    item_type = 'surgery'
+    schema = load_schema('encoded:schemas/surgery.json')
+    embeded = []
+
 @property
 def __name__(self):
     return self.name()
@@ -431,7 +468,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications','surgery_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:
