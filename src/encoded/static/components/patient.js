@@ -84,7 +84,6 @@ class Patient extends React.Component {
 
     const labsPanelBody = (
       <PatientChart chartId="labsChart" data={context.labs} ></PatientChart>
-      // <PatientChart chartId="labsChart" data={context.labs} chartTitle ="Lab Results Over Time"></PatientChart>
 
     );
     const vitalsPanelBody = (
@@ -107,8 +106,6 @@ class Patient extends React.Component {
       <div className={globals.itemClass(context, 'view-item')}>
         <header className="row">
           <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script>
-          <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
-          <script src="http://cdn.zingchart.com/modules/zingchart-grid.min.js"></script>
           <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
           <div className="col-sm-12">
@@ -156,7 +153,7 @@ class Patient extends React.Component {
         {hasVitals && <CollapsiblePanel panelId="myPanelId2" title="Vital Results Over Time" content={vitalsPanelBody} />}
         {hasRadiation && <CollapsiblePanel panelId="myPanelId3" title="Radiation History" content={radiationPanelBody} />}
         {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
-        {hasSurgery && <CollapsiblePanel panelId="myPanelId5" title="Surgeries Results Over Time" content={surgeryPanelBody} />}
+        {hasSurgery && <CollapsiblePanel panelId="myPanelId5" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
