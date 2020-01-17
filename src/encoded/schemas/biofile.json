@@ -1,0 +1,1387 @@
+{
+    "title": "Biofile",
+    "description": "Schema for submitting metadata for a data file.",
+    "id": "/profiles/biofile.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+
+    "required": ["file_format", "output_type", "md5sum"],
+
+    "identifyingProperties": ["uuid", "accession"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+
+        "platform.term_name": {
+            "title": "Platform"
+        },
+
+        "assembly": {
+            "title": "Genome assembly"
+        }
+
+    },
+    "dependencies": {
+
+        "paired_with": {
+            "comment": "Only paired-ended files should have paired_with value.",
+            "required": ["run_type"],
+            "allOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                }
+            ]
+        },
+        "run_type": {
+            "comment": "run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
+            "required": ["platform"],
+            "allOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "run_type": {
+                                    "enum": ["single-ended"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["paired_end"],
+                            "properties": {
+                                "run_type": {
+                                    "enum": ["paired-ended"]
+                                },
+                                "paired_end":{
+                                    "enum": ["1", "2", "1,2"]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "read_name_details": {
+            "comment": "Only fastq files can have read_name_details specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                }
+            }
+        },
+        "mapped_run_type": {
+            "comment": "Only bam files can have mapped_run_type specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "mapped_read_length": {
+            "comment": "Only bam files can have mapped_read_length specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "paired_end": {
+            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
+            "oneOf": [
+                {
+                   "required": ["paired_with", "run_type"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["run_type"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["1"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["run_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "paired_end": {
+                            "enum": ["1,2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                }
+            ]
+        },
+        "output_type":{
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
+            "oneOf":[
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["reads"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "required": ["read_length"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
+                                },
+                                "not": {
+                                    "platform": {
+                                        "linkTo": "Platform",
+                                        "linkEnum": [
+                                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "required": ["restriction_enzymes"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["restriction enzyme site locations"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["reads", "restriction enzyme site locations"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "assembly": {
+            "not": {
+                "anyOf": [
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["rejected reads"]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "platform": {
+            "not": {
+                "required": ["run_type", "paired_end", "read_length"],
+                "properties": {
+                    "platform": {
+                        "linkTo": "Platform",
+                        "linkEnum": [
+                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                        ]
+                    }
+                }
+            }
+        },
+        "read_length": {
+            "oneOf": [
+                {
+                    "not": {
+                        "required":["platform"]
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "file_format":{
+            "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "required": [ "platform"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "rcc",
+                                        "idat",
+                                        "CEL",
+                                        "csfasta",
+                                        "csqual"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "replicate",
+                                "platform"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "fastq",
+                                        "sra"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "file_format_type",
+                                "assembly"
+                            ],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "gff",
+                                        "bed",
+                                        "bigBed"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["assembly"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam",
+                                        "sam",
+                                        "gtf",
+                                        "bigWig",
+                                        "idx"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "properties": {
+                                    "file_format": {
+                                        "enum": [
+                                            "rcc",
+                                            "idat",
+                                            "CEL",
+                                            "fastq",
+                                            "gff",
+                                            "gtf",
+                                            "bed",
+                                            "bigBed",
+                                            "bam",
+                                            "sam",
+                                            "sra",
+                                            "bigWig",
+                                            "csfasta",
+                                            "csqual",
+                                            "idx",
+                                            "database"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "required": ["assembly", "genome_annotation"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["database"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "rcc",
+                                        "idat",
+                                        "CEL",
+                                        "csfasta",
+                                        "csqual",
+                                        "fastq",
+                                        "sra",
+                                        "tsv",
+                                        "tar",
+                                        "fasta"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "idat green channel",
+                                        "idat red channel",
+                                        "intensity values",
+                                        "reads",
+                                        "rejected reads",
+                                        "raw data",
+                                        "reporter code counts"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "database"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "transcriptome index"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam",
+                                        "bed",
+                                        "bedpe",
+                                        "bigBed",
+                                        "bigWig",
+                                        "chain",
+                                        "csv",
+                                        "fasta",
+                                        "gff",
+                                        "gtf",
+                                        "idx",
+                                        "hdf5",
+                                        "hic",
+                                        "PWM",
+                                        "sam",
+                                        "tagAlign",
+                                        "tar",
+                                        "tsv",
+                                        "vcf",
+                                        "wig",
+                                        "2bit",
+                                        "btr"
+                                    ]
+                                },
+                                "output_type": {
+                                    "not": {
+                                        "enum": [
+                                            "idat green channel",
+                                            "idat red channel",
+                                            "intensity values",
+                                            "reads",
+                                            "rejected reads",
+                                            "raw data",
+                                            "reporter code counts",
+                                            "restriction enzyme site locations"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "txt"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "restriction enzyme site locations"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "status": {
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "required": ["file_size"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["in progress",  "revoked", "archived", "released"]
+                                 }
+                            }
+                                    
+                            
+                        },
+
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+
+                }
+            ]
+        },
+        "restriction_enzymes": {
+            "comment": "Only files with output_type of restriction enzyme site locations can specify restriction_enzymes.",
+            "properties": {
+                "output_type": {
+                    "enum": ["restriction enzyme site locations"]
+                }
+            }
+        }
+    },
+    "properties": {
+         "date_created": {
+            "rdfs:subPropertyOf": "dc:created",
+            "title": "Date created",
+            "decription": "The date the object was created.",
+            "comment": "Do not submit. The date the object is created is assigned by the server.",
+            "type": "string",
+            "format": "date-time",
+            "serverDefault": "now",
+            "permission": "import_items"
+        },
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "FF"
+        },
+
+        "read_count": {
+            "title": "Read count",
+            "description": "Number of reads in fastq file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "permission": "import_items",
+            "type": "integer",
+            "minimum": 0
+        },
+        "file_format": {
+            "title": "File format",
+            "type": "string",
+            "oneOf": [
+                {
+                    "comment": "This field is required.",
+                    "enum": [
+                        "bam",
+                        "bed",
+                        "bedpe",
+                        "bigBed",
+                        "bigWig",
+                        "CEL",
+                        "chain",
+                        "csv",
+                        "database",
+                        "fasta",
+                        "fastq",
+                        "gff",
+                        "gtf",
+                        "hdf5",
+                        "hic",
+                        "idat",
+                        "PWM",
+                        "rcc",
+                        "sam",
+                        "tagAlign",
+                        "tar",
+                        "tsv",
+                        "vcf",
+                        "wig",
+                        "idx",
+                        "txt"
+                    ]
+                },
+                {
+                    "comment": "Historical file formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "2bit",
+                        "btr",
+                        "csfasta",
+                        "csqual",
+                        "sra"
+                    ]
+                }
+            ]
+        },
+        "file_format_type": {
+            "title": "File format type",
+            "description": "Files of type bed and gff require further specification",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "bed12",
+                        "bed3",
+                        "bed3+",
+                        "bed5",
+                        "bed6",
+                        "bed6+",
+                        "bed9",
+                        "bed9+",
+                        "bedGraph",
+                        "bedLogR",
+                        "bedMethyl",
+                        "broadPeak",
+                        "candidate enhancer predictions",
+                        "enhancer predictions",
+                        "enhancerAssay",
+                        "gappedPeak",
+                        "gff2",
+                        "gff3",
+                        "idr_peak",
+                        "narrowPeak",
+                        "tss_peak"
+                    ]
+                },
+                {
+                    "comment": "Historical file formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "bedExonScore",
+                        "bedRnaElements",
+                        "mango",
+                        "modPepMap",
+                        "openChromCombinedPeaks",
+                        "pepMap",
+                        "peptideMapping",
+                        "shortFrags",
+                        "unknown"
+                    ]
+                }
+           ]
+        },
+        "restricted": {
+            "title": "Restricted file",
+            "permission":"import_items",
+            "description": "A flag to indicate whether this file is subject to restricted access",
+            "comment": "Do not submit. This value can only be set by admins.",
+            "type": "boolean"
+        },
+        "submitted_file_name": {
+            "title": "Original file name",
+            "description": "The local file name used at time of submission.",
+            "comment": "Although this is not required. It is highly recommended.",
+            "type": "string"
+        },
+ 
+        "md5sum": {
+            "title": "MD5sum",
+            "description": "The md5sum of the file being transferred.",
+            "comment": "Warning: This value can vary for files of same content gzipped at different times",
+            "type": "string",
+            "format": "hex",
+            "maxLength": 32,
+            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
+        },
+        "content_md5sum": {
+            "title": "Content MD5sum",
+            "description": "The MD5sum of the uncompressed file.",
+            "comment": "Do not submit. This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
+            "type": "string",
+            "permission": "import_items",
+            "format": "hex",
+            "maxLength": 32,
+            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
+        },
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Flowcell based fastq signature part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
+                "type":  "string",
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
+            }
+        },
+        "file_size": {
+            "title": "File size",
+            "description": "File size specified in bytes.",
+            "comment": "Required.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "platform": {
+            "title": "Platform",
+            "description": "The measurement device used to collect data.",
+            "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
+            "type": "string",
+            "linkTo": "Platform"
+        },
+        "read_length": {
+            "title": "Read length",
+            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "run_type": {
+            "title": "Run type",
+            "description": "Indicates if file is part of a single or paired end sequencing run",
+            "comment": "This field is required for sra and fastq files.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "paired_end": {
+            "title": "Paired end identifier",
+            "description": "Which read of the pair the file represents (in case of paired end sequencing run)",
+            "comment": "This field is required if run_type is paired-ended.",
+            "type": "string",
+            "enum": [
+                "1",
+                "2",
+                "1,2"
+            ]
+        },
+        "paired_with": {
+            "title": "Paired with",
+            "description": "The paired end fastq that corresponds with this file.",
+            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
+            "type": "string",
+            "linkTo": "File"
+        },
+        "mapped_read_length": {
+            "title": "Mapped read length (nt)",
+            "permission": "import_items",
+            "description": "The length of the reads actually mapped, if the original read length was clipped.",
+            "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mapped_run_type": {
+            "title": "Mapped run type for bam files",
+            "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
+            "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
+            "permission": "import_items",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "read_name_details": {
+            "title": "Fastq read name details",
+            "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
+            "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
+            "type": "object",
+            "permission": "import_items",
+            "additionalProperties": false,
+            "properties": {
+                "flowcell_id_location": {
+                    "title": "Flowcell identifier location",
+                    "description": "Location of the flowcell identifier in the read name",
+                    "comment": "Zero-based location of the flowcell identifier in the read name, if you split read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "lane_id_location": {
+                    "title": "Lane identifier location",
+                    "description": "Location of the lane identifier in the read name",
+                    "comment": "Zero-based location of the lane identifier in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "read_number_location": {
+                    "title": "Read number (1 or 2) identifier location",
+                    "description": "Location of the read number in the read name",
+                    "comment": "Zero-based location of the read number in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "barcode_location": {
+                    "title": "Barcode location",
+                    "description": "Location of the barcode in the read name",
+                    "comment": "Zero-based location of the barcode in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "flowcell_details": {
+            "title": "Flowcell details",
+            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    },
+                    "barcode": {
+                        "title": "Barcode",
+                        "type": "string"
+                    },
+                    "barcode_in_read": {
+                        "title": "Barcode in read",
+                        "description": "The read the barcode is located on.",
+                        "type": "string",
+                        "enum": [
+                            "1",
+                            "2"
+                        ]
+                    },
+                    "barcode_position": {
+                         "title": "Barcode position",
+                         "description": "The 1-based start position of the barcode in 5->3 orientation.",
+                         "type": "integer",
+                         "minimum": 1
+                    },
+                    "chunk": {
+                        "title": "Chunk",
+                        "description": "The file chunk label as assigned by Illumina software when splitting up a fastq into specified chunk sizes.",
+                        "comment": "This label is used to re-assemble the chunks into the original file in the correct order.",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "output_type": {
+            "title": "Output type",
+            "description": "A description of the file's purpose or contents.",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "alignments",
+                        "blacklisted regions",
+                        "candidate Cis-Regulatory Elements",
+                        "candidate enhancers",
+                        "candidate promoters",
+                        "chromatin interactions",
+                        "mapping quality thresholded chromatin interactions",
+                        "conservative idr thresholded peaks",
+                        "control normalized signal",
+                        "DHS peaks",
+                        "differential expression quantifications",
+                        "differential splicing quantifications",
+                        "enhancer validation",
+                        "enrichment",
+                        "exon quantifications",
+                        "female genome index",
+                        "female genome reference",
+                        "filtered indels",
+                        "filtered peaks",
+                        "filtered regions",
+                        "filtered SNPs",
+                        "fold change over control",
+                        "gene alignments",
+                        "gene quantifications",
+                        "genome compartments",
+                        "genome index",
+                        "genome reference",
+                        "hotspots",
+                        "idat green channel",
+                        "idat red channel",
+                        "intensity values",
+                        "library fraction",
+                        "long range chromatin interactions",
+                        "male genome index",
+                        "male genome reference",
+                        "maternal haplotype mapping",
+                        "maternal variant calls",
+                        "methylation state at CHG",
+                        "methylation state at CHH",
+                        "methylation state at CpG",
+                        "microRNA quantifications",
+                        "minus strand signal of all reads",
+                        "minus strand signal of unique reads",
+                        "mitochondria blacklisted regions",
+                        "motif model",
+                        "nested topologically associated domains",
+                        "normalized signal of all reads",
+                        "open chromatin regions",
+                        "optimal idr thresholded peaks",
+                        "paternal haplotype mapping",
+                        "paternal variant calls",
+                        "peaks",
+                        "peaks and background as input for IDR",
+                        "phased mapping",
+                        "phased variant calls",
+                        "plus strand signal of all reads",
+                        "plus strand signal of unique reads",
+                        "predicted enhancers",
+                        "pseudoreplicated idr thresholded peaks",
+                        "raw minus strand signal",
+                        "raw normalized signal",
+                        "raw plus strand signal",
+                        "raw signal",
+                        "read-depth normalized signal",
+                        "reads",
+                        "reference variants",
+                        "relative replication signal",
+                        "replicated peaks",
+                        "replication timing profile",
+                        "reporter code counts",
+                        "representative dnase hypersensitivity sites",
+                        "restriction enzyme site locations",
+                        "RNA-binding protein associated mRNAs",
+                        "rRNA reference",
+                        "semi-automated genome annotation",
+                        "signal of all reads",
+                        "signal of unique reads",
+                        "signal p-value",
+                        "spike-in sequence",
+                        "splice junctions",
+                        "stable peaks",
+                        "topologically associated domains",
+                        "transcript quantifications",
+                        "transcription start sites",
+                        "transcriptome alignments",
+                        "transcriptome index",
+                        "transcriptome reference",
+                        "TSS reference",
+                        "unfiltered alignments",
+                        "variant calls"
+                    ]
+                },
+                {
+                    "comment": "Historical output types, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "base overlap signal",
+                        "clusters",
+                        "contigs",
+                        "copy number variation",
+                        "distal peaks",
+                        "filtered modified peptide quantification",
+                        "filtered peptide quantification",
+                        "filtered transcribed fragments",
+                        "HMM predicted chromatin state",
+                        "minus strand signal",
+                        "minus strand transcription start sites",
+                        "miRNA reference",
+                        "percentage normalized signal",
+                        "plus strand signal",
+                        "plus strand transcription start sites",
+                        "predicted forebrain enhancers",
+                        "predicted heart enhancers",
+                        "predicted transcription start sites",
+                        "predicted whole brain enhancers",
+                        "primer sequence",
+                        "proximal peaks",
+                        "raw data",
+                        "redacted alignments",
+                        "redacted unfiltered alignments",
+                        "reference",
+                        "rejected reads",
+                        "sequence alignability",
+                        "sequence uniqueness",
+                        "signal",
+                        "snRNA reference",
+                        "spike-in alignments",
+                        "summed densities signal",
+                        "transcribed fragments",
+                        "tRNA reference",
+                        "unfiltered modified peptide quantification",
+                        "unfiltered peptide quantification",
+                        "validation",
+                        "valleys",
+                        "wavelet-smoothed signal"
+                    ]
+                }
+            ]
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The files participating as inputs into software to produce this output file.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "File"
+                    }
+        },
+        "controlled_by": {
+            "title": "Controlled by",
+            "description": "The files which should be used as a control for this file. ",
+            "comment": "This is used by the pipeline to find ChIP-seq controls.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "File"
+            }
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The files that this file supersedes.",
+            "comment": "The files in this list should be obsolete and the superseeding file object should be used instead.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                    "comment": "The files in this list should be archived or revoked.",
+                    "type": "string",
+                    "linkTo": "File"
+            }
+        },
+
+        "replicate": {
+            "title": "Replicate",
+            "description": "The experimental replicate designation for the file.",
+            "comment": "This field is required for sra and fastq files. See replicate.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Replicate"
+        },
+        "assembly": {
+            "title": "Genome assembly",
+            "description": "Genome assembly that files were mapped to.",
+            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
+            "type": "string",
+            "enum": [
+                "GRCh38-minimal",
+                "GRCh38",
+                "hg19"
+    
+                ]
+        },
+        "genome_annotation": {
+            "title": "Genome annotation",
+            "description": "Genome annotation that file was generated with.",
+            "comment": "Applies to files created using annotations.",
+            "type": "string",
+            "enum": [
+                "ENSEMBL V65",
+                "M2",
+                "M3",
+                "M4",
+                "M7",
+                "M14",
+                "M21",
+                "miRBase V21",
+                "None",
+                "V10",
+                "V19",
+                "V22",
+                "V24",
+                "V29",
+                "V30",
+                "V3c",
+                "V7",
+                "WS235",
+                "WS245"
+                ]
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "permission": "import_items",
+            "default": "uploading",
+            "description": "The status of the file object.",
+            "comment": "Do not submit.  This is set by admins along the process of file submission.",
+            "enum" : [
+                "uploading",
+                "upload failed",
+                "in progress",
+                "released",
+                "archived",
+                "deleted",
+                "replaced",
+                "revoked",
+                "content error"
+                ]
+        },
+        "restriction_enzymes": {
+            "title": "Restriction enzymes",
+            "description": "The restriction enzymes the restriction site locations file applies to.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Restriction enzyme",
+                "description": "The name of a restriction enzyme",
+                "type": "string",
+                "enum": [
+                    "DpnII",
+                    "MboI",
+                    "HindIII"
+                ]
+            }
+
+        },
+        "content_error_detail": {
+            "title": "Content error detail",
+            "description": "Explanation of why the file failed the automated content checks.",
+            "comment": "Do not submit.  This is posted by the checkfiles script. It is required when status is 'content error'",
+            "type": "string",
+            "permission": "import_items"
+        },
+        "revoke_detail": {
+            "title": "Revoke error detail",
+            "description": "Explanation of why the file was revoked.",
+            "comment": "Do not submit. The field would be posted by DCC.",
+            "type": "string",
+            "permission": "import_items"
+        }
+    },
+    "columns": {
+    },
+    "output_type_output_category": {
+        "idat green channel": "raw data",
+        "idat red channel": "raw data",
+        "intensity values": "raw data",
+        "reads": "raw data",
+        "rejected reads": "raw data",
+        "raw data": "raw data",
+        "reporter code counts": "raw data",
+
+        "alignments": "alignment",
+        "unfiltered alignments": "alignment",
+        "gene alignments": "alignment",
+        "redacted alignments": "alignment",
+        "redacted unfiltered alignments": "alignment",
+        "transcriptome alignments": "alignment",
+        "spike-in alignments": "alignment",
+        "maternal haplotype mapping": "alignment",
+        "paternal haplotype mapping": "alignment",
+        "phased mapping": "alignment",
+
+        "minus strand signal of all reads": "signal",
+        "plus strand signal of all reads": "signal",
+        "signal of all reads": "signal",
+        "normalized signal of all reads": "signal",
+        "raw minus strand signal": "signal",
+        "raw plus strand signal": "signal",
+        "raw signal": "signal",
+        "raw normalized signal": "signal",
+        "read-depth normalized signal": "signal",
+        "control normalized signal": "signal",
+        "minus strand signal of unique reads": "signal",
+        "plus strand signal of unique reads": "signal",
+        "signal of unique reads": "signal",
+        "signal p-value": "signal",
+        "fold change over control": "signal",
+        "minus strand signal": "signal",
+        "plus strand signal": "signal",
+        "signal": "signal",
+        "base overlap signal": "signal",
+        "percentage normalized signal":"signal",
+        "summed densities signal": "signal",
+        "wavelet-smoothed signal": "signal",
+        "relative replication signal": "signal",
+
+        "enrichment": "quantification",
+        "library fraction": "quantification",
+        "exon quantifications": "quantification",
+        "gene quantifications": "quantification",
+        "microRNA quantifications": "quantification",
+        "transcript quantifications": "quantification",
+        "methylation state at CpG": "quantification",
+        "methylation state at CHG": "quantification",
+        "methylation state at CHH": "quantification",
+        "filtered modified peptide quantification": "quantification",
+        "unfiltered modified peptide quantification": "quantification",
+        "filtered peptide quantification": "quantification",
+        "unfiltered peptide quantification": "quantification",
+        "replication timing profile": "quantification",
+        "motif model": "quantification",
+        "differential expression quantifications": "quantification",
+        "differential splicing quantifications": "quantification",
+
+        "hotspots": "annotation",
+        "long range chromatin interactions": "annotation",
+        "chromatin interactions": "annotation",
+        "mapping quality thresholded chromatin interactions": "annotation",
+        "topologically associated domains": "annotation",
+        "nested topologically associated domains": "annotation",
+        "genome compartments": "annotation",
+        "open chromatin regions":"annotation",
+        "filtered peaks":"annotation",
+        "filtered regions":"annotation",
+        "DHS peaks": "annotation",
+        "peaks": "annotation",
+        "peaks and background as input for IDR": "annotation",
+        "replicated peaks": "annotation",
+        "RNA-binding protein associated mRNAs": "annotation",
+        "splice junctions": "annotation",
+        "copy number variation": "annotation",
+        "clusters": "annotation",
+        "contigs": "annotation",
+        "transcribed fragments": "annotation",
+        "filtered transcribed fragments": "annotation",
+        "valleys": "annotation",
+        "blacklisted regions": "annotation",
+        "mitochondria blacklisted regions": "annotation",
+        "distal peaks": "annotation",
+        "proximal peaks": "annotation",
+        "optimal idr thresholded peaks": "annotation",
+        "conservative idr thresholded peaks": "annotation",
+        "pseudoreplicated idr thresholded peaks": "annotation",
+        "stable peaks": "annotation",
+        "predicted forebrain enhancers": "annotation",
+        "predicted heart enhancers": "annotation",
+        "predicted whole brain enhancers": "annotation",
+        "predicted enhancers": "annotation",
+        "candidate enhancers": "annotation",
+        "candidate promoters": "annotation",
+        "predicted transcription start sites": "annotation",
+        "transcription start sites": "annotation",
+        "candidate Cis-Regulatory Elements": "annotation",
+        "representative dnase hypersensitivity sites":"annotation",
+        "variant calls": "annotation",
+        "maternal variant calls": "annotation",
+        "paternal variant calls": "annotation",
+        "phased variant calls": "annotation",
+        "filtered SNPs": "annotation",
+        "filtered indels": "annotation",
+
+        "transcriptome reference": "reference",
+        "transcriptome index": "reference",
+        "genome index": "reference",
+        "tRNA reference": "reference",
+        "miRNA reference": "reference",
+        "snRNA reference": "reference",
+        "rRNA reference": "reference",
+        "TSS reference": "reference",
+        "reference variants": "reference",
+        "genome reference": "reference",
+        "female genome reference": "reference",
+        "female genome index": "reference",
+        "male genome reference": "reference",
+        "male genome index": "reference",
+        "primer sequence": "reference",
+        "spike-in sequence": "reference",
+        "reference": "reference",
+        "restriction enzyme site locations": "reference",
+        "sequence alignability": "reference",
+        "sequence uniqueness": "reference",
+
+        "enhancer validation": "validation",
+        "validation": "validation",
+
+        "HMM predicted chromatin state": "annotation",
+        "semi-automated genome annotation": "annotation"
+
+    },
+    "file_format_file_extension": {
+        "2bit": ".2bit",
+        "CEL": ".cel.gz",
+        "bam": ".bam",
+        "bed": ".bed.gz",
+        "bedpe": ".bedpe.gz",
+        "chain": ".chain",
+        "bigBed": ".bigBed",
+        "bigWig": ".bigWig",
+        "btr": ".btr",
+        "csfasta": ".csfasta.gz",
+        "csqual": ".csqual.gz",
+        "database": ".db",
+        "fasta": ".fasta.gz",
+        "fastq": ".fastq.gz",
+        "gff": ".gff.gz",
+        "gtf": ".gtf.gz",
+        "idx": ".idx",
+        "hic": ".hic",
+        "hdf5": ".h5",
+        "idat": ".idat",
+        "PWM":".pwm",
+        "rcc": ".rcc",
+        "sra": ".sra",
+        "tagAlign": ".tagAlign.gz",
+        "tar": ".tar.gz",
+        "tsv": ".tsv",
+        "csv": ".csv",
+        "vcf": ".vcf.gz",
+        "wig": ".wig.gz",
+        "sam": ".sam.gz",
+        "txt": ".txt"
+    },
+    "changelog": "/profiles/changelogs/file.md"
+}
