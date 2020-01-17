@@ -1,12 +1,15 @@
 ## Changelog for gene.json
 
+### Minor changes since schema version 2
+
+* Added *locations*, which specifies the chromosome and genomic coordinates of the gene using a 0-based, closed coordinate system.
+
 ### Schema version 2
 
 * Remove *go_annotations*.
 
 ### Minor changes since schema version 1
 
-* Added *locations*, which specifies the chromosome and genomic coordinates of the gene.
 * *dbxrefs* was set to have a minimum of 1.
 
 ### Schema version 1
