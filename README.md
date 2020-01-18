@@ -2,8 +2,8 @@
 ### Build instance to create new ami
     * bin/deploy --use-prebuilt 20191112-pg11-u18-demo --build-ami -n buildami
     * Use AWS to make an ami out of instance. args:
-        AMI name: encd-u18-py37-demo
-        description: Encoded ubuntu 18 python 376 demo ami
+        AMI name: encd-u18-py369-demo
+        description: Encoded ubuntu 18 python 3.6.9 demo ami
 ### Use new ami id to create a demo
     * bin/deploy --use-prebuilt 20191112-pg11-u18-demo -n encd3983-on-sno132 --image-id the-ami-id
 
