@@ -52,20 +52,31 @@ if [ ! "$ONLY_RESTART_ES" == 'yes' ]; then
     fi
     copy_with_permission "$opts_src/$es_opts_filename" "$opts_dest/elasticsearch.yml"
 
-    # Setup/Restart
-    sudo /bin/systemctl enable elasticsearch.service
+    # Install discovery for clusters, maybe only needed for clusters
     sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
+    # Add es service and start
+    sudo /bin/systemctl enable elasticsearch.service
+    sudo systemctl start elasticsearch.service
 fi
 
-# start es and wait for yellow or green
-while true; do
-    sudo systemctl start elasticsearch.service
-    es_status="$(curl -fsSL 'localhost:9201/_cat/health?h=status')"
-    echo "ES Cluster Status: $es_status"
-    if [ "$es_status" == 'yellow' ] || [ "$es_status" == 'green' ]; then
-        break
-    else
-        echo "Waiting for es to turn yellow or green"
-        sleep 10
-    fi
-done
+
+if [ -z "$CLUSTER_NAME" ]; then
+    # Only for single demos
+    # start es and wait for yellow or green
+    while true; do
+        es_status="$(curl -fsSL 'localhost:9201/_cat/health?h=status')"
+        echo "ES Demo Status: '$es_status'"
+        if [ "$es_status" == 'yellow' ] || [ "$es_status" == 'green' ]; then
+            echo 'ES Ready!'
+            break
+        else
+            echo 'ES NOT Ready'
+            if [ "$es_status" == 'yellow' ]; then
+                echo "Waiting for es to turn yellow or green"
+            else
+                sudo systemctl start elasticsearch.service
+            fi
+            sleep 10
+        fi
+    done
+fi
