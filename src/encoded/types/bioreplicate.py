@@ -12,7 +12,7 @@ import re
 
 @collection(
     name='bioreplicates',
-    unique_key='accession',
+    unique_key='uuid',
     properties={
         'title': 'Bioreplicates',
         'description': 'Bioreplicates used or available',
@@ -20,7 +20,7 @@ import re
 class Bioreplicate(Item):
     item_type = 'bioreplicate'
     schema = load_schema('encoded:schemas/bioreplicate.json')
-    name_key = 'accession'
+    name_key = 'uuid'
     rev = {
         
     }
