@@ -759,7 +759,7 @@ class AssayClicking extends React.Component {
                         <div className="site-banner-img">
                             <img src="static/img/classic-image.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />
 
-                            <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
+                            <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" width="2260" className="classic-svg">
                                 <BannerOverlayButton item={assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95" selected={assayCategory === assayList[0]} clickHandler={this.sortByAssay} />
                                 <BannerOverlayButton item={assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95" selected={assayCategory === assayList[1]} clickHandler={this.sortByAssay} />
                                 <BannerOverlayButton item={assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95" selected={assayCategory === assayList[2]} clickHandler={this.sortByAssay} />
