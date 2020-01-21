@@ -7,6 +7,7 @@ executors:
   encoded-executor:
     docker:
       - image: circleci/buildpack-deps:bionic
+      - image: circleci/postgres:11
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
