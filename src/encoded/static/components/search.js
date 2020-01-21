@@ -177,9 +177,8 @@ class BiosampleComponent extends React.Component {
     render() {
         const result = this.props.context;
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
-        const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
-        const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
-        const separator = (lifeStage || age) ? ',' : '';
+        const ageDisplay = (result.age_display && result.age_display !== '') ? ` ${result.age_display}` : '';
+        const separator = (lifeStage || ageDisplay) ? ',' : '';
         const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
 
         // Calculate genetic modification properties for display.
@@ -221,7 +220,7 @@ class BiosampleComponent extends React.Component {
                         <a href={result['@id']} className="result-item__link">
                             {`${result.biosample_ontology.term_name} (`}
                             <em>{result.organism.scientific_name}</em>
-                            {`${separator}${lifeStage}${age}${ageUnits})`}
+                            {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
                         <div className="result-item__data-row">
                             <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
