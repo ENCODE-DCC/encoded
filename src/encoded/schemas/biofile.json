@@ -1113,12 +1113,12 @@
             }
         },
 
-        "replicate": {
-            "title": "Replicate",
+        "bioreplicate": {
+            "title": "Bioreplicate",
             "description": "The experimental replicate designation for the file.",
             "comment": "This field is required for sra and fastq files. See replicate.json for available identifiers.",
             "type": "string",
-            "linkTo": "Replicate"
+            "linkTo": "Bioreplicate"
         },
         "assembly": {
             "title": "Genome assembly",

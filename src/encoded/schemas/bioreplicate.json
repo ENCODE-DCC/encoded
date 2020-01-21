@@ -38,7 +38,7 @@
         },
 
         "biolibrary": {
-            "title": "Library",
+            "title": "Biolibrary",
             "description": "The nucleic acid library used in this replicate.",
             "comment": "See biolibrary.json for available identifiers.",
             "type": "string",
