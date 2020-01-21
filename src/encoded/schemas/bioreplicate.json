@@ -19,7 +19,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "1"
         },
 
         "biological_replicate_number": {
@@ -42,7 +42,7 @@
             "description": "The nucleic acid library used in this replicate.",
             "comment": "See biolibrary.json for available identifiers.",
             "type": "string",
-            "linkTo": "biolibrary"
+            "linkTo": "Biolibrary"
         },
         "rbns_protein_concentration": {
             "title": "RBNS protein concentration",

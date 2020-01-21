@@ -25,7 +25,7 @@ class Bioreplicate(Item):
         
     }
     embedded = [
-        'biolibrary',
+
     ]
     audit_inherit = [
     ]

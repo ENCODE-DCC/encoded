@@ -56,12 +56,8 @@ class Biofile(Item):
     }
 
     embedded = [
-        'platform',
 
-        'bioreplicate',
-
-        'bioreplicate.biolibrary',
-        'biolibrary',
+       
 
     ]
     audit_inherit = [
@@ -69,7 +65,7 @@ class Biofile(Item):
     ]
     set_status_up = [
 
-        'platform',
+
     ]
     set_status_down = []
     public_s3_statuses = ['released', 'archived']

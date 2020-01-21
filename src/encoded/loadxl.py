@@ -23,7 +23,6 @@ ORDER = [
     'platform',
     'biolibrary',
     'bioreplicate',
-    'biofile',
     'medication',
     'supportive_medication', 
     'lab_results',
