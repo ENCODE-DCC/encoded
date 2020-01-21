@@ -41,7 +41,7 @@ commands:
               postgresql-9.3
             sudo chown -R circleci /etc/elasticsearch
             sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH\n;' $BASH_ENV
-            sudo apt-get install -y python3.4-dev python3-pip
+            sudo apt-get install -y python3.6-dev python3-pip
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
       - run:
           name: Run buildout
