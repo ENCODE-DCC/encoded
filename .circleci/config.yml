@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
     browser-tools: circleci/browser-tools@0.1.0
-    python: tinyclues/python@3.5.9
+    python: tinyclues/python@3.5.2
 executors:
   encoded-executor:
     docker:
