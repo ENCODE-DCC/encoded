@@ -127,10 +127,7 @@ def library_8_9(value, system):
 @upgrade_step('library', '9', '10')
 def library_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-4975
-    extr_method = value.get('extraction_method')
-    lys_method = value.get('lysis_method')
-    size_method = value.get('library_size_selection_method')
-    mapping1 = {
+    old_to_new = {
         'ATAC buffer': 'ATAC buffer',
         'ATAC_buffer': 'ATAC buffer',
         'ATAC-seq (Greenleaf & Chang Lab protocol)': 'ATAC-seq (Greenleaf & Chang Lab protocol)',
@@ -158,41 +155,6 @@ def library_9_10(value, system):
         '[NPB(5%BSA(Sigma),0.2%IGEPAL-CA630(Sigma),cOmplete(Roche),1mMDTTinPBS)]': '[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]',
         '0.01% digitonin': '0.01% digitonin',
         '72 degrees for 3 minutes in the presence of Triton': '72 degrees for 3 minutes in the presence of Triton',
-    }
-    if 'extraction_method' in value:
-        if extr_method in ['n/a', '0', 'see document', 'see document ', 'None', 'Diagenode Bioruptor, 20-40 cycles of 0.5 minute on and 0.5 minute off']:
-            value.pop('extraction_method')
-        elif extr_method in mapping1:
-            value['extraction_method'] = mapping1[extr_method]
-        else:
-            extr_method = repr(value['extraction_method'])
-            if 'notes' in value:
-                value['notes'] = value['notes'] + extr_method
-                value['extraction_method'] = 'other'
-            else:
-                value['notes'] = extr_method
-                value['extraction_method'] = 'other'
-
-    if 'lysis_method' in value:
-        if lys_method == 'see document':
-            value.pop('lysis_method')
-        elif lys_method in mapping1:
-            value['lysis_method'] = mapping1[lys_method]
-            if value['lysis_method'] == value['extraction_method']:
-                if lys_method == 'SDS':
-                    return
-                else:
-                    value.pop('lysis_method')
-        else:
-            lys_method = repr(value['lysis_method'])
-            if 'notes' in value:
-                value['notes'] = value['notes'] + lys_method
-                value['lysis_method'] = 'other'
-            else:
-                value['notes'] = lys_method
-                value['lysis_method'] = 'other'
-
-    mapping2 = {
         'agarose gel extraction': 'agarose gel extraction',
         'AMPure XP bead purification': 'AMPure XP bead purification',
         'Agencourt AMPure XP': 'AMPure XP bead purification',
@@ -217,16 +179,44 @@ def library_9_10(value, system):
         'Only RNAs greater than 200 nucleotides. The inserts for the library will vary from ~ 100 - 700 base pairs.': 'Only RNAs greater than 200 nucleotides. The inserts for the library will vary from ~ 100 - 700 base pairs.',
         'Only RNAs greater than 200 nucleotides. The insert for the library will vary from ~ 100 - 700 base pairs.': 'Only RNAs greater than 200 nucleotides. The insert for the library will vary from ~ 100 - 700 base pairs.'
     }
+    if 'extraction_method' in value:
+        extr_method = value.get('extraction_method')
+        if extr_method in ['n/a', '0', 'see document', 'see document ', 'None', 'Diagenode Bioruptor, 20-40 cycles of 0.5 minute on and 0.5 minute off']:
+            value.pop('extraction_method')
+        elif extr_method in old_to_new:
+            value['extraction_method'] = old_to_new[extr_method]
+        else:
+            if 'notes' in value:
+                value['notes'] += "\t" + value['extraction_method']
+            else:
+                value['notes'] = value['extraction_method']
+            value['extraction_method'] = 'other'
+
+    if 'lysis_method' in value:
+        lys_method = value.get('lysis_method')
+        if lys_method == 'see document':
+            value.pop('lysis_method')
+        elif lys_method in old_to_new:
+            value['lysis_method'] = old_to_new[lys_method]
+            if 'extraction_method' in value:
+                if value['lysis_method'] == value['extraction_method'] and lys_method != 'SDS':
+                    value.pop('lysis_method')
+        else:
+            if 'notes' in value:
+                value['notes'] += '\t' + value['lysis_method']
+            else:
+                value['notes'] = lys_method
+            value['lysis_method'] = 'other'
+
     if 'library_size_selection_method' in value:
+        size_method = value.get('library_size_selection_method')
         if size_method in ['none', 'see document', 'DNA', 'No size selections were done on this sample', 'no post-PCR size selection']:
             value.pop('library_size_selection_method')
-        elif size_method in mapping2:
-            value['library_size_selection_method'] = mapping2[size_method]
+        elif size_method in old_to_new:
+            value['library_size_selection_method'] = old_to_new[size_method]
         else:
-            size_method = repr(value['library_size_selection_method'])
             if 'notes' in value:
-                value['notes'] = value['notes'] + size_method
-                value['library_size_selection_method'] = 'other'
+                value['notes'] += "\t" + value['library_size_selection_method']
             else:
-                value['notes'] = size_method
-                value['library_size_selection_method'] = 'other'
+                value['notes'] = value['library_size_selection_method']
+            value['library_size_selection_method'] = 'other'

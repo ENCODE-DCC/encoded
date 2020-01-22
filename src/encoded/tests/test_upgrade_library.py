@@ -90,16 +90,16 @@ def test_upgrade_library_8_to_9(upgrader, library_8):
     assert 'fragmentation_method' not in value
 
 
-def test_library_upgrade_9_to_10(upgrader, library_schema_10):
-    value = upgrader.upgrade('library', library_schema_10, target_version='10')
+def test_library_upgrade_9_to_10(upgrader, library_schema_9):
+    value = upgrader.upgrade('library', library_schema_9, target_version='10')
     assert value['schema_version'] == '10'
     assert value['extraction_method'] == 'Trizol'
     assert 'lysis_method' not in value
     assert value['library_size_selection_method'] == 'gel'
 
 
-def test_library_upgrade_9_to_10b(upgrader, library_schema_10b):
-    value = upgrader.upgrade('library', library_schema_10b, target_version='10')
+def test_library_upgrade_9_to_10b(upgrader, library_schema_9b):
+    value = upgrader.upgrade('library', library_schema_9b, target_version='10')
     assert value['schema_version'] == '10'
     assert value['lysis_method'] == 'other'
     assert 'test' in value['notes']

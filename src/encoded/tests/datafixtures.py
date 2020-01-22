@@ -1267,7 +1267,7 @@ def fastq_pair_1(fastq):
 
 
 @pytest.fixture
-def library_schema_10(lab, award):
+def library_schema_9(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -1278,11 +1278,10 @@ def library_schema_10(lab, award):
 
 
 @pytest.fixture
-def library_schema_10b(lab, award):
+def library_schema_9b(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'extraction_method': 'see document',
         'lysis_method': 'test',
-        'notes': '',
     }

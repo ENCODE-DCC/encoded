@@ -20,9 +20,10 @@ The properties *extraction_method*, *lysis_method*, and *library_size_selection_
                         "Zymo Quick-DNA MicroPrep (D3021)"
         ]
 
-    "comment": "Historical file formats, not valid for new submissions."
+    "comment": "Historical extraction methods, not valid for new submissions."
     "enum": [
         "TruChIP chromatin shearing reagent kit Covaris cat# 520154, sonication Covaris M220, IP (home protocol), DNA isolation with QIAquick PCR Purification Kit cat# 28104.",
+        "SDS"
         ]
 ```
 * *lysis_method* now has enum:
@@ -35,6 +36,11 @@ The properties *extraction_method*, *lysis_method*, and *library_size_selection_
                         "[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]",
                         "0.01% digitonin",
                         "72 degrees for 3 minutes in the presence of Triton"
+        ]
+
+    "comment": "Historical lysis methods, not valid for new submissions.",
+    "enum": [
+        "QIAGEN DNeasy Blood & Tissue Kit"
         ]
 ```
 * *library_size_selection_method* now has enum:
@@ -54,7 +60,7 @@ The properties *extraction_method*, *lysis_method*, and *library_size_selection_
                         "SPRI beads"
         ]
 
-    "comment": "Historical extration methods, not valid for new submissions.",
+    "comment": "Historical size selection methods, not valid for new submissions.",
     "enum": [
         "Only RNAs greater than 200 nucleotides. The inserts for the library will vary from ~ 100 - 700 base pairs.",
         "Only RNAs greater than 200 nucleotides. The insert for the library will vary from ~ 100 - 700 base pairs.",
