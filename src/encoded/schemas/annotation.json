@@ -19,7 +19,8 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "file_set.json#/properties" }
+        { "$ref": "file_set.json#/properties" },
+        { "$ref": "mixins.json#/assay" }
     ],
     "dependencies": {
         "biosample_ontology": {
@@ -80,6 +81,7 @@
                 "chromatin state",
                 "consensus DNase hypersensitivity sites",
                 "enhancer predictions",
+                "functional characterization elements",
                 "gene expression",
                 "imputation",
                 "in vivo enhancer evaluations",
@@ -90,6 +92,7 @@
                 "representative DNase hypersensitivity sites",
                 "transcript expression",
                 "transcription factor motifs",
+                "transcription start sites",
                 "validated enhancers",
                 "variant calls"
             ]

@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 26
+* Added *functional characterization elements* and *transcription start sites* enum to *annotation_type* property.
+* Added *assay_term_name* property.
+
 ### Schema version 26
 * Altered *encyclopedia_version* from free text to an enum list of terms, including a new specification for ENCODE v5.
 
