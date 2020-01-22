@@ -54,8 +54,8 @@ commands:
       - run:
           name: Run buildout
           command: |
-            sudo pip3.5 install --upgrade pip
-            sudo pip3.5 install -U zc.buildout setuptools
+            sudo /usr/local/bin/pip3.5 install --upgrade pip
+            sudo /usr/local/bin/pip3.5 install -U zc.buildout setuptools
             buildout bootstrap
             bin/buildout
 jobs:
