@@ -37,9 +37,6 @@ import pytz
 import time
 
 from encoded.upload_credentials import UploadCredentials
-from snovault.util import ensure_list_and_filter_none
-from snovault.util import take_one_or_return_none
-from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
 def show_upload_credentials(request=None, context=None, status=None):
@@ -118,8 +115,6 @@ class File(Item):
         'analysis_step_version.software_versions.software',
         'quality_metrics',
         'step_run',
-        'biosample_ontology',
-        'target'
     ]
     audit_inherit = [
         'replicate',
@@ -212,7 +207,6 @@ class File(Item):
             return None
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
-
 
     @calculated_property(schema={
         "title": "Download URL",
@@ -481,68 +475,6 @@ class File(Item):
      )
     def library(self, request, replicate):
         return request.embed(replicate, '@@object?skip_calculated=true').get('library')
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Assay term name",
-            "type": "string",
-            "notSubmittable": True
-        }
-    )
-    def assay_term_name(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'assay_term_name',
-                    dataset
-                )
-            )
-        )
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Biosample ontology",
-            "type": "string",
-            "linkTo": "BiosampleType",
-            "notSubmittable": True
-        }
-    )
-    def biosample_ontology(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'biosample_ontology',
-                    dataset
-                )
-            )
-        )
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Target",
-            "type": "string",
-            "linkTo": "Target",
-            "notSubmittable": True,
-        }
-    )
-    def target(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'target',
-                    dataset
-                )
-            )
-        )
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
