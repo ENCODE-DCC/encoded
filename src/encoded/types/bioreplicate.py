@@ -21,16 +21,17 @@ import re
 class Bioreplicate(Item):
     item_type = 'bioreplicate'
     schema = load_schema('encoded:schemas/bioreplicate.json')
-    
+
     rev = {
-        
+
     }
     embedded = [
         'biolibrary',
+        'biolibrary.biospecimen'
     ]
     audit_inherit = [
     ]
     set_status_up = [
-      
+
     ]
     set_status_down = []
