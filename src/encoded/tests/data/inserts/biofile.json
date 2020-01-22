@@ -57,9 +57,9 @@
         "read_length": 50,
         "run_type": "paired-ended",
         "paired_end": "2",
-        "paired_with": "KCEFF001RDB",
+        "paired_with": "KCEFF287RDC",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
-        "bioreplicate": "9bc85837-e3ce-40b0-b57b-354fab678db1",
+        "bioreplicate": "6b576141-1347-419e-95d9-1d00a3e7bdd2",
         "status": "released",
         "uuid": "6869a7b9-260d-4aa9-9cd2-74e056f6eded"
     },
@@ -72,6 +72,7 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "bioreplicate": "e18354a2-210f-4cd5-985b-e154a37967b5",
         "status": "released",
+        "assembly": "hg19",
         "uuid": "016f5f73-ccd0-4b23-963d-1a41064e72ac"
     },
     {
@@ -83,6 +84,7 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "bioreplicate": "32b89619-35e0-4000-8f1e-3ab80c43bfe2",
         "status": "released",
+        "assembly": "hg19",
         "uuid": "52475ff9-ba44-4e5f-8fe8-6db1cfe45cdc"
     }
 

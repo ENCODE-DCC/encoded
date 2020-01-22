@@ -108,7 +108,6 @@
                 }
             ]
         },
-
         "revoke_detail": {
             "comment": "Only revoked files can have revoke_detail specified.",
             "properties": {
@@ -140,47 +139,6 @@
                     "enum": ["bam"]
                 }
             }
-        },
-        "paired_end": {
-            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
-            "oneOf": [
-                {
-                   "required": ["paired_with", "run_type"],
-                    "properties": {
-                        "paired_end": {
-                            "enum": ["2"]
-                        },
-                        "run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                },
-                {
-                    "required": ["run_type"],
-                    "properties": {
-                        "paired_end": {
-                            "enum": ["1"]
-                        },
-                        "run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                },
-                {
-                    "required": ["run_type"],
-                    "properties": {
-                        "file_format": {
-                            "enum": ["sra"]
-                        },
-                        "paired_end": {
-                            "enum": ["1,2"]
-                        },
-                        "run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                }
-            ]
         },
         "output_type":{
             "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
@@ -320,6 +278,125 @@
                 }
             ]
         },
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "status": {
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "required": ["file_size"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["in progress",  "revoked", "archived", "released"]
+                                 }
+                            }
+                                    
+                            
+                        },
+
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+
+                }
+            ]
+        },
+        "restriction_enzymes": {
+            "comment": "Only files with output_type of restriction enzyme site locations can specify restriction_enzymes.",
+            "properties": {
+                "output_type": {
+                    "enum": ["restriction enzyme site locations"]
+                }
+            }
+        },
+        "paired_end": {
+            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
+            "oneOf": [
+                {
+                    "required": ["run_type"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["run_type"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["1"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["run_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "paired_end": {
+                            "enum": ["1,2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                }
+            ]
+        },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
             "allOf": [
@@ -341,7 +418,7 @@
                         },
                         {
                             "required": [
-                                "replicate",
+                                "bioreplicate",
                                 "platform"
                             ],
                             "properties": {
@@ -524,86 +601,9 @@
                     ]
                 }
             ]
-        },
-        "content_error_detail":{
-            "comment": "Specification of status of content error is required if content_error_detail is specified",
-            "required": ["status"],
-            "properties": {
-                "status": {
-                    "enum": ["content error"]
-                }
-            }
-        },
-        "status": {
-            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
-            "allOf": [
-                {
-                    "oneOf": [
-                        {
-                            "required": ["file_size"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["in progress",  "revoked", "archived", "released"]
-                                 }
-                            }
-                                    
-                            
-                        },
-
-                        {
-                            "properties": {
-                                "status": {
-                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "oneOf": [
-                        {
-                            "required": ["content_error_detail"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["content error"]
-                                }
-                            }
-                        },
-                        {
-                            "not": {
-                                "oneOf": [
-                                    {
-                                        "required": ["content_error_detail"],
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["content error"]
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-
-                }
-            ]
-        },
-        "restriction_enzymes": {
-            "comment": "Only files with output_type of restriction enzyme site locations can specify restriction_enzymes.",
-            "properties": {
-                "output_type": {
-                    "enum": ["restriction enzyme site locations"]
-                }
-            }
         }
     },
+ 
     "properties": {
          "date_created": {
             "rdfs:subPropertyOf": "dc:created",
@@ -821,7 +821,7 @@
             "description": "The paired end fastq that corresponds with this file.",
             "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
             "type": "string",
-            "linkTo": "File"
+            "linkTo": "Biofile"
         },
         "mapped_read_length": {
             "title": "Mapped read length (nt)",
@@ -1213,175 +1213,7 @@
     },
     "columns": {
     },
-    "output_type_output_category": {
-        "idat green channel": "raw data",
-        "idat red channel": "raw data",
-        "intensity values": "raw data",
-        "reads": "raw data",
-        "rejected reads": "raw data",
-        "raw data": "raw data",
-        "reporter code counts": "raw data",
-
-        "alignments": "alignment",
-        "unfiltered alignments": "alignment",
-        "gene alignments": "alignment",
-        "redacted alignments": "alignment",
-        "redacted unfiltered alignments": "alignment",
-        "transcriptome alignments": "alignment",
-        "spike-in alignments": "alignment",
-        "maternal haplotype mapping": "alignment",
-        "paternal haplotype mapping": "alignment",
-        "phased mapping": "alignment",
-
-        "minus strand signal of all reads": "signal",
-        "plus strand signal of all reads": "signal",
-        "signal of all reads": "signal",
-        "normalized signal of all reads": "signal",
-        "raw minus strand signal": "signal",
-        "raw plus strand signal": "signal",
-        "raw signal": "signal",
-        "raw normalized signal": "signal",
-        "read-depth normalized signal": "signal",
-        "control normalized signal": "signal",
-        "minus strand signal of unique reads": "signal",
-        "plus strand signal of unique reads": "signal",
-        "signal of unique reads": "signal",
-        "signal p-value": "signal",
-        "fold change over control": "signal",
-        "minus strand signal": "signal",
-        "plus strand signal": "signal",
-        "signal": "signal",
-        "base overlap signal": "signal",
-        "percentage normalized signal":"signal",
-        "summed densities signal": "signal",
-        "wavelet-smoothed signal": "signal",
-        "relative replication signal": "signal",
-
-        "enrichment": "quantification",
-        "library fraction": "quantification",
-        "exon quantifications": "quantification",
-        "gene quantifications": "quantification",
-        "microRNA quantifications": "quantification",
-        "transcript quantifications": "quantification",
-        "methylation state at CpG": "quantification",
-        "methylation state at CHG": "quantification",
-        "methylation state at CHH": "quantification",
-        "filtered modified peptide quantification": "quantification",
-        "unfiltered modified peptide quantification": "quantification",
-        "filtered peptide quantification": "quantification",
-        "unfiltered peptide quantification": "quantification",
-        "replication timing profile": "quantification",
-        "motif model": "quantification",
-        "differential expression quantifications": "quantification",
-        "differential splicing quantifications": "quantification",
-
-        "hotspots": "annotation",
-        "long range chromatin interactions": "annotation",
-        "chromatin interactions": "annotation",
-        "mapping quality thresholded chromatin interactions": "annotation",
-        "topologically associated domains": "annotation",
-        "nested topologically associated domains": "annotation",
-        "genome compartments": "annotation",
-        "open chromatin regions":"annotation",
-        "filtered peaks":"annotation",
-        "filtered regions":"annotation",
-        "DHS peaks": "annotation",
-        "peaks": "annotation",
-        "peaks and background as input for IDR": "annotation",
-        "replicated peaks": "annotation",
-        "RNA-binding protein associated mRNAs": "annotation",
-        "splice junctions": "annotation",
-        "copy number variation": "annotation",
-        "clusters": "annotation",
-        "contigs": "annotation",
-        "transcribed fragments": "annotation",
-        "filtered transcribed fragments": "annotation",
-        "valleys": "annotation",
-        "blacklisted regions": "annotation",
-        "mitochondria blacklisted regions": "annotation",
-        "distal peaks": "annotation",
-        "proximal peaks": "annotation",
-        "optimal idr thresholded peaks": "annotation",
-        "conservative idr thresholded peaks": "annotation",
-        "pseudoreplicated idr thresholded peaks": "annotation",
-        "stable peaks": "annotation",
-        "predicted forebrain enhancers": "annotation",
-        "predicted heart enhancers": "annotation",
-        "predicted whole brain enhancers": "annotation",
-        "predicted enhancers": "annotation",
-        "candidate enhancers": "annotation",
-        "candidate promoters": "annotation",
-        "predicted transcription start sites": "annotation",
-        "transcription start sites": "annotation",
-        "candidate Cis-Regulatory Elements": "annotation",
-        "representative dnase hypersensitivity sites":"annotation",
-        "variant calls": "annotation",
-        "maternal variant calls": "annotation",
-        "paternal variant calls": "annotation",
-        "phased variant calls": "annotation",
-        "filtered SNPs": "annotation",
-        "filtered indels": "annotation",
-
-        "transcriptome reference": "reference",
-        "transcriptome index": "reference",
-        "genome index": "reference",
-        "tRNA reference": "reference",
-        "miRNA reference": "reference",
-        "snRNA reference": "reference",
-        "rRNA reference": "reference",
-        "TSS reference": "reference",
-        "reference variants": "reference",
-        "genome reference": "reference",
-        "female genome reference": "reference",
-        "female genome index": "reference",
-        "male genome reference": "reference",
-        "male genome index": "reference",
-        "primer sequence": "reference",
-        "spike-in sequence": "reference",
-        "reference": "reference",
-        "restriction enzyme site locations": "reference",
-        "sequence alignability": "reference",
-        "sequence uniqueness": "reference",
-
-        "enhancer validation": "validation",
-        "validation": "validation",
-
-        "HMM predicted chromatin state": "annotation",
-        "semi-automated genome annotation": "annotation"
-
-    },
-    "file_format_file_extension": {
-        "2bit": ".2bit",
-        "CEL": ".cel.gz",
-        "bam": ".bam",
-        "bed": ".bed.gz",
-        "bedpe": ".bedpe.gz",
-        "chain": ".chain",
-        "bigBed": ".bigBed",
-        "bigWig": ".bigWig",
-        "btr": ".btr",
-        "csfasta": ".csfasta.gz",
-        "csqual": ".csqual.gz",
-        "database": ".db",
-        "fasta": ".fasta.gz",
-        "fastq": ".fastq.gz",
-        "gff": ".gff.gz",
-        "gtf": ".gtf.gz",
-        "idx": ".idx",
-        "hic": ".hic",
-        "hdf5": ".h5",
-        "idat": ".idat",
-        "PWM":".pwm",
-        "rcc": ".rcc",
-        "sra": ".sra",
-        "tagAlign": ".tagAlign.gz",
-        "tar": ".tar.gz",
-        "tsv": ".tsv",
-        "csv": ".csv",
-        "vcf": ".vcf.gz",
-        "wig": ".wig.gz",
-        "sam": ".sam.gz",
-        "txt": ".txt"
-    },
-    "changelog": "/profiles/changelogs/file.md"
+  
+   
+    "changelog": "/profiles/changelogs/biofile.md"
 }

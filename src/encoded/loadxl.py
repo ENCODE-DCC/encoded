@@ -23,6 +23,7 @@ ORDER = [
     'platform',
     'biolibrary',
     'bioreplicate',
+    'biofile',
     'medication',
     'supportive_medication', 
     'lab_results',
@@ -574,6 +575,9 @@ PHASE1_PIPELINES = {
     ],
     'biospecimen': [
         remove_keys('originated_from')
+    ],
+    'biofile': [
+        remove_keys('paired_with')
     ]
 
 }
@@ -661,6 +665,9 @@ PHASE2_PIPELINES = {
     ],
     'biospecimen': [
         skip_rows_missing_all_keys('originated_from')
+    ],
+    'biofile': [
+        skip_rows_missing_all_keys('paired_with')
     ]
 }
 

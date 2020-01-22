@@ -56,7 +56,8 @@ class Biofile(Item):
     }
 
     embedded = [
-
+        'platform',
+        'bioreplicate',
        
 
     ]
@@ -64,9 +65,10 @@ class Biofile(Item):
 
     ]
     set_status_up = [
-
+        'platform',
 
     ]
     set_status_down = []
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
+
