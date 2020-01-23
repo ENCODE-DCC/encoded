@@ -39,8 +39,9 @@ packages:
 - libxslt1-dev
 - ntp
 - pv
-- python3.4-dev
-- python3-pip
+- checkinstall
+- libreadline-gplv2-dev
+- tk-dev
 - python-software-properties
 - ruby-dev
 - unattended-upgrades

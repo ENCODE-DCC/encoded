@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
     browser-tools: circleci/browser-tools@0.1.0
-    python: tinyclues/python@3.5.2
 executors:
   encoded-executor:
     docker:
@@ -45,7 +44,6 @@ commands:
             sudo apt-get install libreadline-gplv2-dev tk-dev
             cd /usr/src
             sudo wget https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tgz
-            pwd
             sudo tar xzf Python-3.5.9.tgz
             cd /usr/src/Python-3.5.9
             sudo ./configure --enable-optimizations

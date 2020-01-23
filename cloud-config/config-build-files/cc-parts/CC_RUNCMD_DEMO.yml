@@ -1,4 +1,9 @@
 runcmd:
+- sudo wget https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tgz
+- sudo tar xzf Python-3.5.9.tgz
+- cd /usr/src/Python-3.5.9
+- sudo ./configure --enable-optimizations
+- sudo make altinstall
 - sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
 - sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
 - sudo -u ubuntu %(CC_DIR)s/post-boot-install.sh %(S3_AUTH_KEYS)s
