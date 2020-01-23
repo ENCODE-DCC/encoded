@@ -47,7 +47,7 @@ commands:
           name: Run buildout
           command: |
             sudo pip3 install --upgrade pip==19.1.1
-            sudo pip3 install -U zc.buildout==43 setuptools
+            sudo pip3 install -U zc.buildout setuptools==43
             buildout bootstrap
             bin/buildout
 jobs:
