@@ -212,6 +212,25 @@ EulaModal.propTypes = {
     signup: PropTypes.func.isRequired,
 };
 
+const AccountCreationFailedModal = ({ closeModal }) => (
+    <Modal>
+        <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                Creating a new acount failed. Please, contact <a href="mailto:encode-help@lists.stanford.edu">support</a>.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            cancelTitle="Close"
+            closeModal={closeModal}
+        />
+    </Modal>
+);
+
+AccountCreationFailedModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+};
+
 
 const AccountCreatedModal = ({ closeModal }) => (
     <Modal>
@@ -265,6 +284,7 @@ class App extends React.Component {
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
+            accountCreationFailedVisibility: false,
             authResult: '',
         };
 
@@ -299,7 +319,7 @@ class App extends React.Component {
         this.currentResource = this.currentResource.bind(this);
         this.currentAction = this.currentAction.bind(this);
         this.closeSignupModal = this.closeSignupModal.bind(this);
-        this.closeAccountCreationNotification = this.closeAccountCreationNotification.bind(this);
+        this.closeAccountCreationErrorModal = this.closeAccountCreationErrorModal.bind(this);
         this.signup = this.signup.bind(this);
     }
 
@@ -553,8 +573,8 @@ class App extends React.Component {
         this.setState({ eulaModalVisibility: false });
     }
 
-    closeAccountCreationNotification() {
-        this.setState({ accountCreatedModalVisibility: false });
+    closeAccountCreationErrorModal() {
+        this.setState({ accountCreationFailedVisibility: false });
     }
 
     signup() {
@@ -577,10 +597,10 @@ class App extends React.Component {
             if (!response.ok) {
                 throw new Error('Failed to create new account');
             }
-            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
-            this.handleAuth0Login(authResult, false, false); // sign in after account creation
-        }).catch((err) => {
-            console.warn(err);
+            // sign in after account creation
+            this.handleAuth0Login(authResult, false, false);
+        }).catch(() => {
+            this.setState({ accountCreationFailedVisibility: true });
         });
     }
 
@@ -1228,11 +1248,11 @@ class App extends React.Component {
                                     signup={this.signup}
                                 /> :
                             null}
-                            { this.state.accountCreatedModalVisibility ?
-                                <AccountCreatedModal
-                                    closeModal={this.closeAccountCreationNotification}
+                            {this.state.accountCreationFailedVisibility ?
+                                <AccountCreationFailedModal
+                                    closeModal={this.closeAccountCreationErrorModal}
                                 /> :
-                            null}
+                                null}
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>
