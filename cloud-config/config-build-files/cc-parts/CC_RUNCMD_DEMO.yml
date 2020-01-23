@@ -1,4 +1,5 @@
 runcmd:
+- cd /usr/src
 - sudo wget https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tgz
 - sudo tar xzf Python-3.5.9.tgz
 - cd /usr/src/Python-3.5.9
