@@ -422,17 +422,6 @@ class SupportiveMedication(Item):
     schema = load_schema('encoded:schemas/supportive_medication.json')
     embeded = []
 
-@collection(
-    name='biospecimen',
-    properties={
-        'title': 'Biospecimens',
-        'description': 'Biospecimen results pages',
-    })
-class Biospecimen(Item):
-    item_type = 'biospecimen'
-    schema = load_schema('encoded:schemas/biospecimen.json')
-    embeded = []
-
 
 @property
 def __name__(self):

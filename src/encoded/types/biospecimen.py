@@ -25,7 +25,6 @@ class Biospecimen(Item):
         'parent_of': ('Biospecimen', 'originated_from'),
     }
     embedded = [
-        'patient',
     ]
     audit_inherit = [
     ]
