@@ -44,7 +44,7 @@ WALE_ENV=
 WALE_REQS='/home/ubuntu/encoded/wal-e-requirements.txt'
 if [ $python_version -eq 3 ]; then
     WALE_DIR='/opt/pg-wal-e'
-    WALE_VENV="$WALE_DIR/.py343-wal-e"
+    WALE_VENV="$WALE_DIR/.py359-wal-e"
     WALE_BIN="$WALE_VENV/bin"
     WALE_ENV='/etc/wal-e.d/env'
     WALE_REQS='/home/ubuntu/encoded/wal-e-requirements-py3.txt'

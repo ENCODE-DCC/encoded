@@ -16,7 +16,7 @@ packages:
 - postgresql
 - postgresql-contrib
 # wal-e
-- python3.4-venv
+#- python3.4-venv
 - lzop
 # cloudwatchmon
 - python2.7-dev
