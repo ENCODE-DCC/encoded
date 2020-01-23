@@ -34,7 +34,7 @@ AWS_CREDS_DIR='/var/lib/postgresql/.aws'
 AWS_PROFILE='default'
 
 PG_CONF_DEST="/etc/postgresql/$PG_VERSION/main"
-PG_CONF_SRC="home/ubuntu/encoded/cloud-config/deploy-run-scripts/conf-pg$pg_version"
+PG_CONF_SRC="/home/ubuntu/encoded/cloud-config/deploy-run-scripts/conf-pg$pg_version"
 PG_DATA="/var/lib/postgresql/$PG_VERSION/main"
 
 WALE_DIR='/opt/wal-e'
