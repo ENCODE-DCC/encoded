@@ -1,0 +1,18 @@
+[
+	{
+		"_test": "evaluation dataset",
+		"computational_model_type": "imputation",
+		"accession": "ENCSR860CMZ",
+		"submitted_by": "facilisi.tristique@potenti.vivamus",
+		"status": "released",
+		"description": "Computational model fileset to group avocado imputation model.",
+		"award": "U54HG007004",
+		"lab": "j-michael-cherry",
+		"uuid": "c79e7536-d1a2-4b12-a53f-79d8c014f9de",
+		"related_files": [
+			"/files/ENCSR000ACY/",
+			"/files/ENCFF001RCW/"
+		],
+		"date_released": "2020-01-23"
+	}
+]

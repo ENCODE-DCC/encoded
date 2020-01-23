@@ -27,6 +27,7 @@ const types = {
     antibody_lot: { title: 'Antibodies' },
     biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
+    computational_model: { title: 'Computational model'}
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
@@ -60,6 +61,7 @@ const datasetTypes = {
     Project: types.project.title,
     PublicationData: types.publication_data.title,
     Reference: types.reference.title,
+    ComputationalModel: types.computational_model.title,
     ReferenceEpigenome: types.reference_epigenome.title,
     ReplicationTimingSeries: types.replication_timing_series.title,
     TreatmentConcentrationSeries: types.treatment_concentration_series.title,
