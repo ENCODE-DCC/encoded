@@ -98,7 +98,7 @@ Feature: Search
         And I wait for the content to load
         And I click the link to "?type=Experiment&assay_title=Control+ChIP-seq"
         And I wait for the content to load
-        Then I should see "Showing 3 of 3 results"
+        Then I should see "Showing 6 of 6 results"
         
     Scenario: Smoke testing advanced query search
         When I fill in "searchTerm" with "@type:Experiment  date_created:[2015-01-01 TO 2018-12-31]"

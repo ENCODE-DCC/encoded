@@ -921,5 +921,47 @@
         "strand_specificity": false,
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCLB123AAA",
+        "aliases": [
+            "john-stamatoyannopoulos:57126B"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS123AAA",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCLB123AAB",
+        "aliases": [
+            "john-stamatoyannopoulos:57126C"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS123AAB",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCLB123AAC",
+        "aliases": [
+            "john-stamatoyannopoulos:57126D"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS123AAC",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f"
     }
 ]

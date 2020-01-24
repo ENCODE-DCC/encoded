@@ -728,5 +728,44 @@
         "submitted_by": "elementum.mus@dictumst.nostra",
         "technical_replicate_number": 1,
         "uuid": "6af49008-9208-43bb-b000-80aeddf4b9a6"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:1-2"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAA",
+        "library": "ENCLB123AAA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "7e9df875-e622-4185-8160-758bf4f8ae9e"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:1-3"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAB",
+        "library": "ENCLB123AAB",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "e20fff5c-d5cb-4f88-93eb-07dc7c66e5d6"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "aliases": [
+            "john-stamatoyannopoulos:1-4"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR123AAC",
+        "library": "ENCLB123AAC",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "f1843c60-e027-4b18-8582-64d3f3eae45b"
     }
 ]
