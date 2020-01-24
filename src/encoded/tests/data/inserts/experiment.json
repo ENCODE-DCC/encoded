@@ -858,7 +858,7 @@
     },
     {
         "_test": "icLASER test",
-        "accession": "ENCSR999PRO",
+        "accession": "ENCSR124LAS",
         "assay_term_name": "icLASER",
         "award": "UM1HG009442",
         "biosample_ontology": "cell_line_EFO_0003072",
