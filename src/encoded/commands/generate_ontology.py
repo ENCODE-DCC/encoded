@@ -552,6 +552,19 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0000538": {
+        "assay": ['RNA structure'],
+        "category": [],
+        "developmental": [],
+        "name": "in vivo click light activated structural examination of RNA",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "icLASER",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 
