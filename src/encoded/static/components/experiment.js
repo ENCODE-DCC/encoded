@@ -507,6 +507,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                             <dd>{context.target_expression_range_minimum}% &ndash; {context.target_expression_range_maximum}%</dd>
                                         </div>
                                     : null}
+                                    {context.target_expression_percentile !== undefined ?
+                                        <div data-test="target-percentile">
+                                            <dt>Target expression percentile</dt>
+                                            <dd>{context.target_expression_percentile}</dd>
+                                        </div>
+                                    : null}
                                 </React.Fragment>
                             : null}
 
