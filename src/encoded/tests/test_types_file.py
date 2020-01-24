@@ -251,6 +251,26 @@ def test_public_restricted_file_does_not_have_s3_uri(testapp, file_with_external
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' not in res.json
 
+def test_upload_failed_file_does_not_have_s3_uri(testapp, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'upload failed',
+        }
+    )
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' not in res.json
+
+def test_uploading_file_does_have_s3_uri(testapp, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'uploading',
+        }
+    )
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' in res.json
+    
 
 def test_file_update_bucket_as_admin(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
