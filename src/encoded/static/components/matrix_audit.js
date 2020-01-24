@@ -298,12 +298,10 @@ MatrixHeader.propTypes = {
  */
 const MatrixVerticalFacets = ({ context }, reactContext) => (
     <FacetList
-        context={context}
         facets={context.facets}
         filters={context.filters}
         searchBase={`${url.parse(reactContext.location_href).search}&` || '?'}
         addClasses="matrix-facets"
-        supressTitle
     />
 );
 

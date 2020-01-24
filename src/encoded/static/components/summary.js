@@ -209,12 +209,10 @@ const SummaryVerticalFacets = ({ context }, reactContext) => {
 
     return (
         <FacetList
-            context={context}
             facets={vertFacets}
             filters={context.filters}
             searchBase={searchBase}
             addClasses="summary-facets"
-            supressTitle
         />
     );
 };

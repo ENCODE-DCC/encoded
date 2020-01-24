@@ -177,6 +177,7 @@ export class ObjectPicker extends React.Component {
                         <Param name="context" url={`/search/${searchParams}`} />
                         <SearchBlockEdit
                             searchBase={searchParams}
+                            restrictions={this.props.restrictions}
                             hideTextFilter={!url}
                             actions={actions}
                             onChange={this.handleFilter}
@@ -190,6 +191,7 @@ export class ObjectPicker extends React.Component {
 
 ObjectPicker.propTypes = {
     onChange: PropTypes.func,
+    restrictions: PropTypes.object,
     searchBase: PropTypes.string,
     value: PropTypes.string,
     disabled: PropTypes.bool,
@@ -197,6 +199,7 @@ ObjectPicker.propTypes = {
 
 ObjectPicker.defaultProps = {
     onChange: null,
+    restrictions: {},
     searchBase: '?mode=picker',
     value: '',
     disabled: false,

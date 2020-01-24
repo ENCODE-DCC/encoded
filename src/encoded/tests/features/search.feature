@@ -65,21 +65,21 @@ Feature: Search
         And I click the link to "/search/?type=Experiment&status=released"
         And I wait for the content to load
         When I fill in "searchAssaytitle" with "dna"
-        Then I should see at least 2 elements with the css selector "div.facet__term-list.searchAssaytitle > li"
+        Then I should see at least 2 elements with the css selector "div.term-list.searchAssaytitle > li"
 
     Scenario: Search for Target of Assay term
         When I press "Data"
         And I click the link to "/search/?type=Experiment&status=released"
         And I wait for the content to load
         When I fill in "searchTargetofassay" with "h3k2"
-        Then I should see at least 2 elements with the css selector "div.facet__term-list.searchTargetofassay > li"
+        Then I should see at least 2 elements with the css selector "div.term-list.searchTargetofassay > li"
         
     Scenario: Search for Organ term
         When I press "Data"
         And I click the link to "/search/?type=Experiment&status=released"
         And I wait for the content to load
         When I fill in "searchOrgan" with "zzz"
-        Then I should see 0 elements with the css selector "div.facet__term-list.searchOrgan > li"
+        Then I should see 0 elements with the css selector "div.term-list.searchOrgan > li"
 
     Scenario: Search for different ChIP-seq
         When I click the link to "?type=Experiment"

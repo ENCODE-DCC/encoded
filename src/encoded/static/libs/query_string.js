@@ -25,20 +25,10 @@ class QueryString {
     }
 
     /**
-     * Parse the `_query` string into an array of query-string elements, each an object with the
-     * query-string key becoming a key in the object with the query-string value its value, and a
-     * `negative` key false for a=b query string parameters, and true for a!=b. For example, the
-     * query string "type=Experiment&organism=human&assay!=ChIP-seq" becomes:
-     * [{
-     *     type: 'Experiment',
-     *     negative: false,
-     * }, {
-     *     organism: 'human',
-     *     negative: false,
-     * }, {
-     *     assay: 'ChIP-seq',
-     *     negative: true,
-     * }]
+     * Parse the `_query` string into an array of query-string elements, each one itself an array
+     * with the key in the first element and the value in the second. For example, the query string
+     * "type=Experiment&organism=human" becomes:
+     * [['type', 'Experiment'], ['organism', 'human']]
      *
      * The order of the elements in the array maintains the order they existed in the original
      * query string.
@@ -47,22 +37,11 @@ class QueryString {
      */
     _parse() {
         // Filter out any empty elements caused by a trailing ampersand.
-        if (this._query) {
-            const inputQueryElements = this._query.split('&').filter(element => element);
-            this._parsedQuery = inputQueryElements.map((element) => {
-                // Split each query string element into its key and value in `queryElement`. If "!"
-                // is at the end of the key, then this was a != query-string element. In that case
-                // set the `negative` property in `queryElement` and strip the "!" from the key.
-                const queryElement = {};
-                const keyValue = element.split('=');
-                const negationMatch = keyValue[0].match(/(.*?)(%21|!)*$/);
-                queryElement[negationMatch[1]] = queryEncoding.decodedURIComponent(keyValue[1]);
-                queryElement.negative = negationMatch[2] === '%21' || negationMatch[2] === '!';
-                return queryElement;
-            });
-        } else {
-            this._parsedQuery = [];
-        }
+        const inputQueryElements = this._query.split('&').filter(element => element);
+        this._parsedQuery = inputQueryElements.map((element) => {
+            const keyValue = element.split('=');
+            return [keyValue[0], queryEncoding.decodedURIComponent(keyValue[1])];
+        });
         return this;
     }
 
@@ -71,15 +50,11 @@ class QueryString {
      * so your key can exist multiple times in the formatted query string.
      * @param {string} key Key to add to query string.
      * @param {*} value Non-URL-encoded value to add to query string. Numbers converted to strings.
-     * @param {bool} negative: True if negative query (a!=b)
      *
      * @return {object} Reference to this object for method chaining.
      */
-    addKeyValue(key, value, negative) {
-        const keyValue = {};
-        keyValue[key] = typeof value === 'number' ? value.toString() : value;
-        keyValue.negative = !!negative; // Caller might pass anything; want true/false
-        this._parsedQuery.push(keyValue);
+    addKeyValue(key, value) {
+        this._parsedQuery.push([key, typeof value === 'number' ? value.toString() : value]);
         return this;
     }
 
@@ -92,7 +67,7 @@ class QueryString {
      * @return {object} Reference to this object for method chaining.
      */
     deleteKeyValue(key, value) {
-        this._parsedQuery = this._parsedQuery.filter(element => element[key] === undefined || (value !== undefined ? element[key] !== value : false));
+        this._parsedQuery = this._parsedQuery.filter(element => element[0] !== key || (value !== undefined ? element[1] !== value : false));
         return this;
     }
 
@@ -102,40 +77,57 @@ class QueryString {
      * key/value pair.
      * @param {string} key Key value to replace
      * @param {string} value Non-URL-encoded value to replace
-     * @param {string} negative True if new key/value is a negative (a!=b)
      *
      * @param {object} Reference to this object for method chaining.
      */
-    replaceKeyValue(key, value, negative) {
-        this.deleteKeyValue(key).addKeyValue(key, value, negative);
+    replaceKeyValue(key, value) {
+        this.deleteKeyValue(key).addKeyValue(key, value);
         return this;
     }
 
     /**
      * Return an array of values whose keys match the `key` string parameter. For example, for the
-     * query string "a=1&b=2&a=3&b!=3" the resulting array for `key` of "a" returns [1, 3], and a
-     * `key` of "b" would return [2]. If you pass `negative` as true, then a `key` of "a" is [] and
-     * a `key` of "b" return [3].
+     * query string "a=1&b=2&a=3" the resulting array for `key` of "a" is [1, 3], and a `key` of"b"
+     * would lead to [2].
      * @param {string} key Key whose values get returned.
-     * @param {bool} negative True to return negative matches for `key`.
      *
      * @return {array} Non-URL-encoded values that have `key` as their key.
      */
-    getKeyValues(key, negative) {
-        return this._parsedQuery.filter(queryElement => queryElement[key] && queryElement.negative === !!negative).map(queryElement => queryElement[Object.keys(queryElement)[0]]);
+    getKeyValues(key) {
+        return this._parsedQuery.filter(queryElement => queryElement[0] === key).map(queryElement => queryElement[1]);
     }
 
     /**
-     * Get the number of query string elements for any key or a specific key.
-     * @param {string} key Optional key to count; count all keys if not supplied
+     * Return key/value pairs for query-string elements whose keys do NOT match the `key` string
+     * parameter. For example, for the query string "a=1&b=2&a=3" the resulting object for `key`
+     * of "b" is { a: [1, 3] } and for `key` of "a" is { b: 2 }. Note that keys that occur
+     * multiple times in the query string have an array as their value in the object returned by
+     * this function.
+     * @param {string} key Key whose values get returned.
      *
-     * @return {number} Count of query string elements.
+     * @return {object} Key/value pairs that don't have `key` as their key.
      */
-    queryCount(key) {
-        if (key) {
-            return this._parsedQuery.filter(queryElement => queryElement[key]).length;
-        }
-        return this._parsedQuery.length;
+    getNotKeyElements(key) {
+        const notElements = this._parsedQuery.filter(queryElement => queryElement[0] !== key);
+        const notKeyValues = {};
+        notElements.forEach((element) => {
+            if (notKeyValues[element[0]]) {
+                // We have seen this key before. Convert its value to an array if the current
+                // value is a single value, or add to the key's array if the key already has
+                // multiple values.
+                if (typeof notKeyValues[element[0]] === 'object') {
+                    // Key already has multiple values, so add to that array.
+                    notKeyValues[element[0]].push(element[1]);
+                } else {
+                    // Key has a single value, so convert that and new value to an array.
+                    notKeyValues[element[0]] = [notKeyValues[element[0]], element[1]];
+                }
+            } else {
+                // Haven't seen this key before; just assign its (so far) single value.
+                notKeyValues[element[0]] = element[1];
+            }
+        });
+        return notKeyValues;
     }
 
     /**
@@ -146,19 +138,7 @@ class QueryString {
      * @return {string} Equivalent query string.
      */
     format() {
-        return this._parsedQuery.map((queryElement) => {
-            const key = Object.keys(queryElement)[0];
-            return `${key}${queryElement.negative ? '!=' : '='}${queryEncoding.encodedURIComponent(queryElement[key])}`;
-        }).join('&');
-    }
-
-    /**
-     * Make a clone of this query string object that can be manipulated independently of this one.
-     *
-     * @return {object} Cloned QueryString object.
-     */
-    clone() {
-        return new QueryString(this.format());
+        return this._parsedQuery.map(queryElement => `${queryElement[0]}=${queryEncoding.encodedURIComponent(queryElement[1])}`).join('&');
     }
 }
 
