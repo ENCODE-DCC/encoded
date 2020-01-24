@@ -271,7 +271,6 @@ def test_uploading_file_does_have_s3_uri(testapp, file_with_external_sheet):
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' in res.json
     
-
 def test_file_update_bucket_as_admin(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],
