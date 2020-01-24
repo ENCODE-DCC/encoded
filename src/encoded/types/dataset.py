@@ -463,17 +463,17 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'title': "Computational model file set",
         'description': 'A set of files that comprise a computational model.',
     })
-class ComputationalModel(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedAssaySynonyms):
-    item_type = 'project'
+class ComputationalModel(FileSet):
+    item_type = 'computational_model'
     schema = load_schema('encoded:schemas/computational_model.json')
     embedded = FileSet.embedded + [
-        'biosample_ontology',
-        'files.dataset',
-        'files.replicate.library',
-        'files.library',
-        'organism',
-        'software_used',
-        'software_used.software'
+        'submitted_by',
+        'lab',
+        'award.pi.lab',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'references'
     ]
 
 

@@ -55,12 +55,6 @@
                 "imputation"
             ]
         },
-        "organism": {
-            "title": "Organism",
-            "comment": "See organism.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Organism"
-        },
         "software_used": {
             "title": "Software used",
             "description": "A list of software used to derive the reference file set.",
@@ -78,29 +72,14 @@
         "computational_model_type": {
             "title": "Computational model type"
         },
-        "assay_term_name": {
-            "title": "Assay name"
-        },
         "status": {
             "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
         },
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
         "files.replicate.experiment.target.investigated_as": {
             "title": "Target category"
-        },
-        "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -132,16 +111,8 @@
             "title": "Accession",
             "type": "string"
         },
-        "assay_term_name": {
-            "title": "Assay name",
-            "type": "string"
-        },
         "files.replicate.experiment.target.label":{
             "title": "Target",
-            "type": "string"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name",
             "type": "string"
         },
         "description": {
@@ -168,13 +139,6 @@
     "boost_values": {
         "accession": 1.0,
         "alternate_accessions": 1.0,
-        "assay_term_name": 1.0,
-        "biosample_ontology.term_name": 1.0,
-        "biosample_ontology.classification": 1.0,
-        "biosample_ontology.cell_slims": 1.0,
-        "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.organ_slims": 1.0,
-        "biosample_ontology.synonyms": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
         "award.title": 1.0,
@@ -190,8 +154,6 @@
         "files.replicate.experiment.target.genes.symbol": 1.0,
         "files.replicate.experiment.target.label": 1.0,
         "files.replicate.experiment.target.dbxref": 1.0,
-        "organism.scientific_name": 1.0,
-        "organism.taxon_id": 1.0,
         "software_used.software.name": 1.0,
         "computational_model_type": 1.0,
         "internal_tags": 1.0,

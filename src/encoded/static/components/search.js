@@ -27,7 +27,7 @@ const types = {
     antibody_lot: { title: 'Antibodies' },
     biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
-    computational_model: { title: 'Computational model'}
+    computational_model: { title: 'Computational model file set'},
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
