@@ -174,7 +174,7 @@ if [ $python_version -eq 3 ]; then
     sudo -u root cp "$WALE_REQS" "$WALE_DIR/wal-e-requirements.txt"
     sudo -u root chown postgres:postgres "$WALE_DIR/wal-e-requirements.txt"
     sudo -H -u postgres python3 -m venv "$WALE_VENV"
-    sudo -H -u postgres "$WALE_BIN/pip" install pip setuptools==43 boto awscli --upgrade
+    sudo -H -u postgres "$WALE_BIN/pip" install pip==19.1.1 setuptools==43 boto awscli --upgrade
     sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_DIR/wal-e-requirements.txt"
     sudo -u postgres git clone https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
     sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"
