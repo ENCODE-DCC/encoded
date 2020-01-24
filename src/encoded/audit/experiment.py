@@ -3831,10 +3831,10 @@ def audit_missing_modification(value, system, excluded_types):
         }
         if not (ab_tags & tags):
             detail = (
-                '{} uses antibody {} targeting {} yet its biosample {} has no '
+                '{} specifies antibody {} targeting {} yet its biosample {} has no '
                 'genetic modifications tagging the target.'.format(
                     audit_link(
-                        'Replication {}_{}'.format(
+                        'Replicate {}_{}'.format(
                             rep['biological_replicate_number'],
                             rep['technical_replicate_number']
                         ),
