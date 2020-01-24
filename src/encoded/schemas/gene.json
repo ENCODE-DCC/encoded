@@ -41,7 +41,7 @@
                             "items": {
                                 "properties": {
                                     "assembly": {
-                                        "enum": ["mm10", "mm9"]
+                                        "enum": ["mm10"]
                                     }
                                 }
                             }
@@ -60,7 +60,7 @@
                             "items": {
                                 "properties": {
                                     "assembly": {
-                                        "enum": ["dm6", "dm3"]
+                                        "enum": ["dm6"]
                                     }
                                 }
                             }
@@ -79,7 +79,7 @@
                             "items": {
                                 "properties": {
                                     "assembly": {
-                                        "enum": ["ce11", "ce10"]
+                                        "enum": ["ce11"]
                                     }
                                 }
                             }
@@ -181,14 +181,11 @@
                         "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
                         "type": "string",
                         "enum": [
-                            "ce10",
                             "ce11",
-                            "dm3",
                             "dm6",
                             "GRCh38",
                             "hg19",
-                            "mm10",
-                            "mm9"
+                            "mm10"
                         ]
                     },
                     "chromosome": {
