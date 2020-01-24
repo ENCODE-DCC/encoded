@@ -542,7 +542,7 @@ class App extends React.Component {
         }
         const accessToken = authResult.accessToken;
         this.closeSignupModal();
-        this.fetch('users/@@sign-up', {
+        this.fetch(`${window.location.origin}/users/@@sign-up`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
