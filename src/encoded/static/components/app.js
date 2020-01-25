@@ -212,12 +212,12 @@ EulaModal.propTypes = {
     signup: PropTypes.func.isRequired,
 };
 
-const AccountCreationFailedModal = ({ closeModal }) => (
+const AccountCreationFailedModal = ({ closeModal, date }) => (
     <Modal>
         <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
         <ModalBody>
             <p>
-                Creating a new acount failed. Please, contact <a href="mailto:encode-help@lists.stanford.edu">support</a>.
+                Creating a new acount failed. Please, contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -229,6 +229,7 @@ const AccountCreationFailedModal = ({ closeModal }) => (
 
 AccountCreationFailedModal.propTypes = {
     closeModal: PropTypes.func.isRequired,
+    date: PropTypes.string.isRequired,
 };
 
 
@@ -1251,6 +1252,7 @@ class App extends React.Component {
                             {this.state.accountCreationFailedVisibility ?
                                 <AccountCreationFailedModal
                                     closeModal={this.closeAccountCreationErrorModal}
+                                    date={(new Date()).toUTCString()}
                                 /> :
                                 null}
                             <Footer version={this.props.context.app_version} />
