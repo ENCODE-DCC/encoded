@@ -13,5 +13,6 @@ scenarios(
     'matrix_experiment.feature',
     'matrix_reference_epigenome.feature',
     'matrix_chip_seq.feature',
+    'matrix_mouse_development.feature',
     strict_gherkin=False,
 )

@@ -28,6 +28,7 @@ require('./search');
 require('./report');
 require('./matrix_audit');
 require('./matrix_entex');
+require('./matrix_mouse_development');
 require('./matrix_experiment');
 require('./matrix_reference_epigenome');
 require('./matrix_chip_seq');

@@ -20,7 +20,7 @@ Feature: Views
         And I should see exactly one element with the css selector "[data-test='summary']"
 
         When I click the link to "/matrix/?type=Experiment"
-        Then I should see "Showing 56 results"
+        Then I should see "Showing 61 results"
 
         When I click the link to "/report/?type=Experiment"
         Then I should see "Experiment report"

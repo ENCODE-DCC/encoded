@@ -15,6 +15,176 @@ $row-data-header-width: 200px;
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
 }
 
+.mouse-dev-legend {
+    p {
+        margin-bottom: 10px;
+    }
+    .outer-button-container {
+        display: inline-block;
+    }
+    .stage-container {
+        display: inline-block;
+    }
+    button {
+        font-size: 1rem;
+        line-height: 1.7;
+        padding: 2px;
+        font-family: Mada;
+        font-weight: 400;
+        margin: 1px;
+        background: linear-gradient(#DFDFDF, #F8F8F8);
+        border: 2px solid #DFDFDF;
+        border-radius: 3px;
+        &.embryo {
+            background: lighten(#FFE9C6, 5%);
+        }
+        &.postnatal {
+            background: lighten(#F2C782, 8%);
+        }
+        &.adult {
+            background: lighten(#E2AE53, 8%);
+        }
+        @media screen and (max-width: 500px) {
+            font-size: 0.9rem;
+        }
+    }
+    .active {
+        font-weight: 600;
+        border: 2px solid #000;
+        &.embryo {
+            background: darken(#FFE9C6, 8%);
+        }
+        &.postnatal {
+            background: darken(#F2C782, 5%);
+        }
+        &.adult {
+            background: darken(#E2AE53, 8%);
+        }
+    }
+}
+
+.type-MouseDevelopmentMatrix {
+    .matrix-header__filter-controls {
+        flex: 0 1 100%;
+    }
+    .matrix-general-search {
+        p {
+            margin-bottom: 5px;
+        }
+    }
+    .matrix__row-spacer {
+        height: 1px;
+    }
+    .matrix__row-category {
+        font-family: Mada;
+        > th {
+            > div {
+                font-weight: 500;
+            }
+        }
+    }
+    .matrix__content {
+        display: block;
+    }
+    .matrix-header {
+        border-bottom: 0;
+    }
+    .mouse-stage-selector-container {
+        margin: 5px 0;
+        label {
+            margin-right: 10px;
+        }
+    }
+    .Matrix-page-link {
+        display: none;
+    }
+    .clear-filters {
+        margin: 10px 5px 5px;
+        padding: 0;
+        font-size: 0.9rem;
+        border: none;
+        color: #428bca;
+        background: white;
+    }
+}
+
+.mouse-dev-matrix {
+    position: relative;
+    .matrix__data-wrapper {
+        border: none;
+        padding-left: 0;
+        .matrix__data {
+            padding-left: 0;
+        }
+    }
+    .matrix__col-category-header {
+        > th {
+            > a {
+                letter-spacing: 1px;
+                .sub {
+                    padding-top: 10px;
+                    color: #000;
+                }
+            }
+        }
+    }
+    .sub {
+        padding-top: 10px !important;
+        color: #000 !important;
+    }
+    .matrix__row-data {
+        td {
+            a {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+        }
+    }
+    .column-category {
+        letter-spacing: 0;
+        font-family: Mada;
+        background: #881600;
+        color: white;
+        padding: 7px 5px;
+    }
+    .matrix__clear-classifications {
+        margin-bottom: 5px;
+    }
+}
+
+.subcategory-row-text {
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+    .label-stage {
+        font-family: Mada;
+        flex: 0 0 60%;
+        letter-spacing: 1px;
+        font-weight: 500;
+        padding: 6px 0;
+    }
+    .label-length {
+        flex: 0 0 40%;
+        font-size: 12px;
+    }
+}
+.embryo {
+    background-color: #fff3e0;
+}
+.postnatal {
+    background-color: #f6d8a7;
+}
+.adult {
+    background-color: #e8be76;
+}
+
+.matrix__row-data > th {
+    padding: 0;
+}
+
 
 // Reusable styles for the left-most non-scrolling column.
 %sticky-column {
@@ -154,6 +324,22 @@ $row-data-header-width: 200px;
                 text-decoration: none;
                 font-weight: 400;
                 line-height: 1.15;
+                
+                &.embryo {
+                    &:hover {
+                        background-color: darken(#FFE9C6, 8%);
+                    }
+                }
+                &.postnatal {
+                    &:hover {
+                        background-color: darken(#FFD491, 6%);
+                    }
+                }
+                &.adult {
+                    &:hover {
+                        background-color: darken(#E2AE53, 8%);
+                    }
+                }
 
                 &:hover {
                     background-color: #e0e0e0;
@@ -596,11 +782,11 @@ table.matrix th.group-all-groups-cell {
             a::after {
                 content: none !important;
             }
-        }   
+        }
     }
 }
 
-.chip_seq_matrix__data-wrapper { 
+.chip_seq_matrix__data-wrapper {
     .tab-content {
             overflow-x: auto;
     }

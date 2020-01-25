@@ -185,13 +185,49 @@ const getQueryFromFilters = (filters) => {
 /**
  * Displays view control buttons appropriate for the given search results.
  */
-export const ViewControls = ({ results, filterTerm }) => {
+export const ViewControls = ({ results, filterTerm, activeFilters }) => {
     // Add the hard-coded type filter if given.
     let filters = [];
     if (filterTerm) {
         filters = results.filters.concat({ field: 'type', term: filterTerm });
     } else {
         filters = results.filters;
+    }
+
+    // if we have 'activeFilters' set on mouse development matrix page, append these to view control button links
+    if (activeFilters) {
+        activeFilters.forEach((f) => {
+            if (['adult', 'postnatal', 'embryo'].includes(f)) {
+                const stageTerm = f === 'embryo' ? 'embryonic' : f;
+                const stageFilterExists = filters.filter(f2 => f2.term === stageTerm).length > 0;
+                if (!stageFilterExists) {
+                    filters.push({
+                        term: f === 'embryo' ? 'embryonic' : f,
+                        remove: '',
+                        field: 'replicates.library.biosample.life_stage',
+                    });
+                }
+            } else {
+                const stageTerm = f.split(' ')[0] === 'embryo' ? 'embryonic' : f.split(' ')[0];
+                const ageTerm = f.split(' ').slice(1).join(' ');
+                const stageFilterExists = filters.filter(f2 => f2.term === stageTerm).length > 0;
+                const ageFilterExists = filters.filter(f2 => f2.term === ageTerm).length > 0;
+                if (!stageFilterExists) {
+                    filters.push({
+                        term: stageTerm,
+                        remove: '',
+                        field: 'replicates.library.biosample.life_stage',
+                    });
+                }
+                if (!ageFilterExists) {
+                    filters.push({
+                        term: ageTerm,
+                        remove: '',
+                        field: 'replicates.library.biosample.age_display',
+                    });
+                }
+            }
+        });
     }
 
     // Get all "type=" in query string. We only display controls when URL has exactly one "type=".
@@ -207,6 +243,9 @@ export const ViewControls = ({ results, filterTerm }) => {
         } else {
             // No custom filter, so just get the default relevant views.
             views = viewInfo.types.filter(item => item !== results['@type'][0]);
+        }
+        if (activeFilters.length === 0) {
+            results.filters = results.filters.filter(f3 => f3.remove !== '');
         }
         const queryString = getQueryFromFilters(results.filters);
         return (
@@ -230,10 +269,12 @@ ViewControls.propTypes = {
     results: PropTypes.object.isRequired,
     /** Filter `type` to use in addition to `filters` property for missing "type" filter cases */
     filterTerm: PropTypes.string,
+    activeFilters: PropTypes.array,
 };
 
 ViewControls.defaultProps = {
     filterTerm: null,
+    activeFilters: [],
 };
 
 

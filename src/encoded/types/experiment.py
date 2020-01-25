@@ -318,6 +318,17 @@ class Experiment(Dataset,
         },
     }
 
+    mouse_development = {
+        'y': {
+            'group_by': ['biosample_ontology.term_name', 'biosample_summary'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
     audit = {
         'audit.ERROR.category': {
             'group_by': 'audit.ERROR.category',
