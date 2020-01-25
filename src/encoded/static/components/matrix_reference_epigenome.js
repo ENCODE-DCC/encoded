@@ -46,6 +46,8 @@ const matrixAssaySortOrder = [
     'Histone ChIP-seq',
 ];
 
+export default matrixAssaySortOrder;
+
 
 /**
  * All assay columns to not include in matrix.

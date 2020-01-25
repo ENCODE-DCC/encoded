@@ -57,6 +57,7 @@ const portal = {
                 { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
                 { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'mouse-dev-series', title: 'Mouse development series', url: '/search/?type=OrganismDevelopmentSeries&internal_tags=MouseDevSeries&status=released', tag: 'collection' },
+                { id: 'mouse_development_matrix', title: 'Mouse development matrix', url: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'sep-mm-3' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
@@ -1222,10 +1223,11 @@ class App extends React.Component {
                     {/* The following line is a get around for GO server not being HTTPS */}
                     {/* https://encodedcc.atlassian.net/browse/ENCD-5005 */}
                     {/* https://stackoverflow.com/questions/33507566/mixed-content-blocked-when-running-an-http-ajax-operation-in-an-https-page#answer-48700852 */}
-                    {this.props.context['@type'].includes('Gene') ? <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
+                    {this.props.context['@type'].includes('Gene') ? <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
+                    <link href="https://fonts.googleapis.com/css?family=Mada:200,400,500,600,700" rel="stylesheet" />
                     <script async src="//www.google-analytics.com/analytics.js" />
                     <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}

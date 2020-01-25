@@ -317,6 +317,19 @@ class Experiment(Dataset,
             'label': 'Assay',
         },
     }
+    
+    mouse_development = {
+        'y': {
+            'group_by': ['biosample_ontology.term_name', 'biosample_summary'],
+            # 'replicates.library.biosample.mouse_life_stage'],
+            # 'replicates.library.biosample.age'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
 
     audit = {
         'audit.ERROR.category': {

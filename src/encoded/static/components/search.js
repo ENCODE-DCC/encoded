@@ -796,10 +796,12 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+    console.log('active filters');
+    console.log(activeFilters);
 
     let resultsToggle = null;
     if (showResultsToggle) {
@@ -834,7 +836,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
-                <ViewControls results={context} />
+                <ViewControls results={context} activeFilters={activeFilters} />
                 {resultsToggle}
                 <BatchDownloadControls results={context} />
                 {!hideBrowserSelector ?
@@ -869,6 +871,8 @@ SearchControls.propTypes = {
     },
     /** True to hide the Visualize button */
     hideBrowserSelector: PropTypes.bool,
+    /** Add filters to search links if needed */
+    activeFilters: PropTypes.array,
 };
 
 SearchControls.defaultProps = {
@@ -876,6 +880,7 @@ SearchControls.defaultProps = {
     showResultsToggle: false,
     onFilter: null,
     hideBrowserSelector: false,
+    activeFilters: [],
 };
 
 SearchControls.contextTypes = {
