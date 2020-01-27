@@ -41,7 +41,7 @@
                             "items": {
                                 "properties": {
                                     "assembly": {
-                                        "enum": ["mm10"]
+                                        "enum": ["mm10", "mm9"]
                                     }
                                 }
                             }
@@ -60,7 +60,7 @@
                             "items": {
                                 "properties": {
                                     "assembly": {
-                                        "enum": ["dm6"]
+                                        "enum": ["dm6", "dm3"]
                                     }
                                 }
                             }
@@ -79,7 +79,7 @@
                             "items": {
                                 "properties": {
                                     "assembly": {
-                                        "enum": ["ce11"]
+                                        "enum": ["ce11", "ce10"]
                                     }
                                 }
                             }
@@ -182,10 +182,13 @@
                         "type": "string",
                         "enum": [
                             "ce11",
+                            "ce10",
                             "dm6",
+                            "dm3",
                             "GRCh38",
                             "hg19",
-                            "mm10"
+                            "mm10",
+                            "mm9"
                         ]
                     },
                     "chromosome": {
