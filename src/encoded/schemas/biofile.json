@@ -411,25 +411,14 @@
                                         "idat",
                                         "CEL",
                                         "csfasta",
-                                        "csqual"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "required": [
-                                "bioreplicate",
-                                "platform"
-                            ],
-                            "properties": {
-                                "file_format": {
-                                    "enum": [
+                                        "csqual",
                                         "fastq",
                                         "sra"
                                     ]
                                 }
                             }
                         },
+ 
                         {
                             "required": [
                                 "file_format_type",
@@ -1113,13 +1102,7 @@
             }
         },
 
-        "bioreplicate": {
-            "title": "Bioreplicate",
-            "description": "The experimental replicate designation for the file.",
-            "comment": "This field is required for sra and fastq files. See replicate.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Bioreplicate"
-        },
+
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",

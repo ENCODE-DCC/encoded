@@ -57,7 +57,7 @@ class Biofile(Item):
 
     embedded = [
         'platform',
-        'bioreplicate',
+
        
 
     ]
