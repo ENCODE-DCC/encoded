@@ -165,7 +165,7 @@
         },
         "locations": {
             "title": "Gene location coordinates",
-            "description": "Genomic locations using 0-based, closed coordinates for different assembles of this gene.",
+            "description": "Genomic locations using 1-based, closed coordinates for different assembles of this gene.",
             "type": "array",
             "default": [],
             "uniqueItems": true,

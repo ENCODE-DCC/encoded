@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 2
 
-* Added *locations*, which specifies the chromosome and genomic coordinates of the gene using a 0-based, closed coordinate system.
+* Added *locations*, which specifies the chromosome and genomic coordinates of the gene using a 1-based, closed coordinate system.
 
 ### Schema version 2
 
