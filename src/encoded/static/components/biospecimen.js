@@ -76,7 +76,7 @@ class Biospecimen extends React.Component {
                         </div>
                         {context.originated_from && <div data-test="originated_from">
                             <dt>Originated From</dt>
-                            <dd>{context.originated_from}</dd>
+                            <dd><a href={context.originated_from}>{context.originated_from.split("/")[2]}</a></dd>
                         </div>}
                         {context.path_ID && <div data-test="path_ID">
                             <dt>Path Report</dt>
