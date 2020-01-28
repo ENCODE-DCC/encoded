@@ -3,6 +3,14 @@
 ### Minor changes since schema version 8
 * *input_file_types* and *output_file_types* were updated to have the following enum term(s) to match File schema: *miRNA annotations*, *personalized genome assembly*.
 * *personalized genome assembly* was also added to the enum list for *analysis_step_types*.
+* The following enums were added to the list for *input_file_types* and *output_file_types*:
+        [
+            "negative control regions",
+            "non-targeting gRNAs",
+            "positive control regions",
+            "safe-targeting gRNAs",
+            "sub-reads"
+        ]
 
 ### Schema version 8
 

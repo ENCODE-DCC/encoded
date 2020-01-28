@@ -441,8 +441,26 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "sub-reads"]
                             }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["sub-reads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            ]
+                        },
+                        "file_format": {
+                            "enum": ["bam"]
                         }
                     }
                 }
@@ -450,29 +468,16 @@
         },
         "assembly": {
             "not": {
-                "anyOf": [
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["index reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["rejected reads"]
-                            }
-                        }
+                "properties": {
+                    "output_type": {
+                        "enum": [
+                            "reads",
+                            "index reads",
+                            "rejected reads",
+                            "sub-reads"
+                        ]
                     }
-                ]
+                }
             }
         },
         "platform": {
@@ -577,6 +582,32 @@
                                         "idx"
                                     ]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "output_type": {
+                                        "enum": [
+                                            "sub-reads"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "sub-reads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
                             }
                         },
                         {
@@ -1255,7 +1286,9 @@
                         "minus strand signal of unique reads",
                         "mitochondria blacklisted regions",
                         "motif model",
+                        "negative control regions",
                         "nested topologically associated domains",
+                        "non-targeting gRNAs",
                         "normalized signal of all reads",
                         "open chromatin regions",
                         "optimal IDR thresholded peaks",
@@ -1268,6 +1301,7 @@
                         "phased variant calls",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
+                        "positive control regions",
                         "predicted enhancers",
                         "pseudoreplicated IDR thresholded peaks",
                         "raw minus strand signal",
@@ -1285,6 +1319,7 @@
                         "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
+                        "safe-targeting gRNAs",
                         "semi-automated genome annotation",
                         "sequence adapters",
                         "sequence barcodes",
@@ -1294,6 +1329,7 @@
                         "spike-in sequence",
                         "splice junctions",
                         "stable peaks",
+                        "sub-reads",
                         "topologically associated domains",
                         "transcript quantifications",
                         "transcription start sites",
@@ -1681,6 +1717,7 @@
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
+        "sub-reads": "raw data",
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
