@@ -217,7 +217,7 @@ const AccountCreationFailedModal = ({ closeModal, date }) => (
         <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
         <ModalBody>
             <p>
-                Creating a new acount failed. Please, contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
+                Creating a new account failed. Please, contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -1247,14 +1247,14 @@ class App extends React.Component {
                                 <EulaModal
                                     closeModal={this.closeSignupModal}
                                     signup={this.signup}
-                                /> :
-                            null}
+                                />
+                            : null}
                             {this.state.accountCreationFailedVisibility ?
                                 <AccountCreationFailedModal
                                     closeModal={this.closeAccountCreationErrorModal}
                                     date={(new Date()).toUTCString()}
-                                /> :
-                                null}
+                                />
+                            : null}
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>
