@@ -27,6 +27,7 @@ class Biospecimen(Item):
     }
     embedded = [
         'biolibrary',
+        'biolibrary.biofile',
     ]
     audit_inherit = [
     ]

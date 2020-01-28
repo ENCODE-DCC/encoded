@@ -51,14 +51,14 @@ class Biofile(Item):
     name_key = 'accession'
 
     rev = {
-        'paired_with': ('Biofile', 'paired_with'),
 
     }
 
     embedded = [
+        'biolibrary',
         'platform',
 
-       
+        'paired_with',
 
     ]
     audit_inherit = [
