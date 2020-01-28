@@ -5,7 +5,7 @@ import FacetRegistry from './registry';
 
 
 /**
- * The Publication datasets.accession facet field renders an "exists" facet.
+ * Facet renderer for "exists" facets.
  */
 const ExistsFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => (
     <DefaultExistsFacet

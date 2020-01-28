@@ -804,24 +804,23 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // resulting list to avoid needlessly rerendering the facet-term list that can get very long.
     const filteredTerms = React.useMemo(() => {
         if (facet.type === 'typeahead') {
-            // Typeahead facets only render a truncated list of terms until initialState becomes
-            // false, which happens when the component mounts.
-            const truncatedProcessedTerms = initialState ? processedTerms.slice(0, 50) : processedTerms;
-            return (
-                truncatedProcessedTerms.filter(
-                    (term) => {
-                        if (term.doc_count > 0) {
-                            const termKey = sanitizedString(term.key);
-                            const typeaheadVal = String(sanitizedString(typeaheadTerm));
-                            if (termKey.match(typeaheadVal)) {
-                                return term;
-                            }
-                            return null;
+            const passingTerms = processedTerms.filter(
+                (term) => {
+                    if (term.doc_count > 0) {
+                        const termKey = sanitizedString(term.key);
+                        const typeaheadVal = String(sanitizedString(typeaheadTerm));
+                        if (termKey.match(typeaheadVal)) {
+                            return term;
                         }
                         return null;
                     }
-                )
+                    return null;
+                }
             );
+
+            // Typeahead facets only render a truncated list of terms until initialState becomes
+            // false, which happens when the component mounts.
+            return initialState ? passingTerms.slice(0, 50) : passingTerms;
         }
         return processedTerms;
     }, [processedTerms, facet.type, typeaheadTerm, initialState]);
