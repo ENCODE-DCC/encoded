@@ -2625,7 +2625,8 @@
         "submitted_file_name": "longreadRNA/Rep1.fastq",
         "uuid": "3412830f-154f-129f-814b-fd3435417edf",
         "run_type": "single-ended",
-        "read_length": 76
+        "read_length": 76,
+        "derived_from": ["ENCFF333SBR"]
     },
     {
         "accession": "ENCFF002ISO",
@@ -2971,5 +2972,21 @@
             "ali-mortazavi:miRNA-five-prime-adapter-set4"
         ],
         "status": "in progress"
+    },
+    {
+        "_test": "PacBio sub-reads",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/ali-mortazavi/",
+        "dataset": "ENCSR751ISO",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "3f150408-7371-7cdd-8028-6866ed2facba",
+        "accession": "ENCFF333SBR",
+        "file_format": "bam",
+        "output_type": "sub-reads",
+        "file_size": 567890,
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
+        "md5sum": "a61ba395c73713edf8b7cddd92dce969"
     }
 ]
