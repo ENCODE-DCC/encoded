@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
 
-    "required": ["file_format", "output_type", "md5sum"],
+    "required": ["file_format", "output_type", "md5sum", "biolibrary"],
 
     "identifyingProperties": ["uuid", "accession"],
     "additionalProperties": false,
@@ -610,7 +610,20 @@
         "accession": {
             "accessionType": "FF"
         },
-
+        "biolibrary": {
+            "title": "Biolibrary",
+            "description": "The nucleic acid library used in this replicate.",
+            "comment": "See biolibrary.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biolibrary"
+        },
+        "sequencing_replicate_number": {
+            "title": "Sequencing replicate",
+            "description": "Sequencing data collection under the same biolibrary.",
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+        },
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",
