@@ -11,7 +11,7 @@ class BiospecimenTable extends React.Component {
 
     renderData() {
        
-            const germlineTableColumns = {
+            const tableColumns = {
                 accession: {
                     title: 'Accession',
                     display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
@@ -43,7 +43,7 @@ class BiospecimenTable extends React.Component {
             };
             return (
                 <SortTablePanel title={this.props.tableTitle}>
-                    <SortTable list={this.props.data} columns={germlineTableColumns} />
+                    <SortTable list={this.props.data} columns={tableColumns} />
                 </SortTablePanel>
             );
         

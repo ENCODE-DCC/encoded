@@ -6,6 +6,7 @@ import { Breadcrumbs } from './navigation';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 import { PanelLookup } from './objectutils';
+import GenomicsTable from './genomicsTable';
 
 class Biospecimen extends React.Component {
     constructor(props) {
@@ -22,6 +23,10 @@ class Biospecimen extends React.Component {
             { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
+        let hasGenomics =false;
+        if (Object.keys(this.props.context.biolibrary).length > 0) {
+            hasGenomics = true;
+        }
 
         return (
             <div className={itemClass}>
@@ -102,6 +107,8 @@ class Biospecimen extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
+                { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
+
                 {false && 
                     <div>
                         {PanelLookup({ context: context.patient, biospecimen: context })}
@@ -114,3 +121,4 @@ class Biospecimen extends React.Component {
 }
 
 globals.contentViews.register(Biospecimen, 'Biospecimen');
+
