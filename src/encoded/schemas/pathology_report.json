@@ -1,0 +1,374 @@
+{
+    "title": "Pathology Report",
+    "description": "Schema for pathology reports embedded in portal pages",
+    "id": "/profiles/pathology_report.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "identifyingProperties": ["uuid", ],
+    "required": ["gender", "race", "ethnicity"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/uuid" }
+    ],
+    "dependencies": {
+        "tumor_size": ["tumor_size_units"],
+        "tumor_size_units": ["tumor_size"],
+        "sarcomatoid_percentage": ["sarcomatoid"],
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the pathology was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "surgery": {
+            "title": "Surgery",
+            "description": "The surgery the pathology originated from.",
+            "type": "string",
+            "linkTo": "Surgery"
+        },
+        "path_id": {
+            "title": "Pathology ID",
+            "comment": "KCE personnel are allowed to set this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": true
+        },
+        "date": {
+            "title": "Pathology date",
+            "description": "Date of sample was taken for pathology.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {
+                    "format": "date"
+                }
+            ]
+        },
+        "laterality": {
+            "title": "Laterality",
+            "description": "The laterality of tumor",
+            "type": "string",
+            "enum": [
+                    "Bilateral",
+                    "Bilateral, Asynchronous",
+                    "Bilateral, Horseshoe",
+                    "Bilateral, Synchronous",
+                    "Left",
+                    "Right"
+                ]
+
+        },
+        "tumor_size": {
+            "title": "Tumor Size",
+            "description": "Greatest dimension of tumor was recorded in cm. ",
+            "type": "number"
+        },
+        "tumor_size_units": {
+            "title": "Tumor Size units",
+            "type": "string",
+            "enum": [
+                "cm"
+            ]
+        },
+        "focality": {
+            "title": "Focality",
+            "description": "The focality of tumor",
+            "type": "string",
+            "enum": [
+                    "Unifocal",
+                    "Multifocal",
+                    "Not applicable"
+                ]
+        },
+        "histology": {
+            "title": "Histology",
+            "description": "The histology of tumor",
+            "type": "string",
+            "enum": [
+                    "Acquired cystic disease-associated RCC",
+                    "Angiomyolipoma",
+                    "ccPRCC",
+                    "ccRCC",
+                    "ChRCC",
+                    "ChRCC, hybrid type",
+                    "Collecting ducts of Bellini",
+                    "Cystic nephroma",
+                    "HLRCC",
+                    "Leiomyoma",
+                    "Metanephric adenoma",
+                    "Mucinous tubular and spindle cell carcinoma",
+                    "Multilocular ccRCC",
+                    "PRCC",
+                    "Renal medullary carcinoma",
+                    "RO",
+                    "RON",
+                    "RON, favor ChRCC",
+                    "RON, favor RO",
+                    "Sarcoma",
+                    "Sarcomatoid",
+                    "tRCC",
+                    "Tubulocystic RCC",
+                    "Unclassified"
+                ]
+        },
+        "sarcomatoid": {
+            "title": "Sarcomatoid Change",
+            "description": "The sarcomatoid dedifferentiation",
+            "type": "string",
+            "enum": [
+                    "Present",
+                    "Absent",
+                    "Not applicable",
+                    "Not available"
+                ]
+        },
+        "sarcomatoid_percentage": {
+            "title": "Sarcomatoid Percentage",
+            "description": "Percentage of tumor that was sarcomatoid. ",
+            "type": "number"
+        },
+        "rhabdoid": {
+            "title": "Rhabdoid",
+            "description": "The precense of rhabdoid features.",
+            "type": "string",
+            "enum": [
+                    "Present",
+                    "Not identified",
+                    "Not applicable",
+                    "Not available"
+                ]
+        },
+        "necrosis": {
+            "title": "Tumor Necrosis",
+            "description": "The presence of tumor necrosis",
+            "type": "string",
+            "enum": [
+                    "Present",
+                    "Absent",
+                    "Not applicable",
+                    "Not available"
+                ]
+        },
+        "grade": {
+            "title": "Grade",
+            "description": "Highest grade seen in tumor",
+            "type": "string",
+            "enum": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "Not available",
+                    "Not applicable"
+                ]
+        },
+        "margins": {
+            "title": "Margin Status",
+            "description": "Invasion seen at the margins or not",
+            "type": "string",
+            "enum": [
+                    "Margins uninvolved by invasive carcinoma",
+                    "Margins involved by invasive carcinoma"
+                ]
+        },
+      "lvi": {
+          "title": "LVI",
+          "description": "Lymphvascular invasion",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Absent",
+                  "Indeterminate",
+                  "Not identified",
+                  "Not available"
+              ]
+      },
+      "micro_limited": {
+          "title": "Renal Limited",
+          "description": "Tumor limited to kidney or not, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Limited",
+                  "Not Limited",
+                  "Not applicable",
+                  "Not available"
+              ]
+      },
+      "micro_vein": {
+          "title": "Renal Vein Involvement",
+          "description": "Tumor extension into major veins, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Absent",
+                  "Not applicable",
+                  "Not available"
+              ]
+      },
+      "micro_perineperic": {
+          "title": "Perinephric Infiltration",
+          "description": "Tumor extension into perinephric tissues, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Absent",
+                  "Not applicable",
+                  "Not available"
+              ]
+      },
+      "micro_adrenal": {
+          "title": "Ipsilateral Adrenal Gland Involvement",
+          "description": "Tumor extension into adrenal gland, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Present, contiguous",
+                  "Present, noncontiguous",
+                  "Absent",
+                  "Not applicable",
+                  "Not available",
+                  "Not removed"
+              ]
+      },
+      "micro_sinus": {
+          "title": "Renal Sinus Involvement",
+          "description": "Tumor extension into renal sinus, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Absent",
+                  "Not applicable",
+                  "Not available",
+              ]
+      },
+      "micro_gerota": {
+          "title": "Gerotas Fascia Involvement",
+          "description": "Tumor extension beyond Gerotas Fascia, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Absent",
+                  "Not applicable",
+                  "Not available",
+              ]
+      },
+      "micro_pelvaliceal": {
+          "title": "Pelvicaliceal Involvement",
+          "description": "Tumor extension into pelvicalyceal, identified microscopically",
+          "type": "string",
+          "enum": [
+                  "Present",
+                  "Absent",
+                  "Not applicable",
+                  "Not available",
+              ]
+      },
+      "t_stage": {
+          "title": "pT Stage",
+          "description": "Pathological T stage, size primary tumor",
+          "type": "string",
+          "enum": [
+                  "pT1",
+                  "pT1a",
+                  "pT1b",
+                  "pT2",
+                  "pT2a",
+                  "pT2b",
+                  "pT3",
+                  "pT3a",
+                  "pT3b",
+                  "pT3c",
+                  "pT4",
+                  "pTX"
+              ]
+      },
+      "n_stage": {
+          "title": "pN Stage",
+          "description": "Pathological N stage, nodal involvement",
+          "type": "string",
+          "enum": [
+                  "pN0",
+                  "pN1",
+                  "pN2",
+                  "pNX",
+                  "Not applicable",
+                  "Not available"
+              ]
+      },
+      "examined_lymph_nodes": {
+          "title": "Examined Lymph Nodes",
+          "description": "Number of lymph nodes examined",
+          "type": "number"
+      },
+      "positive_lymph_nodes": {
+          "title": "Positive Lymph Nodes",
+          "description": "Number of lymph nodes positive",
+          "type": "number"
+      },
+      "m_stage": {
+          "title": "pM Stage",
+          "description": "Pathological M stage, nodal involvement",
+          "type": "string",
+          "enum": [
+                  "pM0",
+                  "pM1",
+                  "Not applicable",
+                  "Not available"
+              ]
+      },
+      "ajcc_version": {
+        "title": "AJCC Version",
+        "description": "AJCC Version used for staging",
+        "type": "string",
+        "enum": [
+                "6th edition",
+                "7th edition",
+            ]
+      },
+      "ajcc_tnm_stage": {
+        "title": "AJCC TNM Stage",
+        "description": "AJCC TNM Stage",
+        "type": "string",
+        "enum": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ]
+      },
+      "ajcc_p_stage": {
+        "title": "AJCC pT Stage",
+        "description": "TNM Stage",
+        "type": "string",
+        "enum": [
+                "1A",
+                "1B",
+                "2",
+                "2A",
+                "2B",
+                "3",
+                "3A",
+                "3B",
+                "3C",
+                "4",                
+            ]
+      },
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
+    "boost_values": {
+        "patient": 1.0,
+    },
+    "changelog": "/profiles/changelogs/pathology_report.md"
+}
