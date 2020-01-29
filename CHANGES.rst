@@ -1,5 +1,35 @@
 Changes
 =======
+v95.0 (released) snovault 1.0.40
+---------------------------------------
+1.	ENCD-5064 update the detail message in "inconsistent genetic modification tags" audit (#3113)
+2.	ENCD-5058 fix pip version (#3111)
+3.	ENCD-4899 additions to robots.txt (#3055)
+4.	ENCD-5008 Analyses property (#3100)
+5.	ENCD-5015 functional characterization series (#3099)
+6.	ENCD-4999 Add PRO-cap assay term (#3101)
+7.	SNO-129-add-fielded-generator-response (#3077)
+8.	ENCD-5005 replace GO properties with GO links (#3098)
+9.	ENCD-5044-update-to-snovault-1-40 (#3104)
+10.	ENCD-4995 adding read index_of (#3095)
+11.	ENCD-4987 Add audits for eclip queried_RNP_size_range (#3090)
+12.	ENCD-3086-add-dataset-to-file (#2977)
+13.	ENCD-4655 remove recombinant protein category of target (#3070)
+14.	ENCD-4986-fix-summary-page-filter-miscount (#3081)
+15.	ENCD-4997-adjust-GM-schema-for-FCC-expts (#3096)
+16.	ENCD-5004-update-assay-titles-ontology (#3093)
+17.	ENCD-4956-add-content-to-schema (#3089)
+18.	ENCD-5014-new-FCE-property-target-expression-percentile (#3097)
+19.	ENCD-5013 Allow elements_reference to link to Annotations (#3086)
+20.	ENCD-5010-Reduce-min-read-length-miRNA (#3092)
+21.	ENCD-5027-fix-refseq-dbxref-link (#3087)
+22.	ENCD-4998 Revise time units pluralization (#3082)
+23.	ENCD-4951-add-4dn-expt-dbxref (#3084)
+24.	ENCD-5036 freeze setuptools for wale at v43 (#3091)
+25.	ENCD-4790 replicates in Valis (#3068)
+26.	ENCD-5023 fix advanced query search BDD test (#3088)
+27.	ENCD-5007-home-svg-chrome-bug (#3080)
+
 v94.0 (released) snovault 1.0.39
 ---------------------------------------
 1.	ENCD-5002 Removed month_released from facet list for scRNA series (#3074)
