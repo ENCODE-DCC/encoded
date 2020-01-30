@@ -1822,6 +1822,10 @@
         "filtered indels": "annotation",
         "transcriptome annotations": "annotation",
         "miRNA annotations": "annotation",
+        "non-targeting gRNAs": "annotation",
+        "negative control regions": "annotation",
+        "positive control regions": "annotation",
+        "safe-targeting gRNAs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
