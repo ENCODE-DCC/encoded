@@ -55,7 +55,7 @@ class Biofile extends React.Component {
 
                         <div data-test="biolibrary">
                             <dt>Library</dt>
-                            <dd><a href={context.biolibrary['@id']}>{context.biolibrary.accession}</a></dd>
+                            <dd>{context.biolibrary.accession}</dd>
                             
                         </div>
                         <div data-test="md5sum">

@@ -202,9 +202,6 @@
         "openspecimen_ID": {
             "title": "OpenSpecimen ID"
         },
-        "patient.accession": {
-            "title": "Patient"
-        },
         "collection_type": {
             "title": "Collection Type"
         },
