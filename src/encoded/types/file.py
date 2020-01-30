@@ -51,7 +51,7 @@ def show_upload_credentials(request=None, context=None, status=None):
 def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=None, no_file_available=None):
     if restricted or not md5sum or not file_size or no_file_available:
         return False
-    return status in File.public_s3_statuses + File.private_s3_statuses
+    return True
 
 
 def property_closure(request, propname, root_uuid):
