@@ -524,6 +524,7 @@ def annotation_25_26(value, system):
 @upgrade_step('functional_characterization_series', '1', '2')
 @upgrade_step('matched_set', '15', '16')
 @upgrade_step('organism_development_series', '15', '16')
+@upgrade_step('project', '15', '16')
 @upgrade_step('publication_data', '15', '16')
 @upgrade_step('reference_epigenome', '16', '17')
 @upgrade_step('reference', '16', '17')
