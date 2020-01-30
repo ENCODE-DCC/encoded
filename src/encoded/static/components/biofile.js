@@ -64,8 +64,16 @@ class Biofile extends React.Component {
                         </div>
 
                         {context.biolibrary.biological_replicate_number && <div data-test="biological_replicate_number">
-                            <dt>biological_replicate_number</dt>
+                            <dt>Biological replicate number</dt>
                             <dd>{context.biolibrary.biological_replicate_number}</dd>
+                        </div>}
+                        {context.biolibrary.technical_replicate_number && <div data-test="technical_replicate_number">
+                            <dt>Technical replicate number</dt>
+                            <dd>{context.biolibrary.technical_replicate_number}</dd>
+                        </div>}
+                        {context.sequencing_replicate_number && <div data-test="sequencing_replicate_number">
+                            <dt>Sequencing replicate number</dt>
+                            <dd>{context.sequencing_replicate_number}</dd>
                         </div>}
                         {context.content_md5sum && <div data-test="content_md5sum">
                             <dt>Content MD5sum</dt>

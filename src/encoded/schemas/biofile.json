@@ -1208,8 +1208,24 @@
         }
     },
     "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "biolibrary": {
+            "title": "Biolibrary"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "status": {
+            "title": "Status"
+        }
     },
   
    
     "changelog": "/profiles/changelogs/biofile.md"
 }
+

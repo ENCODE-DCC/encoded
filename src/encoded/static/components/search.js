@@ -577,6 +577,53 @@ const Patient = auditDecor(PatientComponent);
 globals.listingViews.register(Patient, 'Patient');
 
 /* eslint-disable react/prefer-stateless-function */
+class BiofileComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+
+        return (
+          <li>
+              <div className="clearfix">
+                  <PickerActions {...this.props} />
+                  <div className="pull-right search-meta">
+                      <p className="type meta-title">Biofile</p>
+                      <p className="type">{` ${result.accession}`}</p>
+                      <Status item={result.status} badgeSize="small" css="result-table__status" />
+                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                  </div>
+                  <div className="accession">
+                      <a href={result['@id']}>
+                          {`${result.accession} `}
+                          
+                      </a>
+                  </div>
+                  <div className="data-row">
+                      <div><strong>File format: </strong>{result.file_format}</div>
+                      <div><strong>Output type: </strong>{result.output_type}</div>
+                  </div>
+              </div>
+              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+          </li>
+        );
+    }
+}
+/* eslint-enable react/prefer-stateless-function */
+
+BiofileComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Target search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiofileComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biofile = auditDecor(BiofileComponent);
+
+globals.listingViews.register(Biofile, 'Biofile');
+
+/* eslint-disable react/prefer-stateless-function */
 class BiospecimenComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -2238,3 +2285,4 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
