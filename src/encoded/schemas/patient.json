@@ -132,6 +132,12 @@
         "surgery.nephrectomy_details.robotic_assist": {
             "title": "Nephrectomy Robotic Assist"
         },
+        "ihc.result": {
+            "title": "IHC staining result"
+        },
+        "ihc.proteins": {
+            "title": "IHC staining protein marker"
+        },
         "status": {
             "title": "Status"
         }

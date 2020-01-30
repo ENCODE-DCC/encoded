@@ -20,11 +20,13 @@ ORDER = [
     'page',
     'patient',
     'surgery',
+    'ihc',
     'medication',
     'supportive_medication',
     'lab_results',
     'vital_results',
     'germline',
+    
     'consent',
     'radiation',
     'medical_imaging',

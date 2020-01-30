@@ -89,6 +89,7 @@ class Patient(Item):
         'labs',
         'vitals',
         'germline',
+        'ihc',
         'consent',
         'radiation',
         'medical_imaging',
@@ -100,6 +101,7 @@ class Patient(Item):
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
         'germline': ('Germline', 'patient'),
+        'ihc': ('Ihc', 'patient'),
         'consent': ('Consent', 'patient'),
         'radiation': ('Radiation', 'patient'),
         'medical_imaging': ('MedicalImaging', 'patient'),
@@ -143,6 +145,8 @@ class Patient(Item):
     def germline(self, request, germline):
         return paths_filtered_by_status(request, germline)
 
+   
+
     @calculated_property(condition='germline', schema={
         "title": "Positive Germline Mutations",
         "type": "array",
@@ -158,6 +162,18 @@ class Patient(Item):
                 mutation_summary = mutatation_object['target']
                 germline_summary.append(mutation_summary)
         return germline_summary
+
+    @calculated_property(schema={
+        "title":"IHC result",
+        "type":"array",
+        "items":{
+            "type":'string',
+            "linkTo":'ihc'
+        }
+    }) 
+
+    def ihc(self,request,ihc):
+        return paths_filtered_by_status(request,ihc)
 
 
     @calculated_property(schema={
@@ -368,6 +384,17 @@ class Germline(Item):
     embeded = []
 
 @collection(
+    name='ihc',
+    properties={
+        'title': 'IHC results',
+        'description': 'IHC results pages',
+    })
+class Ihc(Item):
+    item_type = 'ihc'
+    schema = load_schema('encoded:schemas/ihc.json')
+    embeded = []
+
+@collection(
     name='consent',
     properties={
         'title': 'Consent',
@@ -468,7 +495,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications','surgery_summary']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications','surgery_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:
