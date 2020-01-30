@@ -286,9 +286,8 @@ const convertContextToDataTable = (context) => {
 
     // Generate the matrix header row labels for the assays with targets. Need a max-width inline
     // style so that wide labels don't make the target columns expand.
-    let targetAssayHeader;
     if (targetAssays.length > 0) {
-        targetAssayHeader = [{ css: 'matrix__col-category-targetassay-corner' }].concat(targetAssays.map(((targetAssayElement) => {
+        const targetAssayHeader = [{ css: 'matrix__col-category-targetassay-corner' }].concat(targetAssays.map(((targetAssayElement) => {
             if (targetAssayElement) {
                 // Add cell with assay title and span for the number of targets it has.
                 const categoryQuery = `${colCategory}=${encoding.encodedURIComponent(targetAssayElement.category)}`;
