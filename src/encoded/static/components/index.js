@@ -42,6 +42,7 @@ require('./biosample_type');
 require('./patient');
 require('./experiment_series');
 require('./biospecimen');
+require('./biofile');
 
 
 module.exports = require('./app');
