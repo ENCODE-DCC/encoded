@@ -1,0 +1,100 @@
+{
+    "title": "Immunohistochemistry(IHC) results",
+    "id": "/profiles/ihc.json",
+    "description": "Schema for describing the IHC results.",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["patient", "service_date", "proteins","result"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/standard_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        
+        "patient": {
+            "title": "Patient",
+            "description": "The patient who had the IHC assay tested for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+
+        "path_id": {
+            "title": "Pathology ID",
+            "comment": "KCE personnel are allowed to set this value.",
+            "type": "string",
+            "permission": "import_items"
+        },
+        "service_date": {
+            "title": "Service date",
+            "description": "Date of IHC assay performed.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date"}
+            ]
+        },
+        "proteins": {
+            "title": "IHC Assay tested protein",
+            "description": "The targeted protein name for IHC Assay",
+            "type": "string",
+            "enum": [
+                "AE1/AE3",
+                "BAP1",
+                "Cam 5.2",
+                "Carbonic Anhydrase IX",
+                "Cathepsin-K",
+                "CD10",
+                "CD117",
+                "CK20",
+                "CK7",
+                "CK903",
+                "E-cadherin",
+                "EMA",
+                "HMB-45",
+                "Melan-A",
+                "PAX2",
+                "PAX8",
+                "Racemase",
+                "RCC Antigen",
+                "TFE3 FISH",
+                "TFE3 IHC",
+                "TFEB FISH",
+                "Vimentin"
+                
+            ]
+        },
+        "result": {
+            "title": "IHC assay staining result",
+            "description": "IHC targeted protein staining result",
+            "type": "string",
+            "enum": [
+              "Positive",
+              "Negative",
+              "Rare Focal Positive",
+              "Focal Negative"
+            ]
+        }
+    },
+    "facets": {
+      "result": {
+          "title": "IHC assay staining result"
+      },
+      "proteins": {
+          "title": "IHC assay tested protein"
+      }
+    },
+   
+    "boost_values": {
+        "result": 1.0,
+        "proteins": 1.0
+    },
+    "changelog": "/profiles/changelogs/ihc.md"
+
+}
