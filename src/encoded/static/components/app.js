@@ -213,6 +213,25 @@ EulaModal.propTypes = {
 };
 
 
+const AccountCreatedModal = ({ closeModal }) => (
+    <Modal>
+        <ModalHeader title="Account Created" closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                Welcome! A new user account is now created for you and you are automatically logged in.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            closeModal={closeModal}
+            cancelTitle={'Close'}
+        />
+    </Modal>
+);
+
+AccountCreatedModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+};
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -280,6 +299,7 @@ class App extends React.Component {
         this.currentResource = this.currentResource.bind(this);
         this.currentAction = this.currentAction.bind(this);
         this.closeSignupModal = this.closeSignupModal.bind(this);
+        this.closeAccountCreationNotification = this.closeAccountCreationNotification.bind(this);
         this.signup = this.signup.bind(this);
     }
 
@@ -533,6 +553,10 @@ class App extends React.Component {
         this.setState({ eulaModalVisibility: false });
     }
 
+    closeAccountCreationNotification() {
+        this.setState({ accountCreatedModalVisibility: false });
+    }
+
     signup() {
         const authResult = this.state.authResult;
 
@@ -553,8 +577,8 @@ class App extends React.Component {
             if (!response.ok) {
                 throw new Error('Failed to create new account');
             }
-            // sign in after account creation
-            this.handleAuth0Login(authResult, false, false);
+            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
+            this.handleAuth0Login(authResult, false, false); // sign in after account creation
         }).catch((err) => {
             console.warn(err);
         });
@@ -1202,6 +1226,11 @@ class App extends React.Component {
                                 <EulaModal
                                     closeModal={this.closeSignupModal}
                                     signup={this.signup}
+                                /> :
+                            null}
+                            { this.state.accountCreatedModalVisibility ?
+                                <AccountCreatedModal
+                                    closeModal={this.closeAccountCreationNotification}
                                 /> :
                             null}
                             <Footer version={this.props.context.app_version} />
