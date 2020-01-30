@@ -1,5 +1,9 @@
 ## Changelog for treatment_concentration_series.json
 
+### Schema version 16
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 15
 * Added *MouseDevSeries* enum to *internal_tags*
 * Removed *month_released* calculated property.
@@ -19,4 +23,3 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
-

@@ -1,5 +1,9 @@
 ## Changelog for dataset.json
 
+### Schema version 14
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 13
 * Added *MouseDevSeries* enum to *internal_tags*
 

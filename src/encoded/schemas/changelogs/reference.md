@@ -1,5 +1,9 @@
 ## Changelog for reference.json
 
+### Schema version 17
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 16
 
 * *functional elements* is added to the enums list of *reference_type* property

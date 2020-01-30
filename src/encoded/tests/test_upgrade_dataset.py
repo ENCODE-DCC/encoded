@@ -314,6 +314,26 @@ def annotation_25(award, lab):
     }
 
 
+@pytest.fixture
+def annotation_26(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '26',
+        'dbxrefs': ['IHEC:IHECRE00000998.1'],
+    }
+
+
+@pytest.fixture
+def reference_epigenome_16(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '16',
+        'dbxrefs': ['IHEC:IHECRE00004643.1'],
+    }
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -668,3 +688,22 @@ def test_upgrade_annotation_25_to_26(upgrader, annotation_25):
     )
     assert value['schema_version'] == '26'
     assert value['encyclopedia_version'] == 'ENCODE v1'
+
+
+def test_upgrade_annotation_26_to_27(upgrader, annotation_26):
+    value = upgrader.upgrade(
+        'annotation', annotation_26, current_version='26', target_version='27'
+    )
+    assert value['schema_version'] == '27'
+    assert value['dbxrefs'] == ['IHEC:IHECRE00000998']
+
+
+def test_upgrade_reference_epigenome_16_to_17(upgrader, reference_epigenome_16):
+    value = upgrader.upgrade(
+        'reference_epigenome',
+        reference_epigenome_16,
+        current_version='16',
+        target_version='17'
+    )
+    assert value['schema_version'] == '17'
+    assert value['dbxrefs'] == ['IHEC:IHECRE00004643']

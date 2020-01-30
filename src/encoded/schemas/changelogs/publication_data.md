@@ -1,5 +1,9 @@
 ## Changelog for publication_data.json
 
+### Schema version 16
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 15
 
 * *references* was set to have a minimum of 1.
