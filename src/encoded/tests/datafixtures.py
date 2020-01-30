@@ -1282,6 +1282,6 @@ def library_schema_9b(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'extraction_method': 'see document',
+        'extraction_method': 'see document ',
         'lysis_method': 'test',
     }

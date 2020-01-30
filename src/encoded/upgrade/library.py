@@ -181,7 +181,8 @@ def library_9_10(value, system):
     }
     if 'extraction_method' in value:
         extr_method = value.get('extraction_method')
-        if extr_method in ['n/a', '0', 'see document', 'see document ', 'None', 'Diagenode Bioruptor, 20-40 cycles of 0.5 minute on and 0.5 minute off']:
+        extr_method = extr_method.rstrip()
+        if extr_method in ['n/a', '0', 'see document', 'None', 'Diagenode Bioruptor, 20-40 cycles of 0.5 minute on and 0.5 minute off']:
             value.pop('extraction_method')
         elif extr_method in old_to_new:
             value['extraction_method'] = old_to_new[extr_method]
@@ -194,6 +195,7 @@ def library_9_10(value, system):
 
     if 'lysis_method' in value:
         lys_method = value.get('lysis_method')
+        lys_method = lys_method.rstrip()
         if lys_method == 'see document':
             value.pop('lysis_method')
         elif lys_method in old_to_new:
@@ -210,6 +212,7 @@ def library_9_10(value, system):
 
     if 'library_size_selection_method' in value:
         size_method = value.get('library_size_selection_method')
+        size_method = size_method.rstrip()
         if size_method in ['none', 'see document', 'DNA', 'No size selections were done on this sample', 'no post-PCR size selection']:
             value.pop('library_size_selection_method')
         elif size_method in old_to_new:

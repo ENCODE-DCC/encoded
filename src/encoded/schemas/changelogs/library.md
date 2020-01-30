@@ -6,21 +6,21 @@ The properties *extraction_method*, *lysis_method*, and *library_size_selection_
 * *extraction_method* now has enum:
 ```
     "enum": [
-                        "Ambion mirVana",
-                        "ATAC-seq (Greenleaf & Chang Lab protocol)",
-                        "C1 fluidigm",
-                        "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
-                        "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                        "QIAGEN DNeasy Blood & Tissue Kit",
-                        "Qiagen RNA extraction",
-                        "RNeasy",
-                        "RNeasy Lipid Tissue Mini Kit (QIAGEN cat#74804)",
-                        "RNeasy Plus Mini Kit Qiagen cat#74134 plus additional on column Dnase treatment",
-                        "Trizol",
-                        "Zymo Quick-DNA MicroPrep (D3021)"
+        "Ambion mirVana",
+        "ATAC-seq (Greenleaf & Chang Lab protocol)",
+        "C1 fluidigm",
+        "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
+        "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "QIAGEN DNeasy Blood & Tissue Kit",
+        "Qiagen RNA extraction",
+        "RNeasy",
+        "RNeasy Lipid Tissue Mini Kit (QIAGEN cat#74804)",
+        "RNeasy Plus Mini Kit Qiagen cat#74134 plus additional on column Dnase treatment",
+        "Trizol",
+        "Zymo Quick-DNA MicroPrep (D3021)"
         ]
 
-    "comment": "Historical extraction methods, not valid for new submissions."
+    "comment": "Historical extraction methods, not valid for new submissions.",
     "enum": [
         "TruChIP chromatin shearing reagent kit Covaris cat# 520154, sonication Covaris M220, IP (home protocol), DNA isolation with QIAquick PCR Purification Kit cat# 28104.",
         "SDS"
@@ -29,35 +29,35 @@ The properties *extraction_method*, *lysis_method*, and *library_size_selection_
 * *lysis_method* now has enum:
 ```
     "enum": [
-                        "ATAC buffer",
-                        "Clontech UltraLow for Illumina sequencing",
-                        "RIPA",
-                        "SDS",
-                        "[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]",
-                        "0.01% digitonin",
-                        "72 degrees for 3 minutes in the presence of Triton"
+        "ATAC buffer",
+        "Clontech UltraLow for Illumina sequencing",
+        "RIPA",
+        "SDS"
         ]
 
     "comment": "Historical lysis methods, not valid for new submissions.",
     "enum": [
-        "QIAGEN DNeasy Blood & Tissue Kit"
+        "QIAGEN DNeasy Blood & Tissue Kit",
+        "[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]",
+        "0.01% digitonin",
+        "72 degrees for 3 minutes in the presence of Triton"
         ]
 ```
 * *library_size_selection_method* now has enum:
 ```
     "enum": [
-                        "agarose gel extraction",
-                        "AMPure XP bead purification",
-                        "BluePippin",
-                        "BluePippin 2-10Kb",
-                        "dual SPRI",
-                        "E-Gel",
-                        "gel",
-                        "gel followed by Amicon filters",
-                        "Invitrogen EGel EX 2% agarose (Cat# G402002)",
-                        "Pippin HT",
-                        "Sera-mag SpeedBeads",
-                        "SPRI beads"
+        "agarose gel extraction",
+        "AMPure XP bead purification",
+        "BluePippin",
+        "BluePippin 2-10Kb",
+        "dual SPRI",
+        "E-Gel",
+        "gel",
+        "gel followed by Amicon filters",
+        "Invitrogen EGel EX 2% agarose (Cat# G402002)",
+        "Pippin HT",
+        "Sera-mag SpeedBeads",
+        "SPRI beads"
         ]
 
     "comment": "Historical size selection methods, not valid for new submissions.",
