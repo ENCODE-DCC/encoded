@@ -3894,3 +3894,28 @@ def test_audit_experiment_inconsistent_queried_RNP_size_range(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent queried_RNP_size_range'
                for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_lacking_processed_data(
+    testapp,
+    base_experiment,
+    experiment,
+    file_fastq,
+    file_bam
+    ):
+
+    testapp.patch_json(file_fastq['@id'], {
+        'dataset': base_experiment['@id'],
+        })
+    testapp.patch_json(file_bam['@id'], {
+        'dataset': base_experiment['@id'],
+        })
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(warning['category'] != 'lacking processed data'
+        for warning in collect_audit_errors(res))
+    testapp.patch_json(file_bam['@id'], {
+        'dataset': experiment['@id']
+        })
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(warning['category'] == 'lacking processed data'
+        for warning in collect_audit_errors(res))
