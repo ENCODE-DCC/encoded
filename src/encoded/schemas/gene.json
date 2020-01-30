@@ -164,14 +164,14 @@
             "permission": "import_items"
         },
         "locations": {
-            "title": "Gene location coordinates",
-            "description": "Genomic locations using 1-based, closed coordinates for different assembles of this gene.",
+            "title": "Gene locations",
+            "description": "Gene locations specified using 1-based, closed coordinates for different versions of reference genome assemblies.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "Gene location coordinate",
-                "description": "Genome position information for one assembly of this gene.",
+                "title": "Gene location",
+                "description": "Gene location specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
                 "type": "object",
                 "additionalProperties": false,
                 "required": ["assembly", "chromosome", "start", "end"],
