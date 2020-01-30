@@ -14,7 +14,7 @@
         "output_type": "reads",
         "file_size": 20,
         "read_length": 50,
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
         "biolibrary": "KCELB038EAA",
         "status": "released",
         "uuid": "f6c125ca-2cc3-4c63-a62a-d326ccfa2f30"
@@ -35,7 +35,7 @@
         "read_length": 50,
         "run_type": "paired-ended",
         "paired_end": "1",
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
         "biolibrary": "KCELB987EAA",
         "status": "released",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
@@ -58,7 +58,7 @@
         "run_type": "paired-ended",
         "paired_end": "2",
         "paired_with": "KCEFF287RDC",
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
         "biolibrary": "KCELB987EAA",
         "status": "released",
         "uuid": "6869a7b9-260d-4aa9-9cd2-74e056f6eded"
@@ -69,7 +69,7 @@
         "file_size": 20,
         "md5sum": "99be74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "biolibrary": "KCELB012FAA",
         "status": "released",
         "assembly": "hg19",
@@ -81,7 +81,7 @@
         "file_size": 20,
         "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "biolibrary": "KCELB745FAA",
         "status": "released",
         "assembly": "hg19",
@@ -89,3 +89,4 @@
     }
 
 ]
+
