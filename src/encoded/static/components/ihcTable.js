@@ -10,7 +10,7 @@ class IHCTable extends React.Component {
     }
 
     filterData() {
-        this.ihcFilters = this.props.data.map(i =>({ "target proteins": i.proteins, "result": i.result }) ) ;
+        this.ihcFilters = this.props.data.map(i =>({ "IHC antibody": i.antibody, "result": i.result }) ) ;
         console.log("IHCfilter",this.ihcFilters);
     }
 
@@ -19,11 +19,11 @@ class IHCTable extends React.Component {
         
         if (this.ihcFilters.length>0) {
             const ihcTableColumns = {
-                "target proteins": {
-                    title: 'Target protein',
+                "IHC antibody": {
+                    title: ' Staining Antibody',
                 },
                 "result": {
-                    title: 'Result',
+                    title: 'Assay Result',
                 },
             };
             return (

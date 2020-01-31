@@ -3,7 +3,7 @@
       "patient": "KCEPT078DUA",
       "path_id": "PT078DUA",
       "service_date": "1876-04-09",
-      "proteins": "AE1/AE3",
+      "antibody": "AE1/AE3",
       "result": "Positive",
       "status": "released",
       "uuid": "f8a573d2-42d3-11ea-b77f-2e728ce88125"
@@ -12,7 +12,7 @@
       "patient": "KCEPT078DUA",
       "path_id": "PT078DUA",
       "service_date": "1876-04-10",
-      "proteins": "Bap1",
+      "antibody": "BAP1",
       "result": "Negative",
       "status": "released",
       "uuid": "f8a578b4-42d3-11ea-b77f-2e728ce88125"
@@ -21,7 +21,7 @@
       "patient": "KCEPT398JLK",
       "path_id": "PT398JLK",
       "service_date": "1876-04-11",
-      "proteins": "Carbonic Anhydrase IX",
+      "antibody": "Carbonic Anhydrase IX",
       "result": "Rare Focal Positive",
       "status": "released",
       "uuid": "f8a57a12-42d3-11ea-b77f-2e728ce88125"
@@ -30,7 +30,7 @@
       "patient": "KCEPT708IJT",
       "path_id": "PT708IJT",
       "service_date": "1876-04-12",
-      "proteins": "Bap1",
+      "antibody": "BAP1",
       "result": "Focal Negative",
       "status": "released",
       "uuid": "f8a57b3e-42d3-11ea-b77f-2e728ce88125"
@@ -39,7 +39,7 @@
       "patient": "KCEPT805NRD",
       "path_id": "PT805NRD",
       "service_date": "1876-04-13",
-      "proteins": "Cam 5.2",
+      "antibody": "CAM 5.2",
       "result": "Positive",
       "status": "released",
       "uuid": "f8a57c74-42d3-11ea-b77f-2e728ce88125"
@@ -48,7 +48,7 @@
       "patient": "KCEPT925TMI",
       "path_id": "PT925TMI",
       "service_date": "1876-04-14",
-      "proteins": "CD10",
+      "antibody": "CD10",
       "result": "Negative",
       "status": "released",
       "uuid": "f8a57da0-42d3-11ea-b77f-2e728ce88125"
@@ -57,7 +57,7 @@
       "patient": "KCEPT604LAK",
       "path_id": "PT604LAK",
       "service_date": "1876-04-15",
-      "proteins": "Cathepsin-K",
+      "antibody": "Cathepsin-K",
       "result": "Rare Focal Positive",
       "status": "released",
       "uuid": "f8a57ee0-42d3-11ea-b77f-2e728ce88125"
@@ -66,7 +66,7 @@
       "patient": "KCEPT480NBU",
       "path_id": "PT480NBU",
       "service_date": "1876-04-16",
-      "proteins": "CD10",
+      "antibody": "CD10",
       "result": "Focal Negative",
       "status": "released",
       "uuid": "f8a5828c-42d3-11ea-b77f-2e728ce88125"
@@ -75,7 +75,7 @@
       "patient": "KCEPT756AEN",
       "path_id": "PT756AEN",
       "service_date": "1876-04-17",
-      "proteins": "CD117",
+      "antibody": "CD117",
       "result": "Positive",
       "status": "released",
       "uuid": "f8a583c2-42d3-11ea-b77f-2e728ce88125"
@@ -84,7 +84,7 @@
       "patient": "KCEPT026PGS",
       "path_id": "PT026PGS",
       "service_date": "1876-04-18",
-      "proteins": "CK20",
+      "antibody": "CK20",
       "result": "Negative",
       "status": "released",
       "uuid": "f8a584ee-42d3-11ea-b77f-2e728ce88125"
@@ -93,7 +93,7 @@
       "patient": "KCEPT873QVK",
       "path_id": "PT873QVK",
       "service_date": "1876-04-19",
-      "proteins": "CK7",
+      "antibody": "CK7",
       "result": "Rare Focal Positive",
       "status": "released",
       "uuid": "f8a58610-42d3-11ea-b77f-2e728ce88125"
@@ -102,7 +102,7 @@
       "patient": "KCEPT802XRB",
       "path_id": "PT802XRB",
       "service_date": "1876-04-20",
-      "proteins": "CK903",
+      "antibody": "CK903",
       "result": "Focal Negative",
       "status": "released",
       "uuid": "f8a5873c-42d3-11ea-b77f-2e728ce88125"
@@ -111,7 +111,7 @@
       "patient": "KCEPT139SOR",
       "path_id": "PT139SOR",
       "service_date": "1876-04-21",
-      "proteins": "E-cadherin",
+      "antibody": "E-cadherin",
       "result": "Positive",
       "status": "released",
       "uuid": "f8a58872-42d3-11ea-b77f-2e728ce88125"
@@ -120,7 +120,7 @@
       "patient": "KCEPT396JUN",
       "path_id": "PT396JUN",
       "service_date": "1876-04-22",
-      "proteins": "EMA",
+      "antibody": "EMA",
       "result": "Negative",
       "status": "released",
       "uuid": "f8a5899e-42d3-11ea-b77f-2e728ce88125"
@@ -129,7 +129,7 @@
       "patient": "KCEPT186NZW",
       "path_id": "PT186NZW",
       "service_date": "1876-04-23",
-      "proteins": "HMB-45",
+      "antibody": "HMB-45",
       "result": "Rare Focal Positive",
       "status": "released",
       "uuid": "f8a58d0e-42d3-11ea-b77f-2e728ce88125"
@@ -138,7 +138,7 @@
       "patient": "KCEPT692UHR",
       "path_id": "PT692UHR",
       "service_date": "1876-04-24",
-      "proteins": "Melan-A",
+      "antibody": "Melan-A",
       "result": "Focal Negative",
       "status": "released",
       "uuid": "f8a58e4e-42d3-11ea-b77f-2e728ce88125"
@@ -147,7 +147,7 @@
       "patient": "KCEPT318AXY",
       "path_id": "PT318AXY",
       "service_date": "1876-04-25",
-      "proteins": "PAX2",
+      "antibody": "PAX2",
       "result": "Positive",
       "status": "released",
       "uuid": "f8a58f7a-42d3-11ea-b77f-2e728ce88125"
@@ -156,7 +156,7 @@
       "patient": "KCEPT021XWS",
       "path_id": "PT021XWS",
       "service_date": "1876-04-26",
-      "proteins": "PAX8",
+      "antibody": "PAX8",
       "result": "Negative",
       "status": "released",
       "uuid": "f8a590a6-42d3-11ea-b77f-2e728ce88125"
@@ -165,7 +165,7 @@
       "patient": "KCEPT294KIZ",
       "path_id": "PT294KIZ",
       "service_date": "1876-04-27",
-      "proteins": "Racemase",
+      "antibody": "Racemase",
       "result": "Rare Focal Positive",
       "status": "released",
       "uuid": "f8a591c8-42d3-11ea-b77f-2e728ce88125"
@@ -174,7 +174,7 @@
       "patient": "KCEPT359MHZ",
       "path_id": "PT359MHZ",
       "service_date": "1876-04-28",
-      "proteins": "RCC Antigen",
+      "antibody": "RCC Antigen",
       "result": "Focal Negative",
       "status": "released",
       "uuid": "f8a592ea-42d3-11ea-b77f-2e728ce88125"
@@ -183,7 +183,7 @@
       "patient": "KCEPT240HMN",
       "path_id": "PT240HMN",
       "service_date": "1876-04-29",
-      "proteins": "TFE3 FISH",
+      "antibody": "TFE3 FISH",
       "result": "Positive",
       "status": "released",
       "uuid": "f8a59696-42d3-11ea-b77f-2e728ce88125"
@@ -192,7 +192,7 @@
       "patient": "KCEPT240HMN",
       "path_id": "PT240HMN",
       "service_date": "1876-04-30",
-      "proteins": "TFE3 IHC",
+      "antibody": "TFE3 IHC",
       "result": "Negative",
       "status": "released",
       "uuid": "f8a5990c-42d3-11ea-b77f-2e728ce88125"
@@ -201,7 +201,7 @@
       "patient": "KCEPT240HMN",
       "path_id": "PT240HMN",
       "service_date": "1876-04-30",
-      "proteins": "TFEB FISH",
+      "antibody": "TFEB FISH",
       "result": "Rare Focal Positive",
       "status": "released",
       "uuid": "f8a59a6a-42d3-11ea-b77f-2e728ce88125"
@@ -210,7 +210,7 @@
       "patient": "KCEPT240HMN",
       "path_id": "PT240HMN",
       "service_date": "1876-04-30",
-      "proteins": "Vimentin",
+      "antibody": "Vimentin",
       "result": "Focal Negative",
       "status": "released",
       "uuid": "f8a59b96-42d3-11ea-b77f-2e728ce88125"

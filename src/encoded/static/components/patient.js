@@ -160,7 +160,7 @@ class Patient extends React.Component {
         {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
         {hasSurgery && <CollapsiblePanel panelId="myPanelId5" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
-        {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Staining Results"></IHCTable>}
+        {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
 
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
