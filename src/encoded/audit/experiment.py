@@ -674,7 +674,6 @@ def check_experiment_dnase_seq_standards(experiment,
     for f in fastq_files:
         yield from check_file_read_length_rna(
             f, 36,
-            assay_term_name,
             pipeline_title,
             link_to_standards)
 
@@ -883,7 +882,6 @@ def check_experiment_rna_seq_standards(value,
         if pipeline_title not in ['Long read RNA-seq pipeline', 'microRNA-seq pipeline']:
             yield from check_file_read_length_rna(f, 50,
                                                   pipeline_title,
-                                                  assay_term_name,
                                                   standards_links[pipeline_title])
         yield from check_file_platform(f, ['OBI:0002024', 'OBI:0000696'])
 
@@ -1339,7 +1337,6 @@ def check_experiment_micro_rna_standards(
     for f in fastq_files:
         yield from check_file_read_length_rna(f, minimum_threshold,
                                                   pipeline_title,
-                                                  experiment['assay_term_name'],
                                                   standards_links)
     # Gather metrics
     quantification_metrics = get_metrics(
@@ -2348,7 +2345,7 @@ def check_file_read_length_chip(file_to_check,
     return
 
 
-def check_file_read_length_rna(file_to_check, threshold_length, assay_term_name, pipeline_title, standard_link):
+def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, standard_link):
     if 'read_length' not in file_to_check:
         detail = ('Reads file {} missing read_length'.format(
             audit_link(path_to_text(file_to_check['@id']), file_to_check['@id'])
@@ -2359,13 +2356,12 @@ def check_file_read_length_rna(file_to_check, threshold_length, assay_term_name,
     if file_to_check.get('read_length') < threshold_length:
         detail = ('Fastq file {} '
             'has read length of {}bp. '
-            'ENCODE uniform processing pipelines ({}) '
+            'ENCODE uniform processing pipeline standards '
             'require sequencing reads to be at least {}bp long. (See {} )'.format(
                 audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
                 file_to_check.get('read_length'),
-                pipeline_title,
                 threshold_length,
-                audit_link('ENCODE ' + assay_term_name + ' data standards', standard_link)
+                audit_link('ENCODE ' + pipeline_title + ' data standards', standard_link)
             )
         )
         yield AuditFailure('insufficient read length', detail,
