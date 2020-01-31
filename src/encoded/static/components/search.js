@@ -207,8 +207,7 @@ class BiosampleComponent extends React.Component {
         // Build the text of the synchronization string
         let synchText;
         if (result.synchronization) {
-            synchText = result.synchronization +
-                (result.post_synchronization_time ? ` +${ageDisplay}` : '');
+            synchText = `${result.synchronization}${result.post_synchronization_time ? ` +${ageDisplay}` : ''}`;
         }
 
         return (
