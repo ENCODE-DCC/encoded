@@ -11,7 +11,6 @@ class IHCTable extends React.Component {
 
     filterData() {
         this.ihcFilters = this.props.data.map(i =>({ "IHC antibody": i.antibody, "result": i.result }) ) ;
-        console.log("IHCfilter",this.ihcFilters);
     }
 
 
