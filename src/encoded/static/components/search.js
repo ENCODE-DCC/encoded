@@ -295,7 +295,7 @@ const ExperimentComponent = (props, reactContext) => {
             replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
         ).map((replicate) => {
             const biosample = replicate.library.biosample;
-            return `${biosample.synchronization}${biosample.post_synchronization_time ? ` +${biosample.age_display}` : ''}`;
+            return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
         }));
     }
 
