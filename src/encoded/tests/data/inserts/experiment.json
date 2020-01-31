@@ -855,5 +855,18 @@
         "date_released": "2020-01-13",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "a3e8514c-3668-11ea-978f-2e728ce88125"
+    },
+    {
+        "_test": "icLASER test",
+        "accession": "ENCSR124LAS",
+        "assay_term_name": "icLASER",
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0003072",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "date_submitted": "2019-09-01",
+        "date_released": "2020-01-20",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "55119174-ce00-455d-8e24-09bd9efd0a65"
     }
 ]
