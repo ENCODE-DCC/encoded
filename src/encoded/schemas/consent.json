@@ -53,6 +53,7 @@
         },
         "future_contact": {
             "title": "Future Contact",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -61,6 +62,7 @@
         },
         "future_research": {
             "title": "Future Research",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -69,6 +71,7 @@
         },
         "information_release": {
             "title": "Information Release",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -77,6 +80,7 @@
         },
         "genetic_information_release": {
             "title": "Genetic Information Release",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -85,6 +89,7 @@
         },
         "hippa": {
             "title": "HIPPA",
+            "description": "Required for version 1, not in version 2 and version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -93,6 +98,7 @@
         },
         "biopsyForResearch": {
             "title": "Biopsy For Research",
+            "description": "Required for version 3, not in version 1 and version 2",
             "type": "string",
             "enum": [
                 "Refuse",
