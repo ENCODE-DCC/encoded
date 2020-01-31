@@ -14,7 +14,7 @@ const newsUri = '/search/?type=Page&news=true&status=released';
 // Convert the selected organisms and assays into an encoded query.
 function generateQuery(selectedOrganisms, selectedAssayCategory) {
     // Make the base query.
-    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=4' : '?type=Experiment&status=released';
+    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=4' : '?type=Patient&status=released';
 
     // Add the selected assay category, if any (doesn't apply to Computational Predictions).
     if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
@@ -59,22 +59,22 @@ class EncodeSearch extends React.Component {
         return (
             <div className="site-search__encode">
                 <div className="site-search__reference">
-                    <a href="/help/project-overview/" role="button" className="site-search__reference-element">About ENCODE Project</a>
+                    <a href="/help/project-overview/" role="button" className="site-search__reference-element">About KCP Project</a>
                     <a href="/help/getting-started/" role="button" className="site-search__reference-element">Getting Started</a>
-                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__reference-element">Experiments</a>
+                    <a href="/matrix/?type=Patient&status=released" role="button" className="site-search__reference-element">Experiments</a>
                 </div>
                 <form action="/search/">
                     <fieldset>
-                        <legend className="sr-only">Encode search</legend>
+                        <legend className="sr-only">KCE search</legend>
                         <div className="site-search__input">
-                            <label htmlFor="encode-search">Search ENCODE portal</label>
+                            <label htmlFor="encode-search">Search KCE portal</label>
                             <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
-                                Search the entire ENCODE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
+                                Search the entire KCE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
                             </Tooltip>
                             <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
                         </div>
                         <div className="site-search__submit">
-                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">ENCODE <i className="icon icon-search" /></button>
+                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">KCE <i className="icon icon-search" /></button>
                         </div>
                     </fieldset>
                 </form>
@@ -654,7 +654,7 @@ export default class Home extends React.Component {
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">
-                                        <h2>News <a href={newsUri} title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
+                                        <h2>News <a href={newsUri} title="More KCP news" className="twitter-ref">More KCP news</a></h2>
                                     </div>
                                     <NewsLoader newsLoaded={this.newsLoaded} />
                                 </div>
@@ -1643,18 +1643,18 @@ class TwitterWidget extends React.Component {
         return (
             <div>
                 <div className="twitter-header">
-                    <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" rel="noopener noreferrer"className="twitter-ref">@EncodeDCC</a></h2>
+                    <h2>Twitter <a href="https://twitter.com/KCPUTSW" title="The Kidney Cancer Program Twitter page in a new window or tab" target="_blank" rel="noopener noreferrer"className="twitter-ref">@KCPUTSW</a></h2>
                 </div>
                 {this.props.height ?
                     <a
                         ref={(anchor) => { this.anchor = anchor; }}
                         className="twitter-timeline"
-                        href="https://twitter.com/encodedcc" // from encodedcc twitter
+                        href="https://twitter.com/kcputsw" // from encodedcc twitter
                         data-chrome="noheader"
-                        data-screen-name="EncodeDCC"
+                        data-screen-name="KidneyCancerProgram"
                         data-height={this.props.height.toString()} // height so it matches with rest of site
                     >
-                        @EncodeDCC
+                        @KCPUTSW
                     </a>
                 : null}
             </div>

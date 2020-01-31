@@ -23,24 +23,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<div class=\"project-info site-title\">\n    <h1>KCP: The Kidney Cancer Program</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
-                },
-                {
-                    "@id": "#block2",
-                    "@type": "richtextblock",
-                    "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
-                },
-                {
-                    "@id": "#block3",
-                    "@type": "richtextblock",
-                    "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
-                },
-                {
-                    "@id": "#block4",
-                    "@type": "teaserblock",
-                    "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
-                    "body": "<h2>Chromatin Structure</h2>",
-                    "href": "/about/chromatin-structure"
+                    "body": "<div class=\"project-info site-title\">\n   <h1>KCP: The Kidney Cancer Program</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>Kidney Cancer Explorer (KCE) seamlessly integrates up-to-date clinical-pathological data with high-dimensional genomics and research samples into a unified database that supports powerful analytical tools for integrative studies. Data are extracted using automatic queries run monthly from multiple warehouses (EPIC, Co-PATH, Tumor Registry, Mosaic, and Cancer Gene Connect). Raw and patient level data are available through a password-protected system. Exome-seq or RNA-seq is available for over 500 specimens. Information can be linked to an extensive biobank including possibly the largest collection of live tumor samples and kidney cancer tumorgrafts. The database has been designed as a scalable engine to meet the complex and increasing demands of biomedical research.</p><p>KCE is the result of a fruitful collaboration between the Department of Bioinformatics and the Kidney Cancer Program at UT Southwestern. The project is supported by a CPRIT grant and through a Specialized Program of Research Excellence Award (SPORE) from the National Cancer Institute. UT Southwestern, is one of two institutions in the US to receive a prestigious SPORE. </p>\n</div>"
                 }
             ]
         }
