@@ -387,11 +387,8 @@
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
-        "replicates.library.biosample.age": {
-            "title": "Age"
-        },
-        "replicates.library.biosample.age_units": {
-            "title": "Age units"
+        "replicates.library.biosample.age_display": {
+            "title": "Biosample age"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
