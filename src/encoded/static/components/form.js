@@ -683,11 +683,9 @@ export class Field extends UpdateChildMixin(React.Component) {
         } else if (schema.linkTo) {
             // Restrict ObjectPicker to finding the specified type
             // FIXME this should handle an array of types too
-            const restrictions = { type: [schema.linkTo] };
             input = (<ObjectPicker
                 {...inputProps}
                 searchBase={`?mode=picker&type=${schema.linkTo}`}
-                restrictions={restrictions}
             />);
         } else if (schema.type === 'boolean') {
             input = <input type="checkbox" {...inputProps} />;
