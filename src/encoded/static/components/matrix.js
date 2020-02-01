@@ -14,28 +14,6 @@ export const MATRIX_VISUALIZE_LIMIT = 500;
 
 
 /**
- * Order in which assay_titles should appear along the horizontal axis of the matrix. Anything not
- * included gets sorted after these.
- */
-export const matrixAssaySortOrder = [
-    'polyA plus RNA-seq',
-    'total RNA-seq',
-    'small RNA-seq',
-    'microRNA-seq',
-    'microRNA counts',
-    'RNA microarray',
-    'DNase-seq',
-    'ATAC-seq',
-    'WGBS',
-    'RRBS',
-    'MeDIP-seq',
-    'MRE-seq',
-    'TF ChIP-seq',
-    'Histone ChIP-seq',
-];
-
-
-/**
  * Render the expander button for a row category, and react to clicks by calling the parent to
  * render the expansion change.
  */
