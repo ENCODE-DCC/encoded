@@ -90,5 +90,34 @@
         "elements_references": ["ENCSR848CFY"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "392ac214-317b-11ea-aec2-2e728ce88125"
+    },
+    {
+        "accession": "ENCSR112TRG",
+        "assay_term_name": "CRISPR screen",
+        "award": "U54HG006997",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "Test submission for CRISPR screen experiment",
+        "elements_mapping": "ENCSR001REF",
+        "lab": "bing-ren",
+        "status": "in progress",
+        "submitted_by": "tristique.sem@faucibus.semper",
+        "target": "FTO-human",
+        "target_expression_range_maximum": 10,
+        "target_expression_range_minimum": 0,
+        "uuid": "38d9ec05-d633-4ce2-aec5-bc32b1fd2364"
+    },
+    {
+        "accession": "ENCSR113TRG",
+        "assay_term_name": "CRISPR screen",
+        "award": "U54HG006997",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "description": "Test submission for CRISPR screen experiment",
+        "elements_mapping": "ENCSR001REF",
+        "lab": "bing-ren",
+        "status": "in progress",
+        "submitted_by": "tristique.sem@faucibus.semper",
+        "target": "FTO-human",
+        "target_expression_percentile": 90,
+        "uuid": "bbd32130-4f13-4c45-9117-3cdebe0ad40a"
     }
 ]
