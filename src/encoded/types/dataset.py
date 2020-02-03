@@ -363,12 +363,10 @@ class Annotation(FileSet, CalculatedVisualize):
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedAssaySynonyms):
+class PublicationData(FileSet):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
     embedded = [
-        'biosample_ontology',
-        'organism',
         'submitted_by',
         'lab',
         'award.pi.lab',
