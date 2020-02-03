@@ -835,6 +835,12 @@
         "description": {
             "title": "Description"
         },
+        "age": {
+            "title": "Age"
+        },
+        "age_units": {
+            "title": "Age units"
+        },
         "age_display": {
             "title": "Biosample age"
         },
