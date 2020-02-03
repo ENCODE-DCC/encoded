@@ -18,6 +18,7 @@ import CollapsiblePanel from './collapsiblePanel';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 import SurgeryChart from './surgeryChart';
+import BiospecimenTable from "./biospecimenTable";
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {

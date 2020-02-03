@@ -95,8 +95,8 @@ class Patient(Item):
         'medical_imaging',
         'medications',
         'supportive_medications',
-        'surgery'
-    ]
+        'surgery',
+        'biospecimen']
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
@@ -107,7 +107,8 @@ class Patient(Item):
         'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
         'supportive_medication': ('SupportiveMedication', 'patient'),
-        'surgery': ('Surgery', 'patient')
+        'surgery': ('Surgery', 'patient'),
+        'biospecimen': ('Biospecimen', 'patient')
     }
     set_status_up = []
     set_status_down = []
@@ -145,7 +146,7 @@ class Patient(Item):
     def germline(self, request, germline):
         return paths_filtered_by_status(request, germline)
 
-   
+
 
     @calculated_property(condition='germline', schema={
         "title": "Positive Germline Mutations",
@@ -170,7 +171,7 @@ class Patient(Item):
             "type":'string',
             "linkTo":'ihc'
         }
-    }) 
+    })
 
     def ihc(self,request,ihc):
         return paths_filtered_by_status(request,ihc)
@@ -312,6 +313,7 @@ class Patient(Item):
                 medication_range.append("48+ months")
         return medication_range
 
+
     @calculated_property( schema={
         "title": "Supportive Medications",
         "type": "array",
@@ -323,6 +325,19 @@ class Patient(Item):
 
     def supportive_medications(self, request, supportive_medication):
         return supportive_med_frequency(request, supportive_medication)
+
+
+    @calculated_property(schema={
+        "title": "Biospecimen",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Biospecimen"
+        },
+    })
+    
+    def biospecimen(self, request, biospecimen):
+        return paths_filtered_by_status(request, biospecimen)
 
 
     @calculated_property( schema={
@@ -337,6 +352,7 @@ class Patient(Item):
     def surgery(self, request, surgery):
         return paths_filtered_by_status(request, surgery)
 
+
     @calculated_property(define=True, schema={
             "title": "Surgery Treatment Summary",
             "type": "string",
@@ -347,6 +363,7 @@ class Patient(Item):
             else:
                     surgery_summary = "No Treatment Received"
             return surgery_summary
+
 
 @collection(
     name='lab-results',
@@ -495,7 +512,8 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications','surgery_summary']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', ihc, 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:
