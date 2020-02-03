@@ -94,7 +94,8 @@ class Patient(Item):
         'medical_imaging',
         'medications',
         'supportive_medications',
-        'biospecimen'    ]
+        'surgery',
+        biospecimen']
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
@@ -104,6 +105,7 @@ class Patient(Item):
         'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
         'supportive_medication': ('SupportiveMedication', 'patient'),
+        'surgery': ('Surgery', 'patient'),
         'biospecimen': ('Biospecimen', 'patient')
     }
     set_status_up = []
@@ -320,6 +322,30 @@ class Patient(Item):
         return paths_filtered_by_status(request, biospecimen)
 
 
+    @calculated_property( schema={
+        "title": "Surgeries",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Surgery",
+        },
+    })
+
+    def surgery(self, request, surgery):
+        return paths_filtered_by_status(request, surgery)
+
+    @calculated_property(define=True, schema={
+            "title": "Surgery Treatment Summary",
+            "type": "string",
+        })
+    def surgery_summary(self, request, surgery=None):
+            if len(surgery) > 0:
+                surgery_summary = "Treatment Received"
+            else:
+                    surgery_summary = "No Treatment Received"
+            return surgery_summary
+
+
 @collection(
     name='lab-results',
     properties={
@@ -423,6 +449,17 @@ class SupportiveMedication(Item):
     embeded = []
 
 
+@collection(
+    name='surgery',
+    properties={
+        'title': 'Surgeries',
+        'description': 'Surgeries results pages',
+    })
+class Surgery(Item):
+    item_type = 'surgery'
+    schema = load_schema('encoded:schemas/surgery.json')
+    embeded = []
+
 @property
 def __name__(self):
     return self.name()
@@ -446,7 +483,7 @@ def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
-                'medications','medication_range', 'supportive_medications', 'biospecimen']:
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:

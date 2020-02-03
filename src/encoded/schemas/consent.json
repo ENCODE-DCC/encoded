@@ -12,6 +12,7 @@
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "required":["consent_version","patient","overall","date"],
     "properties": {
         "schema_version": {
             "default": "1"
@@ -52,6 +53,7 @@
         },
         "future_contact": {
             "title": "Future Contact",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -60,6 +62,7 @@
         },
         "future_research": {
             "title": "Future Research",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -68,6 +71,7 @@
         },
         "information_release": {
             "title": "Information Release",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -76,6 +80,7 @@
         },
         "genetic_information_release": {
             "title": "Genetic Information Release",
+            "description": "Required for version 1 and version 2, not in version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -84,6 +89,7 @@
         },
         "hippa": {
             "title": "HIPPA",
+            "description": "Required for version 1, not in version 2 and version 3",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -92,6 +98,7 @@
         },
         "biopsyForResearch": {
             "title": "Biopsy For Research",
+            "description": "Required for version 3, not in version 1 and version 2",
             "type": "string",
             "enum": [
                 "Refuse",
@@ -100,24 +107,37 @@
         }  
       
     },
-    "anyOf": [
+    "oneOf": [
         {
           "properties": {
-            "consent_version": { "const": "version1" }
+            "consent_version": { "enum": ["version1"] }
           },
-          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"]
-        },
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release", "hippa"],
+        "allOf":[{"not":{"required":["biopsyForResearch" ]}}
+        ]
+    },
         {
           "properties": {
             "consent_version": { "const": "version2" }
           },
-          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release"]
+          "required": ["consent_version", "patient", "overall", "date", "future_contact", "future_research", "information_release", "genetic_information_release"],
+          "allOf":[
+              {"not":{"required":["hippa" ]}},
+              {"not":{"required":["biopsyForResearch" ]}}
+        ]
         },
         {
           "properties": {
             "consent_version": { "const": "version3" }
           },
-          "required": ["consent_version", "patient", "overall", "date","biopsyForResearch"]
+          "required": ["consent_version", "patient", "overall", "date","biopsyForResearch"],
+          "allOf":[
+              {"not":{"required":["future_contact" ]}},
+              {"not":{"required":["future_research" ]}},
+              {"not":{"required":["information_release" ]}},
+              {"not":{"required":["genetic_information_release" ]}},
+              {"not":{"required":["hippa"]}}
+            ]  
         }
       ],
     "facets": {

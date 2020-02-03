@@ -25,7 +25,7 @@ ORDER = [
     'bioreplicate',
     'biofile',
     'medication',
-    'supportive_medication', 
+    'supportive_medication',
     'lab_results',
     'vital_results',
     'germline',
