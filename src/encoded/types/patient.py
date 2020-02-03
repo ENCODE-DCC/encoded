@@ -89,17 +89,19 @@ class Patient(Item):
         'labs',
         'vitals',
         'germline',
+        'ihc',
         'consent',
         'radiation',
         'medical_imaging',
         'medications',
         'supportive_medications',
         'surgery',
-        biospecimen']
+        'biospecimen']
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
         'germline': ('Germline', 'patient'),
+        'ihc': ('Ihc', 'patient'),
         'consent': ('Consent', 'patient'),
         'radiation': ('Radiation', 'patient'),
         'medical_imaging': ('MedicalImaging', 'patient'),
@@ -144,6 +146,8 @@ class Patient(Item):
     def germline(self, request, germline):
         return paths_filtered_by_status(request, germline)
 
+
+
     @calculated_property(condition='germline', schema={
         "title": "Positive Germline Mutations",
         "type": "array",
@@ -159,6 +163,18 @@ class Patient(Item):
                 mutation_summary = mutatation_object['target']
                 germline_summary.append(mutation_summary)
         return germline_summary
+
+    @calculated_property(schema={
+        "title":"IHC result",
+        "type":"array",
+        "items":{
+            "type":'string',
+            "linkTo":'ihc'
+        }
+    })
+
+    def ihc(self,request,ihc):
+        return paths_filtered_by_status(request,ihc)
 
 
     @calculated_property(schema={
@@ -297,6 +313,7 @@ class Patient(Item):
                 medication_range.append("48+ months")
         return medication_range
 
+
     @calculated_property( schema={
         "title": "Supportive Medications",
         "type": "array",
@@ -318,6 +335,7 @@ class Patient(Item):
             "linkTo": "Biospecimen"
         },
     })
+    
     def biospecimen(self, request, biospecimen):
         return paths_filtered_by_status(request, biospecimen)
 
@@ -333,6 +351,7 @@ class Patient(Item):
 
     def surgery(self, request, surgery):
         return paths_filtered_by_status(request, surgery)
+
 
     @calculated_property(define=True, schema={
             "title": "Surgery Treatment Summary",
@@ -379,6 +398,17 @@ class VitalResult(Item):
 class Germline(Item):
     item_type = 'germline'
     schema = load_schema('encoded:schemas/germline.json')
+    embeded = []
+
+@collection(
+    name='ihc',
+    properties={
+        'title': 'IHC results',
+        'description': 'IHC results pages',
+    })
+class Ihc(Item):
+    item_type = 'ihc'
+    schema = load_schema('encoded:schemas/ihc.json')
     embeded = []
 
 @collection(
@@ -482,7 +512,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', ihc, 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
         try:
             filtered[key] = properties[key]
