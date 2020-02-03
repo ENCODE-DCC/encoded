@@ -32,6 +32,7 @@ ORDER = [
     'consent',
     'radiation',
     'medical_imaging',
+    'surgery',
     'cart',
 ]
 
