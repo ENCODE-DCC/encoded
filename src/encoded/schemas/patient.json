@@ -114,6 +114,21 @@
         "medication_range":{
             "title":"Medication Duration"
         },
+        "biospecimen.collection_type": {
+            "title": "Biospecimen Collection Type"
+        },
+        "biospecimen.processing_type": {
+            "title": "Biospecimen Processing Type"
+        },
+        "biospecimen.tissue_type": {
+            "title": "Biospecimen Tissue Type"
+        },
+        "biospecimen.anatomic_site": {
+            "title": "Biospecimen Anatomic Site"
+        },
+        "biospecimen.distributed": {
+            "title": "Biospecimen Distribution Status"
+        },
         "surgery_summary": {
             "title": "Surgery Treatment Status"
         },
@@ -169,7 +184,7 @@
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0,
         "medications.name":1.0
-        
+
         },
     "changelog": "/profiles/changelogs/patient.md"
 }

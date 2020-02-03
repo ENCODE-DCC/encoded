@@ -94,8 +94,8 @@ class Patient(Item):
         'medical_imaging',
         'medications',
         'supportive_medications',
-        'surgery'
-    ]
+        'surgery',
+        biospecimen']
     rev = {
         'labs': ('LabResult', 'patient'),
         'vitals': ('VitalResult', 'patient'),
@@ -105,7 +105,8 @@ class Patient(Item):
         'medical_imaging': ('MedicalImaging', 'patient'),
         'medication': ('Medication', 'patient'),
         'supportive_medication': ('SupportiveMedication', 'patient'),
-        'surgery': ('Surgery', 'patient')
+        'surgery': ('Surgery', 'patient'),
+        'biospecimen': ('Biospecimen', 'patient')
     }
     set_status_up = []
     set_status_down = []
@@ -309,6 +310,18 @@ class Patient(Item):
         return supportive_med_frequency(request, supportive_medication)
 
 
+    @calculated_property(schema={
+        "title": "Biospecimen",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Biospecimen"
+        },
+    })
+    def biospecimen(self, request, biospecimen):
+        return paths_filtered_by_status(request, biospecimen)
+
+
     @calculated_property( schema={
         "title": "Surgeries",
         "type": "array",
@@ -331,6 +344,7 @@ class Patient(Item):
             else:
                     surgery_summary = "No Treatment Received"
             return surgery_summary
+
 
 @collection(
     name='lab-results',
@@ -468,7 +482,8 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging', 'medications','medication_range', 'supportive_medications','surgery_summary']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
         try:
             filtered[key] = properties[key]
         except KeyError:
