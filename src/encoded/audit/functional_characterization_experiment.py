@@ -38,5 +38,3 @@ def audit_fcc_experiment(value, system):
     excluded_types = excluded_files + ['deleted', 'replaced']
     for function_name in function_dispatcher_without_files.keys():
         yield from function_dispatcher_without_files[function_name](value, system, excluded_types)
-
-    return
