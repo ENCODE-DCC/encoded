@@ -308,6 +308,23 @@ def file_no_runtype_readlength(testapp, experiment, award, lab, replicate, platf
     return item
 
 
+@pytest.fixture
+def file_subreads_bam(testapp, experiment, award, lab, replicate, platform3):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 888,
+        'platform': platform3['@id'],
+        'award': award['@id'],
+        'file_format': 'bam',
+        'output_type': 'sub-reads',
+        'md5sum': 'e057b49246a8c794ec2e94f0e1aca906',
+        'status': 'in progress'
+    }
+    return item
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -531,3 +548,20 @@ def test_no_runtype_readlength_dependency(testapp, file_no_runtype_readlength, p
     testapp.post_json('/file', file_no_runtype_readlength, status=422)
     file_no_runtype_readlength.update({'platform': platform4['@id']})
     testapp.post_json('/file', file_no_runtype_readlength, status=201)
+
+
+def test_subreads_bam(testapp, file_subreads_bam, platform1):
+    res = testapp.post_json('/file', file_subreads_bam, expect_errors=False)
+    assert res.status_code == 201
+    item = file_subreads_bam.copy()
+    item.update({'platform': platform1['@id']})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+    item = file_subreads_bam.copy()
+    item.update({'read_length': 50})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+    item = file_subreads_bam.copy()
+    item.update({'assembly': 'GRCh38'})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
