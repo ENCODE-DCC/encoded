@@ -469,11 +469,7 @@ class ComputationalModel(FileSet):
     embedded = FileSet.embedded + [
         'submitted_by',
         'lab',
-        'award.pi.lab',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
-        'references'
+        'award.pi.lab'
     ]
 
 
