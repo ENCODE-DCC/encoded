@@ -10,13 +10,13 @@
         },
         {
             "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
-        }  
-    ],    
+        }
+    ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" },     
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
@@ -145,10 +145,12 @@
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                    "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
-                        }                    
+                        }
                     }
                 },
                 {
@@ -172,10 +174,12 @@
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                    "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
-                        }                    
+                        }
                     }
                 },
                 {
@@ -362,6 +366,40 @@
                             }
                         },
                         {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
                             "required": ["read_length"],
                             "properties": {
                                 "file_format": {
@@ -373,7 +411,9 @@
                                         "linkEnum": [
                                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
                                             "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                            "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                         ]
                                     }
                                 }
@@ -444,10 +484,12 @@
                         "linkEnum": [
                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
                             "c7564b38-ab4f-4c42-a401-3de48689a998",
-                            "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                         ]
                     }
-                }  
+                }
             }
         },
         "read_length": {
@@ -465,13 +507,15 @@
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
                                     "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                    "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
-                        }  
+                        }
                     }
                 }
-            ]            
+            ]
         },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
@@ -545,7 +589,7 @@
                                             "CEL",
                                             "fastq",
                                             "gff",
-                                            "gtf",                                            
+                                            "gtf",
                                             "bed",
                                             "bigBed",
                                             "bam",
@@ -598,7 +642,7 @@
                                         "index reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts"                                        
+                                        "reporter code counts"
                                     ]
                                 }
                             }
@@ -709,13 +753,13 @@
                                         }
                                     },
                                     {
-                                        "required": ["file_size"],   
+                                        "required": ["file_size"],
                                         "properties": {
                                             "status": {
                                                 "enum": ["in progress",  "revoked", "archived", "released"]
                                             }
                                         }
-                                    }                                   
+                                    }
                             ]
                         },
 
@@ -785,7 +829,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "16"
+            "default": "17"
         },
         "accession": {
             "accessionType": "FF"
@@ -1239,7 +1283,7 @@
                         "reporter code counts",
                         "representative dnase hypersensitivity sites",
                         "restriction enzyme site locations",
-                        "RNA-binding protein associated mRNAs",           
+                        "RNA-binding protein associated mRNAs",
                         "rRNA reference",
                         "semi-automated genome annotation",
                         "sequence adapters",

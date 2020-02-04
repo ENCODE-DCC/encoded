@@ -1039,6 +1039,16 @@ def platform3(testapp):
 
 
 @pytest.fixture
+def platform4(testapp):
+    item = {
+        'term_id': 'NTR:0000448',
+        'term_name': 'Oxford Nanopore - MinION',
+        'uuid': '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
 def encode4_award(testapp):
     item = {
         'name': 'encode4-award',

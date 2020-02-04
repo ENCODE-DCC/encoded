@@ -291,6 +291,23 @@ def file_good_bam(testapp, experiment, award, lab, replicate, platform1):
     return item
 
 
+@pytest.fixture
+def file_no_runtype_readlength(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'output_type': 'reads',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -508,3 +525,9 @@ def test_matching_md5sum(testapp, file_no_error, file_good_bam):
     file_no_error.update({'matching_md5sum': [file['@id']]})
     res = testapp.post_json('/file', file_no_error, expect_errors=False)
     assert res.status_code == 201
+
+
+def test_no_runtype_readlength_dependency(testapp, file_no_runtype_readlength, platform4):
+    testapp.post_json('/file', file_no_runtype_readlength, status=422)
+    file_no_runtype_readlength.update({'platform': platform4['@id']})
+    testapp.post_json('/file', file_no_runtype_readlength, status=201)
