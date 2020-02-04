@@ -335,7 +335,7 @@ class Patient(Item):
             "linkTo": "Biospecimen"
         },
     })
-    
+
     def biospecimen(self, request, biospecimen):
         return paths_filtered_by_status(request, biospecimen)
 
@@ -512,7 +512,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', ihc, 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'ihc', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
         try:
             filtered[key] = properties[key]
