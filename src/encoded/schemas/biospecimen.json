@@ -224,10 +224,13 @@
         "patient": 1.0,
         "openspecimen_ID": 1.0,
         "internal_ID": 1.0,
-        "anatomic_site": 1.0
+        "anatomic_site": 1.0,
+        "biolibrary.accession": 1.0,
+        "biolibrary.biofile.accession": 1.0
 
 
     },
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
