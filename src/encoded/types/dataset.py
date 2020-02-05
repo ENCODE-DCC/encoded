@@ -457,7 +457,7 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
 
 
 @collection(
-    name='computational-model',
+    name='computational-models',
     unique_key='accession',
     properties={
         'title': "Computational model file set",
