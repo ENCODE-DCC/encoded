@@ -12,7 +12,7 @@
             "non-targeting gRNAs",
             "positive control regions",
             "safe-targeting gRNAs",
-            "sub-reads"
+            "subreads"
         ]
 
 ### Schema version 16

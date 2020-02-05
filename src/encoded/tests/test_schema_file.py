@@ -318,7 +318,7 @@ def file_subreads_bam(testapp, experiment, award, lab, replicate, platform3):
         'platform': platform3['@id'],
         'award': award['@id'],
         'file_format': 'bam',
-        'output_type': 'sub-reads',
+        'output_type': 'subreads',
         'md5sum': 'e057b49246a8c794ec2e94f0e1aca906',
         'status': 'in progress'
     }
