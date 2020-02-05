@@ -1,0 +1,36 @@
+---
+- name: get the elassticserach package
+  get_url:
+    url: 
+    dest: /opt/encode 
+  command: ls -lrt | grep elastic
+  register: command_output 
+
+-  set_fact: elastic-version="{{ command_output.stdout }}"
+
+- debug:
+    msg: elastc-version
+ 
+- name: Extract foo.tgz into /var/lib/foo
+  unarchive:
+    src: /opt/encode/"elastic-version"
+    dest: /opt/encode/
+  command: sudo chown -R "{{username}}:{{username}}" /opt/encode/
+ 
+- name: register the value pof elastic version.
+  command: ls -lrt /opt/encode | grep -i elastic
+  register: command_output
+
+- set_fact: elasticsearch-bin="{{ command_output.stdout }}"
+
+- debug:
+    msg: elasticsearch-bin
+  
+- name: Adding the path in the bashrc files
+  lineinfile: dest= ~/.bashrc line='export PATH=$PATH:/opt/encode/{elasticsearch-bin}/bin' insertafter='EOF'
+
+######regexp='export PATH=\$PATH:path-to-mysql/bin' state=present
+
+- name: Source the bashrc file
+  shell: source ~/.bashrc
+

@@ -1,0 +1,32 @@
+---
+- name: "Create a directory if not exists"
+  file:
+   path: /opt/encode 
+   state: directory
+   mode: 777
+   group: "{{username}}"
+   owner: "{{username}}"
+
+- name: get the java package
+  get_url:
+    url: 
+    dest: /opt/encode 
+  command: ls -lrt | grep jdk
+  register: command_output 
+
+-  set_fact: jdk-version="{{ command_output.stdout }}"
+
+- debug:
+    msg: jdk-version
+ 
+- name: unzip the java file
+  file:
+   path: /usr/lib/jvm
+   state: directory
+   mode: 777
+   group: "{{username}}"
+   owner: "{{username}}"
+  command: tar -xvzf "jdk-version"  --directory /usr/lib/jvm/
+  command: sudo chmod 755 /usr/lib/jvm
+  command: sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/{{jdk_version}}/bin/java 100
+

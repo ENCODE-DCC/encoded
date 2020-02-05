@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  become_method: sudo
+  gather_facts: no
+  vars:
+    - { the path for the variables will update it later }
+  roles:
+    - { role: setup-ubuntu-machine }

@@ -1,0 +1,43 @@
+---
+- name: Install encode required packages
+  apt: 
+    name={{ item }}
+    state=present
+  with_items: "{{ required-packages }}"
+
+- name: making the xhost enabale
+   command: sudo xhost enable
+   commad: xhost +SI:localuser:"{{ username }}"
+
+- name: checking the google is working or not
+   command: google-chrome
+
+- name: install the nvm required packages.
+   command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+ 
+- name: Ansible check directory.
+  stat:
+   path: $HOME/.nvm
+  register: my_folder
+ 
+- name: "echo if directory already existed"
+  debug:
+    msg: "the .nvm directory is already existed"
+  when: my_folder.stat.exists
+ 
+- name: "Create a directory if not exists"
+  file:
+   path: $HOME/.nvm 
+   state: directory
+   when: my_folder.stat.exists == false
+ 
+- name: adding the nvm path to the bash profile.
+   command: export NVM_DIR="$HOME/.nvm"
+   command: [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+   command: [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+- name: installing the nvm version you wanted
+  command: nv install node "{{node-version}}"
+
+- name: use the node version you wanted to use:
+  command: nvm use "{{node-version}}"

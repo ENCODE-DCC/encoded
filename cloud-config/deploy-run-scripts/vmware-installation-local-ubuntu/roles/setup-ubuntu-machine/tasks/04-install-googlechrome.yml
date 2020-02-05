@@ -1,0 +1,22 @@
+---
+- name: get the google-chrome package
+  get_url:
+    url: 
+    dest: /opt/encode 
+  command: ls -lrt | grep -i chromedriver
+  register: command_output 
+
+-  set_fact: google-version="{{ command_output.stdout }}"
+
+- debug:
+    msg: google-version
+
+- name: changing google to bin
+  command: cd /opt/encode && mkdir -p bin && mv google-version  bin/
+
+- name: Adding the path in the bashrc files for postgresql
+  lineinfile: dest= ~/.bashrc line='export PATH=$PATH:/opt/encode/bin' insertafter='EOF' 
+
+- name: Source the bashrc file
+  shell: source ~/.bashrc
+
