@@ -323,6 +323,7 @@ def base_experiment(testapp, lab, award, heart):
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def base_fcc_experiment(testapp, lab, award, heart):
     item = {
@@ -332,7 +333,7 @@ def base_fcc_experiment(testapp, lab, award, heart):
         'biosample_ontology': heart['uuid'],
         'status': 'in progress'
     }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+    return testapp.post_json('/functional-characterization-experiments', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
