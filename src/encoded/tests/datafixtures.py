@@ -324,6 +324,18 @@ def base_experiment(testapp, lab, award, heart):
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
 @pytest.fixture
+def base_fcc_experiment(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'MPRA',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def experiment_with_RNA_library(
     testapp,
     base_experiment,
@@ -1196,6 +1208,8 @@ def inconsistent_biosample_type(testapp):
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
 def base_replicate(testapp, base_experiment):
     item = {
         'biological_replicate_number': 1,
