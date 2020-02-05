@@ -67,7 +67,7 @@ const portal = {
                 { id: 'gettingstarted', title: 'Using the portal', url: '/help/getting-started/' },
                 { id: 'cart', title: 'Cohort', url: '/help/cart/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
-                { id: 'citingencode', title: 'Citing ENCODE', url: '/help/citing-encode' },
+                { id: 'citingencode', title: 'Citing KCE', url: '/help/citing-kce' },
                 { id: 'faq', title: 'FAQ', url: '/help/faq/' },
                 { id: 'sep-mm-1' },
                 { id: 'projectoverview', title: 'Project Overview', url: '/help/project-overview/' },
@@ -1170,3 +1170,4 @@ module.exports.getRenderedProps = function getRenderedProps(document) {
     }
     return props;
 };
+
