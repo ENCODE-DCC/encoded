@@ -468,7 +468,7 @@ const ComputationalModelComponent = (props, reactContext) => {
 
                             {context.computational_model_type ?
                                 <div data-test="type">
-                                    <dt>Annotation type</dt>
+                                    <dt>Computational model type</dt>
                                     <dd className="sentence-case">{context.computational_model_type}</dd>
                                 </div>
                             : null}
