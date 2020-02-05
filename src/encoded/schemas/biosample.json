@@ -841,6 +841,9 @@
         "age_units": {
             "title": "Age units"
         },
+        "age_display": {
+            "title": "Biosample age"
+        },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
