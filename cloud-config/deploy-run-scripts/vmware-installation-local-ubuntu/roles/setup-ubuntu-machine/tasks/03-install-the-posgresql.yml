@@ -1,0 +1,24 @@
+---
+- name: install the postgresql
+  command: curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  command: sudo add-apt-repository 'deb http://apt.postgresql.org/pub/repos/apt bionic-pgdg main'
+ 
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+
+- name: insatll postgresql
+  apt:
+    name: postgresql-"{{ postgresql-version }}"
+    state: present
+
+- name: Adding the path in the bashrc files for postgresql
+  lineinfile: dest= ~/.bashrc line='export PATH=$PATH:/usr/lib/"{{ postgresql-version }}"/bin' insertafter='EOF'
+
+######regexp='export PATH=\$PATH:path-to-mysql/bin' state=present
+
+- name: Source the bashrc file
+  shell: source ~/.bashrc
+
+
