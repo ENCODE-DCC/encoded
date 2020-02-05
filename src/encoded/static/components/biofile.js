@@ -55,9 +55,14 @@ class Biofile extends React.Component {
 
                         <div data-test="biolibrary">
                             <dt>Library</dt>
-                            <dd>{context.biolibrary.accession}</dd>
-                            
+                            <dd>{context.biolibrary.accession}</dd>                            
                         </div>
+
+                        <div data-test="biospecimen">
+                            <dt>Biospecimen</dt>   
+                            <dd><a href={context.biolibrary.biospecimen}>{context.biolibrary.biospecimen.split("/")[2]}</a></dd>                        
+                        </div>
+                
                         <div data-test="md5sum">
                             <dt>MD5sum</dt>
                             <dd>{context.md5sum}</dd>
@@ -103,4 +108,5 @@ class Biofile extends React.Component {
 }
 
 globals.contentViews.register(Biofile, 'Biofile');
+
 
