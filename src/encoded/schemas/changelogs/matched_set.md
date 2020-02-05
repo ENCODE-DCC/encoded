@@ -1,5 +1,9 @@
 ## Changelog for matched_set.json
 
+### Schema version 16
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 15
 * Added *MouseDevSeries* enum to *internal_tags*
 * Removed *month_released* calculated property.

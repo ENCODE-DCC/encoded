@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 27
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 26
 * Added *functional characterization elements* and *transcription start sites* enum to *annotation_type* property.
 * Added *assay_term_name* property.
