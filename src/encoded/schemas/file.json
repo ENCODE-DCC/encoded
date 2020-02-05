@@ -441,7 +441,7 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "sub-reads"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads"]
                             }
                         }
                     }
@@ -449,7 +449,7 @@
                 {
                     "properties": {
                         "output_type": {
-                            "enum": ["sub-reads"]
+                            "enum": ["subreads"]
                         },
                         "platform": {
                             "linkTo": "Platform",
@@ -474,7 +474,7 @@
                             "reads",
                             "index reads",
                             "rejected reads",
-                            "sub-reads"
+                            "subreads"
                         ]
                     }
                 }
@@ -587,7 +587,7 @@
                                 "properties": {
                                     "output_type": {
                                         "enum": [
-                                            "sub-reads"
+                                            "subreads"
                                         ]
                                     }
                                 }
@@ -602,7 +602,7 @@
                                 },
                                 "output_type": {
                                     "enum": [
-                                        "sub-reads"
+                                        "subreads"
                                     ]
                                 }
                             },
@@ -1329,7 +1329,7 @@
                         "spike-in sequence",
                         "splice junctions",
                         "stable peaks",
-                        "sub-reads",
+                        "subreads",
                         "topologically associated domains",
                         "transcript quantifications",
                         "transcription start sites",
@@ -1717,7 +1717,7 @@
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
-        "sub-reads": "raw data",
+        "subreads": "raw data",
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
