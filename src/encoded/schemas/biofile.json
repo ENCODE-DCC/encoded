@@ -1224,8 +1224,13 @@
             "title": "Status"
         }
     },
+    "boost_values": {
+        "accession": 1.0,
+        "biolibrary.accession": 1.0
+    },
   
    
     "changelog": "/profiles/changelogs/biofile.md"
 }
+
 
