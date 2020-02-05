@@ -1274,3 +1274,24 @@ def fastq_pair_1(fastq):
     item = fastq.copy()
     item['paired_end'] = '1'
     return item
+
+
+@pytest.fixture
+def library_schema_9(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'extraction_method': 'Trizol (Invitrogen 15596-026)',
+        'lysis_method': 'Possibly Trizol',
+        'library_size_selection_method': 'Gel',
+    }
+
+
+@pytest.fixture
+def library_schema_9b(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'extraction_method': 'see document ',
+        'lysis_method': 'test',
+    }

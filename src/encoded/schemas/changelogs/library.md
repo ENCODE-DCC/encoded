@@ -1,5 +1,92 @@
 ## Changelog for library.json
 
+### Schema version 10
+
+The properties *extraction_method*, *lysis_method*, and *library_size_selection_method* were converted to enum, and multiple descriptions or wordings of a specific category were collapsed into single entries. Entries that didn't add substantive information (e.g., "see document" or "n/a") were removed. 
+* *extraction_method* now has enum:
+```
+    "enum": [
+        "Ambion mirVana",
+        "ATAC-seq (Greenleaf & Chang Lab protocol)",
+        "C1 fluidigm",
+        "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
+        "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "QIAGEN DNeasy Blood & Tissue Kit",
+        "Qiagen RNA extraction",
+        "RNeasy",
+        "RNeasy Lipid Tissue Mini Kit (QIAGEN cat#74804)",
+        "RNeasy Plus Mini Kit Qiagen cat#74134 plus additional on column Dnase treatment",
+        "Trizol",
+        "Zymo Quick-DNA MicroPrep (D3021)"
+        ]
+
+    "comment": "Historical extraction methods, not valid for new submissions.",
+    "enum": [
+        "TruChIP chromatin shearing reagent kit Covaris cat# 520154, sonication Covaris M220, IP (home protocol), DNA isolation with QIAquick PCR Purification Kit cat# 28104.",
+        "SDS"
+        ]
+```
+* *lysis_method* now has enum:
+```
+    "enum": [
+        "ATAC buffer",
+        "Clontech UltraLow for Illumina sequencing",
+        "RIPA",
+        "SDS"
+        ]
+
+    "comment": "Historical lysis methods, not valid for new submissions.",
+    "enum": [
+        "QIAGEN DNeasy Blood & Tissue Kit",
+        "[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]",
+        "0.01% digitonin",
+        "72 degrees for 3 minutes in the presence of Triton"
+        ]
+```
+* *library_size_selection_method* now has enum:
+```
+    "enum": [
+        "agarose gel extraction",
+        "AMPure XP bead purification",
+        "BluePippin",
+        "BluePippin 2-10Kb",
+        "dual SPRI",
+        "E-Gel",
+        "gel",
+        "gel followed by Amicon filters",
+        "Invitrogen EGel EX 2% agarose (Cat# G402002)",
+        "Pippin HT",
+        "Sera-mag SpeedBeads",
+        "SPRI beads"
+        ]
+
+    "comment": "Historical size selection methods, not valid for new submissions.",
+    "enum": [
+        "Only RNAs greater than 200 nucleotides. The inserts for the library will vary from ~ 100 - 700 base pairs.",
+        "Only RNAs greater than 200 nucleotides. The insert for the library will vary from ~ 100 - 700 base pairs.",
+        "SPRI beads AMPURE"
+        ]
+```
+Preexisting entries not listed above were mapped to one of the enum as follows:
+```
+        'ATAC_buffer': 'ATAC buffer',
+        'Ambion mirVana <200nt fraction': 'Ambion mirVana',
+        'Possibly Trizol': 'Trizol',
+        'Qaigen Kit DnEasy Blood and Tissue 69504': 'QIAGEN DNeasy Blood & Tissue Kit',
+        'Trizol (LifeTech cat#: 15596-018)': 'Trizol',
+        'Trizol (Invitrogen 15596-026)': 'Trizol',
+        '[NPB(5%BSA(Sigma),0.2%IGEPAL-CA630(Sigma),cOmplete(Roche),1mMDTTinPBS)]': '[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]',
+        'Agencourt AMPure XP': 'AMPure XP bead purification',
+        'AMPUREXPbeads': 'AMPure XP bead purification',
+        'SPRI Beads': 'SPRI beads',
+        'SPRI_beads': 'SPRI beads',
+        'SPRI': 'SPRI beads',
+        'eGel': 'E-Gel',
+        'eGEL': 'E-Gel',
+        'Gel': 'gel',
+        'Only RNAs greater than 200 nucleotides. The insert for the library was excised from an agarose gel': 'agarose gel extraction'
+```
+
 ### Minor changes since schema version 9
 
 * *queried_RNP_size_range* property is added, the property captures ribonucleoprotein size range targeted in the assay the library was constructed for.

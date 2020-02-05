@@ -9,11 +9,9 @@
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "extraction_method": "see document",
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
-        "lysis_method": "see document",
         "nucleic_acid_term_name": "DNA",
         "nucleic_acid_starting_quantity": "1",
         "nucleic_acid_starting_quantity_units": "cell-equivalent",
@@ -35,11 +33,9 @@
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "extraction_method": "see document",
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
-        "lysis_method": "see document",
         "nucleic_acid_term_name": "DNA",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -58,11 +54,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -82,11 +77,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
         "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
@@ -103,7 +97,6 @@
         "biosample": "ENCBS087RNA",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -119,7 +112,6 @@
         "biosample": "ENCBS088RNA",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -139,9 +131,8 @@
         "documents": [
             "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
         ],
-        "extraction_method": "Qiagen #74204",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "Qiagen #74204",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
         "strand_specificity": true,
@@ -164,9 +155,8 @@
         "documents": [
             "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
         ],
-        "extraction_method": "Qiagen #74204",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "Qiagen #74204",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
         "strand_specificity": true,
@@ -184,11 +174,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
-        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
+        "extraction_method": "Trizol",
         "fragmentation_methods": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
-        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -278,11 +267,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
-        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
+        "extraction_method": "Trizol",
         "fragmentation_methods": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
-        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -298,7 +286,6 @@
         ],
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "9a230485-0062-4590-be42-6ea7c4258941"
@@ -313,7 +300,6 @@
         ],
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79"
@@ -325,7 +311,6 @@
         "biosample": "ENCBS000GEN",
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816"
