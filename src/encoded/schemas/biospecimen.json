@@ -189,6 +189,15 @@
         "anatomic_site": {
             "title": "Biospecimen Anatomic Site"
 
+        },
+        "biolibrary.nucleic_acid_term_name": {
+            "title": "Library Material"
+        },
+        "biolibrary.biofile.file_format": {
+            "title": "Genomics File Format"
+        },
+        "biolibrary.biofile.output_type": {
+            "title": "Genomics File Output Type"
         }
 
     },
