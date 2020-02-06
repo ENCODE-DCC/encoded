@@ -3990,6 +3990,21 @@ def audit_experiment_eclip_queried_RNP_size_range(value, system, excluded_types)
         yield AuditFailure('inconsistent queried_RNP_size_range', detail, level='ERROR')
 
 
+def audit_experiment_no_processed_data(value, system, files_structure):
+    '''
+    ENCD-5057: flag experiments that do not have any processed data
+    '''
+    raw_data = files_structure.get('raw_data')
+    processed_data = files_structure.get('processed_data')
+
+    if not raw_data:
+        return
+
+    if not processed_data:
+        detail = 'Experiment {} only has raw data and does not contain any processed data'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('lacking processed data', detail, level='WARNING')
+
+
 #######################
 # utilities
 #######################
@@ -4288,6 +4303,8 @@ def create_files_mapping(files_list, excluded):
                  'preferred_default_idr_peaks': {},
                  'cpg_quantifications': {},
                  'contributing_files': {},
+                 'raw_data': {},
+                 'processed_data': {},
                  'excluded_types': excluded}
     if files_list:
         for file_object in files_list:
@@ -4296,6 +4313,7 @@ def create_files_mapping(files_list, excluded):
 
                 file_format = file_object.get('file_format')
                 file_output = file_object.get('output_type')
+                file_output_category = file_object.get('output_category')
 
                 if file_format and file_format == 'fastq' and \
                         file_output and file_output == 'reads':
@@ -4350,6 +4368,12 @@ def create_files_mapping(files_list, excluded):
                 if file_output and file_output == 'methylation state at CpG':
                     to_return['cpg_quantifications'][file_object['@id']
                                                      ] = file_object
+
+                if file_output_category == 'raw data':
+                    to_return['raw_data'][file_object['@id']] = file_object
+                else:
+                    to_return['processed_data'][file_object['@id']] = file_object
+
     return to_return
 
 
@@ -4604,7 +4628,8 @@ function_dispatcher_with_files = {
     'audit_chip_control': audit_experiment_ChIP_control,
     'audit_read_depth_chip_control': audit_experiment_chipseq_control_read_depth,
     'audit_experiment_standards': audit_experiment_standards_dispatcher,
-    'audit_submitted_status': audit_experiment_status
+    'audit_submitted_status': audit_experiment_status,
+    'audit_no_processed_data': audit_experiment_no_processed_data
 }
 
 

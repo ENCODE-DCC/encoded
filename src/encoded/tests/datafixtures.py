@@ -323,6 +323,19 @@ def base_experiment(testapp, lab, award, heart):
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def base_fcc_experiment(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'MPRA',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/functional-characterization-experiments', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def experiment_with_RNA_library(
     testapp,
@@ -1195,6 +1208,52 @@ def inconsistent_biosample_type(testapp):
         'classification': 'single cell',
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_replicate(testapp, base_experiment):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': base_experiment['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq(testapp, lab, award, base_experiment, base_replicate, platform1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': '91b574b6411514393507f4ebfa66d47a',
+        'output_type': 'reads',
+        'platform': platform1['@id'],
+        "read_length": 50,
+        'run_type': "single-ended",
+        'file_size': 34,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'bam',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'assembly': 'mm10',
+        'lab': lab['@id'],
+        'file_size': 34,
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
