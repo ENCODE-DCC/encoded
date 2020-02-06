@@ -171,7 +171,10 @@ export const NavItem = (props) => {
     const dropdownOpen = dropdownId && (props.openDropdown === dropdownId);
 
     return (
-        <li className={dropdownId ? `dropdown${dropdownOpen ? ' open' : ''}` : null}>
+        <li
+            className={dropdownId ? `dropdown${dropdownOpen ? ' open' : ''}` : null}
+            onMouseLeave={props.dropdownClick}
+        >
             {dropdownTitle ?
                 <NavItemButton
                     clickHandler={props.dropdownClick}
@@ -243,6 +246,7 @@ class NavItemButton extends React.Component {
                 aria-expanded={dropdownOpen}
                 aria-label={label}
                 onClick={this.clickHandler}
+                onMouseEnter={this.clickHandler}
             >
                 {dropdownTitle}
             </button>
