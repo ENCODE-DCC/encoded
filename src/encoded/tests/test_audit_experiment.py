@@ -39,6 +39,16 @@ def base_library(testapp, lab, award, base_biosample):
 
 
 @pytest.fixture
+def base_replicate(testapp, base_experiment):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': base_experiment['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def base_replicate_two(testapp, base_experiment):
     item = {
         'biological_replicate_number': 1,
@@ -274,6 +284,25 @@ def biosample_2(testapp, lab, award, source, organism, heart):
 
 
 @pytest.fixture
+def file_fastq(testapp, lab, award, base_experiment, base_replicate, platform1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': '91b474b6411514393507f4ebfa66d47a',
+        'output_type': 'reads',
+        'platform': platform1['@id'],
+        "read_length": 50,
+        'run_type': "single-ended",
+        'file_size': 34,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
 def file_fastq_2(testapp, lab, award, base_experiment, base_replicate, platform1):
     item = {
         'dataset': base_experiment['@id'],
@@ -385,6 +414,23 @@ def file_fastq_no_read_length(testapp, lab, award, experiment, replicate_1_1, pl
         'lab': lab['@id'],
         'award': award['@id'],
         'aliases': ['encode:no read length alias'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'bam',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'assembly': 'mm10',
+        'lab': lab['@id'],
+        'file_size': 34,
+        'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
     }
     return testapp.post_json('/file', item).json['@graph'][0]
@@ -3848,28 +3894,3 @@ def test_audit_experiment_inconsistent_queried_RNP_size_range(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent queried_RNP_size_range'
                for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_lacking_processed_data(
-    testapp,
-    base_experiment,
-    experiment,
-    file_fastq,
-    file_bam
-    ):
-
-    testapp.patch_json(file_fastq['@id'], {
-        'dataset': base_experiment['@id'],
-        })
-    testapp.patch_json(file_bam['@id'], {
-        'dataset': base_experiment['@id'],
-        })
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(warning['category'] != 'lacking processed data'
-        for warning in collect_audit_errors(res))
-    testapp.patch_json(file_bam['@id'], {
-        'dataset': experiment['@id']
-        })
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(warning['category'] == 'lacking processed data'
-        for warning in collect_audit_errors(res))
