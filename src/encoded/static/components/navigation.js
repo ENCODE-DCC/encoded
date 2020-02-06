@@ -86,6 +86,7 @@ export default class Navigation extends React.Component {
      * @param {object} e React synthetic event
      */
     dropdownClick(dropdownId, e) {
+        // Check if device has touch events
         function isMobile() {
             try {
                 document.createEvent('TouchEvent');
@@ -95,24 +96,45 @@ export default class Navigation extends React.Component {
             }
         }
         const isMobileDevice = isMobile();
-        let executeUserAction = true;
+        // Clicks and mouseover actions do not behave the same way (clicks should toggle activation whereas hovering should maintain activation)
+        // so depending on the device we want user actions have different results
+        // We do enable clicks on non-touch devices so that menus are available by keyboard (tab)
+        let activateMenuItem = false;
+        const dropdownIdIsString = typeof dropdownId === 'string';
         if (e) {
             // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
             e.nativeEvent.stopImmediatePropagation();
-            // Do not listen to mouseenter and mouseleave events on mobile devices
-            if ((e.type === 'mouseenter' || e.type === 'mouseleave') && isMobileDevice) {
-                executeUserAction = false;
+            // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
+            if (e.type === 'click' && isMobileDevice) {
+                activateMenuItem = dropdownId !== this.state.openDropdown;
+                this.setState(prevState => ({
+                    openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
+                }));
+            // On non-touch devices, a click functions like a hover would, it only activates and cannot deactivate
+            // This is primarily useful for accessibility
+            } else if (e.type === 'click') {
+                activateMenuItem = true;
+                this.setState({
+                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
+                });
+            // On non-touch devices, activate menu item on mouseenter or deactivate on mouseleave
+            // Note that mouseenter and mouseleave are not available on touch devices
+            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !(isMobileDevice)) {
+                // On mousenter, activate menu item
+                if (e.type === 'mouseenter') {
+                    activateMenuItem = true;
+                }
+                // On mouseleave, de-activate menu item
+                if (e.type === 'mouseleave') {
+                    activateMenuItem = false;
+                }
+                this.setState({
+                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
+                });
             }
-            // Do not listen to click events on non-mobile devices
-            if (e.type === 'click' && !(isMobileDevice)) {
-                executeUserAction = false;
-            }
-        }
-        const dropdownIdIsString = typeof dropdownId === 'string';
-        if (executeUserAction) {
-            this.setState(prevState => ({
-                openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
-            }));
+        // If there is no event trigger, user's cursor has left dropdown so we want to close it
+        } else if (!isMobileDevice) {
+            this.setState({ openDropdown: '' });
         }
     }
 
