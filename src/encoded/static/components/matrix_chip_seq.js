@@ -9,7 +9,7 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixInternalTags } from './objectutils';
+import { MatrixInternalTags, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter } from './search';
 import DataTable from './datatable';
@@ -414,6 +414,12 @@ class ChIPSeqMatrixHeader extends React.Component {
                     </div>
                     <div className="matrix-header__target-search-controls">
                         <h4>Showing {this.state.searchResultCount} results</h4>
+                        <div className="results-table-control">
+                            <div className="results-table-control__main">&nbsp;</div>
+                            <div className="results-table-control__json">
+                                <DisplayAsJson />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
