@@ -576,6 +576,56 @@ const Patient = auditDecor(PatientComponent);
 
 globals.listingViews.register(Patient, 'Patient');
 
+class PathologyComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        // const age = (result.patient.age && result.patient.age !== 'unknown') ? ` ${result.patient.age}` : '';
+        // const ageUnits = (result.patient.age_units && result.patient.age_units !== 'unknown' && age) ? ` ${result.patient.age_units}` : '';
+        console.log(result);
+
+        return (
+          <li>
+              <div className="clearfix">
+                  <PickerActions {...this.props} />
+                  <div className="pull-right search-meta">
+                      <p className="type meta-title">Pathology Report</p>
+                      <p className="type">{` ${result.accession}`}</p>
+                      {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
+                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                  </div>
+                  <div className="accession">
+                        <a href={result['@id']}>
+                          {`${result.accession} `}
+                          {/* {`${age}${ageUnits} )`} */}
+                        </a>
+                  </div>
+                  <div className="data-row">
+                      <div><strong>Tumor Size:</strong>{result.tumor_size}</div>
+                      <div><strong>Laterality: </strong>{result.laterality}</div>
+                      <div><strong> Focality:</strong>{result.focality}</div>
+                  </div>
+              </div>
+              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+          </li>
+        );
+    }
+}
+/* eslint-enable react/prefer-stateless-function */
+
+PathologyComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Target search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+PathologyComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Pathology_report = auditDecor(PathologyComponent);
+
+globals.listingViews.register(Pathology_report, 'Pathology_report');
+
 
 const Image = (props) => {
     const result = props.context;

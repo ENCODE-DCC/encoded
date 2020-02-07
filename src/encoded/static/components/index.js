@@ -41,6 +41,8 @@ require('./gene');
 require('./biosample_type');
 require('./patient');
 require('./experiment_series');
+require('./pathology_report');
+
 
 
 module.exports = require('./app');

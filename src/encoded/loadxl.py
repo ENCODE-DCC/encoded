@@ -20,6 +20,7 @@ ORDER = [
     'page',
     'patient',
     'surgery',
+    'pathology_report',
     'medication',
     'supportive_medication',
     'lab_results',

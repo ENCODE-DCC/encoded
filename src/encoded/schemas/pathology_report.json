@@ -4,14 +4,16 @@
     "id": "/profiles/pathology_report.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "identifyingProperties": ["uuid"],
-    "required": ["gender", "race", "ethnicity","report_source"],
+    "identifyingProperties": ["uuid","accession"],
+    "required": ["report_source"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/standard_status"}
+
     ],
     "dependencies": {
         "tumor_size": ["tumor_size_units"],
@@ -21,6 +23,9 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "accession": {
+            "accessionType": "PR"
         },
         "patient": {
             "title": "Patient",
@@ -212,7 +217,7 @@
                   "Not available"
               ]
       },
-      "micro_perineperic": {
+      "micro_perinephric": {
           "title": "Perinephric Infiltration",
           "description": "Tumor extension into perinephric tissues, identified microscopically",
           "type": "string",
@@ -373,9 +378,49 @@
     "facets": {
         "status": {
             "title": "Status"
-        }
+        },
+        "laterality": {
+            "title": "Laterality"
+        }, 
+        "tumor_size": {
+            "title": "Tumore Size"
+        }, 
+        "histology": {
+            "title": "Histologic Subtypes"
+        }, 
+        
+        "focality": {
+            "title": "Focality"
+        }, 
+        "grade": {
+            "title": "Grade"
+        }, 
+        "sarcomatoid": {
+            "title": "Sarcomatoid"
+        }, 
+        "necrosis": {
+            "title": "Tumor Necrosis"
+        }, 
+        "margins": {
+            "title": "Margins"
+        }, 
+         "lvi": {
+            "title": "LVI"
+        },
+        "micro_perinephric": {
+            "title": "Perinephric Infiltration"
+        },  
+        "micro_vein": {
+            "title": "Renal Vein Involvement (MicroVein)"
+        },
+        "micro_adrenal": {
+            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        }  
     },
     "boost_values": {
+        "accession":1.0,
+        "path_id":1.0,
+        "histology":1.0,
         "patient": 1.0
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
