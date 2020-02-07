@@ -11,11 +11,10 @@ import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
 import { MatrixInternalTags } from './objectutils';
 import { SearchFilter } from './matrix';
-import { TextFilter, SearchControls } from './search';
+import { TextFilter } from './search';
 import DataTable from './datatable';
 
 
-const VISUALIZE_LIMIT = 500;
 const SEARCH_PERFORMED_PUBSUB = 'searchPerformed';
 const SEARCH_RESULT_COUNT_PUBSUB = 'searchResultCount';
 const CLEAR_SEARCH_BOX_PUBSUB = 'clearSearchBox';
@@ -323,7 +322,7 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
                 <input
                     type="search"
                     className="search-query"
-                    placeholder="Enter search term(s)"
+                    placeholder="Filter terms"
                     defaultValue={this.getValue(this.props)}
                     onKeyDown={this.onKeyDown}
                     data-test="filter-search-box"
@@ -358,9 +357,9 @@ class ChIPSeqMatrixSearch extends SearchFilter {
         const type = pluralize(queryStringType.toLocaleLowerCase());
         return (
             <div className="matrix-general-search">
-                <p>Enter search terms to filter the {type} included in the matrix.</p>
+                <p>Enter filter terms to filter the {type} included in the matrix.</p>
                 <div className="general-search-entry">
-                    <i className="icon icon-search" />
+                    <i className="icon icon-filter" />
                     <div className="searchform">
                         <ChIPSeqMatrixTextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                     </div>
@@ -401,8 +400,6 @@ class ChIPSeqMatrixHeader extends React.Component {
     }
 
     render() {
-        const visualizeDisabledTitle = this.state.context.total > VISUALIZE_LIMIT ? `Filter to ${VISUALIZE_LIMIT} to visualize` : '';
-
         return (
             <div className="matrix-header">
                 <div className="matrix-header__title">
@@ -417,7 +414,6 @@ class ChIPSeqMatrixHeader extends React.Component {
                     </div>
                     <div className="matrix-header__target-search-controls">
                         <h4>Showing {this.state.searchResultCount} results</h4>
-                        <SearchControls context={this.state.context} visualizeDisabledTitle={visualizeDisabledTitle} hideBrowserSelector />
                     </div>
                 </div>
             </div>

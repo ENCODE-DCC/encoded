@@ -453,6 +453,7 @@ $row-data-header-width: 200px;
     @at-root #{&}__target-search-controls {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 65%;
+            margin-bottom: -10px;
         }
 
         .results-table-control {
