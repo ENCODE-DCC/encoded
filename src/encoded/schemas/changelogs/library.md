@@ -91,6 +91,7 @@ Preexisting entries not listed above were mapped to one of the enum as follows:
 
 * *queried_RNP_size_range* property is added, the property captures ribonucleoprotein size range targeted in the assay the library was constructed for.
 * *adapters* property is added. The property is a list that captures information on adapters used during library preparation.
+* *mint_mixture_identifier* property is added. The property allows specification of chromatin preps mixture identifier used in a MINT-ChIP experiments.
 
 ### Schema version 9
 
