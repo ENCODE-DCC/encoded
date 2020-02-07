@@ -44,6 +44,7 @@ ORDER = [
     'project',
     'publication_data',
     'reference',
+    'computational_model',
     'ucsc_browser_composite',
     'matched_set',
     'functional_characterization_series',
@@ -626,6 +627,9 @@ PHASE1_PIPELINES = {
     'reference': [
         remove_keys('related_files', 'software_used'),
     ],
+    'computational_model': [
+        remove_keys('related_files', 'software_used'),
+    ],
     'ucsc_browser_composite': [
         remove_keys('related_files'),
     ],
@@ -713,6 +717,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'reference': [
+        skip_rows_missing_all_keys('related_files', 'software_used'),
+    ],
+    'computational_model': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
     ],
     'ucsc_browser_composite': [

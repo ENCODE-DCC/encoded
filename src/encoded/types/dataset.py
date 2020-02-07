@@ -454,6 +454,23 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
     ]
 
 
+@collection(
+    name='computational-models',
+    unique_key='accession',
+    properties={
+        'title': "Computational model file set",
+        'description': 'A set of files that comprise a computational model.',
+    })
+class ComputationalModel(FileSet):
+    item_type = 'computational_model'
+    schema = load_schema('encoded:schemas/computational_model.json')
+    embedded = FileSet.embedded + [
+        'submitted_by',
+        'lab',
+        'award.pi.lab'
+    ]
+
+
 @abstract_collection(
     name='series',
     unique_key='accession',
