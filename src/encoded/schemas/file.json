@@ -441,11 +441,19 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads"]
                             }
                         }
                     }
-                }
+                },
+                {
+                    "required": ["file_format"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["subreads"]
+                        }
+                    }
+                },
             ]
         },
         "assembly": {
