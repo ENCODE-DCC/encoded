@@ -1,5 +1,14 @@
 [
     {
+        "name": "KCP",
+        "project": "Kidney SPORE",
+        "rfa": "Kidney SPORE",
+        "status": "released",
+        "title": "Kidney Cancer SPORE",
+        "uuid": "167abca8-43aa-4298-bdcf-b93b3d4db26e",
+        "viewing_group": "Kidney SPORE"
+    },
+    {
         "name": "ENCODE2",
         "project": "ENCODE",
         "rfa": "ENCODE2",
