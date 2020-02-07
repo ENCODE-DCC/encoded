@@ -594,23 +594,6 @@
                             }
                         },
                         {
-                            "properties": {
-                                "file_format": {
-                                    "enum": [
-                                        "bam"
-                                    ]
-                                },
-                                "output_type": {
-                                    "enum": [
-                                        "subreads"
-                                    ]
-                                }
-                            },
-                            "not": {
-                                "required": ["assembly"]
-                            }
-                        },
-                        {
                             "not": {
                                 "properties": {
                                     "file_format": {
