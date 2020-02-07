@@ -25,7 +25,7 @@
             "default": "1"
         },
         "accession": {
-            "accessionType": "PR"
+            "accessionType": "TUID"
         },
         "patient": {
             "title": "Patient",

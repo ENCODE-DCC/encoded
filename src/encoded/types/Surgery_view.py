@@ -1,12 +1,12 @@
-# from pyramid.view import (
-#     view_config,
-# )
-# from pyramid.security import (
-#     Allow,
-#     Deny,
-#     Everyone,
-# )
-# from pyramid.traversal import find_root
+from pyramid.view import (
+    view_config,
+)
+from pyramid.security import (
+    Allow,
+    Deny,
+    Everyone,
+)
+from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
@@ -18,35 +18,52 @@ from .base import (
     paths_filtered_by_status,
 )
 import re
-# from snovault.resource_views import item_view_object
-# from snovault.util import expand_path
-# from collections import defaultdict
+from snovault.resource_views import item_view_object
+from snovault.util import expand_path
+from collections import defaultdict
+
+def group_values_by_path(request, pathology_report):
+    values_by_key = defaultdict(list)
+    for path in pathology_report:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        values_by_key[properties.get('path_id')].append(properties)
+    return dict(values_by_key)
+
 
 @collection(
-    name='pathology_report',
-    unique_key='accession',
+    name='surgery',
+    unique_key='uuid',
     properties={
-        'title': 'Pathology Report',
-        'description': 'Available Pathology reports',
+        'title': 'Surgery view',
+        'description': 'Single Surgery related Pathology report',
     })
-class Pathology_report(Item):
-    item_type = 'pathology_report'
-    schema = load_schema('encoded:schemas/pathology_report.json')
-    name_key = 'accession'
+class Surgery_view(Item):
+    item_type = 'surgery'
+    schema = load_schema('encoded:schemas/surgery.json')
+    name_key = 'uuid'
     
     embedded = [
-        # 'patient',
-        'surgery',
-        # 'ihc',
+        'pathology_report'
     ]
     rev = {
         # 'patient': ('Patient', 'pathology_report'),
-        'surgery': ('Surgery', 'pathology_report'),
+        'pathology_report': ('PathologyReport', 'surgery'),
         # 'ihc': ('Ihc', 'pathology_report'),
     }
     audit_inherit = []
     set_status_up = []
     set_status_down = []
+
+    @calculated_property( schema={
+        "title": "PathologyReport",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "PathologyReport",
+        },
+    })
+    def pathology_report(self, request, pathology_report):
+        return group_values_by_path(request, pathology_report)
 
     # @calculated_property( schema={
     #     "title": "Patient",
@@ -91,8 +108,8 @@ class Pathology_report(Item):
     
 
 
-# @view_config(context=Pathology_report, permission='view', request_method='GET', name='page')
-# def pathology_report_page_view(context, request):
+# @view_config(context=Surgery_view, permission='view', request_method='GET', name='page')
+# def surgery_report_page_view(context, request):
 #     if request.has_permission('view_details'):
 #         properties = item_view_object(context, request)
 #     else:

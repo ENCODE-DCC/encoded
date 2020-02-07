@@ -91,6 +91,11 @@
                 }
             ]
         },
+        "path_id": {
+            "title": "Pathology Report",
+            "description": "test",
+            "type": "string"
+        },
         "surgery_type": {
             "title": "Surgery procedure",
             "description": "The surgery procedures conducted",
