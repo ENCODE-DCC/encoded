@@ -453,7 +453,7 @@
                             "enum": ["subreads"]
                         }
                     }
-                },
+                }
             ]
         },
         "assembly": {
