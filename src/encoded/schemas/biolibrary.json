@@ -1,0 +1,151 @@
+{
+    "title": "Biolibrary",
+    "description": "Schema for submitting a molecular library.",
+    "id": "/profiles/biolibrary.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["biospecimen", "nucleic_acid_term_name"],
+    "identifyingProperties": ["uuid","accession"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
+    "dependencies": {
+        "nucleic_acid_quantity_units": ["nucleic_acid_starting_quantity"],
+        "nucleic_acid_quantity": ["nucleic_acid_starting_quantity_units"],
+        "source": ["sequencing_ID"],
+        "sequencing_ID": ["source"]
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "LB"
+        },
+        "internal_ID": {
+            "title": "Internal ID",
+            "description": "ID used internally to identify this biospecimen.",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string"
+        },
+        "biospecimen": {
+            "title": "biospecimen",
+            "description": "The biospecimen that nucleic acid was isolated from to generate the library.",
+            "comment": "See biospecimen.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biospecimen"
+        },
+        "biological_replicate_number": {
+            "title": "Biological replicate",
+            "description": "Data collection under the same methods using a different biological source, measuring the variability in the biological source.",
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+        },
+        "technical_replicate_number": {
+            "title": "Technical replicate",
+            "description": "Data collection under the same methods using the same biological source, measuring the variability in the method.",
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+        },
+        "nucleic_acid_term_name": {
+            "title": "Library material",
+            "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
+            "type": "string",
+            "enum": [
+                "DNA",
+                "polyadenylated mRNA",
+                "RNA"
+            ]
+        },
+        "nucleic_acid_quantity": {
+            "title": "Nucleic acid starting quantity",
+            "description": "The starting amount of nucleic acid before selection and purification.",
+            "type": "string",
+            "pattern": "[0-9]+"
+        },
+        "nucleic_acid_quantity_units": {
+            "title": "Nucleic acid starting quantity units",
+            "description": "The units used for starting amount of nucleic acid.",
+            "type": "string",
+            "enum": [
+                "cell-equivalent",
+                "cells",
+                "mg",
+                "ng",
+                "pg",
+                "µg"
+            ]
+        },
+        "nucleic_acid_integrity_number": {
+            "title": "DNA/RNA integrity number",
+            "description": "The DNA/RNA integrity number (DIN/RIN) value.",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+        },
+        "date_sent":{
+            "title": "Date sent",
+            "description": "The date that the nucleic acid was sent for sequencing.",
+            "type": "string",
+            "format": "date"
+        },
+        "sequencing_ID": {
+            "title": "Sequecing ID",
+            "description": "Sequecing ID from the company.",
+            "type": "string"
+        },
+        "construction_platform": {
+            "title": "Platform",
+            "description": "The device used to construct the library.",
+            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
+            "type": "string",
+            "linkTo": "Platform"
+        },
+        "source": {
+            "title": "Source",
+            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA).",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        
+        "biospecimen.collection_type": {
+            "title": "Collection Type"
+        },
+        "biospecimen.anatomic_site": {
+            "title": "Anatomic Site"
+        },
+        "biospecimen.tissue_type": {
+            "title": "Tisue Type"
+        },
+        "biospecimen.processing_type": {
+            "title": "Processing Type"
+        },
+        "nucleic_acid_term_name": {
+            "title": "Library material"
+        }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "internal_ID": 1.0,
+        "biospecimen.accession": 1.0,
+        "biospecimen.patient": 1.0,
+        "sequencing_ID": 1.0
+    },
+    "changelog": "/profiles/changelogs/biolibrary.md"
+}

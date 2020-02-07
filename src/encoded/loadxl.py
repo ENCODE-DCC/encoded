@@ -19,7 +19,11 @@ ORDER = [
     'image',
     'page',
     'patient',
-    'surgery',
+    'biospecimen',
+    'platform',
+    'biolibrary',
+    'biofile',
+    'ihc',
     'medication',
     'supportive_medication',
     'lab_results',
@@ -28,7 +32,8 @@ ORDER = [
     'consent',
     'radiation',
     'medical_imaging',
-    'cart'
+    'surgery',
+    'cart',
 ]
 
 IS_ATTACHMENT = [
@@ -568,6 +573,12 @@ PHASE1_PIPELINES = {
     ],
     'treatment': [
         remove_keys('biosamples_used')
+    ],
+    'biospecimen': [
+        remove_keys('originated_from')
+    ],
+    'biofile': [
+        remove_keys('paired_with')
     ]
 
 }
@@ -652,6 +663,12 @@ PHASE2_PIPELINES = {
     ],
     'treatment': [
         skip_rows_missing_all_keys('biosamples_used')
+    ],
+    'biospecimen': [
+        skip_rows_missing_all_keys('originated_from')
+    ],
+    'biofile': [
+        skip_rows_missing_all_keys('paired_with')
     ]
 }
 
