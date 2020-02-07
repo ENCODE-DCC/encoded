@@ -238,12 +238,6 @@ def chip_seq_matrix(context, request):
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='chip_seq_matrix',
-                facets=[
-                    ('status', {'title': 'Status'}),
-                    ('award.project', {'title': 'Project'}),
-                    ('target.investigated_as', {'title': 'Target category'}),
-                    ('replicates.library.biosample.donor.organism.scientific_name', {'title': 'Organism'}),
-                ],
             ),
             NotificationResponseField(),
             FiltersResponseField(),
