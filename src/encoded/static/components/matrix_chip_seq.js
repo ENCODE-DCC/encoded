@@ -480,7 +480,7 @@ class ChIPSeqTabPanel extends React.Component {
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {tabList.map((tab, index) => (
                             <li key={index} role="presentation" aria-controls={tab.title} className={selectedTab === tab.title ? 'active' : ''}>
-                                <a href={tab.url ? `${baseUrl}&${tab.url}&status=released` : `#${tab.title}`} data-key={index} onClick={handleTabClick} style={{ color: fontColors ? fontColors[index] : 'black' }}>
+                                <a href={tab.url ? `${baseUrl}&${tab.url}&status=released` : ''} data-key={index} onClick={handleTabClick} style={{ color: fontColors ? fontColors[index] : 'black' }}>
                                     {tab.title}
                                 </a>
                             </li>
