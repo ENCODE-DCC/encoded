@@ -6,6 +6,14 @@
 ### Minor changes since schema version 16
 * *output_type* list was updated to include the enum *personalized genome assembly* and *index reads*
 * *index_of* list property was added to allow specification of FASTQ files that are linked to the index file
+* *output_type* list was updated to include the following enums:
+        [
+            "negative control regions",
+            "non-targeting gRNAs",
+            "positive control regions",
+            "safe-targeting gRNAs",
+            "subreads"
+        ]
 
 ### Schema version 16
 
