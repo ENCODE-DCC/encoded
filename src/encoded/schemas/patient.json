@@ -117,19 +117,19 @@
         "surgery_summary": {
             "title": "Surgery Treatment Status"
         },
-        "surgery.surgery_type": {
+        "surgery.surgery_procedure.surgery_type": {
             "title": "Surgery Procedure"
         },
         "surgery.hospital_location": {
             "title": "Surgery Hospital Location"
         },
-        "surgery.nephrectomy_details.type": {
+        "surgery.surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
         },
-        "surgery.nephrectomy_details.approach": {
+        "surgery.surgery_procedure.nephrectomy_details.approach": {
             "title": "Nephrectomy Approach"
         },
-        "surgery.nephrectomy_details.robotic_assist": {
+        "surgery.surgery_procedure.nephrectomy_details.robotic_assist": {
             "title": "Nephrectomy Robotic Assist"
         },
         "status": {
@@ -169,7 +169,7 @@
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0,
         "medications.name":1.0
-        
+
         },
     "changelog": "/profiles/changelogs/patient.md"
 }

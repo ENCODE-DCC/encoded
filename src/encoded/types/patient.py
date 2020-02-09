@@ -94,7 +94,8 @@ class Patient(Item):
         'medical_imaging',
         'medications',
         'supportive_medications',
-        'surgery'
+        'surgery',
+        'surgery.surgery_procedure'
     ]
     rev = {
         'labs': ('LabResult', 'patient'),
@@ -303,11 +304,9 @@ class Patient(Item):
             "type": "string",
             "linkTo": "SupportiveMedication",
         },
-        })
-
+    })
     def supportive_medications(self, request, supportive_medication):
         return supportive_med_frequency(request, supportive_medication)
-
 
     @calculated_property( schema={
         "title": "Surgeries",
@@ -317,7 +316,6 @@ class Patient(Item):
             "linkTo": "Surgery",
         },
     })
-
     def surgery(self, request, surgery):
         return paths_filtered_by_status(request, surgery)
 
@@ -331,6 +329,7 @@ class Patient(Item):
             else:
                     surgery_summary = "No Treatment Received"
             return surgery_summary
+
 
 @collection(
     name='lab-results',
@@ -366,6 +365,7 @@ class Germline(Item):
     item_type = 'germline'
     schema = load_schema('encoded:schemas/germline.json')
     embeded = []
+
 
 @collection(
     name='consent',
@@ -435,16 +435,6 @@ class SupportiveMedication(Item):
     embeded = []
 
 
-@collection(
-    name='surgery',
-    properties={
-        'title': 'Surgeries',
-        'description': 'Surgeries results pages',
-    })
-class Surgery(Item):
-    item_type = 'surgery'
-    schema = load_schema('encoded:schemas/surgery.json')
-    embeded = []
 
 @property
 def __name__(self):

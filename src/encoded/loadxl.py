@@ -21,6 +21,7 @@ ORDER = [
     'patient',
     'surgery',
     'pathology_report',
+    'surgery_procedure',
     'medication',
     'supportive_medication',
     'lab_results',

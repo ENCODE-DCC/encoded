@@ -3,212 +3,125 @@
     "path_id":"PR359MHZ",
     "patient": "KCEPT359MHZ",
     "date": "1860-06-03",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Partial",
-      "approach": "Open",
-      "robotic_assist": true
-    },
-    "status": "released",
-    "uuid": "41692393-f1f3-4797-9043-989c96a9621c"
+    "accession": "KCESX359TRS",
+    "uuid": "5f29b472-cdb1-478e-ae1a-a133e11cc24b"
   },
   {
-    "path_id":"PR708IJT",
+    "path_id":"PR708FIJ",
     "patient": "KCEPT708IJT",
     "date": "1855-01-03",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Total",
-      "approach": "Open",
-      "robotic_assist": true
-    },
     "status": "released",
-    "uuid": "717612f1-0fb7-411b-a8b3-b045e252d098"
+    "accession": "KCESX708FIJ",
+    "uuid": "1bebec41-446b-457d-b707-7cc9d1a34560"
   },
   {
     "path_id":"PR708IJT",
     "patient": "KCEPT708IJT",
     "date": "1860-04-03",
-    "surgery_type": "Metastectomy",
     "hospital_location": "Parkland",
+    "accession": "KCESX708IJT",
     "status": "released",
-    "uuid": "7807ad0f-32f3-475a-a544-00014f2acc15"
+    "uuid": "97b0b585-a84b-4844-a429-b55ffd255e2b"
   },
   {
     "path_id":"PR480NBU",
     "patient": "KCEPT480NBU",
     "date": "1836-05-08",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "Parkland",
-    "nephrectomy_details": {
-      "type": "Partial",
-      "approach": "Laparoscopic",
-      "robotic_assist": false
-    },
+    "accession": "KCESX480NBU",
     "status": "released",
-    "uuid": "4fbe65c9-ca7e-4f0c-a331-f08706d755bd"
-  },
-  {
-    "path_id":"PR480NBU",
-    "patient": "KCEPT480NBU",
-    "date": "1833-08-05",
-    "surgery_type": "Ablation",
-    "hospital_location": "Parkland",
-    "status": "released",
-    "uuid": "9f85a354-f0af-4e0c-ab13-c0171655e328"
+    "uuid": "55f7efa7-8ca1-4a10-a07c-05ab39a128bd"
   },
   {
     "path_id":"PR802XRB",
     "patient": "KCEPT802XRB",
     "date": "1862-02-03",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Partial",
-      "approach": "Laparoscopic",
-      "robotic_assist": false
-    },
+    "accession": "KCESX802XRB",
     "status": "released",
-    "uuid": "7208400e-7f60-468a-a481-1c4a800af076"
-  },
-  {
-    "path_id":"PR802XRB",
-    
-    "patient": "KCEPT802XRB",
-    "date": "1862-02-03",
-    "surgery_type": "Ablation",
-    "hospital_location": "UTSW",
-    "status": "released",
-    "uuid": "962d7434-4bfc-46fe-b0ee-918df1628e6c"
-  },
-  {
-    "path_id":"PR802XRB",
-
-    "patient": "KCEPT802XRB",
-    "date": "1862-02-03",
-    "surgery_type": "Metastectomy",
-    "hospital_location": "UTSW",
-    "status": "released",
-    "uuid": "dfc7df5b-383a-4413-9bed-62c3f1cfd1cc"
+    "uuid": "ea1ef19e-ac9c-47a3-81db-8a622a534937"
   },
   {
     "path_id":"PR186NZW",
-    
     "patient": "KCEPT186NZW",
     "date": "1827-08-03",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Total",
-      "approach": "Open",
-      "robotic_assist": false
-    },
+    "accession": "KCESX186NZW",
     "status": "released",
-    "uuid": "2e7e12db-a655-4d38-b1c0-8424f52de629"
+    "uuid": "d192c2c2-b68a-4177-9703-6573b36215ec"
   },
   {
     "path_id":"PR139SOR",
-
     "patient": "KCEPT139SOR",
     "date": "1877-12-16",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Total",
-      "approach": "Laparoscopic",
-      "robotic_assist": false
-    },
+    "accession": "KCESX139SOR",
     "status": "released",
-    "uuid": "b0524648-e2e1-4f3b-81bd-cad5c4cfe228"
+    "uuid": "af523fef-db5f-4e66-8c76-88b78db38475"
   },
   {
     "path_id":"PR021XWS",
-
     "patient": "KCEPT021XWS",
     "date": "1822-05-24",
-    "surgery_type": "Ablation",
     "hospital_location": "Outside",
+    "accession": "KCESX021XWS",
     "status": "released",
-    "uuid": "186d7d47-e86d-4a28-9771-4179321585b9"
+    "uuid": "19896169-c9ed-41ba-ac9b-5e910da87784"
   },
   {
     "path_id":"PR692UHR",
-
     "patient": "KCEPT692UHR",
     "date": "1838-05-11",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Partial",
-      "approach": "Open",
-      "robotic_assist": true
-    },
+    "accession": "KCESX692UHR",
     "status": "released",
-    "uuid": "1bee6b5d-ecaf-48ee-bca5-45a27938f4f1"
+    "uuid": "f72ebc3f-90db-48b6-aa85-e2ac5f18af78"
   },
   {
     "path_id":"PR294KIZ",
-
     "patient": "KCEPT294KIZ",
     "date": "1901-08-14",
-    "surgery_type": "Metastectomy",
     "hospital_location": "UTSW",
+    "accession": "KCESX294KIZ",
     "status": "released",
-    "uuid": "bf2b0628-2d9b-4e17-b7de-1bd545ca5a8f"
+    "uuid": "9873da0d-9af3-4309-a5a9-0107951dbab9"
   },
   {
     "path_id":"PR398JLK",
-
     "patient": "KCEPT398JLK",
     "date": "1847-04-20",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Partial",
-      "approach": "Laparoscopic",
-      "robotic_assist": false
-    },
+    "accession": "KCESX398JLK",
     "status": "released",
-    "uuid": "2ce209cb-2ccf-49c1-9971-9c96414f42be"
+    "uuid": "485c1724-2080-439a-ac50-d073aa0749c7"
   },
   {
-    
     "path_id":"PR756AEN",
     "patient": "KCEPT756AEN",
     "date": "1853-10-31",
-    "surgery_type": "Ablation",
     "hospital_location": "UTSW",
+    "accession": "KCESX756AEN",
     "status": "released",
-    "uuid": "a68f696a-e78e-4c92-86ae-ea23b91db76e"
+    "uuid": "8428f265-80b3-4ed9-9128-826da1e2847c"
   },
   {
     "path_id":"PR396JUN",
     "patient": "KCEPT396JUN",
     "date": "1870-06-11",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Total",
-      "approach": "Laparoscopic",
-      "robotic_assist": true
-    },
+    "accession": "KCESX396JUN",
     "status": "released",
-    "uuid": "6a256daa-f6ed-417a-8fef-eb59c7dd81a2"
+    "uuid": "eec0bbf7-37c3-4438-adb2-7003712cb5ea"
   },
   {
     "path_id":"PR318AXY",
     "patient": "KCEPT318AXY",
     "date": "1859-08-01",
-    "surgery_type": "Nephrectomy",
     "hospital_location": "UTSW",
-    "nephrectomy_details": {
-      "type": "Partial",
-      "approach": "Laparoscopic",
-      "robotic_assist": true
-    },
+    "accession": "KCESX318AXY",
     "status": "released",
-    "uuid": "215e5029-1325-4b12-af47-038cb5e9de54"
+    "uuid": "a3a0bc7e-63e0-49ad-953c-a7947dac7d62"
   }
 ]

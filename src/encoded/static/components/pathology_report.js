@@ -6,7 +6,7 @@ import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
 
-class Pathology_report extends React.Component {
+class PathologyReport extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -16,7 +16,7 @@ class Pathology_report extends React.Component {
         // Set up breadcrumbs
         const crumbs = [
             { id: 'Pathology_report' },
-            { id: <i>{context.accession}</i> },
+            { id: <i>{context.name}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
         // let hasGenomics =false;
@@ -29,8 +29,8 @@ class Pathology_report extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Pathology_report" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.accession}</h2>
+                        <Breadcrumbs root="/search/?type=PathologyReport" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        <h2>{context.name}</h2>
 
                     </div>
 
@@ -45,17 +45,9 @@ class Pathology_report extends React.Component {
                             <dt>Status</dt>
                             <dd><Status item={context} inline /></dd>
                         </div>
-                        <div data-test="patient">
-                            <dt>Patient</dt>
-                            <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
-                        </div>
                         <div data-test="surgery">
                             <dt>Surgery</dt>
-                            <dd><a href={context.surgery.date}>{context.surgery.date}</a></dd>
-                        </div>
-                        <div data-test="path_Id">
-                            <dt>Path_Id</dt>
-                            <dd><a href={context.path_id}>{context.path_id}</a></dd>
+                            <dd><a href={context.surgery}>{context.surgery.split("/")[2]}</a></dd>
                         </div>
                         <div data-test="date">
                             <dt>Date</dt>
@@ -94,7 +86,7 @@ class Pathology_report extends React.Component {
                             <dd>{context.rhabdoid}</dd>
                         </div>
 
-                        
+
                         {/* {context.originated_from && <div data-test="originated_from">
                             <dt>Originated From</dt>
                             <dd><a href={context.originated_from}>{context.originated_from.split("/")[2]}</a></dd>
@@ -145,47 +137,47 @@ class Pathology_report extends React.Component {
                             <dt>Micro-pelvaliceal</dt>
                             <dd>{context.micro_pelvaliceal}</dd>
                         </div>}
-                        
+
                         {context.t_stage && <div data-test="t_stage">
                             <dt>T stage</dt>
                             <dd>{context.t_stage}</dd>
                         </div>}
-                        
+
                         {context.n_stage && <div data-test="n_stage">
                             <dt>N stage</dt>
                             <dd>{context.n_stage}</dd>
                         </div>}
-                        
+
                         {context.examined_lymph_nodes && <div data-test="examined_lymph_nodes">
                             <dt>Examined lymph nodes</dt>
                             <dd>{context.examined_lymph_nodes}</dd>
                         </div>}
-                        
+
                         {context.positive_lymph_nodes && <div data-test="positive_lymph_nodes">
                             <dt>Positive lymph nodes</dt>
                             <dd>{context.positive_lymph_nodes}</dd>
                         </div>}
-                        
+
                         {context.m_stage && <div data-test="m_stage">
                             <dt>M stage</dt>
                             <dd>{context.m_stage}</dd>
                         </div>}
-                        
+
                         {context.ajcc_version && <div data-test="ajcc_version">
                             <dt>Ajcc version</dt>
                             <dd>{context.ajcc_version}</dd>
                         </div>}
-                        
+
                         {context.ajcc_tnm_stage && <div data-test="ajcc_tnm_stage">
                             <dt>Ajcc tnm stage</dt>
                             <dd>{context.ajcc_tnm_stage}</dd>
                         </div>}
-                        
+
                         {context.ajcc_p_stage && <div data-test="ajcc_p_stage">
                             <dt>Ajcc p stage</dt>
                             <dd>{context.ajcc_p_stage}</dd>
                         </div>}
-                        
+
                         {context.report_source && <div data-test="report_source">
                             <dt>Report source</dt>
                             <dd>{context.report_source}</dd>
@@ -199,7 +191,7 @@ class Pathology_report extends React.Component {
                 </Panel>
                 {/* { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
 
-                {false && 
+                {false &&
                     <div>
                         {PanelLookup({ context: context.patient, Pathology_report: context })}
                     </div>} */}
@@ -210,13 +202,12 @@ class Pathology_report extends React.Component {
     }
 }
 
-Pathology_report.propTypes = {
+PathologyReport.propTypes = {
     context: PropTypes.object, // Target object to display
   };
-  
-  Pathology_report.defaultProps = {
-    context: null,
-  };
-  
-globals.contentViews.register(Pathology_report, 'Pathology_report');
 
+PathologyReport.defaultProps = {
+  context: null,
+};
+
+globals.contentViews.register(PathologyReport, 'PathologyReport');

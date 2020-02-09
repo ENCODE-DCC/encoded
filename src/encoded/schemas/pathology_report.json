@@ -1,19 +1,17 @@
 {
-    "title": "Pathology Report",
-    "description": "Schema for pathology reports embedded in portal pages",
+    "title": "Pathology Tumor Report",
+    "description": "Schema for pathology tumor reports embedded in portal pages",
     "id": "/profiles/pathology_report.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "identifyingProperties": ["uuid","accession"],
-    "required": ["report_source"],
+    "required": ["surgery", "date", "report_source", "tumor_sequence_number"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/uuid" },
-        {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/standard_status"}
-
     ],
     "dependencies": {
         "tumor_size": ["tumor_size_units"],
@@ -24,26 +22,11 @@
         "schema_version": {
             "default": "1"
         },
-        "accession": {
-            "accessionType": "TUID"
-        },
-        "patient": {
-            "title": "Patient",
-            "description": "The patient the pathology was conducted for.",
-            "type": "string",
-            "linkTo": "Patient"
-        },
         "surgery": {
             "title": "Surgery",
             "description": "The surgery the pathology originated from.",
             "type": "string",
             "linkTo": "Surgery"
-        },
-        "path_id": {
-            "title": "Pathology ID",
-            "comment": "KCE personnel are allowed to set this value.",
-            "type": "string",
-            "permission": "import_items"
         },
         "date": {
             "title": "Pathology date",
@@ -362,7 +345,7 @@
                 "3A",
                 "3B",
                 "3C",
-                "4"                
+                "4"
             ]
       },
       "report_source": {
@@ -373,6 +356,13 @@
                 "Pathology report",
                 "Tumor registery"
             ]
+      },
+      "tumor_sequence_number": {
+          "title": "Tumor number",
+          "description": "Tumor sequence number.",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
       }
     },
     "facets": {
@@ -381,47 +371,45 @@
         },
         "laterality": {
             "title": "Laterality"
-        }, 
+        },
         "tumor_size": {
             "title": "Tumore Size"
-        }, 
+        },
         "histology": {
             "title": "Histologic Subtypes"
-        }, 
-        
+        },
+
         "focality": {
             "title": "Focality"
-        }, 
+        },
         "grade": {
             "title": "Grade"
-        }, 
+        },
         "sarcomatoid": {
             "title": "Sarcomatoid"
-        }, 
+        },
         "necrosis": {
             "title": "Tumor Necrosis"
-        }, 
+        },
         "margins": {
             "title": "Margins"
-        }, 
+        },
          "lvi": {
             "title": "LVI"
         },
         "micro_perinephric": {
             "title": "Perinephric Infiltration"
-        },  
+        },
         "micro_vein": {
             "title": "Renal Vein Involvement (MicroVein)"
         },
         "micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
-        }  
+        }
     },
     "boost_values": {
-        "accession":1.0,
-        "path_id":1.0,
         "histology":1.0,
-        "patient": 1.0
+        "surgery": 1.0
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }

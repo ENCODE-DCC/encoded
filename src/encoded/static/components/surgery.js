@@ -6,7 +6,7 @@ import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
 
-class Surgery_view extends React.Component {
+class Surgery extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -19,22 +19,20 @@ class Surgery_view extends React.Component {
             { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
-        console.log(context);
-        // let hasGenomics =false;
-        // if (Object.keys(this.props.context.pathology_report).length > 0) {
-        //     hasGenomics = true;
-        // }
+
+        // Get procedure_type
+        //surgeryTypes = surgeryTypes.concat(context.surgery_procedure.procedure_type);
 
         //list single page of Surgery View.
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Surgry_view" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        <Breadcrumbs root="/search/?type=Surgery" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>{context.accession}</h2>
-            
+
                     </div>
-            
+
                 </header>
                 <Panel>
                     <PanelHeading>
@@ -50,29 +48,25 @@ class Surgery_view extends React.Component {
                             <dt>Patient</dt>
                             <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
                         </div>
-                        <div data-test="pathology">
-                            <dt>Pathology</dt>
-                            <dd><a href={context.pathology_report.date}>{context.pathology_report.date}</a></dd>
+                        <div data-test="hospital">
+                            <dt>Hospital Location</dt>
+                            <dd><a>{context.hospital_location}</a></dd>
                         </div>
-                        <div data-test="surgery">
-                            <dt>surgery type</dt>
-                            <dd><a href={context.surgery.type}>{context.surgery.type}</a></dd>
-                        </div>
-            
+
                     </dl>
                     </PanelBody>
                 </Panel>
             </div>
             )
-        
+
     }
 }
-Surgery_view.propTypes = {
+Surgery.propTypes = {
     context: PropTypes.object, // Target object to display
   };
-  
-  Surgery_view.defaultProps = {
-    context: null,
-  };
-  
-globals.contentViews.register(Surgery_view, 'Surgery_view');
+
+Surgery.defaultProps = {
+  context: null,
+};
+
+globals.contentViews.register(Surgery, 'Surgery');

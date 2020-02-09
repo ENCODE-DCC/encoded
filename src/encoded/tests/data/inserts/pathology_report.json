@@ -1,9 +1,7 @@
 [
   {
-    "accession": "TUID708IJT-1",
-    "patient": "KCEPT708IJT",
-    "path_id": "PT708IJT-1",
-    "surgery":"717612f1-0fb7-411b-a8b3-b045e252d098",
+    "surgery": "KCESX708FIJ",
+    "tumor_sequence_number": 1,
     "date": "1855-01-05",
     "laterality": "Bilateral, Horseshoe",
     "tumor_size": 5,
@@ -37,10 +35,8 @@
     "uuid": "b5644d7a-46d7-11ea-b77f-2e728ce88125"
   },
   {
-    "accession": "TUID708IJT-2",
-    "patient": "KCEPT708IJT",
-    "path_id": "PT708IJT-1",
-    "surgery":"717612f1-0fb7-411b-a8b3-b045e252d098",
+    "surgery": "KCESX708FIJ",
+    "tumor_sequence_number": 2,
     "date": "1855-01-05",
     "laterality": "Bilateral, Horseshoe",
     "tumor_size": 5,
@@ -74,10 +70,8 @@
     "uuid": "7d0ef92b-33da-4ae0-ada8-9013e3c195f4"
   },
   {
-    "accession": "TUID708IJT-3",
-    "patient": "KCEPT708IJT",
-    "path_id": "PT708IJT-2",
-    "surgery":"7807ad0f-32f3-475a-a544-00014f2acc15",
+    "surgery":"KCESX708IJT",
+    "tumor_sequence_number": 1,
     "date": "1860-04-03",
     "laterality": "Bilateral, Horseshoe",
     "tumor_size": 5,
@@ -111,10 +105,8 @@
     "uuid": "9575a49b-feb0-4831-a74e-02546f0c27be"
   },
   {
-    "accession": "TUID480NBU",
-    "patient": "KCEPT480NBU",
-    "path_id": "PT480NBU",
-    "surgery": "4fbe65c9-ca7e-4f0c-a331-f08706d755bd",
+    "surgery": "KCESX480NBU",
+    "tumor_sequence_number": 1,
     "date": "1836-05-08",
     "laterality": "Bilateral",
     "tumor_size": 2.5,
@@ -148,10 +140,9 @@
     "uuid": "b56454b4-46d7-11ea-b77f-2e728ce88125"
   },
   {
-    "accession": "TUID802XRB",
-    "patient": "KCEPT802XRB",
-    "path_id": "PT802XRB",
-    "surgery": "7208400e-7f60-468a-a481-1c4a800af076",
+
+    "surgery": "KCESX802XRB",
+    "tumor_sequence_number": 1,
     "date": "1862-02-03",
     "laterality": "Left",
     "tumor_size": 5,
@@ -185,10 +176,8 @@
     "uuid": "b5645964-46d7-11ea-b77f-2e728ce88125"
   },
   {
-    "accession": "TUID359MHZ",
-    "patient": "KCEPT359MHZ",
-    "path_id": "PT359MHZ",
-    "surgery": "41692393-f1f3-4797-9043-989c96a9621c",
+    "surgery": "KCESX359TRS",
+    "tumor_sequence_number": 1,
     "date": "1860-06-03",
     "laterality": "Bilateral",
     "tumor_size": 2,
