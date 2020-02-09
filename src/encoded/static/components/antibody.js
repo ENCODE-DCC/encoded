@@ -647,7 +647,7 @@ StatusIndicator.defaultProps = {
 
 
 // Display the status indicators for one target
-const StatusIndicators = (props) => {
+export const StatusIndicators = (props) => {
     const { targetTree, target } = props;
 
     return (
