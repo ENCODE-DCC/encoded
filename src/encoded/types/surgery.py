@@ -17,6 +17,10 @@ from .base import (
     SharedItem,
     paths_filtered_by_status,
 )
+from pyramid.traversal import (
+    find_root,
+    resource_path
+)
 import re
 # from snovault.resource_views import item_view_object
 # from snovault.util import expand_path
@@ -93,13 +97,18 @@ class PathologyReport(Item):
     schema = load_schema('encoded:schemas/pathology_report.json')
     embeded = []
 
+    @calculated_property(schema={
+        "title": "Name",
+        "type": "string",
+    })
+    def name(self):
+        return self.__name__
+
     @property
     def __name__(self):
         properties = self.upgrade_properties()
         return self._name(properties)
 
-    def _name(self, properties):
-        root = find_root(self)
-        surgery_uuid = self.surgery(properties=properties, return_uuid=True)
-        surgery_id = surgery.upgrade_properties()['accession']
+    def _name(self, request, properties):
+        surgery_id = request.embed(surgery, '@@object')['accession']
         return u'{}-{}'.format(surgery_id, properties['tumor_sequence_number'])
