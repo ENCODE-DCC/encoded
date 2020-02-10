@@ -16,7 +16,7 @@ class PathologyReport extends React.Component {
         // Set up breadcrumbs
         const crumbs = [
             { id: 'Pathology_report' },
-            { id: <i>{context.name}</i> },
+            { id: <i>{context.uuid}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
         // let hasGenomics =false;
