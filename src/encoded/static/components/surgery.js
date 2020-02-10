@@ -50,7 +50,7 @@ class Surgery extends React.Component {
                         </div>
                         <div data-test="hospital">
                             <dt>Hospital Location</dt>
-                            <dd><a>{context.hospital_location}</a></dd>
+                            <dd>{context.hospital_location}</dd>
                         </div>
 
                     </dl>
