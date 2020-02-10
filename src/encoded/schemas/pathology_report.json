@@ -4,7 +4,7 @@
     "id": "/profiles/pathology_report.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "identifyingProperties": ["uuid","accession"],
+    "identifyingProperties": ["uuid"],
     "required": ["surgery", "date", "report_source", "tumor_sequence_number"],
     "additionalProperties": false,
     "mixinProperties": [
