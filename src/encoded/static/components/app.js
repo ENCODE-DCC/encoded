@@ -288,6 +288,7 @@ class App extends React.Component {
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
+            accountCreatedModalVisibility: false,
             accountCreationFailedVisibility: false,
             authResult: '',
         };
