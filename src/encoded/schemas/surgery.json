@@ -52,8 +52,7 @@
             "title": "Path ID",
             "comment": "KCE personnel are allowed to set this value.",
             "type": "string",
-            "permission": "import_items",
-            "uniqueKey": true
+            "permission": "import_items"
         }
     },
     "facets": {
