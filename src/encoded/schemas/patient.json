@@ -132,6 +132,12 @@
         "surgery.surgery_procedure.nephrectomy_details.robotic_assist": {
             "title": "Nephrectomy Robotic Assist"
         },
+        "ihc.antibody": {
+            "title": "IHC Assay Staining Antibody"
+        },
+        "ihc.result": {
+            "title": "IHC Assay Staining Result"
+        },
         "status": {
             "title": "Status"
         }
@@ -168,6 +174,8 @@
         "germline.significance": 1.0,
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0,
+        "ihc.antibody":1.0,
+        "ihc.result":1.0,
         "medications.name":1.0
 
         },

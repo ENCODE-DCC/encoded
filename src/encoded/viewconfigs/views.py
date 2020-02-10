@@ -35,8 +35,10 @@ DEFAULT_DOC_TYPES = [
     'Gene',
     'Target',
     'Patient',
+    'Biospecimen',
+    'Biofile',
     'Pathology_report',
-    'Surgery_view'
+    'Surgery'
 ]
 
 

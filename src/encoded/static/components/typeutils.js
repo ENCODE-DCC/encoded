@@ -145,6 +145,99 @@ BiosampleTableFooter.defaultProps = {
     url: '#',
 };
 
+// Display a table of retrieved biospecimen related to the displayed biospecimen
+export const BiospecimenTable = (props) => {
+    const { items, limit, total, url, title } = props;
+    let biospecimens;
+
+    // If there's a limit on entries to display and the array is greater than that
+    // limit, then clone the array with just that specified number of elements
+    if (limit && (limit < items.length)) {
+        // Limit the experiment list by cloning first {limit} elements
+        biospecimens = items.slice(0, limit);
+    } else {
+        // No limiting; just reference the original array
+        biospecimens = items;
+    }
+
+    return (
+        <SortTablePanel title={title}>
+            <SortTable list={items} columns={BiospecimenTable.columns} footer={<BiospecimenTableFooter items={biospecimens} total={total} url={url} />} />
+        </SortTablePanel>
+    );
+};
+
+BiospecimenTable.propTypes = {
+    items: PropTypes.array.isRequired,
+    limit: PropTypes.number,
+    total: PropTypes.number,
+    url: PropTypes.string,
+    title: PropTypes.string,
+};
+
+BiospecimenTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    url: '',
+    title: '',
+};
+
+BiospecimenTable.columns = {
+    accession: {
+        title: 'Accession',
+        display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
+    },
+    openspecimen_ID: {
+        title: 'OpenSpecimen ID',
+        getValue: biospecimen => biospecimen.openspecimen_ID,
+    },
+    collection_type: {
+        title: 'Collection type',
+        getValue: biospecimen => biospecimen.collection_type,
+    },
+    processing_type: {
+        title: 'Processing type',
+        getValue: biospecimen => biospecimen.processing_type,
+    },
+
+    tissue_type: {
+        title: 'Tissue type',
+        getValue: biospecimen => biospecimen.tissue_type,
+    },
+    anatomic_site: {
+        title: 'Anatomic site',
+        getValue: biospecimen => biospecimen.anatomic_site,
+    },
+    distributed: {
+        title: 'Distributed?',
+        getValue: biospecimen => biospecimen.distributed,
+    },
+};
+
+
+// Display a count of biospecimen in the footer, with a link to the corresponding search if needed
+export const BiospecimenTableFooter = (props) => {
+    const { items, total, url } = props;
+
+    return (
+        <div>
+            <span>Displaying {items.length} of {total} </span>
+            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        </div>
+    );
+};
+
+BiospecimenTableFooter.propTypes = {
+    items: PropTypes.array, // List of biospecimen in the table
+    total: PropTypes.number, // Total number of biospecimen matching search criteria
+    url: PropTypes.string, // URI to get full search results
+};
+
+BiospecimenTableFooter.defaultProps = {
+    items: [],
+    total: 0,
+    url: '#',
+};
 
 // Display a table of donors retrieved from a GET request.
 export const DonorTable = (props) => {

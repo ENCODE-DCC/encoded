@@ -582,27 +582,64 @@ class PathologyComponent extends React.Component {
         // const age = (result.patient.age && result.patient.age !== 'unknown') ? ` ${result.patient.age}` : '';
         // const ageUnits = (result.patient.age_units && result.patient.age_units !== 'unknown' && age) ? ` ${result.patient.age_units}` : '';
         console.log(result);
+        return (
+          <li>
+              <div className="clearfix">
+                  <PickerActions {...this.props} />
+                  <div className="pull-right search-meta">
+                    <p className="type meta-title">Pathology Report</p>
+                    <p className="type">{` ${result.accession}`}</p>
+                    {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
+                    {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                </div>
+                <div className="accession">
+                      <a href={result['@id']}>
+                        {`${result.accession} `}
+                        {/* {`${age}${ageUnits} )`} */}
+                      </a>
+                </div>
+                <div className="data-row">
+                    <div><strong>Tumor Size:</strong>{result.tumor_size}</div>
+                    <div><strong>Laterality: </strong>{result.laterality}</div>
+                    <div><strong> Focality:</strong>{result.focality}</div>
+                    </div>
+                </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li>
+          );
+      }
+  }
+
+PathologyComponent.propTypes = {
+  context: PropTypes.object.isRequired, // Target search results
+  auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+  auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+/* eslint-disable react/prefer-stateless-function */
+class BiofileComponent extends React.Component {
+    render() {
+        const result = this.props.context;
 
         return (
           <li>
               <div className="clearfix">
                   <PickerActions {...this.props} />
                   <div className="pull-right search-meta">
-                      <p className="type meta-title">Pathology Report</p>
+                      <p className="type meta-title">Biofile</p>
                       <p className="type">{` ${result.accession}`}</p>
-                      {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
+                      <Status item={result.status} badgeSize="small" css="result-table__status" />
                       {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                   </div>
                   <div className="accession">
-                        <a href={result['@id']}>
+                      <a href={result['@id']}>
                           {`${result.accession} `}
-                          {/* {`${age}${ageUnits} )`} */}
-                        </a>
+
+                      </a>
                   </div>
                   <div className="data-row">
-                      <div><strong>Tumor Size:</strong>{result.tumor_size}</div>
-                      <div><strong>Laterality: </strong>{result.laterality}</div>
-                      <div><strong> Focality:</strong>{result.focality}</div>
+                      <div><strong>File format: </strong>{result.file_format}</div>
+                      <div><strong>Output type: </strong>{result.output_type}</div>
                   </div>
               </div>
               {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -610,13 +647,6 @@ class PathologyComponent extends React.Component {
         );
     }
 }
-/* eslint-enable react/prefer-stateless-function */
-
-PathologyComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Target search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
 
 PathologyComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
@@ -632,40 +662,36 @@ class Surgery_viewComponent extends React.Component {
         // const age = (result.patient.age && result.patient.age !== 'unknown') ? ` ${result.patient.age}` : '';
         // const ageUnits = (result.patient.age_units && result.patient.age_units !== 'unknown' && age) ? ` ${result.patient.age_units}` : '';
         console.log(result);
-
         return (
           <li>
               <div className="clearfix">
                   <PickerActions {...this.props} />
                   <div className="pull-right search-meta">
-                      <p className="type meta-title">Surgery View</p>
-                      <p className="type">{` ${result.accession}`}</p>
-                      {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
-                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                  </div>
-                  <div className="accession">
-                        <a href={result['@id']}>
-                          {`${result.accession} `}
-                          {/* {`${age}${ageUnits} )`} */}
-                        </a>
-                  </div>
-                  <div className="data-row">
-                      <div><strong>Surgery Date:</strong>{result.tumor_size}</div>
-                      <div><strong>Surgery Type: </strong>{result.laterality}</div>
-                  </div>
-              </div>
-              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-          </li>
-        );
-    }
-}
+                    <p className="type meta-title">Surgery View</p>
+                    <p className="type">{` ${result.accession}`}</p>
+                    {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
+                    {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                </div>
+                <div className="accession">
+                      <a href={result['@id']}>
+                        {`${result.accession} `}
+                        {/* {`${age}${ageUnits} )`} */}
+                      </a>
+                </div>
+                <div className="data-row">
+                    <div><strong>Surgery Date:</strong>{result.tumor_size}</div>
+                    <div><strong>Surgery Type: </strong>{result.laterality}</div>
+                </div>
+            </div>
+            {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+      );
+  }
+
 /* eslint-enable react/prefer-stateless-function */
 
 Surgery_viewComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
 
 Surgery_viewComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
@@ -674,6 +700,73 @@ Surgery_viewComponent.contextTypes = {
 const Surgery_view = auditDecor(Surgery_viewComponent);
 
 globals.listingViews.register(Surgery_view, 'Surgery_view');
+
+/* eslint-enable react/prefer-stateless-function */
+BiofileComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Target search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiofileComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biofile = auditDecor(BiofileComponent);
+
+globals.listingViews.register(Biofile, 'Biofile');
+
+/* eslint-disable react/prefer-stateless-function */
+class BiospecimenComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        const tissueType = (result.tissue_type && result.collection_type == 'solid tissue') ? ` ${result.tissue_type}` : '';
+        const anatomicSite = (result.anatomic_site && result.collection_type == 'solid tissue') ? ` ${result.anatomic_site}` : '';
+
+        return (
+          <li>
+              <div className="clearfix">
+                  <PickerActions {...this.props} />
+                  <div className="pull-right search-meta">
+                      <p className="type meta-title">Biospecimen</p>
+                      <p className="type">{` ${result.accession}`}</p>
+
+                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                  </div>
+                  <div className="accession">
+                      <a href={result['@id']}>
+                          {`${result.accession} `}
+
+                      </a>
+                  </div>
+                  <div className="data-row">
+                      <div><strong>Collection type: </strong>{result.collection_type}</div>
+                      <div><strong>Processing type: </strong>{result.processing_type}</div>
+                      { tissueType != '' && <div><strong>Tissue type: </strong>{tissueType}</div> }
+                      { anatomicSite != '' && <div><strong>Anotomic type: </strong>{anatomicSite}</div> }
+                  </div>
+              </div>
+              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+          </li>
+        );
+    }
+
+}
+/* eslint-enable react/prefer-stateless-function */
+
+BiospecimenComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Biosample search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiospecimenComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biospecimen = auditDecor(BiospecimenComponent);
+
+globals.listingViews.register(Biospecimen, 'Biospecimen');
 
 const Image = (props) => {
     const result = props.context;
@@ -1312,12 +1405,12 @@ class Facet extends React.Component {
         // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => obj.key);
-        } else if (field.match('range') ) {           
-            terms = _.sortBy(unsortedTerms, obj => parseInt(obj.key.match(/\d+/)));        
+        } else if (field.match('range') ) {
+            terms = _.sortBy(unsortedTerms, obj => parseInt(obj.key.match(/\d+/)));
         } else {
             terms = unsortedTerms;
         }
-      
+
         const moreTerms = terms.slice(5);
         const TermComponent = field === 'type' ? TypeTerm : Term;
         const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);

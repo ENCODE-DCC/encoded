@@ -1,0 +1,245 @@
+{
+    "title": "Biospecimen",
+    "description": "Schema for submitting a Biospecimen.",
+    "id": "/profiles/biospecimen.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
+    "identifyingProperties": ["uuid","accession"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/uuid"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "BS"
+        },
+        "openspecimen_ID": {
+            "title": "OpenSpecimen ID",
+            "description": "ID used in OpenSpecimen to identify this biospecimen",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": true
+        },
+        "internal_ID": {
+            "title": "Internal ID",
+            "description": "ID used internally to identify this biospecimen.",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": true
+        },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the biospecimen was originated from.",
+            "comment": "See patient.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
+        "collection_date": {
+            "title": "Collection Date",
+            "description": "the date the biospecimen was taken, such as surgery date or blood draw date.",
+            "comment": "Date should be submitted in as YYYY-MM-DD.",
+            "type": "string",
+            "format": "date"
+        },
+        "collection_type": {
+            "title": "Collection Type",
+            "description": "The type of the biospecimen when it was taken.",
+            "type": "string",
+            "enum": [
+                "solid tissue",
+                "blood",
+                "ascites fluid"
+            ]
+        },
+        "processing_type": {
+            "title": "Processing Type",
+            "description": "the type of the final product after processing.",
+            "type": "string",
+            "enum": [
+                "FF",
+                "FFPE",
+                "zenograft",
+                "DMSO",
+                "blood",
+                "cell line"
+            ]
+        },
+        "host": {
+            "title": "Host",
+            "description": "A biospecimen that was hosting this biosample.",
+            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation.",
+            "type": "string",
+            "default": "Human",
+            "enum": [
+                "Human",
+                "Mouse"
+            ]
+
+        },
+        "originated_from": {
+            "title": "Originated from",
+            "description": "The parent biospecimen that the sample was orginated from.",
+            "comment": "See biospecimen.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biospecimen"
+        },
+        "path_ID": {
+            "title": "Path Report ID",
+            "type": "string"
+        },
+        "tissue_type": {
+            "title": "Tissue Type",
+            "type": "string",
+            "enum": [
+                "malignant primary",
+                "malignant metastasis",
+                "benign",
+                "normal"
+            ]
+        },
+        "anatomic_site": {
+            "title": "Anatomic Site",
+            "type": "string",
+            "enum": [
+                "kidney",
+                "abdominal Wall",
+                "adrenal",
+                "bone",
+                "brain",
+                "liver",
+                "lung",
+                "lymph node",
+                "pancreas",
+                "peritoneum",
+                "Retroperitoneal mass",
+                "thrombus"
+            ]
+        },
+        "primary_site": {
+            "title": "Primary Site",
+            "type": "string",
+            "enum": [
+                "kidney",
+                "abdominal Wall",
+                "adrenal",
+                "bone",
+                "brain",
+                "liver",
+                "lung",
+                "lymph node",
+                "pancreas",
+                "peritoneum",
+                "Retroperitoneal mass",
+                "thrombus"
+            ]
+        },
+        "distributed": {
+            "title": "Distributed?",
+            "type": "string",
+            "enum": [
+                "Yes",
+                "No"
+            ]
+        }
+
+
+
+    },
+    "oneOf": [
+        {
+            "properties": {
+                "collection_type": {
+                    "enum": ["solid tissue"]
+                }
+            },
+            "required": ["tissue_type", "anatomic_site", "primary_site"]
+        },
+        {
+            "properties": {
+                "collection_type": {
+                    "enum": ["blood", "ascites fluid"]
+                }
+            }
+        }
+    ],
+    "facets": {
+
+        "status": {
+            "title": "Status"
+        },
+        "collection_type": {
+            "title": "Collection Type"
+        },
+        "processing_type": {
+            "title": "Product Type"
+        },
+        "tissue_type": {
+            "title": "Tissue Type"
+        },
+        "anatomic_site": {
+            "title": "Biospecimen Anatomic Site"
+
+        },
+        "biolibrary.nucleic_acid_term_name": {
+            "title": "Library Material"
+        },
+        "biolibrary.biofile.file_format": {
+            "title": "Genomics File Format"
+        },
+        "biolibrary.biofile.output_type": {
+            "title": "Genomics File Output Type"
+        }
+
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "internal_ID": {
+            "title": "Internal ID"
+        },
+        "openspecimen_ID": {
+            "title": "OpenSpecimen ID"
+        },
+        "collection_type": {
+            "title": "Collection Type"
+        },
+        "processing_type": {
+            "title": "Processing Type"
+        },
+        "tissue_type": {
+            "title": "Tissue Type"
+        },
+        "anatomic_site": {
+            "title": "Anatomic Site"
+        },
+        "distributed": {
+            "title": "Distributed?"
+        }
+
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "patient": 1.0,
+        "openspecimen_ID": 1.0,
+        "internal_ID": 1.0,
+        "anatomic_site": 1.0,
+        "biolibrary.accession": 1.0,
+        "biolibrary.biofile.accession": 1.0
+
+
+    },
+    "changelog": "/profiles/changelogs/biospecimen.md"
+
+}
+
