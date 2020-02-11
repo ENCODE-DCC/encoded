@@ -629,9 +629,6 @@ globals.listingViews.register(Pathology_report, 'Pathology_report');
 class SurgeryComponent extends React.Component {
     render() {
         const result = this.props.context;
-        // const age = (result.patient.age && result.patient.age !== 'unknown') ? ` ${result.patient.age}` : '';
-        // const ageUnits = (result.patient.age_units && result.patient.age_units !== 'unknown' && age) ? ` ${result.patient.age_units}` : '';
-        console.log(result);
 
         return (
           <li>
@@ -650,8 +647,7 @@ class SurgeryComponent extends React.Component {
                         </a>
                   </div>
                   <div className="data-row">
-                      <div><strong>Surgery Date:</strong>{result.tumor_size}</div>
-                      <div><strong>Surgery Type: </strong>{result.laterality}</div>
+                      <div><strong>Surgery Date:</strong>{result.date}</div>
                   </div>
               </div>
               {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}

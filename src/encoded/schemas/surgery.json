@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["patient", "date", "hospital_location"],
-    "identifyingProperties": [ "uuid", "accession" ],
+    "identifyingProperties": [ "uuid" ],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version"},
         { "$ref": "mixins.json#/uuid"},

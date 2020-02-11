@@ -16,7 +16,7 @@ class PathologyReport extends React.Component {
         // Set up breadcrumbs
         const crumbs = [
             { id: 'Pathology_report' },
-            { id: <i>{context.name}</i> },
+            { id: <i>{context.uuid}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
         // let hasGenomics =false;
@@ -30,7 +30,7 @@ class PathologyReport extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=PathologyReport" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.name}</h2>
+                        <h2>{context.uuid}</h2>
 
                     </div>
 
