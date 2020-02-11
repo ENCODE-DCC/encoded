@@ -643,7 +643,6 @@ class SurgeryComponent extends React.Component {
                   <div className="accession">
                         <a href={result['@id']}>
                           {`${result.accession} `}
-                          {/* {`${age}${ageUnits} )`} */}
                         </a>
                   </div>
                   <div className="data-row">
