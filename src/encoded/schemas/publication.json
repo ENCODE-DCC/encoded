@@ -174,7 +174,7 @@
             "title": "Published by",
             "type": "array",
             "uniqueItems": true,
-            "default": ["ENCODE"],
+            "default": ["Kidney Cancer SPORE"],
             "items": {
                 "title": "Published by",
             "type": "string",
@@ -184,7 +184,8 @@
                 "historical reference",
                 "modENCODE",
                 "mouseENCODE",
-                "Roadmap"
+                "Roadmap",
+                "Kidney Cancer SPORE"
                 ]
             }
         },
@@ -280,3 +281,4 @@
     "changelog": "/profiles/changelogs/publication.md"
 
 }
+
