@@ -87,6 +87,7 @@ class SurgeryProcedure(Item):
 
 @collection(
     name='pathology-reports',
+    unique_key='pathology_report:name',
     properties={
         'title': 'Pathology tumor reports',
         'description': 'Pathology tumor reports results pages',
@@ -95,3 +96,29 @@ class PathologyReport(Item):
     item_type = 'pathology_report'
     schema = load_schema('encoded:schemas/pathology_report.json')
     embeded = []
+
+    def unique_keys(self, properties):
+        keys = super(PathologyReport, self).unique_keys(properties)
+        keys.setdefault('pathology_report:name', []).append(self._name(properties))
+        return keys
+
+    @calculated_property(schema={
+        "title": "Name",
+        "type": "string",
+        "description": "Name of the tumor specific pathology report.",
+        "comment": "Do not submit. Value is automatically assigned by the server.",
+        "uniqueKey": "name"
+    })
+    def name(self):
+        return self.__name__
+
+    @property
+    def __name__(self):
+        properties = self.upgrade_properties()
+        return self._name(properties)
+
+    def _name(self, properties):
+        root = find_root(self)
+        surgery_uuid = properties['surgery']
+        surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()['accession']
+        return u'{}-{}'.format(surgery_id, properties['tumor_sequence_number'])

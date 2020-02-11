@@ -409,7 +409,7 @@
     },
     "boost_values": {
         "histology":1.0,
-        "surgery": 1.0
+        "name": 1.0
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }

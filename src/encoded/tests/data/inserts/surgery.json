@@ -4,6 +4,7 @@
     "patient": "KCEPT359MHZ",
     "date": "1860-06-03",
     "hospital_location": "UTSW",
+    "status": "released",
     "accession": "KCESX359TRS",
     "uuid": "5f29b472-cdb1-478e-ae1a-a133e11cc24b"
   },
