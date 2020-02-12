@@ -5,6 +5,13 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
+import CollapsiblePanel from './collapsiblePanel';
+// import PathologyReport from './pathology_report';
+import PathologyReportTable from './patholgoyReprotTable';
+
+
+
+
 
 class Surgery extends React.Component {
     constructor(props) {
@@ -19,12 +26,27 @@ class Surgery extends React.Component {
             { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
-
+        console.log(context);
+        console.log(context.pathology_report);
         // Get procedure_type
         //surgeryTypes = surgeryTypes.concat(context.surgery_procedure.procedure_type);
 
         //list single page of Surgery View.
-        return (
+       
+        let hasPathology=false;
+        if (Object.keys(this.props.context.pathology_report).length > 0) {
+          hasPathology = true;
+            
+        }
+          const pathologyPanelBody = (
+            <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report Details" ></PathologyReportTable>
+          );
+
+        
+        // const pathologyPanelBody = (
+        //     <PathologyReport data={this.props.context} chartTitle="Pathology Report Details" ></PathologyReport>
+        //   );
+         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
@@ -48,6 +70,10 @@ class Surgery extends React.Component {
                             <dt>Patient</dt>
                             <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
                         </div>
+                        <div data-test="surgery date">
+                            <dt>Surgery date</dt>
+                            <dd>{context.date}</dd>
+                        </div>
                         <div data-test="hospital">
                             <dt>Hospital Location</dt>
                             <dd>{context.hospital_location}</dd>
@@ -56,8 +82,14 @@ class Surgery extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
+                {/* {hasPathology && <CollapsiblePanel panelId="pathology" title="Pathology report Details" content={pathologyPanelBody} />} */}
+            
+                <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report Details" ></PathologyReportTable>
+            
             </div>
-            )
+
+
+            );
 
     }
 }

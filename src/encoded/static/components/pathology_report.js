@@ -12,6 +12,8 @@ class PathologyReport extends React.Component {
     }
     render() {
         const context = this.props.context;
+        console.log(context);
+
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs
         const crumbs = [
@@ -37,7 +39,7 @@ class PathologyReport extends React.Component {
                 </header>
                 <Panel>
                     <PanelHeading>
-                        <h4>Pathology Report</h4>
+        <h4>{this.props.chartTitle}</h4>
                     </PanelHeading>
                     <PanelBody>
                     <dl className="key-value">
@@ -200,7 +202,9 @@ class PathologyReport extends React.Component {
             </div>
         )
     }
+
 }
+
 
 PathologyReport.propTypes = {
     context: PropTypes.object, // Target object to display
@@ -211,3 +215,5 @@ PathologyReport.defaultProps = {
 };
 
 globals.contentViews.register(PathologyReport, 'PathologyReport');
+
+export default PathologyReport;
