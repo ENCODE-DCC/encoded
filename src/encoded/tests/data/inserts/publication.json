@@ -1,438 +1,403 @@
 [
     {
-        "title": "An integrated encyclopedia of DNA elements in the human genome",
-        "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
-        "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
+        "title": "Renal Cell Carcinoma With Pulmonary Metastasis and Metachronous Non-Small Cell Lung Cancer.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Bowman IA, Pedrosa I, Kapur P, Brugarolas J.",
+        "journal": "Clinical genitourinary cancer",
+        "identifiers": ["PMID:28258962"],
+        "status": "released",
+        "uuid": "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
+    },
+    {
+        "title": "Targeting renal cell carcinoma with a HIF-2 antagonist.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Chen W, Hill H, Christie A, Kim MS, Holloman E, Pavia-Jimenez A, Homayoun F, Ma Y, Patel N, Yell P, Hao G, Yousuf Q, Joyce A, Pedrosa I, Geiger H, Zhang H, Chang J, Gardner KH, Bruick RK, Reeves C, Hwang TH, Courtney K, Frenkel E, Sun X, Zojwalla N, Wong T, Rizzi JP, Wallace EM, Josey JA, Xie Y, Xie XJ, Kapur P, McKay RM, Brugarolas J.",
         "journal": "Nature",
-        "date_published": "2012 Sep 6",
-        "identifiers": ["PMID:22955616", "PMCID:PMC3439153"],
-        "volume": "489",
-        "issue": "7414",
-        "page": "57-74",
+        "identifiers": ["PMID:27595394", "PMCID:PMC5340502"],
+        "volume":"539",
+        "issue": "7627",
+        "page":"112-117",
         "status": "released",
-        "published_by": ["ENCODE"],
-        "categories": ["integrative analysis"],
-        "data_used": "ENCODE main paper",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
+        "uuid": "caa8db45-32e3-4fb5-8cc0-885325fb7fc8"
     },
     {
-        "status":"in progress",
-        "uuid":"baf202c2-b7af-4c43-b135-15104394daac",
-        "title":"DNase-seq: a high-resolution technique for mapping active gene regulatory elements across the genome from mammalian cells.",
-        "issue":"2",
-        "journal":"Cold Spring Harbor protocols",
-        "page":"pdb.prot5384",
-        "volume":"2010",
-        "date_published":"2010 Feb",
-        "identifiers":["PMID:20150147"],
-        "authors":"Crawford GE",
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "categories": ["data standard"]
-    },
-    {
-        "status":"in progress",
-        "uuid":"a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2",
-        "title":"The reality of pervasive transcription.",
-        "issue":"7",
-        "journal":"PLoS biology",
-        "page":"e1000625; discussion e1001102",
-        "volume":"9",
-        "date_published":"2011 Jul",
-        "identifiers":["PMID:21765801"],
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
-    },
-    {
-        "status":"in progress",
-        "uuid":"e9b33b63-3a85-47cf-9fc5-b1904c56d7ee",
-        "title":"Missing lincs in the transcriptome.",
-        "issue":"4",
-        "journal":"Nature biotechnology",
-        "page":"346-7",
-        "volume":"27",
-        "date_published":"2009 Apr",
-        "identifiers":["PMID:19352372"],
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "authors":"Gingeras T"
-    },
-    {
-        "status":"in progress",
-        "uuid":"f1d4ec0c-9c90-437e-a6e2-4688791abeea",
-        "title":"Molecular biology: RNA discrimination.",
-        "issue":"7385",
-        "journal":"Nature",
-        "page":"310-1",
-        "volume":"482",
-        "date_published":"2012 Feb 15",
-        "categories": ["basic biology"],
-        "published_by": ["ENCODE"],
-        "identifiers": ["PMID:22337043"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
-    },
-    {
-        "status":"in progress",
-        "uuid":"8c578e87-e4b1-432e-b58a-921c6933c1ea",
-        "title":"Nucleosome positioning: bringing order to the eukaryotic genome.",
-        "issue":"5",
-        "journal":"Trends in cell biology",
-        "page":"250-6",
-        "volume":"22",
-        "date_published":"2012 May",
-        "authors":"Iyer VR",
-        "identifiers": ["PMID:22421062"],
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
-    },
-    {
-        "status":"in progress",
-        "uuid":"46169636-fe8b-4823-bc73-49b6fcd6b484",
-        "title":"Cross-talk between site-specific transcription factors and DNA methylation states.",
-        "issue":"48",
-        "journal":"The Journal of biological chemistry",
-        "page":"34287-94",
-        "volume":"288",
-        "date_published":"2013 Nov 29",
-        "identifiers":["PMID:24151070"],
-        "published_by": ["ENCODE"],
-        "authors":"Blattler A, Farnham PJ",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
-    },
-    {
-        "status":"in progress",
-        "uuid":"6af11fd9-c0d3-486a-afcb-6c350d20222c",
-        "title":"Genome-wide epigenetic data facilitate understanding of disease susceptibility association studies.",
-        "issue":"37",
-        "journal":"The Journal of biological chemistry",
-        "schema_version":"1",
-        "page":"30932-40",
-        "volume":"287",
-        "date_published":"2014 Jan",
-        "identifiers":["PMID:22952232"],
-        "authors":"Hardison RC",
-        "published_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "abstract":"Complex traits such as susceptibility to diseases are determined in part by variants at multiple genetic loci. Genome-wide association studies can identify these loci, but most phenotype-associated variants lie distal to protein-coding regions and are likely involved in regulating gene expression. Understanding how  these genetic variants affect complex traits depends on the ability to predict and test the function of the genomic elements harboring them. Community efforts such as the ENCODE Project provide a wealth of data about epigenetic features associated with gene regulation. These data enable the prediction of testable functions for many phenotype-associated variants. AU"
-    },
-    {
-        "abstract": "MOTIVATION: Accurate alignment of high-throughput RNA-seq data is a challenging and yet unsolved problem because of the non-contiguous transcript structure, relatively short read lengths and constantly increasing throughput of the sequencing technologies. Currently available RNA-seq aligners suffer from high mapping error rates, low mapping speed, read length limitation and mapping biases. RESULTS: To align our large (>80 billon reads) ENCODE Transcriptome RNA-seq dataset, we developed the Spliced Transcripts Alignment to a Reference (STAR) software based on a previously undescribed RNA-seq alignment algorithm that uses sequential maximum mappable seed search in uncompressed suffix arrays followed by seed clustering and stitching procedure. STAR outperforms other aligners by a factor of >50 in mapping speed, aligning to the human genome 550 million 2 x 76 bp paired-end reads per hour on a modest 12-core server, while at  the same time improving alignment sensitivity and precision. In addition to unbiased de novo detection of canonical junctions, STAR can discover non-canonical splices and chimeric (fusion) transcripts, and is also capable of mapping full-length RNA sequences. Using Roche 454 sequencing of reverse transcription polymerase chain reaction amplicons, we experimentally validated 1960 novel intergenic splice junctions with an 80-90% success rate, corroborating the high precision of the STAR mapping strategy. AVAILABILITY AND IMPLEMENTATION: STAR is implemented as a standalone C++ code. STAR is free open source software distributed under GPLv3 license and can be downloaded from http://code.google.com/p/rna-star/.",
-        "authors": "Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR",
-        "categories": [
-            "software tool"
-        ],
-        "date_published": "2013 Jan 1",
+        "title": "BAP1 and PBRM1 in metastatic clear cell renal cell carcinoma: tumor heterogeneity and concordance with paired primary tumor.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Eckel-Passow JE, Serie DJ, Cheville JC, Ho TH, Kapur P, Brugarolas J, Thompson RH, Leibovich BC, Kwon ED, Joseph RW, Parker AS.",
+        "journal": "BMC urology",
+        "identifiers": ["PMID:28327121", "PMCID:PMC5361787"],
+        "volume":"17",
         "issue": "1",
-        "journal": "Bioinformatics",
-        "page": "15-21",
-        "published_by": [
-            "ENCODE"
-        ],
-        "identifiers": [
-            "PMID:23104886",
-            "PMCID:PMC3530905"
-        ],
+        "page":"19",
         "status": "released",
-        "title": "STAR: ultrafast universal RNA-seq aligner.",
-        "volume": "29",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "9d43c048-c70c-42ab-895d-77a69fceb42b"
+        "uuid": "5a4ffbb9-2a6f-4620-8196-7bfb1b441051"
     },
     {
-        "abstract": "The resolution of genome-wide association studies (GWAS) is limited by the linkage disequilibrium (LD) structure of the population being studied. Selecting  the most likely causal variants within an LD block is relatively straightforward  within coding sequence, but is more difficult when all variants are intergenic. Predicting functional non-coding sequence has been recently facilitated by the availability of conservation and epigenomic information. We present HaploReg, a tool for exploring annotations of the non-coding genome among the results of published GWAS or novel sets of variants. Using LD information from the 1000 Genomes Project, linked SNPs and small indels can be visualized along with their  predicted chromatin state in nine cell types, conservation across mammals and their effect on regulatory motifs. Sets of SNPs, such as those resulting from GWAS, are analyzed for an enrichment of cell type-specific enhancers. HaploReg will be useful to researchers developing mechanistic hypotheses of the impact of  non-coding variants on clinical phenotypes and normal variation. The HaploReg database is available at http://compbio.mit.edu/HaploReg.",
-        "authors": "Ward LD, Kellis M",
-        "categories": [
-            "integrative analysis",
-            "database"
-        ],
-        "datasets": [
-            "/projects/KCESR860CMY/",
-            "/publication_data/KCESR727WCB/"
-        ],
-        "date_published": "2012 Jan",
-        "issue": "Database issue",
-        "journal": "Nucleic acids research",
-        "page": "D930-4",
-        "published_by": [
-            "ENCODE"
-        ],
-        "identifiers": [
-            "PMID:22064851",
-            "PMCID:PMC3245002"
-        ],
-        "supplementary_data":[
-            {
-                "url": "http://encodenets.gersteinlab.org/metatracks/",
-                "supplementary_data_type": "enhancer annotations",
-                "data_summary": "Enhancers are identified as binding active regions (BARs) outside promoter-proximal regulatory modules (PRMs) and more than 10kb away from any GENCODE genes and non-coding genes. A random forest model trained on chromatin accessibility and histone modification has been used to identify BARs, using randomly sampled TF binding regions and non-binding regions as positive and negative training sets. PRMs are identified with a similar model as that for BARs, using TF binding regions at transcription start site (TSS) as positive training set, and non-binding regions or regions far away from TSS or both as negative training sets. This model has been applied to 5 ENCODE cell lines: GM12878, K562, h1-HESC, HeLa-S3, and Hep-G2.",
-                "file_format": "BED"
-            },
-            {
-                "url": "http://funseq2.gersteinlab.org/static/data/ENCODE.annotation.gz",
-                "supplementary_data_type": "enhancer annotations",
-                "data_summary": "An update of the list in 2014 using the same methodology.",
-                "file_format": "BED"
-            },
-            {
-                "url": "http://encodenets.gersteinlab.org/metatracks",
-                "supplementary_data_type": "HOT regions",
-                "data_summary": "The ChIP-Seq signals from various experiments for transcription factors were grouped together into 100 bp bins. The co-binding of different factors were computed based on these signals. The HOT and LOT regions were defined as the top 1% of region-specific co-occurrence and the bottom 1% of non-zero degrees of region-specific co-occurrence.",
-                "file_format": "BED"
-            },
-            {
-                "url": "http://funseq2.gersteinlab.org/static/data/drm.gene.bed",
-                "supplementary_data_type": "connectivity",
-                "data_summary": "The correlation (or anti-correlation) of histone marks at a putative enhancer and the expression of nearby genes was used to determine connectivity. This list was updated in 2014 based on the 2012 methodology. First 3 columns are coordinates of DRM, 4th column is target gene, 5th column in correlation, and 6th column is correlation of histone mark (annotation of the histone mark with high correlation.",
-                "file_format": "BED"
-            }
-        ],
+        "title": "Modeling Renal Cell Carcinoma in Mice: Bap1 and Pbrm1 Inactivation Drive Tumor Grade.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Gu YF, Cohn S, Christie A, McKenzie T, Wolff NC, Do QN, Madhuranthakam A, Pedrosa I, Wang T, Dey A, Busslinger M, Xie XJ, Hammer RE, McKay RM, Kapur P, Brugarolas J.",
+        "journal": "Cancer discovery",
+        "identifiers": ["PMID:28473526"],
         "status": "released",
-        "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",
-        "volume": "40",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "d40de6c3-7b60-4567-8282-b29f0cafc0e1"
+        "uuid": "e55da15b-05a3-437f-a162-3aebf9e11bad"
     },
     {
-        "abstract": "MOTIVATION: Testing for correlations between different sets of genomic features is a fundamental task in genomics research. However, searching for overlaps between features with existing web-based methods is complicated by the massive datasets that are routinely produced with current sequencing technologies. Fast and flexible tools are therefore required to ask complex questions of these data  in an efficient manner. RESULTS: This article introduces a new software suite for the comparison, manipulation and annotation of genomic features in Browser Extensible Data (BED) and General Feature Format (GFF) format. BEDTools also supports the comparison of sequence alignments in BAM format to both BED and GFF  features. The tools are extremely efficient and allow the user to compare large datasets (e.g. next-generation sequencing data) with both public and custom genome annotation tracks. BEDTools can be combined with one another as well as with standard UNIX commands, thus facilitating routine genomics tasks as well as  pipelines that can quickly answer intricate questions of large genomic datasets.  AVAILABILITY AND IMPLEMENTATION: BEDTools was written in C++. Source code and a comprehensive user manual are freely available at http://code.google.com/p/bedtools CONTACT: aaronquinlan@gmail.com; imh4y@virginia.edu SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
-        "authors": "Quinlan AR, Hall IM",
-        "categories": [
-            "software tool"
-        ],
-        "date_created": "2014-08-01T04:33:54.912655+00:00",
-        "date_published": "2010 Mar 15",
-        "issue": "6",
-        "journal": "Bioinformatics",
-        "page": "841-2",
-        "published_by": [
-            "community"
-        ],
-        "identifiers": [
-            "PMID:20110278",
-            "PMCID:PMC2832824"
-        ],
+        "title": "Hypoxiainducible factor-1α activates insig-2 transcription for degradation of HMG CoA reductase in the liver.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Hwang S, Nguyen AD, Jo Y, Engelking LJ, Brugarolas J, DeBose-Boyd RA.",
+        "journal": "The Journal of biological chemistry",
+        "identifiers": ["PMID:28416613"],
         "status": "released",
-        "title": "BEDTools: a flexible suite of utilities for comparing genomic features.",
-        "volume": "26",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "bdd1b360-c377-450d-969a-efc1a7e8611f"
+        "uuid": "6596ef74-a7a2-42e7-8cfe-dcf623bc02ea"
     },
     {
-        "abstract": "Protein ubiquitylation has emerged as a key regulatory mechanism in DNA-damage signalling and repair pathways. We report a proteome-wide, site-specific survey of ubiquitylation changes after ultraviolet irradiation, identifying numerous upregulated and downregulated ubiquitylation sites on known components of DNA-damage signalling, as well as on proteins not previously implicated in this process. Our results uncover a critical role for PCNA-associated factor PAF15 (p15(PAF)/KIAA0101) ubiquitylation during DNA replication. During unperturbed S phase, chromatin-associated PAF15 is modified by double mono-ubiquitylation of Lys 15 and 24 templated through PCNA binding. Replication blocks trigger rapid, proteasome-dependent removal of Lys 15/24-ubiquitylated PAF15 from PCNA, facilitating bypass of replication-fork-blocking lesions by allowing recruitment of translesion DNA synthesis polymerase polη to mono-ubiquitylated PCNA at stalled replisomes. Our findings demonstrate widespread involvement of ubiquitin signalling in genotoxic-stress responses and identify a critical function for dynamic PAF15 ubiquitylation in safeguarding genome integrity when DNA replication is challenged.",
-        "authors": "Povlsen LK, Beli P, Wagner SA, Poulsen SL, Sylvestersen KB, Poulsen JW, Nielsen ML, Bekker-Jensen S, Mailand N, Choudhary C.",
-        "identifiers": [
-            "PMID:23000965"
-        ],
+        "title": "Multistep regulation of TFEB by MTORC1.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Vega-Rubin-de-Celis S, Peña-Llopis S, Konda M, Brugarolas J.",
+        "journal": "Autophagy",
+        "identifiers": ["PMID:28055300", "PMCID:PMC5361595"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Systems-wide analysis of ubiquitylation dynamics reveals a key role for PAF15 ubiquitylation in DNA-damage bypass.",
-        "uuid": "4cb65ec0-bd49-11e4-bb52-0800200c9a66"
+        "volume":"13",
+        "issue": "3",
+        "page":"464-472",
+        "uuid": "54b5b24e-ffe6-40fd-b6a0-bafca6d020cc"
     },
     {
-        "abstract": "The ability to inhibit a response is an important component of normal behavioral control and is an aspect of psychopathology when diminished. Converging evidence implicates the serotonergic neurotransmitter system in response inhibition circuitry.",
-        "authors": "Stoltenberg SF, Glass JM, Chermack ST, Flynn HA, Li S, Weston ME, Burmeister M.",
-        "identifiers": [
-            "PMID:16395128"
-        ],
+        "title": "Safety and Efficacy of Stereotactic Ablative Radiation Therapy for Renal Cell Carcinoma Extracranial Metastases",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Wang CJ, Christie A, Lin MH, Jung M, Weix D, Huelsmann L, Kuhn K, Meyer J, Desai N, Kim DWN, Pedrosa I, Margulis V, Cadeddu J, Sagalowsky A, Gahan J, Laine A, Xie XJ, Choy H, Brugarolas J, Timmerman R, Hannan R.",
+        "journal": "International journal of radiation oncology, biology, physics",
+        "identifiers": ["PMID:28587057", "PMCID:PMC5555369"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Possible association between response inhibition and a variant in the brain-expressed tryptophan hydroxylase-2 gene.",
-        "uuid": "b163ba10-bd4a-11e4-bb52-0800200c9a66"
+        "uuid": "dfe01772-5409-466b-96da-1dbfcb9c525a"
     },
     {
-        "abstract": "Chromatin immunoprecipitation (ChIP) followed by high-throughput DNA sequencing (ChIP-seq) has become a valuable and widely used approach for mapping the genomic location of transcription-factor binding and histone modifications in living cells. Despite its widespread use, there are considerable differences in how these experiments are conducted, how the results are scored and evaluated for quality, and how the data and metadata are archived for public use. These practices affect the quality and utility of any global ChIP experiment. Through our experience in performing ChIP-seq experiments, the ENCODE and modENCODE consortia have developed a set of working standards and guidelines for ChIP experiments that are updated routinely. The current guidelines address antibody validation, experimental replication, sequencing depth, data and metadata reporting, and data quality assessment. We discuss how ChIP quality, assessed in these ways, affects different uses of ChIP-seq data. All data sets used in the analysis have been deposited for public viewing and downloading at the ENCODE (http://encodeproject.org/ENCODE/) and modENCODE (http://www.modencode.org/) portals.",
-        "authors": "Landt SG, Marinov GK, Kundaje A, Kheradpour P, Pauli F, Batzoglou S, Bernstein BE, Bickel P, Brown JB, Cayting P, Chen Y, DeSalvo G, Epstein C, Fisher-Aylor KI, Euskirchen G, Gerstein M, Gertz J, Hartemink AJ, Hoffman MM, Iyer VR, Jung YL, Karmakar S, Kellis M, Kharchenko PV, Li Q, Liu T, Liu XS, Ma L, Milosavljevic A, Myers RM, Park PJ, Pazin MJ, Perry MD, Raha D, Reddy TE, Rozowsky J, Shoresh N, Sidow A, Slattery M, Stamatoyannopoulos JA, Tolstorukov MY, White KP, Xi S, Farnham PJ, Lieb JD, Wold BJ, Snyder M.",
-        "identifiers": [
-             "PMID:22955991"
-        ],
+        "title": "MYC activation cooperates with Vhl and Ink4a/Arf loss to induce clear cell renal cell carcinoma.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Bailey ST, Smith AM, Kardos J, Wobker SE, Wilson HL, Krishnan B, Saito R, Lee HJ, Zhang J, Eaton SC, Williams LA, Manocha U, Peters DJ, Pan X, Carroll TJ, Felsher DW, Walter V, Zhang Q, Parker JS, Yeh JJ, Moffitt RA, Leung JY, Kim WY.",
+        "journal": "Nature communications",
+        "identifiers": ["PMID:28593993", "PMCID:PMC5472759"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia.",
-        "uuid":"06a28ab0-bd4b-11e4-bb52-0800200c9a66"
+        "volume":"8",
+        "page":"15770",
+        "date_published": "2017 Jun 8",
+        "uuid": "b4e651f4-2df1-4b0c-8a96-7efe9034af19"
     },
     {
-        "abstract": "Faithful transmission of genetic material to daughter cells involves a characteristic temporal order of DNA replication, which may play a significant role in the inheritance of epigenetic states. We developed a genome-scale approach--Repli Seq--to map temporally ordered replicating DNA using massively parallel sequencing and applied it to study regional variation in human DNA replication time across multiple human cell types. The method requires as few as 8,000 cytometry-fractionated cells for a single analysis, and provides high-resolution DNA replication patterns with respect to both cell-cycle time and genomic position. We find that different cell types exhibit characteristic replication signatures that reveal striking plasticity in regional replication time patterns covering at least 50% of the human genome. We also identified autosomal regions with marked biphasic replication timing that include known regions of monoallelic expression as well as many previously uncharacterized domains. Comparison with high-resolution genome-wide profiles of DNaseI sensitivity revealed that DNA replication typically initiates within foci of accessible chromatin comprising clustered DNaseI hypersensitive sites, and that replication time is better correlated with chromatin accessibility than with gene expression. The data collectively provide a unique, genome-wide picture of the epigenetic compartmentalization of the human genome and suggest that cell-lineage specification involves extensive reprogramming of replication timing patterns.",
-        "authors": "Hansen RS, Thomas S, Sandstrom R, Canfield TK, Thurman RE, Weaver M, Dorschner MO, Gartler SM, Stamatoyannopoulos JA.",
-        "identifiers": [
-            "PMID:19966280"
-        ],
+        "title": "Addressing metabolic heterogeneity in clear cell renal cell carcinoma with quantitative Dixon MRI.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Zhang Y, Udayakumar D, Cai L, Hu Z, Kapur P, Kho EY, Pavía-Jiménez A, Fulkerson M, de Leon AD, Yuan Q, Dimitrov IE, Yokoo T, Ye J, Mitsche MA, Kim H, McDonald JG, Xi Y, Madhuranthakam AJ, Dwivedi DK, Lenkinski RE, Cadeddu JA, Margulis V, Brugarolas J, DeBerardinis RJ, Pedrosa I.",
+        "journal": "JCI insight",
+        "identifiers": ["PMID:28768909", "PMCID:PMC5543910"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Sequencing newly replicated DNA reveals widespread plasticity in human replication timing.",
-        "uuid": "99dc0be0-bddb-11e4-bb52-0800200c9a66"
+        "volume":"2",
+        "issue":"15",
+        "date_published": "2017 August 3",
+        "uuid": "eee571fc-484e-4ce8-8885-450068452ab8"
     },
     {
-        "abstract": "Bowtie is an ultrafast, memory-efficient alignment program for aligning short DNA sequence reads to large genomes. For the human genome, Burrows-Wheeler indexing allows Bowtie to align more than 25 million reads per CPU hour with a memory footprint of approximately 1.3 gigabytes. Bowtie extends previous Burrows-Wheeler techniques with a novel quality-aware backtracking algorithm that permits mismatches. Multiple processor cores can be used simultaneously to achieve even greater alignment speeds. Bowtie is open source (http://bowtie.cbcb.umd.edu).",
-        "authors": "Langmead B, Trapnell C, Pop M, Salzberg SL.",
-        "identifiers": [
-            "PMID:19261174"
-        ],
+        "title": "Diagnostic Accuracy of Multiparametric Magnetic Resonance Imaging to Identify Clear Cell Renal Cell Carcinoma in cT1a Renal Masses.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Canvasser NE, Kay FU, Xi Y, Pinho DF, Costa D, de Leon AD, Khatri G, Leyendecker JR, Yokoo T, Lay A, Kavoussi N, Koseoglu E, Cadeddu JA, Pedrosa I.",
+        "journal": "The Journal of urology",
+        "identifiers": ["PMID:28457802"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Ultrafast and memory-efficient alignment of short DNA sequences to the human genome.",
-        "uuid": "30819150-bddc-11e4-bb52-0800200c9a66"
+        "volume":"198",
+        "issue":"4",
+        "page": "780-786",
+        "date_published": "2017 October",
+        "uuid": "729660d2-4ea7-452e-b69a-53b70d06a474"
     },
     {
-        "abstract": "A method for characterizing quantum measurement devices completes the suite of 'tomography techniques', which should enable us to learn all there is to know about a given quantum-physics experiment.",
-        "authors": "Aspelmeyer M",
-        "identifiers": [
-            "doi:10.1038/nphys1170"
-        ],
+        "title": "Imaging and Screening of Kidney Cancer.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Diaz de Leon A, Pedrosa I.",
+        "journal": "Radiologic clinics of North America",
+        "identifiers": ["PMID:28991563", "PMCID:PMC5669050"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Quantum tomography: Measured measurement",
-        "uuid": "eedcf3b0-bddc-11e4-bb52-0800200c9a66"
+        "volume":"55",
+        "issue":"6",
+        "page": "235-1250",
+        "date_published": "2017 November",
+        "uuid": "2232d114-962b-4f95-97f5-dc66a162b926"
     },
     {
-        "abstract": "We developed a general approach that combines chromosome conformation capture carbon copy (5C) with the Integrated Modeling Platform (IMP) to generate high-resolution three-dimensional models of chromatin at the megabase scale. We applied this approach to the ENm008 domain on human chromosome 16, containing the α-globin locus, which is expressed in K562 cells and silenced in lymphoblastoid cells (GM12878). The models accurately reproduce the known looping interactions between the α-globin genes and their distal regulatory elements. Further, we find using our approach that the domain folds into a single globular conformation in GM12878 cells, whereas two globules are formed in K562 cells. The central cores of these globules are enriched for transcribed genes, whereas nontranscribed chromatin is more peripheral. We propose that globule formation represents a higher-order folding state related to clustering of transcribed genes around shared transcription machineries, as previously observed by microscopy.",
-        "authors": "Baù D, Sanyal A, Lajoie BR, Capriotti E, Byron M, Lawrence JB, Dekker J, Marti-Renom MA.",
-        "identifiers": [
-            "PMID:21131981"
-        ],
+        "title": "Multicenter Validation of Enhancer of Zeste Homolog 2 Expression as an Independent Prognostic Marker in Localized Clear Cell Renal Cell Carcinoma.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Ho TH, Kapur P, Eckel-Passow JE, Christie A, Joseph RW, Serie DJ, Cheville JC, Thompson RH, Homayoun F, Panwar V, Brugarolas J, Parker AS.",
+        "journal": "Journal of clinical oncology : official journal of the American Society of Clinical Oncology",
+        "identifiers": ["PMID:28976794", "PMCID:PMC5678341"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title":  "The three-dimensional folding of the α-globin gene domain reveals formation of chromatin globules.",
-        "uuid": "e5e336a0-bdde-11e4-bb52-0800200c9a66"
+        "volume":"35",
+        "issue":"32",
+        "page": "3706-3713",
+        "date_published": "2017 November 10",
+        "uuid": "96e01d3b-acf1-4c20-b49b-6b381cc296c5"
     },
     {
-        "abstract": "Transcription regulation in higher eukaryotes is controlled by regulatory elements such as enhancers that are recognized by transcription factors. In many cases regulatory elements can be located at distances up to several megabases from their target genes. Recent evidence shows that long-range control of gene expression can be mediated through direct physical interactions between genes and these regulatory elements. Such looping interactions can be detected using the chromosome conformation capture (3C) methodology. Although 3C is experimentally straightforward, to draw meaningful conclusions one must carefully design 3C experiments and implement the conscientious use of controls. The general guidelines presented here should help experimental design and minimize misinterpretation of 3C experiments.",
-        "authors": "Dekker J.",
-        "identifiers": [
-            "PMID:16369547"
-        ],
+        "title": "Quantitative Methods in Abdominal MRI: Perfusion Imaging",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Madhuranthakam AJ, Yuan Q, Pedrosa I.",
+        "journal": "Topics in magnetic resonance imaging : TMRI",
+        "identifiers": ["PMID:29176470", "PMCID:PMC5726296"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "The three 'C' s of chromosome conformation capture: controls, controls, controls.",
-        "uuid": "41d71990-bddf-11e4-bb52-0800200c9a66"
+        "volume":"26",
+        "issue":"6",
+        "page": "251-258",
+        "date_published": "2017 December",
+        "uuid": "5c689549-c913-4c9f-a329-40c248f48704"
     },
     {
-        "abstract": "We describe an approach to detect the frequency of interaction between any two genomic loci. Generation of a matrix of interaction frequencies between sites on the same or different chromosomes reveals their relative spatial disposition and provides information about the physical properties of the chromatin fiber. This methodology can be applied to the spatial organization of entire genomes in organisms from bacteria to human. Using the yeast Saccharomyces cerevisiae, we could confirm known qualitative features of chromosome organization within the nucleus and dynamic changes in that organization during meiosis. We also analyzed yeast chromosome III at the G1 stage of the cell cycle. We found that chromatin is highly flexible throughout. Furthermore, functionally distinct AT- and GC-rich domains were found to exhibit different conformations, and a population-average 3D model of chromosome III could be determined. Chromosome III emerges as a contorted ring.",
-        "authors": "Dekker J, Rippe K, Dekker M, Kleckner N.",
-        "identifiers": [
-            "PMID:11847345"
-        ],
+        "title": "Statistical clustering of parametric maps from dynamic contrast enhanced MRI and an associated decision tree model for non-invasive tumour grading of T1b solid clear cell renal cell carcinoma. European radiology.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Xi Y, Yuan Q, Zhang Y, Madhuranthakam AJ, Fulkerson M, Margulis V, Brugarolas J, Kapur P, Cadeddu JA, Pedrosa I.",
+        "journal": "European radiology",
+        "identifiers": ["PMID:28681074", "PMCID:PMC5718968"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Capturing chromosome conformation.",
-        "uuid": "f646cfb0-bddf-11e4-bb52-0800200c9a66"
+        "volume":"28",
+        "issue":"1",
+        "page": "124-132",
+        "date_published": "2018 January",
+        "uuid": "00aa26cb-73a9-4467-bf23-c25a5c8cde4c"
     },
     {
-        "abstract": "Genomic elements separated by large genomic distances can physically interact to mediate long-range gene regulation and other chromosomal processes. Interactions between genomic elements can be detected using the chromosome conformation capture (3C) technology. We recently developed a high-throughput adaptation of 3C, 3C-carbon copy (5C), that is used to measure networks of millions of chromatin interactions in parallel. As in 3C, cells are treated with formaldehyde to cross-link chromatin interactions. The chromatin is solubilized, digested with a restriction enzyme and ligated at low DNA concentration to promote intra-molecular ligation of cross-linked DNA fragments. Ligation products are subsequently purified to generate a 3C library. The 5C technology then employs highly multiplexed ligation-mediated amplification (LMA) to detect and amplify 3C ligation junctions. The resulting 5C library of ligated primers is analyzed using either microarray detection or ultra-high-throughput DNA sequencing. The 5C protocol described here can be completed in 13 d.",
-        "authors": "Dostie J, Dekker J.",
-        "identifiers": [
-            "PMID:17446898"
-        ],
+        "title": "Development of a Patient-specific Tumor Mold Using Magnetic Resonance Imaging and 3-Dimensional Printing Technology for Targeted Tissue Procurement and Radiomics Analysis of Renal Masses.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Dwivedi DK, Chatzinoff Y, Zhang Y, Yuan Q, Fulkerson M, Chopra R, Brugarolas J, Cadeddu JA, Kapur P, Pedrosa I.",
+        "journal": "Urology",
+        "identifiers": ["PMID:29056576", "PMCID:PMC5885749"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Mapping networks of physical interactions between genomic elements using 5C technology.",
-        "uuid": "30eba0f0-bde0-11e4-bb52-0800200c9a66"
+        "volume":"112",
+        "page": "209-214",
+        "date_published": "2018 February",
+        "uuid": "3fc73cb9-1e39-4542-a5b5-97585dddff6c"
     },
     {
-        "abstract": "Physical interactions between genetic elements located throughout the genome play important roles in gene regulation and can be identified with the Chromosome Conformation Capture (3C) methodology. 3C converts physical chromatin interactions into specific ligation products, which are quantified individually by PCR. Here we present a high-throughput 3C approach, 3C-Carbon Copy (5C), that employs microarrays or quantitative DNA sequencing using 454-technology as detection methods. We applied 5C to analyze a 400-kb region containing the human beta-globin locus and a 100-kb conserved gene desert region. We validated 5C by detection of several previously identified looping interactions in the beta-globin locus. We also identified a new looping interaction in K562 cells between the beta-globin Locus Control Region and the gamma-beta-globin intergenic region. Interestingly, this region has been implicated in the control of developmental globin gene switching. 5C should be widely applicable for large-scale mapping of cis- and trans- interaction networks of genomic elements and for the study of higher-order chromosome structure.",
-        "authors": "Dostie J, Richmond TA, Arnaout RA, Selzer RR, Lee WL, Honan TA, Rubio ED, Krumm A, Lamb J, Nusbaum C, Green RD, Dekker J.",
-        "identifiers": [
-            "PMID:16954542"
-        ],
+        "title": "Whole-body MRI for metastatic cancer detection using T2 -weighted imaging with fat and fluid suppression.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Wang X, Pirasteh A, Brugarolas J, Rofsky NM, Lenkinski RE, Pedrosa I, Madhuranthakam AJ.",
+        "journal": "Magnetic resonance in medicine",
+        "identifiers": ["PMID:29446127"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Chromosome Conformation Capture Carbon Copy (5C): a massively parallel solution for mapping interactions between genomic elements.",
-        "uuid": "83ea1e80-bde0-11e4-bb52-0800200c9a66"
+        "date_published": "2018 February 14",
+        "uuid": "a5717da1-d139-47ac-aaab-7dae9a7df876"
     },
     {
-        "authors": "Lajoie BR, van Berkum NL, Sanyal A, Dekker J.",
-        "identifiers": [
-            "PMID:19789528"
-        ],
+        "title": "Phase I Dose-Escalation Trial of PT2385, a First-in-Class Hypoxia-Inducible Factor-2α Antagonist in Patients With Previously Treated Advanced Clear Cell Renal Cell Carcinoma.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Courtney KD, Infante JR, Lam ET, Figlin RA, Rini BI, Brugarolas J, Zojwalla NJ, Lowe AM, Wang K, Wallace EM, Josey JA, Choueiri TK.",
+        "journal": "Journal of clinical oncology : official journal of the American Society of Clinical Oncology",
+        "identifiers": ["PMID:29257710", "PMCID:PMC5946714"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "My5C: web tools for chromosome conformation capture studies.",
-        "uuid": "bbbeb8c0-bde0-11e4-bb52-0800200c9a66"
+        "volume":"36",
+        "issue": "9",
+        "page": "867-874",
+        "date_published": "2018 March 20",
+        "uuid": "8686177f-7372-46bb-a801-4c3357eab3cf"
     },
     {
-        "abstract": "Disruptions in local chromatin structure often indicate features of biological interest such as regulatory regions. We find that sonication of cross-linked chromatin, when combined with a size-selection step and massively parallel short-read sequencing, can be used as a method (Sono-Seq) to map locations of high chromatin accessibility in promoter regions. Sono-Seq sites frequently correspond to actively transcribed promoter regions, as evidenced by their co-association with RNA Polymerase II ChIP regions, transcription start sites, histone H3 lysine 4 trimethylation (H3K4me3) marks, and CpG islands; signals over other sites, such as those bound by the CTCF insulator, are also observed. The pattern of breakage by Sono-Seq overlaps with, but is distinct from, that observed for FAIRE and DNase I hypersensitive sites. Our results demonstrate that Sono-Seq can be a useful and simple method by which to map many local alterations in chromatin structure. Furthermore, our results provide insights into the mapping of binding sites by using ChIP-Seq experiments and the value of reference samples that should be used in such experiments.",
-        "authors": "Auerbach RK, Euskirchen G, Rozowsky J, Lamarre-Vincent N, Moqtaderi Z, Lefrançois P, Struhl K, Gerstein M, Snyder M.",
-        "identifiers": [
-            "PMID:19706456"
-        ],
+        "title": "Diagnostic Performance and Interreader Agreement of a Standardized MR Imaging Approach in the Prediction of Small Renal Mass Histology.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Kay FU, Canvasser NE, Xi Y, Pinho DF, Costa DN, Diaz de Leon A, Khatri G, Leyendecker JR, Yokoo T, Lay AH, Kavoussi N, Koseoglu E, Cadeddu JA, Pedrosa I.",
+        "journal": "Radiology",
+        "identifiers": ["PMID:29390196", "PMCID:PMC5929366"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Mapping accessible chromatin regions using Sono-Seq.",
-        "uuid": "72a4a030-bdfb-11e4-bb52-0800200c9a66"
+        "volume":"287",
+        "issue": "2",
+        "page": "543-553",
+        "date_published": "2018 May",
+        "uuid": "dbf1fc9f-6a9d-440a-bbae-cdda079a4fc8"
     },
     {
-        "abstract": "Recent progress in mapping transcription factor (TF) binding regions can largely be credited to chromatin immunoprecipitation (ChIP) technologies. We compared strategies for mapping TF binding regions in mammalian cells using two different ChIP schemes: ChIP with DNA microarray analysis (ChIP-chip) and ChIP with DNA sequencing (ChIP-PET). We first investigated parameters central to obtaining robust ChIP-chip data sets by analyzing STAT1 targets in the ENCODE regions of the human genome, and then compared ChIP-chip to ChIP-PET. We devised methods for scoring and comparing results among various tiling arrays and examined parameters such as DNA microarray format, oligonucleotide length, hybridization conditions, and the use of competitor Cot-1 DNA. The best performance was achieved with high-density oligonucleotide arrays, oligonucleotides >/=50 bases (b), the presence of competitor Cot-1 DNA and hybridizations conducted in microfluidics stations. When target identification was evaluated as a function of array number, 80%-86% of targets were identified with three or more arrays. Comparison of ChIP-chip with ChIP-PET revealed strong agreement for the highest ranked targets with less overlap for the low ranked targets. With advantages and disadvantages unique to each approach, we found that ChIP-chip and ChIP-PET are frequently complementary in their relative abilities to detect STAT1 targets for the lower ranked targets; each method detected validated targets that were missed by the other method. The most comprehensive list of STAT1 binding regions is obtained by merging results from ChIP-chip and ChIP-sequencing. Overall, this study provides information for robust identification, scoring, and validation of TF targets using ChIP-based technologies.",
-        "authors": "Euskirchen GM, Rozowsky JS, Wei CL, Lee WH, Zhang ZD, Hartman S, Emanuelsson O, Stolc V, Weissman S, Gerstein MB, Ruan Y, Snyder M.",
-        "identifiers": [
-            "PMID:17568005"
-        ],
+        "title": "Imaging of Solid Renal Masses",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Kay FU, Pedrosa I",
+        "journal": "Radiologic clinics of North America",
+        "identifiers": ["PMID:28126214", "PMCID:PMC5607740", "doi:10.1016/j.rcl.2016.10.003"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Mapping of transcription factor binding regions in mammalian cells by ChIP: comparison of array- and sequencing-based technologies.",
-        "uuid": "341bf550-be0c-11e4-bb52-0800200c9a66"
+        "volume":"55",
+        "issue": "2",
+        "page": "243-258",
+        "date_published": "2017 March",
+        "uuid": "c97d071b-fb7b-4025-8758-9e70ed54608d"
     },
     {
-        "abstract": "We have mapped the chromosomal binding site distribution of a transcription factor in human cells. The NF-kappaB family of transcription factors plays an essential role in regulating the induction of genes involved in several physiological processes, including apoptosis, immunity, and inflammation. The binding sites of the NF-kappaB family member p65 were determined by using chromatin immunoprecipitation and a genomic microarray of human chromosome 22 DNA. Sites of binding were observed along the entire chromosome in both coding and noncoding regions, with an enrichment at the 5' end of genes. Strikingly, a significant proportion of binding was seen in intronic regions, demonstrating that transcription factor binding is not restricted to promoter regions. NF-kappaB binding was also found at genes whose expression was regulated by tumor necrosis factor alpha, a known inducer of NF-kappaB-dependent gene expression, as well as adjacent to genes whose expression is not affected by tumor necrosis factor alpha. Many of these latter genes are either known to be activated by NF-kappaB under other conditions or are consistent with NF-kappaB's role in the immune and apoptotic responses. Our results suggest that binding is not restricted to promoter regions and that NF-kappaB binding occurs at a significant number of genes whose expression is not altered, thereby suggesting that binding alone is not sufficient for gene activation.",
-        "authors": "Martone R, Euskirchen G, Bertone P, Hartman S, Royce TE, Luscombe NM, Rinn JL, Nelson FK, Miller P, Gerstein M, Weissman S, Snyder M.",
-        "identifiers": [
-            "PMID:14527995"
-        ],
+        "title": "Sample Size Estimation for Comparing Rates of Change in Kgroup Repeated Count Outcomes",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Lou Y, Cao J, Ahn C.",
+        "journal": "Communications in statistics: theory and methods",
+        "identifiers": ["PMID:30930527", "PMCID:PMC6436812", "doi:10.1080/03610926.2016.1260744"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Distribution of NF-kappaB-binding sites across human chromosome 22.",
-        "uuid": "cf890830-bdfc-11e4-bb52-0800200c9a66"
+        "volume":"46",
+        "issue": "22",
+        "page": "11204-11213",
+        "date_published": "2017 August 7",
+        "uuid": "4c33cbdb-9802-4aab-9771-5f9b3cd4920b"
     },
     {
-        "abstract": "We developed a method, ChIP-sequencing (ChIP-seq), combining chromatin immunoprecipitation (ChIP) and massively parallel sequencing to identify mammalian DNA sequences bound by transcription factors in vivo. We used ChIP-seq to map STAT1 targets in interferon-gamma (IFN-gamma)-stimulated and unstimulated human HeLa S3 cells, and compared the method's performance to ChIP-PCR and to ChIP-chip for four chromosomes. By ChIP-seq, using 15.1 and 12.9 million uniquely mapped sequence reads, and an estimated false discovery rate of less than 0.001, we identified 41,582 and 11,004 putative STAT1-binding regions in stimulated and unstimulated cells, respectively. Of the 34 loci known to contain STAT1 interferon-responsive binding sites, ChIP-seq found 24 (71%). ChIP-seq targets were enriched in sequences similar to known STAT1 binding motifs. Comparisons with two ChIP-PCR data sets suggested that ChIP-seq sensitivity was between 70% and 92% and specificity was at least 95%.",
-        "authors": "Robertson G, Hirst M, Bainbridge M, Bilenky M, Zhao Y, Zeng T, Euskirchen G, Bernier B, Varhol R, Delaney A, Thiessen N, Griffith OL, He A, Marra M, Snyder M, Jones S.",
-        "identifiers": [
-            "PMID:17558387"
-        ],
+        "title": "Improved Magnetic Resonance Imaging-Pathology Correlation With Imaging-Derived, 3D-Printed, Patient-Specific Whole-Mount Molds of the Prostate.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Costa DN, Chatzinoff Y, Passoni NM, Kapur P, Roehrborn CG, Xi Y, Rofsky NM, Torrealba J, Francis F, Futch C, Hagens P, Notgrass H, Otero-Muinelo S, Pedrosa I, Chopra R.",
+        "journal": "Investigative radiology",
+        "identifiers": ["PMID:28379863", "PMCID:PMC5544596"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "Genome-wide profiles of STAT1 DNA association using chromatin immunoprecipitation and massively parallel sequencing.",
-        "uuid": "4be68100-be0c-11e4-bb52-0800200c9a66"
+        "volume":"52",
+        "issue": "9",
+        "page": "507-513",
+        "date_published": "2017 September",
+        "uuid": "d90cbcde-d054-4674-943a-29c378052cd5"
     },
     {
-        "abstract": "Chromatin immunoprecipitation (ChIP) followed by tag sequencing (ChIP-seq) using high-throughput next-generation instrumentation is fast, replacing chromatin immunoprecipitation followed by genome tiling array analysis (ChIP-chip) as the preferred approach for mapping of sites of transcription-factor binding and chromatin modification. Using two deeply sequenced data sets for human RNA polymerase II and STAT1, each with matching input-DNA controls, we describe a general scoring approach to address unique challenges in ChIP-seq data analysis. Our approach is based on the observation that sites of potential binding are strongly correlated with signal peaks in the control, likely revealing features of open chromatin. We develop a two-pass strategy called PeakSeq to compensate for this. A two-pass strategy compensates for signal caused by open chromatin, as revealed by inclusion of the controls. The first pass identifies putative binding sites and compensates for genomic variation in the 'mappability' of sequences. The second pass filters out sites not significantly enriched compared to the normalized control, computing precise enrichments and significances. Our scoring procedure enables us to optimize experimental design by estimating the depth of sequencing required for a desired level of coverage and demonstrating that more than two replicates provides only a marginal gain in information.",
-        "authors": "Rozowsky J, Euskirchen G, Auerbach RK, Zhang ZD, Gibson T, Bjornson R, Carriero N, Snyder M, Gerstein MB.",
-        "identifiers": [
-            "PMID:19122651"
-        ],
+        "title": "Loss of Dis3l2 partially phenocopies Perlman syndrome in mice and results in up-regulation of Igf2 in nephron progenitor cells.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Hunter RW, Liu Y, Manjunath H, Acharya A, Jones BT, Zhang H, Chen B, Ramalingam H, Hammer RE, Xie Y, Richardson JA, Rakheja D, Carroll TJ, Mendell JT.",
+        "journal": "Genes & development",
+        "identifiers": ["PMID:29950491", "PMCID:PMC6075040", "doi:10.1101/gad.315804.118"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "title": "PeakSeq enables systematic scoring of ChIP-seq experiments relative to controls.",
-        "uuid": "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
+        "volume":"32",
+        "issue": "13-14",
+        "page": "903-908",
+        "date_published": "2018 July 1",
+        "uuid": "5bc29061-a48f-4280-b8ca-901081aa329a"
+    },
+    {
+        "title": "Mutations in microRNA processing genes in Wilms tumors derepress the IGF2 regulator PLAG1.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Chen KS, Stroup EK, Budhipramono A, Rakheja D, Nichols-Vinueza D, Xu L, Stuart SH, Shukla AA, Fraire C, Mendell JT, Amatruda JF.",
+        "journal": "Genes & development",
+        "identifiers": ["PMID:30026293", "PMCID:PMC6075147", "doi:10.1101/gad.313783.118"],
+        "status": "released",
+        "volume":"32",
+        "issue": "15-16",
+        "page": "996-1007",
+        "date_published": "2018 August 1",
+        "uuid": "be1ccb81-062f-45f9-943c-9682c6fea36a"
+    },
+    {
+        "title": "An Empirical Approach Leveraging Tumorgrafts to Dissect the Tumor Microenvironment in Renal Cell Carcinoma Identifies Missing Link to Prognostic Inflammatory Factors.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Wang T, Lu R, Kapur P, Jaiswal BS, Hannan R, Zhang Z, Pedrosa I, Luke JJ, Zhang H, Goldstein LD, Yousuf Q, Gu YF, McKenzie T, Joyce A, Kim MS, Wang X, Luo D, Onabolu O, Stevens C, Xie Z, Chen M, Filatenkov A, Torrealba J, Luo X, Guo W, He J, Stawiski E, Modrusan Z, Durinck S, Seshagiri S, Brugarolas J.",
+        "journal": "Cancer discovery",
+        "identifiers": ["PMID:29884728", "PMCID:PMC6125163", "doi:10.1158/2159-8290.CD-17-1246"],
+        "status": "released",
+        "volume":"8",
+        "issue": "9",
+        "page": "1142-1155",
+        "date_published": "2018 September",
+        "uuid": "55d8868d-08f2-4135-99ef-efddaac7b875"
+    },
+    {
+        "title": "Imaging Advances in the Management of Kidney Cancer",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Krajewski KM, Pedrosa I.",
+        "journal": "Journal of clinical oncology : official journal of the American Society of Clinical Oncology",
+        "identifiers": ["PMID:30372386", "PMCID:PMC6299343", "doi:10.1200/JCO.2018.79.1236"],
+        "status": "released",
+        "date_published": "2018 October 29",
+        "uuid": "072e3678-de65-452a-984a-162af86e03e0"
+    },
+    {
+        "title": "Isotope Tracing of Human Clear Cell Renal Cell Carcinomas Demonstrates Suppressed Glucose Oxidation In Vivo.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Courtney KD, Bezwada D, Mashimo T, Pichumani K, Vemireddy V, Funk AM, Wimberly J, McNeil SS, Kapur P, Lotan Y, Margulis V, Cadeddu JA, Pedrosa I, DeBerardinis RJ, Malloy CR, Bachoo RM, Maher EA.",
+        "journal": "Cell metabolism",
+        "identifiers": ["PMID:30146487", "PMCID:PMC6221993", "doi:10.1016/j.cmet.2018.07.020"],
+        "status": "released",
+        "volume":"28",
+        "issue": "5",
+        "page": "793-800",
+        "date_published": "2018 November 6",
+        "uuid": "b0d1a024-713e-4367-ac4e-1ba41e863921"
+    },
+    {
+        "title": "Improved Survival Outcomes for Kidney Cancer Patients With Brain Metastases.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Bowman IA, Bent A, Le T, Christie A, Wardak Z, Arriaga Y, Courtney K, Hammers H, Barnett S, Mickey B, Patel T, Whitworth T, Stojadinovic S, Hannan R, Nedzi L, Timmerman R, Brugarolas J.",
+        "journal": "Clinical genitourinary cancer",
+        "identifiers": ["PMID:30538068", "doi:10.1016/j.clgc.2018.11.007"],
+        "status": "released",
+        "volume":"17",
+        "issue": "2",
+        "page": "e263-e272",
+        "date_published": "2019 April",
+        "uuid": "9ca2a6e4-33a7-4456-b94f-87c97151e79b"
+    },
+    {
+        "title": "Stereotactic Radiosurgery for Multiple Brain Metastases From Renal-Cell Carcinoma",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Wardak Z, Christie A, Bowman A, Stojadinovic S, Nedzi L, Barnett S, Patel T, Mickey B, Whitworth T, Hannan R, Brugarolas J, Timmerman R.",
+        "journal": "Clinical genitourinary cancer",
+        "identifiers": ["PMID:30595522", "doi:10.1016/j.clgc.2018.11.006"],
+        "status": "released",
+        "volume":"17",
+        "issue": "2",
+        "page": "e273-e280",
+        "date_published": "2019 April",
+        "uuid": "21fda6b3-e233-4c3a-a6b6-d3c638b8bd8f"
+    },
+    {
+        "title": "Down-regulation of human DAB2IP Gene Expression in Renal Cell Carcinoma Results in Resistance to Ionizing Radiation.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Yun EJ, Lin CJ, Dang A, Hernandez E, Guo J, Chen WM, Allison J, Kim N, Kapur P, Brugarolas J, Wu K, He D, Lai CH, Lin H, Saha D, Baek ST, Chen BPC, Hsieh JT.",
+        "journal": "Clinical cancer research : an official journal of the American Association for Cancer Research",
+        "identifiers": ["PMID:31000589", "doi:10.1158/1078-0432.CCR-18-3004"],
+        "status": "released",
+        "date_published": "2019 April 18",
+        "uuid": "a52fbf54-280e-49b8-b67a-21a0991a75eb"
+    },
+    {
+        "title": "Distinct DICER1 hotspot mutations identify bilateral tumors as separate events.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Kenneth S. Chen, Sarai H. Stuart, Emily K. Stroup, Abhay S. Shukla, Jason Wang, Veena Rajaram, Gordan M. Vujanic, Tamra Slone, Dinesh Rakheja, and James F. Amatruda",
+        "journal": "JCO precision oncology",
+        "identifiers": ["PMID:31893257", "PMCID:PMC6938390"],
+        "status": "released",
+        "date_published": "2018 Apr 25",
+        "uuid": "b3f4b4c7-1527-4e58-a5a3-380f00de727a"
+    },
+    {
+        "title": "Role of Virtual Biopsy in the Management of Renal Masses. AJR.",
+        "award": "Kidney-SPORE",
+        "lab": "james-brugarolas",
+        "authors": "Diaz de Leon A, Davenport MS, Silverman SG, Schieda N, Cadeddu JA, Pedrosa I.",
+        "journal": "American journal of roentgenology",
+        "identifiers": ["PMID:30995092", "doi:10.2214/AJR.19.21172"],
+        "status": "released",
+        "page": "1-10",
+        "date_published": "2019 April 17",
+        "uuid": "18674e02-ecb1-41dc-ac98-cdd5825a5bb3"
     }
+
+    
 ]
+
