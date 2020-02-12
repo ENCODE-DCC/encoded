@@ -288,6 +288,7 @@ class App extends React.Component {
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
+            accountCreatedModalVisibility: false,
             accountCreationFailedVisibility: false,
             authResult: '',
         };
@@ -324,6 +325,7 @@ class App extends React.Component {
         this.currentAction = this.currentAction.bind(this);
         this.closeSignupModal = this.closeSignupModal.bind(this);
         this.closeAccountCreationErrorModal = this.closeAccountCreationErrorModal.bind(this);
+        this.closeAccountCreationNotification = this.closeAccountCreationNotification.bind(this);
         this.signup = this.signup.bind(this);
     }
 
@@ -577,6 +579,10 @@ class App extends React.Component {
         this.setState({ eulaModalVisibility: false });
     }
 
+    closeAccountCreationNotification() {
+        this.setState({ accountCreatedModalVisibility: false });
+    }
+
     closeAccountCreationErrorModal() {
         this.setState({ accountCreationFailedVisibility: false });
     }
@@ -601,8 +607,8 @@ class App extends React.Component {
             if (!response.ok) {
                 throw new Error('Failed to create new account');
             }
-            // sign in after account creation
-            this.handleAuth0Login(authResult, false, false);
+            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
+            this.handleAuth0Login(authResult, false, false); // sign in after account creation
         }).catch(() => {
             this.setState({ accountCreationFailedVisibility: true });
         });
@@ -1250,6 +1256,11 @@ class App extends React.Component {
                                 <EulaModal
                                     closeModal={this.closeSignupModal}
                                     signup={this.signup}
+                                />
+                            : null}
+                            { this.state.accountCreatedModalVisibility ?
+                                <AccountCreatedModal
+                                    closeModal={this.closeAccountCreationNotification}
                                 />
                             : null}
                             {this.state.accountCreationFailedVisibility ?
