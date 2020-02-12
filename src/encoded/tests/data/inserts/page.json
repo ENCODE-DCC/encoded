@@ -10,13 +10,6 @@
                     "cols": [
                         {"blocks": ["#block1"]}
                     ]
-                },
-                {
-                    "cols": [
-                        {"blocks": ["#block2"]},
-                        {"blocks": ["#block3"]},
-                        {"blocks": ["#block4"]}
-                    ]
                 }
             ],
             "blocks": [
