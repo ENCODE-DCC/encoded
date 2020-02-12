@@ -1,0 +1,315 @@
+#steps to follow to install the encode on the Vagrant Box.
+
+1) insatll vagrant on you mac.
+   ## You should have installed the vmware fusion what ever is thr latest version.
+a) link to install vagrant:virtualbox: https://www.virtualbox.org/wiki/Downloads
+b) link to install vagrant: https://www.vagrantup.com/downloads.html
+
+
+2) Follow below commands to run the virtual box
+a) command:- cd ~
+b) command:- mkdir -p /work/vagrant-test   ## this would be your working directory (vagrant-test)
+c) command:- vagrant init ubuntu/bionic64  ## this will boot up you virtual machina on vagrant
+
+   Changes need to be done in the vagrant file.
+
+2) In the same working directory a file named "Vagrantfile" will be created.
+   then make some changes in the Vagrantfile
+
+a) At the top level you will need to allow the port number to communicate from vagrant box to mac os
+   At this section please allow the port numbers.
+
+   # NOTE: This will enable public access to the opened port
+   # config.vm.network "forwarded_port", guest: 80, host: 8080
+   config.vm.network "forwarded_port", guest: 8000, host: 8000
+   config.vm.network "forwarded_port", guest: 6543, host: 6543
+   config.vm.network "forwarded_port", guest: 80, host: 80
+
+
+b) uncomment the line in the file
+   config.vm.network "private_network", ip: "192.168.33.10"
+
+c) change the ram memory in the file.
+
+   The raw file before changing the content of the ram memory
+
+   # Example for VirtualBox:
+   #
+   # config.vm.provider "virtualbox" do |vb|
+   #   # Display the VirtualBox GUI when booting the machine
+   #   vb.gui = true
+   #
+   #   # Customize the amount of memory on the VM:
+   #   vb.memory = "1024"
+   # end
+   #
+
+   Change it to this way and remember that you are giving it 11 gigabytes of RAM
+
+   # Example for VirtualBox:
+   #
+   config.vm.provider "virtualbox" do |vb|
+   #   # Display the VirtualBox GUI when booting the machine
+      vb.gui = true
+   #
+   #   # Customize the amount of memory on the VM:
+      vb.memory = "11000"
+   end
+
+
+d) save it and exit from the file.
+
+2) Bring up the vagrant andd ssh in to the vagrant box.
+a) command: vagrant up               (Note: it will take some time to boot it up)
+b) command: vagrant ssh              (yopu are sshing in to the vagrant box)
+
+
+Your Vagrant box is ready to use.
+
+pre requisets to be installed befor making the encoded to run.
+
+Note i will be using the user test-encode for reference here please give your own user name.
+
+3) add the user as elastic-serach will not start using root.
+  a) command to add the user is ---> sudo adduser test-encode (in place of test-encode please provide your own user name)
+
+    then it will ask you some of the questions linke mentioned below just use the enter button to skip the info but please provide the password
+
+    Adding user `test-encode' ...
+    Adding new group `test-encode' (1001) ...
+    Adding new user `test-encode' (1001) with group `encode-ubutnu' ...
+    Creating home directory `/home/test-encode' ...
+    Copying files from `/etc/skel' ...
+    Enter new UNIX password: (please give your passwd)
+    Retype new UNIX password: (please re enter your passwd)
+    passwd: password updated successfully
+    Changing the user information for encode-ubutnu
+    Enter the new value, or press ENTER for the default
+          Full Name []:
+          Room Number []:
+          Work Phone []:
+          Home Phone []:
+          Other []:
+      Is the information correct? [Y/n] y (say y if you think yoiur are good ether give n)
+
+  b) execute this commands to check weather the user is added or not.
+        command 1) sudo cat /etc/passwd | grep test-encode   ( here you can see your user has been created  in place of test-encode please provide your own user name )
+        command 2) sudo cat /etc/shadow | grep test-encode   ( here you can see user passwd has been created in place of test-encode please provide your own user name )
+
+
+  c) you have to give the sudoers privilages to avoid some the blockers.
+        command 1) sudo su ( it will take to the root user please give the password you have given while initial setup)
+        command 2) sudo nano /etc/sudoers (please follow the below after enter this command )
+
+                 you will see on the 19th or 20th line some thing linke this .
+
+                 # User privilege specification
+                   root    ALL=(ALL:ALL) ALL
+
+                now please add your user some think like this with your user ( for exapmle test-encode )
+                # User privilege specification
+                  root    ALL=(ALL:ALL) ALL
+                  test-encode    ALL=(ALL:ALL) ALL
+
+          then save it and exit out
+      command 3) exit (this will exit from the root user)
+      command 4) sudo su - test-encode
+4) please install curl and git
+  a) command to install git is sudo apt-get install git -y
+  b) command to install curl is sudo apt-get install curl -y
+
+
+5)Download java manually in to your mac and here the steps to insatll it manually on ubuntu machine.
+  a) Link to install the jdk https://www.oracle.com/technetwork/java/javase/downloads/index.html
+  b) Please select the version to be installed saying Oracle Jdk for example iam using here jdk-11.0.6.
+  c) Please accept the license before downloading.
+  d) It will ask to create an account to download the jdk please create the account and now please do not select the open option select the save file option.
+  e) Now Do not select the open with option please select the save file and it will save in the ~Downloads
+  f) mv the downloaded jdk file from your local mac downloads to the vagrant working directory which is as per this document /home/work/vagrant-test
+  g) command: vagrant ssh
+  h) command: sudo su test-encode
+  i) command: sudo mkdir /opt/encode
+  j) command: sudo chown test-encode:test-encode /opt/encode
+  k) command: sudo chmod 777 /opt/encode
+  l) now open a new terminal and go the vagrant working dorectory which is /home/work/vagrant-test
+  m) commaand: vagrant upload jdk-11.0.6_linux-x64_bin.tar.gz /opt/encode/
+  n) come back to you vagrant termininal and follow the below steps (make sure you are using test-encode user which is what i am refering here)
+  o) cd /opt/encode/
+  p) sudo mkdir -p /usr/lib/jvm
+  q) sudo chmod 777 /usr/lib/jvm
+  r) sudo tar -xzvf /opt/encode/jdk-11.0.6_linux-x64_bin.tar.gz --directory /usr/lib/jvm/
+  s) sudo chmod 755 /usr/lib/jvm
+  t) sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-11.0.6/bin/java 100
+
+  to check the java version
+
+  a) java -version
+  b) java
+
+Java insatllation is done.
+
+6) Download The elassticsearch manually using the below steps.
+
+  a) cd /opt/encode/
+  b) curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.16.tar.gz (if curl does not work please provide sudo)
+  c) tar -xvzf elasticsearch-5.6.16.tar.gz
+  d) chown -R test-encode:test-encode  elasticsearch-5.6.16
+  e) cd /opt/encode/elasticsearch-5.6.16/bin/
+  f) pwd (take the path add in the bashrc)
+  g) sudo nano ~/.bashrc
+
+  add some thing like this on the bashrc file
+  export PATH="/opt/encode/elasticsearch-5.6.16/bin:$PATH" ###provide the binary pathg for the elasticsearch
+
+  h) save the bashrc file and exit.
+  i) now do source ~/.bashrc
+
+Elasticsearch setup is done.
+
+7) Add the dependencies for the Postgresql-11 for ubuntu 18.04. (please make sure you using test-encode user )
+  a) sudo apt-get install curl ca-certificates gnupg
+  b) curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  c) sudo add-apt-repository 'deb http://apt.postgresql.org/pub/repos/apt bionic-pgdg main'
+  d) sudo apt-get update
+
+8) please insatll following dependecies for the python 3.6.9 and please make sure you are using test-encode.
+
+  a) cd /opt/encode
+  b) touch install.txt
+  c) chmod 777 install.txt
+  d) sudo nano install.txt (add the below following packages which are supposed to be installed using your file)
+
+awscli
+unattended-upgrades
+apache2
+apache2-utils
+ssl-cert
+libapache2-mod-wsgi-py3
+bsdtar
+libjpeg8-dev
+zlib1g-dev
+apt-transport-https
+nodejs
+g++
+gcc
+make
+nginx
+libpq-dev
+daemontools
+postgresql-11
+build-essential
+libffi-dev
+libssl-dev
+python3.7-dev
+python3-pip
+python3.7-venv
+software-properties-common
+redis-server
+lzop
+net-tools
+
+##please use the following command to install all the above mentioned packages.
+  e) cat install.txt | xargs sudo apt-get install -y
+
+9)Add the binary path for postgresql-11
+
+  a) sudo nano ~/.bashrc
+  add the below line in the bashrc file.
+
+export PATH="/usr/lib/postgresql/11/bin:$PATH" ###the binary path for the postgresql
+
+  b) save and exit
+  c) source ~/.bashrc
+
+
+10)Install nvm,npm and node 10 (please make sure you using test-encode user)
+
+  a) curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+
+###please execute the following commands it will add the path in the ~/.bashrc file.
+  b) export NVM_DIR="$HOME/.nvm"
+     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+  c) nvm install node v10.14.0
+  d) nvm use 10.14.0
+
+
+11) git clone the repository in to /opt/encode
+  a) cd /opt/encode
+  b) git clone the repo
+  c) cd encoded
+  d) pip3 install -U zc.buildout setuptools
+  e) pip3 install zope.deprecation
+  f) buildout bootstrap
+  g) bin/buildout
+
+12) creater a virtual envirnment to run the test caes and to build a dev server.
+  a) command: cd /opt/encode/
+  b) sudo apt install -y python3-venv
+  c) python3.6 -m venv my_env        Note:  give your own virtual env i have given a ref name i.e my_env
+  d) source my_env/bin/activate      (actiuvitaing vertual env you will bw running all the dev and test suite in this virtual env)
+
+13)To run the test cases using google chrome
+  a) link to download the chrome driver https://chromedriver.chromium.org/downloads
+  b) please do not open the file save the file.
+  c) cd ~
+  d) cd /home/(vm-ware-user)/Downloads
+  e) sudo mv chromedriver_linux64.zip /opt/encode
+  f) get back to your test-encode user
+  g) cd /opt/encode
+  h) sudo unzip chromedriver_linux64.zip
+  i) mkdir -p bin
+  j) mv chromedriver bin/
+  k) sudo nano ~/.bashrc
+
+     export PATH="/opt/encode/bin:$PATH" #the binary path for chrome driver which we have changed above
+
+  l) save and exit it out
+  m) source ~/.bashrc
+   All the required packeges have been installed.
+
+14) change some of the permisions.
+
+  a) sudo chmod -R 777  /var/log/nginx/
+  b) sudo chmod 777 /var/lib/nginx/
+  c) sudo nano /etc/postgresql/11/main/pg_hba.conf
+
+   change the content in the file from peer to trust in two places.
+
+
+    # Database administrative login by Unix domain socket
+     local   all             postgres                                trust
+
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+    # "local" is for Unix domain socket connections only
+     local   all             all                                     trust
+    # IPv4 local connections:
+
+    d) sudo service postgresql restart
+    e) sudo ln -s /var/run/postgresql/.s.PGSQL.5432 /tmp/snovault/pgdata/.s.PGSQL.5432
+
+15) Enabling and adding the user to XHOST as to make google-chrome running.
+  a) sudo su
+  b) xhost enable
+  c) xhost +SI:localuser:test-encode
+  d) sudo su test-encode
+  e) google-chrome (test is is working or not you should see the google ui)
+
+    All the changes have been done accordingly
+
+16) build the dev server.
+  a) bin/dev-servers development.ini --app-name app --clear --init --load
+
+    if you see /run/ngnix.pid permision denaied please ignore.
+
+17) open Another terminal 
+  a) bin/pserve develo.ini
+
+18) wanted to run the test cases.
+  a) bin/test -m "not bdd"  Note: expect some failures
+
+19) expected issues
+ a) if dev server build fails saying  /tmp/snovault/pgdata/.s.PGSQL.5432 is no avalble execute the following command.
+ command:- sudo ln -s /var/run/postgresql/.s.PGSQL.5432 /tmp/snovault/pgdata/.s.PGSQL.5432
