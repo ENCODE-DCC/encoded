@@ -78,7 +78,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
 
         yData.forEach((y) => {
             const yKey = Object.keys(y)[0];
-            dataRowT[yKey] = dataRowT[yKey] || [...Array(headerRowLength + 1)].fill(0);
+            dataRowT[yKey] = dataRowT[yKey] || Array(headerRowLength + 1).fill(0);
             dataRowT[yKey][0] = yKey;
 
             const keyDocCountPair = y[yKey].reduce((a, b) => a.concat(b), []);
@@ -726,7 +726,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
 
                 // .fill([]) duplicate the same array reference rather than create a new array
                 // so map was used
-                dataRow = [...Array(dataRowLength)].map(() => []);
+                dataRow = Array(dataRowLength).map(() => []);
 
                 headerRow = [];
 
