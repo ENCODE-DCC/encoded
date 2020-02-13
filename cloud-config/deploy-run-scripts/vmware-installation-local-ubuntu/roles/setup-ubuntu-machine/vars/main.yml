@@ -1,0 +1,39 @@
+---
+jdkversion: jdk-11.0.6
+pass: 1234
+jdktarfile: jdk-11.0.6_linux-x64_bin.tar
+defaultdirectory: /opt/encode/
+username: test-encode
+groupname: test-encode
+postgresql-version: 11
+elasticsearchurl: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.16.tar.gz
+node-version: v10.14.0
+required-packages:
+ - awscli
+ - unattended-upgrades
+ - apache2
+ - apache2-utils
+ - ssl-cert
+ - libapache2-mod-wsgi-py3
+ - bsdtar
+ - libjpeg8-dev
+ - zlib1g-dev
+ - apt-transport-https
+ - nodejs
+ - g++
+ - gcc
+ - make
+ - nginx
+ - libpq-dev
+ - daemontools
+ - postgresql-11
+ - build-essential
+ - libffi-dev
+ - libssl-dev
+ - python3.7-dev
+ - python3-pip
+ - python3.7-venv
+ - software-properties-common
+ - redis-server
+ - lzop
+ - net-tools 

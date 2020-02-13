@@ -1,0 +1,6 @@
+---
+#- include_tasks: 01-install-java.yml
+- include_tasks: 02-install-elasticsearch.yml
+- include_tasks: 03-install-the-posgresql.yml
+- include_tasks: 04-install-googlechrome.yml
+- include_tasks: 05-install-all-the-required-packeages.yml
