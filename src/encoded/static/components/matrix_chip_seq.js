@@ -53,10 +53,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
         const xGroupBy2 = context.matrix.x.group_by[1];
         const headerRow = context.matrix.x[xGroupBy1].buckets.find(f => f.key === subTab)[xGroupBy2]
             .buckets
-            .reduce((a, b) => {
-                const m = a.concat(b);
-                return m;
-            }, [])
+            .reduce((a, b) => a.concat(b), [])
             .map(x => x.key);
         const headerRowIndex = headerRow.reduce((x, y, z) => { x[y] = z; return x; }, []);
         const headerRowLength = headerRow.length;
@@ -70,7 +67,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
                 m[b.key] = b[xGroupBy1].buckets
                     .filter(f => f.key === subTab)
                     .reduce((x, y) => {
-                        x.push(y[xGroupBy2].buckets
+                        x.push([...y[xGroupBy2].buckets]
                             .reduce((i, j) => i.concat(j), []));
                         return x;
                     }, []);
@@ -84,10 +81,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
             dataRowT[yKey] = dataRowT[yKey] || [...Array(headerRowLength + 1)].fill(0);
             dataRowT[yKey][0] = yKey;
 
-            const keyDocCountPair = y[yKey].reduce((a, b) => {
-                const m = a.concat(b);
-                return m;
-            }, []);
+            const keyDocCountPair = y[yKey].reduce((a, b) => a.concat(b), []);
 
             keyDocCountPair.forEach((kp) => {
                 const key = kp.key;
@@ -105,13 +99,9 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
             dataRow.push(dataRowT[key]);
         });
 
-        // Remove all rows with no data (all entries/count are zero)
-        // Remove this line if you want to show all data and not just ones with content
-        dataRow = dataRow.filter((d) => {
-            const data = [...d]; // !Imporant. Clone to avoid modifying dataRow itself
-            data.shift(); // remove first entry as it is biosample ontology classification and not a count
-            return !data.every(i => i === 0); // remove all rows with all zeros
-        });
+        // remove all rows with all 0's
+        // Note- First entry is biosample ontology classification, does not count against 0's-row and is weedy out in the statement
+        dataRow = dataRow.filter(data => data.some((content, index) => (content !== 0 && index !== 0)));
 
         chIPSeqData[subTab] = { headerRow, dataRow, assayTitle, organismName };
     });
