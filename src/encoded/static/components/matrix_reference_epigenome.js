@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { bool } from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
@@ -347,8 +347,17 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
 /**
  * Render the area above the matrix itself, including the page title.
  */
-const MatrixHeader = ({ context }) => {
+const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
     const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
+
+    const projectSelect = (e) => {
+        const selectedProject = e.target.value;
+        const awardRfa = selectedProject === 'All' ? '' : `&award.rfa${selectedProject === 'Roadmap' ? '=' : '!='}Roadmap`;
+        const link = `/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens${awardRfa}`;
+        reactContext.navigate(link);
+    };
+
+    const rowCount = matrix => matrix.y['biosample_ontology.classification'].buckets.reduce((currentTotalCount, termName) => currentTotalCount + termName['biosample_ontology.term_name'].buckets.length, 0);
 
     return (
         <div className="matrix-header">
@@ -358,12 +367,22 @@ const MatrixHeader = ({ context }) => {
                     <MatrixInternalTags context={context} />
                 </div>
             </div>
+            {showProjects ?
+                <div className="test-project-selector">
+                    <input type="radio" id="all" name="project" value="All" checked={project === null} onChange={projectSelect} />
+                    <label htmlFor="all">All</label> &nbsp; &nbsp;
+                    <input type="radio" id="roadmap" name="project" value="Roadmap" checked={project === 'Roadmap'} onChange={projectSelect} />
+                    <label htmlFor="roadmap">Roadmap</label> &nbsp; &nbsp;
+                    <input type="radio" id="nonroadmap" name="project" value="Nonroadmap" checked={project !== 'Roadmap' && project !== null} onChange={projectSelect} />
+                    <label htmlFor="nonroadmap">Non-Roadmap</label>
+                </div>
+            : null}
             <div className="matrix-header__controls">
                 <div className="matrix-header__filter-controls">
                     <SearchFilter context={context} />
                 </div>
                 <div className="matrix-header__search-controls">
-                    <h4>Showing {context.total} results</h4>
+                    <h4>Showing {rowCount(context.matrix)} results</h4>
                     <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} hideBrowserSelector />
                 </div>
             </div>
@@ -374,6 +393,17 @@ const MatrixHeader = ({ context }) => {
 MatrixHeader.propTypes = {
     /** Matrix search result object */
     context: PropTypes.object.isRequired,
+    showProjects: bool,
+    project: PropTypes.string,
+};
+
+MatrixHeader.defaultProps = {
+    showProjects: false,
+    project: null,
+};
+
+MatrixHeader.contextTypes = {
+    navigate: PropTypes.func,
 };
 
 
@@ -679,12 +709,19 @@ MatrixContent.propTypes = {
  */
 const ReferenceEpigenomeMatrix = ({ context }) => {
     const itemClass = globals.itemClass(context, 'view-item');
+    const parsedUrl = url.parse(context['@id']);
+    const query = new QueryString(parsedUrl.query);
+    const species = query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name')[0];
+    const showProjects = species === 'Homo sapiens';
+    const project = query.getKeyValues('award.rfa')[0] || query.getKeyValues('award.rfa', true)[0] ?
+        query.getKeyValues('award.rfa')[0] ? 'Roadmap' : 'Nonroadmap' :
+        null;
 
     if (context.total > 0) {
         return (
             <Panel addClasses={itemClass}>
                 <PanelBody>
-                    <MatrixHeader context={context} />
+                    <MatrixHeader context={context} showProjects={showProjects} project={project} />
                     <MatrixContent context={context} />
                 </PanelBody>
             </Panel>
