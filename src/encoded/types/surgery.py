@@ -40,11 +40,13 @@ class Surgery(Item):
 
     embedded = [
         'pathology_report',
-        'surgery_procedure'
+        'surgery_procedure',
+        'ihc'
     ]
     rev = {
         'pathology_report': ('PathologyReport', 'surgery'),
         'surgery_procedure': ('SurgeryProcedure', 'surgery'),
+        'ihc':('Ihc','surgery')
     }
     audit_inherit = []
     set_status_up = []
@@ -72,6 +74,27 @@ class Surgery(Item):
     def pathology_report(self, request, pathology_report):
         return paths_filtered_by_status(request, pathology_report)
 
+    @calculated_property(schema={
+        "title": "ihc link PR",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Ihc"
+        },
+    })
+    def ihc(self, request, ihc):
+        return paths_filtered_by_status(request, ihc)
+
+@collection(
+    name='PR_ihc',
+    properties={
+        'title': 'PR-ihc linked',
+        'description': 'PR-ihc results pages',
+    })
+class Ihc(Item):
+    item_type = 'ihc'
+    schema = load_schema('encoded:schemas/ihc.json')
+    embeded = []
 
 @collection(
     name='surgery-procedures',

@@ -5,13 +5,14 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["patient", "date", "hospital_location"],
-    "identifyingProperties": [ "uuid" ],
+    "identifyingProperties": [ "uuid","accession"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version"},
         { "$ref": "mixins.json#/uuid"},
-        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/accessioned_status" }
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/submitted" }
+
     ],
     "properties": {
         "schema_version": {
@@ -56,6 +57,9 @@
         }
     },
     "facets": {
+        "status": {
+            "title": "Status"
+        },
         "surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
@@ -71,9 +75,44 @@
         "surgery_procedure.nephrectomy_details.robotic_assist": {
             "title": "Nephrectomy Robotic Assist"
         },
-        "status": {
-            "title": "Status"
+        "pathology_report.laterality": {
+            "title": "Laterality"
+        },
+        "pathology_report.tumor_size": {
+            "title": "Tumore Size"
+        },
+        "pathology_report.histology": {
+            "title": "Histologic Subtypes"
+        },
+
+        "pathology_report.focality": {
+            "title": "Focality"
+        },
+        "pathology_report.grade": {
+            "title": "Grade"
+        },
+        "pathology_report.sarcomatoid": {
+            "title": "Sarcomatoid"
+        },
+        "pathology_report.necrosis": {
+            "title": "Tumor Necrosis"
+        },
+        "pathology_report.margins": {
+            "title": "Margins"
+        },
+         "pathology_report.lvi": {
+            "title": "LVI"
+        },
+        "pathology_report.micro_perinephric": {
+            "title": "Perinephric Infiltration"
+        },
+        "pathology_report.micro_vein": {
+            "title": "Renal Vein Involvement (MicroVein)"
+        },
+        "pathology_report.micro_adrenal": {
+            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
+      
     },
     "boost_values": {
         "patient": 1.0,

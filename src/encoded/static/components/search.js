@@ -590,7 +590,7 @@ class PathologyComponent extends React.Component {
                   <div className="pull-right search-meta">
                       <p className="type meta-title">Pathology Report</p>
                       <p className="type">{` ${result.accession}`}</p>
-                      {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
+                      <Status item={result.status} badgeSize="small" css="result-table__status" />
                       {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                   </div>
                   <div className="accession">
@@ -629,7 +629,7 @@ globals.listingViews.register(Pathology_report, 'Pathology_report');
 class SurgeryComponent extends React.Component {
     render() {
         const result = this.props.context;
-
+        console.log(result);
         return (
           <li>
               <div className="clearfix">
@@ -637,16 +637,18 @@ class SurgeryComponent extends React.Component {
                   <div className="pull-right search-meta">
                       <p className="type meta-title">Surgery</p>
                       <p className="type">{` ${result.accession}`}</p>
-                      {/* <Status item={result} badgeSize="small" css="result-table__status" /> */}
+                      <Status item={result.status} badgeSize="small" css="result-table__status" />
                       {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                   </div>
                   <div className="accession">
-                        <a href={result['@id']}>
+                      <a href={result['@id']}>
                           {`${result.accession} `}
-                        </a>
+
+                      </a>
                   </div>
                   <div className="data-row">
-                      <div><strong>Surgery Date:</strong>{result.date}</div>
+                      <div><strong>Surgery Date: </strong>{result.date}</div>
+                      <div><strong>Hospital Location: </strong>{result.hospital_location}</div>
                   </div>
               </div>
               {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -674,7 +676,7 @@ globals.listingViews.register(Surgery, 'Surgery');
 class BiofileComponent extends React.Component {
     render() {
         const result = this.props.context;
-
+        console.log(result);
         return (
           <li>
               <div className="clearfix">

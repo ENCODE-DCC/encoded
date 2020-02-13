@@ -8,8 +8,7 @@ import { PanelLookup } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
 // import PathologyReport from './pathology_report';
 import PathologyReportTable from './patholgoyReprotTable';
-
-
+import IHCTable from './ihcTable';
 
 
 
@@ -22,26 +21,32 @@ class Surgery extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs
         const crumbs = [
-            { id: 'Surgery' },
+            { id: 'Surgeries' },
             { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
         console.log(context);
-        console.log(context.pathology_report);
+        // console.log(context.pathology_report);
         // Get procedure_type
         //surgeryTypes = surgeryTypes.concat(context.surgery_procedure.procedure_type);
 
         //list single page of Surgery View.
        
         let hasPathology=false;
+        let hasIHC=false;
+
         if (Object.keys(this.props.context.pathology_report).length > 0) {
           hasPathology = true;
             
         }
-          const pathologyPanelBody = (
-            <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report Details" ></PathologyReportTable>
-          );
-
+        if (Object.keys(this.props.context.ihc).length > 0) {
+            hasIHC = true;
+          }
+      
+        //   const pathologyPanelBody = (
+        //     <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report Details" ></PathologyReportTable>
+        //   );
+        
         
         // const pathologyPanelBody = (
         //     <PathologyReport data={this.props.context} chartTitle="Pathology Report Details" ></PathologyReport>
@@ -82,9 +87,8 @@ class Surgery extends React.Component {
                     </dl>
                     </PanelBody>
                 </Panel>
-                {/* {hasPathology && <CollapsiblePanel panelId="pathology" title="Pathology report Details" content={pathologyPanelBody} />} */}
-            
-                <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report Details" ></PathologyReportTable>
+                {hasPathology && <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report " ></PathologyReportTable>}
+                {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
             
             </div>
 
@@ -93,12 +97,14 @@ class Surgery extends React.Component {
 
     }
 }
+/* eslint-enable react/prefer-stateless-function */
+
 Surgery.propTypes = {
     context: PropTypes.object, // Target object to display
   };
 
-Surgery.defaultProps = {
-  context: null,
-};
+// Surgery.defaultProps = {
+//   context: null,
+// };
 
 globals.contentViews.register(Surgery, 'Surgery');
