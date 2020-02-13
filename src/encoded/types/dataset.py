@@ -366,6 +366,7 @@ class Annotation(FileSet, CalculatedVisualize):
 class PublicationData(FileSet):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
+    audit_inherit = []
     embedded = [
         'submitted_by',
         'lab',
