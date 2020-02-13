@@ -1,12 +1,12 @@
-# from pyramid.view import (
-#     view_config,
-# )
-# from pyramid.security import (
-#     Allow,
-#     Deny,
-#     Everyone,
-# )
-# from pyramid.traversal import find_root
+from pyramid.view import (
+    view_config,
+)
+from pyramid.security import (
+    Allow,
+    Deny,
+    Everyone,
+)
+from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
@@ -22,9 +22,9 @@ from pyramid.traversal import (
     resource_path
 )
 import re
-# from snovault.resource_views import item_view_object
-# from snovault.util import expand_path
-# from collections import defaultdict
+from snovault.resource_views import item_view_object
+from snovault.util import expand_path
+from collections import defaultdict
 
 @collection(
     name='surgeries',
@@ -82,6 +82,28 @@ class Surgery(Item):
             "linkTo": "Ihc"
         },
     })
+    # @calculated_property(condition='pathology_report', schema={
+    #     "title": "pathonlogy_report tumor size range",
+    #     "type": "array",
+    #     "items": {
+    #         "type": "string",
+    #     },
+    # })
+    # def tumor_size_range(self, request,pathology_report):
+    #     tumor_size_range = []
+    #     for tumorSize in pathology_report:
+    #         tumorSize = request.embed(tumorSize, '@@object')
+    #         if tumorSize['tumor_size'] < 3:
+    #             tumor_size_range.append("<3cm")
+    #         elif tumorSize['tumor_size'] < 7:
+    #             tumor_size_range.append("3cm-7cm")
+    #         elif tumorSize['tumor_size'] < 10:
+    #             tumor_size_range.append("7cm-10cm")
+    #         else:
+    #             tumor_size_range.append("10cm and up")
+    #     return tumor_size_range
+
+
     def ihc(self, request, ihc):
         return paths_filtered_by_status(request, ihc)
 
@@ -145,3 +167,26 @@ class PathologyReport(Item):
         surgery_uuid = properties['surgery']
         surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()['accession']
         return u'{}-{}'.format(surgery_id, properties['tumor_sequence_number'])
+
+# @view_config(context=Surgery, permission='view', request_method='GET', name='page')
+# def surgery_page_view(context, request):
+#     if request.has_permission('view_details'):
+#         properties = item_view_object(context, request)
+#     else:
+#         item_path = request.resource_path(context)
+#         properties = request.embed(item_path, '@@object')
+#     for path in context.embedded:
+#         expand_path(request, properties, path)
+#     return properties
+
+# @view_config(context=Surgery, permission='view', request_method='GET',
+#              name='object')
+# def surgery_basic_view(context, request):
+#     properties = item_view_object(context, request)
+#     filtered = {}
+#     for key in ['@id', '@type', 'accession', 'uuid', 'date','hospital_location','PathologyReport','SurgeryProcedure','Ihc','tumor_size_range']:
+#         try:
+#             filtered[key] = properties[key]
+#         except KeyError:
+#             pass
+#     return filtered

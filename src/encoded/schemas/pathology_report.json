@@ -407,6 +407,56 @@
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
     },
+
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "status": {
+            "title": "Status"
+        },
+
+        "laterality": {
+            "title": "Laterality"
+        },
+        "tumor_size": {
+            "title": "Tumore Size"
+        },
+        "histology": {
+            "title": "Histologic Subtypes"
+        },
+
+        "focality": {
+            "title": "Focality"
+        },
+        "grade": {
+            "title": "Grade"
+        },
+        "sarcomatoid": {
+            "title": "Sarcomatoid"
+        },
+        "necrosis": {
+            "title": "Tumor Necrosis"
+        },
+        "margins": {
+            "title": "Margins"
+        },
+         "lvi": {
+            "title": "LVI"
+        },
+        "micro_perinephric": {
+            "title": "Perinephric Infiltration"
+        },
+        "micro_vein": {
+            "title": "Renal Vein Involvement (MicroVein)"
+        },
+        "micro_adrenal": {
+            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        }
+
+       
+
+    },
     "boost_values": {
         "histology":1.0,
         "name": 1.0

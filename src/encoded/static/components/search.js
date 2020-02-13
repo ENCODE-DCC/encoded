@@ -589,13 +589,13 @@ class PathologyComponent extends React.Component {
                   <PickerActions {...this.props} />
                   <div className="pull-right search-meta">
                       <p className="type meta-title">Pathology Report</p>
-                      <p className="type">{` ${result.accession}`}</p>
+                      <p className="type">{` ${result.name}`}</p>
                       <Status item={result.status} badgeSize="small" css="result-table__status" />
                       {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                   </div>
                   <div className="accession">
                         <a href={result['@id']}>
-                          {`${result.accession} `}
+                          {`${result.name} `}
                           {/* {`${age}${ageUnits} )`} */}
                         </a>
                   </div>
@@ -622,9 +622,9 @@ PathologyComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
 };
 
-const Pathology_report = auditDecor(PathologyComponent);
+const PathologyReport = auditDecor(PathologyComponent);
 
-globals.listingViews.register(Pathology_report, 'Pathology_report');
+globals.listingViews.register(PathologyReport, 'PathologyReport');
 
 class SurgeryComponent extends React.Component {
     render() {
@@ -649,6 +649,10 @@ class SurgeryComponent extends React.Component {
                   <div className="data-row">
                       <div><strong>Surgery Date: </strong>{result.date}</div>
                       <div><strong>Hospital Location: </strong>{result.hospital_location}</div>
+                      <div><strong>Surgery Procedure Type </strong>{result.surgery_procedure.procedure_type}</div>
+                      {/* <div><strong>surgery_procedure.nephrectomy_details.type: </strong>{result.surgery_procedure.nephrectomy_details.type}</div> */}
+
+
                   </div>
               </div>
               {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}

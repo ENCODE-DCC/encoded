@@ -17,7 +17,7 @@ class PathologyReport extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs
         const crumbs = [
-            { id: 'Pathology_report' },
+            { id: 'PathologyReport' },
             { id: <i>{context.name}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
