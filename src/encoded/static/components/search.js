@@ -579,8 +579,6 @@ globals.listingViews.register(Patient, 'Patient');
 class PathologyComponent extends React.Component {
     render() {
         const result = this.props.context;
-        // const age = (result.patient.age && result.patient.age !== 'unknown') ? ` ${result.patient.age}` : '';
-        // const ageUnits = (result.patient.age_units && result.patient.age_units !== 'unknown' && age) ? ` ${result.patient.age_units}` : '';
         console.log(result);
 
         return (
@@ -596,7 +594,6 @@ class PathologyComponent extends React.Component {
                   <div className="accession">
                         <a href={result['@id']}>
                           {`${result.name} `}
-                          {/* {`${age}${ageUnits} )`} */}
                         </a>
                   </div>
                   <div className="data-row">

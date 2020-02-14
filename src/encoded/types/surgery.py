@@ -25,6 +25,7 @@ import re
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
 from collections import defaultdict
+import math
 
 @collection(
     name='surgeries',
@@ -74,6 +75,171 @@ class Surgery(Item):
     def pathology_report(self, request, pathology_report):
         return paths_filtered_by_status(request, pathology_report)
 
+    @calculated_property(condition='pathology_report', schema={
+        "title": "pathonlogy_report tumor size range",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def tumor_size_range(self, request, pathology_report):
+        
+        for object in pathology_report:
+      
+            tumor_object = request.embed(object, '@@object')
+            tumor_size=tumor_object['tumor_size']
+           
+            tumor_size_range = []
+
+            if 0<=tumor_size<3:
+                tumor_size_range.append("0-3 cm")
+            elif 3<=tumor_size<7:
+               tumor_size_range.append("3-7 cm")
+            elif 7<=tumor_size<10:
+                tumor_size_range.append("7-10 cm")
+            else :
+                tumor_size_range.append("10+ cm")
+        return tumor_size_range
+
+    @calculated_property(condition='pathology_report', schema={
+        "title": "pathonlogy_report pT stage in version 6",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def pT_stage_version6(self, request, pathology_report):
+        
+        for object in pathology_report:
+      
+            pr_object = request.embed(object, '@@object')
+
+            t_stage = pr_object['t_stage']
+            version = pr_object['ajcc_version']
+
+            t_stage_version6 = []
+
+            if t_stage=="pT1a" and version=="6th edition":
+                t_stage_version6.append("1A")
+            elif t_stage=="pT1b" and version=="6th edition":
+                t_stage_version6.append("1B")
+            elif t_stage=="pT2" and version=="6th edition":
+                t_stage_version6.append("2")  
+            elif t_stage=="pT3" and version=="6th edition":
+                t_stage_version6.append("3")
+            elif t_stage=="pT3a" and version=="6th edition":
+                t_stage_version6.append("3A")
+            elif t_stage=="pT3b" and version=="6th edition":
+                t_stage_version6.append("3B")
+            elif t_stage=="pT3c" and version=="6th edition":
+                t_stage_version6.append("3C")  
+            elif t_stage=="pT4" and version=="6th edition":
+                t_stage_version6.append("4")
+            
+        return t_stage_version6
+    
+    @calculated_property(condition='pathology_report', schema={
+        "title": "pathonlogy_report pT stage in version 7",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def pT_stage_version7(self, request, pathology_report):
+        
+        for object in pathology_report:
+      
+            pr_object = request.embed(object, '@@object')
+
+            t_stage = pr_object['t_stage']
+            version = pr_object['ajcc_version']
+
+            t_stage_version7 = []
+
+            if t_stage=="pT1a" and version=="7th edition":
+                t_stage_version7.append("1A")
+            elif t_stage=="pT1b" and version=="7th edition":
+                t_stage_version7.append("1B")
+            elif t_stage=="pT2a" and version=="7th edition":
+                t_stage_version7.append("2A") 
+            elif t_stage=="pT2b" and version=="7th edition":
+                t_stage_version7.append("2B")  
+            elif t_stage=="pT3a" and version=="7th edition":
+                t_stage_version7.append("3A")
+            elif t_stage=="pT3b" and version=="7th edition":
+                t_stage_version7.append("3B")
+            elif t_stage=="pT3c" and version=="7th edition":
+                t_stage_version7.append("3C")  
+            elif t_stage=="pT4" and version=="7th edition":
+                t_stage_version7.append("4")
+            
+        return t_stage_version7
+
+    @calculated_property(condition='pathology_report', schema={
+        "title": "pathonlogy_report pTNM stage in version 6",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def pTNM_stage_version6(self, request, pathology_report):
+        
+        for object in pathology_report:
+      
+            pr_object = request.embed(object, '@@object')
+
+            tnm_stage = pr_object['ajcc_tnm_stage']
+            version = pr_object['ajcc_version']
+
+            tnm_stage_version6 = []
+
+            if tnm_stage=="1" and version=="6th edition":
+                tnm_stage_version6.append("1")
+            elif tnm_stage=="2" and version=="6th edition":
+                tnm_stage_version6.append("2")
+            elif tnm_stage=="3" and version=="6th edition":
+                tnm_stage_version6.append("3") 
+            elif tnm_stage=="4" and version=="6th edition":
+                tnm_stage_version6.append("4")  
+            
+        return tnm_stage_version6
+
+    @calculated_property(condition='pathology_report', schema={
+        "title": "pathonlogy_report pTNM stage in version 6",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def pTNM_stage_version7(self, request, pathology_report):
+        
+        for object in pathology_report:
+      
+            pr_object = request.embed(object, '@@object')
+
+            tnm_stage = pr_object['ajcc_tnm_stage']
+            version = pr_object['ajcc_version']
+
+            tnm_stage_version7 = []
+
+            if tnm_stage=="1" and version=="7th edition":
+                tnm_stage_version7.append("1")
+            elif tnm_stage=="2" and version=="7th edition":
+                tnm_stage_version7.append("2")
+            elif tnm_stage=="3" and version=="7th edition":
+                tnm_stage_version7.append("3") 
+            elif tnm_stage=="4" and version=="7th edition":
+                tnm_stage_version7.append("4")  
+            
+        return tnm_stage_version7
+
+    
+
     @calculated_property(schema={
         "title": "ihc link PR",
         "type": "array",
@@ -82,41 +248,12 @@ class Surgery(Item):
             "linkTo": "Ihc"
         },
     })
-    # @calculated_property(condition='pathology_report', schema={
-    #     "title": "pathonlogy_report tumor size range",
-    #     "type": "array",
-    #     "items": {
-    #         "type": "string",
-    #     },
-    # })
-    # def tumor_size_range(self, request,pathology_report):
-    #     tumor_size_range = []
-    #     for tumorSize in pathology_report:
-    #         tumorSize = request.embed(tumorSize, '@@object')
-    #         if tumorSize['tumor_size'] < 3:
-    #             tumor_size_range.append("<3cm")
-    #         elif tumorSize['tumor_size'] < 7:
-    #             tumor_size_range.append("3cm-7cm")
-    #         elif tumorSize['tumor_size'] < 10:
-    #             tumor_size_range.append("7cm-10cm")
-    #         else:
-    #             tumor_size_range.append("10cm and up")
-    #     return tumor_size_range
-
+   
 
     def ihc(self, request, ihc):
         return paths_filtered_by_status(request, ihc)
 
-@collection(
-    name='PR_ihc',
-    properties={
-        'title': 'PR-ihc linked',
-        'description': 'PR-ihc results pages',
-    })
-class Ihc(Item):
-    item_type = 'ihc'
-    schema = load_schema('encoded:schemas/ihc.json')
-    embeded = []
+
 
 @collection(
     name='surgery-procedures',
@@ -129,6 +266,16 @@ class SurgeryProcedure(Item):
     schema = load_schema('encoded:schemas/surgery_procedure.json')
     embeded = []
 
+@collection(
+    name='PR_ihc',
+    properties={
+        'title': 'PR-ihc linked',
+        'description': 'PR-ihc results pages',
+    })
+class Ihc(Item):
+    item_type = 'ihc'
+    schema = load_schema('encoded:schemas/ihc.json')
+    embeded = []
 
 @collection(
     name='pathology-reports',
@@ -167,6 +314,14 @@ class PathologyReport(Item):
         surgery_uuid = properties['surgery']
         surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()['accession']
         return u'{}-{}'.format(surgery_id, properties['tumor_sequence_number'])
+        
+
+
+
+# @property
+# def __name__(self):
+#     return self.name()
+
 
 # @view_config(context=Surgery, permission='view', request_method='GET', name='page')
 # def surgery_page_view(context, request):
@@ -184,7 +339,7 @@ class PathologyReport(Item):
 # def surgery_basic_view(context, request):
 #     properties = item_view_object(context, request)
 #     filtered = {}
-#     for key in ['@id', '@type', 'accession', 'uuid', 'date','hospital_location','PathologyReport','SurgeryProcedure','Ihc','tumor_size_range']:
+#     for key in ['@id', '@type', 'accession', 'uuid', 'date','pT_stage_version6','pT_stage_version7''pTNM_stage_version6','pTNM_stage_version7''hospital_location','PathologyReport','SurgeryProcedure','Ihc','tumor_size_range']:
 #         try:
 #             filtered[key] = properties[key]
 #         except KeyError:

@@ -153,9 +153,7 @@
         "biospecimen.distributed": {
             "title": "Biospecimen Distribution Status"
         },
-        "surgery_summary": {
-            "title": "Surgery Treatment Status"
-        },
+       
         "status": {
             "title": "Status"
         }
@@ -194,7 +192,7 @@
         "radiation.treatment_intention": 1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "medications.name":1.0,
+        "medications.name":1.0
 
 
         },
