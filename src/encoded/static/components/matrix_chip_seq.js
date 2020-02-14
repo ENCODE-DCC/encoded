@@ -307,12 +307,16 @@ class ChIPSeqMatrixTextFilter extends TextFilter {
     }
 
     render() {
+        const filterText = this.state.searchOption === 'biosample' ?
+            'Enter any text string such as lung or musc or H9 to filter biosample' :
+            'Enter any text string such as ac or H3 to filter ChIP target';
+
         return (
             <div className="facet chip_seq_matrix-search">
                 <input
                     type="search"
                     className="search-query"
-                    placeholder="Filter terms"
+                    placeholder={filterText}
                     defaultValue={this.getValue(this.props)}
                     onKeyDown={this.onKeyDown}
                     data-test="filter-search-box"
