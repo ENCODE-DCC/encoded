@@ -1,5 +1,36 @@
 Changes
 =======
+v96.0 (released) snovault 1.0.40
+---------------------------------------
+1.	ENCD-5089-add-back-account-creation-msg (#3139)
+2.	ENCD-5088-graphlib-crash (#3137)
+3.	ENCD-5086-remove-chip-seq-matrix-from-menu (#3136)
+4.	ENCD-5047-no-dependencies-output-types (#3135)
+5.	ENCD-4943-fix-bad-ancient-URL-forwards (#3129)
+6.	ENCD-5049 add MINT mixture to library object (#3132)
+7.	ENCD-5056-computation-model-object (#3128)
+8.	ENCD-5037-valis-library-update (#3119)
+9.	ENCD-5026 toolbar updates (#3133)
+10.	ENCD-5057-add-experiment-audit-for-no-processed-data (#3126)
+11.	ENCD-5078-fcc-insert (#3134)
+12.	ENCD-5068-update-regex-pattern-for-IHEC-dbxref (#3123)
+13.	ENCD-4172 improved PublicationData embedding (#3130)
+14.	ENCD-4975-three-library-properties-restricted-to-enum (#3108)
+15.	ENCD-5054-revise-biosample-search-result-link-age-display (#3118)
+16.	ENCD-5065-account-creation-error-msg (#3110)
+17.	ENCD-5050-nanopore-file-dependency (#3121)
+18.	ENCD-5032 add reset to genome browser (#3106)
+19.	ENCD-5020-create-account-on-any-page (#3112)
+20.	ENCD-5022-ENTEx-updates (#3122)
+21.	ENCD-5053-Display target_expression_percentile (#3127)
+22.	ENCD-4948 Facet registry (#3120)
+23.	ENCD-4936-add-location-to-gene (#3083)
+24.	ENCD-5043-add-icLASER-assay (#3115)
+25.	ENCD-5055-update-audit-detail-insufficient-read-length-rna (#3116)
+26.	ENCD-5025-create-account-created-messagebox (#3107)
+27.	ENCD-5048 annotation schema change for FCC controls (#3114)
+28.	ENCD-5066-calculate-s3-uri-for-all-files (#3117)
+
 v95.0 (released) snovault 1.0.40
 ---------------------------------------
 1.	ENCD-5064 update the detail message in "inconsistent genetic modification tags" audit (#3113)
