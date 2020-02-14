@@ -44,3 +44,4 @@
 .pyvenv/
 .ssh/
 .config/
+*initial-indexing-times.json
