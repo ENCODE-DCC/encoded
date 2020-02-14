@@ -16,7 +16,6 @@ if ('NodeList' in window && !NodeList.prototype.forEach) {
     };
 }
 
-
 // Read and clear stats cookie
 var cookie = require('js-cookie');
 window.stats_cookie = cookie.get('X-Stats') || '';
