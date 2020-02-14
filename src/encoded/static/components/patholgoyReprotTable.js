@@ -3,22 +3,17 @@ import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 
-import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 
 class PathologyReportTable extends React.Component {
     constructor(props) {
         super(props);
         this.filteredData = [];
         this.tableId = [];
-        // this.transformData = [];
     }
 
     filterData() {
         this.filteredData = this.props.data;
-        console.log(this.filteredData);
-        // this.filteredData.filter(i => i.patholgogy_report);
-        // this.tableId=[];
+       
 
         for (let i = 0; i < this.filteredData.length; i++) {
             let tableTitle = this.props.tableTitle + "Tumor information" + " " + (i + 1);
@@ -157,13 +152,6 @@ class PathologyReportTable extends React.Component {
                                 </div>}
                             </dl>
                         </PanelBody>
-                  
-                    {/* { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
-    
-                    {false &&
-                        <div>
-                            {PanelLookup({ context: context.patient, Pathology_report: context })}
-                        </div>} */}
                 </div >
                 )
 
@@ -172,14 +160,6 @@ class PathologyReportTable extends React.Component {
         }
     }
 
-    // renderData() {
-    //     return (
-    //         <div>
-    //             <div> {this.props.tableTitle}</div>
-    //             {/* <div>{this.filteredData[i][0]}</div> */}
-    //         </div>);
-
-    // }
 
     render() {
         return (
@@ -196,7 +176,6 @@ class PathologyReportTable extends React.Component {
 
     componentDidMount() {
         this.filterData();
-        // this.renderData();
     }
 
 

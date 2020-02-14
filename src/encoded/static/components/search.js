@@ -579,7 +579,6 @@ globals.listingViews.register(Patient, 'Patient');
 class PathologyComponent extends React.Component {
     render() {
         const result = this.props.context;
-        console.log(result);
 
         return (
           <li>
@@ -626,7 +625,6 @@ globals.listingViews.register(PathologyReport, 'PathologyReport');
 class SurgeryComponent extends React.Component {
     render() {
         const result = this.props.context;
-        console.log(result);
         return (
           <li>
               <div className="clearfix">
@@ -677,7 +675,6 @@ globals.listingViews.register(Surgery, 'Surgery');
 class BiofileComponent extends React.Component {
     render() {
         const result = this.props.context;
-        console.log(result);
         return (
           <li>
               <div className="clearfix">

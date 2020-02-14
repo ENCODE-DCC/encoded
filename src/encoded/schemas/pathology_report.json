@@ -372,22 +372,7 @@
         "status": {
             "title": "Status"
         },
-        "surgery.tumor_size_range": {
-            "title": "Tumor Size"
-        },
-        "surgery.pT_stage_version6": {
-            "title": "pT 6th edition"
-        },
-        "surgery.pT_stage_version7": {
-            "title": "pT 7th edition"
-        },
-        
-        "surgery.pTNM_stage_version6": {
-            "title": "TNM Stage 6th edition"
-        },
-        "surgery.pTNM_stage_version7": {
-            "title": "TNM Stage 7th edition"
-        },
+       
         "laterality": {
             "title": "Laterality"
         },
@@ -428,7 +413,7 @@
     },
 
     "columns": {
-        "accession": {
+        "name": {
             "title": "Accession"
         },
         "status": {
