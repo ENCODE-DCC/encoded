@@ -86,24 +86,27 @@
                     "ccRCC",
                     "ChRCC",
                     "ChRCC, hybrid type",
-                    "Collecting ducts of Bellini",
+                    "collecting duct carcinoma(CDC)",
                     "Cystic nephroma",
                     "HLRCC",
                     "Leiomyoma",
                     "Metanephric adenoma",
                     "Mucinous tubular and spindle cell carcinoma",
-                    "Multilocular ccRCC",
+                    "multilocular cystic renal neoplasm of low malignant potential",
                     "PRCC",
                     "Renal medullary carcinoma",
                     "RO",
                     "RON",
-                    "RON, favor ChRCC",
-                    "RON, favor RO",
+                    "RON,favor ChRCC",
+                    "RON,favor RO",
+                    "Sarcomatoid,NOS",
                     "Sarcoma",
-                    "Sarcomatoid",
-                    "tRCC",
+                    "MiT family translocation RCC",
                     "Tubulocystic RCC",
-                    "Unclassified"
+                    "Unclassified",
+                    "Nephroblastoma(Wilms tumor)",
+                    "Soft tissue neoplasm, NOS",
+                    "SDH deficient RCC"
                 ]
         },
         "sarcomatoid": {
@@ -369,6 +372,22 @@
         "status": {
             "title": "Status"
         },
+        "surgery.tumor_size_range": {
+            "title": "Tumor Size"
+        },
+        "surgery.pT_stage_version6": {
+            "title": "pT 6th edition"
+        },
+        "surgery.pT_stage_version7": {
+            "title": "pT 7th edition"
+        },
+        
+        "surgery.pTNM_stage_version6": {
+            "title": "TNM Stage 6th edition"
+        },
+        "surgery.pTNM_stage_version7": {
+            "title": "TNM Stage 7th edition"
+        },
         "laterality": {
             "title": "Laterality"
         },
@@ -458,7 +477,17 @@
 
     },
     "boost_values": {
-        "histology":1.0,
+        "laterality":1.0, 
+        "histology": 1.0,
+        "focality": 1.0,
+        "grade": 1.0,
+        "sarcomatoid":1.0,
+        "necrosis": 1.0,
+        "margins": 1.0,
+        "lvi": 1.0,
+        "micro_perinephric":1.0,
+        "micro_vein": 1.0,
+        "micro_adrenal": 1.0,
         "name": 1.0
     },
     "changelog": "/profiles/changelogs/pathology_report.md"

@@ -133,10 +133,10 @@
             "title": "Nephrectomy Robotic Assist"
         },
         "ihc.antibody": {
-            "title": "IHC Assay Staining Antibody"
+            "title": "IHC/FISH (Clinical lab)"
         },
         "ihc.result": {
-            "title": "IHC Assay Staining Result"
+            "title": "IHC/FISH results"
         },
         "biospecimen.collection_type": {
               "title": "Biospecimen Collection Type"

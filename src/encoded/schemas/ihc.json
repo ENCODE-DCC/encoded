@@ -99,16 +99,17 @@
                 "Positive",
                 "Negative",
                 "Rare Focal Positive",
-                "Focal Negative"
+                "Focal Loss"
+
             ]
         }
     },
     "facets": {
         "antibody": {
-            "title": "IHC assay staining antibody"
+            "title": "IHC/FISH (Clinical lab)"
         },
         "result": {
-            "title": "IHC assay staining result"
+            "title": "IHC/FISH results"
         }
     },
    

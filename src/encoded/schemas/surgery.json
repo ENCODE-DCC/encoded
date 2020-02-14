@@ -76,7 +76,7 @@
             "title": "Nephrectomy Robotic Assist"
         },
         "tumor_size_range": {
-            "title": "Tumor Size Range"
+            "title": "Tumor Size"
         },
         "pT_stage_version6": {
             "title": "pT 6th edition"
@@ -126,7 +126,6 @@
         "pathology_report.micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
-      
     },
     "columns": {
         "accession": {
@@ -146,13 +145,79 @@
         },
         "surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
+        },
+        "tumor_size_range": {
+            "title": "Tumor Size"
+        },
+        "pT_stage_version6": {
+            "title": "pT 6th edition"
+        },
+        "pT_stage_version7": {
+            "title": "pT 7th edition"
+        },
+        
+        "pTNM_stage_version6": {
+            "title": "TNM Stage 6th edition"
+        },
+        "pTNM_stage_version7": {
+            "title": "TNM Stage 7th edition"
+        },
+        "pathology_report.laterality": {
+            "title": "Laterality"
+        },
+       
+        "pathology_report.histology": {
+            "title": "Histologic Subtypes"
+        },
+
+        "pathology_report.focality": {
+            "title": "Focality"
+        },
+        "pathology_report.grade": {
+            "title": "Grade"
+        },
+        "pathology_report.sarcomatoid": {
+            "title": "Sarcomatoid"
+        },
+        "pathology_report.necrosis": {
+            "title": "Tumor Necrosis"
+        },
+        "pathology_report.margins": {
+            "title": "Margins"
+        },
+         "pathology_report.lvi": {
+            "title": "LVI"
+        },
+        "pathology_report.micro_perinephric": {
+            "title": "Perinephric Infiltration"
+        },
+        "pathology_report.micro_vein": {
+            "title": "Renal Vein Involvement (MicroVein)"
+        },
+        "pathology_report.micro_adrenal": {
+            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
 
     },
     "boost_values": {
-        "patient": 1.0,
         "accession": 1.0,
-        "surgery_procedure.procedure_type": 1.0
+        "surgery_procedure.procedure_type": 1.0,
+        "tumor_size_range": 1.0,
+        "pT_stage_version6": 1.0,
+        "pT_stage_version7": 1.0,
+        "pTNM_stage_version6": 1.0,
+        "pTNM_stage_version7": 1.0,
+        "pathology_report.laterality":1.0, 
+        "pathology_report.histology": 1.0,
+        "pathology_report.focality": 1.0,
+        "pathology_report.grade": 1.0,
+        "pathology_report.sarcomatoid":1.0,
+        "pathology_report.necrosis": 1.0,
+        "pathology_report.margins": 1.0,
+        "pathology_report.lvi": 1.0,
+        "pathology_report.micro_perinephric":1.0,
+        "pathology_report.micro_vein": 1.0,
+        "pathology_report.micro_adrenal": 1.0
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }
