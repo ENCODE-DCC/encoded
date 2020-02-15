@@ -1,5 +1,6 @@
 from snovault import upgrade_step
 
+
 @upgrade_step('functional_characterization_experiment', '2', '3')
 def functional_characterization_experiment_2_3(value, system):
     # http://encodedcc.atlassian.net/browse/ENCD-5081

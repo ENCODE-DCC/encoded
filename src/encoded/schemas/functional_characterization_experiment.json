@@ -93,7 +93,7 @@
             ]
         },
         "plasmids_library_type": {
-            "comment": "Only pooled clone sequecing experiments can have plasmids_library_type specified.",
+            "comment": "Only pooled clone sequencing experiments can have plasmids_library_type specified.",
             "properties": {
                 "assay_term_name": {
                     "enum": ["pooled clone sequencing"]
