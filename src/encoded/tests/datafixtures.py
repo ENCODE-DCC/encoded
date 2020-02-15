@@ -337,6 +337,17 @@ def base_fcc_experiment(testapp, lab, award, heart):
 
 
 @pytest.fixture
+def pce_fcc_experiment(testapp, lab, award):
+        return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'pooled clone sequencing',
+        'schema_version': '2',
+        'status': 'in progress'
+    }
+
+
+@pytest.fixture
 def experiment_with_RNA_library(
     testapp,
     base_experiment,
@@ -346,6 +357,7 @@ def experiment_with_RNA_library(
     testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     return testapp.get(base_experiment['@id'] + '@@index-data')
+
 
 @pytest.fixture
 def micro_rna_experiment(
