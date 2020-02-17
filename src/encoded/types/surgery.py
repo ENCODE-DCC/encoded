@@ -1,12 +1,12 @@
-from pyramid.view import (
-    view_config,
-)
-from pyramid.security import (
-    Allow,
-    Deny,
-    Everyone,
-)
-from pyramid.traversal import find_root
+# from pyramid.view import (
+#     view_config,
+# )
+# from pyramid.security import (
+#     Allow,
+#     Deny,
+#     Everyone,
+# )
+# from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
@@ -14,7 +14,7 @@ from snovault import (
 )
 from .base import (
     Item,
-    SharedItem,
+    # SharedItem,
     paths_filtered_by_status,
 )
 from pyramid.traversal import (
@@ -22,10 +22,9 @@ from pyramid.traversal import (
     resource_path
 )
 import re
-from snovault.resource_views import item_view_object
-from snovault.util import expand_path
-from collections import defaultdict
-import math
+# from snovault.resource_views import item_view_object
+# from snovault.util import expand_path
+# from collections import defaultdict
 
 @collection(
     name='surgeries',
@@ -316,32 +315,3 @@ class PathologyReport(Item):
         return u'{}-{}'.format(surgery_id, properties['tumor_sequence_number'])
         
 
-
-
-# @property
-# def __name__(self):
-#     return self.name()
-
-
-# @view_config(context=Surgery, permission='view', request_method='GET', name='page')
-# def surgery_page_view(context, request):
-#     if request.has_permission('view_details'):
-#         properties = item_view_object(context, request)
-#     else:
-#         item_path = request.resource_path(context)
-#         properties = request.embed(item_path, '@@object')
-#     for path in context.embedded:
-#         expand_path(request, properties, path)
-#     return properties
-
-# @view_config(context=Surgery, permission='view', request_method='GET',
-#              name='object')
-# def surgery_basic_view(context, request):
-#     properties = item_view_object(context, request)
-#     filtered = {}
-#     for key in ['@id', '@type', 'accession', 'uuid', 'date','pT_stage_version6','pT_stage_version7''pTNM_stage_version6','pTNM_stage_version7''hospital_location','PathologyReport','SurgeryProcedure','Ihc','tumor_size_range']:
-#         try:
-#             filtered[key] = properties[key]
-#         except KeyError:
-#             pass
-#     return filtered
