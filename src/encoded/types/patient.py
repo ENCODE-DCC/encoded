@@ -363,14 +363,6 @@ class Patient(Item):
                     surgery_summary = "No Treatment Received"
             return surgery_summary
 
-
-            if nephr_robotic_assist is True :
-                robotic_assist_type.append("True")
-            else : 
-                robotic_assist_type.append("False")
-            
-        return robotic_assist_type
-        
 @collection(
     name='lab-results',
     properties={

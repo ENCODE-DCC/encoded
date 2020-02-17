@@ -67,8 +67,8 @@ class Surgery(Item):
       
             sp_object = request.embed(object, '@@object')
 
-            nephr_robotic_assist1 = sp_object['nephrectomy_details']
-            nephr_robotic_assist = nephr_robotic_assist1['robotic_assist']
+            nephr_robotic_assist = sp_object['nephrectomy_details']['robotic_assist']
+            # nephr_robotic_assist = nephr_robotic_assist1['robotic_assist']
 
             robotic_assist_type = []
 
