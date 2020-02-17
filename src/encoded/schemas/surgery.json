@@ -72,8 +72,8 @@
         "surgery_procedure.nephrectomy_details.approach": {
             "title": " Nephrectomy Approach"
         },
-        "surgery_procedure.nephrectomy_details.robotic_assist": {
-            "title": "Nephrectomy Robotic Assist"
+        "nephr_robotic_assist":{
+            "title":"Nephrectomy Robotic Assist"
         },
         "tumor_size_range": {
             "title": "Tumor Size"

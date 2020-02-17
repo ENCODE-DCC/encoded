@@ -1,12 +1,4 @@
-# from pyramid.view import (
-#     view_config,
-# )
-# from pyramid.security import (
-#     Allow,
-#     Deny,
-#     Everyone,
-# )
-# from pyramid.traversal import find_root
+
 from snovault import (
     calculated_property,
     collection,
@@ -22,9 +14,7 @@ from pyramid.traversal import (
     resource_path
 )
 import re
-# from snovault.resource_views import item_view_object
-# from snovault.util import expand_path
-# from collections import defaultdict
+
 
 @collection(
     name='surgeries',
@@ -62,6 +52,32 @@ class Surgery(Item):
     })
     def surgery_procedure(self, request, surgery_procedure):
         return paths_filtered_by_status(request, surgery_procedure)
+
+    @calculated_property(condition='surgery_procedure', schema={
+        "title": "surgery procesure nephrectomy robotic assist",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def nephr_robotic_assist(self, request, surgery_procedure):
+        
+        for object in surgery_procedure:
+      
+            sp_object = request.embed(object, '@@object')
+
+            nephr_robotic_assist1 = sp_object['nephrectomy_details']
+            nephr_robotic_assist = nephr_robotic_assist1['robotic_assist']
+
+            robotic_assist_type = []
+
+            if nephr_robotic_assist is True :
+                robotic_assist_type.append("True")
+            else : 
+                robotic_assist_type.append("False")
+            
+        return robotic_assist_type
 
     @calculated_property(schema={
         "title": "Pathology Report",
@@ -208,7 +224,7 @@ class Surgery(Item):
         return tnm_stage_version6
 
     @calculated_property(condition='pathology_report', schema={
-        "title": "pathonlogy_report pTNM stage in version 6",
+        "title": "pathonlogy_report pTNM stage in version 7",
         "type": "array",
         "items": {
             "type": "string",
