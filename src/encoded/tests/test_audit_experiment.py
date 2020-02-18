@@ -3819,7 +3819,6 @@ def test_audit_experiment_mixed_queried_RNP_size_range(
     testapp.patch_json(library_1['@id'], {'queried_RNP_size_range': '150-200'})
     testapp.patch_json(library_2['@id'], {'queried_RNP_size_range': '200-400'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    print(res.text)
     assert any(error['category'] == 'mixed queried_RNP_size_range'
                for error in collect_audit_errors(res))
 
