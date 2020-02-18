@@ -114,6 +114,13 @@ const AnnotationComponent = (props, reactContext) => {
                                 <dd>{context.accession}</dd>
                             </div>
 
+                            {context.assay_term_name ?
+                            <div data-test="assaytermname">
+                                <dt>Assay</dt>
+                                <dd>{context.assay_term_name}</dd>
+                            </div>
+                            : null}
+
                             {context.description ?
                                 <div data-test="description">
                                     <dt>Description</dt>
@@ -152,10 +159,17 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
-                            {context.target ?
-                                <div data-test="target">
+                            {context.targets && context.targets.length > 0 ?
+                                <div data-test="targets">
                                     <dt>Target</dt>
-                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                    <dd>
+                                        {context.targets.map((target, i) =>
+                                            <span>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={target['@id']}>{target.label}</a>
+                                            </span>
+                                        )}
+                                    </dd>
                                 </div>
                             : null}
 

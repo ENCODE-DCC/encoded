@@ -236,9 +236,6 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "target.@id":{
-            "title": "@id"
-        },
         "targets.investigated_as": {
             "title": "Target category"
         },
