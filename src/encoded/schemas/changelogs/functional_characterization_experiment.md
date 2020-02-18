@@ -1,5 +1,9 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Schema version 4
+
+* Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
+
 ### Schema version 3
 
 * Added *elements_cloning* property.

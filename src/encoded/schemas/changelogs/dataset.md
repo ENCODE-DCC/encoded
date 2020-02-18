@@ -1,5 +1,9 @@
 ## Changelog for dataset.json
 
+### Schema version 15
+
+* Update the dbxref regex to remove IHEC; IHEC is explicitly allowed only in Annotation and ReferenceEpigenome objects
+
 ### Schema version 14
 
 * Update IHEC dbxref regex to remove version number
