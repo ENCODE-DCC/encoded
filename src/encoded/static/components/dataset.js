@@ -297,13 +297,6 @@ const PublicationDataComponent = (props, reactContext) => {
                                 <dd><Status item={context} inline /></dd>
                             </div>
 
-                            {context.assay_term_name && context.assay_term_name.length > 0 ?
-                                <div data-test="assaytermname">
-                                    <dt>Assay(s)</dt>
-                                    <dd>{context.assay_term_name.join(', ')}</dd>
-                                </div>
-                            : null}
-
                             <div data-test="accession">
                                 <dt>Accession</dt>
                                 <dd>{context.accession}</dd>
@@ -313,20 +306,6 @@ const PublicationDataComponent = (props, reactContext) => {
                                 <div data-test="description">
                                     <dt>Description</dt>
                                     <dd>{context.description}</dd>
-                                </div>
-                            : null}
-
-                            {context.biosample_ontology && context.biosample_ontology.length > 0 ?
-                                <div data-test="biosampletermname">
-                                    <dt>Biosample term name</dt>
-                                    <dd>{_.uniq(context.biosample_ontology.map(b => b.term_name)).join(', ')}</dd>
-                                </div>
-                            : null}
-
-                            {context.biosample_ontology && context.biosample_ontology.length > 0 ?
-                                <div data-test="biosampletype">
-                                    <dt>Biosample type</dt>
-                                    <dd>{_.uniq(context.biosample_ontology.map(b => b.classification)).join(', ')}</dd>
                                 </div>
                             : null}
 
