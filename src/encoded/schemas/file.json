@@ -422,6 +422,21 @@
                     ]
                 },
                 {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["subreads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            ]
+                        }
+                    }
+                },
+                {
                     "required": ["restriction_enzymes"],
                     "properties": {
                         "output_type": {
@@ -441,7 +456,7 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads"]
                             }
                         }
                     }
@@ -450,29 +465,16 @@
         },
         "assembly": {
             "not": {
-                "anyOf": [
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["index reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["rejected reads"]
-                            }
-                        }
+                "properties": {
+                    "output_type": {
+                        "enum": [
+                            "reads",
+                            "index reads",
+                            "rejected reads",
+                            "subreads"
+                        ]
                     }
-                ]
+                }
             }
         },
         "platform": {
@@ -577,6 +579,30 @@
                                         "idx"
                                     ]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "output_type": {
+                                        "enum": ["subreads"]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
                             }
                         },
                         {

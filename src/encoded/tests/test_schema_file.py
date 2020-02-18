@@ -308,6 +308,23 @@ def file_no_runtype_readlength(testapp, experiment, award, lab, replicate, platf
     return item
 
 
+@pytest.fixture
+def file_subreads(testapp, experiment, award, lab, replicate, platform3):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 5768,
+        'platform': platform3['@id'],
+        'award': award['@id'],
+        'file_format': 'bam',
+        'md5sum': '0adb8693a743723d8a7882b5e9261b98',
+        'output_type': 'subreads',
+        'status': 'in progress'
+    }
+    return item
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -531,3 +548,9 @@ def test_no_runtype_readlength_dependency(testapp, file_no_runtype_readlength, p
     testapp.post_json('/file', file_no_runtype_readlength, status=422)
     file_no_runtype_readlength.update({'platform': platform4['@id']})
     testapp.post_json('/file', file_no_runtype_readlength, status=201)
+
+
+def test_subreads_bam(testapp, file_subreads):
+    res = testapp.post_json('/file', file_subreads, expect_errors=False)
+    print(res)
+    assert res.status_code == 201
