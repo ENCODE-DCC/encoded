@@ -24,16 +24,17 @@ class SurgeryChart extends React.Component {
         var nephDataPoints = [];
         var ablaDataPoints = [];
         var metDataPoints = [];
+        console.log(this.props.data);
         this.props.data.forEach((i) => {
           i.surgery_procedure.forEach((surgery_procedure) => {
               if (surgery_procedure.procedure_type === "Nephrectomy") {
                 nephDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location, "nephrectomy_details": surgery_procedure.nephrectomy_details})
               }
               else if (surgery_procedure.procedure_type === "Ablation") {
-                nephDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
+                ablaDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
               }
               else if (surgery_procedure.procedure_type === "Metastectomy") {
-                nephDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
+                metDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
               }
             })
           });
@@ -46,6 +47,9 @@ class SurgeryChart extends React.Component {
 
         //metDataPoints = this.props.data.filter(i => { return i.surgery_procedure.procedure_type === "Metastectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_procedure.procedure_type, i.hospital_location] });
         metDataPoints.sort((a, b) => a[0] - b[0]);
+          console.log(nephDataPoints);
+          console.log(ablaDataPoints);
+          console.log(metDataPoints);
 
         let sortedDateUnix = [];
         sortedDateUnix = this.props.data.map(i => { return Date.parse(i.date) });
