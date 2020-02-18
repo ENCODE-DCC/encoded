@@ -26,7 +26,7 @@ from .shared_calculated_properties import (
 )
 
 from .assay_data import assay_terms
-
+from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 @collection(
     name='experiments',
@@ -176,6 +176,45 @@ class Experiment(Dataset,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Protein tags",
+        "description": "The protein tags introduced through the genetic modifications of biosamples investigated in the experiment.",
+        "type": "array",
+        "notSubmittable": True,
+        "items": {
+            "title": "Protein tag",
+            "description": "The protein tag introduced in the modification.",
+            "comment": "See genetic_modification.json for available identifiers.",
+            "type": "object",
+            "linkTo": "GeneticModification"
+        }
+    })
+    def protein_tags(self, request, replicates=None):
+        protein_tags = None
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        genetic_modifications = biosampleObject.get('applied_modifications')
+                        if genetic_modifications:
+                            for gm in genetic_modifications:
+                                gm_object = request.embed(gm, '@@object')
+                                if gm_object.get('introduced_tags'):
+                                    protein_tags = []
+                                    for tag in gm_object.get('introduced_tags'):
+                                        tag_dict = {'location': tag['location'], 'name': tag['name']}
+                                        protein_tags.append(tag_dict)
+        return protein_tags
 
     matrix = {
         'y': {
