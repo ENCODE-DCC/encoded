@@ -212,6 +212,9 @@
         "annotation_type": {
             "title": "Annotation type"
         },
+        "assay_term_name": {
+            "title": "Assay name"
+        },
         "files.file_type": {
             "title": "Available file types"
         },
@@ -232,6 +235,9 @@
         },
         "organism.scientific_name": {
             "title": "Organism"
+        },
+        "target.@id":{
+            "title": "@id"
         },
         "targets.investigated_as": {
             "title": "Target category"
