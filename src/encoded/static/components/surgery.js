@@ -6,7 +6,6 @@ import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
-// import PathologyReport from './pathology_report';
 import PathologyReportTable from './patholgoyReprotTable';
 import IHCTable from './ihcTable';
 
@@ -19,18 +18,13 @@ class Surgery extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        // Set up breadcrumbs
+
         const crumbs = [
             { id: 'Surgeries' },
             { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
-        console.log(context);
-        // console.log(context.pathology_report);
-        // Get procedure_type
-        //surgeryTypes = surgeryTypes.concat(context.surgery_procedure.procedure_type);
 
-        //list single page of Surgery View.
        
         let hasPathology=false;
         let hasIHC=false;
@@ -43,14 +37,6 @@ class Surgery extends React.Component {
             hasIHC = true;
           }
       
-        //   const pathologyPanelBody = (
-        //     <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report Details" ></PathologyReportTable>
-        //   );
-        
-        
-        // const pathologyPanelBody = (
-        //     <PathologyReport data={this.props.context} chartTitle="Pathology Report Details" ></PathologyReport>
-        //   );
          return (
             <div className={itemClass}>
                 <header className="row">
@@ -99,12 +85,12 @@ class Surgery extends React.Component {
 }
 /* eslint-enable react/prefer-stateless-function */
 
-// Surgery.propTypes = {
-//     context: PropTypes.object, // Target object to display
-//   };
+Surgery.propTypes = {
+    context: PropTypes.object, // Target object to display
+  };
 
-// Surgery.defaultProps = {
-//   context: null,
-// };
+Surgery.defaultProps = {
+  context: null,
+};
 
-// globals.contentViews.register(Surgery, 'Surgery');
+globals.contentViews.register(Surgery, 'Surgery');
