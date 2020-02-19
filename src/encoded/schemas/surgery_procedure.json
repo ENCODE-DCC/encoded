@@ -72,7 +72,8 @@
             "enum": [
                     "Ablation",
                     "Nephrectomy",
-                    "Metastectomy"
+                    "Metastectomy",
+                    "Biopsy"
                 ]
         },
         "nephrectomy_details": {
