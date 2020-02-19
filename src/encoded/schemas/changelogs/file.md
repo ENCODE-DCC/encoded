@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 18
+* Added dependency restrictions for files of *output_type* subreads, preventing specification of *assembly* and requiring that *platform* be one of the Pacific Biosciences platforms.
+
 ### Schema version 17
 * Added Oxford Nanopore platforms, MinION and PromethION to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on Oxford Nanopore and PacBio platforms.
 
