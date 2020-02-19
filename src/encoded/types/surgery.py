@@ -50,7 +50,7 @@ class Surgery(Item):
         schema={
             "title": "surgery procedure nephrectomy robotic assist",
             "type": "array",
-            "items": {"type": "string",},
+            "items": {"type": "string"},
         },
     )
     def nephr_robotic_assist(self, request, surgery_procedure):

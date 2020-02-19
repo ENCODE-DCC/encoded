@@ -129,9 +129,11 @@
         "surgery.surgery_procedure.nephrectomy_details.approach": {
             "title": "Nephrectomy Approach"
         },
-        "surgery.surgery_procedure.nephrectomy_details.robotic_assist": {
-            "title": "Nephrectomy Robotic Assist"
+
+        "sur_nephr_robotic_assist":{
+            "title": "Nephrectomy Robotic Assist" 
         },
+
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
@@ -179,7 +181,11 @@
         },
         "status": {
             "title": "Status"
+        },
+        "sur_nephr_robotic_assist":{
+            "title": "Nephrectomy Robotic Assist" 
         }
+
     },
     "boost_values": {
         "accession": 1.0,
@@ -192,8 +198,8 @@
         "radiation.treatment_intention": 1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "medications.name":1.0
-
+        "medications.name":1.0,
+        "sur_nephr_robotic_assist":1.0
 
         },
     "changelog": "/profiles/changelogs/patient.md"

@@ -348,6 +348,7 @@ class Patient(Item):
             "linkTo": "Surgery",
         },
     })
+
     def surgery(self, request, surgery):
         return paths_filtered_by_status(request, surgery)
 
@@ -363,6 +364,47 @@ class Patient(Item):
                     surgery_summary = "No Treatment Received"
             return surgery_summary
 
+
+
+    @calculated_property(condition='surgery', schema={
+        "title": "surgery procedure nephrectomy robotic assist",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def sur_nephr_robotic_assist(self, request, surgery):
+        
+        
+        sp_obj_array = []
+        array=[]
+        if surgery is not None:
+            for so in surgery:
+                so_object = request.embed(so, "@@object")
+                sp_obj_array = so_object.get("surgery_procedure")
+
+                if sp_obj_array is not None:
+                    for spo in sp_obj_array:
+                        sp_obj = request.embed(spo, "@@object")
+                        sp_proc_type=sp_obj.get("procedure_type")
+                        if sp_proc_type=="Nephrectomy":
+
+                            sp_nephr_robotic=sp_obj.get("nephrectomy_details").get("robotic_assist")
+                            array.append(sp_nephr_robotic)
+                        else: continue
+                           
+
+        robotic_assist=[]
+
+        for logic in array:
+
+            if  logic is True:
+                    robotic_assist.append("True")
+            else:
+                    robotic_assist.append("False")
+        return robotic_assist
+ 
 @collection(
     name='lab-results',
     properties={
@@ -478,7 +520,6 @@ class SupportiveMedication(Item):
     embeded = []
 
 
-
 @property
 def __name__(self):
     return self.name()
@@ -502,7 +543,7 @@ def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'ihc', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
-                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:

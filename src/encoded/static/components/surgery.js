@@ -99,12 +99,12 @@ class Surgery extends React.Component {
 }
 /* eslint-enable react/prefer-stateless-function */
 
-Surgery.propTypes = {
-    context: PropTypes.object, // Target object to display
-  };
+// Surgery.propTypes = {
+//     context: PropTypes.object, // Target object to display
+//   };
 
-Surgery.defaultProps = {
-  context: null,
-};
+// Surgery.defaultProps = {
+//   context: null,
+// };
 
-globals.contentViews.register(Surgery, 'Surgery');
+// globals.contentViews.register(Surgery, 'Surgery');
