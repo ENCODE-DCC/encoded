@@ -88,16 +88,16 @@ def main():
     """Entry point"""
     main_args = _parse_args()
     
-    session = boto3.Session(region_name='us-west-2', profile_name='default')
+    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
     ec2_resource = session.resource('ec2')
     ec2_client = session.client('ec2')
 
-    fuzzy_ami_name = 'encdami-{}-'.format(
+    fuzzy_ami_name = 'encdami-{}'.format(
         main_args.deployment_type,
     )
     date_now = str(datetime.now())
-    date_str = date_now.split('.')[0].replace(' ', '').replace(':', '')
-    ami_name = '{}{}'.format(
+    date_str = date_now.split('.')[0].replace(' ', '_').replace(':', '')
+    ami_name = '{}-{}'.format(
         fuzzy_ami_name,
         date_str,
     )
@@ -129,14 +129,30 @@ def main():
         while True:
             state = _get_ami_status(ec2_client, ami_id)
             if state == 'available':
-                print(ticks, ami_id, 'state: {}'.format(state))
-                _tag_ami(ec2_resource, ami_id, ami_name, main_args.created_by, main_args.deployment_type, main_args.instance_id, date_now)
+                msg = "\t\t{}\t{}\t{}".format(ticks, ami_id, state)
+                print(msg)
+                _tag_ami(
+                    ec2_resource,
+                    ami_id,
+                    ami_name,
+                    main_args.created_by,
+                    main_args.deployment_type,
+                    main_args.instance_id,
+                    date_now,
+                )
                 break
             sleep(1.0)
             if ticks == 0 or ticks >= tick_max:
-                print(ticks, ami_id, 'state: {}'.format(state))
+                msg = "\t\t{}\t{}\t{}".format(ticks, ami_id, state)
+                print(msg)
                 ticks = 0
             ticks += 1
+        key_name = main_args.deployment_type
+        if main_args.profile_name == 'production':
+            key_name += '-prod'
+        print('\nAdd below to ami map in deploy script')
+        print("# {} build on {}: {}".format(fuzzy_ami_name, date_now, ami_name))
+        print("'{}': '{}',".format(main_args.deployment_type, ami_id))
 
 def _parse_args():
     # pylint: disable=too-many-branches, too-many-statements
@@ -144,6 +160,7 @@ def _parse_args():
     parser.add_argument('created_by', help='Your name')
     parser.add_argument('deployment_type', help='deployment type')
     parser.add_argument('instance_id', help='instance id')
+    parser.add_argument('--profile-name', default='default', help="AWS creds profile")
     args = parser.parse_args()
     return args
 

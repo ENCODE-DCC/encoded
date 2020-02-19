@@ -6,43 +6,50 @@ Encoded Application AWS Deployment Helper
 # Creating private AMIs
 
 ### Demos
-    $ bin/deploy --name encdbuildami-demo --build-ami
-    $ python ./cloud-config/create-ami.py $username demo $encd_instance_id
+    1. Create demo ami instance to build demo ami image
+        $ bin/deploy --name encdbuildami-demo --build-ami
+    2. Watch the logs of both machines, wait till deployment finishes. 
+    3. Create the demo ami image from the instance using the commands printed in the console.
+        Example create ami command
+            $ python ./cloud-config/create-ami.py $username demo $encd_instance_id
+        Terminate the instance when ami image is built
+    4. Add the ami-id to the ami_map['demo'] below, commit and push the code
+    5. Then create a test demo
+        $ bin/deploy -n test-encdami-demo
 
-### Es Nodes: Creates a master and data node
-    $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami
-    # Tail the logs until the machine(s) reboot
-    # data node
-    $ python ./cloud-config/create-ami.py $username es-wait-node $encd_instance_id
-    # head node
-    $ python ./cloud-config/create-ami.py $username es-wait-head $encd_instance_id
+### ES wait nodes
+    1. Create es wait node and head for ami instance to build ami images
+        $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami
+    2. Watch the logs of both machines, wait till deployment finishes.
+    3. Create the es data and head node ami image from the instance using the commands 
+        printed in the console.
 
-### Es Nodes: Creates data nodes with elected master (TBD)
-    $ bin/deploy --cluster-name encdbuildami-es-elect --es-elect --build-ami
-    # Tail the logs until the machine reboots
-    $ python create-ami.py $username es-elect $encd_instance_id
+        Examples:
+            $ python ./cloud-config/create-ami.py $username es-wait-node $encd_instance_id
+            $ python ./cloud-config/create-ami.py $username es-wait-head $encd_instance_id
+        Terminate the instances when ami image is built
 
-### Frontend to go with es nodes
-    $ bin/deploy --cluster-name encdbuildami-frontend --build-ami
-    # Tail the logs until the machine reboots
-    $ python ./cloud-config/create-ami.py $username frontend $encd_instance_id
+    4. Add the ami-id to the ami_map['es-wait-node-cluster'] and
+        ami_map['es-wait-head-cluster'] below, commit and push the code.
+    5. Then create a test demo
+        $ bin/deploy --cluster-name test-encdami-eswait --es-wait
 
 
-### Add the ami-ids to the deploy.sh in the ami_map var in _parse_args function
-    * add the code and push to remote
+### Frontend
+    1. Create frontend ami instance to build fronend ami image
+        $ bin/deploy --cluster-name encdbuildami-frontend --build-ami
+    2. Watch the logs of both machines, wait till deployment finishes.
+    3. Create the frontend ami image from the instance using the command
+        printed in the console.
 
-# Deploying with prebuilt AMIs
-### Demos
-    $ bin/deploy -n test-encdami-demo
-### Es Nodes: Creates a master and data node
-    $ bin/deploy --cluster-name test-encdami-eswait --es-wait
-### Frontend to go with es nodes
-    $ bin/deploy --cluster-name test-encdami-eswait --es-ip $es_head_ip
+        Example:
+        $ python ./cloud-config/create-ami.py $username frontend $encd_instance_id
+        Terminate the instance when ami image is built
+    
+    4. Add the ami-id to the ami_map['fe-cluster'] below, commit and push the code.
+    5. Then create a test frontend
+        $ bin/deploy --cluster-name test-encdami-eswait --es-ip $es_head_ip
 
-### Es Nodes: Creates data nodes with elected master
-    $ bin/deploy --cluster-name test-encdami-eselect --es-elect
-
-### Test demo, elect, and wait clusters like you would with an ENCD ticket
 
 
 Ex) Build a new ami and deploy a demo
@@ -403,11 +410,15 @@ def _wait_and_tag_instances(
         url = None 
         if not is_cluster and not cluster_master:
             # Demos and frontends
-            if instances_tag_data['domain'] == 'production':
+            # - build type
+            if main_args.cluster_name:
                 info_type = 'frontend'
-                url = 'http://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'production')
             else:
                 info_type = 'demo'
+            # - url for prod and demo
+            if instances_tag_data['domain'] == 'production':
+                url = 'http://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'production')
+            else:
                 url = 'https://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'demo')
         if url:
             instances_tag_data['url'] = url
@@ -647,9 +658,10 @@ def main():
             print('instance_id:', instance_info['instance_id'])
             print(
                 'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} demo {}".format(
+                "python ./cloud-config/create-ami.py {} demo {} --profile-name {}".format(
                     instances_tag_data['username'],
                     instance_info['instance_id'],
+                    main_args.profile_name,
                 )
             )
         else:
@@ -667,10 +679,11 @@ def main():
                 arg_name = 'es-elect'
             print(
                 'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} {} {}".format(
+                "python ./cloud-config/create-ami.py {} {} {} --profile-name {}".format(
                     instances_tag_data['username'],
                     arg_name,
                     instance_info['instance_id'],
+                    main_args.profile_name,
                 )
             )
         else:
@@ -689,9 +702,10 @@ def main():
                 if main_args.build_ami and main_args.es_wait:
                     print(
                         'After it builds, create the ami: '
-                        "python ./cloud-config/create-ami.py {} es-wait-node {}".format(
+                        "python ./cloud-config/create-ami.py {} es-wait-node {} --profile-name {}".format(
                             instances_tag_data['username'],
-                            instance_info['instance_id'],
+                            node_info['instance_id'],
+                            main_args.profile_name,
                         )
                     )
                 print("ES node{} ssh:\n ssh ubuntu@{}{}".format(index, instance_info['public_dns'], tail_cmd))
@@ -704,9 +718,10 @@ def main():
             print('instance_id:', instance_info['instance_id'])
             print(
                 'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} frontend {}".format(
+                "python ./cloud-config/create-ami.py {} frontend {} --profile-name {}".format(
                     instances_tag_data['username'],
                     instance_info['instance_id'],
+                    main_args.profile_name,
                 )
             )
         else:
@@ -714,7 +729,7 @@ def main():
             print('url:', instance_info['url'])
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
-        helper_vars.append("frontend{}='{}'".format(index, node_info['instance_id']))
+        helper_vars.append("frontend='{}'".format(instance_info['instance_id']))
     else:
         print('Warning: Unknown instance info')
         print(instances_info)
@@ -836,7 +851,7 @@ def _parse_args():
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
 
     # AWS
-    parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--profile-name', default='default', help="AWS creds profile")
     parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
@@ -881,13 +896,31 @@ def _parse_args():
     ami_map = {
         # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
         'default': 'ami-0d1cd67c26f5fca19',
+
         # Private AMIs: Add comments to each build
-        #  Es builds were on 2020-02-13 for v96rc2
-        'demo': 'ami-0cde27eafd2dd7059',
-        #  FE/ES builds were on 2020-02-10 for v96rc1, only for wait clusters
-        'es-node-cluster': 'ami-0cebaae3c1c4e791c',
-        'es-head-cluster': 'ami-0cc21309093b53144',
-        'fe-cluster': 'ami-0865885ed5b96cec9',
+
+        # encdami-demo build on 2020-02-21 11:53:16.187361: encdami-demo-2020-02-21_115316
+        'demo': 'ami-0d88f6592258b08ad',
+        # encdami-es-wait-head build on 2020-02-21 11:55:07.962171: encdami-es-wait-head-2020-02-21_115507
+        'es-wait-head': 'ami-0cf11e413a755e2c7',
+        # encdami-es-wait-node build on 2020-02-21 11:53:19.309244: encdami-es-wait-node-2020-02-21_115319
+        'es-wait-node': 'ami-041aee7689ecedb20',
+        #  ES elect builds were not bulit since we rarely use them
+        'es-elect-head': None,
+        'es-elect-node': None,
+        # encdami-frontend build on 2020-02-21 12:55:16.612837: encdami-frontend-2020-02-21_125516
+        'frontend': 'ami-00d817362ffd6ae00',
+
+        # Production Private AMIs: Add comments to each build
+
+        #  ES wait builds have not been built
+        'es-wait-head-prod': None,
+        'es-wait-node-prod': None,
+        #  ES elect builds were not bulit since we rarely use them
+        'es-elect-head-prod': None,
+        'es-elect-node-prod': None,
+        #  Frontend build have not been built
+        'fe-cluster-prod': None,
     }
     if not args.image_id:
         # Select ami by build type.  
@@ -900,11 +933,25 @@ def _parse_args():
             args.cluster_size = 1
         elif args.cluster_name:
             # Cluster builds have three prebuilt priviate amis
-            if args.es_wait or args.es_elect:
-                args.image_id = ami_map['es-node-cluster']
-                args.eshead_image_id = ami_map['es-head-cluster']
+            if args.es_wait:
+                if args.profile_name == 'production':
+                    args.eshead_image_id = ami_map['es-wait-head-prod']
+                    args.image_id = ami_map['es-wait-node-prod']
+                else:
+                    args.eshead_image_id = ami_map['es-wait-head']
+                    args.image_id = ami_map['es-wait-node']
+            elif args.es_elect and args.profile_name != 'production':
+                if args.profile_name == 'production':
+                    args.eshead_image_id = ami_map['es-elect-head-prod']
+                    args.image_id = ami_map['es-elect-node-prod']
+                else:
+                    args.eshead_image_id = ami_map['es-elect-head']
+                    args.image_id = ami_map['es-elect-node']
             else:
-                args.image_id = ami_map['fe-cluster']
+                if args.profile_name == 'production':
+                    args.image_id = ami_map['frontend-prod']
+                else:
+                    args.image_id = ami_map['frontend']
         else:
             args.image_id = ami_map['demo']
     else:
