@@ -2987,8 +2987,7 @@
         "output_type": "subreads",
         "file_size": 567890,
         "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
-        "md5sum": "a61ba395c73713edf8b7cddd92dce969",
-        "assembly": "hg19"
+        "md5sum": "a61ba395c73713edf8b7cddd92dce969"
     },
     {
         "_test": "negative control regions",
