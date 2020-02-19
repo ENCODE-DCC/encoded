@@ -730,7 +730,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
 
                 // .fill([]) duplicate the same array reference rather than create a new array
                 // so map was used
-                dataRow = Array(dataRowLength).map(() => []);
+                dataRow = [...Array(dataRowLength)].map(() => []);
 
                 headerRow = [];
 
