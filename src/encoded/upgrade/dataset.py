@@ -569,6 +569,11 @@ def dataset_28_29(value, system):
         if not dbxref.startswith('IHEC:IHECRE'):
             new_dbxrefs.add(dbxref)
             continue
+        else:
+            if 'notes' in value:
+                value['notes'] += '\t' + dbxref
+            else:
+                value['notes'] = dbxref
     if len(new_dbxrefs) == 0:
         value.pop('dbxrefs', None)
     else:

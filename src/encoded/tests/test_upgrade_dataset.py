@@ -720,3 +720,4 @@ def test_upgrade_reference_17_to_18(upgrader, dataset_reference_1, dataset_refer
     )
     assert value['schema_version'] == '18'
     assert 'dbxrefs' not in value
+    assert 'IHEC:IHECRE00004703' in value['notes']
