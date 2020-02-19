@@ -187,11 +187,29 @@ class Experiment(Dataset,
             "description": "The protein tag introduced in the modification.",
             "comment": "See genetic_modification.json for available identifiers.",
             "type": "object",
-            "linkTo": "GeneticModification"
+            "additionalProperties": False,
+            "linkTo": "GeneticModification",
+            "properties": {
+                "name": {
+                    "title": "Tag name",
+                    "type": "string"
+                },
+                "location": {
+                    "title": "Tag location",
+                    "type": "string"
+                },
+                "target": {
+                    "title": "Tagged target",
+                    "type": "string",
+                    "linkTo": "Target"
+                }
+            }
         }
     })
     def protein_tags(self, request, replicates=None):
         protein_tags = None
+        modification_tags = None
+        tag_list = None
         if replicates is not None:
             for rep in replicates:
                 replicateObject = request.embed(rep, '@@object')
@@ -207,13 +225,19 @@ class Experiment(Dataset,
                             continue
                         genetic_modifications = biosampleObject.get('applied_modifications')
                         if genetic_modifications:
+                            protein_tags = []
+                            tag_list = []
                             for gm in genetic_modifications:
                                 gm_object = request.embed(gm, '@@object')
+                                if gm_object.get('introduced_tags') is None:
+                                    continue
                                 if gm_object.get('introduced_tags'):
-                                    protein_tags = []
+                                    modification_tags = []
                                     for tag in gm_object.get('introduced_tags'):
-                                        tag_dict = {'location': tag['location'], 'name': tag['name']}
-                                        protein_tags.append(tag_dict)
+                                        tag_dict = {'location': tag['location'], 'name': tag['name'], 'target': gm_object.get('modified_site_by_target_id')}
+                                        modification_tags.append(tag_dict)
+                                tag_list.append(modification_tags)
+                                protein_tags = [item for sublist in tag_list for item in sublist]
         return protein_tags
 
     matrix = {
