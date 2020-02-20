@@ -175,7 +175,7 @@ class TabPanel extends React.Component {
     }
 
     render() {
-        const { tabs, tabPanelCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
+        const { tabs, tabDisplay, tabPanelCss, navCss, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
 
@@ -205,10 +205,7 @@ class TabPanel extends React.Component {
                             return (
                                 <li key={tab} role="presentation" aria-controls={tab} className={this.getCurrentTab() === tab ? 'active' : ''}>
                                     <TabItem tab={tab} handleClick={this.handleClick}>
-                                        {tabs[tab]}
-                                        {tabs[tab] === 'Genome browser' ?
-                                            <span className="BETA">BETA</span>
-                                        : null}
+                                        {tabDisplay[tab] || tabs[tab]}
                                     </TabItem>
                                 </li>
                             );
@@ -229,6 +226,8 @@ class TabPanel extends React.Component {
 TabPanel.propTypes = {
     /** Object with tab=>pane specifications */
     tabs: PropTypes.object.isRequired,
+    /** Object with optional tab-rendering components */
+    tabDisplay: PropTypes.object,
     /** CSS class for the entire tab panel <div> */
     tabPanelCss: PropTypes.string,
     /** key of tab to select (must provide handleTabClick) too; null for no selection */
@@ -251,6 +250,7 @@ TabPanel.propTypes = {
 };
 
 TabPanel.defaultProps = {
+    tabDisplay: {},
     selectedTab: '',
     tabPanelCss: null,
     navCss: null,

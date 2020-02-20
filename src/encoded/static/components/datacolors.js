@@ -199,7 +199,7 @@ export const isLight = (color) => {
 
     // YIQ equation from http://24ways.org/2010/calculating-color-contrast
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return yiq > 128;
+    return yiq > 180;
 };
 
 

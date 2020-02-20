@@ -12,6 +12,7 @@ from urllib.parse import (
     quote,
 )
 from encoded.search_views import search_generator
+from .vis_defines import is_file_visualizable
 import csv
 import io
 import json
@@ -34,6 +35,8 @@ def includeme(config):
 _tsv_mapping = OrderedDict([
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
+    ('File type', ['files.file_format']),
+    ('File format type', ['files.file_format_type']),
     ('Output type', ['files.output_type']),
     ('Experiment accession', ['accession']),
     ('Assay', ['assay_term_name']),
@@ -249,6 +252,8 @@ def _get_annotation_metadata(request, search_path, param_list):
             row = [
                 result_file.get('title', ''),
                 result_file.get('file_type', ''),
+                result_file.get('file_format'), '',
+                result_file.get('file_format_type', ''),
                 result_file.get('output_type', ''),
                 result_graph.get('accession', ''),
                 result_graph.get('annotation_type', ''),
@@ -359,7 +364,7 @@ def metadata_tsv(context, request):
             if _tsv_mapping[prop][0].startswith('files'):
                 file_attributes = file_attributes + [_tsv_mapping[prop][0]]
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
-        
+
     # Handle metadata.tsv lines from cart-generated files.txt.
     cart_uuids = param_list.get('cart', [])
     if cart_uuids:
@@ -395,6 +400,11 @@ def metadata_tsv(context, request):
         for p in param_list.get('@id', [])
     ]
     qs.drop('limit')
+
+    # Determine if "visualizable=true" in query string to select only visualizable files.
+    visualizable_only = qs.is_param('visualizable', 'true')
+    qs.drop('visualizable')
+
     qs.extend(
         default_params + field_params + at_id_params
     )
@@ -408,12 +418,13 @@ def metadata_tsv(context, request):
                 if not _tsv_mapping[column][0].startswith('files'):
                     make_cell(column, experiment_json, exp_data_row)
 
-            f_attributes = ['files.title', 'files.file_type',
-                            'files.output_type']
+            f_attributes = ['files.title', 'files.file_type', 'files.file_format',
+                            'files.file_format_type', 'files.output_type']
 
             for f in experiment_json['files']:
-                # If we're looking for a file type but it doesn't match, ignore file
                 if not files_prop_param_list(f, param_list):
+                    continue
+                if visualizable_only and not is_file_visualizable(f):
                     continue
                 if restricted_files_present(f):
                     continue
@@ -422,7 +433,7 @@ def metadata_tsv(context, request):
                 f['href'] = request.host_url + f['href']
                 f_row = []
                 for attr in f_attributes:
-                    f_row.append(f[attr[6:]])
+                    f_row.append(f.get(attr[6:], ''))
                 data_row = f_row + exp_data_row
                 for prop in file_attributes:
                     if prop in f_attributes:
@@ -462,9 +473,13 @@ def batch_download(context, request):
     default_params = [
         ('limit', 'all'),
         ('field', 'files.href'),
-        ('field', 'files.restricted')
+        ('field', 'files.restricted'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.status'),
     ]
     qs = QueryString(request)
+    param_list = qs.group_values_by_key()
     file_filters = qs.param_keys_to_list(
         params=qs.get_filters_by_condition(
             key_and_value_condition=lambda k, _: k.startswith('files.')
@@ -475,6 +490,11 @@ def batch_download(context, request):
         for k in file_filters
     ]
     qs.drop('limit')
+
+    # Determine if "visualizable=true" in query string to select only visualizable files.
+    visualizable_only = qs.is_param('visualizable', 'true')
+    qs.drop('visualizable')
+
     qs.extend(
         default_params + file_fields
     )
@@ -538,6 +558,8 @@ def batch_download(context, request):
     for exp_file in exp_files:
         if not files_prop_param_list(exp_file, param_list):
             continue
+        elif visualizable_only and not is_file_visualizable(exp_file):
+            continue
         elif restricted_files_present(exp_file):
             continue
         files.append(
@@ -555,6 +577,12 @@ def batch_download(context, request):
 
 
 def files_prop_param_list(exp_file, param_list):
+    """Does a file in experiment search results match query-string parms?
+
+    Keyword arguments:
+    exp_file -- file object from experiment search results
+    param_list -- grouped query-string parameters for experiment search
+    """
     for k, v in param_list.items():
         if k.startswith('files.'):
             file_prop = k[len('files.'):]
