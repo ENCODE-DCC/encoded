@@ -73,7 +73,6 @@ minimal_read_depth_requirements = {
     'RAMPAGE': 10000000,
     'shRNA knockdown followed by RNA-seq': 10000000,
     'siRNA knockdown followed by RNA-seq': 10000000,
-    'single cell isolation followed by RNA-seq': 10000000,
     'CRISPR genome editing followed by RNA-seq': 10000000,
     'modENCODE-chip': 500000
 }
