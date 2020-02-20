@@ -501,7 +501,7 @@
             "title": "Laterality"
         },
         "tumor_size": {
-            "title": "Tumore Size"
+            "title": "Tumor Size"
         },
         "histology": {
             "title": "Histologic Subtypes"
