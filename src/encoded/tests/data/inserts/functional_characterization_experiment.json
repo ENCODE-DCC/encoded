@@ -27,7 +27,8 @@
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "8494161d-fd7d-4805-beba-d0dc14371504"
+        "uuid": "8494161d-fd7d-4805-beba-d0dc14371504",
+        "plasmids_library_type": "elements mapping"
     },
     {
         "_test": "CRISPR screen test",
@@ -57,7 +58,23 @@
         "lab": "/labs/gregory-crawford/",
         "date_released": "2019-04-10",
         "accession": "ENCSR051STU",
-        "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e"
+        "uuid": "b9e400e4-70ee-11e9-a923-1681be663d3e",
+        "plasmids_library_type": "elements mapping"
+    },
+    {
+        "_test": "pooled clone sequencing elements cloning",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "award": "U54HG007010",
+        "description": "pooled clone sequencing elements validation",
+        "assay_term_name": "pooled clone sequencing",
+        "lab": "/labs/gregory-crawford/",
+        "date_released": "2019-08-10",
+        "accession": "ENCSR127PCE",
+        "uuid": "510800ff-b32d-40b8-8819-b3c91c8f075a",
+        "plasmids_library_type": "elements cloning"
     },
     {
         "_test": "starr",
@@ -113,6 +130,7 @@
         "biosample_ontology": "cell_line_EFO_0002067",
         "description": "Test submission for CRISPR screen experiment",
         "elements_mapping": "ENCSR212POL",
+        "elements_cloning": "ENCSR127PCE",
         "lab": "bing-ren",
         "status": "in progress",
         "submitted_by": "tristique.sem@faucibus.semper",
