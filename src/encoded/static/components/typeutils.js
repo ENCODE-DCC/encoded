@@ -425,11 +425,16 @@ ExperimentTable.defaultProps = {
 };
 
 
+const tableContentMap = {
+    Experiment: 'Experiments',
+    FunctionalCharacterizationExperiment: 'Functional Characterization Experiments',
+};
 /**
  * Display a table of experiments with the dataset in `context` as a possible_controls.
  */
 export const ControllingExperiments = ({ context, items, total, url }) => {
     if (items.length > 0) {
+        const tableContent = context['@type'].map(typ => tableContentMap[typ]).filter(s => s)[0] || 'Experiments';
         return (
             <div>
                 <ExperimentTable
@@ -437,7 +442,7 @@ export const ControllingExperiments = ({ context, items, total, url }) => {
                     limit={5}
                     total={total}
                     url={url}
-                    title={`Experiments with ${context.accession} as a control:`}
+                    title={`${tableContent} with ${context.accession} as a control:`}
                 />
             </div>
         );
