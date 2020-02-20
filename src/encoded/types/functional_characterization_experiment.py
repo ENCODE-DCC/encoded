@@ -54,6 +54,7 @@ class FunctionalCharacterizationExperiment(
         'related_series',
         'replicates.antibody',
         'replicates.library',
+        'replicates.library.construction_platform',
         'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
