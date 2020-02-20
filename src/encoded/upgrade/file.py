@@ -631,5 +631,5 @@ def file_17_18(value, system):
     output_type = value.get('output_type', None)
 
     if output_type == "subreads" and 'assembly' in value:
-            value.pop('assembly', None)
+        value.pop('assembly', None)
     return
