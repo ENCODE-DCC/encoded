@@ -73,7 +73,9 @@
                     "Ablation",
                     "Nephrectomy",
                     "Metastectomy",
-                    "Biopsy"
+                    "Biopsy",
+                    "Excision",
+                    "Fine needle aspiration"
                 ]
         },
         "nephrectomy_details": {
@@ -96,7 +98,7 @@
                     ]
                 },
                 "approach": {
-                    "title": "Neprhectomy Approach",
+                    "title": "Nephrectomy Approach",
                     "type": "string",
                     "enum": [
                         "Laparoscopic",
