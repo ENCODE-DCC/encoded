@@ -24,6 +24,7 @@ class SurgeryChart extends React.Component {
         var nephDataPoints = [];
         var ablaDataPoints = [];
         var metDataPoints = [];
+        var biopsyDataPoints = [];
         console.log(this.props.data);
         this.props.data.forEach((i) => {
           i.surgery_procedure.forEach((surgery_procedure) => {
@@ -36,6 +37,9 @@ class SurgeryChart extends React.Component {
               else if (surgery_procedure.procedure_type === "Metastectomy") {
                 metDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
               }
+              else {
+                biopsyDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
+              }
             })
           });
 
@@ -44,6 +48,9 @@ class SurgeryChart extends React.Component {
 
         //ablaDataPoints = this.props.data.filter(i => { return i.surgery_procedure.procedure_type === "Ablation" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_procedure.procedure_type, i.hospital_location] });
         ablaDataPoints.sort((a, b) => a[0] - b[0]);
+
+        biopsyDataPoints.sort((a, b) => a[0] - b[0]);
+
 
         //metDataPoints = this.props.data.filter(i => { return i.surgery_procedure.procedure_type === "Metastectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_procedure.procedure_type, i.hospital_location] });
         metDataPoints.sort((a, b) => a[0] - b[0]);
@@ -117,6 +124,25 @@ class SurgeryChart extends React.Component {
                     text: ablaDataPoints[i]["procedure_type"],
                     textposition: "right",
                     hovertemplate: "Hospital location: " + ablaDataPoints[i]["hospital_location"] + "<extra></extra>"
+                };
+                data.push(traceAbla);
+            };
+        };
+        if (biopsyDataPoints.length > 0) {
+            for (let i = 0; i < biopsyDataPoints.length; i++) {
+                traceAbla = {
+                    type: 'scatter',
+                    x: [biopsyDataPoints[i]["Date"]],
+                    y: [biopsyDataPoints[i]["procedure_type"]],
+                    mode: 'markers',
+                    marker: {
+                        color: 'orange',
+                        symbol: 'oval',
+                        size: '16'
+                    },
+                    text: biopsyDataPoints[i]["procedure_type"],
+                    textposition: "right",
+                    hovertemplate: "Hospital location: " + biopsyDataPoints[i]["hospital_location"] + "<extra></extra>"
                 };
                 data.push(traceAbla);
             };
