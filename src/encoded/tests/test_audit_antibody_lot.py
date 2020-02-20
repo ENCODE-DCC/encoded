@@ -127,7 +127,6 @@ def test_audit_antibody_ar_dbxrefs(testapp, antibody_lot):
 def test_audit_control_characterizations(testapp, control_antibody):
     res = testapp.get(control_antibody['@id'] + '@@index-data')
     errors = res.json['audit']
-    print(errors)
     assert 'NOT_COMPLIANT' not in errors
 
 
