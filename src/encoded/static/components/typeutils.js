@@ -434,7 +434,7 @@ const tableContentMap = {
  */
 export const ControllingExperiments = ({ context, items, total, url }) => {
     if (items.length > 0) {
-        const tableContent = context['@type'].map(typ => tableContentMap[typ]).filter(s => s)[0] || 'Experiments';
+        const tableContent = tableContentMap[context['@type'][0]] || 'Experiments';
         return (
             <div>
                 <ExperimentTable
