@@ -159,3 +159,15 @@ def test_experiment_biosample_summary_2(testapp,
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
         'liver male child (10 days) not treated and treated with ethanol'
+
+
+def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, biosample_1, biosample_2, construct_genetic_modification, construct_genetic_modification_N, library_1, library_2, replicate_1_1, replicate_2_1):
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'], 'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'], 'genetic_modifications': [construct_genetic_modification_N['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})
+    res = testapp.get(base_experiment['@id']+'@@index-data')
+    assert res.json['object']['protein_tags'] == [{'name': 'eGFP', 'location': 'C-terminal', 'target': '/targets/ATF4-human/'}, {'name': 'eGFP', 'location': 'N-terminal', 'target': '/targets/ATF4-human/'}]
