@@ -1,5 +1,10 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Minor changes since schema version 4
+
+* Added *gRNA_tiling_loci* property.
+* Added *examined_loci* property.
+
 ### Schema version 4
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
