@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "identifyingProperties": ["uuid","surgery"],
-    "required": ["surgery", "date", "report_source", "tumor_sequence_number"],
+    "required": ["surgery", "date", "report_source", "tumor_sequence_number", "path_source_procedure"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -16,7 +16,89 @@
     "dependencies": {
         "tumor_size": ["tumor_size_units"],
         "tumor_size_units": ["tumor_size"],
-        "sarcomatoid_percentage": ["sarcomatoid"]
+        "sarcomatoid_percentage": ["sarcomatoid"],
+        "metasasis_details":  {
+            "comment":"Metasis details required for pathology source procedure.",
+            "properties": {
+                "path_source_procedure": {
+                    "enum": ["path_metasis"]
+                }
+            }
+        },
+        "laterality":  {
+            "comment":"Laterality required for pathology source procedure.",
+            "properties": {
+                "path_source_procedure": {
+                    "enum": ["path_biopsy", "path_nephrectomy"]
+                }
+            }
+        },
+        "path_source_procedure":  {
+            "oneOf": [
+                {
+                    "properties": {
+                        "required": ["metasis_details"],
+                        "path_source_procedure": {
+                            "enum": ["path_metasis"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "oneOf": [
+                            {
+                                "required": ["metasis_details"],
+                                "properties": {
+                                    "path_source_procedure": {
+                                        "enum": ["path_biopsy", "path_nephrectomy"]
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "path_source_procedure": {
+                                        "enum": ["path_metasis"]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "laterality":  {
+            "oneOf": [
+                {
+                    "properties": {
+                        "required": ["laterality"],
+                        "path_source_procedure": {
+                            "enum": ["path_biopsy", "path_nephrectomy"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "oneOf": [
+                            {
+                                "required": ["laterality"],
+                                "properties": {
+                                    "path_source_procedure": {
+                                        "enum": ["path_metasis"]
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "path_source_procedure": {
+                                        "enum": ["path_biopsy", "path_nephrectomy"]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
@@ -38,6 +120,15 @@
                     "format": "date"
                 }
             ]
+        },
+        "path_source_procedure": {
+          "title": "Pathology diagnosis source type.",
+          "type": "string",
+          "enum": [
+              "path_biopsy",
+              "path_metasis",
+              "path_nephrectomy"
+          ]
         },
         "laterality": {
             "title": "Laterality",
@@ -366,13 +457,46 @@
           "type": "integer",
           "default": 1,
           "minimum": 1
+      },
+      "metasis_details": {
+          "title": "Metasis details",
+          "description": "Further details of Metasis pathology report",
+          "type": "object",
+          "permission": "import_items",
+          "required": [
+              "site",
+              "type"
+          ],
+          "properties": {
+              "site": {
+                  "title": "Metasis site",
+                  "type": "string",
+                  "enum": [
+                      "Adrenal",
+                      "Bone",
+                      "Brain",
+                      "Liver",
+                      "Lung",
+                      "Lymph node",
+                      "Other"
+                  ]
+              },
+              "type": {
+                  "title": "Metasis type",
+                  "type": "string",
+                  "enum": [
+                      "Distant",
+                      "Regional"
+                  ]
+              }
+          }
       }
     },
     "facets": {
         "status": {
             "title": "Status"
         },
-       
+
         "laterality": {
             "title": "Laterality"
         },
@@ -458,11 +582,11 @@
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
 
-       
+
 
     },
     "boost_values": {
-        "laterality":1.0, 
+        "laterality":1.0,
         "histology": 1.0,
         "focality": 1.0,
         "grade": 1.0,
@@ -473,7 +597,8 @@
         "micro_perinephric":1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
-        "name": 1.0
+        "name": 1.0,
+        "metasis_details.site": 1.0
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }
