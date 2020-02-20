@@ -20,7 +20,8 @@ Feature: Cart
         And I should see "4 files selected"
 
     Scenario: Cart page interactions
-        When I press "cart-facet-term-alignments"
+        When I press "output_type-label"
+        And I press "cart-facet-term-alignments"
         Then I should see "2 files selected"
         When I press "cart-facet-term-alignments"
         Then I should see "4 files selected"

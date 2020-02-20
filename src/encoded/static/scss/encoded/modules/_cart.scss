@@ -190,22 +190,6 @@
         border-bottom: 1px solid #ddd;
     }
 
-    // Cart result table pager control area.
-    @at-root #{&}__pager {
-        flex: 0 1 auto;
-
-        @at-root #{&}-note {
-            display: none;
-            margin-left: 5px;
-            font-size: 0.9rem;
-            color: #606060;
-
-            @media screen and (min-width: $screen-sm-min) {
-                display: inline-block;
-            }
-        }
-    }
-
     // Cart add/remove toggle button
     @at-root #{&}__toggle {
         display: block;
@@ -275,7 +259,7 @@
     // Header of cart panel.
     @at-root #{&}__header {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
     }
 
     @at-root #{&}__facet-progress-overlay {
@@ -328,33 +312,111 @@
         display: flex;
     }
 
-    .box.facets {
+    &-facets {
         @media screen and (min-width: $screen-sm-min) {
             flex: 0 0 300px;
             margin-right: 20px;
         }
 
         position: relative;
-        padding-bottom: 23px;
+        padding: 0 10px 23px;
         z-index: 0;
-
-        // <button> specific to cart file facets
-        button {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            border: none;
-            background-color: transparent;
-        }
+        border: 1px solid #ccc;
 
         progress {
             width: 100%;
         }
     }
+
+    &-content {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 1 1 auto;
+            overflow: hidden;
+        }
+
+        .tab-nav {
+            display: flex;
+            justify-content: space-between;
+
+            .nav-tabs {
+                border-top: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+            }
+
+            .cart {
+                @at-root #{&}__tab-tools {
+                    flex: 0 1 auto;
+                    align-self: center;
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .result-table {
+            border-top: none;
+        }
+    }
+
+    &-content {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 1 1 auto;
+        }
+
+        .tab-nav {
+            display: flex;
+            justify-content: space-between;
+
+            .nav-tabs {
+                border-top: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+            }
+
+            .cart {
+                @at-root #{&}__tab-tools {
+                    flex: 0 1 auto;
+                    align-self: center;
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .result-table {
+            border-top: none;
+        }
+    }
+}
+
+
+// Defines check boxes and radio button on the cart facets.
+$cart-facet-check-box-size: 18px;
+%facet-term-control {
+    display: flex;
+    flex: 0 0 $cart-facet-check-box-size;
+    width: $cart-facet-check-box-size;
+    height: $cart-facet-check-box-size;
+    border: 1px solid #c0c0c0;
+    justify-content: center;
+    align-items: center;
+}
+
+
+// Defines check boxes and radio button on the cart facets.
+$cart-facet-check-box-size: 18px;
+%facet-term-control {
+    display: flex;
+    flex: 0 0 $cart-facet-check-box-size;
+    width: $cart-facet-check-box-size;
+    height: $cart-facet-check-box-size;
+    border: 1px solid #c0c0c0;
+    justify-content: center;
+    align-items: center;
 }
 
 
 // Facets for the cart-view page.
+$icon-visualizable-color: #396492;
+$cart-facet-visualizable-size: 18px;
+$cart-facet-visualizable-padding: 2px;
 .cart-facet {
     padding: 0;
 
@@ -396,16 +458,9 @@
         }
 
         // Checkbox for a facet term
-        $cart-facet-check-box-size: 18px;
         @at-root #{&}__check {
-            display: flex;
-            flex: 0 0 $cart-facet-check-box-size;
-            width: $cart-facet-check-box-size;
-            height: $cart-facet-check-box-size;
-            border: 1px solid #c0c0c0;
+            @extend %facet-term-control;
             border-radius: 3px;
-            justify-content: center;
-            align-items: center;
 
             $cart-facet-check-size: 16px;
             .icon {
@@ -419,31 +474,56 @@
             color: #fff;
         }
 
+        @at-root #{&}__radio {
+            @extend %facet-term-control;
+            border-radius: $cart-facet-check-box-size / 2;
+            text-align: center;
+
+            $cart-facet-radio-size: 8px;
+            .icon {
+                flex: 0 0 $cart-facet-radio-size;
+                font-size: $cart-facet-radio-size;
+                line-height: $cart-facet-check-box-size;
+            }
+        }
+
+        @at-root #{&}__radio--checked {
+            background-color: #008000;
+            color: #fff;
+        }
+
         // Text of the facet term
         @at-root #{&}__text {
             padding: 0 5px;
-            flex: 0 1 60%;
-            font-size: 0.95rem;
-        }
-
-        // Count of items facet term represents
-        @at-root #{&}__count {
-            flex: 0 1 20%;
-            padding-right: 5px;
-            text-align: right;
+            flex: 1 0 60%;
             font-size: 0.95rem;
         }
 
         // Circle whose tint reflects the count
         $cart-facet-magnitude-size: 18px;
         @at-root #{&}__magnitude {
-            flex: 0 0 $cart-facet-magnitude-size;
-            width: $cart-facet-magnitude-size;
+            flex: 0 1 auto;
+            padding: 0 5px 0;
+            width: auto;
             height: $cart-facet-magnitude-size;
+            border-radius: $cart-facet-magnitude-size / 2;
 
-            .icon {
-                font-size: $cart-facet-magnitude-size;
+            > span {
+                font-size: 0.8rem;
                 line-height: $cart-facet-magnitude-size;
+            }
+        }
+
+        // Icon indicating file visualizability
+        @at-root #{&}__visualizable {
+            flex: 0 0 $cart-facet-visualizable-size;
+            width: $cart-facet-visualizable-size;
+            height: $cart-facet-visualizable-size;
+            padding: $cart-facet-visualizable-padding;
+
+            svg {
+                height: $cart-facet-visualizable-size - (2 * $cart-facet-visualizable-padding); // IE11
+                fill: $icon-visualizable-color;
             }
         }
     }
@@ -454,7 +534,7 @@
 .cart__facet-file-count {
     position: relative;
     padding: 5px;
-    margin: -10px -10px 20px -10px;
+    margin: 0 -10px 10px;
     background-color: #d8d8d8;
     text-align: center;
     font-size: 1rem;
@@ -702,6 +782,62 @@ $deleted-bg: #ffe0e0;
     background-color: #fff;
     border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
+}
+
+
+// Checkbox for filtering out facet terms not included in visualizable files.
+.cart-viz-toggle {
+    margin: 0 0 10px;
+    padding: 0;
+
+    > button {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        border: none;
+        background: none;
+
+        > label {
+            display: flex;
+            cursor: pointer;
+        }
+    }
+
+    @at-root #{&}__check {
+        @extend %facet-term-control;
+        flex: 0 0 18px;
+        border-radius: 3px;
+
+        $cart-viz-toggle-size: 16px;
+        .icon {
+            flex: 0 0 $cart-viz-toggle-size;
+            font-size: $cart-viz-toggle-size;
+        }
+
+        @at-root #{&}--checked {
+            background-color: #008000;
+            color: #fff;
+        }
+    }
+
+    @at-root #{&}__label-text {
+        flex: 0 1 auto;
+        padding: 0 5px;
+        font-size: 1rem;
+        line-height: $cart-facet-visualizable-size;
+    }
+
+    @at-root #{&}__icon {
+        flex: 0 0 18px;
+        padding: 2px;
+        width: $cart-facet-visualizable-size;
+        height: $cart-facet-visualizable-size;
+
+        svg {
+            display: block;
+            fill: $icon-visualizable-color;
+        }
+    }
 }
 
 

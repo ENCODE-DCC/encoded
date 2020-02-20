@@ -27,7 +27,7 @@ const types = {
     antibody_lot: { title: 'Antibodies' },
     biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
-    computational_model: { title: 'Computational model file set'},
+    computational_model: { title: 'Computational model file set' },
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
@@ -269,7 +269,7 @@ globals.listingViews.register(Biosample, 'Biosample');
  * Renders both Experiment and FunctionalCharacterizationExperiment search results.
  */
 const ExperimentComponent = (props, reactContext) => {
-    const { context: result, cartControls } = props;
+    const { context: result, cartControls, mode } = props;
     let synchronizations;
 
     // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
@@ -335,26 +335,34 @@ const ExperimentComponent = (props, reactContext) => {
                             <div><strong>Target: </strong>{result.target.label}</div>
                         : null}
 
-                        {synchronizations && synchronizations.length > 0 ?
-                            <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
-                        : null}
+                        {mode !== 'cart-view' ?
+                            <React.Fragment>
+                                {synchronizations && synchronizations.length > 0 ?
+                                    <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
+                                : null}
 
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
-                        {treatments && treatments.length > 0 ?
-                            <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
-                                <span>
-                                    {uniqueTreatments.join(', ')}
-                                </span>
-                            </div>
-                            : null}
+                                <div><strong>Lab: </strong>{result.lab.title}</div>
+                                <div><strong>Project: </strong>{result.award.project}</div>
+                                {treatments && treatments.length > 0 ?
+                                    <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                        <span>
+                                            {uniqueTreatments.join(', ')}
+                                        </span>
+                                    </div>
+                                : null}
+                            </React.Fragment>
+                        : null}
                     </div>
                 </div>
                 <div className="result-item__meta">
                     <div className="result-item__meta-title">{displayType}</div>
                     <div className="result-item__meta-id">{` ${result.accession}`}</div>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    {mode !== 'cart-view' ?
+                        <React.Fragment>
+                            <Status item={result.status} badgeSize="small" css="result-table__status" />
+                            {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                        </React.Fragment>
+                    : null}
                 </div>
                 {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
@@ -371,12 +379,14 @@ const ExperimentComponent = (props, reactContext) => {
 ExperimentComponent.propTypes = {
     context: PropTypes.object.isRequired, // Experiment search results
     cartControls: PropTypes.bool, // True if displayed in active cart
+    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired,
 };
 
 ExperimentComponent.defaultProps = {
     cartControls: false,
+    mode: '',
 };
 
 ExperimentComponent.contextTypes = {
@@ -967,11 +977,13 @@ ResultTable.contextTypes = {
 };
 
 
-// Display the list of search results.
-export const ResultTableList = ({ results, columns, cartControls }) => (
+// Display the list of search results. `mode` allows for special displays, and supports:
+//     picker: Results displayed in an edit form object picker
+//     cart-view: Results displayed in the Cart View page.
+export const ResultTableList = ({ results, columns, cartControls, mode }) => (
     <ul className="result-table" id="result-table">
         {results.length > 0 ?
-            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls }))
+            results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls, mode }))
         : null}
     </ul>
 );
@@ -980,11 +992,13 @@ ResultTableList.propTypes = {
     results: PropTypes.array.isRequired, // Array of search results to display
     columns: PropTypes.object, // Columns from search results
     cartControls: PropTypes.bool, // True if items should display with cart controls
+    mode: PropTypes.string, // Special search-result modes, e.g. "picker"
 };
 
 ResultTableList.defaultProps = {
     columns: null,
     cartControls: false,
+    mode: '',
 };
 
 

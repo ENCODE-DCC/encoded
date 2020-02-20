@@ -73,6 +73,8 @@ def test__tsv_mapping_value():
     target = OrderedDict([
         ('File accession', ['files.title']),
         ('File format', ['files.file_type']),
+        ('File type', ['files.file_format']),
+        ('File format type', ['files.file_format_type']),
         ('Output type', ['files.output_type']),
         ('Experiment accession', ['accession']),
         ('Assay', ['assay_term_name']),
