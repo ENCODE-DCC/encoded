@@ -458,6 +458,13 @@ const ComputationalModelComponent = (props, reactContext) => {
                                     <dd className="sentence-case">{context.dataset_type}</dd>
                                 </div>
                             : null}
+
+                            {context.software_used && context.software_used.length > 0 ?
+                                <div data-test="softwareused">
+                                    <dt>Software used</dt>
+                                    <dd>{softwareVersionList(context.software_used)}</dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
 
