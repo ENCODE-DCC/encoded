@@ -54,6 +54,7 @@ class Experiment(Dataset,
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
+        'files.quality_metrics',
         'related_series',
         'replicates.antibody',
         'replicates.library',
@@ -194,6 +195,28 @@ class Experiment(Dataset,
         'y': {
             'group_by': ['replication_type']
         }
+    }
+
+    reference_epigenome = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
+    entex = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', ('target.label', 'no_target'), 'replicates.library.biosample.donor.sex', 'replicates.library.biosample.donor.accession'],
+            'label': 'Assay',
+        },
     }
 
     audit = {

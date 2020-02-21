@@ -186,7 +186,6 @@ class AdvSearch extends React.Component {
 
     handleOnFocus() {
         this.setState({ showAutoSuggest: false });
-        this.context.navigate(this.context.location_href);
     }
 
     tick() {
@@ -255,7 +254,6 @@ AdvSearch.contextTypes = {
     autocompleteHidden: PropTypes.bool,
     onAutocompleteHiddenChange: PropTypes.func,
     location_href: PropTypes.string,
-    navigate: PropTypes.func,
 };
 
 
@@ -365,7 +363,6 @@ RegionSearch.defaultProps = {
 
 RegionSearch.contextTypes = {
     location_href: PropTypes.string,
-    navigate: PropTypes.func,
 };
 
 export default AutocompleteBox;

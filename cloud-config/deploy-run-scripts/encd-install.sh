@@ -4,23 +4,29 @@
 # apt deps:
 
 GIT_REPO="$1"
-GIT_BRANCH="$2"
-ROLE="$3"
-ES_IP="$4"
-ES_PORT="$5"
-REGION_INDEX="$6"
-APP_WORKERS="$7"
+GIT_REMOTE="$2"
+GIT_BRANCH="$3"
+ROLE="$4"
+ES_IP="$5"
+ES_PORT="$6"
+REGION_INDEX="$7"
+APP_WORKERS="$8"
+
+git_uri="$GIT_REMOTE/$GIT_BRANCH"
 
 encd_home='/srv/encoded'
 mkdir "$encd_home"
 chown encoded:encoded "$encd_home"
 cd "$encd_home"
 sudo -u encoded git clone "$GIT_REPO" .
-sudo -u encoded git checkout -b "$GIT_BRANCH" origin/"$GIT_BRANCH"
-sudo pip3 install -U zc.buildout setuptools redis
+sudo -u encoded git checkout -b "$GIT_BRANCH" "$git_uri"
+sudo pip3 install --upgrade pip==19.1.1
+sudo pip3 install -U zc.buildout setuptools==43 redis
 sudo -u encoded buildout bootstrap
 sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c "$ROLE".cfg buildout:es-ip="$ES_IP" buildout:es-port="$ES_PORT"
-sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
+sudo -u encoded mkdir /srv/encoded/.aws
+sudo -u root cp /home/ubuntu/encd-aws-keys/* /srv/encoded/.aws/
+sudo -u root chown -R encoded:encoded ~encoded/.aws
 until sudo -u postgres psql postgres -c ""; do sleep 10; done
 sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 sudo -u encoded bin/create-mapping production.ini --app-name app

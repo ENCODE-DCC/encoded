@@ -277,7 +277,7 @@ class Biosample(Item):
             "type": "string",
             "linkTo": "GeneticModification",
         }
-    })
+    }, define=True)
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
 
@@ -315,19 +315,18 @@ class Biosample(Item):
                     model_organism_age_units=None, post_synchronization_time=None,
                     post_synchronization_time_units=None):
         if post_synchronization_time is not None and post_synchronization_time_units is not None:
-            return u'{sync_time} {sync_time_units}'.format(
-                sync_time=post_synchronization_time,
-                sync_time_units=post_synchronization_time_units)
+            return u'{}'.format(
+                pluralize(post_synchronization_time, post_synchronization_time_units)
+                )
         if donor is not None:
             donor = request.embed(donor, '@@object')
             if 'age' in donor and 'age_units' in donor:
                 if donor['age'] == 'unknown':
                     return ''
-                return u'{age} {age_units}'.format(**donor)
+                return u'{}'.format(pluralize(donor['age'], donor['age_units']))
         if model_organism_age is not None and model_organism_age_units is not None:
-            return u'{age} {age_units}'.format(
-                age=model_organism_age,
-                age_units=model_organism_age_units,
+            return u'{}'.format(
+                pluralize(model_organism_age, model_organism_age_units)
             )
         return None
 
@@ -513,6 +512,25 @@ class Biosample(Item):
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
 
+    @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def perturbed(
+        self,
+        request,
+        applied_modifications,
+        treatments=None,
+    ):
+        return bool(treatments) or any(
+            (
+                request.embed(m, '@@object').get('perturbation', False)
+                for m in applied_modifications
+            )
+        )
+
 
 def generate_summary_dictionary(
         request,
@@ -580,7 +598,7 @@ def generate_summary_dictionary(
                     else:
                         dict_of_phrases['strain_background'] = dict_of_phrases['genotype_strain']
     if age is not None and age_units is not None:
-        dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
+        dict_of_phrases['age_display'] = pluralize(age, age_units)
 
     if life_stage is not None and life_stage != 'unknown':
         dict_of_phrases['life_stage'] = life_stage
@@ -674,9 +692,9 @@ def generate_summary_dictionary(
 
     if post_synchronization_time is not None and \
         post_synchronization_time_units is not None:
-        dict_of_phrases['synchronization'] = (post_synchronization_time +
-                                                ' ' + post_synchronization_time_units +
-                                                's post synchronization')
+        dict_of_phrases['synchronization'] = '{} post synchronization'.format(
+            pluralize(post_synchronization_time, post_synchronization_time_units)
+            )
     if synchronization is not None:
         if synchronization.startswith('puff'):
             dict_of_phrases['synchronization'] += ' at ' + synchronization
@@ -687,9 +705,9 @@ def generate_summary_dictionary(
 
     if post_treatment_time is not None and \
         post_treatment_time_units is not None:
-        dict_of_phrases['post_treatment'] = (post_treatment_time +
-                                                ' ' + post_treatment_time_units +
-                                                's after the sample was ')
+        dict_of_phrases['post_treatment'] = '{} after the sample was '.format(
+            pluralize(post_treatment_time, post_treatment_time_units)
+            )
 
     if ('sample_type' in dict_of_phrases and
         dict_of_phrases['sample_type'] != 'cell line') or \
@@ -716,17 +734,15 @@ def generate_summary_dictionary(
         treatments_list = []
         for treatment_object in treatment_objects_list:
             to_add = ''
-            amt = str(treatment_object.get('amount', ''))
+            amt = treatment_object.get('amount', '')
             amt_units = treatment_object.get('amount_units', '')
             treatment_term_name = treatment_object.get('treatment_term_name', '')
-            dur = str(treatment_object.get('duration', ''))
+            dur = treatment_object.get('duration', '')
             dur_units = treatment_object.get('duration_units', '')
-            if dur_units and dur_units[-1] != 's':
-                dur_units += 's'
             to_add = "{}{}{}".format(
-                (amt + ' ' + amt_units + ' ' if amt and amt_units else ''),
+                (str(amt) + ' ' + amt_units + ' ' if amt and amt_units else ''),
                 (treatment_term_name + ' ' if treatment_term_name else ''),
-                ('for ' + dur + ' ' + dur_units if dur and dur_units else '')
+                ('for ' + pluralize(dur, dur_units) if dur and dur_units else '')
             )
             if to_add != '':
                 treatments_list.append(to_add)
@@ -829,6 +845,16 @@ def is_identical(list_of_dicts, key):
     return True
 
 
+def pluralize(value, value_units):
+    try:
+        if float(value) == 1:
+            return str(value) + ' ' + value_units
+        else:
+            return str(value) + ' ' + value_units + 's'
+    except:
+        return str(value) + ' ' + value_units + 's'
+
+
 def get_applied_modifications(genetic_modifications=None, model_organism_donor_modifications=None):
     if genetic_modifications is not None and model_organism_donor_modifications is not None:
         return list(set(genetic_modifications + model_organism_donor_modifications))
@@ -905,12 +931,6 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
 
     rep = {
         ' percent': '%',
-        '1 hours': '1 hour',
-        '1 days': '1 day',
-        '1 minutes': '1 minute',
-        '1 months': '1 month',
-        '1 weeks': '1 week',
-        '1 years': '1 year',
         '.0 ': ' ',
     }
     rep = dict((re.escape(k), v) for k, v in rep.items())

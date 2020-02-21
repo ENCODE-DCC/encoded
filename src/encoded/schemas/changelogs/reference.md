@@ -1,9 +1,15 @@
 ## Changelog for reference.json
 
+### Schema version 17
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 16
 
 * *functional elements* is added to the enums list of *reference_type* property
 * Added *MouseDevSeries* enum to *internal_tags*
+* *reference_type* was updated to include the enum *sequence adapters*
+* Removed *month_released* calculated property.
 
 ### Schema version 16
 
@@ -24,4 +30,3 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
-

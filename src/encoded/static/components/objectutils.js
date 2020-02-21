@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { CartToggle } from './cart';
 import * as globals from './globals';
+import { BrowserFeat } from './browserfeat';
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
@@ -164,7 +166,7 @@ export function requestObjects(atIds, uri, filteringObjects) {
     // complete.
     return Promise.all(objectChunks.map((objectChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
-        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
+        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${encoding.encodedURIComponentOLD('@id')}=${encoding.encodedURIComponentOLD(current)}`, ''));
         return fetch(objectUrl, {
             method: 'GET',
             headers: {
@@ -573,7 +575,7 @@ AlternateAccession.defaultProps = {
  */
 export const InternalTags = ({ internalTags, objectType, css }) => {
     const tagBadges = internalTags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${globals.encodedURIComponent(tag)}&status=released`;
+        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${encoding.encodedURIComponentOLD(tag)}&status=released`;
         return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
     });
     return <span className={css}>{tagBadges}</span>;
@@ -617,11 +619,20 @@ export class ImageWithFallback extends React.Component {
         });
     }
 
-    // Display default "not found" image for non-existent image src
     onError() {
+        // IE11 has an issue where it frequently throws a "Permission denied" exception, when the image
+        // exist. This workaround makes IE11 show either the image if it exist or the browser's
+        // inbuilt no-image display
+        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+            return;
+        }
+
+        const imageUrl = '/static/img/brokenImage.png';
+        const imageAlt = 'Not found';
+
         this.setState({
-            imageUrl: '/static/img/brokenImage.png',
-            imageAlt: 'Not found',
+            imageUrl,
+            imageAlt,
         });
     }
 

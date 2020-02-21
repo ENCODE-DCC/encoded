@@ -376,5 +376,24 @@
         "step_label": "starr-barcodes-mapping-generation-step",
         "title": "STARR-seq barcodes mapping creation step",
         "uuid": "c6a3fe50-ad2b-43c2-9bbe-591f27917cfa"
+    },
+    {
+        "analysis_step_types": [
+            "alignment"
+        ],
+        "date_created": "2019-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "miRNA annotations",
+            "reads",
+            "genome index"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "miRNA annotations"
+        ],
+        "status": "released",
+        "step_label": "star-alignment-step",
+        "title": "microRNA miRNA annotation step",
+        "uuid": "c9c96dd8-681a-43fd-b5ad-07ca5f4d5f86"
     }
 ]

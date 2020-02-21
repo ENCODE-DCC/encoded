@@ -178,7 +178,8 @@ assay_slims = {
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
     'OBI:0000845': 'RNA structure',
-    'NTR:0000516': 'Functional characterization'
+    'NTR:0000516': 'Functional characterization',
+    'OBI:0002144': 'DNA sequencing'
 }
 
 slim_shims = {
@@ -278,6 +279,11 @@ preferred_name = {
     "OBI:0001864": "RAMPAGE",
     "OBI:0001393": "genotyping array",
     "OBI:0002042": "Hi-C",
+    "OBI:0002457": "PRO-seq",
+    "OBI:0002458": "4C",
+    "OBI:0002629": "direct RNA-seq",
+    "OBI:0002144": "Circulome-seq",
+    "OBI:0002459": "genotyping HiC"
 }
 
 category_slims = {
@@ -417,32 +423,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0004875": {
-        "assay": ['Genotyping'],
-        "category": [],
-        "developmental": [],
-        "name": "genotype phasing by HiC",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "genotyping HiC",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0005023": {
-        "assay": ['DNA sequencing'],
-        "category": [],
-        "developmental": [],
-        "name": "extrachromosomal circular DNA sequencing assay",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "Circulome-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000438": {
         "assay": ['DNA accessibility'],
         "category": [],
@@ -490,45 +470,6 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "long read RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000454": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "direct RNA sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "direct RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000455": {
-        "assay": ['RNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Precision nuclear run-on sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PRO-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000456": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "Chromosome conformation capture-on-chip",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "4C",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -594,6 +535,32 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "CRISPR screen",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000536": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "PRO-cap",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "PRO-cap",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000538": {
+        "assay": ['RNA structure'],
+        "category": [],
+        "developmental": [],
+        "name": "in vivo click light activated structural examination of RNA",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "icLASER",
         "slims": [],
         "synonyms": [],
         "systems": [],

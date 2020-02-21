@@ -117,6 +117,7 @@ class GenomeBrowser extends React.Component {
         this.handleOnFocus = this.handleOnFocus.bind(this);
         this.compileFiles = this.compileFiles.bind(this);
         this.setGenomeAndTracks = this.setGenomeAndTracks.bind(this);
+        this.resetLocation = this.resetLocation.bind(this);
     }
 
     componentDidMount() {
@@ -135,7 +136,7 @@ class GenomeBrowser extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (!(this.state.disableBrowserForIE)) {
+        if (!(this.state.disableBrowserForIE) && this.GV) {
             if (this.state.contig !== prevState.contig) {
                 if (this.state.visualizer) {
                     this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
@@ -355,7 +356,8 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             } else if (file.file_format === 'bigWig') {
                 const trackObj = {};
-                trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
+                const biologicalReplicates = file.biological_replicates.join(',');
+                trackObj.name = `${file.accession} ${file.output_type} ${(biologicalReplicates !== '') ? `rep ${biologicalReplicates}` : ''}`;
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = 80;
@@ -376,7 +378,8 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             }
             const trackObj = {};
-            trackObj.name = `${file.accession} ${file.output_type} ${file.biological_replicates ? `rep ${file.biological_replicates.join(',')}` : ''}`;
+            const biologicalReplicates = file.biological_replicates.join(',');
+            trackObj.name = `${file.accession} ${file.output_type} ${(biologicalReplicates !== '') ? `rep ${biologicalReplicates}` : ''}`;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
@@ -467,6 +470,10 @@ class GenomeBrowser extends React.Component {
         });
     }
 
+    resetLocation() {
+        this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -496,7 +503,13 @@ class GenomeBrowser extends React.Component {
                                 <button className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
                             </div>
                         : null}
-                        <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
+                        <div className="browser-container">
+                            <button className="reset-browser-button" onClick={this.resetLocation}>
+                                <i className="icon icon-undo" />
+                                <span className="reset-title">Reset coordinates</span>
+                            </button>
+                            <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
+                        </div>
                     </React.Fragment>
                 :
                     <React.Fragment>

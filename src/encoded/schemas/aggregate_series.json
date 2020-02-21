@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         }
     },
     "facets": {
@@ -103,9 +103,6 @@
         },
         "related_datasets.replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
-        },
-        "month_released": {
-            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"

@@ -103,8 +103,9 @@ def base_antibody(award, lab, source, organism, target):
 def recombinant_target(testapp, gene):
     item = {
         'label': 'HA-ABCD',
-        'investigated_as': ['transcription factor', 'recombinant protein'],
-        'genes': [gene['uuid']]
+        'investigated_as': ['transcription factor'],
+        'genes': [gene['uuid']],
+        'modifications': [{'modification': 'HA'}]
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 

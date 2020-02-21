@@ -1,7 +1,12 @@
 ## Changelog for reference_epigenome.json
 
+### Schema version 17
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 16
 * Added *MouseDevSeries* enum to *internal_tags*
+* Removed *month_released* calculated property.
 
 ### Schema version 16
 
@@ -22,4 +27,3 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
-

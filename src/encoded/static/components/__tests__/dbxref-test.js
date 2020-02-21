@@ -457,6 +457,25 @@ describe('Test individual dbxref types', () => {
         });
     });
 
+    describe('Test 4DN', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['4DN:4DNESUCQ2Q6H', '4DN:4DNESA84SNKC']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://data.4dnucleome.org/experiment-set-replicates/4DNESUCQ2Q6H');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://data.4dnucleome.org/experiment-set-replicates/4DNESA84SNKC');
+        });
+    });
+
     describe('Test UCSC-GB-hg19', () => {
         let dbxLinks;
 

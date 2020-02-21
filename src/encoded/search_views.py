@@ -9,6 +9,7 @@ from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
+from snovault.elasticsearch.searches.fields import MissingMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
@@ -28,6 +29,7 @@ from snovault.elasticsearch.searches.fields import TitleResponseField
 from snovault.elasticsearch.searches.fields import TypeOnlyClearFiltersResponseField
 from snovault.elasticsearch.searches.fields import TypeResponseField
 from snovault.elasticsearch.searches.parsers import ParamsParser
+from snovault.elasticsearch.searches.responses import FieldedGeneratorResponse
 from snovault.elasticsearch.searches.responses import FieldedResponse
 
 
@@ -38,6 +40,8 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
+    config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -49,6 +53,7 @@ DEFAULT_ITEM_TYPES = [
     'Biosample',
     'BiosampleType',
     'Dataset',
+    'Donor',
     'GeneticModification',
     'Page',
     'Pipeline',
@@ -123,6 +128,24 @@ def searchv2_quick(context, request):
     return fr.render()
 
 
+def search_generator(request):
+    '''
+    For internal use (no view). Like search_quick but returns raw generator
+    of search hits in @graph field.
+    '''
+    fgr = FieldedGeneratorResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            BasicSearchResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES
+            )
+        ]
+    )
+    return fgr.render()
+
+
 @view_config(route_name='report', request_method='GET', permission='search')
 def report(context, request):
     fr = FieldedResponse(
@@ -185,6 +208,64 @@ def matrix(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='reference-epigenome-matrix', request_method='GET', permission='search')
+def reference_epigenome_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Reference Epigenome Matrix'
+            ),
+            TypeResponseField(
+                at_type=['ReferenceEpigenomeMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='reference_epigenome'
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='entex-matrix', request_method='GET', permission='search')
+def entex_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='ENTEx Matrix'
+            ),
+            TypeResponseField(
+                at_type=['EntexMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='entex'
             ),
             NotificationResponseField(),
             FiltersResponseField(),

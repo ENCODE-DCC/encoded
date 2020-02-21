@@ -157,6 +157,31 @@ def target_10_other_ptm(gene8335):
     return item
 
 
+@pytest.fixture
+def target_11_control(human):
+    item = {
+        'investigated_as': ['control'],
+        'target_organism': human['uuid'],
+        'label': 'No protein target control'
+    }
+    return item
+
+
+@pytest.fixture
+def target_12_recombinant(ctcf):
+    item = {
+        'investigated_as': [
+            'recombinant protein',
+            'chromatin remodeller',
+            'RNA binding protein'
+        ],
+        'genes': [ctcf['uuid']],
+        'modifications': [{'modification': 'eGFP'}],
+        'label': 'eGFP-CTCF'
+    }
+    return item
+
+
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -223,10 +248,10 @@ def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgr
     assert value['status'] == new_status
 
 
-def test_target_upgrade_link_to_gene(root, upgrader, target_control,
+def test_target_upgrade_link_to_gene(root, upgrader, target_H3K27ac,
                                      target_8_no_genes, target_8_one_gene,
                                      target_8_two_genes, gene3012, gene8335):
-    context = root.get_by_uuid(target_control['uuid'])
+    context = root.get_by_uuid(target_H3K27ac['uuid'])
     no_genes = upgrader.upgrade(
         'target', target_8_no_genes, current_version='8', target_version='9',
         context=context)
@@ -286,3 +311,26 @@ def test_target_upgrade_categories(upgrader,
         'RNA binding protein',
         'chromatin remodeler',
     ]
+
+
+def test_target_upgrade_remove_control(
+    upgrader,
+    target_11_control,
+):
+    new_target = upgrader.upgrade(
+        'target', target_11_control, current_version='11', target_version='12'
+    )
+    assert new_target['schema_version'] == '12'
+    assert new_target['investigated_as'] == ['other context']
+
+
+def test_target_upgrade_remove_recombinant(
+    upgrader,
+    target_12_recombinant,
+):
+    new_target = upgrader.upgrade(
+        'target', target_12_recombinant, current_version='12', target_version='13'
+    )
+    assert new_target['schema_version'] == '13'
+    assert 'recombinant protein' not in new_target['investigated_as']
+    assert len(new_target['investigated_as']) != 0

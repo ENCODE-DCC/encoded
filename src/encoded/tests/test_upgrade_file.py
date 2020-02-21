@@ -179,6 +179,31 @@ def file_14_pseudoreplicated(file_base):
     return item
 
 
+@pytest.fixture
+def file_15(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': 'e2be5728-5744-4da4-8881-cb9526d0389e',
+        'schema_version': '15',
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'read_length': 55,
+        'file_size': 243434,
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
+        'output_type': 'reads'
+    })
+    return item
+
+@pytest.fixture
+def file_16(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+        'schema_version': '16'
+    })
+    return item
+
+
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -289,3 +314,16 @@ def test_file_upgrade_14_to_15(upgrader,
     )
     assert value['schema_version'] == '15'
     assert value['output_type'] == 'pseudoreplicated IDR thresholded peaks'
+
+
+def test_file_upgrade_15_to_16(upgrader, file_15):
+    value = upgrader.upgrade('file', file_15, current_version='15', target_version='16')
+    assert value['schema_version'] == '16'
+    assert 'run_type' not in value
+    assert 'read_length' not in value
+
+def test_file_upgrade_16_to_17(upgrader, file_16):
+    value = upgrader.upgrade('file', file_16, current_version='16', target_version='17')
+    assert value['schema_version'] == '17'
+    assert 'run_type' not in value
+    assert 'read_length' not in value

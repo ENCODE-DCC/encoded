@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as encoding from '../../libs/query_encoding';
 import { FetchedData, Param } from '../fetched';
 import * as globals from '../globals';
 import { ResultTable } from '../search';
@@ -138,7 +139,7 @@ export class ObjectPicker extends React.Component {
         ];
         let searchParams = this.state.searchParams || this.props.searchBase;
         if (this.state.search) {
-            searchParams += `&searchTerm=${globals.encodedURIComponent(this.state.search)}`;
+            searchParams += `&searchTerm=${encoding.encodedURIComponentOLD(this.state.search)}`;
         }
         return (
             <React.Fragment>
@@ -176,7 +177,6 @@ export class ObjectPicker extends React.Component {
                         <Param name="context" url={`/search/${searchParams}`} />
                         <SearchBlockEdit
                             searchBase={searchParams}
-                            restrictions={this.props.restrictions}
                             hideTextFilter={!url}
                             actions={actions}
                             onChange={this.handleFilter}
@@ -190,7 +190,6 @@ export class ObjectPicker extends React.Component {
 
 ObjectPicker.propTypes = {
     onChange: PropTypes.func,
-    restrictions: PropTypes.object,
     searchBase: PropTypes.string,
     value: PropTypes.string,
     disabled: PropTypes.bool,
@@ -198,7 +197,6 @@ ObjectPicker.propTypes = {
 
 ObjectPicker.defaultProps = {
     onChange: null,
-    restrictions: {},
     searchBase: '?mode=picker',
     value: '',
     disabled: false,

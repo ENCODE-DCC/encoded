@@ -325,6 +325,29 @@ def base_experiment(testapp, lab, award, heart):
 
 
 @pytest.fixture
+def base_fcc_experiment(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'MPRA',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/functional-characterization-experiments', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_with_RNA_library(
+    testapp,
+    base_experiment,
+    base_replicate,
+    base_library,
+):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    return testapp.get(base_experiment['@id'] + '@@index-data')
+
+@pytest.fixture
 def micro_rna_experiment(
     testapp,
     base_experiment,
@@ -523,16 +546,6 @@ def target_H3K9me3(testapp, organism):
 
 
 @pytest.fixture
-def target_control(testapp, organism):
-    item = {
-        'label': 'Control',
-        'target_organism': organism['@id'],
-        'investigated_as': ['control']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
 def target_promoter(testapp, fly):
     item = {
         'label': 'daf-2',
@@ -654,11 +667,11 @@ def ucsc_browser_composite(testapp, lab, award):
 
 
 @pytest.fixture
-def publication_data(testapp, lab, award):
+def publication_data(testapp, lab, award, publication):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
-        'references': [],
+        'references': [publication['@id']],
     }
     return testapp.post_json('/publication_data', item).json['@graph'][0]
 
@@ -694,6 +707,16 @@ def pipeline(testapp, lab, award):
         'lab': lab['uuid'],
         'title': "Test pipeline",
         'assay_term_names': ['RNA-seq']
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def pipeline_without_assay_term_names(testapp, lab, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "Test pipeline"
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
@@ -1019,6 +1042,26 @@ def platform2(testapp):
 
 
 @pytest.fixture
+def platform3(testapp):
+    item = {
+        'term_id': 'NTR:0000430',
+        'term_name': 'Pacific Biosciences Sequel',
+        'uuid': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
+def platform4(testapp):
+    item = {
+        'term_id': 'NTR:0000448',
+        'term_name': 'Oxford Nanopore - MinION',
+        'uuid': '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+    }
+    return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
 def encode4_award(testapp):
     item = {
         'name': 'encode4-award',
@@ -1168,6 +1211,52 @@ def inconsistent_biosample_type(testapp):
 
 
 @pytest.fixture
+def base_replicate(testapp, base_experiment):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': base_experiment['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq(testapp, lab, award, base_experiment, base_replicate, platform1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': '91b574b6411514393507f4ebfa66d47a',
+        'output_type': 'reads',
+        'platform': platform1['@id'],
+        "read_length": 50,
+        'run_type': "single-ended",
+        'file_size': 34,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'bam',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'assembly': 'mm10',
+        'lab': lab['@id'],
+        'file_size': 34,
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
 def file_with_external_sheet(file, root):
     file_item = root.get_by_uuid(file['uuid'])
     properties = file_item.upgrade_properties()
@@ -1213,3 +1302,55 @@ def file_with_no_external_sheet(file, root):
         }
     )
     return file
+
+
+@pytest.fixture
+def fastq_no_replicate(award, experiment, lab, platform1):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'fastq',
+        'platform': platform1['@id'],
+        'file_size': 23242,
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'md5sum': '0123456789abcdef0123456789abcdef',
+        'output_type': 'raw data',
+        'status': 'in progress',
+    }
+
+
+@pytest.fixture
+def fastq(fastq_no_replicate, replicate):
+    item = fastq_no_replicate.copy()
+    item['replicate'] = replicate['@id']
+    return item
+
+
+@pytest.fixture
+def fastq_pair_1(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '1'
+    return item
+
+
+@pytest.fixture
+def library_schema_9(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'extraction_method': 'Trizol (Invitrogen 15596-026)',
+        'lysis_method': 'Possibly Trizol',
+        'library_size_selection_method': 'Gel',
+    }
+
+
+@pytest.fixture
+def library_schema_9b(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'extraction_method': 'see document ',
+        'lysis_method': 'test',
+    }

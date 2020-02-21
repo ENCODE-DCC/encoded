@@ -180,13 +180,6 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-    @calculated_property(condition='date_released', schema={
-        "title": "Month released",
-        "type": "string",
-    })
-    def month_released(self, date_released):
-        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
-
 
 class FileSet(Dataset):
     item_type = 'file_set'
@@ -370,12 +363,10 @@ class Annotation(FileSet, CalculatedVisualize):
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedAssaySynonyms):
+class PublicationData(FileSet):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
     embedded = [
-        'biosample_ontology',
-        'organism',
         'submitted_by',
         'lab',
         'award.pi.lab',
@@ -460,6 +451,23 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'files.library',
         'files.replicate.experiment.target',
         'organism'
+    ]
+
+
+@collection(
+    name='computational-models',
+    unique_key='accession',
+    properties={
+        'title': "Computational model file set",
+        'description': 'A set of files that comprise a computational model.',
+    })
+class ComputationalModel(FileSet):
+    item_type = 'computational_model'
+    schema = load_schema('encoded:schemas/computational_model.json')
+    embedded = FileSet.embedded + [
+        'submitted_by',
+        'lab',
+        'award.pi.lab'
     ]
 
 
@@ -558,6 +566,16 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
                 for assembly_from_related_dataset in properties['assembly']:
                     combined_assembly.add(assembly_from_related_dataset)
         return list(combined_assembly)
+
+    @calculated_property(define=True, schema={
+        "title": "Control types",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def control_type(self, request, related_datasets):
+        return request.select_distinct_values('control_type', *related_datasets)
 
 
 @collection(
@@ -744,3 +762,29 @@ class ExperimentSeries(Series):
     })
     def biosample_summary(self, request, related_datasets):
         return request.select_distinct_values('biosample_summary', *related_datasets)
+
+
+@collection(
+    name='single-cell-rna-series',
+    unique_key='accession',
+    properties={
+        'title': "Single cell RNA series",
+        'description': 'A series that group single cell RNA experiments sharing a similar cell classification.',
+    })
+class SingleCellRnaSeries(Series):
+    item_type = 'single_cell_rna_series'
+    schema = load_schema('encoded:schemas/single_cell_rna_series.json')
+    embedded = Series.embedded
+
+
+@collection(
+    name='functional-characterization-series',
+    unique_key='accession',
+    properties={
+        'title': "Functional characterization series",
+        'description': 'A series that group functional characterization experiments which should be analyzed and interpreted together.',
+    })
+class FunctionalCharacterizationSeries(Series):
+    item_type = 'functional_characterization_series'
+    schema = load_schema('encoded:schemas/functional_characterization_series.json')
+    embedded = Series.embedded

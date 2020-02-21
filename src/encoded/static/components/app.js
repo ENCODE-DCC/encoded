@@ -39,18 +39,22 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released' },
-                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released' },
-                { id: 'functional-char-assays', title: 'Functional characterization search', url: '/search/?type=FunctionalCharacterizationExperiment' },
+                { id: 'functional-genomics', title: 'Functional Genomics data' },
+                { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released', tag: 'collection' },
+                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released', tag: 'collection' },
+                { id: 'sep-mm-0' },
+                { id: 'functional-characterization', title: 'Functional Characterization data' },
+                { id: 'functional-char-assays', title: 'Experiment search', url: '/search/?type=FunctionalCharacterizationExperiment', tag: 'collection' },
                 { id: 'sep-mm-1' },
                 { id: 'cloud', title: 'Cloud Resources' },
                 { id: 'aws-link', title: 'AWS Open Data', url: 'https://registry.opendata.aws/encode-project/', tag: 'cloud' },
                 { id: 'sep-mm-2' },
                 { id: 'collections', title: 'Collections' },
                 { id: 'encore', title: 'ENCORE', url: '/matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
-                { id: 'entex', title: 'ENTEx', url: '/matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
+                { id: 'entex', title: 'ENTEx', url: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
                 { id: 'sescc', title: 'SE Stem Cell Consortium', url: '/matrix/?type=Experiment&status=released&internal_tags=SESCC', tag: 'collection' },
-                { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome&status=released', tag: 'collection' },
+                { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
+                { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'mouse-dev-series', title: 'Mouse development series', url: '/search/?type=OrganismDevelopmentSeries&internal_tags=MouseDevSeries&status=released', tag: 'collection' },
                 { id: 'sep-mm-3' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
@@ -63,10 +67,10 @@ const portal = {
             children: [
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
                 { id: 'sep-mm-1' },
-                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'http://screen.encodeproject.org/' },
-                { id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
-                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=4' },
-                { id: 'annotationmethods', title: 'Methods', url: 'http://screen.encodeproject.org/index/about' },
+                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'https://screen.wenglab.org/' },
+                { id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v4' },
+                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=ENCODE+v4' },
+                { id: 'annotationmethods', title: 'Methods', url: 'https://screen.wenglab.org/index/about' },
             ],
         },
         {
@@ -211,6 +215,45 @@ EulaModal.propTypes = {
     signup: PropTypes.func.isRequired,
 };
 
+const AccountCreationFailedModal = ({ closeModal, date }) => (
+    <Modal>
+        <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                Creating a new account failed. Please contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            cancelTitle="Close"
+            closeModal={closeModal}
+        />
+    </Modal>
+);
+
+AccountCreationFailedModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+    date: PropTypes.string.isRequired,
+};
+
+
+const AccountCreatedModal = ({ closeModal }) => (
+    <Modal>
+        <ModalHeader title="Account Created" closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                Welcome! A new user account is now created for you and you are automatically logged in.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            closeModal={closeModal}
+            cancelTitle={'Close'}
+        />
+    </Modal>
+);
+
+AccountCreatedModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+};
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -245,6 +288,8 @@ class App extends React.Component {
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
+            accountCreatedModalVisibility: false,
+            accountCreationFailedVisibility: false,
             authResult: '',
         };
 
@@ -279,6 +324,8 @@ class App extends React.Component {
         this.currentResource = this.currentResource.bind(this);
         this.currentAction = this.currentAction.bind(this);
         this.closeSignupModal = this.closeSignupModal.bind(this);
+        this.closeAccountCreationErrorModal = this.closeAccountCreationErrorModal.bind(this);
+        this.closeAccountCreationNotification = this.closeAccountCreationNotification.bind(this);
         this.signup = this.signup.bind(this);
     }
 
@@ -532,6 +579,14 @@ class App extends React.Component {
         this.setState({ eulaModalVisibility: false });
     }
 
+    closeAccountCreationNotification() {
+        this.setState({ accountCreatedModalVisibility: false });
+    }
+
+    closeAccountCreationErrorModal() {
+        this.setState({ accountCreationFailedVisibility: false });
+    }
+
     signup() {
         const authResult = this.state.authResult;
 
@@ -541,7 +596,7 @@ class App extends React.Component {
         }
         const accessToken = authResult.accessToken;
         this.closeSignupModal();
-        this.fetch('users/@@sign-up', {
+        this.fetch(`${window.location.origin}/users/@@sign-up`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -552,10 +607,10 @@ class App extends React.Component {
             if (!response.ok) {
                 throw new Error('Failed to create new account');
             }
-            // sign in after account creation
-            this.handleAuth0Login(authResult, false, false);
-        }).catch((err) => {
-            console.warn(err);
+            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
+            this.handleAuth0Login(authResult, false, false); // sign in after account creation
+        }).catch(() => {
+            this.setState({ accountCreationFailedVisibility: true });
         });
     }
 
@@ -1163,6 +1218,10 @@ class App extends React.Component {
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    {/* The following line is a get around for GO server not being HTTPS */}
+                    {/* https://encodedcc.atlassian.net/browse/ENCD-5005 */}
+                    {/* https://stackoverflow.com/questions/33507566/mixed-content-blocked-when-running-an-http-ajax-operation-in-an-https-page#answer-48700852 */}
+                    {this.props.context['@type'].includes('Gene') ? <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
@@ -1197,8 +1256,19 @@ class App extends React.Component {
                                 <EulaModal
                                     closeModal={this.closeSignupModal}
                                     signup={this.signup}
-                                /> :
-                            null}
+                                />
+                            : null}
+                            { this.state.accountCreatedModalVisibility ?
+                                <AccountCreatedModal
+                                    closeModal={this.closeAccountCreationNotification}
+                                />
+                            : null}
+                            {this.state.accountCreationFailedVisibility ?
+                                <AccountCreationFailedModal
+                                    closeModal={this.closeAccountCreationErrorModal}
+                                    date={(new Date()).toUTCString()}
+                                />
+                            : null}
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>

@@ -60,7 +60,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<p>Data release: 367 modERN datasets</p>\n\n<p>We are pleased to announced that a whopping <a href=\"/search/?type=Experiment&amp;status=released&amp;award.project=modERN&amp;month_released=July%2C+2016\">367 modERN datasets</a> have just been released in the ENCODE portal.</p>"
+                    "body": "<p>Data release: 367 modERN datasets</p>\n\n<p>We are pleased to announced that a whopping <a href=\"/search/?type=Experiment&amp;status=released&amp;award.project=modERN&amp;advancedQuery=date_released:[2016-07-01%20TO%202016-07-31]\">367 modERN datasets</a> have just been released in the ENCODE portal.</p>"
                 }
             ],
             "rows": [
@@ -209,7 +209,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n"
+                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=ENCODE+v3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n"
                 }
             ],
             "rows": [
@@ -249,7 +249,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<p>With collaborations from the DAC (Data Analysis Center), a total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&amp;month_released=August%2C+2016\">336 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.</p>\n\n<p>The DAC&#39;s code repository for promoter-like and enhancer-like regions are found <a href=\"https://github.com/weng-lab/encyclopedia_v3/tree/master/pipeline\">here</a>. Huge thank you to Michael Purcaro and Jill Moore for the help.</p>\n"
+                    "body": "<p>With collaborations from the DAC (Data Analysis Center), a total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=ENCODE+v3&amp;advancedQuery=date_released:[2016-08-01%20TO%202016-08-31]\">336 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.</p>\n\n<p>The DAC&#39;s code repository for promoter-like and enhancer-like regions are found <a href=\"https://github.com/weng-lab/encyclopedia_v3/tree/master/pipeline\">here</a>. Huge thank you to Michael Purcaro and Jill Moore for the help.</p>\n"
                 }
             ],
             "rows": [
@@ -431,7 +431,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that <a href=\"/matrix/?type=Experiment&amp;status=released&amp;month_released=January%2C+2017\"> 393 new datasets</a> were released in the month of January. The assays range from ChIP-seq, ATAC-seq, and various forms of RNA-seq; these datasets come from human (<a href=\"/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens\">264</a>), mouse (<a href=\u201c/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus\u201d>43</a>), and fruit fly (<a href=\u201c/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster\u201d>86</a>).</p>\n\n<p>These datasets&nbsp;are free and accessible for download&nbsp;on the ENCODE portal, no logins required.</p>"
+                    "body": "<p>We are pleased to announce that <a href=\"/matrix/?type=Experiment&amp;status=released&amp;advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]\"> 393 new datasets</a> were released in the month of January. The assays range from ChIP-seq, ATAC-seq, and various forms of RNA-seq; these datasets come from human (<a href=\"/matrix/?type=Experiment&status=released&advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens\">264</a>), mouse (<a href=\u201c/matrix/?type=Experiment&status=released&advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus\u201d>43</a>), and fruit fly (<a href=\u201c/matrix/?type=Experiment&status=released&advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster\u201d>86</a>).</p>\n\n<p>These datasets&nbsp;are free and accessible for download&nbsp;on the ENCODE portal, no logins required.</p>"
                 }
             ],
             "rows": [
@@ -488,7 +488,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the Garber Lab, under the <a href=\"/awards/U01HG007910/\">Genomics of Gene Regulation project</a>, has released <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;month_released=January%2C+2017\">66 new dendritic cell datasets</a>. These datasets come from ATAC-seq, RNA-seq, and ChIP-seq, providing great look into the genomic and transcriptomic landscape of the dendritic cell. Eleven of these are mouse, 55 are human datasets.&nbsp;</p>\n\n<p>The ENCODE DCC would like to remind all that these <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;month_released=January%2C+2017&amp;limit=all\">66 datasets</a> are free and accessible for use here on the ENCODE portal, no logins required.</p>\n"
+                    "body": "<p>We are pleased to announce that the Garber Lab, under the <a href=\"/awards/U01HG007910/\">Genomics of Gene Regulation project</a>, has released <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]\">66 new dendritic cell datasets</a>. These datasets come from ATAC-seq, RNA-seq, and ChIP-seq, providing great look into the genomic and transcriptomic landscape of the dendritic cell. Eleven of these are mouse, 55 are human datasets.&nbsp;</p>\n\n<p>The ENCODE DCC would like to remind all that these <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]&amp;limit=all\">66 datasets</a> are free and accessible for use here on the ENCODE portal, no logins required.</p>\n"
                 }
             ]
         },
@@ -512,7 +512,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the <a href=\"/about/contributors/#modERN\">modERN project</a> has released <a href=\"/search/?type=Experiment&amp;month_released=January%2C+2017&amp;replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster&award.rfa=modERN&amp;limit=all\">86 new Drosophila melanogaster ChIP-seq data</a> (includes control experiments). Their processed files have been visualized in both dm3 and dm6 genome references, and includes the processing pipelines, steps, and QC metrics.</p>\n\n<p>Please contact us at&nbsp;<a href=\"mailto:encode-help@lists.stanford.edu\">encode-help@lists.stanford.edu</a>&nbsp;for any questions regarding these datasets.</p>\n"
+                    "body": "<p>We are pleased to announce that the <a href=\"/about/contributors/#modERN\">modERN project</a> has released <a href=\"/search/?type=Experiment&amp;advancedQuery=date_released:[2017-01-01%20TO%202017-01-31]&amp;replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster&award.rfa=modERN&amp;limit=all\">86 new Drosophila melanogaster ChIP-seq data</a> (includes control experiments). Their processed files have been visualized in both dm3 and dm6 genome references, and includes the processing pipelines, steps, and QC metrics.</p>\n\n<p>Please contact us at&nbsp;<a href=\"mailto:encode-help@lists.stanford.edu\">encode-help@lists.stanford.edu</a>&nbsp;for any questions regarding these datasets.</p>\n"
                 }
             ],
             "rows": [
@@ -552,7 +552,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the Reddy Lab has released <a href=\"/search/?type=Experiment&amp;month_released=December%2C+2016&amp;lab.title=Tim+Reddy%2C+Duke&amp;status=released&amp;limit=all\">48 new ChIP-seq experiments</a>. These ChIP-seq experiments were assayed on immortalized cell ine A549, treated with dexamethasone, and each transcription factor has a control per time treatment.&nbsp;</p>\n\n<p>Treatment Time Series<br />\nCTCF:&nbsp;<a href=\"/treatment-time-series/ENCSR738NGQ/\">ENCSR738NGQ</a><br />\nJUN: <a href=\"/treatment-time-series/ENCSR588JLN/\">ENCSR588JLN</a><br />\nJUNB: <a href=\"/treatment-time-series/ENCSR483SDK/\">ENCSR483SDK</a><br />\nControl: <a href=\"/treatment-time-series/ENCSR678VDY/\">ENCSR678VDY</a></p>\n",
+                    "body": "<p>We are pleased to announce that the Reddy Lab has released <a href=\"/search/?type=Experiment&amp;advancedQuery=date_released:[2016-12-01%20TO%202016-12-31]&amp;lab.title=Tim+Reddy%2C+Duke&amp;status=released&amp;limit=all\">48 new ChIP-seq experiments</a>. These ChIP-seq experiments were assayed on immortalized cell ine A549, treated with dexamethasone, and each transcription factor has a control per time treatment.&nbsp;</p>\n\n<p>Treatment Time Series<br />\nCTCF:&nbsp;<a href=\"/treatment-time-series/ENCSR738NGQ/\">ENCSR738NGQ</a><br />\nJUN: <a href=\"/treatment-time-series/ENCSR588JLN/\">ENCSR588JLN</a><br />\nJUNB: <a href=\"/treatment-time-series/ENCSR483SDK/\">ENCSR483SDK</a><br />\nControl: <a href=\"/treatment-time-series/ENCSR678VDY/\">ENCSR678VDY</a></p>\n",
                     "@id": "#block1"
                 }
             ],
@@ -664,7 +664,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that 72 ChIP-seq experiments from the Reddy Lab (Duke University), part of the&nbsp;Genomics of Gene Regulation project, have been released to the public. All ChIP-seq experiments were done on&nbsp;A549 cell line biosamples and 66 were treated with dexamethasone. You can explore all of them <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Tim+Reddy%2C+Duke&amp;assay_title=ChIP-seq&amp;month_released=October%2C+2016&amp;biosample_ontology.term_name=A549&amp;assay_title=ChIP-seq\">here.</a>&nbsp;For more information about the Genomics of Gene Regulation, <a href=\"https://www.genome.gov/27561317/genomics-of-gene-regulation/\">read here</a>. For more information about the Reddy Lab, <a href=\"http://reddylab.org/\">read here</a>.</p>\n",
+                    "body": "<p>We are pleased to announce that 72 ChIP-seq experiments from the Reddy Lab (Duke University), part of the&nbsp;Genomics of Gene Regulation project, have been released to the public. All ChIP-seq experiments were done on&nbsp;A549 cell line biosamples and 66 were treated with dexamethasone. You can explore all of them <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Tim+Reddy%2C+Duke&amp;assay_title=ChIP-seq&amp;advancedQuery=date_released:[2016-10-01%20TO%202016-10-31]&amp;biosample_ontology.term_name=A549&amp;assay_title=ChIP-seq\">here.</a>&nbsp;For more information about the Genomics of Gene Regulation, <a href=\"https://www.genome.gov/27561317/genomics-of-gene-regulation/\">read here</a>. For more information about the Reddy Lab, <a href=\"http://reddylab.org/\">read here</a>.</p>\n",
                     "@id": "#block1"
                 }
             ],
@@ -701,7 +701,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;assay_title=ChIP-seq&amp;month_released=September%2C+2016\">81</a>&nbsp;new modERN ChIP-seq experiments released today on the ENCODE portal, 46 in&nbsp;<a href=\"http://bit.ly/2dfJNVI\">fly</a>&nbsp;and 35 in&nbsp;<a href=\"http://bit.ly/2dcVkEu\">worm</a>.&nbsp;</p>\n",
+                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;assay_title=ChIP-seq&amp;advancedQuery=date_released:[2016-09-01%20TO%202016-09-30]\">81</a>&nbsp;new modERN ChIP-seq experiments released today on the ENCODE portal, 46 in&nbsp;<a href=\"http://bit.ly/2dfJNVI\">fly</a>&nbsp;and 35 in&nbsp;<a href=\"http://bit.ly/2dcVkEu\">worm</a>.&nbsp;</p>\n",
                     "@id": "#block1"
                 }
             ],
@@ -741,7 +741,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/matrix/?type=Experiment&amp;month_released=April%2C+2016\">ENCODE Portal</a>:&nbsp;</p>\n\n<table id=\"fixedheight\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td><strong>Human:</strong>\n\n\t\t\t<ul>\n\t\t\t\t<li>127&nbsp;ChIP-seq</li>\n\t\t\t\t<li>19 ATAC-seq</li>\n\t\t\t\t<li>16 shRNA followed by RNA-seq</li>\n\t\t\t\t<li>12 RNA-seq</li>\n\t\t\t\t<li>5 ChIA-pet</li>\n\t\t\t\t<li>2 DNase-seq</li>\n\t\t\t\t<li>1 WGBS</li>\n\t\t\t</ul>\n\n\t\t\t<p>Check them all out&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;status=released&amp;month_released=June%2C+2016\">here</a></p>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n",
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/matrix/?type=Experiment&amp;advancedQuery=date_released:[2016-04-01%20TO%202016-04-30]\">ENCODE Portal</a>:&nbsp;</p>\n\n<table id=\"fixedheight\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td><strong>Human:</strong>\n\n\t\t\t<ul>\n\t\t\t\t<li>127&nbsp;ChIP-seq</li>\n\t\t\t\t<li>19 ATAC-seq</li>\n\t\t\t\t<li>16 shRNA followed by RNA-seq</li>\n\t\t\t\t<li>12 RNA-seq</li>\n\t\t\t\t<li>5 ChIA-pet</li>\n\t\t\t\t<li>2 DNase-seq</li>\n\t\t\t\t<li>1 WGBS</li>\n\t\t\t</ul>\n\n\t\t\t<p>Check them all out&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;status=released&amp;advancedQuery=date_released:[2016-06-01%20TO%202016-06-30]\">here</a></p>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n",
                     "@id": "#block1"
                 }
             ],
@@ -778,7 +778,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce 50 more modERN C. elegans&nbsp;ChIP-seq experiments ENCODE portal, with now great total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;month_released=May%2C+2016\">198 experiments</a>&nbsp;released this month.</p>\n",
+                    "body": "<p>We are pleased to announce 50 more modERN C. elegans&nbsp;ChIP-seq experiments ENCODE portal, with now great total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;advancedQuery=date_released:[2016-05-01%20TO%202016-05-31]\">198 experiments</a>&nbsp;released this month.</p>\n",
                     "@id": "#block1"
                 }
             ],
@@ -1218,7 +1218,7 @@
             "blocks": [
                 {
                     "@id": "#block1",
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human</strong>: 16 ChIP-seq, 4 iCLIP, and 3 RAMPAGE</li>\n\t<li><strong>Mouse:</strong>&nbsp;4 RNA-seq and 1 Shotgun Bisulfite-seq</li>\n</ul>\n\n<p>This release includes a new assay:</p>\n\n<ul>\n\t<li><strong>iCLIP</strong>&nbsp;(individual-nucleotide resolution UV-cross-linking and immunoprecipitation): identifies the binding site of RNA-binding proteins at individual nucleotide resolution (<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/20601959/\">PMID: 20601959</a>,&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21559008/\">PMID: 2155900</a>)</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;month_released=September,%202014\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n\n<p>Read the&nbsp;<a href=\"http://encodeproject.org/ENCODE/terms.html\">new data release policy</a>.</p>\n",
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human</strong>: 16 ChIP-seq, 4 iCLIP, and 3 RAMPAGE</li>\n\t<li><strong>Mouse:</strong>&nbsp;4 RNA-seq and 1 Shotgun Bisulfite-seq</li>\n</ul>\n\n<p>This release includes a new assay:</p>\n\n<ul>\n\t<li><strong>iCLIP</strong>&nbsp;(individual-nucleotide resolution UV-cross-linking and immunoprecipitation): identifies the binding site of RNA-binding proteins at individual nucleotide resolution (<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/20601959/\">PMID: 20601959</a>,&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21559008/\">PMID: 2155900</a>)</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;advancedQuery=date_released:[2014-09-01%20TO%202014-09-30]\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n\n<p>Read the&nbsp;<a href=\"http://encodeproject.org/ENCODE/terms.html\">new data release policy</a>.</p>\n",
                     "@type": [
                         "richtextblock",
                         "block"

@@ -118,7 +118,7 @@
                 "title": "External identifier",
                 "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
+                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*|4DN:4DNES[A-Z0-9]+)$"
             }
         },
         "documents": {
@@ -188,6 +188,50 @@
             "comment": "should be used on experiments with internal_status:pipeline error",
             "permission": "import_items",
             "title": "Pipeline error message"
+        },
+        "control_type": {
+            "type": "string",
+            "title": "Control type",
+            "description": "The specific type of control if the experiment is a control.",
+            "enum": [
+                "control",
+                "IgG",
+                "input library",
+                "mock input",
+                "no protein target",
+                "non-specific target"
+            ]
+        },
+        "analyses": {
+            "title": "Analyses",
+            "description": "A list of analyses.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Analysis",
+                "description": "One group of files which form a coherent analysis.",
+                "type": "object",
+                "required": ["files"],
+                "additionalProperties": false,
+                "properties": {
+                    "files": {
+                        "title": "Analysis files",
+                        "description": "A list of processed files belonging to this analsis",
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "permission": "import_items",
+                        "items": {
+                            "title": "Analysis file",
+                            "comment": "See file.json for available identifiers.",
+                            "type": "string",
+                            "linkTo": "File"
+                        }
+                    }
+                }
+            }
         }
     },
     "facets": {
@@ -267,9 +311,6 @@
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
         },
-        "replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
-        },
         "date_released": {
             "title": "Date released",
             "length": "long"
@@ -325,6 +366,9 @@
         "files.@id": {
             "title": "Files"
         },
+        "related_series": {
+            "title": "Related series"
+        },
         "replicates.library.biosample.accession": {
             "title": "Biosample accession"
         },
@@ -343,11 +387,8 @@
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
-        "replicates.library.biosample.age": {
-            "title": "Age"
-        },
-        "replicates.library.biosample.age_units": {
-            "title": "Age units"
+        "replicates.library.biosample.age_display": {
+            "title": "Biosample age"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"

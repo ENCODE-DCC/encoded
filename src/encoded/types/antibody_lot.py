@@ -171,22 +171,19 @@ class AntibodyLot(SharedItem):
     },
 })
 def lot_reviews(
-    characterizations,
-    targets,
     request,
+    characterizations,
     award,
+    control_type=None,
+    targets=[],
     used_by_biosample_characterizations=[]
 ):
-    characterizations = paths_filtered_by_status(request, characterizations)
     target_organisms = set()
-
-    is_control = False
+    is_control = bool(control_type)
     is_histone = False
     is_tag = False
     for t in targets:
         target = request.embed(t, '@@object')
-        if 'control' in target['investigated_as']:
-            is_control = True
         if 'histone' in target['investigated_as']:
             is_histone = True
         if (
@@ -205,11 +202,13 @@ def lot_reviews(
         'biosample_term_id': 'NTR:99999999',
         'organisms': sorted(target_organisms),
         'targets': sorted(targets),
-        'status': 'characterized to standards with exemption'
-        if is_control else ab_states[(None, None)],
-        'detail': 'IgG does not require further characterization.'
-        if is_control else ab_state_details[(None, None)]
     }
+
+    # All control antibodies are exempt and won't be reviewed
+    if is_control:
+        base_review['status'] = 'characterized to standards with exemption'
+        base_review['detail'] = 'IgG does not require further characterization.'
+        return [base_review]
 
     status_ranking = {
         'characterized to standards': 15,
@@ -228,7 +227,11 @@ def lot_reviews(
         'deleted': 2
     }
 
-    if is_tag and request.embed(award, '@@object?skip_calculated=true')['rfa'] == 'ENCODE4':
+    # ENCD-4608 ENCODE4 new characterization process for ENCODE4 tagged antibody
+    # ENCD-4872 open ENCODE4 new characterization process for ENCODE3 tagged antibody
+    rfa = request.embed(award, '@@object?skip_calculated=true')['rfa']
+    bio_char_reviews = {}
+    if is_tag and rfa in ['ENCODE4', 'ENCODE3']:
         # ENCD-4608 standards for ENCODE4 tag antibody needs different
         # configurations to start with
         encode4_tag_ab_states = {
@@ -245,12 +248,7 @@ def lot_reviews(
             'requires secondary opinion': 'Awaiting to be linked to biosample characterizations.',
             None: 'Awaiting to be linked to biosample characterizations.',
         }
-        # Techincally, a tag antibody can be a control at the same time
-        if not is_control:
-            base_review['status'] = 'awaiting characterization'
-            base_review['detail'] = 'Awaiting to be linked to biosample characterizations.'
 
-        char_reviews = {}
         for bio_char in used_by_biosample_characterizations:
             bio_char_obj = request.embed(
                 bio_char, '@@object?skip_calculated=true'
@@ -262,71 +260,119 @@ def lot_reviews(
             bio_type_obj = request.embed(
                 bio_obj['biosample_ontology'], '@@object?skip_calculated=true'
             )
-            bio_char_review = {
-                'biosample_term_name': bio_type_obj['term_name'],
-                'biosample_term_id': bio_type_obj['term_id'],
-                'organisms': [bio_obj['organism']],
-                'targets': sorted(targets),
-                'status': encode4_tag_ab_states[bio_char_status],
-                'detail': encode4_tag_ab_state_details[bio_char_status]
-            }
-            key = (
-                bio_char_review['biosample_term_name'],
-                bio_char_review['biosample_term_id'],
-                bio_obj['organism'],
+            for target in targets:
+                key = (
+                    bio_type_obj['term_name'],
+                    bio_type_obj['term_id'],
+                    bio_obj['organism'],
+                    target,
+                )
+                review = {
+                    'biosample_term_name': bio_type_obj['term_name'],
+                    'biosample_term_id': bio_type_obj['term_id'],
+                    'organisms': [bio_obj['organism']],
+                    'targets': [target],
+                    'status': encode4_tag_ab_states[bio_char_status],
+                    'detail': encode4_tag_ab_state_details[bio_char_status]
+                }
+                if key not in bio_char_reviews:
+                    bio_char_reviews[key] = review
+                    continue
+                rank = status_ranking[review.get('status')]
+                if rank > status_ranking[bio_char_reviews[key].get('status')]:
+                    bio_char_reviews[key] = review
+        # ENCODE4 tagged antibody will not follow ENCODE3 characterization
+        # process and will return here.
+        if rfa == 'ENCODE4':
+            if bio_char_reviews:
+                return list(bio_char_reviews.values())
+            else:
+                base_review['status'] = 'awaiting characterization'
+                base_review['detail'] = 'Awaiting to be linked to biosample characterizations.'
+                return [base_review]
+
+    # ENCODE3 characterization process
+    ab_char_reviews = build_ab_char_reviews(
+        request,
+        base_review,
+        status_ranking,
+        is_histone,
+        paths_filtered_by_status(request, characterizations)
+    )
+
+    if is_tag and rfa == 'ENCODE3' and bio_char_reviews:
+        # ENCD-4872 use biosample characterizations to compensate reviews for
+        # ENCODE3 tagged antibody. To avoid permutating organisms and targets
+        # while matching `bio_char_reviews` to `ab_char_reviews`, two
+        # assumptions here are:
+        # 1) if `bio_char_reviews` is not empty, every review in it will have
+        # only one organism and one target.
+        # 2) if `ab_char_reviews` is not base review, every review in it will
+        # have only one organism and one target.
+        for review in ab_char_reviews:
+            test_key = (
+                review['biosample_term_name'],
+                review['biosample_term_id'],
+                ','.join(review['organisms']),
+                ','.join(review['targets']),
             )
-            if key not in char_reviews:
-                char_reviews[key] = bio_char_review
-                continue
-            rank = status_ranking[bio_char_review.get('status')]
-            if rank > status_ranking[char_reviews[key].get('status')]:
-                char_reviews[key] = bio_char_review
-        if char_reviews:
-            return list(char_reviews.values())
-        else:
-            return [base_review]
+            if test_key in bio_char_reviews:
+                bio_char_status = bio_char_reviews[test_key]['status']
+                if status_ranking[bio_char_status] > status_ranking[review['status']]:
+                    review['status'] = bio_char_reviews[test_key]['status']
+                    review['detail'] = bio_char_reviews[test_key]['detail']
+                bio_char_reviews.pop(test_key)
+        return ab_char_reviews + list(bio_char_reviews.values())
+    else:
+        return ab_char_reviews
 
-    if not characterizations:
-        # If there are no characterizations, then default to awaiting characterization.
-        return [base_review]
 
+def build_ab_char_reviews(
+    request,
+    base_review,
+    status_ranking,
+    is_histone,
+    characterizations
+):
     review_targets = set()
     char_organisms = {}
     primary_chars = []
     secondary_chars = []
     secondary_status = None
 
-    # Since characterizations can only take one target (not an array) and primary characterizations
-    # for histone modifications may be done in multiple species, we really need to check lane.organism
-    # against the antibody.targets.organism list to determine eligibility of use in that organism.
+    # Since characterizations can only take one target (not an array)
+    # and primary characterizations for histone modifications may be done in
+    # multiple species, we really need to check lane.organism against the
+    # antibody.targets.organism list to determine eligibility of use in that
+    # organism.
 
     for characterization_path in characterizations:
         characterization = request.embed(characterization_path, '@@object')
         target = request.embed(characterization['target'], '@@object')
 
-        # instead of adding to the target_organism list with whatever they put in the
-        # characterization we need to instead compare the lane organism to see if it's in the
-        # target_organism list. If not, we'll need to indicate that they characterized an
-        # organism not in the antibody_lot.targets list so it'll have to be reviewed and
-        # added if legitimate.
+        # instead of adding to the target_organism list with whatever they put
+        # in the characterization we need to instead compare the lane organism
+        # to see if it's in the target_organism list. If not, we'll need to
+        # indicate that they characterized an organism not in the
+        # antibody_lot.targets list so it'll have to be reviewed and added if
+        # legitimate.
         review_targets.add(target['@id'])
         char_organisms[characterization['@id']] = target.get('organism')
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
-
         else:
             secondary_chars.append(characterization)
 
     # Go through the secondary characterizations first
     if secondary_chars:
         # Determine the consensus secondary characterization status based on
-        # all those submitted if more than one
-        secondary_statuses = [item['status'] for item in secondary_chars]
-
-        # Get the highest ranking status in the set
-        secondary_statuses.sort(key=lambda x: status_ranking[x], reverse=True)
-        secondary_status = secondary_statuses[0]
+        # all those submitted if more than one and get the highest ranking
+        # status in the set
+        secondary_status = max(
+            (item['status'] for item in secondary_chars),
+            key=lambda x: status_ranking[x]
+        )
 
     # If there are no primaries, return the lot review with the secondary status
     if not primary_chars:
@@ -338,28 +384,8 @@ def lot_reviews(
             base_review['biosample_term_id'] = 'NTR:00000000'
         return [base_review]
 
-    # Done with easy cases, the remaining require reviews.
-    # Check the primaries and update their status accordingly
-    lot_reviews = build_lot_reviews(request,
-                                    primary_chars,
-                                    secondary_status,
-                                    status_ranking,
-                                    review_targets,
-                                    is_histone,
-                                    char_organisms)
-
-    return lot_reviews
-
-
-def build_lot_reviews(request,
-                      primary_chars,
-                      secondary_status,
-                      status_ranking,
-                      review_targets,
-                      is_histone,
-                      char_organisms):
-
-    # We have primary characterizatons
+    # Done with easy cases, the remaining requires checking the primaries and
+    # update their status accordingly
     char_reviews = {}
     lane_organism = None
     key = None
@@ -393,26 +419,39 @@ def build_lot_reviews(request,
                 base_review = {}
                 lane_organism = lane_review['organism']
 
-                review_biosample_object = request.embed(lane_review['biosample_ontology'], '@@object')
-                base_review['biosample_term_name'] = 'any cell type or tissue' \
-                    if is_histone else review_biosample_object['term_name']
-                base_review['biosample_term_id'] = 'NTR:99999999' \
-                    if is_histone else review_biosample_object['term_id']
+                review_biosample_object = request.embed(
+                    lane_review['biosample_ontology'],
+                    '@@object'
+                )
                 base_review['organisms'] = [lane_organism]
-                base_review['targets'] = sorted(review_targets) \
-                    if is_histone else [primary['target']]
-                base_review['status'] = ab_states[(lane_review['lane_status'], secondary_status)] \
-                    if primary['status'] in ['compliant',
-                                             'not compliant',
-                                             'pending dcc review',
-                                             'exempt from standards'] else \
-                    ab_states[primary['status'], secondary_status]
-                base_review['detail'] = ab_state_details[(lane_review['lane_status'], secondary_status)] \
-                    if primary['status'] in ['compliant',
-                                             'not compliant',
-                                             'pending dcc review',
-                                             'exempt from standards'] else \
-                    ab_state_details[primary['status'], secondary_status]
+                if is_histone:
+                    base_review['biosample_term_name'] = 'any cell type or tissue'
+                    base_review['biosample_term_id'] = 'NTR:99999999'
+                    base_review['targets'] = sorted(review_targets)
+                else:
+                    base_review['biosample_term_name'] = review_biosample_object['term_name']
+                    base_review['biosample_term_id'] = review_biosample_object['term_id']
+                    base_review['targets'] = [primary['target']]
+
+                if primary['status'] in [
+                    'compliant',
+                    'not compliant',
+                    'pending dcc review',
+                    'exempt from standards',
+                ]:
+                    base_review['status'] = ab_states[
+                        (lane_review['lane_status'], secondary_status)
+                    ]
+                    base_review['detail'] = ab_state_details[
+                        (lane_review['lane_status'], secondary_status)
+                    ]
+                else:
+                    base_review['status'] = ab_states[
+                        (primary['status'], secondary_status)
+                    ]
+                    base_review['detail'] = ab_state_details[
+                        (primary['status'], secondary_status)
+                    ]
 
                 # Need to use status ranking to determine whether or not to
                 # add this review to the list or not if another already exists.

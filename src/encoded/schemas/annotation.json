@@ -19,7 +19,8 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "file_set.json#/properties" }
+        { "$ref": "file_set.json#/properties" },
+        { "$ref": "mixins.json#/assay" }
     ],
     "dependencies": {
         "biosample_ontology": {
@@ -67,7 +68,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "25"
+            "default": "27"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -78,7 +79,9 @@
                 "blacklist",
                 "candidate Cis-Regulatory Elements",
                 "chromatin state",
+                "consensus DNase hypersensitivity sites",
                 "enhancer predictions",
+                "functional characterization elements",
                 "gene expression",
                 "imputation",
                 "in vivo enhancer evaluations",
@@ -89,15 +92,23 @@
                 "representative DNase hypersensitivity sites",
                 "transcript expression",
                 "transcription factor motifs",
+                "transcription start sites",
                 "validated enhancers",
                 "variant calls"
             ]
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version",
-            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
-            "comment": "The model should be something like version 1.0",
-            "type": "string"
+            "description": " The version of the ENCODE encyclopedia to which this annotation belongs.",
+            "type": "string",
+            "enum": [
+                "ENCODE v1",
+                "ENCODE v2",
+                "ENCODE v3",
+                "ENCODE v4",
+                "ENCODE v5",
+                "Roadmap"
+            ]
         },
         "organism": {
             "title": "Organism",
@@ -239,9 +250,6 @@
         },
         "relevant_life_stage": {
             "title": "Life stage"
-        },
-        "month_released": {
-            "title": "Month released"
         },
         "software_used.software.name": {
             "title": "Software used"

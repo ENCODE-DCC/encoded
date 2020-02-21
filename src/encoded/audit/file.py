@@ -171,6 +171,11 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
+        detail = ('The file {} that is a read1 in a paired ended sequencing run is not paired_with a paired end 2 file'.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            )
+        )
+        yield AuditFailure('missing paired_with', detail, level='WARNING')
         return
 
     paired_with_file_format = value['paired_with'].get('file_format')
@@ -204,6 +209,18 @@ def audit_paired_with(value, system):
             )
         )
         yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+
+    paired_with_id = value['paired_with'].get('@id')
+
+    if value['paired_end'] == value['paired_with'].get('paired_end'):
+        detail = ('The read{} file {} is paired with read{} file {}.'.format(
+            value['paired_end'],
+            audit_link(path_to_text(value['@id']), value['@id']),
+            value['paired_with'].get('paired_end'),
+            audit_link(path_to_text(paired_with_id), paired_with_id),
+            )
+        )
+        yield AuditFailure('inconsistent paired_with', detail, level='WARNING')
 
     if value['paired_end'] == '1':
         context = system['context']
@@ -260,8 +277,7 @@ def audit_file_controlled_by(value, system):
     if value['file_format'] not in ['fastq']:
         return
 
-    if 'target' in value['dataset'] and \
-       'control' in value['dataset']['target'].get('investigated_as', []):
+    if value['dataset'].get('control_type'):
         return
 
     if not value.get('controlled_by'):
@@ -459,6 +475,13 @@ def audit_file_matching_md5sum(value, system):
         return
 
     for file in value.get('matching_md5sum'):
+        if file.get('uuid') == value.get('uuid'):
+            detail = ('File {} is listing itself as having '
+                'a matching md5 sum.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id'])
+                )
+            )
+            yield AuditFailure('inconsistent matching_md5sum', detail, level='ERROR')
         if file.get('md5sum') != value.get('md5sum'):
             detail = ('File {} is listed as having a matching md5 sum '
                 'as file {}, but the files have different md5 sums.'.format(
@@ -466,8 +489,8 @@ def audit_file_matching_md5sum(value, system):
                     audit_link(path_to_text(value['@id']), value['@id'])
                 )
             )
-            yield AuditFailure('Incorrect matching_md5sum', detail, level='ERROR')
-        else:
+            yield AuditFailure('inconsistent matching_md5sum', detail, level='ERROR')
+        elif file.get('status') in checked_statuses:
             matching_files.append(file['@id'])
             matching_files_links = [audit_link(path_to_text(file), file) for file in matching_files]
 
@@ -487,9 +510,7 @@ def audit_file_matching_md5sum(value, system):
             matching_files_joined
         )
     )
-    yield AuditFailure('Matching md5 sums', detail, level='WARNING')
-
-    return
+    yield AuditFailure('matching md5 sums', detail, level='WARNING')
 
 
 function_dispatcher = {

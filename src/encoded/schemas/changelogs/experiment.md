@@ -2,6 +2,8 @@
 
 ### Minor changes since schema version 28
 * Removed FCC *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen*, and *pooled clone sequencing* from Experiment schema. They are to be used only in FunctionalCharacterizationExperiment objects
+* Removed *month_released* calculated property.
+* Added *analyses* property.
 
 ### Schema version 28
 * Removed required property *experiment_classification*.
@@ -15,6 +17,7 @@
 * Added *MouseDevSeries* enum to *internal_tags*
 * *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen* and *pooled clone sequencing* is restricted for submission by admins only.
 * *experiment_classification* *functional characterization assay* is restricted for specification and submission by admins only.
+* Added *control_type*
 
 ### Schema version 26
 

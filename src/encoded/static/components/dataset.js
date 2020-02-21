@@ -407,6 +407,149 @@ const PublicationData = auditDecor(PublicationDataComponent);
 globals.contentViews.register(PublicationData, 'PublicationData');
 
 
+// Display Computational Model page, a subtype of Dataset.
+const ComputationalModelComponent = (props, reactContext) => {
+    const { context, auditIndicators, auditDetail } = props;
+    const itemClass = globals.itemClass(context, 'view-item');
+    const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
+    const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+
+    // Build up array of documents attached to this dataset
+    const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
+
+    // Set up the breadcrumbs
+    const datasetType = context['@type'][1];
+    const filesetType = context['@type'][0];
+    const crumbs = [
+        { id: 'Datasets' },
+        { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+        { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
+    ];
+
+    const crumbsReleased = (context.status === 'released');
+
+    // Render the publication links
+    const referenceList = pubReferenceList(context.references);
+
+    return (
+        <div className={itemClass}>
+            <header>
+                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>Summary for computational model file set {context.accession}</h1>
+                <div className="replacement-accessions">
+                    <AlternateAccession altAcc={context.alternate_accessions} />
+                </div>
+                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'computationalmodel-audit' }} />
+            </header>
+            {auditDetail(context.audit, 'computationalmodel-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
+            <Panel>
+                <PanelBody addClasses="panel__split">
+                    <div className="panel__split-element">
+                        <div className="panel__split-heading panel__split-heading--computational-model">
+                            <h4>Summary</h4>
+                        </div>
+                        <dl className="key-value">
+                            <div data-test="status">
+                                <dt>Status</dt>
+                                <dd><Status item={context} inline /></dd>
+                            </div>
+
+                            <div data-test="accession">
+                                <dt>Accession</dt>
+                                <dd>{context.accession}</dd>
+                            </div>
+
+                            {context.description ?
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {context.computational_model_type ?
+                                <div data-test="type">
+                                    <dt>Computational model type</dt>
+                                    <dd className="sentence-case">{context.computational_model_type}</dd>
+                                </div>
+                            : null}
+
+                            {context.dataset_type ?
+                                <div data-test="type">
+                                    <dt>Dataset type</dt>
+                                    <dd className="sentence-case">{context.dataset_type}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </div>
+
+                    <div className="panel__split-element">
+                        <div className="panel__split-heading panel__split-heading--computational-model-data">
+                            <h4>Attribution</h4>
+                            <ProjectBadge award={context.award} addClasses="badge-heading" />
+                        </div>
+                        <dl className="key-value">
+                            {context.lab ?
+                                <div data-test="lab">
+                                    <dt>Lab</dt>
+                                    <dd>{context.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            <AwardRef context={context} adminUser={adminUser} />
+
+                            <div data-test="externalresources">
+                                <dt>External resources</dt>
+                                <dd>
+                                    {context.dbxrefs && context.dbxrefs.length > 0 ?
+                                        <DbxrefList context={context} dbxrefs={context.dbxrefs} />
+                                    : <em>None submitted</em> }
+                                </dd>
+                            </div>
+
+                            {referenceList ?
+                                <div data-test="references">
+                                    <dt>Publications</dt>
+                                    <dd>{referenceList}</dd>
+                                </div>
+                            : null}
+
+                            {context.internal_tags && context.internal_tags.length > 0 ?
+                                <div className="tag-badges" data-test="tags">
+                                    <dt>Tags</dt>
+                                    <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </div>
+                </PanelBody>
+            </Panel>
+
+            {/* Display the file widget with the facet, graph, and tables */}
+            <FileGallery context={context} encodevers={globals.encodeVersion(context)} showReplicateNumber={false} hideGraph />
+
+            <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+
+            <DocumentsPanelReq documents={datasetDocuments} />
+        </div>
+    );
+};
+
+ComputationalModelComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Computational Model object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+ComputationalModelComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
+
+const ComputationalModel = auditDecor(ComputationalModelComponent);
+
+globals.contentViews.register(ComputationalModel, 'ComputationalModel');
+
+
 // Display Annotation page, a subtype of Dataset.
 const ReferenceComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
@@ -1221,6 +1364,8 @@ const seriesComponents = {
     TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
     TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
     AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
+    SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
+    FunctionalCharacterizationSeries: { title: 'functional characterization series', table: basicTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {
@@ -1339,6 +1484,15 @@ export const SeriesComponent = (props, reactContext) => {
                                     <dd>
                                         {terms.length > 0 ? <span>{terms.join(' and ')} </span> : null}
                                         {speciesRender ? <span>({speciesRender})</span> : null}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.treatment_term_name && context.treatment_term_name.length > 0 ?
+                                <div data-test="treatmenttermname">
+                                    <dt>Treatment{context.treatment_term_name.length > 0 ? 's' : ''}</dt>
+                                    <dd>
+                                        {context.treatment_term_name.join(', ')}
                                     </dd>
                                 </div>
                             : null}

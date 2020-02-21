@@ -1,5 +1,14 @@
 ## Changelog for user.json
 
+### Schema version 9
+
+* *groups* property was restricted to one of  
+    "enum" : [
+        "admin",
+        "read-only-admin",
+        "verified"
+    ]
+
 ### Schema version 8
 
 * All users were upgraded to include *community* in their *viewing_groups* property

@@ -35,7 +35,6 @@ const excludedTerms = [
     'output_type_output_category',
     'file_format_file_extension',
     'sort_by',
-    'anyOf',
 ];
 
 
@@ -357,7 +356,7 @@ const TermDisplay = (props) => {
                 );
             }
 
-            // No simple term types in the schema value, so don't show anything.
+            // No simple term types in the schema value, this case should be caught before this component
             return null;
         }
 
@@ -397,6 +396,16 @@ class DisplayObjectSection extends React.PureComponent {
     render() {
         const { term, schema, schemaName, profilesMap } = this.props;
 
+        // No simple term types in the schema value, so display the schema object
+        const schemaTerm = schema[term];
+        const schemaIsObject = typeof schemaTerm === 'object';
+        const schemaIsArray = Array.isArray(schemaTerm);
+        let simpleTermValuesExist = true;
+        if (schemaIsObject && schemaIsArray) {
+            const simpleTermValues = schemaTerm.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            simpleTermValuesExist = simpleTermValues.length > 0;
+        }
+
         // Set aria values for accessibility.
         const accordionId = `profile-display-values-${term}`;
         const accordionLabel = `profile-value-item-${term}`;
@@ -418,7 +427,11 @@ class DisplayObjectSection extends React.PureComponent {
                 </h3>
                 {this.state.sectionOpen ?
                     <div id={accordionId} aria-labelledby={accordionLabel} className="profile-display__values">
-                        <TermDisplay termSchema={schema[term]} linkedTerm={linkedTerms.indexOf(term) !== -1} schemaName={schemaName} profilesMap={profilesMap} />
+                        {(schemaIsObject && schemaIsArray && !(simpleTermValuesExist)) ?
+                            <DisplayRawObject schema={schema[term]} />
+                        :
+                            <TermDisplay termSchema={schema[term]} linkedTerm={linkedTerms.indexOf(term) !== -1} schemaName={schemaName} profilesMap={profilesMap} />
+                        }
                     </div>
                 : null}
             </div>

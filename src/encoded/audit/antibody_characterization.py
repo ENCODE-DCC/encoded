@@ -1,6 +1,7 @@
 from snovault import (
     AuditFailure,
     audit_checker,
+    load_schema,
 )
 from .conditions import rfa
 from .formatter import (
@@ -54,7 +55,15 @@ def audit_antibody_characterization_target(value, system):
     '''
     antibody = value['characterizes']
     target = value['target']
-    if 'recombinant protein' in target['investigated_as']:
+    # The following list should in sync with modification enum defined in the
+    # target schema.
+    tags = load_schema(
+        'encoded:schemas/target.json'
+    )['tag_modifications']['enum']
+    is_tag = ({'tag', 'synthetic tag'} & set(target['investigated_as'])) or any(
+        m['modification'] in tags for m in target.get('modifications', [])
+    )
+    if is_tag:
         prefix = target['label'].split('-')[0]
         unique_antibody_target = set()
         unique_investigated_as = set()
@@ -65,7 +74,7 @@ def audit_antibody_characterization_target(value, system):
                 unique_investigated_as.add(investigated_as)
         if ('tag' not in unique_investigated_as
             and 'synthetic tag' not in unique_investigated_as):
-            detail = ('Antibody {} is not for a tagged protein, yet target {} in antibody characterization {} is investigated_as a recombinant protein.'.format(
+            detail = ('Antibody {} is not for a tagged protein, yet target {} in antibody characterization {} is a tagged target.'.format(
                 audit_link(path_to_text(antibody['@id']), antibody['@id']),
                 prefix,
                 audit_link(path_to_text(value['@id']), value['@id']),

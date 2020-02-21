@@ -151,7 +151,7 @@ export const dbxrefPrefixMap = {
         ),
     },
     RefSeq: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
+        pattern: 'https://www.ncbi.nlm.nih.gov/nuccore/{0}',
     },
     JAX: {
         pattern: 'https://www.jax.org/strain/{0}',
@@ -210,11 +210,17 @@ export const dbxrefPrefixMap = {
     GO: {
         pattern: 'http://amigo.geneontology.org/amigo/term/GO:{0}',
     },
+    GOGene: {
+        pattern: 'http://amigo.geneontology.org/amigo/gene_product/{0}',
+    },
     'IMGT/GENE-DB': {
         pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
     },
     SRA: {
         pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
+    },
+    '4DN': {
+        pattern: 'https://data.4dnucleome.org/experiment-set-replicates/{0}',
     },
 };
 

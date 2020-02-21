@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
@@ -208,10 +209,12 @@ const SummaryVerticalFacets = ({ context }, reactContext) => {
 
     return (
         <FacetList
+            context={context}
             facets={vertFacets}
             filters={context.filters}
             searchBase={searchBase}
             addClasses="summary-facets"
+            supressTitle
         />
     );
 };
@@ -271,6 +274,9 @@ class SummaryData extends React.Component {
         const assayFacet = context.facets.find(facet => facet.field === 'assay_title');
         let assays = assayFacet ? assayFacet.terms : null;
 
+        const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
+        const filteredOutAssays = context.filters.filter(c => c.field === 'assay_title!');
+
         // Filter the assay list if any assay facets have been selected so that the assay graph will be
         // filtered accordingly. Find assay_title filters. Same applies to the lab filters.
         if (context.filters && context.filters.length > 0) {
@@ -297,15 +303,15 @@ class SummaryData extends React.Component {
         // Collect selected facet terms to add to the base linkUri.
         let searchQuery = '';
         if (context.filters && context.filters.length > 0) {
-            searchQuery = context.filters.map(filter => `${filter.field}=${globals.encodedURIComponent(filter.term)}`).join('&');
+            searchQuery = context.filters.map(filter => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
         }
         const linkUri = `/matrix/?${searchQuery}`;
 
         return (
             <div className="summary-content__data">
                 <div className="summary-content__snapshot">
-                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" /> : null}
-                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" /> : null}
+                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
+                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
                     {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} ident="status" /> : null}
                 </div>
                 <div className="summary-content__statistics">

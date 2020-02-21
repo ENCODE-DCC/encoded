@@ -35,7 +35,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "accession": {
             "accessionType": "LB"
@@ -112,6 +112,13 @@
         "lot_id":{
             "description": "The lot identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
+        "mint_mixture_identifier": {
+            "title": "MINT mixture identifier",
+            "description": "Identifier of the chromatin preps mixture.",
+            "comment": "Chromatin preps mixture identifier that is used in MINT-ChIP experiments.",
+            "type": "string",
+            "pattern": "^(MoChrPreps\\s\\d+)$"
+        },
         "construction_platform": {
             "title": "Platform",
             "description": "The device used to construct the library.",
@@ -172,16 +179,33 @@
             "title": "Extraction method",
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
             "type": "string",
-            "XXXenum": [
-                "Ambion mirVana",
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "n/a",
-                "Qiagen #74204",
-                "QIAGEN DNeasy Blood & Tissue Kit",
-                "see document",
-                "Trizol (LifeTech cat#: 15596-018)"
-            ],
-            "format": "semi-controlled"
+            "oneOf": [
+                {
+                    "enum": [
+                        "Ambion mirVana",
+                        "ATAC-seq (Greenleaf & Chang Lab protocol)",
+                        "C1 fluidigm",
+                        "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
+                        "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                        "QIAGEN DNeasy Blood & Tissue Kit",
+                        "Qiagen RNA extraction",
+                        "RNeasy",
+                        "RNeasy Lipid Tissue Mini Kit (QIAGEN cat#74804)",
+                        "RNeasy Plus Mini Kit Qiagen cat#74134 plus additional on column Dnase treatment",
+                        "Trizol",
+                        "Zymo Quick-DNA MicroPrep (D3021)"
+                    ]
+                },
+                {
+                    "comment": "Historical extraction methods, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "TruChIP chromatin shearing reagent kit Covaris cat# 520154, sonication Covaris M220, IP (home protocol), DNA isolation with QIAquick PCR Purification Kit cat# 28104.",
+                        "SDS",
+                        "other"
+                    ]
+                }
+            ]
         },
         "fragmentation_methods": {
             "title": "Fragmentation methods",
@@ -242,29 +266,60 @@
             "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
             "type": "string",
-            "XXXenum": [
-                "Agencourt AMPure XP",
-                "BluePippin",
-                "gel",
-                "see document",
-                "SPRI beads"
-            ],
-            "format": "semi-controlled"
+            "oneOf": [
+                {
+                    "enum": [
+                        "agarose gel extraction",
+                        "AMPure XP bead purification",
+                        "BluePippin",
+                        "BluePippin 2-10Kb",
+                        "dual SPRI",
+                        "E-Gel",
+                        "gel",
+                        "gel followed by Amicon filters",
+                        "Invitrogen EGel EX 2% agarose (Cat# G402002)",
+                        "Pippin HT",
+                        "Sera-mag SpeedBeads",
+                        "SPRI beads"
+                    ]
+                },
+                {
+                    "comment": "Historical size selection methods, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "Only RNAs greater than 200 nucleotides. The inserts for the library will vary from ~ 100 - 700 base pairs.",
+                        "Only RNAs greater than 200 nucleotides. The insert for the library will vary from ~ 100 - 700 base pairs.",
+                        "SPRI beads AMPURE",
+                        "other"
+                    ]
+                }
+            ]
         },
         "lysis_method": {
             "title": "Lysis method",
-            "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
+            "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable.",
             "type": "string",
-            "XXXenum": [
-                "Ambion mirVana",
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "n/a",
-                "Qiagen #74204",
-                "QIAGEN DNeasy Blood & Tissue Kit",
-                "see document",
-                "Trizol (LifeTech cat#: 15596-018)"
-            ],
-            "format": "semi-controlled"
+            "oneOf": [
+                {
+                    "enum": [
+                        "ATAC buffer",
+                        "Clontech UltraLow for Illumina sequencing",
+                        "RIPA",
+                        "SDS"
+                    ]
+                },
+                {
+                    "comment": "Historical lysis methods, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "QIAGEN DNeasy Blood & Tissue Kit",
+                        "[NPB (5% BSA (Sigma), 0.2% IGEPAL-CA630 (Sigma), cOmplete (Roche), 1mM DTT in PBS)]",
+                        "0.01% digitonin",
+                        "72 degrees for 3 minutes in the presence of Triton",
+                        "other"
+                    ]
+                }
+            ]
         },
         "crosslinking_method": {
             "title": "Crosslinking method",
@@ -326,6 +381,36 @@
                     "polyadenylated mRNA",
                     "rRNA"
                 ]
+            }
+        },
+        "adapters": {
+            "type": "array",
+            "title": "Sequencing adapters",
+            "description": "Adapter(s) used during library preparation",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Sequencing adapter",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["file"],
+                "properties": {
+                    "type": {
+                        "title": "Adapter type",
+                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                        "type": "string",
+                        "enum": [
+                            "5' adapter",
+                            "3' adapter"
+                        ]
+                    },
+                    "file": {
+                        "title": "Adapter file",
+                        "description": "One file with adapter sequence(s).",
+                        "type": "string",
+                        "linkTo": "File"
+                    }
+                }
             }
         }
     },

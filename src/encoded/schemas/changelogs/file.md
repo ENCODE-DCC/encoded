@@ -1,8 +1,28 @@
 ## Changelog for file.json
 
+### Schema version 17
+* Added Oxford Nanopore platforms, MinION and PromethION to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on Oxford Nanopore and PacBio platforms.
+
+### Minor changes since schema version 16
+* *output_type* list was updated to include the enum *personalized genome assembly* and *index reads*
+* *index_of* list property was added to allow specification of FASTQ files that are linked to the index file
+* *output_type* list was updated to include the following enums:
+        [
+            "negative control regions",
+            "non-targeting gRNAs",
+            "positive control regions",
+            "safe-targeting gRNAs",
+            "subreads"
+        ]
+
+### Schema version 16
+
+* Added new PacBio platform, PacBio Sequel II to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on PacBio platform.
+
 ### Minor changes since schema version 15
 
 * *output_type* list was updated to include the enum *elements reference*
+* *output_type* list was updated to include the enum *miRNA annotations*
 
 ### Schema version 15
 

@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "17"
         },
         "supersedes": {
             "title": "Supersedes" ,
@@ -117,9 +117,6 @@
         "related_datasets.replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
         },
-        "month_released": {
-            "title": "Month released"
-        },
         "lab.title": {
             "title": "Lab"
         },
@@ -133,6 +130,10 @@
     "columns": {
         "accession": {
             "title": "Accession",
+            "type": "string"
+        },
+        "assay_term_name": {
+            "title": "Assay name",
             "type": "string"
         },
         "biosample_ontology.term_name" : {

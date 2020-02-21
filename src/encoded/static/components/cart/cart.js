@@ -5,10 +5,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import * as encoding from '../../libs/query_encoding';
 import Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading } from '../../libs/ui/panel';
 import { tintColor } from '../datacolors';
-import { itemClass, encodedURIComponent, parseAndLogError } from '../globals';
+import { itemClass, parseAndLogError } from '../globals';
 import { requestObjects, ItemAccessories } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
@@ -665,7 +666,7 @@ class FileFacets extends React.Component {
         let queryString = '';
         displayedFacetFields.forEach((field) => {
             if (this.props.selectedTerms[field].length > 0) {
-                const termQuery = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(term)}`).join('&');
+                const termQuery = this.props.selectedTerms[field].map(term => `files.${field}=${encoding.encodedURIComponentOLD(term)}`).join('&');
                 queryString += `&${termQuery}`;
             }
         });

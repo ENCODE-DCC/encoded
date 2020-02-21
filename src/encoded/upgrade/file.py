@@ -599,3 +599,27 @@ def file_14_15(value, system):
         value['output_type'] = 'conservative IDR thresholded peaks'
     elif output_type and output_type == 'pseudoreplicated idr thresholded peaks':
         value['output_type'] = 'pseudoreplicated IDR thresholded peaks'
+
+
+@upgrade_step('file', '15', '16')
+def file_15_16(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4921
+    platform = value.get('platform', None)
+
+    if platform == "e2be5728-5744-4da4-8881-cb9526d0389e":
+            value.pop('read_length', None)
+            value.pop('run_type', None)
+    return
+
+@upgrade_step('file', '16', '17')
+def file_16_17(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5050
+    platform = value.get('platform', None)
+
+    if platform and platform in [
+        "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+        ]:
+            value.pop('read_length', None)
+            value.pop('run_type', None)
+    return

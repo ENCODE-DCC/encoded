@@ -1,8 +1,16 @@
 ## Changelog for genetic_modification.json
 
+### Schema version 9
+
+* Several underused *purpose* enum were combined: *activation* and *overexpression* are remapped to *expression*, and *analysis* and *screening* are remapped to *characterization*.
+* A combination of method *CRISPR* with the category of *activation* or *interference* and purpose *characterization* may be submitted to specify a collective set of modifications intended for a CRISPRa or CRISPRi screen.
+
 ### Minor changes since schema version 8
+* *TagRFP* was added to the *introduced_tags* enum.
 * Added calculated property *perturbed* to indicate genetic modifications which cause genetic perturbations.
-* *donor* property was added to allow specification of the origin of the sheared genomic DNA elements
+* *donor* property was added to allow specification of the origin of the sheared genomic DNA elements or genomic DNA regions
+* *non-specific target control* was added to the *purpose* enum.
+* *genomic DNA regions* was added to the *introduced_elements* enum to describe selected regions derived from donor DNA
 
 ### Schema version 8
 

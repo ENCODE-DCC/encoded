@@ -385,7 +385,7 @@ class CalculatedAssayTitle:
         "type": "string",
     })
     def assay_title(self, request, registry, assay_term_name,
-                    replicates=None, target=None):
+                    control_type=None, replicates=None, target=None):
         # This is the preferred name in generate_ontology.py if exists
         assay_term_id = assay_terms.get(assay_term_name, None)
         if assay_term_id in registry['ontology']:
@@ -416,17 +416,18 @@ class CalculatedAssayTitle:
                             continue
                         break
             elif preferred_name == 'ChIP-seq':
-                if target is not None:
+                preferred_name = 'Control ChIP-seq'
+                if not control_type and target is not None:
                     target_object = request.embed(target,'@@object')
                     target_categories = target_object['investigated_as']
                     if 'histone' in target_categories:
                         preferred_name = 'Histone ChIP-seq'
-                    elif 'control' in target_categories:
-                        preferred_name = 'Control ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
-                else:
-                    preferred_name = 'Control ChIP-seq'
+            elif control_type and assay_term_name == 'eCLIP':
+                preferred_name = 'Control eCLIP'
+            elif control_type == 'control' and assay_term_name in ['MPRA', 'CRISPR screen', 'STARR-seq']:
+                preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
         return assay_term_name
 

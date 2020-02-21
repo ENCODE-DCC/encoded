@@ -17,6 +17,10 @@ indices.query.bool.max_clause_count: 8192
 # Self elect master node
 node.master: true
 node.data: true
+
+# We can only use 4 or 5 node clusters
+#  since this is hard coded to 3.
+# N/2+1 formula.
 discovery.zen.minimum_master_nodes: 3
 
 # Cluster name is appened on deploy

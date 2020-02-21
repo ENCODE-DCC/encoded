@@ -8,14 +8,15 @@
  * types. For example, Experiments support all currently supported types: search (list), report,
  * matrix, and summary.
  *
- * This function call in the module space of experiment.js registers those four views:
+ * This function call in the module space of experiment.js registers those four views and an
+ * optional type filter:
  *
  * ViewControlRegistry.register('Experiment', [
  *     ViewControlTypes.SEARCH,
  *     ViewControlTypes.MATRIX,
  *     ViewControlTypes.REPORT,
  *     ViewControlTypes.SUMMARY,
- * ]);
+ * ], typeFilter);
  *
  * When any of /search/, /matrix/, /report/, or /summary/ specify type=Experiment and no other
  * types in the query string, the three view buttons for the search results pages not currently
@@ -25,6 +26,14 @@
  * specifying only that type, as these two buttons get displayed for all type=<whatever> search
  * results when only one type= exists in the query string.
  *
+ * The optional type filter lets you alter the list of returned views from what you specified in
+ * the array parameter. You pass a function that takes two parameters:
+ * - Array of views -- the same array as you passed in the second parameter to the `register`
+ *   method.
+ * - Search results object for the current page.
+ * This type-filter function returns the actual list of views to display, so that specific searches
+ * can alter the available views.
+ *
  * DISPLAY
  * To display the buttons at the top of any search results, use the <ViewControls> component,
  * passing it the search results object received in React props.context. <SearchControls> includes
@@ -33,9 +42,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import * as encoding from '../libs/query_encoding';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
-import * as globals from './globals';
 
 
 /**
@@ -107,14 +116,18 @@ class ViewControl {
      * not disallowed by the object type.
      * @param {string} type @type of object to register
      * @param {array} controlTypes Elements of ViewControlTypes to register
+     * @param {func} typeFilter Callback for type-specific filtering of views
      */
-    register(type, controlTypes) {
+    register(type, controlTypes, typeFilter) {
         const defaultViewControlTypes = [ViewControlTypes.SEARCH];
         if (!parentTypes.includes(type)) {
             // Add report view if object type has no child types.
             defaultViewControlTypes.push(ViewControlTypes.REPORT);
         }
-        this._registry[type] = new Set(controlTypes.concat(defaultViewControlTypes));
+        this._registry[type] = { types: new Set(controlTypes.concat(defaultViewControlTypes)) };
+        if (typeFilter) {
+            this._registry[type].typeFilter = typeFilter;
+        }
     }
 
     /**
@@ -128,14 +141,17 @@ class ViewControl {
     lookup(resultType) {
         if (this._registry[resultType]) {
             // Registered search result type. Sort and return saved views for that type.
-            return _.sortBy(Array.from(this._registry[resultType]), viewName => viewOrder.indexOf(viewName));
+            return {
+                types: _.sortBy(Array.from(this._registry[resultType].types), viewName => viewOrder.indexOf(viewName)),
+                typeFilter: this._registry[resultType].typeFilter,
+            };
         }
 
         // Unregistered search result type. Return all default views that apply to the type.
-        const defaultViewControlTypes = [ViewControlTypes.SEARCH];
+        const defaultViewControlTypes = { types: [ViewControlTypes.SEARCH] };
         if (!parentTypes.includes(resultType)) {
             // Add report view if object type has no child types.
-            defaultViewControlTypes.push(ViewControlTypes.REPORT);
+            defaultViewControlTypes.types.push(ViewControlTypes.REPORT);
         }
         return defaultViewControlTypes;
     }
@@ -161,7 +177,7 @@ const getQueryFromFilters = (filters) => {
     const typeQueries = filters.filter(searchFilter => searchFilter.field === 'type');
     const termQueries = filters.filter(searchFilter => searchFilter.field !== 'type' && searchFilter.field !== 'searchTerm');
     const searchTermQueries = filters.filter(searchFilter => searchFilter.field === 'searchTerm');
-    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map(searchFilter => `${searchFilter.field}=${globals.encodedURIComponent(searchFilter.term)}`);
+    const queryElements = typeQueries.concat(termQueries, searchTermQueries).map(searchFilter => `${searchFilter.field}=${encoding.encodedURIComponentOLD(searchFilter.term)}`);
     return `${queryElements.join('&')}`;
 };
 
@@ -183,7 +199,15 @@ export const ViewControls = ({ results, filterTerm }) => {
     if (typeFilters.length === 1) {
         // We'll get at least one `views` array element because /report/ is a view available to
         // every "type=" even if nothing has been registered for that type.
-        const views = ViewControlRegistry.lookup(typeFilters[0].term).filter(item => item !== results['@type'][0]);
+        let views;
+        const viewInfo = ViewControlRegistry.lookup(typeFilters[0].term);
+        if (viewInfo.typeFilter) {
+            // Custom type filter defined, so call that to get the relevant views.
+            views = viewInfo.typeFilter(viewInfo.types, results);
+        } else {
+            // No custom filter, so just get the default relevant views.
+            views = viewInfo.types.filter(item => item !== results['@type'][0]);
+        }
         const queryString = getQueryFromFilters(results.filters);
         return (
             <div className="btn-attached">
@@ -287,7 +311,7 @@ export class BatchDownloadControls extends React.Component {
 
     handleDownloadClick() {
         const queryString = getQueryFromFilters(this.props.results.filters);
-        this.context.navigate(`/batch_download/${queryString}`);
+        this.context.navigate(`/batch_download/?${queryString}`);
     }
 
     render() {

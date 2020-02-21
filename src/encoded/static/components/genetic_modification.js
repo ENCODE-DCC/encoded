@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { Document, DocumentPreview, DocumentFile, DocumentsPanel } from './doc';
@@ -470,7 +471,7 @@ class GeneticModificationComponent extends React.Component {
         const modificationDocuments = [];
         const characterizationDocuments = [];
         let searchPromise = null;
-        const modificationCharacterizationDocumentsQuery = modificationCharacterizationDocumentsAtIds.length > 0 ? modificationCharacterizationDocumentsAtIds.reduce((acc, document) => `${acc}&${globals.encodedURIComponent(`@id=${document}`)}`, '') : null;
+        const modificationCharacterizationDocumentsQuery = modificationCharacterizationDocumentsAtIds.length > 0 ? modificationCharacterizationDocumentsAtIds.reduce((acc, document) => `${acc}&${encoding.encodedURIComponentOLD(`@id=${document}`)}`, '') : null;
         if (modificationCharacterizationDocumentsQuery) {
             searchPromise = requestSearch(`type=Document${modificationCharacterizationDocumentsQuery}`);
         } else {
@@ -851,7 +852,9 @@ const CharacterizationDetail = (props) => {
                 {doc.award && doc.award.name ?
                     <div data-test="award">
                         <dt>Grant</dt>
-                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
+                        <dd>
+                            {doc.award['@id'] ? <a href={doc.award['@id']}>{doc.award.name}</a> : doc.award['@id']}
+                        </dd>
                     </div>
                 : null}
 

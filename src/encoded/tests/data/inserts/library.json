@@ -9,11 +9,9 @@
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "extraction_method": "see document",
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
-        "lysis_method": "see document",
         "nucleic_acid_term_name": "DNA",
         "nucleic_acid_starting_quantity": "1",
         "nucleic_acid_starting_quantity_units": "cell-equivalent",
@@ -21,6 +19,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
         "rna_integrity_number": 1.11,
+        "mint_mixture_identifier": "MoChrPreps 252",
         "dbxrefs": [
             "GEO:GSM433174"
         ]
@@ -35,11 +34,9 @@
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "extraction_method": "see document",
         "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
-        "lysis_method": "see document",
         "nucleic_acid_term_name": "DNA",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -58,11 +55,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -82,11 +78,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
         "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
@@ -103,7 +98,6 @@
         "biosample": "ENCBS087RNA",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -119,7 +113,6 @@
         "biosample": "ENCBS088RNA",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -139,9 +132,8 @@
         "documents": [
             "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
         ],
-        "extraction_method": "Qiagen #74204",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "Qiagen #74204",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
         "strand_specificity": true,
@@ -164,9 +156,8 @@
         "documents": [
             "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
         ],
-        "extraction_method": "Qiagen #74204",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "lysis_method": "Qiagen #74204",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
         "strand_specificity": true,
@@ -184,11 +175,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
-        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
+        "extraction_method": "Trizol",
         "fragmentation_methods": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
-        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -278,11 +268,10 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
-        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
+        "extraction_method": "Trizol",
         "fragmentation_methods": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
-        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
         "strand_specificity": true,
@@ -298,7 +287,6 @@
         ],
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "9a230485-0062-4590-be42-6ea7c4258941"
@@ -313,7 +301,6 @@
         ],
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79"
@@ -325,7 +312,6 @@
         "biosample": "ENCBS000GEN",
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816"
@@ -823,5 +809,115 @@
         "uuid": "f0344255-883d-4828-a909-a557a72a447c",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
+    },
+    {
+        "_test": "microRNA-seq rep1 library",
+        "date_created": "2018-07-04T00:03:13.006401+00:00",
+        "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
+        "nucleic_acid_term_name": "miRNA",
+        "accession": "ENCLB136UZC",
+        "status": "released",
+        "size_range": "<30",
+        "award": "/awards/U54HG006998/",
+        "aliases": [
+            "ali-mortazavi:K562-Lib1"
+        ],
+        "biosample": "/biosamples/ENCBS001EPI/",
+        "lab": "/labs/ali-mortazavi/",
+        "adapters": [
+            {
+              "type": "3' adapter",
+              "file": "ENCFF463QEL"
+            },
+            {
+              "type": "5' adapter",
+              "file": "ENCFF980GYX"
+            }
+        ]
+    },
+    {
+        "_test": "microRNA-seq rep2 library",
+        "date_created": "2018-07-04T00:03:13.133968+00:00",
+        "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
+        "nucleic_acid_term_name": "miRNA",
+        "award": "/awards/U54HG006998/",
+        "aliases": [
+            "ali-mortazavi:K562-Lib2"
+        ],
+        "accession": "ENCLB339NLX",
+        "size_range": "<30",
+        "lab": "/labs/ali-mortazavi/",
+        "biosample": "/biosamples/ENCBS088RNA/",
+        "status": "released",
+        "adapters": [
+            {
+              "type": "3' adapter",
+              "file": "ENCFF463QEL"
+            },
+            {
+              "type": "5' adapter",
+              "file": "ENCFF379BCO"
+            }
+        ]
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCLB826TVQ",
+        "aliases": [
+            "john-stamatoyannopoulos:56768A"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS204NZH",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCLB827TVQ",
+        "aliases": [
+            "john-stamatoyannopoulos:58768A"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS061XGD",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCLB828TVQ",
+        "aliases": [
+            "john-stamatoyannopoulos:58288A"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS009WOO",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCLB646BFR",
+        "aliases": [
+            "john-stamatoyannopoulos:57126A"
+        ],
+        "award": "UM1HG009390",
+        "biosample": "ENCBS376EJL",
+        "lab": "encode2-project",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c"
     }
 ]

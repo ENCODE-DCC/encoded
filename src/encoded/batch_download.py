@@ -4,13 +4,14 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 from pyramid.response import Response
 from snovault import TYPES
+from snovault.elasticsearch.searches.parsers import QueryString
 from snovault.util import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
     quote,
 )
-from encoded.search_views import search
+from encoded.search_views import search_generator
 import csv
 import io
 import json
@@ -22,8 +23,8 @@ currenttime = datetime.datetime.now()
 
 
 def includeme(config):
-    config.add_route('batch_download', '/batch_download/{search_params}')
-    config.add_route('metadata', '/metadata/{search_params}/{tsv}')
+    config.add_route('batch_download', '/batch_download{slash:/?}')
+    config.add_route('metadata', '/metadata{slash:/?}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
@@ -340,7 +341,8 @@ def peak_metadata(context, request):
 
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
-    param_list = parse_qs(request.matchdict['search_params'])
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
     if 'referrer' in param_list:
         search_path = '/{}/'.format(param_list.pop('referrer')[0])
     else:
@@ -381,10 +383,23 @@ def metadata_tsv(context, request):
             pass
         else:
             param_list['@id'] = elements
-
-    param_list['limit'] = ['all']
-    path = '{}?{}'.format(search_path, quote(urlencode(param_list, True)))
-    results = request.embed(path, as_user=True)
+    default_params = [
+        ('limit', 'all')
+    ]
+    field_params = [
+        ('field', p)
+        for p in param_list.get('field', [])
+    ]
+    at_id_params = [
+        ('@id', p)
+        for p in param_list.get('@id', [])
+    ]
+    qs.drop('limit')
+    qs.extend(
+        default_params + field_params + at_id_params
+    )
+    path = '{}?{}'.format(search_path, str(qs))
+    results = request.embed(quote(path), as_user=True)
     rows = []
     for experiment_json in results['@graph']:
         if experiment_json.get('files', []):
@@ -444,55 +459,72 @@ def metadata_tsv(context, request):
 
 @view_config(route_name='batch_download', request_method=('GET', 'POST'))
 def batch_download(context, request):
-    # adding extra params to get required columns
-    param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.restricted'] + [k for k, v in param_list.items() if k.startswith('files.')]
-    param_list['limit'] = ['all']
-
+    default_params = [
+        ('limit', 'all'),
+        ('field', 'files.href'),
+        ('field', 'files.restricted')
+    ]
+    qs = QueryString(request)
+    file_filters = qs.param_keys_to_list(
+        params=qs.get_filters_by_condition(
+            key_and_value_condition=lambda k, _: k.startswith('files.')
+        )
+    )
+    file_fields = [
+        ('field', k)
+        for k in file_filters
+    ]
+    qs.drop('limit')
+    qs.extend(
+        default_params + file_fields
+    )
     experiments = []
     error_message = None
     if request.method == 'POST':
         metadata_link = ''
-        cart_uuid = None
-
-        # Batch download from cart issues POST and might include "cart" key.
-        cart_uuids = param_list.get('cart', [])
-        if cart_uuids:
-            # "cart" key in query string. Use first cart UUID in metadata link.
-            cart_uuid = cart_uuids.pop()
-
+        cart_uuid = qs.get_one_value(
+            params=qs.get_key_filters(
+                key='cart'
+            )
+        )
         try:
             elements = request.json.get('elements', [])
         except ValueError:
             elements = []
         if cart_uuid:
             # metadata.tsv link includes a cart UUID
-            metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+            metadata_link = '{host_url}/metadata/?{search_params}'.format(
                 host_url=request.host_url,
-                search_params=quote(request.matchdict['search_params']),
+                search_params=qs._get_original_query_string()
             )
         else:
-            metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
+            metadata_link = '{host_url}/metadata/?{search_params} -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
                 host_url=request.host_url,
-                search_params=quote(request.matchdict['search_params']),
+                search_params=qs._get_original_query_string(),
                 elements_json=','.join('"{0}"'.format(element) for element in elements)
             )
 
         # Because of potential number of datasets in the cart, break search
         # into multiple searches of ELEMENT_CHUNK_SIZE datasets each.
         for i in range(0, len(elements), ELEMENT_CHUNK_SIZE):
-            param_list['@id'] = elements[i:i + ELEMENT_CHUNK_SIZE]
-            path = '/search/?%s' % quote(urlencode(param_list, True))
-            results = request.embed(path, as_user=True)
+            qs.drop('@id')
+            qs.extend(
+                [
+                    ('@id', e)
+                    for e in elements[i:i + ELEMENT_CHUNK_SIZE]
+                ]
+            )
+            path = '/search/?{}'.format(str(qs))
+            results = request.embed(quote(path), as_user=True)
             experiments.extend(results['@graph'])
     else:
         # Regular batch download has single simple call to request.embed
-        metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
+        metadata_link = '{host_url}/metadata/?{search_params}'.format(
             host_url=request.host_url,
-            search_params=quote(request.matchdict['search_params'])
+            search_params=qs._get_original_query_string()
         )
-        path = '/search/?%s' % quote(urlencode(param_list, True))
-        results = request.embed(path, as_user=True)
+        path = '/search/?{}'.format(str(qs))
+        results = request.embed(quote(path), as_user=True)
         experiments = results['@graph']
 
     exp_files = (
@@ -502,6 +534,7 @@ def batch_download(context, request):
     )
 
     files = [metadata_link]
+    param_list = qs.group_values_by_key()
     for exp_file in exp_files:
         if not files_prop_param_list(exp_file, param_list):
             continue
@@ -608,7 +641,7 @@ def report_download(context, request):
     def generate_rows():
         yield format_header(header)
         yield format_row(header)
-        for item in search(context, request).json['@graph']:
+        for item in search_generator(request)['@graph']:
             values = [lookup_column_value(item, path) for path in columns]
             yield format_row(values)
 

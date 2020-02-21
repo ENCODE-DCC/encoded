@@ -495,3 +495,52 @@ def experiment_26_27(value, system):
 def experiment_27_28(value, system):
     #https://encodedcc.atlassian.net/browse/ENCD-4838
     value.pop('experiment_classification', None)
+
+
+@upgrade_step('annotation', '25', '26')
+def annotation_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4488
+    enc_ver = value.get('encyclopedia_version')
+    ver_dict = {
+        '1': 'ENCODE v1',
+        '2': 'ENCODE v2',
+        'ENCODE2': 'ENCODE v2',
+        '3': 'ENCODE v3',
+        '4': 'ENCODE v4',
+        '5': 'ENCODE v5',
+        'ROADMAP': 'Roadmap',
+    }
+    if enc_ver in ver_dict:
+        value['encyclopedia_version'] = ver_dict[enc_ver]
+    elif enc_ver == 'Blacklists':
+        value.pop('encyclopedia_version', None)
+    return
+
+
+@upgrade_step('aggregate_series', '1', '2')
+@upgrade_step('annotation', '26', '27')
+@upgrade_step('experiment_series', '1', '2')
+@upgrade_step('functional_characterization_experiment', '1', '2')
+@upgrade_step('functional_characterization_series', '1', '2')
+@upgrade_step('matched_set', '15', '16')
+@upgrade_step('organism_development_series', '15', '16')
+@upgrade_step('project', '15', '16')
+@upgrade_step('publication_data', '15', '16')
+@upgrade_step('reference_epigenome', '16', '17')
+@upgrade_step('reference', '16', '17')
+@upgrade_step('replication_timing_series', '15', '16')
+@upgrade_step('single_cell_rna_series', '1', '2')
+@upgrade_step('treatment_concentration_series', '15', '16')
+@upgrade_step('treatment_time_series', '16', '17')
+@upgrade_step('ucsc_browser_composite', '15', '16')
+def dataset_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5068
+    if not value.get('dbxrefs'):
+        return
+    new_dbxrefs = set()
+    for dbxref in value['dbxrefs']:
+        if not dbxref.startswith('IHEC:IHECRE'):
+            new_dbxrefs.add(dbxref)
+            continue
+        new_dbxrefs.add(dbxref.rsplit('.', 1)[0])
+    value['dbxrefs'] = sorted(new_dbxrefs)

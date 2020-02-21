@@ -13,6 +13,7 @@ from pyramid.httpexceptions import (
     HTTPInternalServerError,
     HTTPForbidden,
     HTTPCreated,
+    HTTPFound,
 )
 from pyramid.security import (
     NO_PERMISSION_REQUIRED,

@@ -247,6 +247,61 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
                'inconsistent paired_with' for error in errors_list)
 
 
+def test_audit_file_inconsistent_paired_with(testapp, file1, file3):
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '1', 'paired_with': file3['uuid']})
+    testapp.patch_json(file3['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '1'})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'inconsistent paired_with' for error in errors_list)
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file3['uuid']})
+    testapp.patch_json(file3['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file1['uuid']})
+    res2 = testapp.get(file1['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'inconsistent paired_with' for error in errors_list)
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '1'})
+    res3 = testapp.get(file1['@id'] + '@@index-data')
+    errors = res3.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+               'inconsistent paired_with' for error in errors_list)
+
+
+def test_audit_missing_paired_with(testapp, file2, file4):
+    testapp.patch_json(file2['@id'], {
+                        'run_type': 'paired-ended', 'paired_end': '1'})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+                'missing paired_with' for error in errors_list)
+    testapp.patch_json(file2['@id'], {
+                        'paired_with': file4['uuid']})
+    res2  = testapp.get(file2['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+                'missing paired_with' for error in errors_list)
+
+
 def test_audit_paired_with_non_fastq(testapp, file1, file6, platform1):
     testapp.patch_json(
         file1['@id'], 
@@ -1058,7 +1113,7 @@ def test_audit_matching_md5sum(testapp, file7, file6):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'Incorrect matching_md5sum'
+    assert any(error['category'] == 'inconsistent matching_md5sum'
                for error in errors_list)
 
     testapp.patch_json(
@@ -1073,5 +1128,21 @@ def test_audit_matching_md5sum(testapp, file7, file6):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'Matching md5 sums'
+    assert any(error['category'] == 'matching md5 sums'
+               for error in errors_list)
+
+
+def test_audit_self_matching_md5sum(testapp, file7):
+    testapp.patch_json(
+        file7['@id'],
+        {
+            'matching_md5sum': [file7['@id']]
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent matching_md5sum'
                for error in errors_list)

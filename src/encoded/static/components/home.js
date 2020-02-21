@@ -15,7 +15,7 @@ dayjs.extend(utc);
 // Convert the selected organisms and assays into an encoded query.
 function generateQuery(selectedOrganisms, selectedAssayCategory) {
     // Make the base query.
-    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=4' : '?type=Experiment&status=released';
+    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=ENCODE+v4' : '?type=Experiment&status=released';
 
     // Add the selected assay category, if any (doesn't apply to Computational Predictions).
     if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
@@ -337,8 +337,7 @@ InputSuggest.defaultProps = {
 
 
 // URLS to work the SCREEN site, both for a suggestion list and searches.
-const screenSuggestionsUrl = 'https://api.wenglab.org/screenv10_python_beta/autows/suggestions';
-const screenSearchUrl = 'http://screen.encodeproject.org/api/autows/search';
+const screenSuggestionsUrl = 'https://api.wenglab.org/screen_v13/autows/suggestions';
 
 
 // Render the search form for SCREEN searches, including the search field, search buttons, and
@@ -361,7 +360,6 @@ class ScreenSearch extends React.Component {
         this.startDelayTimer = this.startDelayTimer.bind(this);
         this.searchTermChange = this.searchTermChange.bind(this);
         this.searchTermClick = this.searchTermClick.bind(this);
-        this.submitScreenSearch = this.submitScreenSearch.bind(this);
         this.termSelectHandler = this.termSelectHandler.bind(this);
         this.inputBlur = this.inputBlur.bind(this);
     }
@@ -422,24 +420,6 @@ class ScreenSearch extends React.Component {
         }
     }
 
-    submitScreenSearch() {
-        // Request search results from SCREEN.
-        fetch(screenSearchUrl, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                assembly: 'hg19',
-                userQuery: this.state.currSearchTerm,
-                uuid: '0',
-            }),
-        }).then(response => (
-            response.ok ? response.json() : null
-        ));
-    }
-
     termSelectHandler(term) {
         // Called when user clicks on a term in the drop-down suggestion list.
         this.setState({ currSearchTerm: term, suggestedSearchTerms: [] });
@@ -462,7 +442,7 @@ class ScreenSearch extends React.Component {
             <div className="site-search__screen">
                 <div className="site-search__reference">
                     <a href="/data/annotations/" className="btn btn-info btn-sm">About ENCODE Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+Cis-Regulatory+Elements" className="btn btn-info btn-sm">candidate Cis-Regulatory Elements</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=ENCODE+v4&annotation_type=candidate+Cis-Regulatory+Elements" className="btn btn-info btn-sm">candidate Cis-Regulatory Elements</a>
                 </div>
                 <form>
                     <fieldset>
@@ -473,7 +453,7 @@ class ScreenSearch extends React.Component {
                                 <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
-                                <div className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></div>
+                                <div className="site-search__note">Hosted by <a href="https://screen.wenglab.org/">SCREEN</a></div>
                             </label>
                             <InputSuggest
                                 value={this.state.currSearchTerm}
@@ -487,8 +467,36 @@ class ScreenSearch extends React.Component {
                             />
                         </div>
                         <div className="site-search__submit">
-                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info btn-sm site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
-                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info btn-sm site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Human hg19 search"
+                                title="Human hg19 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen-v10.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}
+                            >
+                                Human hg19 <i className="icon icon-search" />
+                            </a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Human GRCh38 search"
+                                title="Human GRCh38 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=GRCh38`}
+                            >
+                                Human GRCh38<i className="icon icon-search" />
+                            </a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Mouse mm10 search"
+                                title="Mouse mm10 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}
+                            >
+                                Mouse mm10 <i className="icon icon-search" />
+                            </a>
                         </div>
                     </fieldset>
                 </form>
@@ -756,13 +764,13 @@ class AssayClicking extends React.Component {
                             <img src="static/img/classic-image.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />
 
                             <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
-                                <BannerOverlayButton item={assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95" selected={assayCategory === assayList[0]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95" selected={assayCategory === assayList[1]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95" selected={assayCategory === assayList[2]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95" selected={assayCategory === assayList[3]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" selected={assayCategory === assayList[4]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" selected={assayCategory === assayList[5]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" selected={assayCategory === assayList[6]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[0]} x="76" y="645.8" width="260" height="230.95" selected={assayCategory === assayList[0]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[1]} x="352" y="645.8" width="276" height="230.95" selected={assayCategory === assayList[1]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[2]} x="643" y="645.8" width="263" height="230.95" selected={assayCategory === assayList[2]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[3]} x="919" y="645.8" width="295" height="230.95" selected={assayCategory === assayList[3]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[4]} x="1230" y="645.8" width="374" height="230.95" selected={assayCategory === assayList[4]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[5]} x="1619" y="645.8" width="331" height="230.95" selected={assayCategory === assayList[5]} clickHandler={this.sortByAssay} />
+                                <BannerOverlayButton item={assayList[6]} x="1965" y="645.8" width="228" height="230.95" selected={assayCategory === assayList[6]} clickHandler={this.sortByAssay} />
                             </svg>
                         </div>
 

@@ -43,4 +43,4 @@ def test_admin_allowed_edit_submitter_treatment(submitter_treatment, testapp):
 
 def test_submitter_denied_edit_submitter_treatment(submitter_testapp, submitter_treatment, testapp):
     res = testapp.post_json('/treatments/', submitter_treatment, status=201)
-    submitter_testapp.patch_json(res.json['@graph'][0]['@id'], {'status': 'released'}, status=403)
+    submitter_testapp.patch_json(res.json['@graph'][0]['@id'], {'status': 'released'}, status=422)

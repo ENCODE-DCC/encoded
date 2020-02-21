@@ -10,13 +10,13 @@
         },
         {
             "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
-        }  
-    ],    
+        }
+    ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" },     
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
@@ -54,6 +54,20 @@
         },
         "lab.title": {
             "title": "Lab"
+        },
+        "target.label": {
+            "title": "Target of assay",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "assay_term_name": {
+            "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
         }
     },
     "dependencies": {
@@ -130,10 +144,13 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
-                        }                    
+                        }
                     }
                 },
                 {
@@ -156,10 +173,13 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
-                        }                    
+                        }
                     }
                 },
                 {
@@ -205,6 +225,17 @@
             "properties": {
                 "file_format": {
                     "enum": ["fastq"]
+                }
+            }
+        },
+        "index_of": {
+            "comment": "Only fastq files can have index_of specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
+                "output_type": {
+                    "enum": ["index reads"]
                 }
             }
         },
@@ -274,7 +305,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
                     "properties": {
@@ -311,7 +342,58 @@
                                 "platform": {
                                     "linkTo": "Platform",
                                     "linkEnum": [
-                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"                                        
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                     ]
                                 }
                                 
@@ -328,7 +410,10 @@
                                         "linkTo": "Platform",
                                         "linkEnum": [
                                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                         ]
                                     }
                                 }
@@ -345,10 +430,18 @@
                     }
                 },
                 {
+                    "required": ["index_of"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations"]
                             }
                         }
                     }
@@ -362,6 +455,13 @@
                         "properties": {
                             "output_type": {
                                 "enum": ["reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["index reads"]
                             }
                         }
                     },
@@ -383,10 +483,13 @@
                         "linkTo": "Platform",
                         "linkEnum": [
                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                         ]
                     }
-                }  
+                }
             }
         },
         "read_length": {
@@ -403,13 +506,16 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
-                        }  
+                        }
                     }
                 }
-            ]            
+            ]
         },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
@@ -483,7 +589,7 @@
                                             "CEL",
                                             "fastq",
                                             "gff",
-                                            "gtf",                                            
+                                            "gtf",
                                             "bed",
                                             "bigBed",
                                             "bam",
@@ -533,9 +639,10 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
+                                        "index reads",
                                         "rejected reads",
                                         "raw data",
-                                        "reporter code counts"                                        
+                                        "reporter code counts"
                                     ]
                                 }
                             }
@@ -588,6 +695,7 @@
                                             "idat green channel",
                                             "idat red channel",
                                             "intensity values",
+                                            "index reads",
                                             "reads",
                                             "rejected reads",
                                             "raw data",
@@ -645,13 +753,13 @@
                                         }
                                     },
                                     {
-                                        "required": ["file_size"],   
+                                        "required": ["file_size"],
                                         "properties": {
                                             "status": {
                                                 "enum": ["in progress",  "revoked", "archived", "released"]
                                             }
                                         }
-                                    }                                   
+                                    }
                             ]
                         },
 
@@ -721,7 +829,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "15"
+            "default": "17"
         },
         "accession": {
             "accessionType": "FF"
@@ -1077,6 +1185,19 @@
                 }
             }
         },
+        "index_of": {
+            "title": "Index of",
+            "description": "The files this index file is relevant for.",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
         "output_type": {
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
@@ -1115,6 +1236,7 @@
                         "hotspots",
                         "idat green channel",
                         "idat red channel",
+                        "index reads",
                         "intensity values",
                         "IDR ranked peaks",
                         "IDR thresholded peaks",
@@ -1128,11 +1250,14 @@
                         "methylation state at CHH",
                         "methylation state at CpG",
                         "microRNA quantifications",
+                        "miRNA annotations",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondria blacklisted regions",
                         "motif model",
+                        "negative control regions",
                         "nested topologically associated domains",
+                        "non-targeting gRNAs",
                         "normalized signal of all reads",
                         "open chromatin regions",
                         "optimal IDR thresholded peaks",
@@ -1140,10 +1265,12 @@
                         "paternal variant calls",
                         "peaks",
                         "peaks and background as input for IDR",
+                        "personalized genome assembly",
                         "phased mapping",
                         "phased variant calls",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
+                        "positive control regions",
                         "predicted enhancers",
                         "pseudoreplicated IDR thresholded peaks",
                         "raw minus strand signal",
@@ -1159,8 +1286,9 @@
                         "reporter code counts",
                         "representative dnase hypersensitivity sites",
                         "restriction enzyme site locations",
-                        "RNA-binding protein associated mRNAs",           
+                        "RNA-binding protein associated mRNAs",
                         "rRNA reference",
+                        "safe-targeting gRNAs",
                         "semi-automated genome annotation",
                         "sequence adapters",
                         "sequence barcodes",
@@ -1170,6 +1298,7 @@
                         "spike-in sequence",
                         "splice junctions",
                         "stable peaks",
+                        "subreads",
                         "topologically associated domains",
                         "transcript quantifications",
                         "transcription start sites",
@@ -1553,9 +1682,11 @@
         "idat red channel": "raw data",
         "intensity values": "raw data",
         "reads": "raw data",
+        "index reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
+        "subreads": "raw data",
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
@@ -1659,6 +1790,11 @@
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
         "transcriptome annotations": "annotation",
+        "miRNA annotations": "annotation",
+        "non-targeting gRNAs": "annotation",
+        "negative control regions": "annotation",
+        "positive control regions": "annotation",
+        "safe-targeting gRNAs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -1683,6 +1819,7 @@
         "sequence barcodes": "reference",
         "sequence adapters": "reference",
         "elements reference": "reference",
+        "personalized genome assembly": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

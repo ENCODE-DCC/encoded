@@ -650,8 +650,16 @@ export class Graph extends React.Component {
             newValue = newValue < 0 ? 0 : 100;
         }
         this.slider.current.value = newValue.toString();
-        const event = new Event('input', { bubbles: true });
-        this.slider.current.dispatchEvent(event);
+
+        if (typeof (Event) === 'function') {
+            const event = new Event('input', { bubbles: true });
+            this.slider.current.dispatchEvent(event);
+        } else {
+            // Needed for IE11
+            const event = document.createEvent('Event', { bubbles: true });
+            event.initEvent('input', true, false, window, 0);
+            this.slider.current.dispatchEvent(event);
+        }
     }
 
     render() {
