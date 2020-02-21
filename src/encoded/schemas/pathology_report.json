@@ -17,6 +17,8 @@
         "tumor_size": ["tumor_size_units"],
         "tumor_size_units": ["tumor_size"],
         "sarcomatoid_percentage": ["sarcomatoid"],
+        "t_stage": ["ajcc_version"],
+        "ajcc_tnm_stage": ["ajcc_version"],
         "metasasis_details":  {
             "comment":"Metasis details required for pathology source procedure.",
             "properties": {
