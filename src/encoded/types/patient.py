@@ -284,8 +284,8 @@ class Patient(Item):
     })
     def medication_range(self, request, medication):
 
-        for object in medication:
-            medication_object = request.embed(object, '@@object')
+        for med in medication:
+            medication_object = request.embed(med, '@@object')
             date_format="%Y-%m-%d"
             start_date=datetime.strptime(medication_object['start_date'],date_format )
             end_date=datetime.strptime(medication_object['end_date'],date_format )
