@@ -647,4 +647,23 @@ describe('Test individual dbxref types', () => {
             expect(dbxSpans.at(0).text()).toEqual('OK:NOT-REAL');
         });
     });
+
+    describe('Test DepMap', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': 'BiosampleType' };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['DepMap:ACH-000551', 'DepMap:ACH-000552']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000551');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000552');
+        });
+    });
 });
