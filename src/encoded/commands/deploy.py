@@ -708,9 +708,9 @@ def main():
                             main_args.profile_name,
                         )
                     )
-                print("ES node{} ssh:\n ssh ubuntu@{}{}".format(index, instance_info['public_dns'], tail_cmd))
+                print("ES node{} ssh:\n ssh ubuntu@{}{}".format(index, node_info['public_dns'], tail_cmd))
             else:
-                print("ES node{} ssh:\n ssh ubuntu@{}".format(index, instance_info['public_dns']))
+                print("ES node{} ssh:\n ssh ubuntu@{}".format(index, node_info['public_dns']))
     elif 'frontend' in instances_info:
         instance_info = instances_info['frontend']
         if main_args.build_ami:
@@ -899,17 +899,17 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-02-21 11:53:16.187361: encdami-demo-2020-02-21_115316
-        'demo': 'ami-0d88f6592258b08ad',
-        # encdami-es-wait-head build on 2020-02-21 11:55:07.962171: encdami-es-wait-head-2020-02-21_115507
-        'es-wait-head': 'ami-0cf11e413a755e2c7',
-        # encdami-es-wait-node build on 2020-02-21 11:53:19.309244: encdami-es-wait-node-2020-02-21_115319
-        'es-wait-node': 'ami-041aee7689ecedb20',
+        # encdami-demo build on 2020-02-21 15:15:18.417816: encdami-demo-2020-02-21_151518
+        'demo': 'ami-095ad16cba42f152e',
+        # encdami-es-wait-head build on 2020-02-21 15:15:19.514011: encdami-es-wait-head-2020-02-21_151519
+        'es-wait-head': 'ami-0bc857eaebb0768e2',
+        # encdami-es-wait-node build on 2020-02-21 15:15:30.431631: encdami-es-wait-node-2020-02-21_151530
+        'es-wait-node': 'ami-05fffc8108a5894f4',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-02-21 12:55:16.612837: encdami-frontend-2020-02-21_125516
-        'frontend': 'ami-00d817362ffd6ae00',
+        # encdami-frontend build on 2020-02-21 15:15:26.691614: encdami-frontend-2020-02-21_151526
+        'frontend': 'ami-09603e06509a957ae',
 
         # Production Private AMIs: Add comments to each build
 
