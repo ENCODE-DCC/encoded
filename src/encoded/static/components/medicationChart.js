@@ -131,7 +131,6 @@ class MedicationChart extends React.Component {
     traceData.push(trace3);
     var layout = {
       autosize: true,
-      // height: 300,
       height: yIndex*80,
 
       xaxis: {
