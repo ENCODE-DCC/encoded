@@ -7,6 +7,8 @@ import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 import { PanelLookup } from './objectutils';
 import GenomicsTable from './genomicsTable';
+import IHCTable from './ihcTable';
+
 
 class Biospecimen extends React.Component {
     constructor(props) {
@@ -27,7 +29,10 @@ class Biospecimen extends React.Component {
         if (Object.keys(this.props.context.biolibrary).length > 0) {
             hasGenomics = true;
         }
-
+        let hasIHC=false;
+        if (Object.keys(this.props.context.ihc).length > 0) {
+            hasIHC = true;
+          }
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -108,6 +113,7 @@ class Biospecimen extends React.Component {
                     </PanelBody>
                 </Panel>
                 { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
+                {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
 
                 {false && 
                     <div>

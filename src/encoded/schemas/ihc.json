@@ -45,6 +45,13 @@
             "permission": "import_items",
             "linkTo": "Surgery"
         },
+        "biospecimen": {
+            "title": "biospecimen accession",
+            "comment": "link to surgery inforation with surgery accession. ",
+            "type": "string",
+            "permission": "import_items",
+            "linkTo": "Biospecimen"
+        },
         "path_id": {
             "title": "Pathology ID",
             "comment": "KCE personnel are allowed to set this value.",
