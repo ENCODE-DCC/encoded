@@ -231,9 +231,9 @@ class Experiment(Dataset,
         }
     })
     def protein_tags(self, request, replicates=None):
-        protein_tags = None
-        modification_tags = None
-        tag_list = None
+        protein_tags = []
+        protein_tags_lists = []
+        one_biosample_tags = []
         if replicates is not None:
             for rep in replicates:
                 replicateObject = request.embed(rep, '@@object?skip_calculated=true')
@@ -248,13 +248,14 @@ class Experiment(Dataset,
                         if biosampleObject['status'] == 'deleted':
                             continue
                         genetic_modifications = biosampleObject.get('applied_modifications')
+                        tag_list = None
                         if genetic_modifications:
-                            protein_tags = []
                             tag_list = []
                             for gm in genetic_modifications:
                                 gm_object = request.embed(gm, '@@object')
                                 if gm_object.get('introduced_tags') is None:
                                     continue
+                                modification_tags = None
                                 if gm_object.get('introduced_tags'):
                                     modification_tags = []
                                     for tag in gm_object.get('introduced_tags'):
@@ -265,8 +266,11 @@ class Experiment(Dataset,
                                             tag_dict.update({'target': 'none'})
                                         modification_tags.append(tag_dict)
                                 tag_list.append(modification_tags)
-                                protein_tags = [item for sublist in tag_list for item in sublist]
-        return protein_tags
+                                one_biosample_tags = [item for sublist in tag_list for item in sublist]
+                            protein_tags_lists.append(one_biosample_tags)
+                            protein_tags = [item for sublist in protein_tags_lists for item in sublist]
+        if len(protein_tags) > 0:
+            return protein_tags
 
     matrix = {
         'y': {
