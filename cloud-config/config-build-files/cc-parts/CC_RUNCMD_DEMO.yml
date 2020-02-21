@@ -4,7 +4,7 @@ runcmd:
 - sudo -u ubuntu %(CC_DIR)s/post-boot-install.sh %(S3_AUTH_KEYS)s
 - sudo -u ubuntu %(CC_DIR)s/java11-oracle-install.sh
 - %(CC_DIR)s/redis-install.sh %(REDIS_PORT)s
-- %(CC_DIR)s/es-install.sh NONE %(JVM_GIGS)s %(ES_OPT_FILENAME)s
+- %(CC_DIR)s/es-install.sh NONE %(JVM_GIGS)s %(ES_OPT_FILENAME)s NONE NONE
 - %(CC_DIR)s/cloudwatchmon-install.sh
 - %(CC_DIR)s/pg-install.sh off %(ROLE)s %(WALE_S3_PREFIX)s %(PG_VERSION)s
 - %(CC_DIR)s/encd-install.sh %(GIT_REPO)s %(GIT_REMOTE)s %(GIT_BRANCH)s %(ROLE)s %(ES_IP)s %(ES_PORT)s %(REGION_INDEX)s %(APP_WORKERS)s

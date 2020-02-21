@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'views.feature',
+    strict_gherkin=False,
 )

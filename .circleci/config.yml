@@ -6,7 +6,7 @@ orbs:
 executors:
   encoded-executor:
     docker:
-      - image: circleci/buildpack-deps:trusty
+      - image: circleci/buildpack-deps:bionic
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
@@ -38,29 +38,20 @@ commands:
               graphviz \
               nodejs \
               openjdk-11-jdk \
-              postgresql-9.3
+              postgresql-10
             sudo chown -R circleci /etc/elasticsearch
-            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH\n;' $BASH_ENV
-            sudo apt-get install -y python3.4-dev python3-pip
+            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
+            sudo apt-get install -y python3.7-dev python3-pip
+            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 0
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
       - run:
           name: Run buildout
           command: |
-            sudo pip3 install --upgrade pip==19.1.1
-            sudo pip3 install -U zc.buildout setuptools==43
+            sudo pip3 install --upgrade pip setuptools
+            sudo pip3 install zc.buildout
             buildout bootstrap
             bin/buildout
 jobs:
-  npm-not-bdd:
-    executor: encoded-executor
-    resource_class: large
-    steps:
-      - buildout
-      - run:
-          name: NPM and non ES indexing tests
-          command: |
-            npm run circleci-test
-            bin/test -s -vv -m "not bdd"
   bdd:
     executor: encoded-executor
     resource_class: large
@@ -70,17 +61,49 @@ jobs:
       - browser-tools/install-chromedriver
       - run:
           name: Run bdd tests
+          # collected 2189 items / 2119 deselected / 70 selected
           command: |
             bin/test -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait 10 \
               --splinter-webdriver chrome \
               --splinter-socket-timeout 300 \
-              --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips"
+              --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
           no_output_timeout: 30m
+  not-bdd-indexing:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: non bdd indexing tests
+          command: |
+            # collected 2189 items / 2184 deselected / 5 selected
+            bin/test -s -vv -m "not bdd" -k test_indexing
+  not-bdd-non-indexing:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: non bdd non indexing tests
+          command: |
+            # collected 2189 items / 75 deselected / 2114 selected
+            bin/test -s -vv -m "not bdd" -k 'not test_indexing'
+  npm:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: npm tests
+          command: |
+            npm run circleci-test
 
 workflows:
   version: 2
   encoded-tests:
     jobs:
-      - npm-not-bdd
       - bdd
+      - not-bdd-indexing
+      - not-bdd-non-indexing
+      - npm

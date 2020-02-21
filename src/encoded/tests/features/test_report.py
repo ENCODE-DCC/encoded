@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'report.feature',
+    strict_gherkin=False,
 )
