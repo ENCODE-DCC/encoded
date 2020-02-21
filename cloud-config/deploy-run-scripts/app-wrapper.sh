@@ -30,10 +30,11 @@ function fix_repo {
     user="$4"
     cd "$repo_dir"
     sudo -H -u "$user" git stash
-    sudo -H -u "$user" git checkout dev
-    sudo -H -u "$user" git branch -df "$branch_name"
-    sudo -H -u "$user" git fetch "$repo_remote" --prune
+    sudo -H -u "$user" git branch -m original-branch
+    sudo -H -u "$user" git checkout original-branch
+    sudo -H -u "$user" git fetch origin --prune
     sudo -H -u "$user" git checkout -b "$branch_name" "$repo_remote/$branch_name"
+    sudo -H -u "$user" git checkout "$branch_name"
 }
 
 
