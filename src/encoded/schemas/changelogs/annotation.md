@@ -1,7 +1,7 @@
 ## Changelog for annotation.json
 
 ### Minor changes since schema version 27
-* Added ENCODE v6 to the list of enums for *encyclopedia_version*
+* Added ENCODE v6 to the list of enums within *encyclopedia_version* property.
 
 ### Schema version 27
 
