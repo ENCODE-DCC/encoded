@@ -26,7 +26,6 @@ from .shared_calculated_properties import (
 )
 
 from .assay_data import assay_terms
-from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 @collection(
     name='experiments',
@@ -180,28 +179,53 @@ class Experiment(Dataset,
     @calculated_property(schema={
         "title": "Protein tags",
         "description": "The protein tags introduced through the genetic modifications of biosamples investigated in the experiment.",
+        "comment": "Do not submit. This field is calculated through applied_modifications.",
         "type": "array",
         "notSubmittable": True,
         "items": {
             "title": "Protein tag",
             "description": "The protein tag introduced in the modification.",
-            "comment": "See genetic_modification.json for available identifiers.",
             "type": "object",
             "additionalProperties": False,
-            "linkTo": "GeneticModification",
             "properties": {
                 "name": {
                     "title": "Tag name",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "3xFLAG",
+                        "6XHis",
+                        "DsRed",
+                        "eGFP",
+                        "ER",
+                        "FLAG",
+                        "GFP",
+                        "HA",
+                        "mCherry",
+                        "T2A",
+                        "TagRFP",
+                        "TRE",
+                        "V5",
+                        "YFP",
+                        "mAID-mClover",
+                        "mAID-mClover-NeoR",
+                        "mAID-mClover-Hygro"
+                    ]
                 },
                 "location": {
                     "title": "Tag location",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "C-terminal",
+                        "internal",
+                        "N-terminal",
+                        "other",
+                        "unknown"
+                    ]
                 },
                 "target": {
-                    "title": "Tagged target",
+                    "title": "Tagged protein",
                     "type": "string",
-                    "linkTo": "Target"
+                    "linkTo": "Target",
                 }
             }
         }
@@ -212,11 +236,11 @@ class Experiment(Dataset,
         tag_list = None
         if replicates is not None:
             for rep in replicates:
-                replicateObject = request.embed(rep, '@@object')
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
                 if replicateObject['status'] == 'deleted':
                     continue
                 if 'library' in replicateObject:
-                    libraryObject = request.embed(replicateObject['library'], '@@object')
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
                     if libraryObject['status'] == 'deleted':
                         continue
                     if 'biosample' in libraryObject:
@@ -234,7 +258,11 @@ class Experiment(Dataset,
                                 if gm_object.get('introduced_tags'):
                                     modification_tags = []
                                     for tag in gm_object.get('introduced_tags'):
-                                        tag_dict = {'location': tag['location'], 'name': tag['name'], 'target': gm_object.get('modified_site_by_target_id')}
+                                        tag_dict = {'location': tag['location'], 'name': tag['name']}
+                                        if gm_object.get('modified_site_by_target_id'):
+                                            tag_dict.update({'target': gm_object.get('modified_site_by_target_id')})
+                                        else:
+                                            tag_dict.update({'target': 'none'})
                                         modification_tags.append(tag_dict)
                                 tag_list.append(modification_tags)
                                 protein_tags = [item for sublist in tag_list for item in sublist]
