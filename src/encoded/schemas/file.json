@@ -465,36 +465,11 @@
         },
         "assembly": {
             "not": {
-                "anyOf": [
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["index reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["rejected reads"]
-                            }
-                        }
-                    },
-                    {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["subreads"]
-                            }
-                        }
+                "properties": {
+                    "output_type": {
+                        "enum": ["reads", "index reads", "rejected reads", "subreads"]
                     }
-                ]
+                }
             }
         },
         "platform": {
