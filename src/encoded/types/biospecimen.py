@@ -28,6 +28,7 @@ class Biospecimen(Item):
     embedded = [
         'biolibrary',
         'biolibrary.biofile',
+        'surgery',
     ]
     audit_inherit = [
     ]
@@ -46,6 +47,7 @@ class Biospecimen(Item):
     })
     def biolibrary(self, request, biolibrary):
         return paths_filtered_by_status(request, biolibrary)
+
 
 
 
