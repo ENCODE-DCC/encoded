@@ -176,10 +176,10 @@ def test_signup_verify_account_is_created(mock_get, mock_collection_add, mock_va
         json_data=json_data,
         status_code=200
     )
+    expected = {'@graph': [], '@type': ['result'], 'status': 'success'}
     signup = auth0.signup(context, request)
     assert len(request.errors) == 0
-    assert isinstance(signup, HTTPCreated)
-    assert signup.status == '201 Created'
+    assert signup == expected
 
 
 @pytest.mark.parametrize('json_data', [{
@@ -328,8 +328,8 @@ def test_signup_verify_email_is_verified_with_given_and_family_name(mock_get, mo
     request.errors = []
     context = mock_context()
     signup = auth0.signup(context, request)
-    assert isinstance(signup, HTTPCreated)
-    assert signup.status == '201 Created'
+    expected = {'@graph': [], 'status': 'success', '@type': ['result']}
+    assert signup == expected
 
 
 @mock.patch('encoded.auth0.validate_request', side_effect=mock_validate_request)
@@ -346,9 +346,9 @@ def test_signup_verify_email_is_verified_with_name(mock_get, mock_collection_add
     request = mock_request()
     request.errors = []
     context = mock_context()
+    expected = {'@graph': [], 'status': 'success', '@type': ['result']}
     signup = auth0.signup(context, request)
-    assert isinstance(signup, HTTPCreated)
-    assert signup.status == '201 Created'
+    assert signup == expected
 
 
 
