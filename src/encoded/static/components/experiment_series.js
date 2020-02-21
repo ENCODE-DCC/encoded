@@ -16,7 +16,7 @@ import { SortTablePanel } from './sorttable';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
 
-// Only GRCh38 analysis will be used for QC reporting
+// Only analysis on selcted assembly will be used for QC reporting
 const selectedAssembly = ['GRCh38', 'mm10'];
 
 /**
@@ -346,7 +346,7 @@ class ExperimentSeriesComponent extends React.Component {
         ).concat(
             updatedDatasetAtIds.filter(i => !datasetAtIds.includes(i))
         );
-        if (symmDiffAtIds && symmDiffAtIds.length > 0) {
+        if (symmDiffAtIds.length > 0) {
             this.getViewableDatasets();
         }
     }
