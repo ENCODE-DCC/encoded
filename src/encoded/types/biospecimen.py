@@ -50,7 +50,7 @@ class Biospecimen(Item):
         return paths_filtered_by_status(request, biolibrary)
 
     @calculated_property(schema={
-        "title": "Biospecimen Ihc",
+        "title": "Biospecimen IHC",
         "type": "array",
         "items": {
             "type": 'string',
@@ -60,13 +60,5 @@ class Biospecimen(Item):
     def ihc(self, request, ihc):
         return paths_filtered_by_status(request, ihc)
 
-# @collection(
-#     name="Biospecimen ihc",
-#     properties={"title": "Biospecimen ihc linked", "description": "Biospecimen ihc results pages",},
-# )
-# class Ihc(Item):
-#     item_type = "ihc"
-#     schema = load_schema("encoded:schemas/ihc.json")
-#     embeded = []
 
 
