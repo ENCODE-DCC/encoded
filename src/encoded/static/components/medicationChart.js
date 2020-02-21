@@ -131,7 +131,9 @@ class MedicationChart extends React.Component {
     traceData.push(trace3);
     var layout = {
       autosize: true,
-      height: 300,
+      // height: 300,
+      height: yIndex*80,
+
       xaxis: {
         type: 'date',
         range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
