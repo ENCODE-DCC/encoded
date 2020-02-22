@@ -141,9 +141,11 @@ def test_visualize(submitter_testapp, workbook):
         'GRCh38': [
             "Ensembl",
             "UCSC",
+            "IGV",
         ],
         'hg19': [
-            "UCSC"
+            "UCSC",
+            "IGV",
         ]
     }
     res = submitter_testapp.get("/experiments/ENCSR000AEN/")

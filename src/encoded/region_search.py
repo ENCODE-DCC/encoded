@@ -796,6 +796,14 @@ def search_result_actions(request, doc_types, es_results, position=None):
                     ensembl_url = vis_format_url("ensembl", hub_url, assembly, pos)
                     if ensembl_url is not None:
                         browser_urls['Ensembl'] = ensembl_url
+                    igv_search_params = request.params.dict_of_lists()
+                    igv_search_params['assembly'] = [assembly]
+                    igv_params = {
+                        "sessionURL": request.route_url('batch_igv', _query=igv_search_params),
+                    }
+                    if pos is not None:
+                        igv_params['locus'] = pos
+                    browser_urls['IGV'] = 'https://igv.org/app/?' + urlencode(igv_params)
                     if browser_urls:
                         viz[assembly] = browser_urls
                         #actions.setdefault('visualize_batch', {})[assembly] =\
