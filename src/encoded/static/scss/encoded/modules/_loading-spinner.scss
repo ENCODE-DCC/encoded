@@ -25,3 +25,32 @@
 .communicating .black-overlay, .communicating .loading-spinner {
 	display: block;
 }
+
+.loading-spinner--centered {
+	align-items: center;
+	justify-content: center;
+	background: rgba(0,0,0,.2);
+	min-height: 100%;
+	min-width: 100%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	z-index: 1000;
+}
+
+.loading-spinner-circle--centered {
+	background: url('../img/spinner1.gif') no-repeat;
+    background-size: 50px;
+    height: 60px;
+    width: 60px;
+    z-index: 1002
+}
+
+.communicating--centered {
+	.loading-spinner--centered {
+    	display: flex;
+    	height: 10px // only here to get IE11 to work, see: https://exceptionshub.com/flexbox-not-working-in-internet-explorer-11.html
+	}
+}
