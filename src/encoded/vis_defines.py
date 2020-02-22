@@ -1131,9 +1131,10 @@ class IhecDefines(object):
         if assay == 'microRNA-seq':
             return 'smRNA-Seq'
         if assay == 'RNA-seq':
-            if dataset['assay_title'] == 'total RNA-seq':
+            assay_title = dataset.get('assay_title')
+            if assay_title == 'total RNA-seq':
                 return 'total-RNA-Seq'
-            if dataset['assay_title'] == 'polyA plus RNA-seq':
+            if assay_title == 'polyA plus RNA-seq':
                 return 'mRNA-Seq'
             return 'RNA-Seq'
 
