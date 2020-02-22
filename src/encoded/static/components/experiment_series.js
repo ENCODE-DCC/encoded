@@ -16,7 +16,7 @@ import { SortTablePanel } from './sorttable';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
 
-// Only analysis on selcted assembly will be used for QC reporting
+// Only analysis on selected assembly will be used for QC reporting
 const selectedAssembly = ['GRCh38', 'mm10'];
 
 /**
