@@ -182,6 +182,7 @@ class Experiment(Dataset,
         "comment": "Do not submit. This field is calculated through applied_modifications.",
         "type": "array",
         "notSubmittable": True,
+        "minItems": 1,
         "items": {
             "title": "Protein tag",
             "description": "The protein tag introduced in the modification.",
@@ -232,43 +233,31 @@ class Experiment(Dataset,
     })
     def protein_tags(self, request, replicates=None):
         protein_tags = []
-        protein_tags_lists = []
-        one_biosample_tags = []
         if replicates is not None:
             for rep in replicates:
                 replicateObject = request.embed(rep, '@@object?skip_calculated=true')
-                if replicateObject['status'] == 'deleted':
+                if replicateObject['status'] in ('deleted', 'revoked'):
                     continue
                 if 'library' in replicateObject:
                     libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                    if libraryObject['status'] == 'deleted':
+                    if libraryObject['status'] in ('deleted', 'revoked'):
                         continue
                     if 'biosample' in libraryObject:
                         biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                        if biosampleObject['status'] == 'deleted':
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
                             continue
                         genetic_modifications = biosampleObject.get('applied_modifications')
-                        tag_list = None
                         if genetic_modifications:
-                            tag_list = []
                             for gm in genetic_modifications:
-                                gm_object = request.embed(gm, '@@object')
+                                gm_object = request.embed(gm, '@@object?skip_calculated=true')
                                 if gm_object.get('introduced_tags') is None:
                                     continue
-                                modification_tags = None
                                 if gm_object.get('introduced_tags'):
-                                    modification_tags = []
                                     for tag in gm_object.get('introduced_tags'):
                                         tag_dict = {'location': tag['location'], 'name': tag['name']}
                                         if gm_object.get('modified_site_by_target_id'):
                                             tag_dict.update({'target': gm_object.get('modified_site_by_target_id')})
-                                        else:
-                                            tag_dict.update({'target': 'none'})
-                                        modification_tags.append(tag_dict)
-                                tag_list.append(modification_tags)
-                                one_biosample_tags = [item for sublist in tag_list for item in sublist]
-                            protein_tags_lists.append(one_biosample_tags)
-                            protein_tags = [item for sublist in protein_tags_lists for item in sublist]
+                                            protein_tags.append(tag_dict)
         if len(protein_tags) > 0:
             return protein_tags
 
