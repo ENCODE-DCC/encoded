@@ -114,17 +114,31 @@ const AnnotationComponent = (props, reactContext) => {
                                 <dd>{context.accession}</dd>
                             </div>
 
-                            {context.assay_term_name ?
-                            <div data-test="assaytermname">
-                                <dt>Assay</dt>
-                                <dd>{context.assay_term_name}</dd>
-                            </div>
-                            : null}
-
                             {context.description ?
                                 <div data-test="description">
                                     <dt>Description</dt>
                                     <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {context.assay_term_name ?
+                                <div data-test="assaytermname">
+                                    <dt>Assay</dt>
+                                    <dd>{context.assay_term_name}</dd>
+                                </div>
+                            : null}
+
+                            {context.targets && context.targets.length > 0 ?
+                                <div data-test="targets">
+                                    <dt>Target</dt>
+                                    <dd>
+                                        {context.targets.map((target, i) =>
+                                        <span>
+                                            {i > 0 ? <span>, </span> : null}
+                                            <a href={target['@id']}>{target.label}</a>
+                                        </span>
+                                        )}
+                                    </dd>
                                 </div>
                             : null}
 
@@ -156,20 +170,6 @@ const AnnotationComponent = (props, reactContext) => {
                                 <div data-test="type">
                                     <dt>Annotation type</dt>
                                     <dd className="sentence-case">{context.annotation_type}</dd>
-                                </div>
-                            : null}
-
-                            {context.targets && context.targets.length > 0 ?
-                                <div data-test="targets">
-                                    <dt>Target</dt>
-                                    <dd>
-                                        {context.targets.map((target, i) =>
-                                        <span>
-                                            {i > 0 ? <span>, </span> : null}
-                                            <a href={target['@id']}>{target.label}</a>
-                                        </span>
-                                        )}
-                                    </dd>
                                 </div>
                             : null}
 
