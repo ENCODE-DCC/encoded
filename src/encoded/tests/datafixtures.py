@@ -1385,3 +1385,25 @@ def dataset_reference_2(lab, award):
         'dbxrefs': ['IHEC:IHECRE00004703'],
         'notes': 'preexisting comment.'
     }
+
+
+def ChIP_experiment(testapp, lab, award, cell_free, target, matched_set):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ChIP-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'target': target['@id'],
+        'possible_controls': [
+            matched_set['@id']]
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def matched_set(testapp, lab, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid']
+    }
+    return testapp.post_json('/matched_set', item, status=201).json['@graph'][0]
