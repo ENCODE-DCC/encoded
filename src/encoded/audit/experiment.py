@@ -3279,7 +3279,7 @@ def audit_experiment_control(value, system, excluded_types):
                     )
                 )
                 yield AuditFailure('inconsistent control', detail, level='ERROR')
-        return
+            return
 
 
 def is_matching_biosample_control(dataset, biosample_term_id):
