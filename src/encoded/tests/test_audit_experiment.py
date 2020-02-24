@@ -177,18 +177,6 @@ def ctrl_experiment(testapp, lab, award, cell_free):
 
 
 @pytest.fixture
-def second_experiment(testapp, lab, award, k562):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'biosample_ontology': k562['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'ChIP-seq'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
 def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
     item = {
         'experiment': ctrl_experiment['@id'],
@@ -3590,7 +3578,7 @@ def test_audit_fcc_experiment_nih_consent(
     )
 
 
-def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, second_experiment, treatment_time_series):
+def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, treatment_time_series):
     from encoded.audit.experiment import is_matching_biosample_control
     exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
     exp_embedded = exp.json['embedded']
@@ -3608,10 +3596,6 @@ def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, seco
     series = testapp.get(treatment_time_series['@id'] + '@@index-data')
     series_embedded = series.json['embedded']
     assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_ontology']['term_id']) == True
-    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id'], second_experiment['@id']]})
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_ontology']['term_id']) == False
 
 
 def test_is_control_dataset(testapp, ctrl_experiment, publication_data, treatment_time_series):

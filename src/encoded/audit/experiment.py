@@ -3270,11 +3270,6 @@ def audit_experiment_control(value, system, excluded_types):
 def is_matching_biosample_control(dataset, biosample_term_id):
     if dataset['@type'][0] == 'Experiment':
         return dataset.get('biosample_ontology', {}).get('term_id') == biosample_term_id
-    # ENCD-5071, fixing script error when biosample_ontology is a list
-    elif 'Series' in dataset['@type'] and 'biosample_ontology' in dataset:
-        for each in dataset['biosample_ontology']:
-            if each['term_id'] != biosample_term_id:
-                return False
     elif (not dataset.get('biosample_ontology') or
          any([term['term_id'] != biosample_term_id
               for term in dataset.get('biosample_ontology')])):
