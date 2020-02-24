@@ -164,10 +164,10 @@ const AnnotationComponent = (props, reactContext) => {
                                     <dt>Target</dt>
                                     <dd>
                                         {context.targets.map((target, i) =>
-                                            <span>
-                                                {i > 0 ? <span>, </span> : null}
-                                                <a href={target['@id']}>{target.label}</a>
-                                            </span>
+                                        <span>
+                                            {i > 0 ? <span>, </span> : null}
+                                            <a href={target['@id']}>{target.label}</a>
+                                        </span>
                                         )}
                                     </dd>
                                 </div>
