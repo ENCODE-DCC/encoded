@@ -168,6 +168,17 @@ def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, bio
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})
-    res = testapp.get(base_experiment['@id']+'@@index-data')
-    assert res.json['object']['protein_tags'] == [{'name': 'eGFP', 'location': 'C-terminal', 'target': '/targets/ATF4-human/'}, {'name': 'eGFP', 'location': 'N-terminal', 'target': '/targets/ATF4-human/'}]
+    protein_tags = testapp.get(
+        base_experiment['@id'] + '@@index-data'
+    ).json['object']['protein_tags']
+    assert len(protein_tags) == 2
+    assert {
+        'name': 'eGFP',
+        'location': 'C-terminal',
+        'target': '/targets/ATF4-human/'
+    } in protein_tags
+    assert {
+        'name': 'eGFP',
+        'location': 'N-terminal',
+        'target': '/targets/ATF4-human/'
+    } in protein_tags
