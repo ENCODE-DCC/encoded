@@ -260,7 +260,7 @@ def read_single_sheet(path, name=None):
 
     if name is None:
         root, ext = os.path.splitext(path)
-        stream = open(path, 'r')
+        stream = open(path, 'rb')
 
         if ext == '.xlsx':
             return read_xl(stream)
@@ -284,19 +284,19 @@ def read_single_sheet(path, name=None):
         names = zf.namelist()
 
         if (name + '.xlsx') in names:
-            stream = zf.open(name + '.xlsx', 'r')
+            stream = zf.open(name + '.xlsx')
             return read_xl(stream)
 
         if (name + '.tsv') in names:
-            stream = io.TextIOWrapper(zf.open(name + '.tsv'), encoding='utf-8')
+            stream = zf.open(name + '.tsv')
             return read_csv(stream, dialect='excel-tab')
 
         if (name + '.csv') in names:
-            stream = io.TextIOWrapper(zf.open(name + '.csv'), encoding='utf-8')
+            stream = zf.open(name + '.csv')
             return read_csv(stream)
 
         if (name + '.json') in names:
-            stream = io.TextIOWrapper(zf.open(name + '.json'), encoding='utf-8')
+            stream = zf.open(name + '.json')
             return read_json(stream)
 
     if os.path.isdir(path):
@@ -307,15 +307,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if os.path.exists(root + '.tsv'):
-            stream = open(root + '.tsv', 'rU')
+            stream = open(root + '.tsv', 'rb')
             return read_csv(stream, dialect='excel-tab')
 
         if os.path.exists(root + '.csv'):
-            stream = open(root + '.csv', 'rU')
+            stream = open(root + '.csv', 'rb')
             return read_csv(stream)
 
         if os.path.exists(root + '.json'):
-            stream = open(root + '.json', 'r')
+            stream = open(root + '.json', 'rb')
             return read_json(stream)
 
     return []
@@ -328,12 +328,14 @@ def read_xl(stream):
 
 def read_csv(stream, **kw):
     import csv
-    return cast_row_values(csv.DictReader(stream, **kw))
+    decoded = io.TextIOWrapper(stream, encoding='utf-8', newline='')
+    return cast_row_values(csv.DictReader(decoded, **kw))
 
 
 def read_json(stream):
     import json
-    obj = json.load(stream)
+    decoded = io.TextIOWrapper(stream, encoding='utf-8', newline='')
+    obj = json.load(decoded)
     if isinstance(obj, dict):
         return [obj]
     return obj
@@ -352,21 +354,22 @@ def request_url(item_type, method):
                 yield row
                 continue
 
-            if '@id' in row:
-                url = row['@id']
-                if not url.startswith('/'):
-                    url = '/' + url
-                row['_url'] = url
-                yield row
-                continue
-
             # XXX support for aliases
-            for key in ['uuid', 'accession']:
+            for key in ['@id', 'uuid', 'accession', 'name', 'email', 'aliases']:
                 if key in row:
-                    url = row['_url'] = '/' + row[key]
+                    url = row[key]
+                    if isinstance(url, list):
+                        if len(url) == 0:
+                            continue
+                        url = url[0]
+                    if key in ['name', 'email']:
+                        url = '/%s/%s' % (item_type, url)
+                    if not url.startswith('/'):
+                        url = '/' + url
+                    row['_url'] = url
                     break
             else:
-                row['_errors'] = ValueError('No key found. Need uuid or accession.')
+                row['_errors'] = ValueError('No key found. Need one of @id, uuid, accession, name, email, aliases.')
 
             yield row
 
@@ -379,6 +382,7 @@ def make_request(testapp, item_type, method):
     def component(rows):
         for row in rows:
             if row.get('_skip') or row.get('_errors') or not row.get('_url'):
+                yield row
                 continue
 
             # Keys with leading underscores are for communicating between
@@ -422,6 +426,7 @@ def pipeline_logger(item_type, phase):
             row_number = index + 2  # header row
             count = index + 1
             res = row.get('_response')
+
 
             if res is None:
                 _skip = row.get('_skip')
@@ -553,7 +558,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         skip_rows_with_all_falsey_value('test') if test_only else noop,
         skip_rows_with_all_falsey_value('_test') if test_only else noop,
         remove_keys_with_empty_value,
-        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name'),
+        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name', 'email', 'aliases'),
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
@@ -570,7 +575,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         method = 'POST'
         pipeline.extend(PHASE1_PIPELINES.get(item_type, []))
     elif phase == 2:
-        method = 'PUT'
+        method = 'PATCH'
         pipeline.extend(PHASE2_PIPELINES.get(item_type, []))
 
     pipeline.extend([
@@ -773,8 +778,8 @@ def load_all(testapp, filename, docsdir, log_level=None, test=False):
     for item_type in ORDER:
         try:
             source = read_single_sheet(filename, item_type)
-        except ValueError:
-            logger.error('Opening %s %s failed.', filename, item_type)
+        except ValueError as err:
+            logger.error('Opening %s %s failed. %s', filename, item_type, err)
             continue
         pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=1)
         process(combine(source, pipeline))
@@ -785,6 +790,7 @@ def load_all(testapp, filename, docsdir, log_level=None, test=False):
         try:
             source = read_single_sheet(filename, item_type)
         except ValueError:
+            # No need to log this error again.
             continue
         pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=2)
         process(combine(source, pipeline))
