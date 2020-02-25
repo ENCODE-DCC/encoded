@@ -92,7 +92,7 @@
                 "Positive",
                 "Negative",
                 "Rare Focal Positive",
-                "Focal Negative"
+                "Focal Loss"
             ]
         }
     },
@@ -104,7 +104,7 @@
             "title": "IHC assay staining result"
         }
     },
-   
+
     "boost_values": {
         "antibody": 1.0,
         "result": 1.0
