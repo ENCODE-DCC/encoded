@@ -16,92 +16,9 @@
     "dependencies": {
         "tumor_size": ["tumor_size_units"],
         "tumor_size_units": ["tumor_size"],
-        "sarcomatoid_percentage": ["sarcomatoid"],
-        "t_stage": ["ajcc_version"],
-        "ajcc_tnm_stage": ["ajcc_version"],
-        "metasasis_details":  {
-            "comment":"Metasis details required for pathology source procedure.",
-            "properties": {
-                "path_source_procedure": {
-                    "enum": ["path_metasis"]
-                }
-            }
+        "sarcomatoid_percentage": ["sarcomatoid"]
         },
-        "laterality":  {
-            "comment":"Laterality required for pathology source procedure.",
-            "properties": {
-                "path_source_procedure": {
-                    "enum": ["path_biopsy", "path_nephrectomy"]
-                }
-            }
-        },
-        "path_source_procedure":  {
-            "oneOf": [
-                {
-                    "properties": {
-                        "required": ["metasis_details"],
-                        "path_source_procedure": {
-                            "enum": ["path_metasis"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "oneOf": [
-                            {
-                                "required": ["metasis_details"],
-                                "properties": {
-                                    "path_source_procedure": {
-                                        "enum": ["path_biopsy", "path_nephrectomy"]
-                                    }
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "path_source_procedure": {
-                                        "enum": ["path_metasis"]
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "laterality":  {
-            "oneOf": [
-                {
-                    "properties": {
-                        "required": ["laterality"],
-                        "path_source_procedure": {
-                            "enum": ["path_biopsy", "path_nephrectomy"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "oneOf": [
-                            {
-                                "required": ["laterality"],
-                                "properties": {
-                                    "path_source_procedure": {
-                                        "enum": ["path_metasis"]
-                                    }
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "path_source_procedure": {
-                                        "enum": ["path_biopsy", "path_nephrectomy"]
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    },
+
     "properties": {
         "schema_version": {
             "default": "1"
