@@ -544,3 +544,37 @@ def dataset_27_28(value, system):
             continue
         new_dbxrefs.add(dbxref.rsplit('.', 1)[0])
     value['dbxrefs'] = sorted(new_dbxrefs)
+
+
+@upgrade_step('aggregate_series', '2', '3')
+@upgrade_step('experiment_series', '2', '3')
+@upgrade_step('functional_characterization_experiment', '3', '4')
+@upgrade_step('functional_characterization_series', '2', '3')
+@upgrade_step('matched_set', '16', '17')
+@upgrade_step('organism_development_series', '16', '17')
+@upgrade_step('project', '16', '17')
+@upgrade_step('publication_data', '16', '17')
+@upgrade_step('reference', '17', '18')
+@upgrade_step('replication_timing_series', '16', '17')
+@upgrade_step('single_cell_rna_series', '2', '3')
+@upgrade_step('treatment_concentration_series', '16', '17')
+@upgrade_step('treatment_time_series', '17', '18')
+@upgrade_step('ucsc_browser_composite', '16', '17')
+def dataset_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5083
+    if not value.get('dbxrefs'):
+        return
+    new_dbxrefs = set()
+    for dbxref in value['dbxrefs']:
+        if not dbxref.startswith('IHEC:IHECRE'):
+            new_dbxrefs.add(dbxref)
+            continue
+        else:
+            if 'notes' in value:
+                value['notes'] += '\t' + dbxref
+            else:
+                value['notes'] = dbxref
+    if len(new_dbxrefs) == 0:
+        value.pop('dbxrefs', None)
+    else:
+        value['dbxrefs'] = sorted(new_dbxrefs)

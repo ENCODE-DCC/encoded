@@ -1,5 +1,9 @@
 ## Changelog for organism_development_series.json
 
+### Schema version 17
+
+* Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
+
 ### Schema version 16
 
 * Update IHEC dbxref regex to remove version number

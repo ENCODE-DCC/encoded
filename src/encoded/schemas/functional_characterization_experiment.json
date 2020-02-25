@@ -103,7 +103,8 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+
+            "default": "4"
         },
         "assay_term_name": {
             "title": "Assay name",
