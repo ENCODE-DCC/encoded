@@ -65,6 +65,7 @@ class FunctionalCharacterizationExperiment(
         'replicates.library.biosample.part_of.donor',
         'replicates.library.biosample.part_of.treatments',
         'replicates.library.biosample.treatments',
+        'replicates.library.construction_platform',
         'replicates.library.treatments',
         'replicates.libraries',
         'replicates.libraries.biosample.submitted_by',

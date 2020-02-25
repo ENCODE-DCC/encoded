@@ -303,6 +303,46 @@ LibrarySubmitterComments.propTypes = {
 
 
 /**
+ * Display, as one element of a "key-value" definition list, all the `construction_platform`
+ * properties in a dataset's replicates' library.
+ */
+const DatasetConstructionPlatform = ({ context }) => {
+    // Collect the library construction platforms from all the dataset replicates.
+    const constructionPlatforms = context.replicates.reduce((platforms, replicate) => {
+        // We easily have duplicates, so only add the replicate library platform if we haven't
+        // already seen it.
+        if ((replicate.library && replicate.library.construction_platform) &&
+            (platforms.findIndex(platform => platform['@id'] === replicate.library.construction_platform['@id']) === -1)) {
+            return platforms.concat(replicate.library.construction_platform);
+        }
+        return platforms;
+    }, []);
+
+    if (constructionPlatforms.length > 0) {
+        return (
+            <div data-test="constructionplatform">
+                <dt>Library construction platform</dt>
+                <dd>
+                    {constructionPlatforms.map((platform, i) =>
+                        <React.Fragment key={platform['@id']}>
+                            {i > 0 ? <span>, </span> : null}
+                            <a href={platform['@id']}>{platform.term_name}</a>
+                        </React.Fragment>
+                    )}
+                </dd>
+            </div>
+        );
+    }
+    return null;
+};
+
+DatasetConstructionPlatform.propTypes = {
+    /** Dataset object potentially containing construction platform */
+    context: PropTypes.object.isRequired,
+};
+
+
+/**
  * Renders both Experiment and FunctionalCharacterizationExperiment objects.
  */
 const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
@@ -579,6 +619,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     </dd>
                                 </div>
                             : null}
+
+                            <DatasetConstructionPlatform context={context} />
 
                             {context.possible_controls && context.possible_controls.length > 0 ?
                                 <div data-test="possible-controls">
