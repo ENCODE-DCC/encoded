@@ -121,6 +121,27 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.assay_term_name ?
+                                <div data-test="assaytermname">
+                                    <dt>Assay</dt>
+                                    <dd>{context.assay_term_name}</dd>
+                                </div>
+                            : null}
+
+                            {context.targets && context.targets.length > 0 ?
+                                <div data-test="targets">
+                                    <dt>Target</dt>
+                                    <dd>
+                                        {context.targets.map((target, i) =>
+                                            <React.Fragment>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={target['@id']}>{target.label}</a>
+                                            </React.Fragment>
+                                        )}
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.biosample_ontology || biosampleSummary ?
                                 <div data-test="biosample">
                                     <dt>Biosample summary</dt>
@@ -149,13 +170,6 @@ const AnnotationComponent = (props, reactContext) => {
                                 <div data-test="type">
                                     <dt>Annotation type</dt>
                                     <dd className="sentence-case">{context.annotation_type}</dd>
-                                </div>
-                            : null}
-
-                            {context.target ?
-                                <div data-test="target">
-                                    <dt>Target</dt>
-                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
                                 </div>
                             : null}
 
