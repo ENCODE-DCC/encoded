@@ -75,10 +75,9 @@
         "nephr_robotic_assist":{
             "title":"Nephrectomy Robotic Assist"
         },
-        "pathology_report.tumor_size_range": {
+        "tumor_size_range": {
             "title": "Tumor Size"
         },
-<<<<<<< HEAD
         "pathology_report.t_stage": {
             "title": "Pathological T stage"
         },
@@ -87,20 +86,6 @@
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
-=======
-        "pathology_report.pT_stage_version6": {
-            "title": "pT 6th edition"
-        },
-        "pathology_report.pT_stage_version7": {
-            "title": "pT 7th edition"
-        },
-
-        "pathology_report.pTNM_stage_version6": {
-            "title": "TNM Stage 6th edition"
-        },
-        "pathology_report.pTNM_stage_version7": {
-            "title": "TNM Stage 7th edition"
->>>>>>> 93fa78bb9de490cc3a97bcd0b05dba756c08f21a
         },
         "pathology_report.laterality": {
             "title": "Tumor Laterality"
@@ -158,7 +143,7 @@
         "surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
         },
-        "pathology_report.tumor_size_range": {
+        "tumor_size_range": {
             "title": "Tumor Size"
         },
         "pathology_report.t_stage": {
@@ -211,20 +196,11 @@
         "accession": 1.0,
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
-<<<<<<< HEAD
         "tumor_size_range": 1.0,
         "pathology_report.t_stage": 1.0,
         "pathology_report.ajcc_tnm_stage": 1.0,
         "pathology_report.ajcc_version": 1.0,
         "pathology_report.laterality":1.0, 
-=======
-        "pathology_report.tumor_size_range": 1.0,
-        "pathology_report.pT_stage_version6": 1.0,
-        "pathology_report.pT_stage_version7": 1.0,
-        "pathology_report.pTNM_stage_version6": 1.0,
-        "pathology_report.pTNM_stage_version7": 1.0,
-        "pathology_report.laterality":1.0,
->>>>>>> 93fa78bb9de490cc3a97bcd0b05dba756c08f21a
         "pathology_report.histology": 1.0,
         "pathology_report.focality": 1.0,
         "pathology_report.grade": 1.0,
