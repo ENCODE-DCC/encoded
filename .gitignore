@@ -44,4 +44,5 @@
 .pyvenv/
 .ssh/
 .config/
-*initial-indexing-times.json
+initial-indexing-times*
+.viminfo
