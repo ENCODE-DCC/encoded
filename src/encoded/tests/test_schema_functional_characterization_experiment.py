@@ -52,6 +52,21 @@ def functional_characterization_experiment_4(testapp, lab, award):
     return item
 
 
+@pytest.fixture
+def functional_characterization_experiment_5(testapp, lab, award, ctcf):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'status': 'in progress',
+        'examined_loci': [{
+             'gene': ctcf['uuid'],
+             'gene_expression_percentile': 80
+         }]
+    }
+    return item
+
+
 def test_valid_functional_characterization_experiment(testapp, functional_characterization_experiment_item):
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_item, status=201)
 
@@ -114,3 +129,15 @@ def test_functional_characterization_experiment_target_expression_dependency(tes
     # the property also may not coexist with target_expression_range_maximum
     functional_characterization_experiment_4.update({'target_expression_range_maximum': 90})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_4, status=422)
+
+
+def test_functional_characterization_experiment_examined_loci_dependency(testapp, functional_characterization_experiment_5, ctcf, bap1):
+    # the property examined_loci has to have at least two items
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid'], 'gene_expression_range_minimum': 2, 'gene_expression_range_maximum': 70}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
+    # the property examined_loci needs to specify either gene_expression_percentile or gene_expression_range_maximum and gene_expression_range_minimum for each item
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid']}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid'], 'gene_expression_percentile': 25}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)

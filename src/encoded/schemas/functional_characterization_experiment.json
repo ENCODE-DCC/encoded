@@ -244,7 +244,7 @@
             "minItems": 2,
             "items": {
                 "title": "Locus",
-                "description": "The gene targeted by gRNAs.",
+                "description": "Gene locus targeted by gRNAs.",
                 "type": "string",
                 "linkTo": "Gene"
             }

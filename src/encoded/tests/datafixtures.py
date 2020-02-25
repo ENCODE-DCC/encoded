@@ -259,6 +259,24 @@ def gene(ctcf):
 
 
 @pytest.fixture
+def bap1(testapp, organism):
+    item = {
+        'uuid': '91205c22-2748-47e1-b261-8c38236f4e98',
+        'dbxrefs': ['HGNC:950'],
+        'geneid': '8314',
+        'symbol': 'BAP1',
+        'ncbi_entrez_status': 'live',
+        'organism': organism['uuid'],
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def gene(bap1):
+    return bap1
+
+
+@pytest.fixture
 def heart(testapp):
     item = {
         'term_id': 'UBERON:0000948',
