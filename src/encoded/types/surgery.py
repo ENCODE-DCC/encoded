@@ -25,7 +25,11 @@ class Surgery(Item):
     schema = load_schema("encoded:schemas/surgery.json")
     name_key = "accession"
 
-    embedded = ["pathology_report", "surgery_procedure", "ihc"]
+    embedded = [
+        "pathology_report",
+        "surgery_procedure",
+        "ihc"
+    ]
     rev = {
         "pathology_report": ("PathologyReport", "surgery"),
         "surgery_procedure": ("SurgeryProcedure", "surgery"),
@@ -39,7 +43,10 @@ class Surgery(Item):
         schema={
             "title": "Surgery Procedures",
             "type": "array",
-            "items": {"type": "string", "linkTo": "SurgeryProcedure"},
+            "items": {
+                "type": "string",
+                "linkTo": "SurgeryProcedure",
+            },
         }
     )
     def surgery_procedure(self, request, surgery_procedure):
@@ -48,9 +55,11 @@ class Surgery(Item):
     @calculated_property(
         condition="surgery_procedure",
         schema={
-            "title": "surgery procedure nephrectomy robotic assist",
+            "title": "Nephrectomy Robotic Assist",
             "type": "array",
-            "items": {"type": "string"},
+            "items": {
+                "type": "string",
+            },
         },
     )
     def nephr_robotic_assist(self, request, surgery_procedure):
@@ -62,8 +71,6 @@ class Surgery(Item):
             robotic_assist_type = []
 
             if nephr_details is not None:
-                
-
                 nephr_robotic_assist = sp_object.get('nephrectomy_details').get('robotic_assist')
                 if nephr_robotic_assist is True:
                     robotic_assist_type.append("True")
@@ -76,7 +83,10 @@ class Surgery(Item):
         schema={
             "title": "Pathology Report",
             "type": "array",
-            "items": {"type": "string", "linkTo": "PathologyReport"},
+            "items": {
+                "type": "string",
+                "linkTo": "PathologyReport",
+            },
         }
     )
     def pathology_report(self, request, pathology_report):
@@ -114,7 +124,10 @@ class Surgery(Item):
         schema={
             "title": "ihc link PR",
             "type": "array",
-            "items": {"type": "string", "linkTo": "Ihc"},
+            "items": {
+                "type": "string",
+                "linkTo": "Ihc",
+            },
         }
     )
     def ihc(self, request, ihc):
@@ -136,7 +149,10 @@ class SurgeryProcedure(Item):
 
 @collection(
     name="PR_ihc",
-    properties={"title": "PR-ihc linked", "description": "PR-ihc results pages",},
+    properties={
+        "title": "Pathology tumor reports IHC",
+        "description": "Pathology tumor IHC reports results pages",
+    },
 )
 class Ihc(Item):
     item_type = "ihc"
@@ -185,3 +201,144 @@ class PathologyReport(Item):
         surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()["accession"]
         return u"{}-{}".format(surgery_id, properties["tumor_sequence_number"])
 
+    @calculated_property(
+        condition='tumor_size',
+        schema={
+            "title": "Tumor size range",
+            "type": "string",
+        },
+    )
+    def tumor_size_range(self, request, tumor_size):
+
+        if 0 <= tumor_size < 3:
+            tumor_size_range = "0-2.9 cm"
+        elif 3 <= tumor_size < 7:
+            tumor_size_range = "3-6.9 cm"
+        elif 7 <= tumor_size < 10:
+            tumor_size_range = "7-9.9 cm"
+        else:
+            tumor_size_range = "10+ cm"
+
+        return tumor_size_range
+
+    @calculated_property(
+        condition='t_stage',
+        schema={
+            "title": "pT stage in version 6",
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
+    )
+    def pT_stage_version6(self, t_stage, ajcc_version):
+
+        t_stage_version6 = None
+
+        if ajcc_version == "6th edition":
+            if t_stage == "pT1a":
+                t_stage_version6 ="1A"
+            elif t_stage == "pT1b":
+                t_stage_version6 ="1B"
+            elif t_stage == "pT2":
+                t_stage_version6 ="2"
+            elif t_stage == "pT3":
+                t_stage_version6 ="3"
+            elif t_stage == "pT3a":
+                t_stage_version6 ="3A"
+            elif t_stage == "pT3b":
+                t_stage_version6 ="3B"
+            elif t_stage == "pT3c":
+                t_stage_version6 ="3C"
+            elif t_stage == "pT4":
+                t_stage_version6 ="4"
+
+        return t_stage_version6
+
+
+    @calculated_property(
+        condition='t_stage',
+        schema={
+            "title": "pT stage in version 7",
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
+    )
+    def pT_stage_version7(self, t_stage, ajcc_version):
+
+        t_stage_version7 = None
+
+        if ajcc_version == "7th edition":
+            if t_stage == "pT1a":
+                t_stage_version7 ="1A"
+            elif t_stage == "pT1b":
+                t_stage_version7 ="1B"
+            elif t_stage == "pT2":
+                t_stage_version7 ="2"
+            elif t_stage == "pT3":
+                t_stage_version7 ="3"
+            elif t_stage == "pT3a":
+                t_stage_version7 ="3A"
+            elif t_stage == "pT3b":
+                t_stage_version7 ="3B"
+            elif t_stage == "pT3c":
+                t_stage_version7 ="3C"
+            elif t_stage == "pT4":
+                t_stage_version7 ="4"
+
+        return t_stage_version7
+
+
+    @calculated_property(
+        condition="ajcc_tnm_stage",
+        schema={
+            "title": "pTNM stage in version 6",
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
+    )
+    def pTNM_stage_version6(self, ajcc_tnm_stage, ajcc_version):
+
+        tnm_stage_version6 = None
+
+        if ajcc_version == "6th edition":
+            if ajcc_tnm_stage == "1":
+                tnm_stage_version6 ="1"
+            elif ajcc_tnm_stage == "2":
+                tnm_stage_version6 ="2"
+            elif ajcc_tnm_stage == "3":
+                tnm_stage_version6 ="3"
+            elif ajcc_tnm_stage == "4":
+                tnm_stage_version6 ="4"
+
+        return tnm_stage_version6
+
+    @calculated_property(
+        condition="ajcc_tnm_stage",
+        schema={
+            "title": "pTNM stage in version 7",
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
+    )
+    def pTNM_stage_version7(self, ajcc_tnm_stage, ajcc_version):
+
+        tnm_stage_version7 = None
+
+        if ajcc_version == "7th edition":
+            if ajcc_tnm_stage == "1":
+                tnm_stage_version7 ="1"
+            elif ajcc_tnm_stage == "2":
+                tnm_stage_version7 ="2"
+            elif ajcc_tnm_stage == "3":
+                tnm_stage_version7 ="3"
+            elif ajcc_tnm_stage == "4":
+                tnm_stage_version7 ="4"
+
+        return tnm_stage_version7

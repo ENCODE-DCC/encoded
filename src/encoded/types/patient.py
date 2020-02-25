@@ -285,8 +285,8 @@ class Patient(Item):
     })
     def medication_range(self, request, medication):
 
-        for object in medication:
-            medication_object = request.embed(object, '@@object')
+        for med in medication:
+            medication_object = request.embed(med, '@@object')
             date_format="%Y-%m-%d"
             start_date=datetime.strptime(medication_object['start_date'],date_format )
             end_date=datetime.strptime(medication_object['end_date'],date_format )
@@ -362,7 +362,7 @@ class Patient(Item):
             if len(surgery) > 0:
                 surgery_summary = "Treatment Received"
             else:
-                    surgery_summary = "No Treatment Received"
+                surgery_summary = "No Treatment Received"
             return surgery_summary
 
 
@@ -376,8 +376,8 @@ class Patient(Item):
     })
 
     def sur_nephr_robotic_assist(self, request, surgery):
-        
-        
+
+
         sp_obj_array = []
         array=[]
         if surgery is not None:
@@ -390,20 +390,18 @@ class Patient(Item):
                         sp_obj = request.embed(spo, "@@object")
                         sp_proc_type=sp_obj.get("procedure_type")
                         if sp_proc_type=="Nephrectomy":
-
                             sp_nephr_robotic=sp_obj.get("nephrectomy_details").get("robotic_assist")
                             array.append(sp_nephr_robotic)
-                        else: continue
-                           
+                        else:
+                            continue
 
         robotic_assist=[]
 
         for logic in array:
-
             if  logic is True:
-                    robotic_assist.append("True")
+                robotic_assist.append("True")
             else:
-                    robotic_assist.append("False")
+                robotic_assist.append("False")
         return robotic_assist
 
     @calculated_property(condition='surgery', schema={
