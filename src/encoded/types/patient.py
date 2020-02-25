@@ -97,6 +97,7 @@ class Patient(Item):
         'supportive_medications',
         'surgery',
         'surgery.surgery_procedure',
+        'surgery.pathology_report',
         'biospecimen']
     rev = {
         'labs': ('LabResult', 'patient'),
@@ -432,19 +433,19 @@ class Patient(Item):
 
                         #     sp_nephr_robotic=sp_obj.get("nephrectomy_details").get("robotic_assist")
                         array.append(sp_tumor_size)
-            return array
+            # return array
                         # else: continue
-        # tumor_size_range = []
-        # for tumor_size in array:
-        #     if 0 <= tumor_size < 3:
-        #         tumor_size_range.append("0-3 cm")
-        #     elif 3 <= tumor_size < 7:
-        #         tumor_size_range.append("3-7 cm")
-        #     elif 7 <= tumor_size < 10:
-        #         tumor_size_range.append("7-10 cm")
-        #     else:
-        #         tumor_size_range.append("10+ cm")
-        # return tumor_size_range                   
+        tumor_size_range = []
+        for tumor_size in array:
+            if 0 <= tumor_size < 3:
+                tumor_size_range.append("0-3 cm")
+            elif 3 <= tumor_size < 7:
+                tumor_size_range.append("3-7 cm")
+            elif 7 <= tumor_size < 10:
+                tumor_size_range.append("7-10 cm")
+            else:
+                tumor_size_range.append("10+ cm")
+        return tumor_size_range                   
 
    
 

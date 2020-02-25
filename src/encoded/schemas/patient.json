@@ -87,33 +87,11 @@
         "race": {
             "title": "Race"
         },
-        "germline_summary": {
-            "title": "Germline Mutation"
-        },
-        "radiation_summary": {
-            "title": "Radiation Treatment Status"
-        },
-        "dose_range": {
-            "title": "Radiation Dose per Fraction"
-        },
-        "fractions_range": {
-            "title": "Radiation Fractions"
-        },
-        "radiation.site_general" : {
-          "title": "Radiation Site"
-        },
-        "radiation.treatment_intention" : {
-          "title": "Radiation Treatment Intention"
-        },
+       
         "medical_imaging.type" : {
           "title": "Medical Imaging"
         },
-        "medications.name":{
-            "title":"Medication Name"
-        },
-        "medication_range":{
-            "title":"Medication Duration"
-        },
+       
         "surgery_summary": {
             "title": "Surgery Treatment Status"
         },
@@ -133,12 +111,54 @@
         "sur_nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist" 
         },
+        "sur_path_tumor_size":{
+            "title": "Tumor Size" 
+
+        },
+        "surgery.pathology_report.laterality": {
+            "title": "Tumor Laterality"
+        },
+       
+        "surgery.pathology_report.histology": {
+            "title": "Tumor Histologic Subtypes"
+        },
+        "surgery.pathology_report.t_stage": {
+            "title": " Pathological T stage"
+        },
+        "surgery.pathology_report.ajcc_tnm_stage": {
+            "title": " AJCC TNM Stage"
+        },
+        "medications.name":{
+            "title":"Medication Name"
+        },
+        "medication_range":{
+            "title":"Medication Duration"
+        },
+        "germline_summary": {
+            "title": "Germline Mutation"
+        },
 
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        
+        "radiation_summary": {
+            "title": "Radiation Treatment Status"
+        },
+        "dose_range": {
+            "title": "Radiation Dose per Fraction"
+        },
+        "fractions_range": {
+            "title": "Radiation Fractions"
+        },
+        "radiation.site_general" : {
+          "title": "Radiation Site"
+        },
+        "radiation.treatment_intention" : {
+          "title": "Radiation Treatment Intention"
         },
         "biospecimen.collection_type": {
               "title": "Biospecimen Collection Type"
@@ -184,8 +204,24 @@
         },
         "sur_nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist" 
-        }
+        },
+        "sur_path_tumor_size":{
+            "title": "Tumor Size" 
 
+        },
+        "surgery.pathology_report.laterality": {
+            "title": "Tumor Laterality"
+        },
+       
+        "surgery.pathology_report.histology": {
+            "title": "Tumor Histologic Subtypes"
+        },
+        "surgery.pathology_report.t_stage": {
+            "title": " Pathological T stage"
+        },
+        "surgery.pathology_report.ajcc_tnm_stage": {
+            "title": " AJCC TNM Stage"
+        }
     },
     "boost_values": {
         "accession": 1.0,
@@ -198,9 +234,7 @@
         "radiation.treatment_intention": 1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "medications.name":1.0,
-        "sur_nephr_robotic_assist":1.0
-
+        "medications.name":1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
