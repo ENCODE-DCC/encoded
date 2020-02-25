@@ -12,7 +12,6 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPInternalServerError,
     HTTPForbidden,
-    HTTPCreated,
     HTTPFound,
 )
 from pyramid.security import (

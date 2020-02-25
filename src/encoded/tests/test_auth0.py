@@ -7,7 +7,6 @@ from jsonschema_serialize_fork.exceptions import ValidationError
 from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPInternalServerError,
-    HTTPCreated,
     HTTPForbidden,
     HTTPUnprocessableEntity,
 )
