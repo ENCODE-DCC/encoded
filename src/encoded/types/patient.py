@@ -419,7 +419,6 @@ class Patient(Item):
         
         sp_obj_array = []
         array=[]
-        # sp_tumor_size=''
         if surgery is not None:
             for so in surgery:
                 so_object = request.embed(so, "@@object")
@@ -427,14 +426,11 @@ class Patient(Item):
 
                 if sp_obj_array is not None:
                     for spo in sp_obj_array:
-                        sp_obj = request.embed(spo, "@@object")#get PR
-                        sp_tumor_size=sp_obj.get("tumor_size")#get tumor size value
-                        # if sp_proc_type=="Nephrectomy":
+                        sp_obj = request.embed(spo, "@@object")
+                        sp_tumor_size=sp_obj.get("tumor_size")
 
-                        #     sp_nephr_robotic=sp_obj.get("nephrectomy_details").get("robotic_assist")
                         array.append(sp_tumor_size)
-            # return array
-                        # else: continue
+
         tumor_size_range = []
         for tumor_size in array:
             if 0 <= tumor_size < 3:
