@@ -497,33 +497,40 @@
             "title": "Status"
         },
 
+        "t_stage": {
+            "title": "Pathological T stage"
+        },
+        "ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
+        },
+        "ajcc_version": {
+            "title": "AJCC Version"
+        },
         "laterality": {
-            "title": "Laterality"
+            "title": "Tumor Laterality"
         },
-        "tumor_size": {
-            "title": "Tumore Size"
-        },
+       
         "histology": {
-            "title": "Histologic Subtypes"
+            "title": "Tumor Histologic Subtypes"
         },
 
         "focality": {
-            "title": "Focality"
+            "title": "Tumor Focality"
         },
         "grade": {
-            "title": "Grade"
+            "title": "Tumor Grade"
         },
         "sarcomatoid": {
-            "title": "Sarcomatoid"
+            "title": "Sarcomatoid Change"
         },
         "necrosis": {
             "title": "Tumor Necrosis"
         },
         "margins": {
-            "title": "Margins"
+            "title": "Margin Status"
         },
          "lvi": {
-            "title": "LVI"
+            "title": "Lymphvascular invasion(LVI)"
         },
         "micro_perinephric": {
             "title": "Perinephric Infiltration"
@@ -544,33 +551,40 @@
             "title": "Status"
         },
 
+        "t_stage": {
+            "title": "Pathological T stage"
+        },
+        "ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
+        },
+        "ajcc_version": {
+            "title": "AJCC Version"
+        },
         "laterality": {
-            "title": "Laterality"
+            "title": "Tumor Laterality"
         },
-        "tumor_size": {
-            "title": "Tumor Size"
-        },
+       
         "histology": {
-            "title": "Histologic Subtypes"
+            "title": "Tumor Histologic Subtypes"
         },
 
         "focality": {
-            "title": "Focality"
+            "title": "Tumor Focality"
         },
         "grade": {
-            "title": "Grade"
+            "title": "Tumor Grade"
         },
         "sarcomatoid": {
-            "title": "Sarcomatoid"
+            "title": "Sarcomatoid Change"
         },
         "necrosis": {
             "title": "Tumor Necrosis"
         },
         "margins": {
-            "title": "Margins"
+            "title": "Margin Status"
         },
          "lvi": {
-            "title": "LVI"
+            "title": "Lymphvascular invasion(LVI)"
         },
         "micro_perinephric": {
             "title": "Perinephric Infiltration"
@@ -581,9 +595,6 @@
         "micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
-
-
-
     },
     "boost_values": {
         "laterality":1.0,
