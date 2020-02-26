@@ -3874,11 +3874,11 @@ def test_audit_experiment_lacking_processed_data(
         for warning in collect_audit_errors(res))
 
 
-def test_audit_experiment_control(testapp, matched_set, ChIP_experiment, experiment, base_experiment):
-    ctrl = testapp.patch_json(matched_set['@id'], {'related_datasets': [experiment['@id'],
+def test_audit_experiment_control(testapp, base_matched_set, ChIP_experiment, experiment, base_experiment):
+    ctrl = testapp.patch_json(base_matched_set['@id'], {'related_datasets': [experiment['@id'],
                                                                         base_experiment['@id']]})
     res = testapp.get(ChIP_experiment['@id'] + '@@index-data')
     assert (error['category'] == 'inconsistent control' for error in collect_audit_errors(res))
-    ctrl = testapp.patch_json(matched_set['@id'], {'related_datasets': [experiment['@id']]})
+    ctrl = testapp.patch_json(base_matched_set['@id'], {'related_datasets': [experiment['@id']]})
     res = testapp.get(ChIP_experiment['@id'] + '@@index-data')
     assert not any(error['category'] == 'inconsistent control' for error in collect_audit_errors(res))

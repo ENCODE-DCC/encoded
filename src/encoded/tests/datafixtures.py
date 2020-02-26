@@ -1387,7 +1387,8 @@ def dataset_reference_2(lab, award):
     }
 
 
-def ChIP_experiment(testapp, lab, award, cell_free, target, matched_set):
+@pytest.fixture
+def ChIP_experiment(testapp, lab, award, cell_free, target, base_matched_set):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
@@ -1395,13 +1396,13 @@ def ChIP_experiment(testapp, lab, award, cell_free, target, matched_set):
         'biosample_ontology': cell_free['uuid'],
         'target': target['@id'],
         'possible_controls': [
-            matched_set['@id']]
+            base_matched_set['@id']]
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
 
 @pytest.fixture
-def matched_set(testapp, lab, award):
+def base_matched_set(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid']

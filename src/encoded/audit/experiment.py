@@ -3263,7 +3263,7 @@ def audit_experiment_control(value, system, excluded_types):
                         value['biosample_ontology']['term_name']
                         )
                     )
-            yield AuditFailure('inconsistent control', detail, level='ERROR')
+                    yield AuditFailure('inconsistent control', detail, level='ERROR')
 
         else:
             if not is_matching_biosample_control(
