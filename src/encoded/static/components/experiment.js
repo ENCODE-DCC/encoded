@@ -456,6 +456,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
+    const fcexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&possible_controls.accession=${context.accession}`;
+
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
 
@@ -711,6 +713,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
 
             {combinedDocuments.length > 0 ?
                 <DocumentsPanelReq documents={combinedDocuments} />
