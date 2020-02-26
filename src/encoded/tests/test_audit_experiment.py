@@ -3578,7 +3578,7 @@ def test_audit_fcc_experiment_nih_consent(
     )
 
 
-def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, treatment_time_series):
+def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment):
     from encoded.audit.experiment import is_matching_biosample_control
     exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
     exp_embedded = exp.json['embedded']
@@ -3589,13 +3589,6 @@ def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, trea
     bio = testapp.get(biosample['@id'] + '@@index-data')
     bio_embedded = bio.json['embedded']
     assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_ontology']['term_id']) == True
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_ontology']['term_id']) == False
-    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id']]})
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_ontology']['term_id']) == True
 
 
 def test_is_control_dataset(testapp, ctrl_experiment, publication_data, treatment_time_series):
