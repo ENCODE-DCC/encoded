@@ -8,7 +8,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap
 
 /** List of object @type allowed in the cart. */
 const allowedCartTypes = [
-    'Experiment',
+    'Patient',
 ];
 
 /** Maximum number of elements allowed in cart while not logged in */

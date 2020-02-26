@@ -529,6 +529,7 @@ globals.listingViews.register(Target, 'Target');
 /* eslint-disable react/prefer-stateless-function */
 class PatientComponent extends React.Component {
     render() {
+        const { cartControls } = this.props;
         const result = this.props.context;
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
         const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
@@ -554,9 +555,14 @@ class PatientComponent extends React.Component {
                       <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
                       <div><strong>Race: </strong>{result.race}</div>
                   </div>
-              </div>
-              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-          </li>
+                    {cartControls ?
+                        <div className="result-item__cart-control">
+                            <CartToggle element={result} />
+                        </div>
+                        : null}
+                </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li>
         );
     }
 }
@@ -564,6 +570,7 @@ class PatientComponent extends React.Component {
 
 PatientComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
+    cartControls: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };

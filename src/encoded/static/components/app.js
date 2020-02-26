@@ -35,12 +35,10 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment&status=released' },
-                { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment&status=released' },
-                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment&status=released' },
+                { id: 'assaysearch', title: 'Search', url: '/search/?type=Patient&status=released' },
+                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Patient&status=released' },
                 { id: 'sep-mm-1' },
-                { id: 'region-search', title: 'Search by region', url: '/region-search/' },
-                { id: 'publications', title: 'Publications', url: '/publications/' },
+                { id: 'publications', title: 'Publications', url: '/search/?type=Publication&status=released' },
             ],
         },
         {
