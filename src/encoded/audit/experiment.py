@@ -2756,6 +2756,15 @@ def audit_experiment_replicated(value, system, excluded_types):
     if value['status'] not in ['released', 'submitted']:
         return
     '''
+    Excluding single cell experiments
+    FCC experiment may not have biosample_ontology
+    '''
+    if (
+        'Experiment' in value['@type']
+        and value['biosample_ontology']['classification'] == 'single cell'
+    ):
+        return
+    '''
     Excluding single cell isolation experiments from the replication requirement
     Excluding RNA-bind-and-Seq from the replication requirment
     Excluding genetic modification followed by DNase-seq from the replication requirement
