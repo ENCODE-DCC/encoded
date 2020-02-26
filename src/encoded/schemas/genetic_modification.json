@@ -126,6 +126,22 @@
                             "required": ["introduced_gene"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["deletion"]
+                        },
+                        "method": {
+                            "enum": ["site specific recombination"]
+                        },
+                        "purpose": {
+                            "enum": ["knock out"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
+                    }
                 }
             ]
         },
@@ -249,24 +265,12 @@
                     }
                 },
                 {
-                    "anyOf": [
-                        {
-                            "required": ["treatments", "modified_site_nonspecific"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["mutagenesis", "site-specific recombination"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["treatments"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["mutagenesis"]
-                                }
-                            }
+                    "required": ["treatments"],
+                    "properties": {
+                        "category": {
+                            "enum": ["mutagenesis"]
                         }
-                    ]
+                    }
                 }
             ]
         },
@@ -525,7 +529,8 @@
                 "repression",
                 "tagging",
                 "characterization",
-                "expression"
+                "expression",
+                "knock out"
             ]
         },
         "zygosity":{

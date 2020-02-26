@@ -1,5 +1,8 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 9
+* Added *knock out* to enum list for *purpose*, only applicable with *category* of *deletion* and *method* of *site specific recombination*.
+
 ### Schema version 9
 
 * Several underused *purpose* enum were combined: *activation* and *overexpression* are remapped to *expression*, and *analysis* and *screening* are remapped to *characterization*.
