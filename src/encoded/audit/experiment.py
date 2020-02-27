@@ -3214,7 +3214,6 @@ def audit_experiment_control(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    # Currently controls are only be required for ChIP-seq
     if value.get('assay_term_name') not in controlRequiredAssayList:
         return
 
@@ -3250,25 +3249,39 @@ def audit_experiment_control(value, system, excluded_types):
             )
         )
         yield AuditFailure('missing possible_controls', detail, level=audit_level)
-        return
 
     for control in value['possible_controls']:
-        if not is_matching_biosample_control(
-            control, value.get('biosample_ontology', {}).get('term_id')):
-            detail = ('The specified control {} '
-                'for this experiment is on {}, '
-                'but this experiment is done on {}.'.format(
-                    audit_link(path_to_text(control['@id']), control['@id']),
-                    control.get('biosample_ontology', {}).get('term_name'),
-                    value['biosample_ontology']['term_name']
+        # https://encodedcc.atlassian.net/browse/ENCD-5071
+        if 'Series' in control['@type'] or control['@type'][0] == 'Project':
+            for each in control['biosample_ontology']:
+                if each.get('term_id') != value.get('biosample_ontology', {}).get('term_id'):
+                    detail = ('The specified control {} '
+                    'for this experiment is on {}, '
+                    'but this experiment is done on {}.'.format(
+                        audit_link(path_to_text(control['@id']), control['@id']),
+                        each.get('term_name'),
+                        value['biosample_ontology']['term_name']
+                        )
+                    )
+                    yield AuditFailure('inconsistent control', detail, level='ERROR')
+
+        else:
+            if not is_matching_biosample_control(
+                control, value.get('biosample_ontology', {}).get('term_id')):
+                detail = ('The specified control {} '
+                    'for this experiment is on {}, '
+                    'but this experiment is done on {}.'.format(
+                        audit_link(path_to_text(control['@id']), control['@id']),
+                        control.get('biosample_ontology', {}).get('term_name'),
+                        value['biosample_ontology']['term_name']
+                    )
                 )
-            )
-            yield AuditFailure('inconsistent control', detail, level='ERROR')
-    return
+                yield AuditFailure('inconsistent control', detail, level='ERROR')
+            return
 
 
 def is_matching_biosample_control(dataset, biosample_term_id):
-    if dataset['@type'][0] == 'Experiment':
+    if dataset['@type'][0] in ['Experiment', 'Annotation']:
         return dataset.get('biosample_ontology', {}).get('term_id') == biosample_term_id
     elif (not dataset.get('biosample_ontology') or
          any([term['term_id'] != biosample_term_id
