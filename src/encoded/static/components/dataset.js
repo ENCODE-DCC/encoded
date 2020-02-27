@@ -264,7 +264,7 @@ const Annotation = auditDecor(AnnotationComponent);
 globals.contentViews.register(Annotation, 'Annotation');
 
 
-// Display Annotation page, a subtype of Dataset.
+// Display PublicationData page, a subtype of Dataset.
 const PublicationDataComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
