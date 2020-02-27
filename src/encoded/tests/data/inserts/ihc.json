@@ -31,7 +31,7 @@
       "path_id": "PT708IJT",
       "service_date": "1876-04-12",
       "antibody": "BAP1",
-      "result": "Focal Negative",
+      "result": "Focal Loss",
       "status": "released",
       "uuid": "f8a57b3e-42d3-11ea-b77f-2e728ce88125"
     },
@@ -67,7 +67,7 @@
       "path_id": "PT480NBU",
       "service_date": "1876-04-16",
       "antibody": "CD10",
-      "result": "Focal Negative",
+      "result": "Focal Loss",
       "status": "released",
       "uuid": "f8a5828c-42d3-11ea-b77f-2e728ce88125"
     },
@@ -103,7 +103,7 @@
       "path_id": "PT802XRB",
       "service_date": "1876-04-20",
       "antibody": "CK903",
-      "result": "Focal Negative",
+      "result": "Focal Loss",
       "status": "released",
       "uuid": "f8a5873c-42d3-11ea-b77f-2e728ce88125"
     },
@@ -139,7 +139,7 @@
       "path_id": "PT692UHR",
       "service_date": "1876-04-24",
       "antibody": "Melan-A",
-      "result": "Focal Negative",
+      "result": "Focal Loss",
       "status": "released",
       "uuid": "f8a58e4e-42d3-11ea-b77f-2e728ce88125"
     },
@@ -175,7 +175,7 @@
       "path_id": "PT359MHZ",
       "service_date": "1876-04-28",
       "antibody": "RCC Antigen",
-      "result": "Focal Negative",
+      "result": "Focal Loss",
       "status": "released",
       "uuid": "f8a592ea-42d3-11ea-b77f-2e728ce88125"
     },
@@ -211,7 +211,7 @@
       "path_id": "PT240HMN",
       "service_date": "1876-04-30",
       "antibody": "Vimentin",
-      "result": "Focal Negative",
+      "result": "Focal Loss",
       "status": "released",
       "uuid": "f8a59b96-42d3-11ea-b77f-2e728ce88125"
     }
