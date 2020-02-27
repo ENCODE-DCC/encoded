@@ -87,7 +87,7 @@
                             "enum": ["characterization"]
                         },
                         "category": {
-                            "enum": ["interference", "activation"]
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -130,13 +130,13 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["deletion"]
+                            "enum": ["knockout"]
                         },
                         "method": {
-                            "enum": ["site specific recombination"]
+                            "enum": ["site-specific recombination"]
                         },
                         "purpose": {
-                            "enum": ["knock out"]
+                            "enum": ["repression"]
                         }
                     },
                     "not": {
@@ -246,7 +246,7 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["interference", "activation"]
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -268,7 +268,7 @@
                     "required": ["treatments"],
                     "properties": {
                         "category": {
-                            "enum": ["mutagenesis"]
+                            "enum": ["mutagenesis", "site-specific recombination"]
                         }
                     }
                 }
@@ -517,7 +517,10 @@
                 "mutagenesis",
                 "replacement",
                 "episome",
-                "activation"
+                "activation",
+                "knockout",
+                "disruption",
+                "inhibition"
             ]
         },
         "purpose":{
@@ -529,8 +532,7 @@
                 "repression",
                 "tagging",
                 "characterization",
-                "expression",
-                "knock out"
+                "expression"
             ]
         },
         "zygosity":{

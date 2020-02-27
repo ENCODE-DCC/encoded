@@ -265,5 +265,18 @@
             "TGGGCTAACATTAGCCAGA"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant"
+    },
+    {
+        "accession": "ENCGM555KOT",
+        "aliases": [
+            "bing-ren:CRISPR_knockout"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "knockout",
+        "lab": "/labs/bing-ren/",
+        "method": "CRISPR",
+        "purpose": "characterization",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
     }
 ]

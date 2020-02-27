@@ -1,7 +1,8 @@
 ## Changelog for genetic_modification.json
 
 ### Minor changes since schema version 9
-* Added *knock out* to enum list for *purpose*, only applicable with *category* of *deletion* and *method* of *site specific recombination*.
+
+* Added *disruption*, *inhibition*, and *knockout* as enums in *category* for use with CRISPR screen data.
 
 ### Schema version 9
 
