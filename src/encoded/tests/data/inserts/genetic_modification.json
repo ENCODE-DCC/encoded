@@ -243,5 +243,27 @@
         "purpose": "characterization",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM518NSB",
+        "uuid": "46758afd-237b-4e01-951e-5f624714bfde",
+        "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "purpose": "tagging",
+        "modified_site_by_gene_id": "/genes/912/",
+        "introduced_tags": [
+            {
+                "name": "FLAG",
+                "location": "C-terminal"
+            }
+        ],
+        "method": "CRISPR",
+        "guide_rna_sequences": [
+            "GCGTAGCCAGTGACCAGCT",
+            "TGGGCTAACATTAGCCAGA"
+        ],
+        "submitted_by": "dignissim.euismod@amet.habitant"
     }
 ]
