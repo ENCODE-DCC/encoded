@@ -120,7 +120,7 @@ class CartStatusComponent extends React.Component {
                         dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
                         openDropdown={openDropdown}
                         dropdownClick={dropdownClick}
-                        label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+                        label={`Cohort containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
                         buttonCss="cart__nav-button"
                     >
                         <DropdownMenu label="cart-control">
