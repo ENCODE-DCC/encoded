@@ -364,6 +364,52 @@ class Patient(Item):
                     surgery_summary = "No Treatment Received"
             return surgery_summary
 
+    matrix = {
+        'y': {
+            'facets': [
+                'status',
+                'gender',
+                'race',
+                'ethnicity',
+                
+            ],
+            'group_by': ['race', 'gender'],
+            'label': 'race',
+        },
+        'x': {
+            'facets': [
+                'radiation_summary',
+                'surgery.surgery_type',
+                'medications.name',
+            ],
+            'group_by': 'medications.name',
+            'label': 'medication',
+        },
+    }
+
+    summary_data = {
+        'y': {
+            'facets': [
+
+                'status',
+                'gender',
+                'race',
+                'radiation_summary',
+
+            ],
+            'group_by': ['gender', 'radiation_summary'],
+            'label': 'Gender',
+        },
+        'x': {
+            'facets': [
+                'race',
+            ],
+            'group_by': 'race',
+            'label': 'Race',
+        },
+        'grouping': ['gender', 'status'],
+    }
+
 
 @collection(
     name='lab-results',
@@ -519,3 +565,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
