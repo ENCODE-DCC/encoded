@@ -42,7 +42,7 @@ const portal = {
                 { id: 'patientmatrix', title: 'Patient matrix', url: '/matrix/?type=Patient&status=released' },
                 { id: 'patientsummary', title: 'Patient summary', url: '/summary/?type=Patient&status=released' },
                 { id: 'sep-mm-2' },
-                { id: 'publications', title: 'Publications', url: '/publications/' },
+                { id: 'publications', title: 'Publications', url: '/search/?type=Publication&status=released' },
             ],
         },
         {

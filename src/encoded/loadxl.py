@@ -18,6 +18,7 @@ ORDER = [
     'lab',
     'image',
     'page',
+    'publication',
     'patient',
     'biospecimen',
     'platform',
