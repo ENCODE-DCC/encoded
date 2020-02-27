@@ -350,10 +350,16 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
 const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
     const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
 
-    const projectSelect = (e) => {
+    const projectSelect = (e, baseUrl) => {
         const selectedProject = e.target.value;
         const awardRfa = selectedProject === 'All' ? '' : `&award.rfa${selectedProject === 'Roadmap' ? '=' : '!='}Roadmap`;
-        const link = `/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens${awardRfa}`;
+        const query = new QueryString(baseUrl);
+
+        // search query string parameters and others need to be preserved across different projects but the
+        // project parameter (award.rfa) may differ. So satisfy both conditions, project is removed from the url
+        // and re-added or not added, as needed.
+        query.deleteKeyValue('award.rfa').deleteKeyValue('award.rfa!');
+        const link = `${query.format()}${awardRfa}`;
         reactContext.navigate(link);
     };
 
@@ -369,11 +375,11 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
             </div>
             {showProjects ?
                 <div className="test-project-selector">
-                    <input type="radio" id="all" name="project" value="All" checked={project === null} onChange={projectSelect} />
+                    <input type="radio" id="all" name="project" value="All" checked={project === null} onChange={e => projectSelect(e, context['@id'])} />
                     <label htmlFor="all">All</label> &nbsp; &nbsp;
-                    <input type="radio" id="roadmap" name="project" value="Roadmap" checked={project === 'Roadmap'} onChange={projectSelect} />
+                    <input type="radio" id="roadmap" name="project" value="Roadmap" checked={project === 'Roadmap'} onChange={e => projectSelect(e, context['@id'])} />
                     <label htmlFor="roadmap">Roadmap</label> &nbsp; &nbsp;
-                    <input type="radio" id="nonroadmap" name="project" value="Nonroadmap" checked={project !== 'Roadmap' && project !== null} onChange={projectSelect} />
+                    <input type="radio" id="nonroadmap" name="project" value="Nonroadmap" checked={project !== 'Roadmap' && project !== null} onChange={e => projectSelect(e, context['@id'])} />
                     <label htmlFor="nonroadmap">Non-Roadmap</label>
                 </div>
             : null}
