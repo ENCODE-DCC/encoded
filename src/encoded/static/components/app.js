@@ -36,7 +36,9 @@ const portal = {
             title: 'Data',
             children: [
                 { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Patient&status=released' },
-                { id: 'assaysearch', title: 'Search', url: '/search/?type=Patient&status=released' },
+                { id: 'patientsearch', title: 'patient search', url: '/search/?type=Patient&status=released' },
+                { id: 'samplesearch', title: 'Biospecimen search', url: '/search/?type=Biospecimen&status=released' },
+                { id: 'genomicssearch', title: 'Genomics search', url: '/search/?type=Biofile&status=released' },
                 { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Patient&status=released' },
                 { id: 'sep-mm-1' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
