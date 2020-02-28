@@ -100,7 +100,6 @@
                 "Negative",
                 "Rare Focal Positive",
                 "Focal Loss"
-
             ]
         }
     },
@@ -112,7 +111,7 @@
             "title": "IHC/FISH results"
         }
     },
-   
+
     "boost_values": {
         "antibody": 1.0,
         "result": 1.0
