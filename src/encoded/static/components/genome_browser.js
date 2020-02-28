@@ -446,8 +446,7 @@ class GenomeBrowser extends React.Component {
 
     handleOnFocus() {
         this.setState({ showAutoSuggest: false });
-        const urlComponents = url.parse(this.context.location_href);
-        const coordinateHref = `${urlComponents.protocol}//${urlComponents.host}/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
+        const coordinateHref = `/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`;
         getCoordinateData(coordinateHref, this.context.fetch).then((response) => {
             // Find the response line that matches the search
             const responseIndex = response['@graph'].findIndex(responseLine => responseLine.text === this.state.searchTerm);
