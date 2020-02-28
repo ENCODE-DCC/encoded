@@ -1222,7 +1222,7 @@ class App extends React.Component {
                     {/* The following line is a get around for GO server not being HTTPS */}
                     {/* https://encodedcc.atlassian.net/browse/ENCD-5005 */}
                     {/* https://stackoverflow.com/questions/33507566/mixed-content-blocked-when-running-an-http-ajax-operation-in-an-https-page#answer-48700852 */}
-                    {this.props.context['@type'].includes('Gene') ? <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
+                    {this.props.context['@type'] && this.props.context['@type'].includes('Gene') ? <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
