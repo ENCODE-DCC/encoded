@@ -12,5 +12,6 @@ scenarios(
     'matrix_entex.feature',
     'matrix_experiment.feature',
     'matrix_reference_epigenome.feature',
-    'matrix_chip_seq.feature'
+    'matrix_chip_seq.feature',
+    strict_gherkin=False,
 )

@@ -3,7 +3,6 @@ from encoded.vis_defines import vis_format_url
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
-from pyramid.security import effective_principals
 from .batch_download import get_peak_metadata_links
 from collections import OrderedDict
 import requests
@@ -265,7 +264,7 @@ def region_search(context, request):
         'notification': '',
         'filters': []
     }
-    principals = effective_principals(request)
+    principals = request.effective_principals
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')

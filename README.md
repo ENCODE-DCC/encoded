@@ -211,6 +211,12 @@ Indexing will then proceed in a background thread similar to the production setu
   
   `bin/test -v -v --splinter-webdriver chrome && npm test`
 
+- Use the circle-tests.sh to run osx tests with .circleci/config.yml args
+  `circle-tests.sh bdd`                 # Headless bdd tests with chromedriver
+  `circle-tests.sh indexing`            # Not bdd indexing tests
+  `circle-tests.sh notindexing`         # Not bdd non-indexing tests
+  `circle-tests.sh npm`                 # Npm tests
+  `circle-tests.sh`                     # All non-bdd tests, e.g. indexing and non-indexing
 
 ## Building Javascript and CSS
 

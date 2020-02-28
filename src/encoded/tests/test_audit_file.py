@@ -955,7 +955,7 @@ def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_e
 def test_audit_file_statuses_in_s3_statuses(testapp):
     # Make sure public_s3_statuses and private_s3_statuses lists in File item include
     # all statuses in File schema, except upload failed and content error.
-    from ..types.file import File
+    from encoded.types.file import File
     public_s3_statuses = File.public_s3_statuses
     private_s3_statuses = File.private_s3_statuses
     assert public_s3_statuses
