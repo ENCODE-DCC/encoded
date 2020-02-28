@@ -109,6 +109,7 @@ class GenomeBrowser extends React.Component {
             disableBrowserForIE: false,
         };
         this.setBrowserDefaults = this.setBrowserDefaults.bind(this);
+        this.clearBrowserMemory = this.clearBrowserMemory.bind(this);
         this.filesToTracks = this.filesToTracks.bind(this);
         this.drawTracks = this.drawTracks.bind(this);
         this.drawTracksResized = this.drawTracksResized.bind(this);
@@ -185,6 +186,13 @@ class GenomeBrowser extends React.Component {
                     }
                 });
             }
+        }
+    }
+
+    componentWillUnmount() {
+        this.clearBrowserMemory();
+        if (this.state.visualizer) {
+            this.state.visualizer.appCanvasRef.componentWillUnmount();
         }
     }
 
@@ -318,6 +326,16 @@ class GenomeBrowser extends React.Component {
         });
     }
 
+    /**
+     * Clear any remains of memory Valis has used within the web browser.
+     */
+    clearBrowserMemory() {
+        if (this.state.visualizer) {
+            this.state.visualizer.stopFrameLoop();
+            this.state.visualizer.clearCaches();
+        }
+    }
+
     compileFiles(domain) {
         let newFiles = [];
         if (domain.includes('localhost')) {
@@ -414,6 +432,7 @@ class GenomeBrowser extends React.Component {
             tracks: this.state.trackList,
         });
         this.setState({ visualizer });
+        this.clearBrowserMemory();
         visualizer.render({
             width: this.chartdisplay.clientWidth,
             height: visualizer.getContentHeight(),
