@@ -4,75 +4,22 @@
     "id": "/profiles/surgery.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [
-        "patient",
-        "date",
-        "surgery_type",
-        "hospital_location"
-    ],
-    "identifyingProperties": [
-        "uuid"
-    ],
+    "required": ["patient", "date", "hospital_location"],
+    "identifyingProperties": [ "uuid","accession"],
     "mixinProperties": [
-        {
-            "$ref": "mixins.json#/schema_version"
-        },
-        {
-            "$ref": "mixins.json#/uuid"
-        },
-        {
-            "$ref": "mixins.json#/submitted"
-        },
-        {
-            "$ref": "mixins.json#/standard_status"
-        }
+        { "$ref": "mixins.json#/schema_version"},
+        { "$ref": "mixins.json#/uuid"},
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/submitted" }
+
     ],
-    "dependencies": {
-      "nephrectomy_details":  {
-          "comment":"Nephrectomy details required if surgery type is nephrectomy.",
-          "properties": {
-              "surgery_type": {
-                  "enum": ["Nephrectomy"]
-              }
-          }
-      },
-      "surgery_type":  {
-          "oneOf": [
-              {
-                  "properties": {
-                      "required": ["nephrectomy_details"],
-                      "surgery_type": {
-                          "enum": ["Nephrectomy"]
-                      }
-                  }
-              },
-              {
-                  "not": {
-                      "oneOf": [
-                          {
-                              "required": ["nephrectomy_details"],
-                              "properties": {
-                                  "surgery_type": {
-                                      "enum": ["Ablation", "Metastectomy"]
-                                  }
-                              }
-                          },
-                          {
-                              "properties": {
-                                  "surgery_type": {
-                                      "enum": ["Nephrectomy"]
-                                  }
-                              }
-                          }
-                      ]
-                  }
-              }
-          ]
-      }
-    },
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "accession": {
+            "accessionType": "SX"
         },
         "patient": {
             "title": "Patient",
@@ -91,17 +38,6 @@
                 }
             ]
         },
-        "surgery_type": {
-            "title": "Surgery procedure",
-            "description": "The surgery procedures conducted",
-            "type": "string",
-            "enum": [
-                    "Ablation",
-                    "Nephrectomy",
-                    "Metastectomy"
-                ]
-
-        },
         "hospital_location": {
             "title": "Surgery hospital Location",
             "type": "string",
@@ -113,64 +49,168 @@
                 "Not available"
             ]
         },
-        "nephrectomy_details": {
-            "title": "Nephrectomy details",
-            "description": "Further details of Nephrectomy",
-            "type": "object",
-            "permission": "import_items",
-            "required": [
-                "type",
-                "approach",
-                "robotic_assist"
-            ],
-            "properties": {
-                "type": {
-                    "title": "Neprhectomy type",
-                    "type": "string",
-                    "enum": [
-                        "Partial",
-                        "Total"
-                    ]
-                },
-                "approach": {
-                    "title": "Neprhectomy Approach",
-                    "type": "string",
-                    "enum": [
-                        "Laparoscopic",
-                        "Open"
-                    ]
-                },
-                "robotic_assist": {
-                    "title": "Robotic Assit",
-                    "type": "boolean"
-                }
-            }
+        "path_id": {
+            "title": "Path ID",
+            "comment": "KCE personnel are allowed to set this value.",
+            "type": "string",
+            "permission": "import_items"
         }
-
     },
     "facets": {
-        "surgery_type": {
+        "status": {
+            "title": "Status"
+        },
+        "surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
         "hospital_location": {
             "title": "Surgery Hospital Location"
         },
-        "nephrectomy_details.type": {
+        "surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
         },
-        "nephrectomy_details.approach": {
+        "surgery_procedure.nephrectomy_details.approach": {
             "title": " Nephrectomy Approach"
         },
-        "nephrectomy_details.robotic_assist": {
-            "title": "Nephrectomy Robotic Assist"
+        "nephr_robotic_assist":{
+            "title":"Nephrectomy Robotic Assist"
+        },
+        "tumor_size_range": {
+            "title": "Tumor Size"
+        },
+        "pathology_report.t_stage": {
+            "title": "Pathological T stage"
+        },
+        "pathology_report.ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
+        },
+        "pathology_report.ajcc_version": {
+            "title": "AJCC Version"
+        },
+        "pathology_report.laterality": {
+            "title": "Tumor Laterality"
+        },
+
+        "pathology_report.histology": {
+            "title": "Tumor Histologic Subtypes"
+        },
+
+        "pathology_report.focality": {
+            "title": "Tumor Focality"
+        },
+        "pathology_report.grade": {
+            "title": "Tumor Grade"
+        },
+        "pathology_report.sarcomatoid": {
+            "title": "Sarcomatoid Change"
+        },
+        "pathology_report.necrosis": {
+            "title": "Tumor Necrosis"
+        },
+        "pathology_report.margins": {
+            "title": "Margin Status"
+        },
+         "pathology_report.lvi": {
+            "title": "Lymphvascular invasion(LVI)"
+        },
+        "pathology_report.micro_perinephric": {
+            "title": "Perinephric Infiltration"
+        },
+        "pathology_report.micro_vein": {
+            "title": "Renal Vein Involvement (MicroVein)"
+        },
+        "pathology_report.micro_adrenal": {
+            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
         },
         "status": {
             "title": "Status"
+        },
+        "date": {
+            "title": "Surgery Procedure"
+        },
+        "hospital_location": {
+            "title": "Surgery Hospital Location"
+        },
+        "surgery_procedure.procedure_type": {
+            "title": "Surgery Procedure"
+        },
+
+        "surgery_procedure.nephrectomy_details.type": {
+            "title": "Nephrectomy Type"
+        },
+        "tumor_size_range": {
+            "title": "Tumor Size"
+        },
+        "pathology_report.t_stage": {
+            "title": "Pathological T stage"
+        },
+        "pathology_report.ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
+        },
+        "pathology_report.ajcc_version": {
+            "title": "AJCC Version"
+        },
+        "pathology_report.laterality": {
+            "title": "Tumor Laterality"
+        },
+
+        "pathology_report.histology": {
+            "title": "Tumor Histologic Subtypes"
+        },
+
+        "pathology_report.focality": {
+            "title": "Tumor Focality"
+        },
+        "pathology_report.grade": {
+            "title": "Tumor Grade"
+        },
+        "pathology_report.sarcomatoid": {
+            "title": "Sarcomatoid Change"
+        },
+        "pathology_report.necrosis": {
+            "title": "Tumor Necrosis"
+        },
+        "pathology_report.margins": {
+            "title": "Margin Status"
+        },
+         "pathology_report.lvi": {
+            "title": "Lymphvascular invasion(LVI)"
+        },
+        "pathology_report.micro_perinephric": {
+            "title": "Perinephric Infiltration"
+        },
+        "pathology_report.micro_vein": {
+            "title": "Renal Vein Involvement (MicroVein)"
+        },
+        "pathology_report.micro_adrenal": {
+            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         }
+
     },
     "boost_values": {
+        "accession": 1.0,
         "patient": 1.0,
-        "surgery_type": 1.0
+        "surgery_procedure.procedure_type": 1.0,
+        "tumor_size_range": 1.0,
+        "pathology_report.t_stage": 1.0,
+        "pathology_report.ajcc_tnm_stage": 1.0,
+        "pathology_report.ajcc_version": 1.0,
+        "pathology_report.laterality":1.0, 
+        "pathology_report.histology": 1.0,
+        "pathology_report.focality": 1.0,
+        "pathology_report.grade": 1.0,
+        "pathology_report.sarcomatoid":1.0,
+        "pathology_report.necrosis": 1.0,
+        "pathology_report.margins": 1.0,
+        "pathology_report.lvi": 1.0,
+        "pathology_report.micro_perinephric":1.0,
+        "pathology_report.micro_vein": 1.0,
+        "pathology_report.micro_adrenal": 1.0
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }

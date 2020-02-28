@@ -24,15 +24,40 @@ class SurgeryChart extends React.Component {
         var nephDataPoints = [];
         var ablaDataPoints = [];
         var metDataPoints = [];
-        nephDataPoints = this.props.data.filter(i => { return i.surgery_type === "Nephrectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location, i.nephrectomy_details] });
+        var biopsyDataPoints = [];
+        console.log(this.props.data);
+        this.props.data.forEach((i) => {
+          i.surgery_procedure.forEach((surgery_procedure) => {
+              if (surgery_procedure.procedure_type === "Nephrectomy") {
+                nephDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location, "nephrectomy_details": surgery_procedure.nephrectomy_details})
+              }
+              else if (surgery_procedure.procedure_type === "Ablation") {
+                ablaDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
+              }
+              else if (surgery_procedure.procedure_type === "Metastectomy") {
+                metDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
+              }
+              else {
+                biopsyDataPoints.push({ "date": Date.parse(i.date), "Date": i.date, "procedure_type": surgery_procedure.procedure_type, "hospital_location": i.hospital_location})
+              }
+            })
+          });
+
+        //nephDataPoints = this.props.data.filter(i => {i.surgery_procedure.filter( surgery_procedure => { return surgery_procedure.procedure_type === "Nephrectomy" })}).map(i => { return [Date.parse(i.date), i.date, surgery_procedure.procedure_type, i.hospital_location, surgery_procedure.nephrectomy_details] });
         nephDataPoints.sort((a, b) => a[0] - b[0]);
 
-        ablaDataPoints = this.props.data.filter(i => { return i.surgery_type === "Ablation" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location] });
+        //ablaDataPoints = this.props.data.filter(i => { return i.surgery_procedure.procedure_type === "Ablation" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_procedure.procedure_type, i.hospital_location] });
         ablaDataPoints.sort((a, b) => a[0] - b[0]);
 
-        metDataPoints = this.props.data.filter(i => { return i.surgery_type === "Metastectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_type, i.hospital_location] });
+        biopsyDataPoints.sort((a, b) => a[0] - b[0]);
+
+
+        //metDataPoints = this.props.data.filter(i => { return i.surgery_procedure.procedure_type === "Metastectomy" }).map(i => { return [Date.parse(i.date), i.date, i.surgery_procedure.procedure_type, i.hospital_location] });
         metDataPoints.sort((a, b) => a[0] - b[0]);
-        
+          console.log(nephDataPoints);
+          console.log(ablaDataPoints);
+          console.log(metDataPoints);
+
         let sortedDateUnix = [];
         sortedDateUnix = this.props.data.map(i => { return Date.parse(i.date) });
         sortedDateUnix.sort((a, b) => a - b);
@@ -40,24 +65,23 @@ class SurgeryChart extends React.Component {
         let minDateUnix = sortedDateUnix[0];
         let maxDateUnix = sortedDateUnix[sortedDateUnix.length - 1];
 
-
         let data = [];
         let traceNeph = {};
         if (nephDataPoints.length > 0) {
             for (let i = 0; i < nephDataPoints.length; i++) {
                 traceNeph = {
                     type: 'scatter',
-                    x: [nephDataPoints[i][1]],
-                    y: [nephDataPoints[i][2]],
+                    x: [nephDataPoints[i]["Date"]],
+                    y: [nephDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
                         color: 'blue',
                         symbol: 'diamond',
                         size: '16'
                     },
-                    text: nephDataPoints[i][2],
+                    text: nephDataPoints[i]["procedure_type"],
                     textposition: "right",
-                    hovertemplate: "Hospital location: " + nephDataPoints[i][3] + "<br>Neph type: " + nephDataPoints[i][4].type + "<br>Neph approach: " + nephDataPoints[i][4].approach + "<br>Robotic Assist: " + nephDataPoints[i][4].robotic_assist + "<extra></extra>"
+                    hovertemplate: "Hospital location: " + nephDataPoints[i]['hospital_location'] + "<br>Neph type: " + nephDataPoints[i]["nephrectomy_details"].type + "<br>Neph approach: " + nephDataPoints[i]["nephrectomy_details"].approach + "<br>Robotic Assist: " + nephDataPoints[i]["nephrectomy_details"].robotic_assist + "<extra></extra>"
                 };
                 data.push(traceNeph);
             };
@@ -68,17 +92,17 @@ class SurgeryChart extends React.Component {
             for (let i = 0; i < metDataPoints.length; i++) {
                 traceMet = {
                     type: 'scatter',
-                    x: [metDataPoints[i][1]],
-                    y: [metDataPoints[i][2]],
+                    x: [metDataPoints[i]["Date"]],
+                    y: [metDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
                         color: 'red',
                         symbol: 'circle',
                         size: '16'
                     },
-                    text: metDataPoints[i][2],
+                    text: metDataPoints[i]["procedure_type"],
                     textposition: "right",
-                    hovertemplate: "Hospital location: " + metDataPoints[i][3] + "<extra></extra>"
+                    hovertemplate: "Hospital location: " + metDataPoints[i]["hospital_location"] + "<extra></extra>"
                 };
                 data.push(traceMet);
             };
@@ -89,17 +113,36 @@ class SurgeryChart extends React.Component {
             for (let i = 0; i < ablaDataPoints.length; i++) {
                 traceAbla = {
                     type: 'scatter',
-                    x: [ablaDataPoints[i][1]],
-                    y: [ablaDataPoints[i][2]],
+                    x: [ablaDataPoints[i]["Date"]],
+                    y: [ablaDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
                         color: 'green',
                         symbol: 'square',
                         size: '16'
                     },
-                    text: ablaDataPoints[i][2],
+                    text: ablaDataPoints[i]["procedure_type"],
                     textposition: "right",
-                    hovertemplate: "Hospital location: " + ablaDataPoints[i][3] + "<extra></extra>"
+                    hovertemplate: "Hospital location: " + ablaDataPoints[i]["hospital_location"] + "<extra></extra>"
+                };
+                data.push(traceAbla);
+            };
+        };
+        if (biopsyDataPoints.length > 0) {
+            for (let i = 0; i < biopsyDataPoints.length; i++) {
+                traceAbla = {
+                    type: 'scatter',
+                    x: [biopsyDataPoints[i]["Date"]],
+                    y: [biopsyDataPoints[i]["procedure_type"]],
+                    mode: 'markers',
+                    marker: {
+                        color: 'orange',
+                        symbol: 'oval',
+                        size: '16'
+                    },
+                    text: biopsyDataPoints[i]["procedure_type"],
+                    textposition: "right",
+                    hovertemplate: "Hospital location: " + biopsyDataPoints[i]["hospital_location"] + "<extra></extra>"
                 };
                 data.push(traceAbla);
             };

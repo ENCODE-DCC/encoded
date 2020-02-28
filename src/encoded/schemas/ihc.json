@@ -38,6 +38,13 @@
             "type": "string",
             "linkTo": "Patient"
         },
+        "surgery": {
+            "title": "surgery accession",
+            "comment": "link to surgery inforation with surgery accession. ",
+            "type": "string",
+            "permission": "import_items",
+            "linkTo": "Surgery"
+        },
         "path_id": {
             "title": "Pathology ID",
             "comment": "KCE personnel are allowed to set this value.",
@@ -98,10 +105,10 @@
     },
     "facets": {
         "antibody": {
-            "title": "IHC assay staining antibody"
+            "title": "IHC/FISH (Clinical lab)"
         },
         "result": {
-            "title": "IHC assay staining result"
+            "title": "IHC/FISH results"
         }
     },
 
