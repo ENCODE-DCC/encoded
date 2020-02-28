@@ -666,7 +666,6 @@ def main():
             )
         else:
             print('Deploying Demo:', instance_info['url'])
-            print('url:', instance_info['name'])
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
     elif 'cluster_master' in instances_info and main_args.es_wait:
@@ -690,7 +689,8 @@ def main():
             print('Deploying Head ES Node:', instance_info['name'])
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
             print(" --es-ip {}".format(instance_info['private_ip']))
-        print("Es head ssh:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+        print('\nRun the following command to view es head deployment log.')
+        print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         print('')
         helper_vars.append("datam='{}'".format(instance_info['instance_id']))
         for index in range(main_args.cluster_size):
@@ -708,7 +708,8 @@ def main():
                             main_args.profile_name,
                         )
                     )
-                print("ES node{} ssh:\n ssh ubuntu@{}{}".format(index, node_info['public_dns'], tail_cmd))
+                print('Run the following command to view this es node deployment log.')
+                print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
             else:
                 print("ES node{} ssh:\n ssh ubuntu@{}".format(index, node_info['public_dns']))
     elif 'frontend' in instances_info:
@@ -725,10 +726,10 @@ def main():
                 )
             )
         else:
-            print('Deploying Frontend:', instance_info['name'])
-            print('url:', instance_info['url'])
+            print('Deploying Frontend:', instance_info['url'])
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
-        print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+        print('\n\nRun the following command to view the deployment log.')
+        print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         helper_vars.append("frontend='{}'".format(instance_info['instance_id']))
     else:
         print('Warning: Unknown instance info')
