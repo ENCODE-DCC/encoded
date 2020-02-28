@@ -27,7 +27,6 @@ from .shared_calculated_properties import (
 
 from .assay_data import assay_terms
 
-
 @collection(
     name='experiments',
     unique_key='accession',
@@ -69,6 +68,7 @@ class Experiment(Dataset,
         'replicates.library.biosample.part_of.donor',
         'replicates.library.biosample.part_of.treatments',
         'replicates.library.biosample.treatments',
+        'replicates.library.construction_platform',
         'replicates.library.treatments',
         'replicates.libraries',
         'replicates.libraries.biosample.submitted_by',
@@ -177,6 +177,91 @@ class Experiment(Dataset,
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
+    @calculated_property(schema={
+        "title": "Protein tags",
+        "description": "The protein tags introduced through the genetic modifications of biosamples investigated in the experiment.",
+        "comment": "Do not submit. This field is calculated through applied_modifications.",
+        "type": "array",
+        "notSubmittable": True,
+        "minItems": 1,
+        "items": {
+            "title": "Protein tag",
+            "description": "The protein tag introduced in the modification.",
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "name": {
+                    "title": "Tag name",
+                    "type": "string",
+                    "enum": [
+                        "3xFLAG",
+                        "6XHis",
+                        "DsRed",
+                        "eGFP",
+                        "ER",
+                        "FLAG",
+                        "GFP",
+                        "HA",
+                        "mCherry",
+                        "T2A",
+                        "TagRFP",
+                        "TRE",
+                        "V5",
+                        "YFP",
+                        "mAID-mClover",
+                        "mAID-mClover-NeoR",
+                        "mAID-mClover-Hygro"
+                    ]
+                },
+                "location": {
+                    "title": "Tag location",
+                    "type": "string",
+                    "enum": [
+                        "C-terminal",
+                        "internal",
+                        "N-terminal",
+                        "other",
+                        "unknown"
+                    ]
+                },
+                "target": {
+                    "title": "Tagged protein",
+                    "type": "string",
+                    "linkTo": "Target",
+                }
+            }
+        }
+    })
+    def protein_tags(self, request, replicates=None):
+        protein_tags = []
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] in ('deleted', 'revoked'):
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
+                            continue
+                        genetic_modifications = biosampleObject.get('applied_modifications')
+                        if genetic_modifications:
+                            for gm in genetic_modifications:
+                                gm_object = request.embed(gm, '@@object?skip_calculated=true')
+                                if gm_object.get('introduced_tags') is None:
+                                    continue
+                                if gm_object.get('introduced_tags'):
+                                    for tag in gm_object.get('introduced_tags'):
+                                        tag_dict = {'location': tag['location'], 'name': tag['name']}
+                                        if gm_object.get('modified_site_by_target_id'):
+                                            tag_dict.update({'target': gm_object.get('modified_site_by_target_id')})
+                                            protein_tags.append(tag_dict)
+        if len(protein_tags) > 0:
+            return protein_tags
+
     matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
@@ -185,6 +270,20 @@ class Experiment(Dataset,
         'x': {
             'group_by': 'assay_title',
             'label': 'Assay',
+        },
+    }
+
+    chip_seq_matrix = {
+        'y': {
+            'group_by': [
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'target.label',
+            ],
+            'label': 'Target',
+        },
+        'x': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Term Name',
         },
     }
 

@@ -62,7 +62,6 @@ def test_not_pipeline_error_with_message_bad(testapp, experiment_no_error):
 def test_bad_alias_namespace(testapp, experiment):
     experiment.update({'aliases': ['jobb-dekker:job not jobb', 'encode:these are bad:!%^#@[]']})
     res = testapp.post_json('/experiment', experiment, expect_errors=True)
-    print(experiment)
     assert res.status_code == 422
 
 def test_alt_accession_ENCSR_regex(testapp, experiment_no_error):

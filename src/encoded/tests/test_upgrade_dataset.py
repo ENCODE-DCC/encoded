@@ -707,3 +707,17 @@ def test_upgrade_reference_epigenome_16_to_17(upgrader, reference_epigenome_16):
     )
     assert value['schema_version'] == '17'
     assert value['dbxrefs'] == ['IHEC:IHECRE00004643']
+
+
+def test_upgrade_reference_17_to_18(upgrader, dataset_reference_1, dataset_reference_2):
+    value = upgrader.upgrade(
+        'reference', dataset_reference_1, current_version='17', target_version='18'
+    )
+    assert value['schema_version'] == '18'
+    assert value['dbxrefs'] == ['UCSC-ENCODE-hg19:wgEncodeEH000325']
+    value = upgrader.upgrade(
+        'reference', dataset_reference_2, current_version='17', target_version='18'
+    )
+    assert value['schema_version'] == '18'
+    assert 'dbxrefs' not in value
+    assert 'IHEC:IHECRE00004703' in value['notes']

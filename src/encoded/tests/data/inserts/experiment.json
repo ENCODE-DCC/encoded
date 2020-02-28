@@ -715,6 +715,19 @@
         "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b2"
     },
     {
+        "_test": "Paired set series 3",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "status": "released",
+        "date_submitted": "2015-04-20",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "award": "U54HG007010",
+        "assay_term_name": "DNase-seq",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "date_released": "2015-08-31",
+        "accession": "ENCSR751YPT",
+        "uuid": "d53d6a59-a444-49d1-b9f8-c4502c7cc4b2"
+    },
+    {
         "_test": "long read RNA-seq test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
@@ -868,5 +881,22 @@
         "date_released": "2020-01-20",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "55119174-ce00-455d-8e24-09bd9efd0a65"
-    }
+    },
+    {
+        "_test": "midbrain ChIP-seq controlled by mismatched-set",
+        "accession": "ENCSR000INT",
+        "assay_term_name": "ChIP-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "description": "ChIP-seq on midbrain tissue",
+        "lab": "john-stamatoyannopoulos/",
+        "possible_controls": [
+            "ENCSR834QRX"
+        ],
+        "status": "released",
+        "date_submitted": "2015-07-20",
+        "date_released": "2016-01-01",
+        "target": "EBF1-human",
+        "uuid": "e8251058-d8c4-4b17-b03b-bfaeabe75e02"
+     }
 ]

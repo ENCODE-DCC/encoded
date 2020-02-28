@@ -436,6 +436,32 @@ def test_search_views_matrix_response_no_results(workbook, testapp):
     assert r.json['notification'] == 'No results found'
 
 
+def test_chip_seq_matrix_view(workbook, testapp):
+    res = testapp.get('/chip-seq-matrix/?type=Experiment').json
+    assert res['@type'] == ['ChipSeqMatrix']
+    assert res['@id'] == '/chip-seq-matrix/?type=Experiment'
+    assert res['@context'] == '/terms/'
+    assert res['notification'] == 'Success'
+    assert res['title'] == 'ChIP-seq Matrix'
+    assert res['total'] > 0
+    assert 'filters' in res
+    assert 'matrix' in res
+    assert res['matrix']['x']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
+    assert res['matrix']['x']['label'] == 'Term Name'
+    assert res['matrix']['y']['group_by'] == [
+        'replicates.library.biosample.donor.organism.scientific_name',
+        'target.label'
+    ]
+    assert res['matrix']['y']['label'] == 'Target'
+    assert len(res['matrix']['y']['replicates.library.biosample.donor.organism.scientific_name']['buckets']) > 0
+    assert len(
+        res['matrix']['y']['replicates.library.biosample.donor.organism.scientific_name']['buckets'][0]['target.label']['buckets']
+)       > 0
+
+
 def test_search_views_summary_response(workbook, testapp):
     r = testapp.get('/summary/?type=Experiment')
     assert 'aggregations' not in r.json

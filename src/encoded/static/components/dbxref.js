@@ -222,6 +222,9 @@ export const dbxrefPrefixMap = {
     '4DN': {
         pattern: 'https://data.4dnucleome.org/experiment-set-replicates/{0}',
     },
+    DepMap: {
+        pattern: 'https://depmap.org/portal/cell_line/{0}',
+    }
 };
 
 

@@ -12,7 +12,6 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPInternalServerError,
     HTTPForbidden,
-    HTTPCreated,
     HTTPFound,
 )
 from pyramid.security import (
@@ -127,7 +126,7 @@ def signup(context, request):
     result = collection_add(context, request, user_info)
     if not result or result['status'] != 'success':
         raise HTTPInternalServerError(explanation='attempt to create account was not successful')
-    return HTTPCreated(explanation='User created')
+    return result
 
 
 def _get_first_and_last_names_from_name(name):

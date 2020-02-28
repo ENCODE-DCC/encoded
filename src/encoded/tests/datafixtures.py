@@ -259,6 +259,24 @@ def gene(ctcf):
 
 
 @pytest.fixture
+def bap1(testapp, organism):
+    item = {
+        'uuid': '91205c22-2748-47e1-b261-8c38236f4e98',
+        'dbxrefs': ['HGNC:950'],
+        'geneid': '8314',
+        'symbol': 'BAP1',
+        'ncbi_entrez_status': 'live',
+        'organism': organism['uuid'],
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def gene(bap1):
+    return bap1
+
+
+@pytest.fixture
 def heart(testapp):
     item = {
         'term_id': 'UBERON:0000948',
@@ -337,6 +355,17 @@ def base_fcc_experiment(testapp, lab, award, heart):
 
 
 @pytest.fixture
+def pce_fcc_experiment(testapp, lab, award):
+        return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'pooled clone sequencing',
+        'schema_version': '2',
+        'status': 'in progress'
+    }
+
+
+@pytest.fixture
 def experiment_with_RNA_library(
     testapp,
     base_experiment,
@@ -346,6 +375,7 @@ def experiment_with_RNA_library(
     testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     return testapp.get(base_experiment['@id'] + '@@index-data')
+
 
 @pytest.fixture
 def micro_rna_experiment(
@@ -1354,3 +1384,45 @@ def library_schema_9b(lab, award):
         'extraction_method': 'see document ',
         'lysis_method': 'test',
     }
+
+
+@pytest.fixture
+def dataset_reference_1(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'dbxrefs': ['UCSC-ENCODE-hg19:wgEncodeEH000325', 'IHEC:IHECRE00004703'],
+    }
+
+
+@pytest.fixture
+def dataset_reference_2(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'dbxrefs': ['IHEC:IHECRE00004703'],
+        'notes': 'preexisting comment.'
+    }
+
+
+@pytest.fixture
+def ChIP_experiment(testapp, lab, award, cell_free, target, base_matched_set):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ChIP-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'target': target['@id'],
+        'possible_controls': [
+            base_matched_set['@id']]
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def base_matched_set(testapp, lab, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid']
+    }
+    return testapp.post_json('/matched_set', item, status=201).json['@graph'][0]

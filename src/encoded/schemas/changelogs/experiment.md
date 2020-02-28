@@ -1,11 +1,14 @@
 ## Changelog for experiment.json
 
 ### Minor changes since schema version 28
+
 * Removed FCC *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen*, and *pooled clone sequencing* from Experiment schema. They are to be used only in FunctionalCharacterizationExperiment objects
 * Removed *month_released* calculated property.
 * Added *analyses* property.
+* Added *protein_tags* calculated property that specifies the protein tags introduced through genetic modification of the biosamples investigated in the experiment.
 
 ### Schema version 28
+
 * Removed required property *experiment_classification*.
 
 ### Schema version 27

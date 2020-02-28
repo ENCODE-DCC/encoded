@@ -370,9 +370,6 @@ class PublicationData(FileSet):
         'submitted_by',
         'lab',
         'award.pi.lab',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'references'
     ]
 
@@ -467,7 +464,9 @@ class ComputationalModel(FileSet):
     embedded = FileSet.embedded + [
         'submitted_by',
         'lab',
-        'award.pi.lab'
+        'award.pi.lab',
+        'software_used',
+        'software_used.software'
     ]
 
 

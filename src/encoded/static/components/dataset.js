@@ -121,6 +121,27 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.assay_term_name ?
+                                <div data-test="assaytermname">
+                                    <dt>Assay</dt>
+                                    <dd>{context.assay_term_name}</dd>
+                                </div>
+                            : null}
+
+                            {context.targets && context.targets.length > 0 ?
+                                <div data-test="targets">
+                                    <dt>Target</dt>
+                                    <dd>
+                                        {context.targets.map((target, i) =>
+                                            <React.Fragment>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={target['@id']}>{target.label}</a>
+                                            </React.Fragment>
+                                        )}
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.biosample_ontology || biosampleSummary ?
                                 <div data-test="biosample">
                                     <dt>Biosample summary</dt>
@@ -149,13 +170,6 @@ const AnnotationComponent = (props, reactContext) => {
                                 <div data-test="type">
                                     <dt>Annotation type</dt>
                                     <dd className="sentence-case">{context.annotation_type}</dd>
-                                </div>
-                            : null}
-
-                            {context.target ?
-                                <div data-test="target">
-                                    <dt>Target</dt>
-                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
                                 </div>
                             : null}
 
@@ -250,7 +264,7 @@ const Annotation = auditDecor(AnnotationComponent);
 globals.contentViews.register(Annotation, 'Annotation');
 
 
-// Display Annotation page, a subtype of Dataset.
+// Display PublicationData page, a subtype of Dataset.
 const PublicationDataComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
@@ -297,13 +311,6 @@ const PublicationDataComponent = (props, reactContext) => {
                                 <dd><Status item={context} inline /></dd>
                             </div>
 
-                            {context.assay_term_name && context.assay_term_name.length > 0 ?
-                                <div data-test="assaytermname">
-                                    <dt>Assay(s)</dt>
-                                    <dd>{context.assay_term_name.join(', ')}</dd>
-                                </div>
-                            : null}
-
                             <div data-test="accession">
                                 <dt>Accession</dt>
                                 <dd>{context.accession}</dd>
@@ -313,20 +320,6 @@ const PublicationDataComponent = (props, reactContext) => {
                                 <div data-test="description">
                                     <dt>Description</dt>
                                     <dd>{context.description}</dd>
-                                </div>
-                            : null}
-
-                            {context.biosample_ontology && context.biosample_ontology.length > 0 ?
-                                <div data-test="biosampletermname">
-                                    <dt>Biosample term name</dt>
-                                    <dd>{_.uniq(context.biosample_ontology.map(b => b.term_name)).join(', ')}</dd>
-                                </div>
-                            : null}
-
-                            {context.biosample_ontology && context.biosample_ontology.length > 0 ?
-                                <div data-test="biosampletype">
-                                    <dt>Biosample type</dt>
-                                    <dd>{_.uniq(context.biosample_ontology.map(b => b.classification)).join(', ')}</dd>
                                 </div>
                             : null}
 
@@ -477,6 +470,13 @@ const ComputationalModelComponent = (props, reactContext) => {
                                 <div data-test="type">
                                     <dt>Dataset type</dt>
                                     <dd className="sentence-case">{context.dataset_type}</dd>
+                                </div>
+                            : null}
+
+                            {context.software_used && context.software_used.length > 0 ?
+                                <div data-test="softwareused">
+                                    <dt>Software used</dt>
+                                    <dd>{softwareVersionList(context.software_used)}</dd>
                                 </div>
                             : null}
                         </dl>
