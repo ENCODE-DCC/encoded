@@ -1,7 +1,25 @@
 Changes
 =======
+
+v96.1 (unreleased) snovault 1.0.41
+----------------------------------
+1. SNO-142 Minor fixes for ubutnu 18 on v96x1rc1 (#3167)
+2. SNO-141-update-osx-catalina-readme (#3167)
+3. ENCD-5120-1st-post-master-merge-fix-u18-py369 (#3160) 
+4. ENCD-5112 Update deploy ami map for all builds (#3109)
+5. SNO-140 Allow shorting uuids with flag (#3109)
+6. SNO-139 Log detailed initial indexing times (#3109)
+7. ENCD-3983-update-to-ubuntu-18 (#3109)
+8. ENCD-4961-make-base-amis-encd-deployment (#3109)
+9. ENCD-4960-add-aws-pems-for-deployment (#3109)
+10. SNO-132 Update to py37 lrowe pr with fixes (#3109)
+11. ENCD-5061-echo-filenames-in-deploy-scirpt (#3109)
+12. ENCD-5060-add-py-requirements-file (#3109)
+13. ENCD-5059-fix-pylint-in-deploy-script (#3109)
+
+
 v96.0 (released) snovault 1.0.40
----------------------------------------
+--------------------------------
 1.	ENCD-5089-add-back-account-creation-msg (#3139)
 2.	ENCD-5088-graphlib-crash (#3137)
 3.	ENCD-5086-remove-chip-seq-matrix-from-menu (#3136)
