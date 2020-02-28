@@ -1,5 +1,31 @@
 Changes
 =======
+
+v97rc1 (unreleased) snovault 1.0.41 - pre v96.1 ubuntu18/py376 merge
+--------------------------------------------------------------------
+1. ENCD-5071-audit-script-error-when-control-is-series (#3164)
+2. ENCD-4626-fix-test-save-change-antibody (#3145)
+3. ENCD-4365-roadmap-collection-view (#3142)
+4. ENCD-5121-doc-section-publication-data (#3162)
+5. ENCD-5073-multiple-targets-FCC (#3154)
+6. ENCD-5097-add-Ingrid-to-AntibodyCharacterization-reviewed-by (#3148)
+7. ENCD-5033-index-user-made-accounts (#3158)
+8. ENCD-4953-calculated-tags-property-experiment (#3155)
+9. ENCD-5072 Library construction platform display (#3168)
+10. ENCD-5106-add-control-link-FCE (#3151)
+11. ENCD-5101-add-target-to-annotation-summary-page (#3165)
+12. ENCD-5124-fix-vis-indexing-failure-on-RNA-seq-annotation (#3161)
+13. ENCD-5074-exclude-single-cell-from-read-count-audit (#3153)
+14. ENCD-5083-restrict-IHEC-dbxref-to-RefEpi-and-Annotation (#3147)
+15. ENCD-5034-encyclopedia-v6-addition (#3152)
+16. ENCD-4917-new-target-matrix (#3071)
+17. ENCD-5075 Adding the change for depmap (#3141)
+18. ENCD-5081 add-pooled-clone-sequencing-types (#3144)
+19. ENCD-5084-draft-1 (#3149)
+20. ENCD-5096-draft-1 (#3150)
+21. ENCD-5091 Rebuilt package-lock.json (#3140)
+22. ENCD-5077 Remove unnecessary prints (#3146)
+
 v96.0 (released) snovault 1.0.40
 ---------------------------------------
 1.	ENCD-5089-add-back-account-creation-msg (#3139)
