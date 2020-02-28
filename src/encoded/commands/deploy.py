@@ -900,17 +900,17 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-02-21 15:15:18.417816: encdami-demo-2020-02-21_151518
-        'demo': 'ami-095ad16cba42f152e',
-        # encdami-es-wait-head build on 2020-02-21 15:15:19.514011: encdami-es-wait-head-2020-02-21_151519
-        'es-wait-head': 'ami-0bc857eaebb0768e2',
-        # encdami-es-wait-node build on 2020-02-21 15:15:30.431631: encdami-es-wait-node-2020-02-21_151530
-        'es-wait-node': 'ami-05fffc8108a5894f4',
+        # encdami-demo build on 2020-02-27 17:12:38.684857: encdami-demo-2020-02-27_171238
+        'demo': 'ami-03a18bee9b42de1ff',
+        # encdami-es-wait-head build on 2020-02-27 17:12:49.808527: encdami-es-wait-head-2020-02-27_171249
+        'es-wait-head': 'ami-0dcd11e4701f5f45c',
+        # encdami-es-wait-node build on 2020-02-27 17:13:29.261061: encdami-es-wait-node-2020-02-27_171329
+        'es-wait-node': 'ami-0ce548b66f9934fbf',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-02-21 15:15:26.691614: encdami-frontend-2020-02-21_151526
-        'frontend': 'ami-09603e06509a957ae',
+        # encdami-frontend build on 2020-02-27 17:18:11.694340: encdami-frontend-2020-02-27_171811
+        'frontend': 'ami-0661ab83587c0a6ae',
 
         # Production Private AMIs: Add comments to each build
 
