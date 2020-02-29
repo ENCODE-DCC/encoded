@@ -121,12 +121,6 @@ $row-data-header-width: 200px;
                 transform: rotate(180deg);
                 color: #000;
 
-                // Column subcategory links
-                &.sub {
-                    padding-top: 20px;
-                    color: #808080;
-                }
-
                 &:hover {
                     background-color: #e0e0e0;
                 }
