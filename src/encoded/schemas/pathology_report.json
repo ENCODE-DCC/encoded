@@ -115,7 +115,7 @@
                     "Tubulocystic RCC",
                     "Unclassified",
                     "Nephroblastoma(Wilms tumor)",
-                    "Soft tissue neoplasm, NOS",
+                    "Soft tissue neoplasm,NOS",
                     "SDH deficient RCC"
                 ]
         },
@@ -133,7 +133,7 @@
         "sarcomatoid_percentage": {
             "title": "Sarcomatoid Percentage",
             "description": "Percentage of tumor that was sarcomatoid. ",
-            "type": "number"
+            "type": "string"
         },
         "rhabdoid": {
             "title": "Rhabdoid",
@@ -305,7 +305,7 @@
       },
       "examined_lymph_nodes": {
           "title": "Examined Lymph Nodes",
-          "description": "Number of lymph nodes examined",
+          "description": "Number of lymph  nodes examined",
           "type": "number"
       },
       "positive_lymph_nodes": {
