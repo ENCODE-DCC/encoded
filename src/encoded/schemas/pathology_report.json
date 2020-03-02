@@ -481,6 +481,9 @@
         "tumor_size": {
             "title": "Tumor Size"
         },
+        "tumor_size_units": {
+            "title": "Tumor Size Units"
+        },
         "ajcc_p_stage": {
             "title": "pT stage"
         },
