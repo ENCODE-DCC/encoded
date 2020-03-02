@@ -142,7 +142,7 @@ class PathologyReportTable extends React.Component {
                                 </div>}
 
                                 {this.filteredData[i].ajcc_p_stage && <div data-test="ajcc_p_stage">
-                                    <dt>Ajcc p stage</dt>
+                                    <dt>Ajcc pT stage</dt>
                                     <dd>{this.filteredData[i].ajcc_p_stage}</dd>
                                 </div>}
 

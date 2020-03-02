@@ -423,9 +423,14 @@
         "ajcc_p_stage": {
             "title": "pT stage"
         },
+        "n_stage": {
+            "title": "pN stage"
+        },
+        
         "ajcc_tnm_stage": {
             "title": "TNM Stage"
         } ,
+
         "ajcc_version": {
             "title": "AJCC Version"
         },
@@ -476,8 +481,11 @@
         "tumor_size": {
             "title": "Tumor Size"
         },
-        "t_stage": {
-            "title": "Pathological T stage"
+        "ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "n_stage": {
+            "title": "pN stage"
         },
         "ajcc_tnm_stage": {
             "title": "AJCC TNM Stage"
@@ -522,6 +530,10 @@
         }
     },
     "boost_values": {
+        "ajcc_p_stage": 1.0,
+        "n_stage": 1.0,
+        "ajcc_tnm_stage": 1.0,
+        "ajcc_version": 1.0,
         "laterality":1.0,
         "histology": 1.0,
         "focality": 1.0,

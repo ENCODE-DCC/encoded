@@ -125,6 +125,9 @@
         "surgery.pathology_report.ajcc_p_stage": {
             "title": "pT stage"
         },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
+        },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " TNM Stage"
         },
@@ -219,6 +222,9 @@
         "surgery.pathology_report.ajcc_p_stage": {
             "title": "pT stage"
         },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
+        },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " TNM Stage"
         }
@@ -236,6 +242,7 @@
         "ihc.result":1.0,
         "medications.name":1.0,
         "surgery.pathology_report.ajcc_p_stage": 1.0,
+        "surgery.pathology_report.n_stage": 1.0,
         "surgery.pathology_report.ajcc_tnm_stage": 1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
