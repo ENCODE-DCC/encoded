@@ -420,11 +420,11 @@
             "title": "Tumor Size"
         },
 
-        "t_stage": {
-            "title": "Pathological T stage"
+        "ajcc_p_stage": {
+            "title": "pT stage"
         },
         "ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "TNM Stage"
         } ,
         "ajcc_version": {
             "title": "AJCC Version"
