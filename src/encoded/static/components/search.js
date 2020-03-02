@@ -139,7 +139,7 @@ class ItemComponent extends React.Component {
                             <p>{itemType}: {` ${result.accession}`}</p>
                             {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                         </div>
-                    : null}
+                        : null}
                     <div className="accession">
                         <a href={result['@id']}>{title}</a>
                     </div>
@@ -208,7 +208,7 @@ class BiosampleComponent extends React.Component {
             synchText = result.synchronization +
                 (result.post_synchronization_time ?
                     ` + ${result.post_synchronization_time}${result.post_synchronization_time_units ? ` ${result.post_synchronization_time_units}` : ''}`
-                : '');
+                    : '');
         }
 
         return (
@@ -288,7 +288,7 @@ const ExperimentComponent = (props, reactContext) => {
             return (biosample.synchronization +
                 (biosample.post_synchronization_time ?
                     ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
-                : ''));
+                    : ''));
         }));
     }
 
@@ -307,7 +307,7 @@ const ExperimentComponent = (props, reactContext) => {
                         <a href={result['@id']}>
                             {result.assay_title ?
                                 <span>{result.assay_title}</span>
-                            :
+                                :
                                 <span>{result.assay_term_name}</span>
                             }
                             {result.biosample_ontology.term_name ? <span>{` of ${result.biosample_ontology.term_name}`}</span> : null}
@@ -324,18 +324,18 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     )}
                                 </span>
-                            : null}
+                                : null}
                             {result.biosample_summary}
                         </div>
-                    : null}
+                        : null}
                     <div className="data-row">
                         {result.target && result.target.label ?
                             <div><strong>Target: </strong>{result.target.label}</div>
-                        : null}
+                            : null}
 
                         {synchronizations && synchronizations.length ?
                             <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
-                        : null}
+                            : null}
 
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
@@ -345,7 +345,7 @@ const ExperimentComponent = (props, reactContext) => {
                     <div className="result-item__cart-control">
                         <CartToggle element={result} />
                     </div>
-                : null}
+                    : null}
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
         </li>
@@ -445,9 +445,9 @@ const DatasetComponent = (props, reactContext) => {
                                             {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
                                             {')'}
                                         </span>
-                                    : null}
+                                        : null}
                                 </span>
-                            :
+                                :
                                 <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
                             }
                         </a>
@@ -501,7 +501,7 @@ class TargetComponent extends React.Component {
                         <strong>External resources: </strong>
                         {result.dbxref && result.dbxref.length ?
                             <DbxrefList context={result} dbxrefs={result.dbxref} />
-                        : <em>None submitted</em> }
+                            : <em>None submitted</em>}
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -583,34 +583,130 @@ const Patient = auditDecor(PatientComponent);
 
 globals.listingViews.register(Patient, 'Patient');
 
-/* eslint-disable react/prefer-stateless-function */
-class BiofileComponent extends React.Component {
+class PathologyComponent extends React.Component {
     render() {
         const result = this.props.context;
 
         return (
-          <li>
-              <div className="clearfix">
-                  <PickerActions {...this.props} />
-                  <div className="pull-right search-meta">
-                      <p className="type meta-title">Biofile</p>
-                      <p className="type">{` ${result.accession}`}</p>
-                      <Status item={result.status} badgeSize="small" css="result-table__status" />
-                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                  </div>
-                  <div className="accession">
-                      <a href={result['@id']}>
-                          {`${result.accession} `}
-                          
-                      </a>
-                  </div>
-                  <div className="data-row">
-                      <div><strong>File format: </strong>{result.file_format}</div>
-                      <div><strong>Output type: </strong>{result.output_type}</div>
-                  </div>
-              </div>
-              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-          </li>
+            <li>
+                <div className="clearfix">
+                    <PickerActions {...this.props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Pathology Report</p>
+                        <p className="type">{` ${result.name}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {`${result.name} `}
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        <div><strong>Tumor Size:</strong>{result.tumor_size}</div>
+                        <div><strong>Laterality: </strong>{result.laterality}</div>
+                        <div><strong> Focality:</strong>{result.focality}</div>
+                    </div>
+                </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li>
+        );
+    }
+}
+/* eslint-enable react/prefer-stateless-function */
+
+PathologyComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Target search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+PathologyComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const PathologyReport = auditDecor(PathologyComponent);
+
+globals.listingViews.register(PathologyReport, 'PathologyReport');
+
+class SurgeryComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        const surgeryProcedure = result.surgery_procedure;
+        let type1 = [];
+        for (let i = 0; i < surgeryProcedure.length; i++) {
+            type1.push(<div><strong>Surgery Procedure: </strong>{surgeryProcedure[i].procedure_type}</div>);
+        }
+        return (
+            < li >
+                <div className="clearfix">
+                    <PickerActions {...this.props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Surgery</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {`${result.accession} `}
+
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        <div><strong>Surgery Date: </strong>{result.date}</div>
+                        <div><strong>Hospital Location: </strong>{result.hospital_location} </div>
+                        {type1}
+                    </div>
+                </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li >
+        );
+    }
+}
+/* eslint-enable react/prefer-stateless-function */
+
+SurgeryComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Target search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+SurgeryComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Surgery = auditDecor(SurgeryComponent);
+
+globals.listingViews.register(Surgery, 'Surgery');
+
+/* eslint-disable react/prefer-stateless-function */
+class BiofileComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    <PickerActions {...this.props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Biofile</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {`${result.accession} `}
+
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        <div><strong>File format: </strong>{result.file_format}</div>
+                        <div><strong>Output type: </strong>{result.output_type}</div>
+                    </div>
+                </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li>
         );
     }
 }
@@ -638,33 +734,33 @@ class BiospecimenComponent extends React.Component {
         const anatomicSite = (result.anatomic_site && result.collection_type == 'solid tissue') ? ` ${result.anatomic_site}` : '';
 
         return (
-          <li>
-              <div className="clearfix">
-                  <PickerActions {...this.props} />
-                  <div className="pull-right search-meta">
-                      <p className="type meta-title">Biospecimen</p>
-                      <p className="type">{` ${result.accession}`}</p>
-                      
-                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                  </div>
-                  <div className="accession">
-                      <a href={result['@id']}>
-                          {`${result.accession} `}
-                         
-                      </a>
-                  </div>
-                  <div className="data-row">
-                      <div><strong>Collection type: </strong>{result.collection_type}</div>
-                      <div><strong>Processing type: </strong>{result.processing_type}</div>
-                      { tissueType != '' && <div><strong>Tissue type: </strong>{tissueType}</div> }
-                      { anatomicSite != '' && <div><strong>Anotomic type: </strong>{anatomicSite}</div> }
-                  </div>
-              </div>
-              {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-          </li>
+            <li>
+                <div className="clearfix">
+                    <PickerActions {...this.props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Biospecimen</p>
+                        <p className="type">{` ${result.accession}`}</p>
+
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {`${result.accession} `}
+
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        <div><strong>Collection type: </strong>{result.collection_type}</div>
+                        <div><strong>Processing type: </strong>{result.processing_type}</div>
+                        {tissueType != '' && <div><strong>Tissue type: </strong>{tissueType}</div>}
+                        {anatomicSite != '' && <div><strong>Anotomic type: </strong>{anatomicSite}</div>}
+                    </div>
+                </div>
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li>
         );
     }
-    
+
 }
 /* eslint-enable react/prefer-stateless-function */
 
@@ -792,8 +888,8 @@ const Term = (props) => {
     const title = props.title || term;
     const field = facet.field;
     const em = field === 'target.organism.scientific_name' ||
-                field === 'organism.scientific_name' ||
-                field === 'replicates.library.biosample.donor.organism.scientific_name';
+        field === 'organism.scientific_name' ||
+        field === 'replicates.library.biosample.donor.organism.scientific_name';
     const barStyle = {
         width: `${Math.ceil((count / total) * 100)}%`,
     };
@@ -1004,7 +1100,7 @@ class DateSelectorFacet extends React.Component {
             // Possibilities for endYears must now all be greater than the new startYear
             const endYears = this.state.possibleYears.filter(year => +year >= event.target.value);
             this.setState({ endYears });
-        // We are changing the end year, which means we need to change the possiblities for the starting year and also the possible end months
+            // We are changing the end year, which means we need to change the possiblities for the starting year and also the possible end months
         } else {
             // Set endYear to be user choice
             this.setState({ endYear: event.target.value }, () => {
@@ -1032,7 +1128,7 @@ class DateSelectorFacet extends React.Component {
             // If start month is later than the end month and years match, this is not allowed, so we reset
             if (+this.state.endMonth < +this.state.startMonth) {
                 this.resetMonthDropDowns();
-            // If start and end months are allowed, we still need to filter dropdown possible lists so they can't select an unallowed combination
+                // If start and end months are allowed, we still need to filter dropdown possible lists so they can't select an unallowed combination
             } else {
                 // endMonths can only display months that are after the chosen startMonth
                 const endMonths = allMonths.filter(month => +month >= +this.state.startMonth);
@@ -1043,7 +1139,7 @@ class DateSelectorFacet extends React.Component {
                     startMonths,
                 });
             }
-        // If the start and end years previously matched (but now they don't), an incomplete list of months may be set and we need to update
+            // If the start and end years previously matched (but now they don't), an incomplete list of months may be set and we need to update
         } else {
             if (allMonths.length !== this.state.startMonths.length) {
                 this.setState({ startMonths: allMonths });
@@ -1141,7 +1237,7 @@ class DateSelectorFacet extends React.Component {
                                 <div key={filter.term}>{dateRangeString}</div>
                             )}
                         </div>
-                    : null}
+                        : null}
 
                     <div className="date-selector-toggle-wrapper">
                         <div className="date-selector-toggle"><input
@@ -1316,15 +1412,15 @@ class Facet extends React.Component {
             terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'MMMM, YYYY').toISOString()).reverse();
         } else if (field.match('year')) {
             terms = _.sortBy(unsortedTerms, obj => moment(obj.key, 'YYYY').toISOString()).reverse();
-        // For straightforward numerical facets, just sort by value
+            // For straightforward numerical facets, just sort by value
         } else if (unsortedTerms.every(numericalTest)) {
             terms = _.sortBy(unsortedTerms, obj => obj.key);
-        } else if (field.match('range') ) {           
-            terms = _.sortBy(unsortedTerms, obj => parseInt(obj.key.match(/\d+/)));        
+        } else if (field.match('range')) {
+            terms = _.sortBy(unsortedTerms, obj => parseInt(obj.key.match(/\d+/)));
         } else {
             terms = unsortedTerms;
         }
-      
+
         const moreTerms = terms.slice(5);
         const TermComponent = field === 'type' ? TypeTerm : Term;
         const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
@@ -1370,7 +1466,7 @@ class Facet extends React.Component {
                                 <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
                             )}
                         </div>
-                    : null}
+                        : null}
                     <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
                         {/* Display searchbar for typeahead facets if there are more than 5 terms */}
                         {typeahead ?
@@ -1380,7 +1476,7 @@ class Facet extends React.Component {
                                     <input type="search" aria-label={`search to filter list of terms for facet ${titleComponent}`} placeholder="Search" value={this.state.unsanitizedSearchTerm} onChange={this.handleSearch} name={`search${titleComponent.replace(/\s+/g, '')}`} />
                                 </div>
                             </div>
-                        : null}
+                            : null}
                         {/* If user has searched using the typeahead, we will not display the full set of facet terms, just those matching the search */}
                         {(filteredList !== null) ?
                             <div>
@@ -1389,7 +1485,7 @@ class Facet extends React.Component {
                                     <div className="searcherror">
                                         Try a different search term for results.
                                     </div>
-                                :
+                                    :
                                     <div className="terms-block">
                                         {/* List of results does not overflow top on initialization */}
                                         <div className="top-shading hide-shading" />
@@ -1404,7 +1500,7 @@ class Facet extends React.Component {
                                     </div>
                                 }
                             </div>
-                        :
+                            :
                             <div>
                                 {/* If the user has not searched, we will display the full set of facet terms */}
                                 {(((terms.length > 0) && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!') || (facet.appended === 'true')) ?
@@ -1420,7 +1516,7 @@ class Facet extends React.Component {
                                                         <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                                     )}
                                                 </div>
-                                            :
+                                                :
                                                 <div>
                                                     {terms.map(term =>
                                                         <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
@@ -1431,7 +1527,7 @@ class Facet extends React.Component {
                                         {/* Only show bottom shading when list of results overflows */}
                                         <div className={`shading ${(terms.length < displayedTermsCount) ? 'hide-shading' : ''}`} />
                                     </div>
-                                : null}
+                                    : null}
                             </div>
                         }
                     </ul>
@@ -1592,7 +1688,7 @@ export class FacetList extends React.Component {
                             {context ? <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} /> : null}
                             <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
                         </div>
-                    : null}
+                        : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
                         if (hideTypes && facet.field === 'type') {
@@ -1843,7 +1939,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                         >
                             View 25
                         </a>
-                    : null}
+                        : null}
                 </span>
             );
         }
@@ -1857,7 +1953,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
 
             {context.batch_download ?
                 <BatchDownload context={context} />
-            : null}
+                : null}
 
             {visualizeKeys.length > 0 ?
                 <BrowserSelector
@@ -1865,7 +1961,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                     disabled={!!visualizeDisabledTitle}
                     title={visualizeDisabledTitle || 'Visualize'}
                 />
-            : null}
+                : null}
         </div>
     );
 };
@@ -2078,7 +2174,7 @@ export class ResultTable extends React.Component {
                                 onFilter={this.onFilter}
                             />
                         </div>
-                    : ''}
+                        : ''}
                     <div className="col-sm-7 col-md-8 col-lg-9">
 
                         {context.notification === 'Success' ?
@@ -2098,11 +2194,11 @@ export class ResultTable extends React.Component {
                                             <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
                                         </TabPanelPane>
                                     </TabPanel>
-                                :
+                                    :
                                     <ResultTableList results={results} columns={columns} cartControls />
                                 }
                             </div>
-                        :
+                            :
                             <h4>{context.notification}</h4>
                         }
                     </div>
@@ -2147,7 +2243,7 @@ export const ResultTableList = ({ results, columns, tabbed, cartControls }) => (
     <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
         {results.length ?
             results.map(result => Listing({ context: result, columns, key: result['@id'], cartControls }))
-        : null}
+            : null}
     </ul>
 );
 
@@ -2270,7 +2366,7 @@ export class Search extends React.Component {
                     <div className="panel data-display main-panel">
                         <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
-                : <h4>{notification}</h4>}
+                    : <h4>{notification}</h4>}
             </div>
         );
     }
@@ -2292,4 +2388,3 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
-

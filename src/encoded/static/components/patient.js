@@ -69,6 +69,7 @@ class Patient extends React.Component {
     let hasMedication = false;
     let hasSurgery=false;
     let hasIHC=false;
+    let hasBiospecimen = false;
     if (Object.keys(this.props.context.labs).length > 0) {
       hasLabs = true;
     }
@@ -87,6 +88,9 @@ class Patient extends React.Component {
     }
     if (Object.keys(this.props.context.ihc).length > 0) {
       hasIHC = true;
+    }
+    if (Object.keys(this.props.context.biospecimen).length > 0) {
+      hasBiospecimen = true;
     }
 
     const labsPanelBody = (
@@ -164,6 +168,7 @@ class Patient extends React.Component {
         {hasSurgery && <CollapsiblePanel panelId="myPanelId5" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
         {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
+        { hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
 
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
