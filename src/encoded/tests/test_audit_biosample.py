@@ -1,128 +1,18 @@
 import pytest
 
 
-@pytest.fixture
-def base_biosample(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_mouse_biosample(testapp, lab, award, source, mouse, liver):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': liver['uuid'],
-        'lab': lab['uuid'],
-        'organism': mouse['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_human_donor(testapp, lab, award, organism):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid']
-    }
-    return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_chipmunk(testapp):
-    item = {
-        'name': 'chimpmunk',
-        'taxon_id': '12345',
-        'scientific_name': 'Chip chipmunicus'
-    }
-    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ontology():
-    ontology = {
-        'UBERON:0002469': {
-            'part_of': [
-                'UBERON:0001043',
-                'UBERON:0001096',
-                'UBERON:1111111'
-            ]
-        },
-        'UBERON:1111111': {
-            'part_of': []
-        },
-        'UBERON:0001096': {
-            'part_of': []
-        },
-        'UBERON:0001043': {
-            'part_of': [
-                'UBERON:0001007',
-                'UBERON:0004908'
-            ]
-        },
-        'UBERON:0001007': {
-            'part_of': []
-        },
-        'UBERON:0004908': {
-            'part_of': [
-                'UBERON:0001043',
-                'UBERON:1234567'
-            ]
-        },
-        'UBERON:1234567': {
-            'part_of': [
-                'UBERON:0006920'
-            ]
-        },
-        'UBERON:0006920': {
-            'part_of': []
-        },
-        'UBERON:1231231': {
-            'name': 'liver'
-        }
-    }
-    return ontology
-
-
-@pytest.fixture
-def purkinje_cell(testapp):
-    item = {
-            'term_id': "CL:0000121",
-            'term_name': 'Purkinje cell',
-            'classification': 'primary cell'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def cerebellum(testapp):
-    item = {
-            'term_id': "UBERON:0002037",
-            'term_name': 'cerebellum',
-            'classification': 'tissue'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
 def test_audit_biosample_modifications_whole_organism(
-        testapp, base_biosample,
+        testapp, base_biosample_1,
         fly_donor, fly, construct_genetic_modification,
         construct_genetic_modification_N, whole_organism):
     testapp.patch_json(fly_donor['@id'], {
         'genetic_modifications': [construct_genetic_modification_N['@id']]})
-    testapp.patch_json(base_biosample['@id'], {
+    testapp.patch_json(base_biosample_1['@id'], {
         'biosample_ontology': whole_organism['uuid'],
         'donor': fly_donor['@id'],
         'organism': fly['@id'],
         'genetic_modifications': [construct_genetic_modification['@id']]})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -131,16 +21,16 @@ def test_audit_biosample_modifications_whole_organism(
 
 
 def test_audit_biosample_modifications_whole_organism_duplicated(
-        testapp, base_biosample,
+        testapp, base_biosample_1,
         fly_donor, fly, construct_genetic_modification, whole_organism):
     testapp.patch_json(fly_donor['@id'], {
         'genetic_modifications': [construct_genetic_modification['@id']]})
-    testapp.patch_json(base_biosample['@id'], {
+    testapp.patch_json(base_biosample_1['@id'], {
         'biosample_ontology': whole_organism['uuid'],
         'donor': fly_donor['@id'],
         'organism': fly['@id'],
         'genetic_modifications': [construct_genetic_modification['@id']]})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -148,9 +38,9 @@ def test_audit_biosample_modifications_whole_organism_duplicated(
     assert any(error['category'] != 'duplicated genetic modifications' for error in errors_list)
 
 
-def test_audit_biosample_term_ntr(testapp, base_biosample, cell_free):
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': cell_free['uuid']})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+def test_audit_biosample_term_ntr(testapp, base_biosample_1, cell_free):
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': cell_free['uuid']})
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -158,10 +48,10 @@ def test_audit_biosample_term_ntr(testapp, base_biosample, cell_free):
     assert any(error['category'] == 'NTR biosample' for error in errors_list)
 
 
-def test_audit_biosample_culture_dates(testapp, base_biosample, erythroblast):
-    testapp.patch_json(base_biosample['@id'], {'culture_start_date': '2014-06-30',
+def test_audit_biosample_culture_dates(testapp, base_biosample_1, erythroblast):
+    testapp.patch_json(base_biosample_1['@id'], {'culture_start_date': '2014-06-30',
                                                'culture_harvest_date': '2014-06-25'})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -170,8 +60,8 @@ def test_audit_biosample_culture_dates(testapp, base_biosample, erythroblast):
     assert any(error['category'] == 'biosample not from culture'
                for error in errors_list)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': erythroblast['uuid']})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': erythroblast['uuid']})
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -180,8 +70,8 @@ def test_audit_biosample_culture_dates(testapp, base_biosample, erythroblast):
     assert any(error['category'] == 'invalid dates' for error in errors_list)
 
 
-def test_audit_biosample_donor(testapp, base_biosample):
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+def test_audit_biosample_donor(testapp, base_biosample_1):
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -189,10 +79,10 @@ def test_audit_biosample_donor(testapp, base_biosample):
     assert any(error['category'] == 'missing donor' for error in errors_list)
 
 
-def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_donor, base_chipmunk):
-    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'],
+def test_audit_biosample_donor_organism(testapp, base_biosample_1, base_human_donor, base_chipmunk):
+    testapp.patch_json(base_biosample_1['@id'], {'donor': base_human_donor['@id'],
                                                'organism': base_chipmunk['@id']})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -200,9 +90,9 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     assert any(error['category'] == 'inconsistent organism' for error in errors_list)
 
 
-def test_audit_biosample_consistent_organism(testapp, base_biosample, base_human_donor):
-    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id']})
-    r = testapp.get(base_biosample['@id'] + '@@index-data')
+def test_audit_biosample_consistent_organism(testapp, base_biosample_1, base_human_donor):
+    testapp.patch_json(base_biosample_1['@id'], {'donor': base_human_donor['@id']})
+    r = testapp.get(base_biosample_1['@id'] + '@@index-data')
     audits = r.json['audit']
     assert all(
         [
@@ -212,11 +102,11 @@ def test_audit_biosample_consistent_organism(testapp, base_biosample, base_human
     )
 
 
-def test_audit_biosample_status(testapp, base_biosample, construct_genetic_modification):
-    testapp.patch_json(base_biosample['@id'], {
+def test_audit_biosample_status(testapp, base_biosample_1, construct_genetic_modification):
+    testapp.patch_json(base_biosample_1['@id'], {
         'status': 'released',
         'genetic_modifications': [construct_genetic_modification['@id']]})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -224,11 +114,11 @@ def test_audit_biosample_status(testapp, base_biosample, construct_genetic_modif
     assert any(error['category'] == 'mismatched status' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample, ileum):
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': ileum['uuid'],
+def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample_1, ileum):
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': ileum['uuid'],
                                                'part_of': biosample['@id']})
 
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -236,12 +126,12 @@ def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample,
     assert any(error['category'] == 'inconsistent BiosampleType term' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency_ontology(testapp, biosample, base_biosample, ileum):
+def test_audit_biosample_part_of_consistency_ontology(testapp, biosample, base_biosample_1, ileum):
     testapp.patch_json(biosample['biosample_ontology'], {'term_id': 'UBERON:0004264'})
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': ileum['uuid'],
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': ileum['uuid'],
                                                'part_of': biosample['@id']})
 
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -251,16 +141,16 @@ def test_audit_biosample_part_of_consistency_ontology(testapp, biosample, base_b
 
 def test_audit_biosample_part_of_consistency_ontology_part_of_multicellular_organism(testapp,
                                                                                      biosample,
-                                                                                     base_biosample,
+                                                                                     base_biosample_1,
                                                                                      whole_organism,
                                                                                      mouse,
                                                                                      purkinje_cell):
     testapp.patch_json(biosample['@id'], {'biosample_ontology': whole_organism['uuid'],
                                           'organism': mouse['uuid']})
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': purkinje_cell['uuid'],
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': purkinje_cell['uuid'],
                                                'part_of': biosample['@id']})
 
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -269,7 +159,7 @@ def test_audit_biosample_part_of_consistency_ontology_part_of_multicellular_orga
 
 
 def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
-                                                              base_biosample,
+                                                              base_biosample_1,
                                                               biosample_1,
                                                               biosample_2,
                                                               whole_organism,
@@ -280,9 +170,9 @@ def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
                                             'organism': mouse['uuid']})
     testapp.patch_json(biosample_2['@id'], {'biosample_ontology': cerebellum['uuid'],
                                             'part_of': biosample_1['@id']})
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': purkinje_cell['uuid'],
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': purkinje_cell['uuid'],
                                                'part_of': biosample_2['@id']})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    res = testapp.get(base_biosample_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -290,79 +180,79 @@ def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
     assert all(error['category'] != 'inconsistent BiosampleType term' for error in errors_list)
 
 
-def test_audit_biosample_phase(testapp, base_biosample, single_cell):
+def test_audit_biosample_phase(testapp, base_biosample_1, single_cell):
     target_err_cat = 'biosample cannot have defined cell cycle phase'
 
-    testapp.patch_json(base_biosample['@id'], {'phase': 'G1'})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    testapp.patch_json(base_biosample_1['@id'], {'phase': 'G1'})
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': single_cell['uuid']})
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert all(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_pmi(testapp, base_biosample, single_cell):
+def test_audit_biosample_pmi(testapp, base_biosample_1, single_cell):
     target_err_cat = 'non-tissue sample has PMI'
 
-    testapp.patch_json(base_biosample['@id'], {'PMI': 10,
+    testapp.patch_json(base_biosample_1['@id'], {'PMI': 10,
                                                'PMI_units': 'day'})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert all(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': single_cell['uuid']})
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_cell_isolation_method(testapp, base_biosample, single_cell):
+def test_audit_biosample_cell_isolation_method(testapp, base_biosample_1, single_cell):
     target_err_cat = 'non-cell sample has cell_isolation_method'
 
-    testapp.patch_json(base_biosample['@id'], {'cell_isolation_method': 'micropipetting'})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    testapp.patch_json(base_biosample_1['@id'], {'cell_isolation_method': 'micropipetting'})
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': single_cell['uuid']})
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert all(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_depleted_in_term_name(testapp, base_biosample, single_cell):
+def test_audit_biosample_depleted_in_term_name(testapp, base_biosample_1, single_cell):
     target_err_cat = 'non-tissue sample has parts depleted'
 
-    testapp.patch_json(base_biosample['@id'],
+    testapp.patch_json(base_biosample_1['@id'],
                        {'depleted_in_term_name': ['adult maxillary segment']})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert all(error['category'] != target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
-    testapp.patch_json(base_biosample['@id'], {'biosample_ontology': single_cell['uuid']})
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    testapp.patch_json(base_biosample_1['@id'], {'biosample_ontology': single_cell['uuid']})
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)
 
 
-def test_audit_biosample_post_differentiation(testapp, base_biosample):
+def test_audit_biosample_post_differentiation(testapp, base_biosample_1):
     target_err_cat = 'invalid post_differentiation_time details'
     testapp.patch_json(
-        base_biosample['@id'],
+        base_biosample_1['@id'],
         {'post_differentiation_time': 20, 'post_differentiation_time_units': 'hour'}
     )
-    errors = testapp.get(base_biosample['@id'] + '@@index-data').json['audit']
+    errors = testapp.get(base_biosample_1['@id'] + '@@index-data').json['audit']
     assert any(error['category'] == target_err_cat
                for error_cat in errors.values()
                for error in error_cat)

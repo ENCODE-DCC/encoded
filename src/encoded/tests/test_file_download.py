@@ -5,22 +5,6 @@ from moto import (
 )
 
 
-@pytest.fixture
-def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'uploading',
-    }
-    return item
-
-
 @mock_sts
 def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'

@@ -1,75 +1,8 @@
 import pytest
 
 
-@pytest.fixture
-def genetic_modification(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'modified_site_by_coordinates': {
-            'assembly': 'GRCh38',
-            'chromosome': '11',
-            'start': 20000,
-            'end': 21000
-        },
-        'purpose': 'repression',
-        'category': 'deletion',
-        'method': 'CRISPR',
-        'zygosity': 'homozygous'
-    }
-    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
-
-
-@pytest.fixture
-def genetic_modification_RNAi(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'modified_site_by_coordinates': {
-            'assembly': 'GRCh38',
-            'chromosome': '11',
-            'start': 20000,
-            'end': 21000
-        },
-        'purpose': 'repression',
-        'category': 'deletion',
-        'method': 'RNAi'
-    }
-    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
-
-
-@pytest.fixture
-def tagged_target(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'modifications': [{'modification': 'eGFP'}],
-        'label': 'eGFP-CTCF',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def genetic_modification_source(testapp, lab, award, source, gene):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'category': 'insertion',
-        'introduced_gene': gene['@id'],
-        'purpose': 'expression',
-        'method': 'CRISPR',
-        'reagents': [
-            {
-                'source': source['@id'],
-                'identifier': 'sigma:ABC123'
-            }
-        ]
-    }
-    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
-
-
-def test_genetic_modification_reagents(testapp, genetic_modification, source):
-    res = testapp.get(genetic_modification['@id'] + '@@index-data')
+def test_genetic_modification_reagents(testapp, genetic_modification_1, source):
+    res = testapp.get(genetic_modification_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -77,12 +10,12 @@ def test_genetic_modification_reagents(testapp, genetic_modification, source):
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing genetic modification reagents' for
                error in errors_list)
-    testapp.patch_json(genetic_modification['@id'], {'reagents': [
+    testapp.patch_json(genetic_modification_1['@id'], {'reagents': [
         {
             'source': source['@id'],
             'identifier': 'trc:TRCN0000246247'
         }]})
-    res = testapp.get(genetic_modification['@id'] + '@@index-data')
+    res = testapp.get(genetic_modification_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:

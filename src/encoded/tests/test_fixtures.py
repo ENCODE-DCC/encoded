@@ -1,50 +1,6 @@
 import pytest
 
 
-@pytest.yield_fixture(scope='session')
-def minitestdata(app, conn):
-    tx = conn.begin_nested()
-
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
-    }
-    testapp = TestApp(app, environ)
-
-    item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
-    }
-    testapp.post_json('/organism', item, status=201)
-
-    yield
-    tx.rollback()
-
-
-@pytest.yield_fixture(scope='session')
-def minitestdata2(app, conn):
-    tx = conn.begin_nested()
-
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
-    }
-    testapp = TestApp(app, environ)
-
-    item = {
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
-    }
-    testapp.post_json('/organism', item, status=201)
-
-    yield
-    tx.rollback()
-
-
 @pytest.mark.usefixtures('minitestdata')
 def test_fixtures1(testapp):
     """ This test is not really exhaustive.

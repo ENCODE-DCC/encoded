@@ -1,34 +1,7 @@
 from base64 import b64decode
 import pytest
+from .constants import (RED_DOT, BLUE_DOT)
 
-
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
-BLUE_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA
-oAAAAKAQMAAAC3/F3+AAAACXBIWXMAAA7DAAAOwwHHb6hkAA
-AAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQ
-AAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPA
-AAAANQTFRFALfvPEv6TAAAAAtJREFUCB1jYMAHAAAeAAEBGN
-laAAAAAElFTkSuQmCC"""
-
-
-@pytest.fixture
-def testing_download(testapp):
-    url = '/testing-downloads/'
-    item = {
-        'attachment': {
-            'download': 'red-dot.png',
-            'href': RED_DOT,
-        },
-        'attachment2': {
-            'download': 'blue-dot.png',
-            'href': BLUE_DOT,
-        },
-    }
-    res = testapp.post_json(url, item, status=201)
-    return res.location
 
 
 def test_download_create(testapp, testing_download):

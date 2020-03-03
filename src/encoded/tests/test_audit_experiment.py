@@ -1,702 +1,5 @@
 import pytest, re
-
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
-
-def collect_audit_errors(result, error_types=None):
-    errors = result.json['audit']
-    errors_list = []
-    if error_types:
-        for error_type in error_types:
-            errors_list.extend(errors[error_type])
-    else:
-        for error_type in errors:
-            errors_list.extend(errors[error_type])
-    return errors_list
-
-
-@pytest.fixture
-def library_no_biosample(testapp, lab, award):
-    item = {
-        'nucleic_acid_term_name': 'DNA',
-        'lab': lab['@id'],
-        'award': award['@id']
-    }
-    return testapp.post_json('/library', item).json['@graph'][0]
-
-
-@pytest.fixture
-def base_library(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_replicate_two(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 2,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_target(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'label': 'XYZ',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_target(testapp, organism):
-    item = {
-        'target_organism': organism['uuid'],
-        'label': 'eGFP',
-        'investigated_as': ['tag']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_antibody(testapp, award, lab, source, organism, tag_target):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [tag_target['uuid']],
-        'product_id': 'eGFP',
-        'lot_id': '1'
-    }
-    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def fly_organism(testapp):
-    item = {
-        'taxon_id': "7227",
-        'name': "dmelanogaster",
-        'scientific_name': "Drosophila melanogaster"
-    }
-    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_H3K9me3(testapp, mouse):
-    item = {
-        'target_organism': mouse['@id'],
-        'label': 'H3K9me3',
-        'investigated_as': ['histone', 'broad histone mark']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody(testapp, award, lab, source, organism, target):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [target['uuid']],
-        'product_id': 'KDKF123',
-        'lot_id': '123'
-    }
-
-
-@pytest.fixture
-def IgG_antibody(testapp, award, lab, source, organism):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'control_type': 'isotype control',
-        'isotype': 'IgG',
-        'product_id': 'ABCDEF',
-        'lot_id': '321'
-    }
-    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization1(testapp, lab, award, target, antibody_lot, organism, k562):
-    item = {
-        'award': award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'primary_characterization_method': 'immunoblot',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'characterization_reviews': [
-            {
-                'lane': 2,
-                'organism': organism['uuid'],
-                'biosample_ontology': k562['uuid'],
-                'lane_status': 'compliant'
-            }
-        ]
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, organism):
-    item = {
-        'award': award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'secondary_characterization_method': 'dot blot assay',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ctrl_experiment(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'ChIP-seq'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
-    item = {
-        'experiment': ctrl_experiment['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'antibody': IgG_antibody['@id'],
-        'status': 'released'
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def treatment_time_series(testapp, lab, award):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-    return testapp.post_json('/treatment_time_series', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def library_1(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def library_2(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_1_1(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_2_1(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 2,
-        'technical_replicate_number': 1,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_1_2(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 2,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_1(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_2(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_2(testapp, lab, award, base_experiment, base_replicate, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': base_replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '94be74b6e14515393547f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'platform': platform1['@id'],
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_2_1['@id'],
-        'platform': platform1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'md5sum': '11be74b6e11515393507f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'platform': platform1['@id'],
-        'replicate': replicate_2_1['@id'],
-        'file_format': 'fastq',
-        'md5sum': '91be79b6e11515993509f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        "read_length": 50,
-        'output_type': 'reads',
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_6(testapp, lab, award, base_experiment, replicate_1_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'run_type': "single-ended",
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_no_read_length(testapp, lab, award, experiment, replicate_1_1, platform3):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 68,
-        'platform': platform3['@id'],
-        'output_type': 'reads',
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'aliases': ['encode:no read length alias'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
-    item = {
-        'dataset': base_experiment['@id'],
-        'derived_from': [file_fastq_3['@id']],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 34,
-        'md5sum': '91be44b6e11515394407f4ebfa66d77a',
-        'output_type': 'alignments',
-        'lab': encode_lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
-    item = {
-        'dataset': base_experiment['@id'],
-        'derived_from': [file_fastq_4['@id']],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 34,
-        'md5sum': '91be71b6e11515377807f4ebfa66d77a',
-        'output_type': 'alignments',
-        'lab': encode_lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def bam_quality_metric_1_1(testapp, analysis_step_run_bam, file_bam_1_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def bam_quality_metric_2_1(testapp, analysis_step_run_bam, file_bam_2_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def hotspot_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, encode_lab):
-    item = {
-        'SPOT1 score': 0.3345,
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'award': award['@id'],
-        'lab': encode_lab['@id']
-    }
-    return testapp.post_json('/hotspot-quality-metrics', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'NRF': 0.1,
-        'PBC1': 0.3,
-        'PBC2': 11
-    }
-
-    return testapp.post_json('/chipseq-filter-quality-metrics', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mad_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Spearman correlation': 0.1,
-        'MAD of log ratios': 3.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Pearson correlation': 0.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def spearman_correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Spearman correlation': 0.7,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def duplicates_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'Percent Duplication': 0.23,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/duplicates_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def wgbs_quality_metric(testapp, analysis_step_run_bam, file_bed_methyl, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file_bed_methyl['@id']],
-        'lambda C methylated in CHG context': '13.1%',
-        'lambda C methylated in CHH context': '12.5%',
-        'lambda C methylated in CpG context': '0.9%'}
-    return testapp.post_json('/bismark_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def micro_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'expressed_mirnas': 250,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/micro_rna_quantification_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def micro_rna_mapping_quality_metric_2_1(
-    testapp,
-    analysis_step_run_bam,
-    file_bam_2_1,
-    award,
-    lab
-):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'aligned_reads': 4000000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/micro_rna_mapping_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def long_read_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'genes_detected': 5000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/long_read_rna_quantification_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def long_read_rna_mapping_quality_metric_2_1(
-    testapp,
-    analysis_step_run_bam,
-    file_bam_2_1,
-    award,
-    lab
-):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'full_length_non_chimeric_read_count': 500000,
-        'mapping_rate': 0.5,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/long_read_rna_mapping_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        "file_format": "bed",
-        "file_format_type": "bedMethyl",
-        "file_size": 66569,
-        "assembly": "mm10",
-        "md5sum": "91be74b6e11515223507f4ebf266d77a",
-        "output_type": "methylation state at CpG",
-        "award": award["uuid"],
-        "lab": encode_lab["uuid"],
-        "status": "released",
-        "step_run": analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        'file_format': 'tsv',
-        'file_size': 3654,
-        'assembly': 'mm10',
-        'genome_annotation': 'M4',
-        'md5sum': '912e7ab6e11515393507f42bfa66d77a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        'file_format': 'tsv',
-        'file_size': 36524,
-        'assembly': 'mm10',
-        'genome_annotation': 'M4',
-        'md5sum': '91be74b6e315153935a7f4ecfa66d77a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-@pytest.fixture
-def experiment_no_read_length(
-    testapp,
-    experiment,
-    bam_file,
-    file_fastq_no_read_length,
-    replicate_1_1,
-    base_library,
-    analysis_step_bam,
-    analysis_step_version_bam,
-    analysis_step_run_bam,
-    encode_lab,
-):
-    testapp.patch_json(replicate_1_1['@id'], {'experiment': experiment['@id'],
-                                              'library': base_library['@id'],
-                                              })
-    testapp.patch_json(file_fastq_no_read_length['@id'], {'dataset': experiment['@id'],
-                                                          'replicate':replicate_1_1['@id'],
-                                                          })
-    testapp.patch_json(bam_file['@id'], {'dataset': experiment['@id'],
-                                         'step_run': analysis_step_run_bam['@id'],
-                                         'assembly': 'GRCh38',
-                                         'lab': encode_lab['@id'],
-                                         'derived_from': [file_fastq_no_read_length['@id']],
-                                         })
-    testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'date_released': '2016-01-01',
-                                           'assay_term_name': 'long read RNA-seq',
-                                           })
-    return testapp.get(experiment['@id'] + '@@index-data')
+from .constants import collect_audit_errors
 
 
 def test_audit_experiment_missing_fragmentation_method(testapp,
@@ -939,10 +242,10 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
 
 
 def test_audit_experiment_target_mismatch(
-        testapp, base_experiment, base_replicate, base_target, antibody_lot):
+        testapp, base_experiment, base_replicate, base_target_1, antibody_lot):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
     testapp.patch_json(
-        base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
+        base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': base_target_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent target'
                for error in collect_audit_errors(res))
@@ -975,7 +278,7 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
                                                           base_biosample,
                                                           mouse_H3K9me3,
                                                           target_H3K9me3,
-                                                          base_antibody_characterization1,
+                                                          base_antibody_characterization1_2,
                                                           base_antibody_characterization2,
                                                           mouse,
                                                           human,
@@ -1001,7 +304,7 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
         }
     ]
     testapp.patch_json(
-        base_antibody_characterization1['@id'],
+        base_antibody_characterization1_2['@id'],
         {'target': target_H3K9me3['@id'],
             'characterizes': histone_antibody['@id'],
             'status': 'compliant',
@@ -1027,19 +330,19 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
 def test_audit_experiment_partially_characterized_antibody(testapp,
                                                            base_experiment,
                                                            wrangler,
-                                                           base_target,
+                                                           base_target_1,
                                                            base_antibody,
                                                            base_replicate,
                                                            base_library,
                                                            base_biosample,
-                                                           base_antibody_characterization1,
+                                                           base_antibody_characterization1_2,
                                                            base_antibody_characterization2,
                                                            human,
                                                            hepg2,
                                                            k562):
     # K562 biosample in ChIP-seq experiment with exempt primary in K562 and in progress
     # secondary - leading to partial characterization.
-    base_antibody['targets'] = [base_target['@id']]
+    base_antibody['targets'] = [base_target_1['@id']]
     TF_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     characterization_reviews = [
         {
@@ -1056,8 +359,8 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
         }
     ]
     testapp.patch_json(
-        base_antibody_characterization1['@id'],
-        {'target': base_target['@id'],
+        base_antibody_characterization1_2['@id'],
+        {'target': base_target_1['@id'],
             'characterizes': TF_antibody['@id'],
             'status': 'compliant',
             'reviewed_by': wrangler['@id'],
@@ -1068,7 +371,7 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
                                                'experiment': base_experiment['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'biosample_ontology': k562['uuid'],
-                                                'target': base_target['@id']})
+                                                'target': base_target_1['@id']})
 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'partially characterized antibody'
@@ -3285,7 +2588,7 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
 def test_audit_experiment_missing_genetic_modification(
         testapp,
         base_experiment,
-        base_target,
+        base_target_1,
         replicate_1_1,
         replicate_2_1,
         library_1,
@@ -3312,7 +2615,7 @@ def test_audit_experiment_missing_genetic_modification(
         {'library': library_2['@id'], 'antibody': tag_antibody['@id']}
     )
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'target': base_target['@id']})
+                                                'target': base_target_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'inconsistent genetic modification tags' for error in collect_audit_errors(res))
@@ -3323,7 +2626,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
         construct_genetic_modification,
         gm_characterization,
         base_experiment,
-        base_target,
+        base_target_1,
         replicate_1_1,
         library_1,
         biosample_1,
@@ -3335,7 +2638,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})  
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'target': base_target['@id']})
+                                                'target': base_target_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'missing genetic modification characterization' for error in collect_audit_errors(res))
@@ -3351,7 +2654,7 @@ def test_audit_experiment_tagging_biosample_characterization(
         interference_genetic_modification,
         biosample_characterization,
         base_experiment,
-        base_target,
+        base_target_1,
         replicate_1_1,
         replicate_2_1,
         library_1,
@@ -3376,7 +2679,7 @@ def test_audit_experiment_tagging_biosample_characterization(
     testapp.patch_json(base_experiment['@id'],
                        {'assay_term_name': 'ChIP-seq',
                         'award': award_encode4['@id'],
-                        'target': base_target['@id']})
+                        'target': base_target_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing biosample characterization'
                for error in collect_audit_errors(res, ['WARNING']))
@@ -3419,7 +2722,7 @@ def test_audit_experiment_missing_unfiltered_bams(testapp,
 def test_audit_experiment_wrong_modification(
         testapp,
         base_experiment,
-        base_target,
+        base_target_1,
         replicate_1_1,
         replicate_2_1,
         library_1,
@@ -3433,7 +2736,7 @@ def test_audit_experiment_wrong_modification(
         k562):
 
     testapp.patch_json(construct_genetic_modification['@id'],
-                       {'modified_site_by_target_id': base_target['@id'],
+                       {'modified_site_by_target_id': base_target_1['@id'],
                         'introduced_tags': [{'name': 'FLAG', 'location': 'internal'}]})
     testapp.patch_json(biosample_1['@id'], {'biosample_ontology': k562['uuid'],
                                             'donor': donor_1['@id']})
@@ -3452,7 +2755,7 @@ def test_audit_experiment_wrong_modification(
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [construct_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [construct_genetic_modification['@id']]})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
-                                                'target': base_target['@id']})
+                                                'target': base_target_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'inconsistent genetic modification tags' for error in collect_audit_errors(res))

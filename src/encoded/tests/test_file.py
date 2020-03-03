@@ -1,14 +1,14 @@
 import pytest
 
 
-def test_reference_file_by_md5(testapp, file):
-    res = testapp.get('/md5:{md5sum}'.format(**file)).follow(status=200)
-    assert res.json['@id'] == file['@id']
+def test_reference_file_by_md5(testapp, file_object):
+    res = testapp.get('/md5:{md5sum}'.format(**file_object)).follow(status=200)
+    assert res.json['@id'] == file_object['@id']
 
 
-def test_replaced_file_not_uniqued(testapp, file):
-    testapp.patch_json('/{uuid}'.format(**file), {'status': 'replaced'}, status=200)
-    testapp.get('/md5:{md5sum}'.format(**file), status=404)
+def test_replaced_file_not_uniqued(testapp, file_object):
+    testapp.patch_json('/{uuid}'.format(**file_object), {'status': 'replaced'}, status=200)
+    testapp.get('/md5:{md5sum}'.format(**file_object), status=404)
 
 
 def test_file_post_fastq_no_replicate(testapp, fastq_no_replicate):
@@ -19,91 +19,12 @@ def test_file_post_fastq_with_replicate(testapp, fastq):
     testapp.post_json('/file', fastq, status=201)
 
 
-@pytest.fixture
-def mapped_run_type_on_fastq(award, experiment, lab, platform1):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'file_format': 'fastq',
-        'file_size': 2535345,
-        'platform': platform1['@id'],
-        'run_type': 'paired-ended',
-        'mapped_run_type': 'single-ended',
-        'md5sum': '01234567890123456789abcdefabcdef',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-
-
-@pytest.fixture
-def mapped_run_type_on_bam(award, experiment, lab):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 2534535,
-        'mapped_run_type': 'single-ended',
-        'md5sum': 'abcdef01234567890123456789abcdef',
-        'output_type': 'alignments',
-        'status': 'in progress',
-    }
-
-
 def test_file_post_mapped_run_type_on_fastq(testapp, mapped_run_type_on_fastq):
     testapp.post_json('/file', mapped_run_type_on_fastq, status=422)
 
 
 def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
     testapp.post_json('/file', mapped_run_type_on_bam, status=201)
-
-
-@pytest.fixture
-def file(testapp, award, experiment, lab, replicate):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-    res = testapp.post_json('/file', item)
-    return res.json['@graph'][0]
-
-
-@pytest.fixture
-def fastq_pair_1_paired_with(fastq_pair_1, file):
-    item = fastq_pair_1.copy()
-    item['paired_with'] = file['@id']
-    return item
-
-
-@pytest.fixture
-def fastq_pair_2(fastq):
-    item = fastq.copy()
-    item['paired_end'] = '2'
-    item['md5sum'] = '2123456789abcdef0123456789abcdef'
-    return item
-
-
-@pytest.fixture
-def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
-    item = fastq_pair_2.copy()
-    item['paired_with'] = 'md5:' + fastq_pair_1['md5sum']
-    return item
-
-
-@pytest.fixture
-def external_accession(fastq_pair_1):
-    item = fastq_pair_1.copy()
-    item['external_accession'] = 'EXTERNAL'
-    return item
 
 
 def test_file_post_fastq_pair_1_paired_with(testapp, fastq_pair_1_paired_with):

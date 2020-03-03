@@ -1,12 +1,8 @@
 import pytest
-
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
+from .constants import *
 
 @pytest.fixture
-def base_target1(testapp, gene):
+def base_target1_1(testapp, gene):
     item = {
         'genes': [gene['uuid']],
         'label': 'ABCD',
@@ -16,7 +12,7 @@ def base_target1(testapp, gene):
 
 
 @pytest.fixture
-def base_target2(testapp, gene):
+def base_target2_1(testapp, gene):
     item = {
         'genes': [gene['uuid']],
         'label': 'EFGH',
@@ -26,10 +22,10 @@ def base_target2(testapp, gene):
 
 
 @pytest.fixture
-def base_antibody_characterization1(testapp, lab, award, base_target1, antibody_lot, organism, k562, hepg2):
+def base_antibody_characterization1_1(testapp, lab, award, base_target1_1, antibody_lot, organism, k562, hepg2):
     item = {
         'award': award['uuid'],
-        'target': base_target1['uuid'],
+        'target': base_target1_1['uuid'],
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
         'primary_characterization_method': 'immunoblot',
@@ -54,10 +50,10 @@ def base_antibody_characterization1(testapp, lab, award, base_target1, antibody_
 
 
 @pytest.fixture
-def base_antibody_characterization2(testapp, lab, award, base_target2, antibody_lot, organism):
+def base_antibody_characterization2(testapp, lab, award, base_target2_1, antibody_lot, organism):
     item = {
         'award': award['uuid'],
-        'target': base_target2['uuid'],
+        'target': base_target2_1['uuid'],
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
         'secondary_characterization_method': 'dot blot assay',
@@ -106,7 +102,7 @@ def control_antibody(testapp, lab, award, source, mouse, target):
     return testapp.post_json('/antibody_lot', item).json['@graph'][0]
 
 
-def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characterization1, base_antibody_characterization2):
+def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characterization1_1, base_antibody_characterization2):
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -184,14 +180,14 @@ def test_audit_encode3_tag_ab_characterizations(
     antibody_lot,
     gfp_target,
     biosample_characterization,
-    base_antibody_characterization1,
+    base_antibody_characterization1_1,
     lab,
     submitter
 ):
     testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
     biosample = testapp.get(biosample_characterization['characterizes']).json
     testapp.patch_json(
-        base_antibody_characterization1['@id'],
+        base_antibody_characterization1_1['@id'],
         {
             'target': gfp_target['uuid'],
             'characterization_reviews': [{
