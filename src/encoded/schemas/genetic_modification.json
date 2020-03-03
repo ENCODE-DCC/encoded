@@ -126,22 +126,6 @@
                             "required": ["introduced_gene"]
                         }
                     ]
-                },
-                {
-                    "properties": {
-                        "category": {
-                            "enum": ["knockout"]
-                        },
-                        "method": {
-                            "enum": ["site-specific recombination"]
-                        },
-                        "purpose": {
-                            "enum": ["repression"]
-                        }
-                    },
-                    "not": {
-                        "required": ["modified_site_nonspecific"]
-                    }
                 }
             ]
         },
@@ -268,8 +252,24 @@
                     "required": ["treatments"],
                     "properties": {
                         "category": {
-                            "enum": ["mutagenesis", "site-specific recombination"]
+                            "enum": ["mutagenesis"]
                         }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["knockout"]
+                        },
+                        "method": {
+                            "enum": ["site-specific recombination"]
+                        },
+                        "purpose": {
+                            "enum": ["repression"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
                     }
                 }
             ]

@@ -164,7 +164,13 @@ def recombination_knockout(lab, award):
         'award': award['@id'],
         'category': 'knockout',
         'purpose': 'repression',
-        'method': 'site-specific recombination'
+        'method': 'site-specific recombination',
+        'modified_site_by_coordinates': {
+            "assembly": "GRCh38",
+            "chromosome": "11",
+            "start": 60000,
+            "end": 62000
+        }
     }
 
 def test_crispr_deletion_missing_site(testapp, crispr_deletion):
@@ -418,11 +424,11 @@ def test_introduced_elements_properties(testapp, introduced_elements, mouse_dono
 def test_crispr_knockout(testapp, crispr_knockout):
     # Category of CRISPR characterization GMs must be one of ["interference", "activation", "disruption", "inhibition", "knockout"]
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
-    crispr_knockout.update({'purpose': 'disruption'})
+    crispr_knockout.update({'category': 'disruption'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
-    crispr_knockout.update({'purpose': 'inhibition'})
+    crispr_knockout.update({'category': 'inhibition'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
-    crispr_knockout.update({'purpose': 'expression'})
+    crispr_knockout.update({'category': 'expression'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=422)
 
 
@@ -430,5 +436,5 @@ def test_recombination_knockout(testapp, recombination_knockout, treatment):
     testapp.post_json('/genetic_modification', recombination_knockout, status=422)
     recombination_knockout.update({'treatments': [treatment['@id']]})
     testapp.post_json('/genetic_modification', recombination_knockout, status=201)
-    recombination_knockout.update({'purpose': 'disruption'})
+    recombination_knockout.update({'category': 'disruption'})
     testapp.post_json('/genetic_modification', recombination_knockout, status=422)
