@@ -4,6 +4,7 @@
 
 * Added *post_differentiation_time* and *post_differentiation_time_units* properties.
 * Added *perturbed* calculated property to indicate if the biosample has been perturbed using a treatment or a genetic modification for non-tagging purposes.
+* Added *post_nucleic_acid_delivery_time* and *post_nucleic_acid_delivery_time_units* properties.
 
 ### Schema version 24
 

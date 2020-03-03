@@ -958,6 +958,21 @@
         "uuid": "693c82ee-70f1-11e9-a923-1681be663d3e"
     },
     {
+        "accession": "ENCBS303RUL",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "WTC11 cell line",
+        "donor": "ENCDO000HUM",
+        "lab": "gregory-crawford",
+        "organism": "human",
+        "post_nucleic_acid_delivery_time": 30,
+        "post_nucleic_acid_delivery_time_units": "minute",
+        "source": "dana-levasseur",
+        "status": "released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
+        "uuid": "78268bc7-1715-4f49-97ef-88a123b56269"
+    },
+    {
         "_test": "For ENTEx matrix testing",
         "accession": "ENCBS376EJL",
         "aliases": [

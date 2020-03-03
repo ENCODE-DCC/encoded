@@ -158,3 +158,28 @@ def test_biosample_post_diffentiation_props(testapp, biosample, organoid):
         }
     )
     assert res.status_code == 200
+
+
+def test_biosample_post_nucleic_acid_delivery_props(testapp, biosample, organoid):
+    biosample['biosample_ontology'] = organoid['uuid']
+    bio = testapp.post_json('/biosample', biosample).json['@graph'][0]
+    res = testapp.patch_json(
+        bio['@id'],
+        {'post_nucleic_acid_delivery_time': 10},
+        expect_errors=True
+    )
+    assert res.status_code == 422
+    res = testapp.patch_json(
+        bio['@id'],
+        {'post_nucleic_acid_delivery_time_units': 'hour'},
+        expect_errors=True
+    )
+    assert res.status_code == 422
+    res = testapp.patch_json(
+        bio['@id'],
+        {
+            'post_nucleic_acid_delivery_time': 10,
+            'post_nucleic_acid_delivery_time_units': 'hour'
+        }
+    )
+    assert res.status_code == 200
