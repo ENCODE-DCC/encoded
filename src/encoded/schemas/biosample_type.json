@@ -95,6 +95,21 @@
                             "pattern": "^NTR:0000471$"
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "classification": {
+                            "enum": [
+                                "DNA cloning sample"
+                            ]
+                        },
+                        "term_name": {
+                            "pattern": "^DNA cloning sample$"
+                        },
+                        "term_id": {
+                            "pattern": "^NTR:0000545$"
+                        }
+                    }
                 }
             ]
         }
@@ -115,6 +130,7 @@
                 "in vitro differentiated cells",
                 "primary cell",
                 "cell-free sample",
+                "DNA cloning sample",
                 "tissue",
                 "whole organisms",
                 "organoid"
