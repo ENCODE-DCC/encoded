@@ -44,8 +44,7 @@
         "accession": "ENCSR759STU",
         "elements_mapping": "ENCSR051STU",
         "elements_references": ["ENCSR001REF", "ENCSR500ELM"],
-        "uuid": "b9e3fdf6-70ee-11e9-a923-1681be663d3e",
-        "gRNA_tiling_loci": ["/genes/912/", "/genes/2995/"]
+        "uuid": "b9e3fdf6-70ee-11e9-a923-1681be663d3e"
     },
     {
         "_test": "pooled clone sequencing test",
@@ -153,9 +152,9 @@
         "uuid": "f4455f2b-8dd3-462b-aa00-4d0ea471714a",
         "examined_loci": [{
             "gene": "/genes/912/",
-            "gene_expression_percentile": 80
+            "expression_percentile": 80
         }, {"gene": "/genes/2995/",
-            "gene_expression_range_minimum": 2,
-            "gene_expression_range_maximum": 70}]
+            "expression_range_minimum": 2,
+            "expression_range_maximum": 70}]
     }
 ]
