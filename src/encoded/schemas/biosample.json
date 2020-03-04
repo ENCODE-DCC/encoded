@@ -803,8 +803,7 @@
                 "hour",
                 "day",
                 "week",
-                "month",
-                "stage"
+                "month"
             ]
         }
     },

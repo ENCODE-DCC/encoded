@@ -160,8 +160,7 @@ def test_biosample_post_diffentiation_props(testapp, biosample, organoid):
     assert res.status_code == 200
 
 
-def test_biosample_post_nucleic_acid_delivery_props(testapp, biosample, organoid):
-    biosample['biosample_ontology'] = organoid['uuid']
+def test_biosample_post_nucleic_acid_delivery_props(testapp, biosample):
     bio = testapp.post_json('/biosample', biosample).json['@graph'][0]
     res = testapp.patch_json(
         bio['@id'],
