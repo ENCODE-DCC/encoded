@@ -229,6 +229,58 @@
                             "type": "string",
                             "linkTo": "File"
                         }
+                    },
+                    "assemblies": {
+                        "title": "Assemblies",
+                        "description": "A list of genome assemblies on which this analsis is performed.",
+                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
+                        "type": "array",
+                        "notSubmittable": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "genome_annotations": {
+                        "title": "Genome Annotations",
+                        "description": "A list of genome annotations on which this analsis is performed.",
+                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
+                        "type": "array",
+                        "notSubmittable": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "pipelines": {
+                        "title": "Piplines",
+                        "description": "A list of pipelines used to generate this analysis.",
+                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
+                        "type": "array",
+                        "notSubmittable": true,
+                        "items": {
+                            "type": "string",
+                            "linkTo": "Pipeline"
+                        }
+                    },
+                    "pipeline_award_rfas": {
+                        "title": "Pipline awards",
+                        "description": "A list of award bioproject phases to which pipelines that used to generate this analysis belong to.",
+                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
+                        "type": "array",
+                        "notSubmittable": true,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "pipeline_labs": {
+                        "title": "Pipeline labs",
+                        "description": "A list of labs whose pipelines are used to generate this analysis.",
+                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
+                        "type": "array",
+                        "notSubmittable": true,
+                        "items": {
+                            "type": "string",
+                            "linkTo": "Lab"
+                        }
                     }
                 }
             }
