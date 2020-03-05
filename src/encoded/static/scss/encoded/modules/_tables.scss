@@ -323,21 +323,3 @@ form.table-filter {
 .table-raw-separator td {
     border-top: 2px solid #606060;
 }
-
-.qc-report {
-    @at-root #{&}--ideal {
-        background-color: #4ca84c;
-    }
-
-    @at-root #{&}--warning {
-        background-color: #adad00;
-    }
-
-    @at-root #{&}--not-compliant {
-        background-color: #ea7500;
-    }
-
-    @at-root #{&}--error {
-        background-color: #ea0700;
-    }
-}

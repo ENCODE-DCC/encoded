@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Panel, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelHeading, PanelBody, PanelFooter } from '../libs/ui/panel';
 import Tooltip from '../libs/ui/tooltip';
 import { CartAddAllElements, CartToggle } from './cart';
 import { auditDecor, AuditCounts } from './audit';
@@ -12,7 +12,6 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { requestObjects, ItemAccessories, InternalTags } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
-import { SortTablePanel } from './sorttable';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
 
@@ -264,6 +263,34 @@ const experimentTableColumns = {
         hide: series => !series.assay_term_name.includes('ChIP-seq') || series.target.some(target => target.investigated_as.includes('histone')),
     },
 
+    peakCount: {
+        title: <div>Replicated Peak count<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
+        getValue: (experiment, meta) => {
+            // ENCODE3 TF and histone ChIP-seq quality metrics modeling
+            const optimalPeakCounts = getQualityMetricsByReplicate(experiment, 'N_optimal')[meta.bioRepNum] || getQualityMetricsByReplicate(experiment, 'npeak_overlap')[meta.bioRepNum] || [];
+            if (optimalPeakCounts.length === 0) {
+                // ENCODE4 ChIP-seq quality metrics modeling
+                experiment.files.forEach((f) => {
+                    if (f.preferred_default && f.biological_replicates.includes(meta.bioRepNum)) {
+                        f.quality_metrics.forEach((qm) => {
+                            if (qm.reproducible_peaks) {
+                                optimalPeakCounts.push(qm.reproducible_peaks);
+                            }
+                        });
+                    }
+                });
+            }
+            if (optimalPeakCounts.length > 1) {
+                return '?';
+            }
+            if (optimalPeakCounts.length === 1) {
+                return optimalPeakCounts[0];
+            }
+            return '';
+        },
+        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+    },
+
     status: {
         title: 'Status',
         display: (experiment, meta) => <td key="status" rowSpan={meta.rowCount}><Status item={experiment} badgeSize="small" /></td>,
@@ -295,6 +322,17 @@ const experimentTableColumns = {
         sorter: false,
     },
 };
+
+// Display the color legend for quality metrics.
+const QualityMetricLegend = () => (
+    <div className="qc-legend">
+        <div className="qc-legend-item"><b>Quality metric status:</b></div>
+        <div className="qc-legend-item qc-report--ideal">Recommended</div>
+        <div className="qc-legend-item qc-report--warning">Sufficient</div>
+        <div className="qc-legend-item qc-report--not-compliant">Insufficient</div>
+        <div className="qc-legend-item qc-report--error">Error</div>
+    </div>
+);
 
 
 /**
@@ -628,18 +666,23 @@ class ExperimentSeriesComponent extends React.Component {
                 </Panel>
 
                 {addAllToCartControl && allRows.length > 0 ?
-                    <SortTablePanel header={addAllToCartControl}>
-                        <table className="table table__sortable table-raw">
-                            <thead>
-                                <tr>
-                                    {Object.keys(columns).map(columnId => <th key={columnId}>{columns[columnId].title}</th>)}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {allRows}
-                            </tbody>
-                        </table>
-                    </SortTablePanel>
+                    <Panel addClasses="table-panel">
+                        <PanelHeading key="heading">{addAllToCartControl}</PanelHeading>
+
+                        <div className="table__scrollarea" key="table">
+                            <table className="table table__sortable table-raw">
+                                <thead>
+                                    <tr>
+                                        {Object.keys(columns).map(columnId => <th key={columnId}>{columns[columnId].title}</th>)}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {allRows}
+                                </tbody>
+                            </table>
+                        </div>
+                        <PanelFooter><QualityMetricLegend /></PanelFooter>
+                    </Panel>
                 : null}
 
                 <FetchedItems
