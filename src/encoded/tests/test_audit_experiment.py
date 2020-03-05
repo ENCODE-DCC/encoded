@@ -835,10 +835,15 @@ def test_audit_experiment_target(testapp, base_experiment):
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
+def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library, a549):
     testapp.patch_json(base_experiment['@id'], {'status': 'submitted', 'date_submitted': '2015-03-03'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'unreplicated experiment'
+    print(res)
+    assert any(error['category'] == 'unreplicated experiment' and error['level_name'] == 'INTERNAL_ACTION'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'biosample_ontology': a549['uuid']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'unreplicated experiment' and error['level_name'] == 'NOT_COMPLIANT'
                for error in collect_audit_errors(res))
 
 

@@ -2806,7 +2806,10 @@ def audit_experiment_replicated(value, system, excluded_types):
         # different levels of severity for different rfas
         detail = ('This experiment is expected to be replicated, but '
             'contains only one listed biological replicate.')
-        yield AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+        if value['biosample_ontology']['classification'] in ['tissue', 'primary cells']:
+            yield AuditFailure('unreplicated experiment', detail, level='INTERNAL_ACTION')
+        else:
+            yield AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
     return
 
 
