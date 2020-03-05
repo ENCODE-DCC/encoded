@@ -241,6 +241,7 @@
             "description": "The loci whose expression or product is under investigation for the functional characterization experiment.",
             "type": "array",
             "uniqueItems": true,
+            "minItems": 1,
             "items": {
                 "title": "Locus",
                 "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
