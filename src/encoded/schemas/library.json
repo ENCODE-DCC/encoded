@@ -352,10 +352,24 @@
             "maximum": 10
         },
         "strand_specificity": {
-            "title": "Strand specific",
-            "description": "The preparation of the library uses a strand-specific protocol.",
-            "type": "boolean",
-            "default": false
+            "title": "Strand specificity",
+            "description": "The forward or reverse strandedness of the library resulting from a strand-specific protocol.",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "forward",
+                        "reverse"
+                    ]
+                },
+                {
+                    "comment": "Libraries that have indicated specificity in the past, not for new submissions.",
+                    "permissions": "import_items",
+                    "enum": [
+                        "strand-specific"
+                    ]
+                }
+            ]
         },
         "treatments": {
             "title": "Treatments",

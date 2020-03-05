@@ -61,7 +61,7 @@
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "rna_integrity_number": 7.3,
         "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"
@@ -85,7 +85,7 @@
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
         "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
     },
@@ -101,7 +101,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
     },
@@ -117,7 +117,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e4824882-0ad8-4009-a169-44d5955800af"
     },
@@ -138,7 +138,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "treatments": [
             "8661b120-5c82-11e3-949a-0800200c9a66"
@@ -162,7 +162,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "treatments": [
             "8661b120-5c82-11e3-949a-0800200c9a66"
@@ -183,7 +183,7 @@
         "library_size_selection_method": "SPRI beads",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
     },
@@ -276,7 +276,7 @@
         "library_size_selection_method": "SPRI beads",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
     },
@@ -324,7 +324,6 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "documents": [],
         "uuid": "0cbd1597-831a-4628-9cd0-c428b208d259",
-        "strand_specificity": false,
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "status": "in progress",
         "nucleic_acid_term_name": "DNA",
@@ -341,7 +340,6 @@
         "lab": "michael-snyder/",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
     },
@@ -352,7 +350,6 @@
         "lab": "michael-snyder",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
     },
@@ -363,7 +360,6 @@
         "lab": "michael-snyder",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "de797662-a71b-45d5-96bf-9dd800194907"
     },
@@ -373,7 +369,6 @@
         "accession": "ENCLB376WDO",
         "biosample": "ENCBS278TPS",
         "status": "released",
-        "strand_specificity": false,
         "award": "U54HG007010",
         "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -382,7 +377,6 @@
     {
         "_test": "Paired set 2 library",
         "accession": "ENCLB033CJI",
-        "strand_specificity": false,
         "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
@@ -401,7 +395,6 @@
         "uuid": "d82037c7-d189-4111-bff8-589d0b614e84",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
-        "strand_specificity": false,
         "size_range": "350-600",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "aliases": ["robert-waterston:library_RB884_80_1_1"],
@@ -418,7 +411,6 @@
         "uuid": "c36567eb-880a-41af-9b19-5d879a4ff6ce",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
-        "strand_specificity": false,
         "size_range": "350-600",
         "fragmentation_methods": ["shearing (Covaris generic)"],
         "aliases": ["robert-waterston:library_RB884_680_1_1"],
@@ -428,7 +420,6 @@
     {
         "_test": "Organism development series 3 library",
         "accession": "ENCLB595GWE",
-        "strand_specificity": false,
         "biosample": "ENCBS598ADI",
         "lab": "robert-waterston",
         "status": "revoked",
@@ -444,7 +435,6 @@
     },
     {
         "_test": "Treatment time series 1 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -459,7 +449,6 @@
     },
     {
         "_test": "Treatment time series 2 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -474,7 +463,6 @@
     },
     {
         "_test": "Treatment time series 3 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -489,7 +477,6 @@
     },
     {
         "_test": "Treatment concentration series 1 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -504,7 +491,6 @@
     },
     {
         "_test": "Treatment time series 2 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -519,7 +505,6 @@
     },
     {
         "_test": "Treatment time series 3 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -534,7 +519,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library RNA-seq",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "RNA",
@@ -549,7 +533,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library WGBS",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -562,7 +545,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me1",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -575,7 +557,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me3",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -588,7 +569,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -601,7 +581,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -614,7 +593,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library H3K27me3",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -627,7 +605,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library H3K9me3",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -640,7 +617,6 @@
     },
     {
         "_test": "Reference epigenome series 1 library control",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -653,7 +629,6 @@
     },
     {
         "_test": "Replication timing series 1 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -666,7 +641,6 @@
     },
     {
         "_test": "Replication timing series 2 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -679,7 +653,6 @@
     },
     {
         "_test": "Replication timing series 3 library",
-        "strand_specificity": false,
         "lab": "robert-waterston",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
@@ -693,7 +666,6 @@
     {
         "_test": "RCC files",
         "accession": "ENCLB000RCC",
-        "strand_specificity": false,
         "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
@@ -705,7 +677,6 @@
     {
         "_test": "RCC files",
         "accession": "ENCLB001RCC",
-        "strand_specificity": false,
         "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
@@ -717,7 +688,6 @@
     {
         "_test": "idat files",
         "accession": "ENCLB000DAT",
-        "strand_specificity": false,
         "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
@@ -729,7 +699,6 @@
     {
         "_test": "single cell barcodes",
         "accession": "ENCLB001SCL",
-        "strand_specificity": false,
         "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
@@ -752,7 +721,6 @@
     {
         "_test": "CRISPR screen library",
         "accession": "ENCLB009ACL",
-        "strand_specificity": false,
         "biosample": "ENCBS888RUL",
         "lab": "gregory-crawford",
         "status": "released",
@@ -765,7 +733,6 @@
     {
         "_test": "pooled clone sequencing library",
         "accession": "ENCLB001ACL",
-        "strand_specificity": false,
         "biosample": "ENCBS888RUL",
         "lab": "gregory-crawford",
         "status": "released",
@@ -778,7 +745,6 @@
     {
         "_test": "MPRA library",
         "accession": "ENCLB001MPR",
-        "strand_specificity": false,
         "biosample": "ENCBS888RUL",
         "lab": "gregory-crawford",
         "status": "released",
@@ -790,7 +756,6 @@
     {
         "_test": "STARR-seq library",
         "accession": "ENCLB011STR",
-        "strand_specificity": false,
         "biosample": "ENCBS888RUL",
         "lab": "gregory-crawford",
         "status": "in progress",
@@ -802,7 +767,7 @@
     {
         "_test": "eCLIP control library",
         "accession": "ENCLB011ECL",
-        "strand_specificity": true,
+        "strand_specificity": "strand-specific",
         "biosample": "ENCBS804RUL",
         "lab": "robert-waterston",
         "status": "in progress",
@@ -873,7 +838,6 @@
         "lab": "encode2-project",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5"
     },
@@ -888,7 +852,6 @@
         "lab": "encode2-project",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416"
     },
@@ -903,7 +866,6 @@
         "lab": "encode2-project",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa"
     },
@@ -918,7 +880,6 @@
         "lab": "encode2-project",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
-        "strand_specificity": false,
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c"
     }

@@ -1426,3 +1426,12 @@ def base_matched_set(testapp, lab, award):
         'lab': lab['uuid']
     }
     return testapp.post_json('/matched_set', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def library_schema_10(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'strand_specificity': 'true',
+    }
