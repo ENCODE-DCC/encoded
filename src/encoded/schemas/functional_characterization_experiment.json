@@ -247,9 +247,10 @@
                 "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
                 "type": "object",
                 "additionalProperties": false,
-                "anyOf": [
+                "oneOf": [
                     {
-                        "required": ["gene"]
+                        "required": ["gene"],
+                        "maxProperties": 1
                     },
                     {
                         "required": ["gene", "expression_percentile"]
