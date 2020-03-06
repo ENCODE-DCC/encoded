@@ -107,6 +107,9 @@ export const dbxrefPrefixMap = {
     Cellosaurus: {
         pattern: 'https://web.expasy.org/cellosaurus/{0}',
     },
+    FactorBook: {
+        pattern: 'http://factorbook.beta.wenglab.org/experiment/{0}',
+    },
     FlyBase: {
         pattern: 'http://flybase.org/search/symbol/{0}',
         preprocessor: (context) => {
