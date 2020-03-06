@@ -4818,10 +4818,6 @@ def treatment_2_upgrade(treatment_upgrade):
 
 
 @pytest.fixture
-def fastq_pair_2(fastq):
-    item = fastq.copy()
-    item['paired_end'] = '2'
-    item['md5sum'] = '2123456789abcdef0123456789abcdef'
 def treatment_3_upgrade(treatment_upgrade):
     item = treatment_upgrade.copy()
     item.update({
@@ -4832,9 +4828,6 @@ def treatment_3_upgrade(treatment_upgrade):
 
 
 @pytest.fixture
-def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
-    item = fastq_pair_2.copy()
-    item['paired_with'] = 'md5:' + fastq_pair_1['md5sum']
 def treatment_4_upgrade(treatment_upgrade, document, antibody_lot):
     item = treatment_upgrade.copy()
     item.update({
@@ -4852,9 +4845,6 @@ def external_accession(fastq_pair_1):
     item = fastq_pair_1.copy()
     item['external_accession'] = 'EXTERNAL'
     return item
-
-
-
 
 
 
