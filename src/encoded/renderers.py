@@ -29,24 +29,30 @@ import psutil
 import time
 
 
-
 log = logging.getLogger(__name__)
+TWEEN_LOG = logging.getLogger('tweens')
 
 
 def includeme(config):
+    TWEEN_LOG.debug('encoded renderers.py includeme tweens')
+
     config.add_tween(
         '.renderers.fix_request_method_tween_factory',
         under='snovault.stats.stats_tween_factory')
+
     config.add_tween(
         '.renderers.normalize_cookie_tween_factory',
         under='.renderers.fix_request_method_tween_factory')
 
+    TWEEN_LOG.debug(
+        'encoded renderers.py includeme tweens.  reload_templates: %s',
+        config.registry.settings['pyramid.reload_templates']
+    )
     renderer_tween = (
         '.renderers.debug_page_or_json'
         if config.registry.settings['pyramid.reload_templates']
         else '.renderers.page_or_json'
     )
-
     config.add_tween(
         renderer_tween,
         under='.renderers.normalize_cookie_tween_factory')
@@ -57,6 +63,7 @@ def includeme(config):
     )
 
     config.add_tween('.renderers.security_tween_factory', under=EXCVIEW)
+
     config.scan(__name__)
 
 
@@ -68,25 +75,32 @@ def fix_request_method_tween_factory(handler, registry):
     Apache config:
         SetEnvIf Request_Method HEAD X_REQUEST_METHOD=HEAD
     """
-
+    TWEEN_LOG.debug('encoded renderers.py fix_request_method_tween_factory')
+    
     def fix_request_method_tween(request):
+        TWEEN_LOG.debug('er fix_request_method_tween: %s', request.url)
         environ = request.environ
         if 'X_REQUEST_METHOD' in environ:
             environ['REQUEST_METHOD'] = environ['X_REQUEST_METHOD']
-        return handler(request)
+        res = handler(request)
+        TWEEN_LOG.debug('er fix_request_method_tween res return: %s', request.url)
+        return res
 
     return fix_request_method_tween
 
 
 def security_tween_factory(handler, registry):
+    TWEEN_LOG.debug('encoded renderers.py security_tween_factory')
 
     def security_tween(request):
+        TWEEN_LOG.debug('er security_tween: %s', request.url)
         login = None
         expected_user = request.headers.get('X-If-Match-User')
         if expected_user is not None:
             login = request.authenticated_userid
             if login != 'mailto.' + expected_user:
                 detail = 'X-If-Match-User does not match'
+                TWEEN_LOG.debug('er security_tween raise HTTPPreconditionFailed: %s', request.url)
                 raise HTTPPreconditionFailed(detail)
 
         # wget may only send credentials following a challenge response.
@@ -94,13 +108,18 @@ def security_tween_factory(handler, registry):
         if auth_challenge or request.authorization is not None:
             login = request.authenticated_userid
             if login is None:
+                TWEEN_LOG.debug('er security_tween raise HTTPUnauthorized: %s', request.url)
                 raise HTTPUnauthorized(headerlist=forget(request))
 
         if request.method in ('GET', 'HEAD'):
-            return handler(request)
+            TWEEN_LOG.debug('er security_tween(1) pre call: %s', request.url)
+            res = handler(request)
+            TWEEN_LOG.debug('er security_tween(1) res return: %s', request.url)
+            return res
 
         if request.content_type != 'application/json':
             detail = "%s is not 'application/json'" % request.content_type
+            TWEEN_LOG.debug('er security_tween raise HTTPUnsupportedMediaType: %s', request.url)
             raise HTTPUnsupportedMediaType(detail)
 
         token = request.headers.get('X-CSRF-Token')
@@ -108,7 +127,11 @@ def security_tween_factory(handler, registry):
             # Avoid dirtying the session and adding a Set-Cookie header
             # XXX Should consider if this is a good idea or not and timeouts
             if token == dict.get(request.session, '_csrft_', None):
-                return handler(request)
+                TWEEN_LOG.debug('er security_tween(2) pre call: %s', request.url)
+                res = handler(request)
+                TWEEN_LOG.debug('er security_tween(2) res return: %s', request.url)
+                return res
+            TWEEN_LOG.debug('er security_tween raise CSRFTokenError(1): %s', request.url)
             raise CSRFTokenError('Incorrect CSRF token')
 
         if login is None:
@@ -116,13 +139,18 @@ def security_tween_factory(handler, registry):
         if login is not None:
             namespace, userid = login.split('.', 1)
             if namespace not in ('mailto', 'auth0'):
-                return handler(request)
+                TWEEN_LOG.debug('er security_tween(3) pre call: %s', request.url)
+                res = handler(request)
+                TWEEN_LOG.debug('er security_tween(3) res return: %s', request.url)
+                return res
+        TWEEN_LOG.debug('er security_tween raise CSRFTokenError(2): %s', request.url)
         raise CSRFTokenError('Missing CSRF token')
 
     return security_tween
 
 
 def normalize_cookie_tween_factory(handler, registry):
+    TWEEN_LOG.debug('encoded renderers.py normalize_cookie_tween_factory')
     from webob.cookies import Cookie
 
     ignore = {
@@ -130,20 +158,27 @@ def normalize_cookie_tween_factory(handler, registry):
     }
 
     def normalize_cookie_tween(request):
+        TWEEN_LOG.debug('er normalize_cookie_tween: %s', request.url)
         if request.path in ignore or request.path.startswith('/static/'):
-            return handler(request)
+            res = handler(request)
+            TWEEN_LOG.debug('er normalize_cookie_tween(1) res return: %s', request.url)
+            return res
 
         session = request.session
         if session or session._cookie_name not in request.cookies:
-            return handler(request)
+            res = handler(request)
+            TWEEN_LOG.debug('er normalize_cookie_tween(2) res return: %s', request.url)
+            return res
 
         response = handler(request)
+        TWEEN_LOG.debug('er normalize_cookie_tween(3) res: %s', request.url)
         existing = response.headers.getall('Set-Cookie')
         if existing:
             cookies = Cookie()
             for header in existing:
                 cookies.load(header)
             if session._cookie_name in cookies:
+                TWEEN_LOG.debug('er normalize_cookie_tween(3a) return: %s', request.url)
                 return response
 
         response.delete_cookie(
@@ -151,16 +186,19 @@ def normalize_cookie_tween_factory(handler, registry):
             path=session._cookie_path,
             domain=session._cookie_domain,
         )
-
+        TWEEN_LOG.debug('er normalize_cookie_tween(3b) return: %s', request.url)
         return response
 
     return normalize_cookie_tween
 
 
 def set_x_request_url_tween_factory(handler, registry):
+    TWEEN_LOG.debug('encoded renderers.py set_x_request_url_tween_factory')
 
     def set_x_request_url_tween(request):
+        TWEEN_LOG.debug('er set_x_request_url_tween call: %s', request.url)
         response = handler(request)
+        TWEEN_LOG.debug('er set_x_request_url_tween res return: %s', request.url)
         response.headers['X-Request-URL'] = request.url
         return response
 
