@@ -835,23 +835,16 @@ def test_audit_experiment_target(testapp, base_experiment):
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library, a549):
+def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library, a549, single_cell):
     testapp.patch_json(base_experiment['@id'], {'status': 'submitted', 'date_submitted': '2015-03-03'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    print(res)
     assert any(error['category'] == 'unreplicated experiment' and error['level_name'] == 'INTERNAL_ACTION'
                for error in collect_audit_errors(res))
     testapp.patch_json(base_experiment['@id'], {'biosample_ontology': a549['uuid']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'unreplicated experiment' and error['level_name'] == 'NOT_COMPLIANT'
                for error in collect_audit_errors(res))
-
-
-def test_audit_sc_experiment_replicated(testapp, base_experiment, base_replicate, base_library, single_cell):
-    testapp.patch_json(base_experiment['@id'], {
-        'status': 'submitted',
-        'biosample_ontology': single_cell['uuid'],
-        'date_submitted': '2015-03-03'})
+    testapp.patch_json(base_experiment['@id'], {'biosample_ontology': single_cell['uuid']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'unreplicated experiment'
                for error in collect_audit_errors(res))
