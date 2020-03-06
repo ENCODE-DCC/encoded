@@ -287,24 +287,12 @@ def heart(testapp):
 
 
 @pytest.fixture
-def biosample(testapp, source, lab, award, organism, heart):
-    item = {
-        'biosample_ontology': heart['uuid'],
-        'source': source['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'organism': organism['@id'],
-    }
-    return testapp.post_json('/biosample', item).json['@graph'][0]
-
-
-@pytest.fixture
-def library(testapp, lab, award, biosample):
+def library(testapp, lab, award, biosample_1):
     item = {
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id'],
-        'biosample': biosample['@id'],
+        'biosample': biosample_1['@id'],
     }
     return testapp.post_json('/library', item).json['@graph'][0]
 
@@ -914,6 +902,19 @@ def liver(testapp):
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
 
 
+# TODO: Figure out biosample
+@pytest.fixture
+def biosample(testapp, source, lab, award, organism, heart):
+    item = {
+        'biosample_ontology': heart['uuid'],
+        'source': source['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'organism': organism['@id'],
+    }
+    return testapp.post_json('/biosample', item).json['@graph'][0]
+
+
 @pytest.fixture
 def biosample_1(testapp, lab, award, source, organism, liver):
     item = {
@@ -937,6 +938,17 @@ def biosample_2(testapp, lab, award, source, organism, liver):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def biosample_3(testapp, source, lab, award, organism, heart):
+    item = {
+        'biosample_ontology': heart['uuid'],
+        'source': source['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'organism': organism['@id'],
+    }
+    return testapp.post_json('/biosample', item).json['@graph'][0]
 
 @pytest.fixture
 def library_1(testapp, lab, award, base_biosample):
@@ -1421,1867 +1433,827 @@ def base_matched_set(testapp, lab, award):
         'lab': lab['uuid']
     }
     return testapp.post_json('/matched_set', item, status=201).json['@graph'][0]
-####################################################
 
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
-####################################################
-
-
-##################
-
-@pytest.fixture
-def no_login_submitter(testapp, lab, award):
-    item = {
-        'first_name': 'ENCODE',
-        'last_name': 'Submitter',
-        'email': 'no_login_submitter@example.org',
-        'submits_for': [lab['@id']],
-        'status': 'disabled',
-    }
-    # User @@object view has keys omitted.
-    res = testapp.post_json('/user', item)
-    return testapp.get(res.location).json
 
 
 @pytest.fixture
-def no_login_access_key(testapp, no_login_submitter):
-    description = 'My programmatic key'
-    item = {
-        'user': no_login_submitter['@id'],
-        'description': description,
-    }
-    res = testapp.post_json('/access_key', item)
-    result = res.json['@graph'][0].copy()
-    result['secret_access_key'] = res.json['secret_access_key']
-    return result
-
-###################
-
-# also tests schema_formats generally
-@pytest.fixture
-def human_donor(lab, award, organism):
+def biosample_data(submitter, lab, award, source, human, brain):
     return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid']        
-    }
-
-###################
-
-@pytest.fixture
-def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody_lot, organism, k562):
-    characterization_review_list = [{
-        'lane': 2,
-        'organism': organism['uuid'],
-        'biosample_ontology': k562['uuid'],
-        'lane_status': 'pending dcc review'
-    }]
-    item = {
-        'award': ENCODE3_award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'primary_characterization_method': 'immunoblot',
-        'characterization_reviews': characterization_review_list,
-        'status': 'pending dcc review'
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_characterization_review(testapp, organism, k562):
-    return {
-        'lane': 2,
-        'organism': organism['uuid'],
-        'biosample_ontology': k562['uuid'],
-        'lane_status': 'pending dcc review'
-    }
-
-
-@pytest.fixture
-def base_characterization_review2(testapp, organism, hepg2):
-    return {
-        'lane': 3,
-        'organism': organism['uuid'],
-        'biosample_ontology': hepg2['uuid'],
-        'lane_status': 'compliant'
-    }
-
-
-@pytest.fixture
-def base_document(testapp, lab, award):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'document_type': 'growth protocol'
-    }
-    return testapp.post_json('/document', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def standards_document(testapp, lab, award):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'document_type': 'standards document'
-    }
-    return testapp.post_json('/document', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_target(testapp, organism):
-    item = {
-        'target_organism': organism['uuid'],
-        'label': 'TAF1',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_target(testapp, organism):
-    item = {
-        'target_organism': organism['uuid'],
-        'label': 'eGFP',
-        'investigated_as': ['tag']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody(award, lab, source, organism, target):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [target['uuid']],
-        'product_id': 'KDKF123',
-        'lot_id': '123'
-        }
-
-
-@pytest.fixture
-def recombinant_target(testapp, gene):
-    item = {
-        'label': 'HA-ABCD',
-        'investigated_as': ['transcription factor'],
-        'genes': [gene['uuid']],
-        'modifications': [{'modification': 'HA'}]
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ENCODE3_award(testapp):
-    item = {
-        'name': 'ABC1234',
-        'rfa': 'ENCODE3',
-        'project': 'ENCODE',
-        'title': 'A Generic ENCODE3 Award'
-    }
-    return testapp.post_json('/award', item, status=201).json['@graph'][0]
-
-
-
-###################
-
-@pytest.fixture
-def base_target1(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'label': 'ABCD',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_target2(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'label': 'EFGH',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization1(testapp, lab, award, base_target1, antibody_lot, organism, k562, hepg2):
-    item = {
-        'award': award['uuid'],
-        'target': base_target1['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'primary_characterization_method': 'immunoblot',
-        'status': 'pending dcc review',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'characterization_reviews': [
-            {
-                'lane': 2,
-                'organism': organism['uuid'],
-                'biosample_ontology': k562['uuid'],
-                'lane_status': 'pending dcc review'
-            },
-            {
-                'lane': 3,
-                'organism': organism['uuid'],
-                'biosample_ontology': hepg2['uuid'],
-                'lane_status': 'pending dcc review'
-            }
-        ]
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization2(testapp, lab, award, base_target2, antibody_lot, organism):
-    item = {
-        'award': award['uuid'],
-        'target': base_target2['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'secondary_characterization_method': 'dot blot assay',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'status': 'pending dcc review'
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def gfp_target(testapp, organism):
-    item = {
-        'label': 'gfp',
-        'target_organism': organism['@id'],
-        'investigated_as': ['tag'],
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_target):
-    item = {
-        'product_id': 'WH0000468M1',
-        'lot_id': 'CB191-2B3',
-        'award': encode4_award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'host_organism': mouse['@id'],
-        'targets': [gfp_target['@id']],
-    }
-    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
-
-
-@pytest.fixture
-def control_antibody(testapp, lab, award, source, mouse, target):
-    item = {
-        'product_id': 'WH0000468M1',
-        'lot_id': 'CB191-2B3',
         'award': award['@id'],
+        'biosample_ontology': brain['uuid'],
         'lab': lab['@id'],
+        'organism': human['@id'],
         'source': source['@id'],
-        'host_organism': mouse['@id'],
-        'control_type': 'isotype control',
-        'isotype': 'IgG',
     }
-    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
-
-
-###################
-
-@pytest.fixture
-def ntr_biosample_type(testapp):
-    item = {
-        'term_id': 'NTR:0000022',
-        'term_name': 'heart',
-        'classification': 'single cell',
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
-def id_nonexist_biosample_type(testapp):
-    item = {
-        'term_id': 'CL:99999999',
-        'term_name': 'heart',
-        'classification': 'single cell',
+def antibody_characterization_data(submitter, award, lab, antibody_lot, target):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'target': target['uuid'],
+        'characterizes': antibody_lot['uuid']
     }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
-
-
-###################
 
 @pytest.fixture
-def base_biosample_1(testapp, lab, award, source, organism, heart):
-    item = {
+def biosample_data2(submitter, lab, award, source, organism, heart):
+    return {
         'award': award['uuid'],
         'biosample_ontology': heart['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
-        'source': source['uuid']
+        'source': source['uuid'],
     }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def biosample_depleted_in(mouse_biosample, whole_organism):
+    item = mouse_biosample.copy()
+    item.update({
+        'depleted_in_term_name': ['head'],
+        'biosample_ontology': whole_organism['uuid'],
+    })
+    return item
 
 
 @pytest.fixture
-def base_mouse_biosample(testapp, lab, award, source, mouse, liver):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': liver['uuid'],
-        'lab': lab['uuid'],
+def biosample_starting_amount(biosample_data2):
+    item = biosample_data2.copy()
+    item.update({
+        'starting_amount': 20
+    })
+    return item
+
+
+@pytest.fixture
+def mouse_biosample(biosample_data2, mouse):
+    item = biosample_data2.copy()
+    item.update({
         'organism': mouse['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
+        'model_organism_age': '8',
+        'model_organism_age_units': 'day',
+        'model_organism_sex': 'female',
+        'model_organism_health_status': 'apparently healthy',
+        'model_organism_mating_status': 'virgin'
+    })
+    return item
 
 @pytest.fixture
-def base_human_donor(testapp, lab, award, organism):
+def organoid(testapp):
     item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid']
-    }
-    return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_chipmunk(testapp):
-    item = {
-        'name': 'chimpmunk',
-        'taxon_id': '12345',
-        'scientific_name': 'Chip chipmunicus'
-    }
-    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ontology():
-    ontology = {
-        'UBERON:0002469': {
-            'part_of': [
-                'UBERON:0001043',
-                'UBERON:0001096',
-                'UBERON:1111111'
-            ]
-        },
-        'UBERON:1111111': {
-            'part_of': []
-        },
-        'UBERON:0001096': {
-            'part_of': []
-        },
-        'UBERON:0001043': {
-            'part_of': [
-                'UBERON:0001007',
-                'UBERON:0004908'
-            ]
-        },
-        'UBERON:0001007': {
-            'part_of': []
-        },
-        'UBERON:0004908': {
-            'part_of': [
-                'UBERON:0001043',
-                'UBERON:1234567'
-            ]
-        },
-        'UBERON:1234567': {
-            'part_of': [
-                'UBERON:0006920'
-            ]
-        },
-        'UBERON:0006920': {
-            'part_of': []
-        },
-        'UBERON:1231231': {
-            'name': 'liver'
-        }
-    }
-    return ontology
-
-
-@pytest.fixture
-def purkinje_cell(testapp):
-    item = {
-            'term_id': "CL:0000121",
-            'term_name': 'Purkinje cell',
-            'classification': 'primary cell'
+            'term_id': 'UBERON:0000955',
+            'term_name': 'brain',
+            'classification': 'organoid'
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
 
 
-@pytest.fixture
-def cerebellum(testapp):
-    item = {
-            'term_id': "UBERON:0002037",
-            'term_name': 'cerebellum',
-            'classification': 'tissue'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-###################
 
 @pytest.fixture
-def review(lab, submitter):
-    review = {
-        'reviewed_by': submitter['@id'],
-        'status': 'compliant',
-        'lab': lab['@id'],
-    }
-    return review
-
-###################
-
-@pytest.fixture
-def worm(testapp):
-    item = {
-        'uuid': '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20',
-        'name': 'celegans',
-        'scientific_name': 'Caenorhabditis elegans',
-        'taxon_id': '6239',
-    }
-    return testapp.post_json('/organism', item).json['@graph'][0]
-
-
-@pytest.fixture
-def worm_donor(lab, award, worm, testapp):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'organism': worm['uuid'],
-        'dbxrefs': ['CGC:OP520'],
-        'genotype': 'blahblahblah'
-        }
-    return testapp.post_json('/WormDonor', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def fly_donor_201(lab, award, fly, testapp):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'organism': fly['uuid'],
-        'dbxrefs': ['FlyBase:FBst0000003'],
-        'genotype': 'blahblah'
-        }
-    return testapp.post_json('/FlyDonor', item, status=201).json['@graph'][0]
-
-###################
-
-@pytest.fixture
-def experiment_series_1(testapp, lab, award, base_experiment):
-    item = {
+def mouse_donor_to_test(testapp, lab, award, mouse):
+    return {
         'award': award['@id'],
         'lab': lab['@id'],
-        'related_datasets': [base_experiment['@id']]
+        'organism': mouse['@id'],
     }
-    return testapp.post_json('/experiment_series', item, status=201).json['@graph'][0]
+
+
 
 
 @pytest.fixture
-def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum):
+def experiment_pipeline_error(testapp, lab, award, cell_free):
     item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-10-08',
-        'biosample_ontology': ileum['uuid'],
+        'lab': lab['@id'],
+        'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid']
-
+        'biosample_ontology': cell_free['uuid'],
+        'internal_status': 'pipeline error',
     }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
+    return item
 
 @pytest.fixture
-def experiment_chip_CTCF(testapp, lab, award, target_CTCF, k562):
+def experiment_no_error(testapp, lab, award, cell_free):
     item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-10-08',
-        'biosample_ontology': k562['uuid'],
+        'lab': lab['@id'],
+        'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_CTCF['uuid']
-
+        'biosample_ontology': cell_free['uuid'],
+        'internal_status': 'release ready',
     }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
+    return item
 
 @pytest.fixture
-def experiment_rna(testapp, lab, award, h1):
+def matched_set(testapp, lab, award):
     item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-10-08',
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': h1['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def experiment_dnase(testapp, lab, award, heart):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-10-08',
-        'assay_term_name': 'DNase-seq',
-        'biosample_ontology': heart['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K4me3(testapp, organism):
-    item = {
-        'label': 'H3K4me3',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_CTCF(testapp, organism):
-    item = {
-        'label': 'CTCF',
-        'target_organism': organism['@id'],
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_dnase(testapp, experiment_dnase, library_1):
-    item = {
-        'experiment': experiment_dnase['@id'],
-        'library': library_1['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-    }
-    return testapp.post_json('/replicate', item).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_rna(testapp, experiment_rna, library_2):
-    item = {
-        'experiment': experiment_rna['@id'],
-        'library': library_2['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-    }
-    return testapp.post_json('/replicate', item).json['@graph'][0]
-
-###################
-
-@pytest.fixture
-def library_no_biosample(testapp, lab, award):
-    item = {
-        'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id']
     }
-    return testapp.post_json('/library', item).json['@graph'][0]
+    return item
+
+
 
 
 @pytest.fixture
-def base_library(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_replicate_two(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 2,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_target_1(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'label': 'XYZ',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_target(testapp, organism):
-    item = {
-        'target_organism': organism['uuid'],
-        'label': 'eGFP',
-        'investigated_as': ['tag']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_antibody(testapp, award, lab, source, organism, tag_target):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [tag_target['uuid']],
-        'product_id': 'eGFP',
-        'lot_id': '1'
-    }
-    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def fly_organism(testapp):
-    item = {
-        'taxon_id': "7227",
-        'name': "dmelanogaster",
-        'scientific_name': "Drosophila melanogaster"
-    }
-    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_H3K9me3(testapp, mouse):
-    item = {
-        'target_organism': mouse['@id'],
-        'label': 'H3K9me3',
-        'investigated_as': ['histone', 'broad histone mark']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody(testapp, award, lab, source, organism, target):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [target['uuid']],
-        'product_id': 'KDKF123',
-        'lot_id': '123'
-    }
-
-
-@pytest.fixture
-def IgG_antibody(testapp, award, lab, source, organism):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'control_type': 'isotype control',
-        'isotype': 'IgG',
-        'product_id': 'ABCDEF',
-        'lot_id': '321'
-    }
-    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization1_2(testapp, lab, award, target, antibody_lot, organism, k562):
-    item = {
-        'award': award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'primary_characterization_method': 'immunoblot',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'characterization_reviews': [
-            {
-                'lane': 2,
-                'organism': organism['uuid'],
-                'biosample_ontology': k562['uuid'],
-                'lane_status': 'compliant'
-            }
-        ]
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, organism):
-    item = {
-        'award': award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'secondary_characterization_method': 'dot blot assay',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ctrl_experiment(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'ChIP-seq'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
-    item = {
-        'experiment': ctrl_experiment['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'antibody': IgG_antibody['@id'],
-        'status': 'released'
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def treatment_time_series(testapp, lab, award):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-    return testapp.post_json('/treatment_time_series', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def library_1(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def library_2(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_1_1(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_2_1(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 2,
-        'technical_replicate_number': 1,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_1_2(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 2,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_1(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_2(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_2(testapp, lab, award, base_experiment, base_replicate, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': base_replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '94be74b6e14515393547f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'platform': platform1['@id'],
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_2_1['@id'],
-        'platform': platform1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'md5sum': '11be74b6e11515393507f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'platform': platform1['@id'],
-        'replicate': replicate_2_1['@id'],
-        'file_format': 'fastq',
-        'md5sum': '91be79b6e11515993509f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        "read_length": 50,
-        'output_type': 'reads',
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_6(testapp, lab, award, base_experiment, replicate_1_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'run_type': "single-ended",
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_no_read_length(testapp, lab, award, experiment, replicate_1_1, platform3):
+def file_no_replicate(testapp, experiment, award, lab):
     item = {
         'dataset': experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 68,
-        'platform': platform3['@id'],
-        'output_type': 'reads',
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
         'lab': lab['@id'],
         'award': award['@id'],
-        'aliases': ['encode:no read length alias'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
-    item = {
-        'dataset': base_experiment['@id'],
-        'derived_from': [file_fastq_3['@id']],
         'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 34,
-        'md5sum': '91be44b6e11515394407f4ebfa66d77a',
-        'output_type': 'alignments',
-        'lab': encode_lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
-    item = {
-        'dataset': base_experiment['@id'],
-        'derived_from': [file_fastq_4['@id']],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 34,
-        'md5sum': '91be71b6e11515377807f4ebfa66d77a',
-        'output_type': 'alignments',
-        'lab': encode_lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def bam_quality_metric_1_1(testapp, analysis_step_run_bam, file_bam_1_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def bam_quality_metric_2_1(testapp, analysis_step_run_bam, file_bam_2_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def hotspot_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, encode_lab):
-    item = {
-        'SPOT1 score': 0.3345,
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'award': award['@id'],
-        'lab': encode_lab['@id']
-    }
-    return testapp.post_json('/hotspot-quality-metrics', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'NRF': 0.1,
-        'PBC1': 0.3,
-        'PBC2': 11
-    }
-
-    return testapp.post_json('/chipseq-filter-quality-metrics', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mad_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Spearman correlation': 0.1,
-        'MAD of log ratios': 3.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Pearson correlation': 0.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def spearman_correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Spearman correlation': 0.7,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def duplicates_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'Percent Duplication': 0.23,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/duplicates_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def wgbs_quality_metric(testapp, analysis_step_run_bam, file_bed_methyl, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file_bed_methyl['@id']],
-        'lambda C methylated in CHG context': '13.1%',
-        'lambda C methylated in CHH context': '12.5%',
-        'lambda C methylated in CpG context': '0.9%'}
-    return testapp.post_json('/bismark_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def micro_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'expressed_mirnas': 250,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/micro_rna_quantification_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def micro_rna_mapping_quality_metric_2_1(
-    testapp,
-    analysis_step_run_bam,
-    file_bam_2_1,
-    award,
-    lab
-):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'aligned_reads': 4000000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/micro_rna_mapping_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def long_read_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'genes_detected': 5000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/long_read_rna_quantification_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def long_read_rna_mapping_quality_metric_2_1(
-    testapp,
-    analysis_step_run_bam,
-    file_bam_2_1,
-    award,
-    lab
-):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'full_length_non_chimeric_read_count': 500000,
-        'mapping_rate': 0.5,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/long_read_rna_mapping_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        "file_format": "bed",
-        "file_format_type": "bedMethyl",
-        "file_size": 66569,
-        "assembly": "mm10",
-        "md5sum": "91be74b6e11515223507f4ebf266d77a",
-        "output_type": "methylation state at CpG",
-        "award": award["uuid"],
-        "lab": encode_lab["uuid"],
-        "status": "released",
-        "step_run": analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        'file_format': 'tsv',
-        'file_size': 3654,
-        'assembly': 'mm10',
-        'genome_annotation': 'M4',
-        'md5sum': '912e7ab6e11515393507f42bfa66d77a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        'file_format': 'tsv',
-        'file_size': 36524,
-        'assembly': 'mm10',
-        'genome_annotation': 'M4',
-        'md5sum': '91be74b6e315153935a7f4ecfa66d77a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-@pytest.fixture
-def experiment_no_read_length(
-    testapp,
-    experiment,
-    bam_file,
-    file_fastq_no_read_length,
-    replicate_1_1,
-    base_library,
-    analysis_step_bam,
-    analysis_step_version_bam,
-    analysis_step_run_bam,
-    encode_lab,
-):
-    testapp.patch_json(replicate_1_1['@id'], {'experiment': experiment['@id'],
-                                              'library': base_library['@id'],
-                                              })
-    testapp.patch_json(file_fastq_no_read_length['@id'], {'dataset': experiment['@id'],
-                                                          'replicate':replicate_1_1['@id'],
-                                                          })
-    testapp.patch_json(bam_file['@id'], {'dataset': experiment['@id'],
-                                         'step_run': analysis_step_run_bam['@id'],
-                                         'assembly': 'GRCh38',
-                                         'lab': encode_lab['@id'],
-                                         'derived_from': [file_fastq_no_read_length['@id']],
-                                         })
-    testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'date_released': '2016-01-01',
-                                           'assay_term_name': 'long read RNA-seq',
-                                           })
-    return testapp.get(experiment['@id'] + '@@index-data')
-
-###################
-
-
-@pytest.fixture
-def file_exp(lab, award, testapp, experiment, ileum):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'assay_term_name': 'RAMPAGE',
-        'biosample_ontology': ileum['uuid'],
-        'possible_controls': [experiment['uuid']],
-        'status': 'released',
-        'date_released': '2016-01-01'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_rep(replicate, file_exp, testapp):
-    item = {
-        'experiment': file_exp['uuid'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_exp2(lab, award, testapp, ileum):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'assay_term_name': 'RAMPAGE',
-        'biosample_ontology': ileum['uuid'],
-        'status': 'released',
-        'date_released': '2016-01-01'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_rep2(replicate, file_exp2, testapp):
-    item = {
-        'experiment': file_exp2['uuid'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_rep1_2(replicate, file_exp, testapp):
-    item = {
-        'experiment': file_exp['uuid'],
-        'biological_replicate_number': 2,
-        'technical_replicate_number': 1
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file1_2(file_exp, award, lab, file_rep1_2, platform1, testapp):
-    item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep1_2['uuid'],
-        'file_format': 'fastq',
-        'platform': platform1['@id'],
-        'md5sum': '91be74b6e11515393507f4ebfa66d58a',
-        'output_type': 'raw data',
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file2(file_exp2, award, lab, file_rep2, platform1, testapp):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'replicate': file_rep2['uuid'],
-        'file_format': 'fastq',
-        'md5sum': '91be74b6e11515393507f4ebfa66d58b',
-        'output_type': 'raw data',
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'platform': platform1['uuid'],
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
-    item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep['uuid'],
-        'file_format': 'fastq',
-        'md5sum': '91be74b6e11515393507f4ebfa66d58c',
-        'output_type': 'reads',
-        "read_length": 50,
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'platform': platform1['uuid'],
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'controlled_by': [file2['uuid']]
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file3(file_exp, award, lab, file_rep, platform1, testapp):
-    item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep['uuid'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'md5sum': '91be74b6e11515393507f4ebfa56d78d',
-        'output_type': 'reads',
-        "read_length": 50,
-        'platform': platform1['uuid'],
-        'run_type': 'single-ended',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file4(file_exp2, award, lab, file_rep2, platform1, testapp):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'replicate': file_rep2['uuid'],
-        'file_format': 'fastq',
-        'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
-        'output_type': 'reads',
-        'platform': platform1['uuid'],
-        "read_length": 50,
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'file_format': 'bam',
-        'file_size': 3,
-        'md5sum': '91ce74b6e11515393507f4ebfa66d78a',
-        'output_type': 'alignments',
-        'award': award['uuid'],
-        'file_size': 34,
+        'file_size': 345,
         'assembly': 'hg19',
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
+        'md5sum': 'e002cd204df36d93dd070ef0712b8eed',
+        'output_type': 'alignments',
+        'status': 'in progress',  # avoid s3 upload codepath
     }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
+def file_with_replicate(testapp, experiment, award, lab, replicate):
     item = {
-        'dataset': file_exp2['uuid'],
-        'file_format': 'tsv',
-        'file_size': 3,
-        'md5sum': '91be74b6e11515394507f4ebfa66d78a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file6['@id']],
-        'total': 20000000
-    }
-
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file7['@id']],
-        'total': 20000000
-    }
-
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def analysis_step_bam(testapp):
-    item = {
-        'step_label': 'bamqc-step',
-        'title': 'bamqc step',
-        'major_version': 1,
-        'input_file_types': ['reads'],
-        'analysis_step_types': ['QA calculation']
-    }
-    return testapp.post_json('/analysis_step', item).json['@graph'][0]
-
-
-@pytest.fixture
-def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'title': "Small RNA-seq single-end pipeline",
-        'analysis_steps': [analysis_step_bam['@id']]
-    }
-    return testapp.post_json('/pipeline', item).json['@graph'][0]
-
-
-
-###################
-
-@pytest.fixture
-def genetic_modification_1(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'modified_site_by_coordinates': {
-            'assembly': 'GRCh38',
-            'chromosome': '11',
-            'start': 20000,
-            'end': 21000
-        },
-        'purpose': 'repression',
-        'category': 'deletion',
-        'method': 'CRISPR',
-        'zygosity': 'homozygous'
-    }
-    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
-
-
-@pytest.fixture
-def genetic_modification_RNAi(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'modified_site_by_coordinates': {
-            'assembly': 'GRCh38',
-            'chromosome': '11',
-            'start': 20000,
-            'end': 21000
-        },
-        'purpose': 'repression',
-        'category': 'deletion',
-        'method': 'RNAi'
-    }
-    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
-
-
-@pytest.fixture
-def tagged_target(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'modifications': [{'modification': 'eGFP'}],
-        'label': 'eGFP-CTCF',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def genetic_modification_source(testapp, lab, award, source, gene):
-    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
         'lab': lab['@id'],
         'award': award['@id'],
-        'category': 'insertion',
-        'introduced_gene': gene['@id'],
-        'purpose': 'expression',
-        'method': 'CRISPR',
-        'reagents': [
-            {
-                'source': source['@id'],
-                'identifier': 'sigma:ABC123'
-            }
-        ]
+        'file_format': 'bam',
+        'file_size': 345,
+        'assembly': 'hg19',
+        'md5sum': 'e003cd204df36d93dd070ef0712b8eed',
+        'output_type': 'alignments',
+        'status': 'in progress',  # avoid s3 upload codepath
     }
-    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+    return testapp.post_json('/file', item).json['@graph'][0]
 
-###################
 
 @pytest.fixture
-def reference_epigenome_1(testapp, lab, award):
+def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
     item = {
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
         'award': award['@id'],
-        'lab': lab['@id']
+        'file_format': 'bam',
+        'assembly': 'hg19',
+        'file_size': 345,
+        'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
+        'output_type': 'alignments',
+        'status': 'in progress',  # avoid s3 upload codepath
+        'derived_from': [file_with_replicate['@id']]
     }
-    return testapp.post_json('/reference_epigenome', item).json['@graph'][0]
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def reference_experiment_RNA_seq(testapp, lab, award, ileum):
+def file_no_assembly(testapp, experiment, award, lab, replicate):
     item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'RNA-seq'
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_RRBS(testapp, lab, award, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'assay_term_name': 'RRBS',
-        'biosample_ontology': ileum['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_WGBS(testapp, lab, award, ileum):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': ileum['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_control(testapp, lab, award, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'control_type': 'control'
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27me3['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'target': target_H3K36me3['uuid']
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me1['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3_1, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3_1['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac_1, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27ac_1['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3_1, ileum):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'date_released': '2019-01-08',
-        'biosample_ontology': ileum['uuid'],
-        'assay_term_name': 'ChIP-seq',
-        'target': target_H3K9me3_1['uuid']
-
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K27me3(testapp, organism):
-    item = {
-        'label': 'H3K27me3',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K36me3(testapp, organism):
-    item = {
-        'label': 'H3K36me3',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K4me1(testapp, organism):
-    item = {
-        'label': 'H3K4me1',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K4me3_1(testapp, organism):
-    item = {
-        'label': 'H3K4me3',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K27ac_1(testapp, organism):
-    item = {
-        'label': 'H3K27ac',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_H3K9me3_1(testapp, organism):
-    item = {
-        'label': 'H3K9me3',
-        'target_organism': organism['@id'],
-        'investigated_as': ['histone']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-@pytest.fixture
-def replicate_RNA_seq(testapp, reference_experiment_RNA_seq, library_1):
-    item = {
-        'experiment': reference_experiment_RNA_seq['@id'],
-        'library': library_1['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-    }
-    return testapp.post_json('/replicate', item).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_RRBS(testapp, reference_experiment_RRBS, library_2):
-    item = {
-        'experiment': reference_experiment_RRBS['@id'],
-        'library': library_2['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-    }
-    return testapp.post_json('/replicate', item).json['@graph'][0]
-
-###################
-
-@pytest.fixture
-def rep1(experiment, testapp):
-    item = {
-        'experiment': experiment['uuid'],
-        'biological_replicate_number': 5,
-        'technical_replicate_number': 4,
-        'status': 'released'
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def rep2(experiment, testapp):
-    item = {
-        'experiment': experiment['uuid'],
-        'biological_replicate_number': 5,
-        'technical_replicate_number': 4,
-        'status': 'released'
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-###################
-
-@pytest.fixture
-def lookup_column_value_item():
-    item = {
-        'assay_term_name': 'long read RNA-seq',
-        'lab': {'title': 'John Stamatoyannopoulos, UW'},
-        'accession': 'ENCSR751ISO',
-        'assay_title': 'long read RNA-seq',
-        'award': {'project': 'Roadmap'},
-        'status': 'released',
-        '@id': '/experiments/ENCSR751ISO/',
-        '@type': ['Experiment', 'Dataset', 'Item'],
-        'biosample_ontology': {'term_name': 'midbrain'}
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bam',
+        'file_size': 345,
+        'md5sum': '82847a2a5beb8095282c68c00f48e347',
+        'output_type': 'alignments',
+        'status': 'in progress'
     }
     return item
 
 
 @pytest.fixture
-def lookup_column_value_validate():
-    valid = {
-        'assay_term_name': 'long read RNA-seq',
-        'lab.title': 'John Stamatoyannopoulos, UW',
-        'audit': '',
-        'award.project': 'Roadmap',
-        '@id': '/experiments/ENCSR751ISO/',
-        'level.name': '',
-        '@type': 'Experiment,Dataset,Item'
+def file_no_error(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress'
     }
-    return valid
+    return item
 
-###################
 
 @pytest.fixture
-def testing_download(testapp):
-    url = '/testing-downloads/'
+def file_content_error(testapp, experiment, award, lab, replicate, platform1):
     item = {
-        'attachment': {
-            'download': 'red-dot.png',
-            'href': RED_DOT,
-        },
-        'attachment2': {
-            'download': 'blue-dot.png',
-            'href': BLUE_DOT,
-        },
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'output_type': 'reads',
+        "read_length": 36,
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'content error'
     }
-    res = testapp.post_json(url, item, status=201)
-    return res.location
+    return item
 
-###################
+
+@pytest.fixture
+def file_no_platform(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'output_type': 'reads',
+        "read_length": 36,
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_no_paired_end(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'award': award['@id'],
+        'platform': platform1['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_with_bad_date_created(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'date_created': '2017-10-23',
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_with_bad_revoke_detail(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress',
+        'revoke_detail': 'some reason to be revoked'
+    }
+    return item
+
+
+@pytest.fixture
+def file_processed_output_raw_format(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'output_type': 'peaks',
+        'read_length': 36,
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_raw_output_processed_format(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'award': award['@id'],
+        'file_format': 'bam',
+        'output_type': 'reads',
+        'read_length': 36,
+        'assembly': 'hg19',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_restriction_map(testapp, experiment, award, lab):
+    item = {
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'txt',
+        'file_size': 3456,
+        'assembly': 'hg19',
+        'md5sum': 'e002cd204df36d93dd070ef0712b8e12',
+        'output_type': 'restriction enzyme site locations',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return item
+
+
+@pytest.fixture
+def file_no_genome_annotation(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'database',
+        'file_size': 342,
+        'md5sum': '82847a2a5beb8095282c68c00f48e347',
+        'output_type': 'transcriptome index',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_database_output_type(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'database',
+        'file_size': 342,
+        'genome_annotation': 'V24',
+        'md5sum': '82847a2a5beb8095282c68c00f48e348',
+        'output_type': 'alignments',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_good_bam(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'bam',
+        'output_type': 'alignments',
+        'md5sum': '136e501c4bacf4fab87debab20d76648',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_no_runtype_readlength(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'output_type': 'reads',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+
+
+
+@pytest.fixture
+def functional_characterization_experiment_item(testapp, lab, award, cell_free):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'STARR-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def functional_characterization_experiment_screen(testapp, lab, award, heart, target):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'target': target['uuid']
+
+    }
+    return item
+
+
+@pytest.fixture
+def functional_characterization_experiment(testapp, lab, award, cell_free):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'STARR-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def functional_characterization_experiment_4(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'status': 'in progress',
+        'target_expression_percentile': 70
+    }
+    return item
+
+
+@pytest.fixture
+def functional_characterization_experiment_5(testapp, lab, award, ctcf):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'status': 'in progress',
+        'examined_loci': [{
+             'gene': ctcf['uuid'],
+             'gene_expression_percentile': 80
+         }]
+    }
+    return item
+
+
+
+
+
+@pytest.fixture
+def gene_locations_wrong_assembly(testapp, human):
+    item = {
+        'uuid': 'd358f63b-63d6-408f-baca-13881c6c79a1',
+        'dbxrefs': ['HGNC:7553'],
+        'geneid': '4609',
+        'symbol': 'MYC',
+        'ncbi_entrez_status': 'live',
+        'organism': human['uuid'],
+        'locations': [{'assembly': 'mm10', 'chromosome': 'chr18', 'start': 47808713, 'end': 47814692}]
+    }
+    return item
+
+
+
+@pytest.fixture
+def crispr_deletion(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'deletion',
+        'purpose': 'repression',
+        'method': 'CRISPR'
+    }
+
+
+@pytest.fixture
+def tale_deletion(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'deletion',
+        'purpose': 'repression',
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
+    }
+
+
+@pytest.fixture
+def crispr_tag(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'CRISPR'
+    }
+
+
+@pytest.fixture
+def bombardment_tag(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'bombardment'
+    }
+
+
+@pytest.fixture
+def recomb_tag(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'site-specific recombination'
+    }
+
+
+@pytest.fixture
+def transfection_tag(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'stable transfection'
+    }
+
+
+@pytest.fixture
+def crispri(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'interference',
+        'purpose': 'repression',
+        'method': 'CRISPR'
+    }
+
+
+@pytest.fixture
+def rnai(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'interference',
+        'purpose': 'repression',
+        'method': 'RNAi'
+    }
+
+
+@pytest.fixture
+def mutagen(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'mutagenesis',
+        'purpose': 'repression',
+        'method': 'mutagen treatment'
+    }
+
+
+@pytest.fixture
+def tale_replacement(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'replacement',
+        'purpose': 'characterization',
+        'method': 'TALEN',
+        'zygosity': 'heterozygous'
+    }
+
+@pytest.fixture
+def mpra(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'characterization',
+        'method': 'transduction'
+    }
+
+
+@pytest.fixture
+def starr_seq(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'episome',
+        'purpose': 'characterization',
+        'method': 'transient transfection'
+    }
+
+
+@pytest.fixture
+def introduced_elements(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'episome',
+        'purpose': 'characterization',
+        'method': 'transient transfection',
+        'introduced_elements': 'genomic DNA regions'
+    }
+
+
+
+@pytest.fixture
+def publication_data_no_references(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'references': []
+    }
+    return item
+
+
+
+@pytest.fixture
+def generic_quality_metric(analysis_step_run, file, award, lab):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'name': 'Generic QC',
+        'step_run': analysis_step_run['uuid'],
+        'quality_metric_of': [file['uuid']],
+        'attachment': {
+            'download': 'test.tgz',
+            'type': 'application/x-tar',
+            'href': "data:application/x-tar;base64,dG1wLwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDc1NSAAMDAwNzY2IAAwMDAwMjQgADAwMDAwMDAwMDAwIDEzMDczMjIyMDQ0IDAxMjMxMQAgNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB1c3RhcgAwMGVzdGhlcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAc3RhZmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAgADAwMDAwMCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB0bXAvYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAwNjQ0IAAwMDA3NjYgADAwMDAyNCAAMDAwMDAwMDAwMDIgMTMwNzEyNDU0NjEgMDEyNDUyACAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHVzdGFyADAwZXN0aGVyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzdGFmZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDAwMCAAMDAwMDAwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdG1wL2IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDY0NCAAMDAwNzY2IAAwMDAwMjQgADAwMDAwMDAwMDAyIDEzMDcxMjQ1NDY1IDAxMjQ1NwAgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB1c3RhcgAwMGVzdGhlcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAc3RhZmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAgADAwMDAwMCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHRtcC9jAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDA2NDQgADAwMDc2NiAAMDAwMDI0IAAwMDAwMDAwMDAwMiAxMzA3MTI0NTQ2NyAwMTI0NjIAIDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdXN0YXIAMDBlc3RoZXIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHN0YWZmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAwMDAwIAAwMDAwMDAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB0bXAvZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAwNjQ0IAAwMDA3NjYgADAwMDAyNCAAMDAwMDAwMDAwMDIgMTMwNzEyNDU0NzAgMDEyNDU1ACAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHVzdGFyADAwZXN0aGVyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzdGFmZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDAwMCAAMDAwMDAwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdG1wL2UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDY0NCAAMDAwNzY2IAAwMDAwMjQgADAwMDAwMDAwMDAyIDEzMDcxMjQ1NDcyIDAxMjQ2MAAgMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB1c3RhcgAwMGVzdGhlcgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAc3RhZmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAgADAwMDAwMCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        }
+    }
+
+
+
+
+@pytest.fixture
+def replicate2(experiment):
+    return {
+        'experiment': experiment['uuid'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+    }
+
+
+@pytest.fixture
+def replicate_rbns(replicate2):
+    item = replicate2.copy()
+    item.update({
+        'rbns_protein_concentration': 10,
+        'rbns_protein_concentration_units': 'nM',
+    })
+    return item
+
+
+@pytest.fixture
+def replicate_rbns_no_units(replicate2):
+    item = replicate2.copy()
+    item.update({
+        'rbns_protein_concentration': 10,
+    })
+    return item
+
+
+
+@pytest.fixture
+def myc(testapp, human):
+    item = {
+        'uuid': 'd358f63b-63d6-408f-baca-13881c6c79a1',
+        'dbxrefs': ['HGNC:7553'],
+        'geneid': '4609',
+        'symbol': 'MYC',
+        'ncbi_entrez_status': 'live',
+        'organism': human['uuid'],
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def tbp(testapp, mouse):
+    item = {
+        'uuid': '93def54f-d998-4d85-ba9d-e985d4f736da',
+        'dbxrefs': ['MGI:101838'],
+        'geneid': '21374',
+        'symbol': 'Tbp',
+        'ncbi_entrez_status': 'live',
+        'organism': mouse['uuid'],
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def target_nongene(mouse):
+    return {
+        'label': 'nongene',
+        'target_organism': mouse['uuid'],
+        'investigated_as': ['other context'],
+    }
+
+
+@pytest.fixture
+def target_one_gene(ctcf):
+    return {
+        'label': 'one-gene',
+        'genes': [ctcf['uuid']],
+        'investigated_as': ['other context'],
+    }
+
+
+@pytest.fixture
+def target_two_same_org(ctcf, myc):
+    return {
+        'label': 'two-same-org',
+        'genes': [ctcf['uuid'], myc['uuid']],
+        'investigated_as': ['other context'],
+    }
+
+
+@pytest.fixture
+def target_two_diff_orgs(ctcf, tbp):
+    return {
+        'label': 'two-diff-org',
+        'genes': [ctcf['uuid'], tbp['uuid']],
+        'investigated_as': ['other context'],
+    }
+
+
+@pytest.fixture
+def target_genes_org(human, ctcf, myc):
+    return {
+        'label': 'genes-org',
+        'target_organism': human['uuid'],
+        'genes': [ctcf['uuid'], myc['uuid']],
+        'investigated_as': ['other context'],
+    }
+
+
+@pytest.fixture
+def target_synthetic_tag():
+    return {
+        'label': 'FLAG',
+        'investigated_as': ['synthetic tag'],
+    }
+
+
+
+
+
+@pytest.fixture(scope='session')
+def test_accession_app(request, check_constraints, zsa_savepoints, app_settings):
+    from encoded import main
+    app_settings = app_settings.copy()
+    app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
+    return main({}, **app_settings)
+
+
+@pytest.fixture
+def test_accession_anontestapp(request, test_accession_app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+    }
+    return TestApp(test_accession_app, environ)
+
+
+
 
 @pytest.fixture
 def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
@@ -3299,7 +2271,2469 @@ def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
     return item
 
 
-###################
+@pytest.fixture
+def human_donor(testapp, award, lab, human):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'organism': human['@id'],
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+@pytest.fixture
+def cart(testapp, submitter):
+    item = {
+        'name': 'test cart',
+        'submitted_by': submitter['uuid'],
+    }
+    return testapp.post_json('/cart', item).json['@graph'][0]
+
+
+@pytest.fixture
+def other_cart(testapp, remc_member):
+    item = {
+        'name': 'test cart',
+        'submitted_by': remc_member['uuid'],
+    }
+    return testapp.post_json('/cart', item).json['@graph'][0]
+
+
+@pytest.fixture
+def deleted_cart(testapp, submitter):
+    item = {
+        'name': 'test cart',
+        'status': 'deleted',
+        'elements': [],
+        'submitted_by': submitter['uuid'],
+    }
+    return testapp.post_json('/cart', item).json['@graph'][0]
+
+
+@pytest.fixture
+def autosave_cart(testapp, submitter):
+    item = {
+        'name': 'test cart',
+        'status': 'disabled',
+        'elements': [],
+        'submitted_by': submitter['uuid'],
+    }
+    return testapp.post_json('/cart', item).json['@graph'][0]
+
+
+@pytest.fixture
+def cart_submitter_testapp(app, submitter):
+    '''TestApp with JSON accept header for non-admin user.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': submitter['uuid'],
+    }
+    return TestApp(app, environ)
+
+
+@pytest.fixture
+def other_cart_submitter_testapp(app, remc_member):
+    '''TestApp with JSON accept header for non-admin user.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': remc_member['uuid'],
+    }
+    return TestApp(app, environ)
+
+
+@pytest.fixture
+def parent_human_donor(testapp, award, lab, human):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'organism': human['@id']
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+
+@pytest.fixture
+def child_human_donor(testapp, award, lab, human):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'organism': human['@id']
+    }
+    return testapp.post_json('/human_donor', item).json['@graph'][0]
+
+@pytest.fixture
+def experiment_1(testapp, lab, award, cell_free):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'RNA-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_2(testapp, lab, award, cell_free):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'RNA-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_experiment_series(testapp, lab, award, experiment_1):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'related_datasets': [experiment_1['@id']]
+    }
+    return testapp.post_json('/experiment-series', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_experiment(testapp, lab, award, cell_free):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'RNA-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def crispr_deletion_1(testapp, lab, award, target):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'deletion',
+        'purpose': 'repression',
+        'method': 'CRISPR',
+        'modified_site_by_target_id': target['@id'],
+        'guide_rna_sequences': ['ACCGGAGA']
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def crispr_tag_1(testapp, lab, award, ctcf):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'CRISPR',
+        'modified_site_by_gene_id': ctcf['@id'],
+        'introduced_tags': [{'name': 'mAID-mClover', 'location': 'C-terminal'}]
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def mpra_1(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'characterization',
+        'method': 'transduction',
+        'introduced_elements': 'synthesized DNA',
+        'modified_site_nonspecific': 'random'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def recomb_tag_1(testapp, lab, award, target, treatment, document):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'site-specific recombination',
+        'modified_site_by_target_id': target['@id'],
+        'modified_site_nonspecific': 'random',
+        'category': 'insertion',
+        'treatments': [treatment['@id']],
+        'documents': [document['@id']],
+        'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def rnai_1(testapp, lab, award, source, target):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'interference',
+        'purpose': 'repression',
+        'method': 'RNAi',
+        'reagents': [{'source': source['@id'], 'identifier': 'addgene:12345'}],
+        'rnai_sequences': ['ATTACG'],
+        'modified_site_by_target_id': target['@id']
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def base_reference_epigenome(testapp, lab, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'submitted'
+    }
+    return testapp.post_json('/reference_epigenome', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_single_cell_series(testapp, lab, base_experiment, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'related_datasets': [base_experiment['@id']]
+    }
+    return testapp.post_json('/single_cell_rna_series', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_experiment(testapp, lab, award, cell_free):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'RNA-seq',
+        'biosample_ontology': cell_free['uuid'],
+        'status': 'submitted',
+        'date_submitted': '2015-07-23',
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def hg19_file(testapp, base_reference_epigenome, award, lab):
+    item = {
+        'dataset': base_reference_epigenome['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'hg19',
+        'md5sum': 'e002cd204df36d93dd070ef0712b8eed',
+        'output_type': 'replicated peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def GRCh38_file(testapp, base_experiment, award, lab):
+    item = {
+        'dataset': base_experiment['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'e002cd204df36d93dd070ef0712b8ee7',
+        'output_type': 'replicated peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+
+@pytest.fixture
+def treatment_1():
+    return {
+        'treatment_type': 'chemical',
+        'treatment_term_name': 'estradiol',
+        'treatment_term_id': 'CHEBI:23965'
+    }
+
+
+@pytest.fixture
+def submitter_treatment(submitter, lab):
+    return {
+        'treatment_type': 'chemical',
+        'treatment_term_name': 'estradiol',
+        'treatment_term_id': 'CHEBI:23965',
+        'submitted_by': submitter['@id']
+    }
+
+
+@pytest.fixture
+def access_key_1(access_key):
+    item = access_key.copy()
+    item.update({
+        'schema_version': '1'
+    })
+    return item
+
+'''
+This upgrade test is no longer need as the upgrade was also removed. The test and upgrade will remain
+in the code for posterity but they both are no longer valid after versionof: was removed as a valid 
+namespace according to http://redmine.encodedcc.org/issues/4748
+
+@pytest.fixture
+def analysis_step_version_with_alias(testapp, analysis_step, software_version):
+    item = {
+        'aliases': ['versionof:' + analysis_step['name']],
+        'analysis_step': analysis_step['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_1(analysis_step):
+    item = {
+        'analysis_step': analysis_step['uuid'],
+        'status': 'finished',
+        'workflow_run': 'does not exist',
+    }
+    return item
+
+
+def test_analysis_step_run_1_2(registry, upgrader, analysis_step_run_1, analysis_step_version_with_alias, threadlocals):
+    value = upgrader.upgrade('analysis_step_run', analysis_step_run_1, current_version='1', target_version='2', registry=registry)
+    assert value['analysis_step_version'] == analysis_step_version_with_alias['uuid']
+    assert 'analysis_step' not in value
+    assert 'workflows_run' not in value
+'''
+
+
+@pytest.fixture
+def analysis_step_run_3(analysis_step, analysis_step_version):
+    item = {
+        'analysis_step_version': analysis_step_version['uuid'],
+        'status': 'finished'
+    }
+    return item
+
+
+@pytest.fixture
+def analysis_step_run_4(analysis_step, analysis_step_version):
+    item = {
+        'analysis_step_version': analysis_step_version['uuid'],
+        'status': 'virtual'
+    }
+    return item
+
+
+@pytest.fixture
+def analysis_step_version_3(testapp, analysis_step, software_version):
+    item = {
+        'schema_version': '3',
+        'version': 1,
+        'analysis_step': analysis_step['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return item
+
+@pytest.fixture
+def base_analysis_step(testapp, software_version):
+    item = {
+        'name': 'lrna-pe-star-alignment-step-v-2-0',
+        'title': 'Long RNA-seq STAR paired-ended alignment step v2.0',
+        'analysis_step_types': ['alignments'],
+        'input_file_types': ['reads'],
+        'software_versions': [
+            software_version['@id'],
+        ]
+    }
+    return item
+
+
+@pytest.fixture
+def analysis_step_1(base_analysis_step):
+
+    item = base_analysis_step.copy()
+    item.update({
+        'schema_version': '2',
+        'output_file_types': ['signal of multi-mapped reads']
+    })
+    return item
+
+
+@pytest.fixture
+def analysis_step_3(base_analysis_step):
+    item = base_analysis_step.copy()
+    item.update({
+        'schema_version': '3',
+        'analysis_step_types': ['alignment', 'alignment'],
+        'input_file_types': ['reads', 'reads'],
+        'output_file_types': ['transcriptome alignments', 'transcriptome alignments']
+    })
+    return item
+
+
+@pytest.fixture
+def analysis_step_5(base_analysis_step):
+    item = base_analysis_step.copy()
+    item.update({
+        'schema_version': '5',
+        'aliases': ["dnanexus:align-star-se-v-2"],
+        'uuid': '8eda9dfa-b9f1-4d58-9e80-535a5e4aaab1',
+        'status': 'in progress',
+        'analysis_step_types': ['pooling', 'signal generation', 'file format conversion', 'quantification'],
+        'input_file_types': ['alignments'],
+        'output_file_types': ['methylation state at CHG', 'methylation state at CHH', 'raw signal', 'methylation state at CpG']
+    })
+    return item
+
+
+@pytest.fixture
+def analysis_step_6(base_analysis_step):
+    item = base_analysis_step.copy()
+    item.update({
+        'schema_version': '6',
+        'input_file_types': ['alignments', 'candidate regulatory elements'],
+        'output_file_types': ['raw signal', 'candidate regulatory elements']
+    })
+    return item
+
+
+@pytest.fixture
+def analysis_step_7(base_analysis_step):
+    item = base_analysis_step.copy()
+    item.update({
+        'input_file_types': [
+            'peaks',
+            'optimal idr thresholded peaks',
+            'conservative idr thresholded peaks',
+            'pseudoreplicated idr thresholded peaks'
+        ],
+        'output_file_types': [
+            'peaks',
+            'optimal idr thresholded peaks',
+            'conservative idr thresholded peaks',
+            'pseudoreplicated idr thresholded peaks'
+        ],
+    })
+    return item
+
+
+def test_analysis_step_2_3(registry, upgrader, analysis_step_1, threadlocals):
+    value = upgrader.upgrade('analysis_step', analysis_step_1, current_version='2', target_version='3', registry=registry)
+    assert 'signal of all reads' in value['output_file_types']
+    assert 'signal of multi-mapped reads' not in value['output_file_types']
+
+@pytest.fixture
+def antibody_lot_base(lab, award, source):
+    return {
+        'award': award['uuid'],
+        'product_id': 'SAB2100398',
+        'lot_id': 'QC8343',
+        'lab': lab['uuid'],
+        'source': source['uuid'],
+    }
+
+
+@pytest.fixture
+def antibody_lot_1(antibody_lot_base):
+    item = antibody_lot_base.copy()
+    item.update({
+        'schema_version': '1',
+        'encode2_dbxrefs': ['CEBPZ'],
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_lot_2(antibody_lot_base):
+    item = antibody_lot_base.copy()
+    item.update({
+        'schema_version': '2',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
+        'status': "CURRENT"
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_lot_3(root, antibody_lot):
+    item = root.get_by_uuid(antibody_lot['uuid'])
+    properties = item.properties.copy()
+    del properties['targets']
+    properties.update({
+        'schema_version': '3'
+    })
+    return properties
+
+
+@pytest.fixture
+def antibody_lot_4(root, antibody_lot_3):
+    item = antibody_lot_3.copy()
+    item.update({
+        'schema_version': '4',
+        'lot_id_alias': ['testing:456', 'testing:456'],
+        'purifications': ['crude', 'crude']
+    })
+    return item
+
+@pytest.fixture
+def award_0():
+    return{
+        'name': 'ENCODE2',
+    }
+
+
+@pytest.fixture
+def award_1(award_0):
+    item = award_0.copy()
+    item.update({
+        'schema_version': '1',
+        'rfa': "ENCODE2"
+    })
+    return item
+
+@pytest.fixture
+def award_2(award_1):
+    item = award_1.copy()
+    item.update({
+        'schema_version': '3',
+        'viewing_group': 'ENCODE',
+    })
+    return item
+
+
+@pytest.fixture
+def award_5(award_2):
+    item = award_2.copy()
+    item.update({
+        'schema_version': '6',
+        'viewing_group': 'ENCODE',
+    })
+    return item
+
+@pytest.fixture
+def biosample_upgrade_0(submitter, lab, award, source, organism):
+    return {
+        'award': award['uuid'],
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'biosample_type': 'tissue',
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid'],
+    }
+
+
+@pytest.fixture
+def biosample_upgrade_1(biosample_upgrade_0):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '1',
+        'starting_amount': 1000,
+        'starting_amount_units': 'g'
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_2(biosample_upgrade_0):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '2',
+        'subcellular_fraction': 'nucleus',
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_3(biosample_upgrade_0, biosample):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '3',
+        'derived_from': [biosample['uuid']],
+        'part_of': [biosample['uuid']],
+        'encode2_dbxrefs': ['Liver'],
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_4(biosample_upgrade_0, encode2_award):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '4',
+        'status': 'CURRENT',
+        'award': encode2_award['uuid'],
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_6(biosample_upgrade_0):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '5',
+        'sex': 'male',
+        'age': '2',
+        'age_units': 'week',
+        'health_status': 'Normal',
+        'life_stage': 'newborn',
+
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_7(biosample_upgrade_0):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '7',
+        'worm_life_stage': 'embryonic',
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_8(biosample_upgrade_0):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '8',
+        'model_organism_age': '15.0',
+        'model_organism_age_units': 'day',
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_9(root, biosample, publication):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '9',
+        'references': [publication['identifiers'][0]],
+    })
+    return properties
+
+
+@pytest.fixture
+def biosample_upgrade_10(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'worm_synchronization_stage': 'starved L1 larva'
+    })
+    return properties
+
+
+@pytest.fixture
+def biosample__upgrade_11(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '11',
+        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
+        'aliases': ['testing:123', 'testing:123']
+    })
+    return properties
+
+
+@pytest.fixture
+def biosample_upgrade_12(biosample_upgrade_0, document):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '12',
+        'starting_amount': 'unknown',
+        'starting_amount_units': 'g',
+        'note': 'Value in note.',
+        'submitter_comment': 'Different value in submitter_comment.',
+        'protocol_documents': list(document)
+    })
+    return item
+
+
+@pytest.fixture
+def biosample__upgrade_13(biosample_upgrade_0, document):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'schema_version': '13',
+        'notes': ' leading and trailing whitespace ',
+        'description': ' leading and trailing whitespace ',
+        'submitter_comment': ' leading and trailing whitespace ',
+        'product_id': ' leading and trailing whitespace ',
+        'lot_id': ' leading and trailing whitespace '
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_15(biosample_upgrade_0, biosample):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'date_obtained': '2017-06-06T20:29:37.059673+00:00',
+        'schema_version': '15',
+        'derived_from': biosample['uuid'],
+        'talens': []
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_18(biosample_upgrade_0, biosample):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'biosample_term_id': 'EFO:0002067',
+        'biosample_term_name': 'K562',
+        'biosample_type': 'immortalized cell line',
+        'transfection_type': 'stable',
+        'transfection_method': 'electroporation'
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_19(biosample_upgrade_0, biosample):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'biosample_type': 'immortalized cell line',
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_upgrade_21(biosample_upgrade_0, biosample):
+    item = biosample_upgrade_0.copy()
+    item.update({
+        'biosample_type': 'stem cell',
+        'biosample_term_id': 'EFO:0007071',
+        'biosample_term_name': 'BG01'
+    })
+    return item
+
+
+@pytest.fixture
+def bigbed(testapp, lab, award, experiment, analysis_step_run):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bedMethyl',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'methylation state at CpG',
+        'assembly': 'hg19',
+        'file_size': 13224,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run['@id'],
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def bismark_quality_metric_1(pipeline, analysis_step_run, bigbed):
+    return {
+        'status': "finished",
+        'pipeline': pipeline['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'schema_version': '1',
+    }
+
+
+@pytest.fixture
+def bismark_quality_metric_2(pipeline, analysis_step_run, bigbed):
+    return {
+        'status': "finished",
+        'pipeline': pipeline['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'schema_version': '3',
+        'quality_metric_of': [bigbed['uuid']]
+    }
+
+
+@pytest.fixture
+def antibody_characterization(submitter, award, lab, antibody_lot, target):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'target': target['uuid'],
+        'characterizes': antibody_lot['uuid'],
+    }
+
+
+@pytest.fixture
+def biosample_characterization_base(submitter, award, lab, biosample):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'characterizes': biosample['uuid'],
+    }
+
+
+@pytest.fixture
+def antibody_characterization_1(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'SUBMITTED',
+        'characterization_method': 'mass spectrometry after IP',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_characterization_2(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'COMPLIANT'
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_characterization_1(biosample_characterization_base):
+    item = biosample_characterization_base.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'APPROVED',
+        'characterization_method': 'immunofluorescence',
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_characterization_2(biosample_characterization_base):
+    item = biosample_characterization_base.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'IN PROGRESS',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_characterization_3(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'schema_version': '4',
+        'characterization_method': 'immunoblot',
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_characterization_4(root, biosample_characterization, publication):
+    item = root.get_by_uuid(biosample_characterization['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '4',
+        'references': [publication['identifiers'][0]],
+    })
+    return properties
+
+
+@pytest.fixture
+def antibody_characterization_10(antibody_characterization_1):
+    item = antibody_characterization_1.copy()
+    item.update({
+        'status': 'pending dcc review',
+        'characterization_method': 'immunoprecipitation followed by mass spectrometry',
+        'comment': 'We tried really hard to characterize this antibody.',
+        'notes': 'Your plea has been noted.'
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_characterization_11(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'characterization_reviews': [{
+            'biosample_term_name': 'K562',
+            'biosample_term_id': 'EFO:0002067',
+            'lane_status': 'exempt from standards',
+            'biosample_type': 'immortalized cell line',
+            'lane': 2,
+            'organism': '/organisms/human/'
+        }]
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_characterization_13(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'characterization_reviews': [{
+            'biosample_term_name': 'HUES62',
+            'biosample_term_id': 'EFO:0007087',
+            'lane_status': 'exempt from standards',
+            'biosample_type': 'induced pluripotent stem cell line',
+            'lane': 2,
+            'organism': '/organisms/human/'
+        }]
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_characterization_14(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'characterization_reviews': [{
+            'biosample_term_name': 'A549',
+            'biosample_term_id': 'EFO:0001086',
+            'lane_status': 'exempt from standards',
+            'biosample_type': 'cell line',
+            'lane': 2,
+            'organism': '/organisms/human/'
+        }]
+    })
+    return item
+
+@pytest.fixture
+def chip_peak_enrichment_quality_metric_1(award, lab):
+    return{
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "award": award["uuid"],
+        "lab": lab["uuid"],
+        "quality_metric_of": ["ENCFF003COS"],
+        "FRiP":  0.253147998729
+    }
+
+@pytest.fixture 
+def chip_replication_quality_metric_1(award, lab):
+    return{
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "award": award["uuid"],
+        "lab": lab["uuid"],
+        "quality_metric_of": ["ENCFF003COS"],
+        "IDR_dispersion_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf"
+    }
+
+@pytest.fixture
+def experiment_upgrade_1(root, experiment, file, file_ucsc_browser_composite):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    assert root.get_by_uuid(
+        file['uuid']).properties['dataset'] == str(item.uuid)
+    assert root.get_by_uuid(
+        file_ucsc_browser_composite['uuid']).properties['dataset'] != str(item.uuid)
+    properties.update({
+        'schema_version': '1',
+        'files': [file['uuid'], file_ucsc_browser_composite['uuid']]
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_2():
+    return {
+        'schema_version': '2',
+        'encode2_dbxrefs': ['wgEncodeEH002945'],
+        'geo_dbxrefs': ['GSM99494'],
+    }
+
+
+@pytest.fixture
+def dataset_upgrade_2():
+    return {
+        'schema_version': '2',
+        'aliases': ['ucsc_encode_db:mm9-wgEncodeCaltechTfbs', 'barbara-wold:mouse-TFBS'],
+        'geo_dbxrefs': ['GSE36024'],
+    }
+
+
+@pytest.fixture
+def experiment_upgrade_3():
+    return {
+        'schema_version': '3',
+        'status': "DELETED",
+    }
+
+
+@pytest.fixture
+def dataset_upgrade_3():
+    return {
+        'schema_version': '3',
+        'status': 'CURRENT',
+        'award': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
+    }
+
+
+@pytest.fixture
+def dataset_upgrade_5(publication):
+    return {
+        'schema_version': '5',
+        'references': [publication['identifiers'][0]],
+    }
+
+
+@pytest.fixture
+def experiment_upgrade_6():
+    return {
+        'schema_version': '6',
+        'dataset_type': 'experiment',
+    }
+
+
+@pytest.fixture
+def experiment_upgrade_7(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '7',
+        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
+        'aliases': ['testing:123', 'testing:123']
+    })
+    return properties
+
+
+@pytest.fixture
+def annotation_upgrade_8(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '8',
+        'annotation_type': 'encyclopedia',
+        'status': 'released'
+    }
+
+
+@pytest.fixture
+def annotation_upgrade_12(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '12',
+        'annotation_type': 'candidate regulatory regions',
+        'status': 'released'
+    }
+
+
+@pytest.fixture
+def annotation_upgrade_14(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '14',
+        'annotation_type': 'candidate regulatory regions',
+        'status': 'proposed'
+    }
+
+
+@pytest.fixture
+def experiment_upgrade_10(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'status': 'in progress',
+        'aliases': [
+            'andrew-fire:my_experiment',
+            'j-michael-cherry:Lib:XZ:20100107:11--ChIP:XZ:20100104:09:AdiposeNuclei:H3K4Me3',
+            'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4||Tue Apr 16 16:10:36 -0500 2013||85822',
+            'encode:[this is]_qu#ite:bad" ',
+            'manuel-garber:10% DMSO for 2 hours',
+            'UCSC_encode_db:Illumina_HiSeq_2000',
+            'encode:Illumina_HiSeq_2000'
+        ]
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_13(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '13',
+        'status': 'proposed',
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_14(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '14',
+        'biosample_type': 'in vitro sample',
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_15(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '15',
+        'biosample_type': 'immortalized cell line'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_16(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '16',
+        'biosample_type': 'immortalized cell line',
+        'status': 'ready for review'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_17(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '17',
+        'biosample_type': 'immortalized cell line',
+        'status': 'started'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_21(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '21',
+        'biosample_type': 'induced pluripotent stem cell line',
+        'status': 'started'
+    })
+    return properties
+
+
+@pytest.fixture
+def annotation_upgrade_16(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '16',
+        'biosample_type': 'immortalized cell line'
+    }
+
+
+@pytest.fixture
+def annotation_upgrade_17(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '17',
+        'biosample_type': 'immortalized cell line',
+        'status': 'started'
+    }
+
+
+@pytest.fixture
+def annotation_upgrade_19(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '19',
+        'biosample_type': 'stem cell',
+        'biosample_term_name': 'mammary stem cell',
+        'status': 'started'
+    }
+
+
+@pytest.fixture
+def experiment_upgrade_22(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '22',
+        'biosample_type': 'primary cell',
+        'biosample_term_id': 'CL:0000765',
+        'biosample_term_name': 'erythroblast',
+        'internal_tags': ['cre_inputv10', 'cre_inputv11', 'ENCYCLOPEDIAv3'],
+        'status': 'started'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_25(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '25',
+        'assay_term_name': 'ISO-seq'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_upgrade_26(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '26',
+        'assay_term_name': 'single-nuclei ATAC-seq'
+    })
+    return properties
+
+@pytest.fixture
+def experiment_upgrade_27(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+                      'schema_version': '27',
+                      'experiment_classification': ['functional genomics assay']
+                      
+    })
+    return properties
+
+
+@pytest.fixture
+def annotation_upgrade_20(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '19',
+        'biosample_type': 'primary cell',
+        'biosample_term_id': 'CL:0000765',
+        'biosample_term_name': 'erythroblast',
+        'internal_tags': ['cre_inputv10', 'cre_inputv11', 'ENCYCLOPEDIAv3']
+    }
+
+@pytest.fixture
+def annotation_upgrade_21(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '24',
+        'annotation_type': 'candidate regulatory elements'
+    }
+
+
+@pytest.fixture
+def annotation_upgrade_25(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '25',
+        'encyclopedia_version': '1'
+    }
+
+
+@pytest.fixture
+def annotation_upgrade_26(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '26',
+        'dbxrefs': ['IHEC:IHECRE00000998.1'],
+    }
+
+
+@pytest.fixture
+def reference_epigenome_16(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '16',
+        'dbxrefs': ['IHEC:IHECRE00004643.1'],
+    }
+
+@pytest.fixture
+def document_0(publication):
+    return {
+        'references': [publication['identifiers'][0]],
+    }
+
+
+@pytest.fixture
+def document_base(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'document_type': 'growth protocol',
+    }
+
+
+@pytest.fixture
+def document_1(document_base):
+    item = document_base.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'CURRENT',
+        'award': '4d462953-2da5-4fcf-a695-7206f2d5cf45'
+    })
+    return item
+
+
+@pytest.fixture
+def document_3(root, document, publication):
+    item = root.get_by_uuid(document['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '3',
+        'references': [publication['identifiers'][0]],
+    })
+    return properties
+
+@pytest.fixture
+def human_donor_upgrade(lab, award, organism):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+    }
+
+
+@pytest.fixture
+def mouse_donor_base(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': '3413218c-3d86-498b-a0a2-9a406638e786',
+    }
+
+
+@pytest.fixture
+def human_donor_1(human_donor_upgrade):
+    item = human_donor_upgrade.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'CURRENT',
+        'award': '4d462953-2da5-4fcf-a695-7206f2d5cf45'
+    })
+    return item
+
+
+@pytest.fixture
+def human_donor_2(human_donor_upgrade):
+    item = human_donor_upgrade.copy()
+    item.update({
+        'schema_version': '2',
+        'age': '11.0'
+    })
+    return item
+
+
+@pytest.fixture
+def mouse_donor_1(mouse_donor_base):
+    item = mouse_donor_base.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'CURRENT',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
+@pytest.fixture
+def mouse_donor_2(mouse_donor_base):
+    item = mouse_donor_base.copy()
+    item.update({
+        'schema_version': '2',
+        'sex': 'male',
+
+    })
+    return item
+
+
+@pytest.fixture
+def mouse_donor_3(root, mouse_donor, publication):
+    item = root.get_by_uuid(mouse_donor['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '3',
+        'references': [publication['identifiers'][0]],
+
+    })
+    return properties
+
+
+@pytest.fixture
+def fly_donor_3(award, lab, fly):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': fly['uuid'],
+        'schema_version': '3',
+        'aliases': [
+            'roadmap-epigenomics:smRNA-Seq analysis of foreskin keratinocytes from skin03||Thu Jan 17 19:05:12 -0600 2013||58540||library',
+            'encode:lots:of:colons*'
+        ]
+    }
+
+
+@pytest.fixture
+def human_donor_6(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '6',
+        'aliases': [
+            'encode:why||put||up||bars',
+            'encode:lots:and:lots:of:colons!'
+        ]
+    })
+    return properties
+
+
+@pytest.fixture
+def human_donor_9(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '9',
+        'life_stage': 'postnatal',
+        'ethnicity': 'caucasian'
+    })
+    return properties
+
+
+@pytest.fixture
+def fly_donor_7(root, fly, target_promoter):
+    item = fly.copy()
+    item.update({
+        'schema_version': '7',
+        'mutated_gene': target_promoter['uuid'],
+        'mutagen': 'TMP/UV'
+    })
+    return item
+
+
+@pytest.fixture
+def human_donor_10(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'genetic_modifications': []
+    })
+    return properties
+
+
+@pytest.fixture
+def mouse_donor_10(root, mouse_donor):
+    item = root.get_by_uuid(mouse_donor['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'parent_strains': []
+    })
+    return properties
+
+@pytest.fixture
+def fly_donor_9(root, fly, target_promoter):
+    item = fly.copy()
+    item.update({
+        'schema_version': '9',
+        'aliases': ['kyoto:test-alias-1'],
+        'dbxrefs': ['Kyoto:123456']
+    })
+    return item
+
+
+@pytest.fixture
+def file_base(experiment):
+    return {
+        'accession': 'ENCFF000TST',
+        'dataset': experiment['uuid'],
+        'file_format': 'fasta',
+        'file_size': 243434,
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'raw data',
+    }
+
+
+@pytest.fixture
+def file_1(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'CURRENT',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
+@pytest.fixture
+def file_2(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'current',
+        'download_path': 'bob.bigBed'
+    })
+    return item
+
+
+@pytest.fixture
+def file_3(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'current',
+        'download_path': 'bob.bigBed'
+    })
+    return item
+
+
+@pytest.fixture
+def file_4(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '4',
+        'file_format': 'bed_bedMethyl',
+        'download_path': 'bob.bigBed',
+        'output_type': 'Base_Overlap_Signal'
+    })
+    return item
+
+
+@pytest.fixture
+def file_5(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '5',
+        'file_format': 'bigWig',
+        'output_type': 'signal of multi-mapped reads'
+    })
+    return item
+
+
+@pytest.fixture
+def file_7(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '7'
+    })
+    return item
+
+
+@pytest.fixture
+def file_8a(file_base):
+    item = file_base.copy()
+    item.update({
+        'file_format': 'fastq',
+        'assembly': 'hg19',
+        'schema_version': '8'
+    })
+    return item
+
+
+@pytest.fixture
+def file_9(file_base):
+    item = file_base.copy()
+    item.update({
+        'date_created': '2017-04-28'
+    })
+    return item
+
+
+@pytest.fixture
+def file_10(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '10'
+    })
+    return item
+
+
+@pytest.fixture
+def file_12(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+        'schema_version': '12',
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'read_length': 55,
+        'file_size': 243434,
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
+        'output_type': 'reads'
+    })
+    return item
+
+
+@pytest.fixture
+def old_file(experiment):
+    return {
+        'accession': 'ENCFF000OLD',
+        'dataset': experiment['uuid'],
+        'file_format': 'fasta',
+        'md5sum': 'e41d9ce97b00b204e9811998ecf8427b',
+        'output_type': 'raw data',
+        'uuid': '627ef1f4-3426-44f4-afc3-d723eccd20bf'
+    }
+
+
+@pytest.fixture
+def file_8b(file_base, old_file):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '8',
+        'supercedes': list(old_file['uuid'])
+    })
+    return item
+
+@pytest.fixture
+def file_13(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'candidate regulatory elements'
+    })
+    return item
+
+@pytest.fixture
+def file_14_optimal(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'optimal idr thresholded peaks'
+    })
+    return item
+
+
+@pytest.fixture
+def file_14_conservative(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'conservative idr thresholded peaks'
+    })
+    return item
+
+
+@pytest.fixture
+def file_14_pseudoreplicated(file_base):
+    item = file_base.copy()
+    item.update({
+        'output_type': 'pseudoreplicated idr thresholded peaks'
+    })
+    return item
+
+
+@pytest.fixture
+def file_15(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': 'e2be5728-5744-4da4-8881-cb9526d0389e',
+        'schema_version': '15',
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'read_length': 55,
+        'file_size': 243434,
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
+        'output_type': 'reads'
+    })
+    return item
+
+@pytest.fixture
+def file_16(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+        'schema_version': '16'
+    })
+    return item
+
+
+@pytest.fixture
+def gene_1(gene):
+    item = gene.copy()
+    item.update({
+        'go_annotations': [
+            {
+                "go_id": "GO:0000122",
+                "go_name": "negative regulation of transcription by RNA polymerase II",
+                "go_evidence_code": "IDA",
+                "go_aspect": "P"
+            },
+            {
+                "go_id": "GO:0000775",
+                "go_name": "chromosome, centromeric region",
+                "go_evidence_code": "IDA",
+                "go_aspect": "C"
+            },
+            {
+                "go_id": "GO:0000793",
+                "go_name": "condensed chromosome",
+                "go_evidence_code": "IDA",
+                "go_aspect": "C"
+            },
+        ],
+    })
+    return item
+
+
+@pytest.fixture
+def genetic_modification_1(lab, award):
+    return {
+        'modification_type': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'modifiction_description': 'some description'
+    }
+
+
+@pytest.fixture
+def genetic_modification_2(lab, award):
+    return {
+        'modification_type': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'modification_description': 'some description',
+        'modification_zygocity': 'homozygous',
+        'modification_purpose': 'tagging',
+        'modification_treatments': [],
+        'modification_genome_coordinates': [{
+            'chromosome': '11',
+            'start': 5309435,
+            'end': 5309451
+            }]
+    }
+
+
+@pytest.fixture
+def crispr(lab, award, source):
+    return {
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'source': source['uuid'],
+        'guide_rna_sequences': [
+            "ACA",
+            "GCG"
+        ],
+        'insert_sequence': 'TCGA',
+        'aliases': ['encode:crispr_technique1'],
+        '@type': ['Crispr', 'ModificationTechnique', 'Item'],
+        '@id': '/crisprs/79c1ec08-c878-4419-8dba-66aa4eca156b/',
+        'uuid': '79c1ec08-c878-4419-8dba-66aa4eca156b'
+    }
+
+
+@pytest.fixture
+def genetic_modification_5(lab, award, crispr):
+    return {
+        'modification_type': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        'zygosity': 'homozygous',
+        'treatments': [],
+        'source': 'sigma',
+        'product_id': '12345',
+        'modification_techniques': [crispr],
+        'modified_site': [{
+            'assembly': 'GRCh38',
+            'chromosome': '11',
+            'start': 5309435,
+            'end': 5309451
+            }]
+    }
+
+@pytest.fixture
+def genetic_modification_6(lab, award, crispr, source):
+    return {
+        'purpose': 'validation',
+        'category': 'deeltion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "placeholder_id",
+                "source": source['uuid']
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_invalid_reagent(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "placeholder_id",
+                "source": "/sources/sigma/"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_valid_reagent(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "ABC123",
+                "source": "/sources/sigma/"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_addgene_source(testapp):
+    item = {
+        'name': 'addgene',
+        'title': 'Addgene',
+        'status': 'released'
+    }
+    return testapp.post_json('/source', item).json['@graph'][0]
+
+
+@pytest.fixture
+def genetic_modification_7_multiple_matched_identifiers(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "12345",
+                "source": "/sources/addgene/"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_7_multiple_reagents(lab, award, crispr):
+    return {
+        'purpose': 'characterization',
+        'category': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/FLAG-ZBTB43-human/",
+        "reagents": [
+            {
+                "identifier": "12345",
+                "source": "/sources/addgene/",
+                "url": "http://www.addgene.org"
+            },
+            {
+                "identifier": "67890",
+                "source": "/sources/addgene/",
+                "url": "http://www.addgene.org"
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def genetic_modification_8(lab, award):
+    return {
+        'purpose': 'analysis',
+        'category': 'interference',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        "method": "CRISPR",
+    }
+
+@pytest.fixture
+def lab_0():
+    return{
+        'name': 'Fake Lab',
+    }
+
+
+@pytest.fixture
+def lab_1(lab_0):
+    item = lab_0.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'CURRENT',
+    })
+    return item
+
+
+@pytest.fixture
+def library_upgrade(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'nucleic_acid_term_id': 'SO:0000352',
+        'nucleic_acid_term_name': 'DNA',
+    }
+
+
+@pytest.fixture
+def library_1_upgrade(library_upgrade):
+    item = library_upgrade.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'CURRENT',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
+@pytest.fixture
+def library_2_upgrade(library_upgrade):
+    item = library_upgrade.copy()
+    item.update({
+        'schema_version': '3',
+        'paired_ended': False
+    })
+    return item
+
+
+@pytest.fixture
+def library_3_upgrade(library_upgrade):
+    item = library_upgrade.copy()
+    item.update({
+        'schema_version': '3',
+        'fragmentation_method': 'covaris sheering'
+    })
+    return item
+
+@pytest.fixture
+def library_8_upgrade(library_3_upgrade):
+    item = library_3_upgrade.copy()
+    item.update({
+        'schema_version': '8',
+        'status': "in progress"
+    })
+    return item
+
+@pytest.fixture
+def page():
+    return{
+        'name': 'Fake Page',
+    }
+
+
+@pytest.fixture
+def page_1(page):
+    item = page.copy()
+    item.update({
+        'schema_version': '1',
+        'news_keywords': ['RNA binding', 'Experiment', 'DNA methylation', 'promoter-like regions', 'Conferences'],
+    })
+    return item
+
+
+@pytest.fixture
+def page_2(page):
+    item = page.copy()
+    item.update({
+        'schema_version': '1',
+        'news_keywords': ['Experiment', 'promoter-like regions'],
+    })
+    return item
+
+
+@pytest.fixture
+def page_3(page):
+    item = page.copy()
+    item.update({
+        'schema_version': '1',
+    })
+    return item
+
+@pytest.fixture
+def pipeline_1():
+    return {
+        'schema_version': '1',
+        'status': 'active',
+        'title': 'Test pipeline',
+    }
+
+
+@pytest.fixture
+def pipeline_2(award, lab):
+    return {
+        'schema_version': '2',
+        'status': 'active',
+        'title': 'Test pipeline',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+    }
+
+
+@pytest.fixture
+def pipeline_7(award, lab):
+    return {
+        'assay_term_name': 'MNase-seq',
+        'schema_version': '7',
+        'status': 'active',
+        'title': 'Test pipeline',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+    }
+
+
+@pytest.fixture
+def pipeline_8(award, lab):
+    return {
+        'assay_term_names': ['MNase-seq'],
+        'schema_version': '8',
+        'status': 'active',
+        'title': 'Test pipeline',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+    }
+
+
+@pytest.fixture
+def platform():
+    return{
+        'term_name': 'ChIP-seq',
+        'term_id': 'OBI:0000716'
+    }
+
+
+@pytest.fixture
+def platform_1(platform):
+    item = platform.copy()
+    item.update({
+        'schema_version': '1',
+        'encode2_dbxrefs': ['AB_SOLiD_3.5'],
+        'geo_dbxrefs': ['GPL9442'],
+    })
+    return item
+
+
+@pytest.fixture
+def platform_2(platform):
+    item = platform.copy()
+    item.update({
+        'schema_version': '2',
+        'status': "CURRENT",
+    })
+    return item
+
+
+@pytest.fixture
+def platform_6(platform):
+    item = platform.copy()
+    item.update({
+        'schema_version': '6',
+        'status': "current",
+    })
+    return item
+
+
+@pytest.fixture
+def publication_upgrade():
+    return{
+        'title': "Fake paper"
+    }
+
+
+@pytest.fixture
+def publication_1(publication_upgrade):
+    item = publication_upgrade.copy()
+    item.update({
+        'schema_version': '1',
+        'references': ['PMID:25409824'],
+    })
+    return item
+
+
+@pytest.fixture
+def publication_4():
+    return {
+        'title': 'Fake paper',
+        'schema_version': '4'
+    }
+
+
+@pytest.fixture
+def publication_5(publication_upgrade):
+    item = publication_upgrade.copy()
+    item.update({
+        'schema_version': '5',
+        'status': 'in preparation'
+    })
+    return item
+
+
+@pytest.fixture
+def quality_metric_1(pipeline, analysis_step_run):
+    return {
+        'status': 'released',
+        'pipeline': pipeline['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'schema_version': '1'
+    }
+
+@pytest.fixture
+def replicate_1_upgrade(root, replicate, library):
+    item = root.get_by_uuid(replicate['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '1',
+        'library': library['uuid'],
+        'paired_ended': False
+    })
+    return properties
+
+
+@pytest.fixture
+def replicate_3_upgrade(root, replicate):
+    item = root.get_by_uuid(replicate['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '3',
+        'notes': 'Test notes',
+        'flowcell_details': [
+            {
+                u'machine': u'Unknown',
+                u'lane': u'2',
+                u'flowcell': u'FC64KEN'
+            },
+            {
+                u'machine': u'Unknown',
+                u'lane': u'3',
+                u'flowcell': u'FC64M2B'
+            }
+        ]
+    })
+    return properties
+
+
+@pytest.fixture
+def replicate_4_upgrade(root, replicate):
+    item = root.get_by_uuid(replicate['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '4',
+        'notes': 'Test notes',
+        'platform': 'encode:HiSeq 2000',
+        'paired_ended': False,
+        'read_length': 36,
+        'read_length_units': 'nt'
+    })
+    return properties
+
+
+@pytest.fixture
+def replicate_8_upgrade(root, replicate):
+    item = root.get_by_uuid(replicate['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '8',
+        'status': 'proposed'
+    })
+    return properties
+
+
+@pytest.fixture
+def software_upgrade(software):
+    item = software.copy()
+    item.update({
+        'schema_version': '1',
+    })
+    return item
+
+@pytest.fixture
+def source_upgrade():
+    return{
+        'title': 'Fake source',
+        'name': "fake-source"
+    }
+
+
+@pytest.fixture
+def source_1_upgrade(source_upgrade, lab, submitter, award):
+    item = source_upgrade.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'CURRENT',
+        'lab': lab['uuid'],
+        'submitted_by': submitter['uuid'],
+        'award': award['uuid']
+    })
+    return item
+
+
+@pytest.fixture
+def source_5_upgrade(source_upgrade, lab, submitter, award):
+    item = source_upgrade.copy()
+    item.update({
+        'schema_version': '5',
+        'status': 'current',
+        'lab': lab['uuid'],
+        'submitted_by': submitter['uuid'],
+        'award': award['uuid']
+    })
+    return item
+
+@pytest.fixture
+def star_quality_metric(pipeline, analysis_step_run, bam_file):
+    return {
+        'status': "finished",
+        'pipeline': pipeline['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'schema_version': '2',
+        'quality_metric_of': [bam_file['uuid']]
+    }
+
+@pytest.fixture
+def target_upgrade(organism):
+    return{
+        'organism': organism['uuid'],
+        'label': 'TEST'
+    }
+
+
+@pytest.fixture
+def target_1_upgrade(target_upgrade):
+    item = target_upgrade.copy()
+    item.update({
+        'schema_version': '1',
+        'status': 'CURRENT',
+    })
+    return item
+
+
+@pytest.fixture
+def target_2_upgrade(target_upgrade):
+    item = target_upgrade.copy()
+    item.update({
+        'schema_version': '2',
+    })
+    return item
+
+
+@pytest.fixture
+def target_5_upgrade(target_upgrade):
+    item = target_upgrade.copy()
+    item.update({
+        'schema_version': '5',
+        'status': 'proposed'
+    })
+    return item
+
+
+@pytest.fixture
+def target_6_upgrade(target_upgrade):
+    item = target_upgrade.copy()
+    item.update({
+        'schema_version': '6',
+        'status': 'current',
+        'investigated_as': ['histone modification', 'histone']
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_no_genes(target_upgrade):
+    item = target_upgrade.copy()
+    item.update({
+        'schema_version': '8',
+        'dbxref': [
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_one_gene(target_8_no_genes):
+    item = target_8_no_genes.copy()
+    item.update({
+        'gene_name': 'HIST1H2AE',
+        'dbxref': [
+            'GeneID:3012',
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_8_two_genes(target_8_one_gene):
+    item = target_8_one_gene.copy()
+    item.update({
+        'gene_name': 'Histone H2A',
+        'dbxref': [
+            'GeneID:8335',
+            'GeneID:3012',
+            'UniProtKB:P04908'
+        ]
+    })
+    return item
+
+
+@pytest.fixture
+def target_9_empty_modifications(target_8_one_gene):
+    item = {
+        'investigated_as': ['other context'],
+        'modifications': [],
+        'label': 'empty-modifications'
+    }
+    return item
+
+
+@pytest.fixture
+def target_9_real_modifications(target_8_one_gene):
+    item = {
+        'investigated_as': ['other context'],
+        'modifications': [{'modification': '3xFLAG'}],
+        'label': 'empty-modifications'
+    }
+    return item
+
+
+@pytest.fixture
+def gene3012(testapp, organism):
+    item = {
+        'dbxrefs': ['HGNC:4724'],
+        'organism': organism['uuid'],
+        'symbol': 'HIST1H2AE',
+        'ncbi_entrez_status': 'live',
+        'geneid': '3012',
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def gene8335(testapp, organism):
+    item = {
+        'dbxrefs': ['HGNC:4734'],
+        'organism': organism['uuid'],
+        'symbol': 'HIST1H2AB',
+        'ncbi_entrez_status': 'live',
+        'geneid': '8335',
+    }
+    return testapp.post_json('/gene', item).json['@graph'][0]
+
+
+@pytest.fixture
+def target_10_nt_mod(organism):
+    item = {
+        'investigated_as': ['nucleotide modification'],
+        'target_organism': organism['uuid'],
+        'label': 'nucleotide-modification-target'
+    }
+    return item
+
+
+@pytest.fixture
+def lookup_column_value_validate():
+    valid = {
+        'assay_term_name': 'long read RNA-seq',
+        'lab.title': 'John Stamatoyannopoulos, UW',
+        'audit': '',
+        'award.project': 'Roadmap',
+        '@id': '/experiments/ENCSR751ISO/',
+        'level.name': '',
+        '@type': 'Experiment,Dataset,Item'
+    }
+    return valid
+
+
+
+@pytest.fixture
+def testing_download(testapp):
+    url = '/testing-downloads/'
+    item = {
+        'attachment': {
+            'download': 'red-dot.png',
+            'href': RED_DOT,
+        },
+        'attachment2': {
+            'download': 'blue-dot.png',
+            'href': BLUE_DOT,
+        },
+    }
+    res = testapp.post_json(url, item, status=201)
+    return res.location
+
+
+
+@pytest.fixture
+def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
+    item = {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'replicate': replicate['@id'],
+        'file_format': 'tsv',
+        'file_size': 2534535,
+        'md5sum': '00000000000000000000000000000000',
+        'output_type': 'raw data',
+        'status': 'uploading',
+    }
+    return item
+
+
+def target_10_other_ptm(gene8335):
+    item = {
+        'investigated_as': [
+            'other post-translational modification',
+            'chromatin remodeller',
+            'RNA binding protein'
+        ],
+        'genes': [gene8335['uuid']],
+        'modifications': [{'modification': 'Phosphorylation'}],
+        'label': 'nucleotide-modification-target'
+    }
+    return item
+
+
+@pytest.fixture
+def target_11_control(human):
+    item = {
+        'investigated_as': ['control'],
+        'target_organism': human['uuid'],
+        'label': 'No protein target control'
+    }
+    return item
+
+
+@pytest.fixture
+def target_12_recombinant(ctcf):
+    item = {
+        'investigated_as': [
+            'recombinant protein',
+            'chromatin remodeller',
+            'RNA binding protein'
+        ],
+        'genes': [ctcf['uuid']],
+        'modifications': [{'modification': 'eGFP'}],
+        'label': 'eGFP-CTCF'
+    }
+    return item
+
+
+
 
 @pytest.fixture
 def mapped_run_type_on_fastq(award, experiment, lab, platform1):
@@ -3315,6 +4749,15 @@ def mapped_run_type_on_fastq(award, experiment, lab, platform1):
         'md5sum': '01234567890123456789abcdefabcdef',
         'output_type': 'raw data',
         'status': 'in progress',
+    }
+    
+
+@pytest.fixture
+def treatment_upgrade():
+    return{
+        'treatment_type': 'chemical',
+        'treatment_term_name': 'estradiol',
+        'treatment_term_id': 'CHEBI:23965'
     }
 
 
@@ -3354,6 +4797,23 @@ def file_object(testapp, award, experiment, lab, replicate):
 def fastq_pair_1_paired_with(fastq_pair_1, file_object):
     item = fastq_pair_1.copy()
     item['paired_with'] = file_object['@id']
+def treatment_1_upgrade(treatment_upgrade, award):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '1',
+        'encode2_dbxrefs': ['Estradiol_1nM'],
+        'award': award['uuid'],
+    })
+    return item
+
+
+@pytest.fixture
+def treatment_2_upgrade(treatment_upgrade):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'CURRENT',
+    })
     return item
 
 
@@ -3362,6 +4822,12 @@ def fastq_pair_2(fastq):
     item = fastq.copy()
     item['paired_end'] = '2'
     item['md5sum'] = '2123456789abcdef0123456789abcdef'
+def treatment_3_upgrade(treatment_upgrade):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '3',
+        'aliases': ['encode:treatment1', 'encode:treatment1']
+    })
     return item
 
 
@@ -3369,6 +4835,15 @@ def fastq_pair_2(fastq):
 def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
     item = fastq_pair_2.copy()
     item['paired_with'] = 'md5:' + fastq_pair_1['md5sum']
+def treatment_4_upgrade(treatment_upgrade, document, antibody_lot):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '4',
+        'protocols': list(document),
+        'antibodies': list(antibody_lot),
+        'concentration': 0.25,
+        'concentration_units': 'mg/mL'
+    })
     return item
 
 
@@ -3378,12 +4853,12 @@ def external_accession(fastq_pair_1):
     item['external_accession'] = 'EXTERNAL'
     return item
 
-###################
 
 
 
 
-###################
+
+
 # TODO: replace yield_fixture
 @pytest.yield_fixture(scope='session')
 def minitestdata(app, conn):
@@ -3429,22 +4904,100 @@ def minitestdata2(app, conn):
     tx.rollback()
 
 
-###################
-
-###################
 
 
 
 
-###################
 
 
 
 
-###################
 
 
 
 
-###################
 
+def treatment_8_upgrade(treatment_upgrade, document):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '8',
+        'treatment_type': 'protein'
+    })
+    item['treatment_term_id'] = 'UniprotKB:P03823'
+    return item
+
+
+@pytest.fixture
+def treatment_9_upgrade(treatment_upgrade, document):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '9',
+        'treatment_type': 'protein',
+        'status': 'current'
+    })
+    item['treatment_term_id'] = 'UniprotKB:P03823'
+    return item
+
+
+@pytest.fixture
+def treatment_10_upgrade(treatment_upgrade, document, lab):
+    item = treatment_upgrade.copy()
+    item.update({
+        'schema_version': '10',
+        'treatment_type': 'protein',
+        'status': 'in progress',
+        'lab': lab['@id']
+    })
+    item['treatment_term_id'] = 'UniprotKB:P03823'
+    return item
+
+@pytest.fixture
+def user():
+    return{
+        'first_name': 'Benjamin',
+        'last_name': 'Hitz',
+        'email': 'hitz@stanford.edu',
+    }
+
+
+@pytest.fixture
+def user_1(user):
+    item = user.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'CURRENT'
+    })
+    return item
+
+@pytest.fixture
+def user_3(user):
+    item = user.copy()
+    item.update({
+        'schema_version': '3',
+        'viewing_groups': ['ENCODE'],
+    })
+    return item
+
+@pytest.fixture
+def user_7(user):
+    item = user.copy()
+    item.update({
+        'schema_version': '6',
+        'phone1': '206-685-2672',
+        'phone2': '206-267-1098',
+        'fax': '206-267-1094',
+        'skype': 'fake_id',
+        'google': 'google',
+        'timezone': 'US/Pacific',
+    })
+    return item
+
+@pytest.fixture
+def user_8(user):
+    item = user.copy()
+    item.update({
+        'schema_version': '8',
+        'viewing_groups': ['ENCODE'],
+        'groups': ['admin', 'verified', 'wrangler'],
+    })
+    return item

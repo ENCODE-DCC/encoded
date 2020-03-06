@@ -21,22 +21,6 @@ def content(testapp):
         testapp.post_json(url, item)
 
 
-@pytest.fixture
-def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'uploading',
-    }
-    return item
-
-
 def test_item_set_status_method_exists(testapp, content, root):
     res = testapp.get('/test-encode-items/')
     encode_item_uuid = res.json['@graph'][0]['uuid']

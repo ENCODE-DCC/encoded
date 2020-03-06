@@ -1,15 +1,5 @@
 import pytest
 
-@pytest.fixture
-def base_experiment(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
 def test_isogenic_replicate_type(testapp, base_experiment, donor_1, donor_2,biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1 ):
     testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '55', 'life_stage': 'adult' })

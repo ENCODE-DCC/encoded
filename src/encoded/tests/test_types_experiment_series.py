@@ -1,40 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def experiment_1(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def experiment_2(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_experiment_series(testapp, lab, award, experiment_1):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'related_datasets': [experiment_1['@id']]
-    }
-    return testapp.post_json('/experiment-series', item, status=201).json['@graph'][0]
-
-
 def test_experiment_series_biosample_summary(
     testapp,
     base_experiment_series,

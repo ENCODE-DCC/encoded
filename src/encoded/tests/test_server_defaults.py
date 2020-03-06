@@ -19,25 +19,6 @@ def test_server_defaults(admin, anontestapp):
     )
 
 
-@fixture(scope='session')
-def test_accession_app(request, check_constraints, zsa_savepoints, app_settings):
-    from encoded import main
-    app_settings = app_settings.copy()
-    app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
-    return main({}, **app_settings)
-
-
-@fixture
-def test_accession_anontestapp(request, test_accession_app, external_tx, zsa_savepoints):
-    '''TestApp with JSON accept header.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-    }
-    return TestApp(test_accession_app, environ)
-
-
 def test_test_accession_server_defaults(admin, test_accession_anontestapp):
     email = admin['email']
     extra_environ = {'REMOTE_USER': str(email)}

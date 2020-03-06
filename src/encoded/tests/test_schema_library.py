@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def library(lab, award):
+def library_data(lab, award):
     return {
         'lab': lab['uuid'],
         'award': award['uuid'],
@@ -11,8 +11,8 @@ def library(lab, award):
 
 
 @pytest.fixture
-def library_starting_quantity(library):
-    item = library.copy()
+def library_starting_quantity(library_data):
+    item = library_data.copy()
     item.update({
         'nucleic_acid_starting_quantity': '10',
         'nucleic_acid_starting_quantity_units': 'ng',
@@ -21,16 +21,16 @@ def library_starting_quantity(library):
 
 
 @pytest.fixture
-def library_starting_quantity_no_units(library):
-    item = library.copy()
+def library_starting_quantity_no_units(library_data):
+    item = library_data.copy()
     item.update({
         'nucleic_acid_starting_quantity': '10',
     })
     return item
 
 @pytest.fixture
-def library_with_invalid_fragmentation_methods_string(library):
-    item = library.copy()
+def library_with_invalid_fragmentation_methods_string(library_data):
+    item = library_data.copy()
     item.update(
         {
             'fragmentation_methods': 'chemical (DpnII restriction)',
@@ -39,8 +39,8 @@ def library_with_invalid_fragmentation_methods_string(library):
     return item
 
 @pytest.fixture
-def library_with_valid_fragmentation_method_list(library):
-    item = library.copy()
+def library_with_valid_fragmentation_method_list(library_data):
+    item = library_data.copy()
     item.update(
         {
             'fragmentation_methods': ['chemical (DpnII restriction)', 'chemical (HindIII restriction)'],
