@@ -20,6 +20,9 @@ ORDER = [
     'page',
     'publication',
     'patient',
+    'surgery',
+    'pathology_report',
+    'surgery_procedure',
     'biospecimen',
     'platform',
     'biolibrary',
@@ -33,7 +36,6 @@ ORDER = [
     'consent',
     'radiation',
     'medical_imaging',
-    'surgery',
     'cart',
 ]
 

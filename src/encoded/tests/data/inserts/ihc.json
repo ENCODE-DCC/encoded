@@ -1,218 +1,58 @@
 [
-    {
-      "patient": "KCEPT078DUA",
-      "path_id": "PT078DUA",
-      "service_date": "1876-04-09",
-      "antibody": "AE1/AE3",
-      "result": "Positive",
-      "status": "released",
-      "uuid": "f8a573d2-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT078DUA",
-      "path_id": "PT078DUA",
-      "service_date": "1876-04-10",
-      "antibody": "BAP1",
-      "result": "Negative",
-      "status": "released",
-      "uuid": "f8a578b4-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT398JLK",
-      "path_id": "PT398JLK",
-      "service_date": "1876-04-11",
-      "antibody": "Carbonic Anhydrase IX",
-      "result": "Rare Focal Positive",
-      "status": "released",
-      "uuid": "f8a57a12-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT708IJT",
-      "path_id": "PT708IJT",
-      "service_date": "1876-04-12",
-      "antibody": "BAP1",
-      "result": "Focal Negative",
-      "status": "released",
-      "uuid": "f8a57b3e-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT805NRD",
-      "path_id": "PT805NRD",
-      "service_date": "1876-04-13",
-      "antibody": "CAM 5.2",
-      "result": "Positive",
-      "status": "released",
-      "uuid": "f8a57c74-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT925TMI",
-      "path_id": "PT925TMI",
-      "service_date": "1876-04-14",
-      "antibody": "CD10",
-      "result": "Negative",
-      "status": "released",
-      "uuid": "f8a57da0-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT604LAK",
-      "path_id": "PT604LAK",
-      "service_date": "1876-04-15",
-      "antibody": "Cathepsin-K",
-      "result": "Rare Focal Positive",
-      "status": "released",
-      "uuid": "f8a57ee0-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT480NBU",
-      "path_id": "PT480NBU",
-      "service_date": "1876-04-16",
-      "antibody": "CD10",
-      "result": "Focal Negative",
-      "status": "released",
-      "uuid": "f8a5828c-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT756AEN",
-      "path_id": "PT756AEN",
-      "service_date": "1876-04-17",
-      "antibody": "CD117",
-      "result": "Positive",
-      "status": "released",
-      "uuid": "f8a583c2-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT026PGS",
-      "path_id": "PT026PGS",
-      "service_date": "1876-04-18",
-      "antibody": "CK20",
-      "result": "Negative",
-      "status": "released",
-      "uuid": "f8a584ee-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT873QVK",
-      "path_id": "PT873QVK",
-      "service_date": "1876-04-19",
-      "antibody": "CK7",
-      "result": "Rare Focal Positive",
-      "status": "released",
-      "uuid": "f8a58610-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT802XRB",
-      "path_id": "PT802XRB",
-      "service_date": "1876-04-20",
-      "antibody": "CK903",
-      "result": "Focal Negative",
-      "status": "released",
-      "uuid": "f8a5873c-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT139SOR",
-      "path_id": "PT139SOR",
-      "service_date": "1876-04-21",
-      "antibody": "E-cadherin",
-      "result": "Positive",
-      "status": "released",
-      "uuid": "f8a58872-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT396JUN",
-      "path_id": "PT396JUN",
-      "service_date": "1876-04-22",
-      "antibody": "EMA",
-      "result": "Negative",
-      "status": "released",
-      "uuid": "f8a5899e-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT186NZW",
-      "path_id": "PT186NZW",
-      "service_date": "1876-04-23",
-      "antibody": "HMB-45",
-      "result": "Rare Focal Positive",
-      "status": "released",
-      "uuid": "f8a58d0e-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT692UHR",
-      "path_id": "PT692UHR",
-      "service_date": "1876-04-24",
-      "antibody": "Melan-A",
-      "result": "Focal Negative",
-      "status": "released",
-      "uuid": "f8a58e4e-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT318AXY",
-      "path_id": "PT318AXY",
-      "service_date": "1876-04-25",
-      "antibody": "PAX2",
-      "result": "Positive",
-      "status": "released",
-      "uuid": "f8a58f7a-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT021XWS",
-      "path_id": "PT021XWS",
-      "service_date": "1876-04-26",
-      "antibody": "PAX8",
-      "result": "Negative",
-      "status": "released",
-      "uuid": "f8a590a6-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT294KIZ",
-      "path_id": "PT294KIZ",
-      "service_date": "1876-04-27",
-      "antibody": "Racemase",
-      "result": "Rare Focal Positive",
-      "status": "released",
-      "uuid": "f8a591c8-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT359MHZ",
-      "path_id": "PT359MHZ",
-      "service_date": "1876-04-28",
-      "antibody": "RCC Antigen",
-      "result": "Focal Negative",
-      "status": "released",
-      "uuid": "f8a592ea-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT240HMN",
-      "path_id": "PT240HMN",
-      "service_date": "1876-04-29",
-      "antibody": "TFE3 FISH",
-      "result": "Positive",
-      "status": "released",
-      "uuid": "f8a59696-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT240HMN",
-      "path_id": "PT240HMN",
-      "service_date": "1876-04-30",
-      "antibody": "TFE3 IHC",
-      "result": "Negative",
-      "status": "released",
-      "uuid": "f8a5990c-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT240HMN",
-      "path_id": "PT240HMN",
-      "service_date": "1876-04-30",
-      "antibody": "TFEB FISH",
-      "result": "Rare Focal Positive",
-      "status": "released",
-      "uuid": "f8a59a6a-42d3-11ea-b77f-2e728ce88125"
-    },
-    {
-      "patient": "KCEPT240HMN",
-      "path_id": "PT240HMN",
-      "service_date": "1876-04-30",
-      "antibody": "Vimentin",
-      "result": "Focal Negative",
-      "status": "released",
-      "uuid": "f8a59b96-42d3-11ea-b77f-2e728ce88125"
-    }
-  ]
+  {
+    "patient": "KCEPT708IJT",
+    "path_id": "PR708IJT",
+    "surgery": "KCESX708FIJ",
+    "biospecimen": "KCEBS708IJT",
+    "service_date": "1855-01-05",
+    "antibody": "AE1/AE3",
+    "result": "Positive",
+    "status": "released",
+    "uuid": "3b72101c-4ddd-11ea-b77f-2e728ce88125"
+  },
+  {
+    "patient": "KCEPT708IJT",
+    "path_id": "PR708IJT",
+    "biospecimen": "KCEBS000AAA",
+    "service_date": "1855-01-05",
+    "antibody": "BAP1",
+    "result": "Negative",
+    "status": "released",
+    "uuid": "3b7214ea-4ddd-11ea-b77f-2e728ce88125"
+  },
+  {
+    "patient": "KCEPT480NBU",
+    "path_id": "PR480NBU",
+    "surgery": "KCESX708IJT",
+    "biospecimen": "KCEBS026KCE",
+    "service_date": "1836-05-08",
+    "antibody": "CAM 5.2",
+    "result": "Rare Focal Positive",
+    "status": "released",
+    "uuid": "3b721666-4ddd-11ea-b77f-2e728ce88125"
+  },
+  {
+    "patient": "KCEPT802XRB",
+    "path_id": "PR802XRB",
+    "surgery": "KCESX480NBU",
+    "biospecimen": "KCEBS039ENC",
+
+    "service_date": "1862-02-03",
+    "antibody": "Carbonic Anhydrase IX",
+    "result": "Focal Loss",
+    "status": "released",
+    "uuid": "3b72179c-4ddd-11ea-b77f-2e728ce88125"
+  },
+  {
+    "patient": "KCEPT359MHZ",
+    "path_id": "PR359MHZ",
+    "surgery": "KCESX802XRB",
+    "biospecimen": "",
+
+    "service_date": "1860-06-03",
+    "antibody": "Cathepsin-K",
+    "result": "Positive",
+    "status": "released",
+    "uuid": "3b7218c8-4ddd-11ea-b77f-2e728ce88125"
+  }
+]

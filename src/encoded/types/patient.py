@@ -96,6 +96,8 @@ class Patient(Item):
         'medications',
         'supportive_medications',
         'surgery',
+        'surgery.surgery_procedure',
+        'surgery.pathology_report',
         'biospecimen']
     rev = {
         'labs': ('LabResult', 'patient'),
@@ -283,8 +285,8 @@ class Patient(Item):
     })
     def medication_range(self, request, medication):
 
-        for object in medication:
-            medication_object = request.embed(object, '@@object')
+        for med in medication:
+            medication_object = request.embed(med, '@@object')
             date_format="%Y-%m-%d"
             start_date=datetime.strptime(medication_object['start_date'],date_format )
             end_date=datetime.strptime(medication_object['end_date'],date_format )
@@ -321,8 +323,7 @@ class Patient(Item):
             "type": "string",
             "linkTo": "SupportiveMedication",
         },
-        })
-
+    })
     def supportive_medications(self, request, supportive_medication):
         return supportive_med_frequency(request, supportive_medication)
 
@@ -361,7 +362,7 @@ class Patient(Item):
             if len(surgery) > 0:
                 surgery_summary = "Treatment Received"
             else:
-                    surgery_summary = "No Treatment Received"
+                surgery_summary = "No Treatment Received"
             return surgery_summary
 
     matrix = {
@@ -411,6 +412,83 @@ class Patient(Item):
     }
 
 
+
+    @calculated_property(condition='surgery', schema={
+        "title": "surgery procedure nephrectomy robotic assist",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def sur_nephr_robotic_assist(self, request, surgery):
+
+
+        sp_obj_array = []
+        array=[]
+        if surgery is not None:
+            for so in surgery:
+                so_object = request.embed(so, "@@object")
+                sp_obj_array = so_object.get("surgery_procedure")
+
+                if sp_obj_array is not None:
+                    for spo in sp_obj_array:
+                        sp_obj = request.embed(spo, "@@object")
+                        sp_proc_type=sp_obj.get("procedure_type")
+                        if sp_proc_type=="Nephrectomy":
+                            sp_nephr_robotic=sp_obj.get("nephrectomy_details").get("robotic_assist")
+                            array.append(sp_nephr_robotic)
+                        else:
+                            continue
+
+        robotic_assist=[]
+
+        for logic in array:
+            if  logic is True:
+                robotic_assist.append("True")
+            else:
+                robotic_assist.append("False")
+        return robotic_assist
+
+    @calculated_property(condition='surgery', schema={
+        "title": "surgery pathology tumor size calculation",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+
+    def sur_path_tumor_size(self, request, surgery):
+        
+        
+        sp_obj_array = []
+        array=[]
+        if surgery is not None:
+            for so in surgery:
+                so_object = request.embed(so, "@@object")
+                sp_obj_array = so_object.get("pathology_report")
+
+                if sp_obj_array is not None:
+                    for spo in sp_obj_array:
+                        sp_obj = request.embed(spo, "@@object")
+                        sp_tumor_size=sp_obj.get("tumor_size")
+
+                        array.append(sp_tumor_size)
+
+        tumor_size_range = []
+        for tumor_size in array:
+            if 0 <= tumor_size < 3:
+                tumor_size_range.append("0-3 cm")
+            elif 3 <= tumor_size < 7:
+                tumor_size_range.append("3-7 cm")
+            elif 7 <= tumor_size < 10:
+                tumor_size_range.append("7-10 cm")
+            else:
+                tumor_size_range.append("10+ cm")
+        return tumor_size_range                   
+
+   
+
 @collection(
     name='lab-results',
     properties={
@@ -445,6 +523,7 @@ class Germline(Item):
     item_type = 'germline'
     schema = load_schema('encoded:schemas/germline.json')
     embeded = []
+
 
 @collection(
     name='ihc',
@@ -525,17 +604,6 @@ class SupportiveMedication(Item):
     embeded = []
 
 
-@collection(
-    name='surgery',
-    properties={
-        'title': 'Surgeries',
-        'description': 'Surgeries results pages',
-    })
-class Surgery(Item):
-    item_type = 'surgery'
-    schema = load_schema('encoded:schemas/surgery.json')
-    embeded = []
-
 @property
 def __name__(self):
     return self.name()
@@ -559,7 +627,7 @@ def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'ihc', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
-                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary']:
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
