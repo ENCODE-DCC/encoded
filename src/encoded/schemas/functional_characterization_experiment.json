@@ -247,18 +247,6 @@
                 "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
                 "type": "object",
                 "additionalProperties": false,
-                "oneOf": [
-                    {
-                        "required": ["gene"],
-                        "maxProperties": 1
-                    },
-                    {
-                        "required": ["gene", "expression_percentile"]
-                    },
-                    {
-                        "required": ["gene", "expression_range_minimum", "expression_range_maximum"]
-                    }
-                ],
                 "properties": {
                     "gene": {
                         "title": "Gene",
@@ -275,19 +263,33 @@
                     },
                     "expression_range_minimum": {
                         "title": "Gene expression range minimum",
-                        "description": "Gene expression read-out range minimum precentage value.",
+                        "description": "Gene expression read-out range minimum percentage value.",
                         "type": "integer",
                         "minimum": 0,
                         "maximum": 100
                     },
                     "expression_range_maximum": {
                         "title": "Gene expression range maximum",
-                        "description": "Gene expression read-out range maximum precentage value.",
+                        "description": "Gene expression read-out range maximum percentage value.",
                         "type": "integer",
                         "minimum": 0,
                         "maximum": 100
                     }
-                }
+                },
+                "oneOf": [
+                    {
+                        "examined_loci": ["gene"],
+                        "maxProperties": 1
+                    },
+                    {
+                        "required": ["gene", "expression_percentile"],
+                        "maxProperties": 2
+                    },
+                    {
+                        "required": ["gene", "expression_range_minimum", "expression_range_maximum"],
+                        "maxProperties": 3
+                    }
+                ]
             }
         }
     },
