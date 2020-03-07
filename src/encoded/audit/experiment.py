@@ -4001,6 +4001,24 @@ def audit_experiment_no_processed_data(value, system, files_structure):
         yield AuditFailure('lacking processed data', detail, level='WARNING')
 
 
+def audit_experiment_inconsistent_analyses_files(value, system, files_structure):
+    processed_data = files_structure.get('processed_data')
+    if processed_data and 'analyses' in value:
+        for file_object in processed_data:
+            for analysis in 'analyses':
+                if file_object in analysis:
+                    return
+                if file_object not in analysis:
+                    detail = ('Experiment {} '
+                        'contains a processed file {} '
+                        'that is not in an analysis'.format(
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            audit_link(path_to_text(file_object['@id']), file_object['@id']),
+                        )
+                    )
+                    yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
+
+
 #######################
 # utilities
 #######################
@@ -4624,7 +4642,8 @@ function_dispatcher_with_files = {
     'audit_read_depth_chip_control': audit_experiment_chipseq_control_read_depth,
     'audit_experiment_standards': audit_experiment_standards_dispatcher,
     'audit_submitted_status': audit_experiment_status,
-    'audit_no_processed_data': audit_experiment_no_processed_data
+    'audit_no_processed_data': audit_experiment_no_processed_data,
+    'audit_experiment_inconsistent_analyses_files': audit_experiment_inconsistent_analyses_files
 }
 
 
