@@ -2571,12 +2571,6 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
 
     assay_term_name = value.get('assay_term_name')
 
-    if assay_term_name not in [
-            'ChIP-seq',
-            'DNase-seq',
-            'genetic modification followed by DNase-seq']:
-        return
-
     replicate_pairing_statuses = {}
     replicate_read_lengths = {}
 
