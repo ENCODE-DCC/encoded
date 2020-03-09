@@ -137,18 +137,14 @@ def test_functional_characterization_experiment_examined_loci_dependency(testapp
     functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 80, 'expression_range_minimum': 50, 'expression_range_maximum': 100}]})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
 
-    # the property examined_loci requires expression_range_maximum and expression_range_minimum to be included together
+    # expression_range_maximum and expression_range_minimum must be included together
     functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_range_maximum': 100}]})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
-
-    # percentile is sufficient with gene
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100}]})
-    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
-
-    # min max both need to be specified
     functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_range_minimum': 50, 'expression_range_maximum': 100}]})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
 
-    # percentile may not be specified with one of the range properties
+    # expression_percentile may be specified with gene, but not in combination with a range property
     functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100, 'expression_range_minimum': 50}]})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
