@@ -1,6 +1,52 @@
 Changes
 =======
 
+v97.0 (released) snovault 1.0.42 ubuntu18/py376 merge
+--------------------------------------------------------------------
+
+1.	SNO-145 handle missing _stats on request
+2.	ENCD-5137-Fix-ENTEx-text-issue (#3178)
+3.	ENCD-5132-update-deployment-amis (#3174)
+4.	update-to-v97rc1 (#3172)
+5.	update-to-v96.1 (#3171)
+6.	ENCD-5071-audit-script-error-when-control-is-series (#3164)
+7.	ENCD-4626-fix-test-save-change-antibody (#3145)
+8.	ENCD-4365-roadmap-collection-view (#3142)
+9.	ENCD-5121-doc-section-publication-data (#3162)
+10.	ENCD-5073-multiple-targets-FCC (#3154)
+11.	ENCD-5097-add-Ingrid-to-AntibodyCharacterization-reviewed-by (#3148)
+12.	ENCD-5033-index-user-made-accounts (#3158)
+13.	ENCD-4953-calculated-tags-property-experiment (#3155)
+14.	ENCD-5072 Library construction platform display (#3168)	
+15.	SNO-142 Minor fixes for ubutnu 18 on v96x1rc1
+16.	ENCD-5106-add-control-link-FCE (#3151)
+17.	ENCD-5101-add-target-to-annotation-summary-page (#3165)
+18.	ENCD-5124-fix-vis-indexing-failure-on-RNA-seq-annotation (#3161)
+19.	ENCD-5074-exclude-single-cell-from-read-count-audit (#3153)
+20.	ENCD-5083-restrict-IHEC-dbxref-to-RefEpi-and-Annotation (#3147)
+21.	ENCD-5034-encyclopedia-v6-addition (#3152)
+22.	SNO-141-update-osx-catalina-readme
+23.	ENCD-4917-new-target-matrix (#3071)
+24.	ENCD-5120-1st-post-master-merge-fix-u18-py369 (#3160)
+25.	ENCD-3983-update-to-ubuntu-18
+26.	ENCD-5112 Update deploy ami map for all builds
+27.	SNO-140 Allow shorting uuids with flag
+28.	ENCD-5075 Adding the change for depmap (#3141)
+29.	SNO-139 Log detailed initial indexing times
+30.	ENCD-3983-update-to-ubuntu-18
+31.	ENCD-4961-make-base-amis-encd-deployment
+32.	ENCD-4960-add-aws-pems-for-deployment
+33.	SNO-132 Update to py37 lrowe pr with fixes
+34.	ENCD-5061-echo-filenames-in-deploy-scirpt
+35.	ENCD-5060-add-py-requirements-file
+36.	ENCD-5059-fix-pylint-in-deploy-script
+37.	ENCD-5081 add-pooled-clone-sequencing-types (#3144)
+38.	ENCD-5084-draft-1 (#3149)
+39.	ENCD-5096-draft-1 (#3150)
+40.	ENCD-5091 Rebuilt package-lock.json (#3140)
+41.	ENCD-5077 Remove unnecessary prints (#3146)
+
+
 v97rc1 (unreleased) snovault 1.0.41 - pre v96.1 ubuntu18/py376 merge
 --------------------------------------------------------------------
 1. ENCD-5071-audit-script-error-when-control-is-series (#3164)
