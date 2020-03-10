@@ -31,7 +31,7 @@ class Surgery(Item):
         # "pathology_report.ihc"
     ]
     rev = {
-        # "pathology_report": ("PathologyReport", "surgery"),
+        "pathology_report": ("PathologyReport", "surgery"),
         "surgery_procedure": ("SurgeryProcedure", "surgery"),
         # "ihc": ("Ihc", "surgery"),
     }
@@ -186,22 +186,22 @@ class SurgeryProcedure(Item):
 #             "comment": "Do not submit. Value is automatically assigned by the server.",
 #             "uniqueKey": "name",
 #         }
-#     )
-    # def name(self):
-    #     return self.__name__
-    # @property
-    # def __name__(self):
-    #     return self.name()
-    @property
-    def __name__(self):
-        properties = self.upgrade_properties()
-        return self._name(properties)
+# #     )
+    def name(self):
+        return self.__name__
+#     @property
+#     def __name__(self):
+#         return self.name()
+#     @property
+#     def __name__(self):
+#         properties = self.upgrade_properties()
+#         return self._name(properties)
 
-    def _name(self, properties):
-        root = find_root(self)
-        surgery_uuid = properties["surgery"]
-        surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()["accession"]
-        return u"{}-{}".format(surgery_id, properties["tumor_sequence_number"])
+#     def _name(self, properties):
+#         root = find_root(self)
+#         surgery_uuid = properties["surgery"]
+#         surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()["accession"]
+#         return u"{}-{}".format(surgery_id, properties["tumor_sequence_number"])
 
     
 
