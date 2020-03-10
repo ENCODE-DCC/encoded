@@ -1,8 +1,8 @@
 import pytest
 
 
-def test_reference_epigenome_without_required_assays(testapp, reference_epigenome_1):
-    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+def test_reference_epigenome_without_required_assays(testapp, reference_epigenome_1_1):
+    res = testapp.get(reference_epigenome_1_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -10,41 +10,50 @@ def test_reference_epigenome_without_required_assays(testapp, reference_epigenom
     assert any(error['category'] == 'partial reference epigenome' for error in errors_list)
 
 
-def test_reference_epigenome_with_required_assays(testapp, reference_epigenome_1,
-                                                  reference_experiment_RNA_seq,
-                                                  reference_experiment_RRBS,
-                                                  reference_experiment_WGBS,
-                                                  reference_experiment_chip_seq_control,
-                                                  reference_experiment_chip_seq_H3K27me3,
-                                                  reference_experiment_chip_seq_H3K36me3,
-                                                  reference_experiment_chip_seq_H3K4me1,
-                                                  reference_experiment_chip_seq_H3K4me3,
-                                                  reference_experiment_chip_seq_H3K27ac,
-                                                  reference_experiment_chip_seq_H3K9me3,
+def test_reference_epigenome_without_required_assays(testapp, reference_epigenome_1_1):
+    res = testapp.get(reference_epigenome_1_1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'partial reference epigenome' for error in errors_list)
+
+
+def test_reference_epigenome_with_required_assays(testapp, reference_epigenome_1_1,
+                                                  reference_experiment_RNA_seq_1,
+                                                  reference_experiment_RRBS_1,
+                                                  reference_experiment_WGBS_1,
+                                                  reference_experiment_chip_seq_control_1,
+                                                  reference_experiment_chip_seq_H3K27me3_1,
+                                                  reference_experiment_chip_seq_H3K36me3_1,
+                                                  reference_experiment_chip_seq_H3K4me1_1,
+                                                  reference_experiment_chip_seq_H3K4me3_1,
+                                                  reference_experiment_chip_seq_H3K27ac_1,
+                                                  reference_experiment_chip_seq_H3K9me3_1,
                                                   ):
-    testapp.patch_json(reference_epigenome_1['@id'], {'related_datasets':
-                                                      [reference_experiment_RNA_seq['@id'],
-                                                       reference_experiment_RRBS['@id'],
-                                                       reference_experiment_WGBS['@id'],
-                                                       reference_experiment_chip_seq_control['@id'],
-                                                       reference_experiment_chip_seq_H3K27me3[
+    testapp.patch_json(reference_epigenome_1_1['@id'], {'related_datasets':
+                                                      [reference_experiment_RNA_seq_1['@id'],
+                                                       reference_experiment_RRBS_1['@id'],
+                                                       reference_experiment_WGBS_1['@id'],
+                                                       reference_experiment_chip_seq_control_1['@id'],
+                                                       reference_experiment_chip_seq_H3K27me3_1[
                                                        '@id'],
-                                                       reference_experiment_chip_seq_H3K36me3[
+                                                       reference_experiment_chip_seq_H3K36me3_1[
                                                        '@id'],
-                                                       reference_experiment_chip_seq_H3K4me1['@id'],
-                                                       reference_experiment_chip_seq_H3K4me3['@id'],
-                                                       reference_experiment_chip_seq_H3K27ac['@id'],
-                                                       reference_experiment_chip_seq_H3K9me3['@id']
+                                                       reference_experiment_chip_seq_H3K4me1_1['@id'],
+                                                       reference_experiment_chip_seq_H3K4me3_1['@id'],
+                                                       reference_experiment_chip_seq_H3K27ac_1['@id'],
+                                                       reference_experiment_chip_seq_H3K9me3_1['@id']
                                                        ]})
-    testapp.patch_json(reference_experiment_RNA_seq['@id'], {'status': 'in progress'})
-    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+    testapp.patch_json(reference_experiment_RNA_seq_1['@id'], {'status': 'in progress'})
+    res = testapp.get(reference_epigenome_1_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'partial reference epigenome' for error in errors_list)
-    testapp.patch_json(reference_experiment_RNA_seq['@id'], {'status': 'released'})
-    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+    testapp.patch_json(reference_experiment_RNA_seq_1['@id'], {'status': 'released'})
+    res = testapp.get(reference_epigenome_1_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -52,11 +61,11 @@ def test_reference_epigenome_with_required_assays(testapp, reference_epigenome_1
     assert all(error['category'] != 'partial reference epigenome' for error in errors_list)
 
 
-def test_reference_epigenome_multiple_biosample_term_names(testapp, reference_epigenome_1,
-                                                           reference_experiment_RNA_seq,
-                                                           reference_experiment_RRBS,
-                                                           replicate_RNA_seq,
-                                                           replicate_RRBS,
+def test_reference_epigenome_multiple_biosample_term_names(testapp, reference_epigenome_1_1,
+                                                           reference_experiment_RNA_seq_1,
+                                                           reference_experiment_RRBS_1,
+                                                           replicate_RNA_seq_1,
+                                                           replicate_RRBS_1,
                                                            library_1,
                                                            library_2,
                                                            biosample_1,
@@ -71,10 +80,10 @@ def test_reference_epigenome_multiple_biosample_term_names(testapp, reference_ep
                                             'biosample_ontology': heart['uuid']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(reference_epigenome_1['@id'], {'related_datasets':
-                                                      [reference_experiment_RNA_seq['@id'],
-                                                       reference_experiment_RRBS['@id']]})
-    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+    testapp.patch_json(reference_epigenome_1_1['@id'], {'related_datasets':
+                                                      [reference_experiment_RNA_seq_1['@id'],
+                                                       reference_experiment_RRBS_1['@id']]})
+    res = testapp.get(reference_epigenome_1_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -83,11 +92,11 @@ def test_reference_epigenome_multiple_biosample_term_names(testapp, reference_ep
                error in errors_list)
 
 
-def test_reference_epigenome_multiple_biosample_treatments(testapp, reference_epigenome_1,
-                                                           reference_experiment_RNA_seq,
-                                                           reference_experiment_RRBS,
-                                                           replicate_RNA_seq,
-                                                           replicate_RRBS,
+def test_reference_epigenome_multiple_biosample_treatments(testapp, reference_epigenome_1_1,
+                                                           reference_experiment_RNA_seq_1,
+                                                           reference_experiment_RRBS_1,
+                                                           replicate_RNA_seq_1,
+                                                           replicate_RRBS_1,
                                                            treatment,
                                                            library_1,
                                                            library_2,
@@ -96,10 +105,10 @@ def test_reference_epigenome_multiple_biosample_treatments(testapp, reference_ep
     testapp.patch_json(biosample_1['@id'], {'treatments': [treatment['@id']]})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(reference_epigenome_1['@id'], {'related_datasets':
-                                                      [reference_experiment_RNA_seq['@id'],
-                                                       reference_experiment_RRBS['@id']]})
-    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
+    testapp.patch_json(reference_epigenome_1_1['@id'], {'related_datasets':
+                                                      [reference_experiment_RNA_seq_1['@id'],
+                                                       reference_experiment_RRBS_1['@id']]})
+    res = testapp.get(reference_epigenome_1_1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:

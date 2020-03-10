@@ -1,8 +1,8 @@
 import pytest
 
 
-def test_genetic_modification_reagents(testapp, genetic_modification_1, source):
-    res = testapp.get(genetic_modification_1['@id'] + '@@index-data')
+def test_genetic_modification_reagents(testapp, genetic_modification_3, source):
+    res = testapp.get(genetic_modification_3['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -10,12 +10,12 @@ def test_genetic_modification_reagents(testapp, genetic_modification_1, source):
             errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing genetic modification reagents' for
                error in errors_list)
-    testapp.patch_json(genetic_modification_1['@id'], {'reagents': [
+    testapp.patch_json(genetic_modification_3['@id'], {'reagents': [
         {
             'source': source['@id'],
             'identifier': 'trc:TRCN0000246247'
         }]})
-    res = testapp.get(genetic_modification_1['@id'] + '@@index-data')
+    res = testapp.get(genetic_modification_3['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:

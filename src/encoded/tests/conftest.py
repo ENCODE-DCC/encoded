@@ -12,6 +12,50 @@ pytest_plugins = [
     'snovault.tests.testappfixtures',
     'snovault.tests.toolfixtures',
     'snovault.tests.pyramidfixtures',
+
+    'encoded.tests.fixtures.access_key',
+    'encoded.tests.fixtures.analysis_step',
+    'encoded.tests.fixtures.annotation',
+    'encoded.tests.fixtures.antibody_characterization',
+    'encoded.tests.fixtures.antibody',
+    'encoded.tests.fixtures.award',
+    'encoded.tests.fixtures.biosample_type',
+    'encoded.tests.fixtures.biosample',
+    'encoded.tests.fixtures.bismark_quality_metric'
+    'encoded.tests.fixtures.cart',
+    'encoded.tests.fixtures.characterization',
+    'encoded.tests.fixtures.chip_peak_enrichment_quality_metric',
+    'encoded.tests.fixtures.chip_peak_enrichment_quality_metric',
+    'encoded.tests.fixtures.document',
+    'encoded.tests.fixtures.dataset',
+    'encoded.tests.fixtures.donor',
+    'encoded.tests.fixtures.experiment',
+    'encoded.tests.fixtures.file',
+    'encoded.tests.fixtures.gene',
+    'encoded.tests.fixtures.genetic_modifcation',
+    'encoded.tests.fixtures.lab',
+    'encoded.tests.fixtures.library',
+    'encoded.tests.fixtures.long_read_rna_mapping_quality_metric',
+    'encoded.tests.fixtures.organism',
+    'encoded.tests.fixtures.micro_rna_mapping_quality_metric',
+    'encoded.tests.fixtures.platform'
+    'encoded.tests.fixtures.pipeline',
+    'encoded.tests.fixtures.publication_data',
+    'encoded.tests.fixtures.publication',
+    'encoded.tests.fixtures.reference_epigenome',
+    'encoded.tests.fixtures.replicate',
+    'encoded.tests.fixtures.samtools_flagstats_quality_metric',
+    'encoded.tests.fixtures.series',
+    'encoded.tests.fixtures.software',
+    'encoded.tests.fixtures.source',
+    'encoded.tests.fixtures.target',
+    'encoded.tests.fixtures.treatment',
+    'encoded.tests.fixtures.ucsc_browser_composite',
+    'encoded.tests.fixtures.upgrade',
+    'encoded.tests.fixtures.user',
+
+
+
 ]
 
 
