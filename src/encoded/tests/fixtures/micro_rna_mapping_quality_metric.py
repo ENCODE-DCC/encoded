@@ -30,3 +30,4 @@ def micro_rna_mapping_quality_metric_2_1(
         'lab': lab['@id']
     }
     return testapp.post_json('/micro_rna_mapping_quality_metric', item).json['@graph'][0]
+    

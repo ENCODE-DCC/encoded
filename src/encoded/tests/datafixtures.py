@@ -2,8 +2,6 @@ import pytest
 from .constants import *
 
 
-
-
 @pytest.fixture
 def attachment():
     return {'download': 'red-dot.png', 'href': RED_DOT}
@@ -62,7 +60,6 @@ def matched_set(testapp, lab, award):
         'award': award['@id']
     }
     return item
-
 
 
 @pytest.fixture
