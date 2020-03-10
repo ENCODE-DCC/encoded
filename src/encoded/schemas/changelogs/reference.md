@@ -1,5 +1,9 @@
 ## Changelog for reference.json
 
+### Minor changes since schema version 18
+
+* *Donor* property may now be specified in references that are *reference_type*: *genome*
+
 ### Schema version 18
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
