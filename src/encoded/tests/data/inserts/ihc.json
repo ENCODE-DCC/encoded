@@ -2,7 +2,7 @@
   {
     "patient": "KCEPT708IJT",
     "path_id": "PR708IJT",
-    "surgery": "KCESX708FIJ",
+    "name": "KCESX708FIJ-1",
     "biospecimen": "KCEBS708IJT",
     "service_date": "1855-01-05",
     "antibody": "AE1/AE3",
@@ -23,7 +23,7 @@
   {
     "patient": "KCEPT480NBU",
     "path_id": "PR480NBU",
-    "surgery": "KCESX708IJT",
+    "name": "KCESX480NBU-1",
     "biospecimen": "KCEBS026KCE",
     "service_date": "1836-05-08",
     "antibody": "CAM 5.2",
@@ -34,7 +34,7 @@
   {
     "patient": "KCEPT802XRB",
     "path_id": "PR802XRB",
-    "surgery": "KCESX480NBU",
+    "name": "KCESX802XRB-1",
     "biospecimen": "KCEBS039ENC",
 
     "service_date": "1862-02-03",
@@ -46,7 +46,7 @@
   {
     "patient": "KCEPT359MHZ",
     "path_id": "PR359MHZ",
-    "surgery": "KCESX802XRB",
+    "name": "KCESX359MHZ-1",
     "biospecimen": "",
 
     "service_date": "1860-06-03",
