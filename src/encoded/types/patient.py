@@ -372,6 +372,16 @@ class Patient(Item):
                 'gender',
                 'race',
                 'ethnicity',
+                'surgery_summary',
+                'radiation_summary',
+                'medications.name',
+                'surgery.surgery_procedure.surgery_type',
+                'surgery.hospital_location',
+                'sur_path_tumor_size',
+                'surgery.pathology_report.t_stage',
+                'germline_summary',
+                'ihc.antibody',
+                'ihc.result',
                 
             ],
             'group_by': ['race', 'gender'],
@@ -379,12 +389,11 @@ class Patient(Item):
         },
         'x': {
             'facets': [
-                'radiation_summary',
-                'surgery.surgery_type',
-                'medications.name',
+                
+                'surgery.pathology_report.histology',
             ],
-            'group_by': 'medications.name',
-            'label': 'medication',
+            'group_by': 'surgery.pathology_report.histology',
+            'label': 'histology',
         },
     }
 

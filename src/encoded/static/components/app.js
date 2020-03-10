@@ -35,7 +35,7 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'patientsearch', title: 'patient search', url: '/search/?type=Patient&status=released' },
+                { id: 'patientsearch', title: 'Patient search', url: '/search/?type=Patient&status=released' },
                 { id: 'samplesearch', title: 'Biospecimen search', url: '/search/?type=Biospecimen&status=released' },
                 { id: 'genomicssearch', title: 'Genomics search', url: '/search/?type=Biofile&status=released' },
                 { id: 'sep-mm-1' },
