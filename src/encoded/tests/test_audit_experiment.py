@@ -848,6 +848,10 @@ def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, b
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'unreplicated experiment'
                for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'replicates': []})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'unreplicated experiment' and error['level_name'] == 'NOT_COMPLIANT'
+                for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_technical_replicates_same_library(testapp, base_experiment,
