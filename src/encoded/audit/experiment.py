@@ -478,26 +478,6 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
     return
 
 
-def audit_experiment_with_uploading_files(value, system, files_structure):
-    if files_structure.get('original_files'):
-        for file_object in files_structure.get('original_files').values():
-            category = None
-            if file_object['status'] in ['upload failed', 'content error']:
-                category = 'file validation error'
-            elif file_object['status'] == 'uploading':
-                category = 'file in uploading state'
-            if category:
-                detail = ('Experiment {} contains a file {} '
-                    'with the status {}.'.format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        audit_link(path_to_text(file_object['@id']), file_object['@id']),
-                        file_object['status']
-                    )
-                )
-                yield AuditFailure(category, detail, level='ERROR')
-    return
-
-
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
     valid_assay_term_names = [
         'ChIP-seq',
@@ -4633,7 +4613,6 @@ function_dispatcher_with_files = {
     'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
     'audit_platforms': audit_experiment_platforms_mismatches,
-    'audit_uploading_files': audit_experiment_with_uploading_files,
     'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
     'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
     'audit_modERN': audit_modERN_experiment_standards_dispatcher,
@@ -4732,3 +4711,6 @@ def audit_experiment(value, system):
 
 # def audit_experiment_needs_pipeline(value, system): removed in release 56
 # http://redmine.encodedcc.org/issues/4990
+
+# def audit_experiment_with_uploading_files(value, system, files_structure): removed in release 98
+# https://encodedcc.atlassian.net/browse/ENCD-5109
