@@ -164,6 +164,7 @@
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "donor.accession": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
         "award.name": 1.0,
