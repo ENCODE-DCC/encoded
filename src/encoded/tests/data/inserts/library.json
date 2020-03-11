@@ -117,7 +117,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
-        "strand_specificity": "strand-specific",
+        "strand_specificity": "reverse",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e4824882-0ad8-4009-a169-44d5955800af"
     },
@@ -138,7 +138,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
-        "strand_specificity": "strand-specific",
+        "strand_specificity": "forward",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "treatments": [
             "8661b120-5c82-11e3-949a-0800200c9a66"
@@ -162,7 +162,7 @@
         "lab": "thomas-gingeras",
         "nucleic_acid_term_name": "RNA",
         "size_range": "<200",
-        "strand_specificity": "strand-specific",
+        "strand_specificity": "reverse",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "treatments": [
             "8661b120-5c82-11e3-949a-0800200c9a66"
@@ -183,7 +183,7 @@
         "library_size_selection_method": "SPRI beads",
         "nucleic_acid_term_name": "RNA",
         "size_range": ">200",
-        "strand_specificity": "strand-specific",
+        "strand_specificity": "forward",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
     },
