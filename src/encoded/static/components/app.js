@@ -40,6 +40,7 @@ const portal = {
                 { id: 'genomicssearch', title: 'Genomics search', url: '/search/?type=Biofile&status=released' },
                 { id: 'sep-mm-1' },
                 { id: 'patientmatrix', title: 'Patient matrix', url: '/matrix/?type=Patient&status=released' },
+                { id: 'sampletmatrix', title: 'Biospecimen matrix', url: '/matrix/?type=Biospecimen&status=released' },
                 { id: 'patientsummary', title: 'Patient summary', url: '/summary/?type=Patient&status=released' },
                 { id: 'sep-mm-2' },
                 { id: 'publications', title: 'Publications', url: '/search/?type=Publication&status=released' },
