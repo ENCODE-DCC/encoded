@@ -33,7 +33,10 @@ class Surgery extends React.Component {
           hasPathology = true;
             
         }
-        // if (Object.keys(this.props.context.ihc).length > 0) {
+        // let IHC=this.props.context.pathology_report.map(i=>{return i.ihc.antibody,i.ihc.});
+        // console.log(IHC);
+
+        // if (Object.keys(IHC).length > 0) {
         //     hasIHC = true;
         //   }
       
@@ -74,7 +77,7 @@ class Surgery extends React.Component {
                     </PanelBody>
                 </Panel>
                 {hasPathology && <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report " ></PathologyReportTable>}
-                {/* {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>} */}
+                {/* {hasIHC&&<IHCTable data={context.pathology_report.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>} */}
             
             </div>
 

@@ -2,8 +2,7 @@
   {
     "patient": "KCEPT708IJT",
     "path_id": "PR708IJT",
-    "name": "KCESX708FIJ-1",
-    "biospecimen": "KCEBS708IJT",
+    "name": "b5644d7a-46d7-11ea-b77f-2e728ce88125",
     "service_date": "1855-01-05",
     "antibody": "AE1/AE3",
     "result": "Positive",
@@ -13,18 +12,27 @@
   {
     "patient": "KCEPT708IJT",
     "path_id": "PR708IJT",
-    "biospecimen": "KCEBS000AAA",
+    "name": "7d0ef92b-33da-4ae0-ada8-9013e3c195f4",
     "service_date": "1855-01-05",
-    "antibody": "BAP1",
-    "result": "Negative",
+    "antibody": "CAM 5.2",
+    "result": "Positive",
     "status": "released",
-    "uuid": "3b7214ea-4ddd-11ea-b77f-2e728ce88125"
+    "uuid": "ac8cd4c7-52f6-4f38-945c-d1efaa8be1c1"
+  },
+  {
+    "patient": "KCEPT708IJT",
+    "path_id": "PR708IJT",
+    "name": "7d0ef92b-33da-4ae0-ada8-9013e3c195f4",
+    "service_date": "1855-01-05",
+    "antibody": "CAM 5.2",
+    "result": "Positive",
+    "status": "released",
+    "uuid": "238e5838-314a-4f48-b432-d048f1c70f20"
   },
   {
     "patient": "KCEPT480NBU",
     "path_id": "PR480NBU",
-    "name": "KCESX480NBU-1",
-    "biospecimen": "KCEBS026KCE",
+    "name": "b56454b4-46d7-11ea-b77f-2e728ce88125",
     "service_date": "1836-05-08",
     "antibody": "CAM 5.2",
     "result": "Rare Focal Positive",
@@ -34,9 +42,7 @@
   {
     "patient": "KCEPT802XRB",
     "path_id": "PR802XRB",
-    "name": "KCESX802XRB-1",
-    "biospecimen": "KCEBS039ENC",
-
+    "name": "b5645964-46d7-11ea-b77f-2e728ce88125",
     "service_date": "1862-02-03",
     "antibody": "Carbonic Anhydrase IX",
     "result": "Focal Loss",
@@ -46,9 +52,7 @@
   {
     "patient": "KCEPT359MHZ",
     "path_id": "PR359MHZ",
-    "name": "KCESX359MHZ-1",
-    "biospecimen": "",
-
+    "name": "b56466f2-46d7-11ea-b77f-2e728ce88125",
     "service_date": "1860-06-03",
     "antibody": "Cathepsin-K",
     "result": "Positive",

@@ -5,6 +5,7 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
+// import IHCTable from './ihcTable';
 
 class PathologyReport extends React.Component {
     constructor(props) {
@@ -13,6 +14,7 @@ class PathologyReport extends React.Component {
     render() {
         const context = this.props.context;
         console.log(context);
+        console.log(context.ihc);
 
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs
@@ -21,7 +23,13 @@ class PathologyReport extends React.Component {
             { id: <i>{context.name}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
-
+        
+        // let hasIHC=false;
+        // if (Object.keys(this.props.context.ihc).length > 0) {
+        //       hasIHC = true;
+        //   }
+        
+        
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -174,6 +182,7 @@ class PathologyReport extends React.Component {
                         </dl>
                     </PanelBody>
                 </Panel>
+                {/* {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>} */}
                
             </div>
         )
