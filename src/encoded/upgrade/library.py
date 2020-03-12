@@ -229,7 +229,7 @@ def library_9_10(value, system):
 def library_10_11(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5080
     if 'strand_specificity' in value:
-        if value['strand_specificity'] == 'false':
+        if value['strand_specificity'] == False:
             value.pop('strand_specificity')
-        elif value['strand_specificity'] == 'true':
+        elif value['strand_specificity'] == True:
             value['strand_specificity'] = 'strand-specific'

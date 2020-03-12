@@ -1433,5 +1433,5 @@ def library_schema_10(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'strand_specificity': 'true',
+        'strand_specificity': True
     }
