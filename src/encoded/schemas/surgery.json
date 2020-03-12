@@ -121,6 +121,12 @@
         },
         "pathology_report.micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        },
+        "pathology_report.ihc.antibody": {
+            "title": "IHC Assay staining antibody"
+        },
+        "pathology_report.ihc.result": {
+            "title": "IHC assay staining result"
         }
     },
     "columns": {
@@ -189,6 +195,12 @@
         },
         "pathology_report.micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        },
+        "pathology_report.ihc.antibody": {
+            "title": "IHC Assay staining antibody"
+        },
+        "pathology_report.ihc.result": {
+            "title": "IHC assay staining result"
         }
 
     },
@@ -210,7 +222,11 @@
         "pathology_report.lvi": 1.0,
         "pathology_report.micro_perinephric":1.0,
         "pathology_report.micro_vein": 1.0,
-        "pathology_report.micro_adrenal": 1.0
+        "pathology_report.micro_adrenal": 1.0,
+        "pathology_report.ihc.antibody": 1.0,
+        "pathology_report.ihc.result": 1.0
+
+
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }

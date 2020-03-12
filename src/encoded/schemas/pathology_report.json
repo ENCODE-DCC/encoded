@@ -420,6 +420,7 @@
         "status": {
             "title": "Status"
         },
+        
         "tumor_size": {
             "title": "Tumor Size"
         },
@@ -481,6 +482,9 @@
         "accession": {
             "title": "Accession"
         },
+        "surgery": {
+            "title": "Surgery"
+        },
         "status": {
             "title": "Status"
         },
@@ -539,6 +543,7 @@
         }
     },
     "boost_values": {
+        "surgery": 1.0,
         "laterality":1.0,
         "accession":1.0,
         "histology": 1.0,
