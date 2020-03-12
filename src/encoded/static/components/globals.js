@@ -309,6 +309,7 @@ export const biosampleTypeList = [
     'in vitro differentiated cells',
     'single cell',
     'cell-free sample',
+    'cloning host',
     'organoid',
 ];
 

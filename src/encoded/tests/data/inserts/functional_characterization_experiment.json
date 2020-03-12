@@ -67,7 +67,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
         "date_submitted": "2015-04-20",
-        "biosample_ontology": "cell_line_EFO_0009747",
+        "biosample_ontology": "cloning_host_NTR_0000545",
         "award": "U54HG007010",
         "description": "pooled clone sequencing elements validation",
         "assay_term_name": "pooled clone sequencing",

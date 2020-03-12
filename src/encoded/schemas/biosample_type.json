@@ -100,7 +100,7 @@
                     "properties": {
                         "classification": {
                             "enum": [
-                                "DNA cloning sample"
+                                "cloning host"
                             ]
                         },
                         "term_name": {
@@ -130,7 +130,7 @@
                 "in vitro differentiated cells",
                 "primary cell",
                 "cell-free sample",
-                "DNA cloning sample",
+                "cloning host",
                 "tissue",
                 "whole organisms",
                 "organoid"

@@ -3453,7 +3453,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('biosample_ontology', {}).get('classification') == 'cell-free sample':
+    if value.get('biosample_ontology', {}).get('classification') in ('cell-free sample', 'cloning host'):
         return
 
     ontology = system['registry']['ontology']
