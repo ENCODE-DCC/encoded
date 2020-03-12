@@ -467,6 +467,12 @@
         },
         "micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        },
+        "ihc.antibody": {
+            "title": "IHC Assay staining antibody"
+        },
+        "ihc.result": {
+            "title": "IHC assay staining result"
         }
     },
 
@@ -524,6 +530,12 @@
         },
         "micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        }, 
+        "ihc.antibody": {
+            "title": "IHC Assay staining antibody"
+        },
+        "ihc.result": {
+            "title": "IHC assay staining result"
         }
     },
     "boost_values": {
@@ -539,8 +551,11 @@
         "micro_perinephric":1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
-        "uuid":1.0,
-        "metasis_details.site": 1.0
+        "metasis_details.site": 1.0,
+       "ihc.antibody":1.0,
+       "ihc.result":1.0
+
+
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }

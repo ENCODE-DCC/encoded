@@ -14,14 +14,11 @@ class PathologyReportTable extends React.Component {
 
     filterData() {
         this.filteredData = this.props.data;
-        console.log(this.filteredData);
 
         for (let i = 0; i < this.filteredData.length; i++) {
-            let tableTitle = this.props.tableTitle + "Tumor information" + " " + (i + 1);
+            let tableTitle = this.props.tableTitle + "Tumor information";
             let pathologyReporti=this.filteredData[i];
-            console.log(pathologyReporti);
             let IHCi = pathologyReporti.ihc;
-            console.log(IHCi);
             let hasIHC = false;
 
             if (IHCi.length > 0) {
