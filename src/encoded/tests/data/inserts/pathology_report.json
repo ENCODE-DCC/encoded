@@ -1,7 +1,9 @@
 [
   {
+    "accession": "KCEPR708FIJ",
     "surgery": "KCESX708FIJ",
     "tumor_sequence_number": 1,
+    
     "date": "1855-01-05",
     "laterality": "Bilateral, Horseshoe",
     "tumor_size": 5,
@@ -36,6 +38,7 @@
     "uuid": "b5644d7a-46d7-11ea-b77f-2e728ce88125"
   },
   {
+    "accession": "KCEPR708FIK",
     "surgery": "KCESX708FIJ",
     "tumor_sequence_number": 2,
     "date": "1855-01-05",
@@ -72,6 +75,7 @@
     "uuid": "7d0ef92b-33da-4ae0-ada8-9013e3c195f4"
   },
   {
+    "accession": "KCEPR708IJT",
     "surgery":"KCESX708IJT",
     "tumor_sequence_number": 1,
     "date": "1860-04-03",
@@ -107,7 +111,8 @@
     "path_source_procedure": "path_nephrectomy",
     "uuid": "9575a49b-feb0-4831-a74e-02546f0c27be"
   },
-  {
+  { 
+    "accession": "KCEPR480NBU",
     "surgery": "KCESX480NBU",
     "tumor_sequence_number": 1,
     "date": "1836-05-08",
@@ -144,7 +149,7 @@
     "uuid": "b56454b4-46d7-11ea-b77f-2e728ce88125"
   },
   {
-
+    "accession": "KCEPR802XRB",
     "surgery": "KCESX802XRB",
     "tumor_sequence_number": 1,
     "date": "1862-02-03",
@@ -181,6 +186,7 @@
     "uuid": "b5645964-46d7-11ea-b77f-2e728ce88125"
   },
   {
+    "accession": "KCEPR359TRS",
     "surgery": "KCESX359TRS",
     "tumor_sequence_number": 1,
     "date": "1860-06-03",

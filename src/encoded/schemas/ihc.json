@@ -6,7 +6,7 @@
     "type": "object",
     
     "anyOf": [
-        {"required": ["name"]},
+        {"required": ["pathology_report"]},
         {"required": ["biospecimen"]}
     ],
     "required": [
@@ -16,7 +16,7 @@
         "result"
     ],
     "identifyingProperties": [
-        "uuid"
+        "uuid","pathology_report","biospecimen"
     ],
     "additionalProperties": false,
     "mixinProperties": [
@@ -43,7 +43,7 @@
             "type": "string",
             "linkTo": "Patient"
         },
-        "name": {
+        "pathology_report": {
             "title": "Pathology Report Tumor Accession",
             "description": "Need any of surgery accession or biospecimen accession to submit data",
             "comment": "link to surgery information with surgery accession. ",
@@ -129,7 +129,7 @@
     "boost_values": {
         "antibody": 1.0,
         "patient": 1.0,
-        "name": 1.0,
+        "pathology_report": 1.0,
         "biospecimen": 1.0,
         "result": 1.0
     },

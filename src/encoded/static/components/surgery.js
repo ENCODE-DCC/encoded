@@ -33,9 +33,7 @@ class Surgery extends React.Component {
           hasPathology = true;
             
         }
-        // let IHC=this.props.context.pathology_report.map(i=>{return i.ihc.antibody,i.ihc.});
-        // console.log(IHC);
-
+        
         // if (Object.keys(IHC).length > 0) {
         //     hasIHC = true;
         //   }

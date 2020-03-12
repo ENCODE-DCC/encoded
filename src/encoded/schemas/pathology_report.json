@@ -4,14 +4,15 @@
     "id": "/profiles/pathology_report.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "identifyingProperties": ["uuid","surgery"],
+    "identifyingProperties": ["uuid","surgery","accession"],
     "required": ["surgery", "date", "report_source", "tumor_sequence_number", "path_source_procedure"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/uuid" },
-        {"$ref": "mixins.json#/standard_status"}
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/accessioned_status" }
     ],
     "dependencies": {
         "tumor_size": ["tumor_size_units"],
@@ -23,12 +24,16 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "PR"
+        },
         "surgery": {
             "title": "Surgery",
             "description": "The surgery the pathology originated from.",
             "type": "string",
             "linkTo": "Surgery"
         },
+
         "date": {
             "title": "Pathology date",
             "description": "Date of sample was taken for pathology.",
@@ -415,7 +420,6 @@
         "status": {
             "title": "Status"
         },
-
         "tumor_size": {
             "title": "Tumor Size"
         },
@@ -467,7 +471,8 @@
     },
 
     "columns": {
-        "name": {
+        
+        "accession": {
             "title": "Accession"
         },
         "status": {
@@ -523,6 +528,7 @@
     },
     "boost_values": {
         "laterality":1.0,
+        "accession":1.0,
         "histology": 1.0,
         "focality": 1.0,
         "grade": 1.0,
@@ -533,7 +539,7 @@
         "micro_perinephric":1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
-        "name": 1.0,
+        "uuid":1.0,
         "metasis_details.site": 1.0
     },
     "changelog": "/profiles/changelogs/pathology_report.md"

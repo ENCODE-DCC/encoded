@@ -5,7 +5,7 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
-// import IHCTable from './ihcTable';
+import IHCTable from './ihcTable';
 
 class PathologyReport extends React.Component {
     constructor(props) {
@@ -20,14 +20,14 @@ class PathologyReport extends React.Component {
         // Set up breadcrumbs
         const crumbs = [
             { id: 'pathology-reports' },
-            { id: <i>{context.name}</i> },
+            { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
         
-        // let hasIHC=false;
-        // if (Object.keys(this.props.context.ihc).length > 0) {
-        //       hasIHC = true;
-        //   }
+        let hasIHC=false;
+        if (Object.keys(this.props.context.ihc).length > 0) {
+              hasIHC = true;
+          }
         
         
         return (
@@ -35,7 +35,7 @@ class PathologyReport extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=PathologyReport" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.name}</h2>
+                        <h2>{context.accession}</h2>
 
                     </div>
 
@@ -182,7 +182,7 @@ class PathologyReport extends React.Component {
                         </dl>
                     </PanelBody>
                 </Panel>
-                {/* {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>} */}
+                {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
                
             </div>
         )

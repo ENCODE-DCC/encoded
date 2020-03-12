@@ -28,7 +28,7 @@ class Surgery(Item):
     embedded = [
         "pathology_report",
         "surgery_procedure",
-        # "pathology_report.ihc"
+        "pathology_report.ihc"
     ]
     rev = {
         "pathology_report": ("PathologyReport", "surgery"),

@@ -138,12 +138,7 @@
             "title": "Germline Mutation"
         },
 
-        "ihc.antibody": {
-            "title": "IHC/FISH (Clinical lab)"
-        },
-        "ihc.result": {
-            "title": "IHC/FISH results"
-        },
+      
         
         "radiation_summary": {
             "title": "Radiation Treatment Status"
@@ -232,8 +227,7 @@
         "germline.significance": 1.0,
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0,
-        "ihc.antibody":1.0,
-        "ihc.result":1.0,
+        
         "medications.name":1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
