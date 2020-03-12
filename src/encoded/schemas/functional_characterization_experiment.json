@@ -68,6 +68,21 @@
             }
 
         },
+        "expression_range_minimum": {
+            "comment": "Only examined_loci with a gene can specify expression range, min/max both required.",
+            "required": ["gene", "expression_range_maximum"]
+        },
+        "expression_range_maximum": {
+            "comment": "Only examined_loci with a gene can specify expression range, min/max both required.",
+            "required": ["gene", "expression_range_minimum"]
+        },
+        "expression_percentile": {
+            "comment": "Only examined_loci with a gene can specify expression percentile.",
+            "required": ["gene"],
+            "not": {
+                "required": ["expression_range_minimum", "expression_range_maximum"]
+            }
+        },
         "assay_term_name": {
             "comment": "Pooled clone sequencing experiments are required to have plasmids_library_type specified.",
             "oneOf": [
@@ -278,16 +293,18 @@
                 },
                 "oneOf": [
                     {
-                        "examined_loci": ["gene"],
-                        "maxProperties": 1
+                        "required": ["gene"],
+                        "properties": {
+                            "examined_loci": {
+                                "not": ["gene", "expression_range_minimum", "expression_range_maximum"]
+                            }
+                        }
                     },
                     {
-                        "required": ["gene", "expression_percentile"],
-                        "maxProperties": 2
+                        "required": ["gene", "expression_percentile"]
                     },
                     {
-                        "required": ["gene", "expression_range_minimum", "expression_range_maximum"],
-                        "maxProperties": 3
+                        "required": ["gene", "expression_range_minimum", "expression_range_maximum"]
                     }
                 ]
             }
