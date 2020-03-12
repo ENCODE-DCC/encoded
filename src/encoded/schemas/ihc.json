@@ -4,6 +4,11 @@
     "description": "Schema for describing the IHC results.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
+    
+    "anyOf": [
+        {"required": ["surgery"]},
+        {"required": ["biospecimen"]}
+    ],
     "required": [
         "patient",
         "service_date",
@@ -39,11 +44,20 @@
             "linkTo": "Patient"
         },
         "surgery": {
-            "title": "surgery accession",
-            "comment": "link to surgery inforation with surgery accession. ",
+            "title": "Surgery Accession",
+            "description": "Need any of surgery accession or biospecimen accession to submit data",
+            "comment": "link to surgery information with surgery accession. ",
             "type": "string",
             "permission": "import_items",
             "linkTo": "Surgery"
+        },
+        "biospecimen": {
+            "title": "Biospecimen Accession",
+            "description": "Need any of surgery accession or biospecimen accession to submit data",
+            "comment": "link to biospecimen information with biospecimen accession.",
+            "type": "string",
+            "permission": "import_items",
+            "linkTo": "Biospecimen"
         },
         "path_id": {
             "title": "Pathology ID",
@@ -100,7 +114,6 @@
                 "Negative",
                 "Rare Focal Positive",
                 "Focal Loss"
-
             ]
         }
     },
@@ -112,9 +125,12 @@
             "title": "IHC/FISH results"
         }
     },
-   
+
     "boost_values": {
         "antibody": 1.0,
+        "patient": 1.0,
+        "surgery": 1.0,
+        "biospecimen": 1.0,
         "result": 1.0
     },
     "changelog": "/profiles/changelogs/ihc.md"

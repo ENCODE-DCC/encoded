@@ -75,47 +75,43 @@
         "nephr_robotic_assist":{
             "title":"Nephrectomy Robotic Assist"
         },
-        "pathology_report.tumor_size_range": {
+        "tumor_size_range": {
             "title": "Tumor Size"
         },
-        "pathology_report.pT_stage_version6": {
-            "title": "pT 6th edition"
+        "pathology_report.t_stage": {
+            "title": "Pathological T stage"
         },
-        "pathology_report.pT_stage_version7": {
-            "title": "pT 7th edition"
+        "pathology_report.ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
         },
-
-        "pathology_report.pTNM_stage_version6": {
-            "title": "TNM Stage 6th edition"
-        },
-        "pathology_report.pTNM_stage_version7": {
-            "title": "TNM Stage 7th edition"
+        "pathology_report.ajcc_version": {
+            "title": "AJCC Version"
         },
         "pathology_report.laterality": {
-            "title": "Laterality"
+            "title": "Tumor Laterality"
         },
 
         "pathology_report.histology": {
-            "title": "Histologic Subtypes"
+            "title": "Tumor Histologic Subtypes"
         },
 
         "pathology_report.focality": {
-            "title": "Focality"
+            "title": "Tumor Focality"
         },
         "pathology_report.grade": {
-            "title": "Grade"
+            "title": "Tumor Grade"
         },
         "pathology_report.sarcomatoid": {
-            "title": "Sarcomatoid"
+            "title": "Sarcomatoid Change"
         },
         "pathology_report.necrosis": {
             "title": "Tumor Necrosis"
         },
         "pathology_report.margins": {
-            "title": "Margins"
+            "title": "Margin Status"
         },
          "pathology_report.lvi": {
-            "title": "LVI"
+            "title": "Lymphvascular invasion(LVI)"
         },
         "pathology_report.micro_perinephric": {
             "title": "Perinephric Infiltration"
@@ -147,46 +143,43 @@
         "surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
         },
-        "pathology_report.tumor_size_range": {
+        "tumor_size_range": {
             "title": "Tumor Size"
         },
-        "pathology_report.pT_stage_version6": {
-            "title": "pT 6th edition"
+        "pathology_report.t_stage": {
+            "title": "Pathological T stage"
         },
-        "pathology_report.pT_stage_version7": {
-            "title": "pT 7th edition"
+        "pathology_report.ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
         },
-        "pathology_report.pTNM_stage_version6": {
-            "title": "TNM Stage 6th edition"
-        },
-        "pathology_report.pTNM_stage_version7": {
-            "title": "TNM Stage 7th edition"
+        "pathology_report.ajcc_version": {
+            "title": "AJCC Version"
         },
         "pathology_report.laterality": {
-            "title": "Laterality"
+            "title": "Tumor Laterality"
         },
 
         "pathology_report.histology": {
-            "title": "Histologic Subtypes"
+            "title": "Tumor Histologic Subtypes"
         },
 
         "pathology_report.focality": {
-            "title": "Focality"
+            "title": "Tumor Focality"
         },
         "pathology_report.grade": {
-            "title": "Grade"
+            "title": "Tumor Grade"
         },
         "pathology_report.sarcomatoid": {
-            "title": "Sarcomatoid"
+            "title": "Sarcomatoid Change"
         },
         "pathology_report.necrosis": {
             "title": "Tumor Necrosis"
         },
         "pathology_report.margins": {
-            "title": "Margins"
+            "title": "Margin Status"
         },
          "pathology_report.lvi": {
-            "title": "LVI"
+            "title": "Lymphvascular invasion(LVI)"
         },
         "pathology_report.micro_perinephric": {
             "title": "Perinephric Infiltration"
@@ -203,12 +196,11 @@
         "accession": 1.0,
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
-        "pathology_report.tumor_size_range": 1.0,
-        "pathology_report.pT_stage_version6": 1.0,
-        "pathology_report.pT_stage_version7": 1.0,
-        "pathology_report.pTNM_stage_version6": 1.0,
-        "pathology_report.pTNM_stage_version7": 1.0,
-        "pathology_report.laterality":1.0,
+        "tumor_size_range": 1.0,
+        "pathology_report.t_stage": 1.0,
+        "pathology_report.ajcc_tnm_stage": 1.0,
+        "pathology_report.ajcc_version": 1.0,
+        "pathology_report.laterality":1.0, 
         "pathology_report.histology": 1.0,
         "pathology_report.focality": 1.0,
         "pathology_report.grade": 1.0,
