@@ -4005,10 +4005,10 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
     processed_data = files_structure.get('processed_data')
     if processed_data and 'analyses' in value:
         for file_object in processed_data:
-            for analysis in 'analyses':
-                if file_object in analysis:
+            for analysis in value['analyses']:
+                if file_object['@id'] in analysis:
                     return
-                if file_object not in analysis:
+                if file_object['@id'] not in analysis:
                     detail = ('Experiment {} '
                         'contains a processed file {} '
                         'that is not in an analysis'.format(
