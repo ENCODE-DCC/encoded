@@ -29,14 +29,14 @@ def audit_experiment_released_with_unreleased_files(value, system):
 
 @audit_checker('Dataset', frame=['original_files'])
 def audit_dataset_with_uploading_files(value, system):
-    category = None
     for file in value['original_files']:
+        category = None
         if file['status'] in ['upload failed', 'content error']:
             category = 'file validation error'
         elif file['status'] == 'uploading':
             category = 'file in uploading state'
 
-        if category:
+        if category is not None:
             detail = ('Dataset {} contains a file {} with the status {}.'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
                 audit_link(path_to_text(file['@id']), file['@id']),
