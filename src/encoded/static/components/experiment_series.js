@@ -48,6 +48,21 @@ function getQualityMetricsByReplicate(experiment, field) {
     return qmByRep;
 }
 
+// The hideColorCodedColumns is a collection of conditions determine whether
+// corresponding columns, which are all color coded, should be hide or not.
+// It will be used by experimentTableColumns thus its key should match keys in
+// experimentTableColumns. It will also be used to determine whether color
+// legend should be shown or not. So this collection should be color coded
+// columns only.
+const hideColorCodedColumns = {
+    readDepth: series => !series.assay_term_name.includes('ChIP-seq'),
+    NRF: series => !series.assay_term_name.includes('ChIP-seq'),
+    NSC: series => !series.assay_term_name.includes('ChIP-seq'),
+    PBC1: series => !series.assay_term_name.includes('ChIP-seq'),
+    PBC2: series => !series.assay_term_name.includes('ChIP-seq'),
+    IDR: series => !series.assay_term_name.includes('ChIP-seq') || series.target.some(target => target.investigated_as.includes('histone')),
+};
+
 const experimentTableColumns = {
     accession: {
         title: 'Accession',
@@ -96,7 +111,7 @@ const experimentTableColumns = {
             }
             return (
                 <td key="antibody">
-                    {statuses.map(status => <Status item={status} inline />)}
+                    {statuses.map((status, i) => <Status key={i} item={status} inline />)}
                 </td>
             );
         },
@@ -143,7 +158,7 @@ const experimentTableColumns = {
             return <td key="readDepth" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => hideColorCodedColumns.readDepth(series),
     },
 
     NRF: {
@@ -167,7 +182,7 @@ const experimentTableColumns = {
             return <td key="NRF" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => hideColorCodedColumns.NRF(series),
     },
 
     NSC: {
@@ -191,7 +206,7 @@ const experimentTableColumns = {
             return <td key="NSC" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => hideColorCodedColumns.NSC(series),
     },
 
     PBC1: {
@@ -215,7 +230,7 @@ const experimentTableColumns = {
             return <td key="PBC1" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => hideColorCodedColumns.PBC1(series),
     },
 
     PBC2: {
@@ -239,7 +254,7 @@ const experimentTableColumns = {
             return <td key="PBC2" className="qc-report" />;
         },
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => hideColorCodedColumns.PBC2(series),
     },
 
     IDR: {
@@ -260,7 +275,7 @@ const experimentTableColumns = {
             }
             return <td key="IDR" className="qc-report" rowSpan={meta.rowCount} />;
         },
-        hide: series => !series.assay_term_name.includes('ChIP-seq') || series.target.some(target => target.investigated_as.includes('histone')),
+        hide: series => hideColorCodedColumns.IDR(series),
     },
 
     peakCount: {
@@ -326,11 +341,10 @@ const experimentTableColumns = {
 // Display the color legend for quality metrics.
 const QualityMetricLegend = () => (
     <div className="qc-legend">
-        <div className="qc-legend-item"><b>Quality metric status:</b></div>
-        <div className="qc-legend-item qc-report--ideal">Recommended</div>
-        <div className="qc-legend-item qc-report--warning">Sufficient</div>
-        <div className="qc-legend-item qc-report--not-compliant">Insufficient</div>
-        <div className="qc-legend-item qc-report--error">Error</div>
+        <div className="qc-legend-item qc-report qc-report--ideal">Recommended</div>
+        <div className="qc-legend-item qc-report qc-report--warning">Sufficient</div>
+        <div className="qc-legend-item qc-report qc-report--not-compliant">Insufficient</div>
+        <div className="qc-legend-item qc-report qc-report--error">Error</div>
     </div>
 );
 
@@ -494,6 +508,9 @@ class ExperimentSeriesComponent extends React.Component {
                 columns[columnId] = experimentTableColumns[columnId];
             }
         });
+        const showQualityMetricLegend = Object.keys(hideColorCodedColumns).some(
+            columnId => !hideColorCodedColumns[columnId](seriesObject)
+        );
         let addAllToCartControl;
         let internalTags = [];
         const allRows = [];
@@ -667,7 +684,7 @@ class ExperimentSeriesComponent extends React.Component {
 
                 {addAllToCartControl && allRows.length > 0 ?
                     <Panel addClasses="table-panel">
-                        <PanelHeading key="heading">{addAllToCartControl}</PanelHeading>
+                        <PanelHeading>{addAllToCartControl}</PanelHeading>
 
                         <div className="table__scrollarea" key="table">
                             <table className="table table__sortable table-raw">
@@ -681,7 +698,7 @@ class ExperimentSeriesComponent extends React.Component {
                                 </tbody>
                             </table>
                         </div>
-                        <PanelFooter><QualityMetricLegend /></PanelFooter>
+                        {showQualityMetricLegend ? <PanelFooter><QualityMetricLegend /></PanelFooter> : null}
                     </Panel>
                 : null}
 
