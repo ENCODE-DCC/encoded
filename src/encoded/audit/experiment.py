@@ -4004,19 +4004,25 @@ def audit_experiment_no_processed_data(value, system, files_structure):
 def audit_experiment_inconsistent_analyses_files(value, system, files_structure):
     processed_data = files_structure.get('processed_data')
     if processed_data and 'analyses' in value:
-        for file_object in processed_data:
-            for analysis in value['analyses']:
-                if file_object['@id'] in analysis:
-                    return
-                if file_object['@id'] not in analysis:
-                    detail = ('Experiment {} '
-                        'contains a processed file {} '
-                        'that is not in an analysis'.format(
+        analysis_outputs = set()
+        for analysis in value['analyses']:
+            for f in analysis['files']:
+                analysis_outputs.add(f)
+        files_not_in_analysis = []
+        for processed_file in processed_data:
+            if processed_file['@id'] in analysis_outputs:
+                continue
+            if processed_file['@id'] not in analysis_outputs:
+                files_not_in_analysis.append(processed_file)
+                files_not_in_analysis_links = [audit_link(path_to_text(file), file) for file in files_not_in_analysis]
+                detail = ('Experiment {} '
+                        'contains processed file(s) {} '
+                        'not in an analysis'.format(
                             audit_link(path_to_text(value['@id']), value['@id']),
-                            audit_link(path_to_text(file_object['@id']), file_object['@id']),
+                            ', '.join(files_not_in_analysis_links)
                         )
                     )
-                    yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
 
 
 #######################
