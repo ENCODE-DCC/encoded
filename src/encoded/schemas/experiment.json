@@ -232,7 +232,7 @@
                     },
                     "assemblies": {
                         "title": "Assemblies",
-                        "description": "A list of genome assemblies on which this analsis is performed.",
+                        "description": "A list of genome assemblies on which this analysis is performed.",
                         "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
                         "type": "array",
                         "notSubmittable": true,
@@ -242,7 +242,7 @@
                     },
                     "genome_annotations": {
                         "title": "Genome Annotations",
-                        "description": "A list of genome annotations on which this analsis is performed.",
+                        "description": "A list of genome annotations on which this analysis is performed.",
                         "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
                         "type": "array",
                         "notSubmittable": true,
@@ -251,7 +251,7 @@
                         }
                     },
                     "pipelines": {
-                        "title": "Piplines",
+                        "title": "Pipelines",
                         "description": "A list of pipelines used to generate this analysis.",
                         "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
                         "type": "array",
@@ -262,7 +262,7 @@
                         }
                     },
                     "pipeline_award_rfas": {
-                        "title": "Pipline awards",
+                        "title": "Pipeline awards",
                         "description": "A list of award bioproject phases to which pipelines that used to generate this analysis belong to.",
                         "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
                         "type": "array",
