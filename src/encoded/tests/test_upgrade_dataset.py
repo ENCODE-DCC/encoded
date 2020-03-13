@@ -390,14 +390,6 @@ def test_upgrade_reference_17_to_18(upgrader, dataset_reference_1, dataset_refer
     assert 'IHEC:IHECRE00004703' in value['notes']
 
 
-def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
-    value = upgrader.upgrade(
-        'annotation', annotation_27, current_version='27', target_version='28'
-    )
-    assert value['schema_version'] == '28'
-    assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
-
-
 def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
     upgrade_18_19_reference['examined_loci'] = []
     print(upgrade_18_19_reference['examined_loci'])
@@ -405,3 +397,13 @@ def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
         'reference', upgrade_18_19_reference, current_version='18', target_version='19')
     assert value['schema_version'] == '19'
     assert 'examined_loci' not in value
+    assert value['schema_version'] == '28'
+    assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
+    value = upgrader.upgrade(
+        'annotation', annotation_27, current_version='27', target_version='28'
+    )
+    assert 'relevant_timepoint' not in value
+    assert 'relevant_timepoint_units' not in value

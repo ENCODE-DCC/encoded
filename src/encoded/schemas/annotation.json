@@ -147,8 +147,7 @@
                 "day",
                 "week",
                 "month",
-                "year",
-                "stage"
+                "year"
             ]
         },
         "relevant_life_stage": {

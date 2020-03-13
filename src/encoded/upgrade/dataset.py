@@ -579,6 +579,7 @@ def dataset_28_29(value, system):
     else:
         value['dbxrefs'] = sorted(new_dbxrefs)
 
+<<<<<<< HEAD
 
 @upgrade_step('annotation', '27', '28')
 def annotation_27_28(value, system):
@@ -597,3 +598,13 @@ def reference_18_19(value, system):
         examined_loci = value.get('examined_loci', None)
         if examined_loci == []:
             value.pop('examined_loci', None)
+
+
+@upgrade_step('annotation', '28', '29')
+def annotation_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4438
+    units = value.get('relevant_timepoint_units')
+    if units == 'stage':
+        value.pop('relevant_timepoint', None)
+        value.pop('relevant_timepoint_units', None)
+    return
