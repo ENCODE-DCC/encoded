@@ -33,6 +33,12 @@
             "type": "string",
             "linkTo": "Surgery"
         },
+        "patient": {
+            "title": "Patient",
+            "description": "The patient the lab was conducted for.",
+            "type": "string",
+            "linkTo": "Patient"
+        },
 
         "date": {
             "title": "Pathology date",
@@ -485,6 +491,9 @@
         "surgery": {
             "title": "Surgery"
         },
+        "patient": {
+            "title": "Patient"
+        },
         "status": {
             "title": "Status"
         },
@@ -544,6 +553,7 @@
     },
     "boost_values": {
         "surgery": 1.0,
+        "patient": 1.0,
         "laterality":1.0,
         "accession":1.0,
         "histology": 1.0,
