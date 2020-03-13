@@ -294,7 +294,8 @@
                         "not": {
                             "properties": {
                                 "examined_loci": [
-                                    "expression_percentile"
+                                    "expression_range_minimum",
+                                    "expression_range_maximum"
                                 ]
                             }
                         }
@@ -304,8 +305,7 @@
                         "not": {
                             "properties": {
                                 "examined_loci": [
-                                    "expression_range_minimum",
-                                    "expression_range_maximum"
+                                    "expression_percentile"
                                 ]
                             }
                         }
