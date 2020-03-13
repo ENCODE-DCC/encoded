@@ -152,3 +152,16 @@ $brand-info: #4F689E;
   }
   */
 
+  .tooltip-image-inner {
+    // max-width: 200px;
+    padding: 3px 8px;
+    // color: #fff;
+    // text-align: center;
+    // text-decoration: none;
+    background-color: #d3dee8;
+    border: 1px solid black;
+    border-radius: 3px; }
+
+  .cart__tools button > .no-margin-left {
+     margin-left: 0px;
+   } 
