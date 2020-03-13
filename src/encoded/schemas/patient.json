@@ -128,6 +128,12 @@
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " AJCC TNM Stage"
         },
+        "ihc.antibody": {
+            "title": "IHC/FISH (Clinical lab)"
+        },
+        "ihc.result": {
+            "title": "IHC/FISH results"
+        },
         "medications.name":{
             "title":"Medication Name"
         },
@@ -137,9 +143,6 @@
         "germline_summary": {
             "title": "Germline Mutation"
         },
-
-      
-        
         "radiation_summary": {
             "title": "Radiation Treatment Status"
         },
@@ -216,6 +219,12 @@
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " AJCC TNM Stage"
+        },
+        "ihc.antibody": {
+            "title": "IHC/FISH (Clinical lab)"
+        },
+        "ihc.result": {
+            "title": "IHC/FISH results"
         }
     },
     "boost_values": {
@@ -227,8 +236,9 @@
         "germline.significance": 1.0,
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0,
-        
-        "medications.name":1.0
+        "medications.name":1.0,
+        "ihc.antibody": 1.0,
+        "ihc.result": 1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
 }

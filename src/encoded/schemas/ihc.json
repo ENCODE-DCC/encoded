@@ -16,7 +16,7 @@
         "result"
     ],
     "identifyingProperties": [
-        "uuid","pathology_report","biospecimen"
+        "uuid","pathology_report","biospecimen","patient"
     ],
     "additionalProperties": false,
     "mixinProperties": [
