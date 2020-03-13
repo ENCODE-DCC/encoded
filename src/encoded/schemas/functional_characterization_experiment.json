@@ -242,14 +242,12 @@
             "type": "array",
             "uniqueItems": true,
             "minItems": 1,
-            "required": {
-                "gene": "string"
-            },
             "items": {
                 "title": "Locus",
                 "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
                 "type": "object",
                 "additionalProperties": false,
+                "required": ["gene"],
                 "properties": {
                     "gene": {
                         "title": "Gene",
