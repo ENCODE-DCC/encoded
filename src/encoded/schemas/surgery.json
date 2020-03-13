@@ -123,10 +123,10 @@
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         },
         "pathology_report.ihc.antibody": {
-            "title": "IHC Assay staining antibody"
+            "title": "IHC/FISH (Clinical lab)"
         },
         "pathology_report.ihc.result": {
-            "title": "IHC assay staining result"
+            "title": "IHC/FISH results"
         }
     },
     "columns": {
@@ -197,10 +197,10 @@
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         },
         "pathology_report.ihc.antibody": {
-            "title": "IHC Assay staining antibody"
+            "title": "IHC/FISH (Clinical lab)"
         },
         "pathology_report.ihc.result": {
-            "title": "IHC assay staining result"
+            "title": "IHC/FISH results"
         }
 
     },
