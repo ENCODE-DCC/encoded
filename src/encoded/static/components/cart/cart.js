@@ -12,6 +12,7 @@ import { itemClass, encodedURIComponent, parseAndLogError } from '../globals';
 import { requestObjects, DisplayAsJson } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
+import CartCBioportalButton from './cbioportal';
 import CartClearButton from './clear';
 import { cartRetrieve } from './database';
 import CartMergeShared from './merge_shared';
@@ -881,6 +882,16 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fi
     <div className="cart__tools">
         {elements.length > 0 ?
             <CartBatchDownload
+                elements={elements}
+                selectedTerms={selectedTerms}
+                cartType={cartType}
+                savedCartObj={savedCartObj}
+                sharedCart={sharedCart}
+                fileCount={fileCount}
+            />
+        : null}
+        {elements.length > 0 ?
+            <CartCBioportalButton
                 elements={elements}
                 selectedTerms={selectedTerms}
                 cartType={cartType}
