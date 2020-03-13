@@ -13,8 +13,6 @@ class PathologyReport extends React.Component {
     }
     render() {
         const context = this.props.context;
-        console.log(context);
-        console.log(context.ihc);
 
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs

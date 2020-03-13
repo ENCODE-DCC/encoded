@@ -7,7 +7,6 @@ import Status from './status';
 import { PanelLookup } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
 import PathologyReportTable from './patholgoyReprotTable';
-// import IHCTable from './ihcTable';
 
 
 
