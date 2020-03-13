@@ -53,7 +53,7 @@ const portal = {
                 { id: 'collections', title: 'Collections' },
                 { id: 'encore', title: 'ENCORE', url: '/matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
                 { id: 'entex', title: 'ENTEx', url: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
-                { id: 'sescc', title: 'SE Stem Cell Consortium', url: '/matrix/?type=Experiment&status=released&internal_tags=SESCC', tag: 'collection' },
+                { id: 'sescc', title: 'SESCC stem cell development matrix', url: '/sescc-stem-cell-matrix/?type=Experiment&internal_tags=SESCC', tag: 'collection' },
                 { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
                 { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'mouse-development-matrix', title: 'Mouse development matrix', url: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus', tag: 'collection' },
