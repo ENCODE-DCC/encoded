@@ -242,6 +242,9 @@
             "type": "array",
             "uniqueItems": true,
             "minItems": 1,
+            "required": {
+                "gene": "string"
+            },
             "items": {
                 "title": "Locus",
                 "description": "The gene whose expression or product is under investigation for the functional characterization experiment.",
@@ -276,20 +279,18 @@
                         "maximum": 100
                     }
                 },
-                "oneOf": [
-                    {
-                        "examined_loci": ["gene"],
-                        "maxProperties": 1
-                    },
-                    {
-                        "required": ["gene", "expression_percentile"],
-                        "maxProperties": 2
-                    },
-                    {
-                        "required": ["gene", "expression_range_minimum", "expression_range_maximum"],
-                        "maxProperties": 3
+                "dependencies": {
+                    "expression_range_minimum": ["expression_range_maximum"],
+                    "expression_range_maximum": ["expression_range_minimum"],
+                    "expression_percentile": {
+                        "not": {
+                            "required": {
+                                "expression_range_minimum": "integer",
+                                "expression_range_maximum": "integer"
+                            }
+                        }
                     }
-                ]
+                }
             }
         }
     },
