@@ -278,24 +278,13 @@
                 },
                 "oneOf": [
                     {
-                        "required": ["gene"],
-                        "not": {
-                            "properties": {
-                                "examined_loci": [
-                                    "gene", "expression_percentile"
-                                ],
-                                "examined_loci": [
-                                    "gene", "expression_range_minimum", "expression_range_maximum"
-                                ]
-                            }
-                        }
+                        "required": ["gene"]
                     },
                     {
                         "required": ["gene", "expression_percentile"],
                         "not": {
                             "properties": {
                                 "examined_loci": [
-                                    "gene",
                                     "expression_range_minimum",
                                     "expression_range_maximum"
                                 ]
@@ -307,7 +296,6 @@
                         "not": {
                             "properties": {
                                 "examined_loci": [
-                                    "gene",
                                     "expression_percentile"
                                 ]
                             }
