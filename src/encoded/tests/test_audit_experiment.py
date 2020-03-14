@@ -3896,7 +3896,7 @@ def test_audit_experiment_inconsistent_analyses_files(testapp, experiment_with_a
         'dataset': experiment_with_analyses['@id'],
         })
     res = testapp.get(experiment_with_analyses['@id'] + '@@index-data')
-    assert (error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
     testapp.patch_json(file_bam_1_1['@id'], {
         'dataset': experiment_with_analyses_2['@id'],
         })
@@ -3904,4 +3904,4 @@ def test_audit_experiment_inconsistent_analyses_files(testapp, experiment_with_a
         'dataset': experiment_with_analyses_2['@id'],
         })
     res = testapp.get(experiment_with_analyses_2['@id'] + '@@index-data')
-    assert (error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))

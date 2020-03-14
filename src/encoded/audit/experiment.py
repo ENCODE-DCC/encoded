@@ -4010,9 +4010,9 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
                 analysis_outputs.add(f)
         files_not_in_analysis = []
         for processed_file in processed_data:
-            if processed_file['@id'] in analysis_outputs:
+            if processed_file in analysis_outputs:
                 continue
-            if processed_file['@id'] not in analysis_outputs:
+            if processed_file not in analysis_outputs:
                 files_not_in_analysis.append(processed_file)
                 files_not_in_analysis_links = [audit_link(path_to_text(file), file) for file in files_not_in_analysis]
                 detail = ('Experiment {} '
@@ -4025,9 +4025,9 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
                 yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
         files_not_in_processed_data = []
         for analysis_file in analysis_outputs:
-            if analysis_file['@id'] in processed_data:
+            if analysis_file in processed_data:
                 continue
-            if analysis_file['@id'] not in processed_data:
+            if analysis_file not in processed_data:
                 files_not_in_processed_data.append(analysis_file)
                 files_not_in_processed_data_links = [audit_link(path_to_text(file), file) for file in files_not_in_processed_data]
                 detail = ('Experiment {} '
