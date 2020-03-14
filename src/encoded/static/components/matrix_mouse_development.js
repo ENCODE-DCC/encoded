@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
@@ -65,22 +64,40 @@ const mouseMatrixColors = {
 };
 
 /**
- * Given one subcategory of matrix data (all the subcategory rows within a category), collect
- * summary information about that data.
- * @param {array}  subCategoryData Array of subcategory objects, each containing an array of data
- * @param {string} columnCategoryType `subCategoryData` property that contains data array
- * @param {array}  colMap Maps column titles to the column indices they correspond to
- * @param {number} colCount Number of columns in matrix
- *
- * @return {object} Summary information about given matrix data:
- *     {
- *         {array} subCategorySums: Column sums for all subcategory rows
- *         {number} maxSubCategoryValue: Maximum value in all cells in all subcategory rows
- *         {number} minSubCategoryValue: Minimum value in all cells in all subcategory rows
- *     }
+ * Increment subCategorySums value for bucket keys matching a column name
  */
-const analyzeSubCategoryData = (subCategoryData, columnCategory, columnSubcategory, colMap, colCount, stageFilter) => {
-    const subCategorySums = Array(colCount).fill(0);
+function updateColumnCount(value, colMap, subCategorySums) {
+    let colIndex = 0;
+    if (value && value.COL_SUBCATEGORY && value.COL_SUBCATEGORY.buckets.length > 1) {
+        value.COL_SUBCATEGORY.buckets.forEach((bucket) => {
+            const newKey = `${value.key}|${bucket.key}`;
+            if (bucket.key && colMap[newKey]) {
+                colIndex = colMap[newKey].col || 0;
+            } else {
+                colIndex = colMap[value.key].col || 0;
+            }
+            subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
+        });
+    } else {
+        colIndex = colMap[value.key].col || 0;
+        subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
+    }
+    return subCategorySums;
+}
+
+/**
+  * Collect column counts to display on headers
+  * Counts reflect the number of rows which contain data per column, not the number of experiments per column
+  * @param {array}    subCategoryData Array of subcategory objects, each containing an array of data
+  * @param {string}   columnCategory Column headers variable
+  * @param {object}   colMap Keyed column header information
+  * @param {number}   colCount Number of columns
+  * @param {array}   stageFilter Stage/age filters selected by user
+  *
+  * @return {array}   subCategorySums Counts per column
+  */
+const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCount, stageFilter) => {
+    let subCategorySums = Array(colCount).fill(0);
     subCategoryData.forEach((rowData) => {
         // `rowData` has all the data for one row. Collect sums of all data for each column.
         rowData[columnCategory].buckets.forEach((value) => {
@@ -89,47 +106,21 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, columnSubcatego
                     const filterString = singleFilter.replace(/[()]/g, '');
                     const keyString = rowData.key.replace(/[()]/g, '');
                     if (!filterString || keyString.includes(filterString)) {
-                        let colIndex = 0;
-                        if (value && value['target.label'] && value['target.label'].buckets.length > 1) {
-                            value['target.label'].buckets.forEach((bucket) => {
-                                const newKey = `${value.key}|${bucket.key}`;
-                                if (bucket.key && colMap[newKey]) {
-                                    colIndex = colMap[newKey].col || 0;
-                                    subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
-                                } else {
-                                    colIndex = colMap[value.key].col || 0;
-                                    subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
-                                }
-                            });
-                        } else {
-                            colIndex = colMap[value.key].col || 0;
-                            subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
-                        }
+                        subCategorySums = updateColumnCount(value, colMap, subCategorySums);
                     }
                 });
             } else {
-                let colIndex = 0;
-                if (value && value['target.label'] && value['target.label'].buckets.length > 1) {
-                    value['target.label'].buckets.forEach((bucket) => {
-                        const newKey = `${value.key}|${bucket.key}`;
-                        if (bucket.key && colMap[newKey]) {
-                            colIndex = colMap[newKey].col || 0;
-                            subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
-                        } else {
-                            colIndex = colMap[value.key].col || 0;
-                            subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
-                        }
-                    });
-                } else {
-                    colIndex = colMap[value.key].col || 0;
-                    subCategorySums[colIndex] = (subCategorySums[colIndex] || 0) + 1;
-                }
+                subCategorySums = updateColumnCount(value, colMap, subCategorySums);
             }
         });
     });
     return subCategorySums;
 };
 
+// Sort the rows of the matrix by stage (embryo -> postnatal -> adult) and then by age
+// Age can be denoted in days or weeks
+// In the future there are likely to be additions to the data which will require updates to this function
+// For instance, ages measured by months will likely be added
 function sortMouseArray(a, b) {
     const aStage = a.split(' (')[0];
     const bStage = b.split(' (')[0];
@@ -195,7 +186,7 @@ const generateNewColMap = (context) => {
     sortedColCategoryBuckets.forEach((colCategoryBucket) => {
         if (!excludedAssays.includes(colCategoryBucket.key)) {
             const colSubcategoryBuckets = colCategoryBucket[colSubcategory].buckets;
-            if (colSubcategoryBuckets.length <= 0) {
+            if (colSubcategoryBuckets.length === 0) {
                 // Add the mapping of "<assay>" key string to column index.
                 colMap[colCategoryBucket.key] = { col: colIndex, category: colCategoryBucket.key, hasSubcategories: colSubcategoryBuckets.length > 0 };
                 colIndex += 1;
@@ -220,20 +211,18 @@ const generateNewColMap = (context) => {
 
 /**
  * Takes matrix data from JSON and generates an object that <DataTable> can use to generate the JSX
- * for the matrix. This is a shim between the experiment or audit data and the data <DataTable>
- * needs.
+ * for the matrix.
  * @param {object} context Matrix JSON for the page
  * @param {func}   getRowCategories Returns rowCategory info including desired display order
- * @param {func}   getRowSubCategories Returns subCategory desired display order
  * @param {func}   mapRowCategoryQueries Callback to map row category query values
- * @param {func}   mapSubCategoryQueries Callback to map subcategory query values
  * @param {array}  expandedRowCategories Names of rowCategories the user has expanded
  * @param {func}   expanderClickHandler Called when the user expands/collapses a row category
+ * @param {func}   stageFilter Stage/age filters selected by user
  *
  * @return {object} Generated object suitable for passing to <DataTable>
  */
 
-const convertExperimentToDataTable = (context, getRowCategories, getRowSubCategories, mapRowCategoryQueries, mapSubCategoryQueries, expandedRowCategories, expanderClickHandler, clearClassifications, stageFilter) => {
+const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQueries, expandedRowCategories, expanderClickHandler, stageFilter) => {
     const rowCategory = context.matrix.y.group_by[0];
     const rowSubcategory = context.matrix.y.group_by[1];
 
@@ -365,17 +354,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         selectedFilters = selectedFilters.substring(0, selectedFilters.length - 1);
     }
 
-    const header = [
-        {
-            header: (
-                clearClassifications ?
-                    <div className="matrix__clear-classifications">
-                        <a href={clearClassifications}><i className="icon icon-times-circle" /> Clear classifications</a>
-                    </div>
-                : null
-            ),
-        },
-    ].concat(sortedCols.map((colInfo) => {
+    const header = [{ header: null }].concat(sortedCols.map((colInfo) => {
         const categoryQuery = `${COL_CATEGORY}=${encoding.encodedURIComponent(colInfo.category)}`;
         if (!colInfo.subcategory) {
             // Add the category column links.
@@ -392,7 +371,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
     let dataTableCount = 0;
     newRowCategoryData.forEach((rowCategoryBucket) => {
         const rowSubcategoryBuckets = rowCategoryBucket[rowSubcategory].buckets;
-        const subCategorySums = analyzeSubCategoryData(rowSubcategoryBuckets, COL_CATEGORY, colSubcategory, colMap, colCount, stageFilter);
+        const subCategorySums = analyzeSubCategoryData(rowSubcategoryBuckets, COL_CATEGORY, colMap, colCount, stageFilter);
         dataTableCount += subCategorySums.reduce((a, b) => a + b);
     });
 
@@ -417,7 +396,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         const expandableRowCategory = false;
         const rowCategoryQuery = `${ROW_CATEGORY}=${encoding.encodedURIComponent(rowCategoryBucket.key)}`;
 
-        const subCategorySums = analyzeSubCategoryData(rowSubcategoryBuckets, COL_CATEGORY, colSubcategory, colMap, colCount, stageFilter);
+        const subCategorySums = analyzeSubCategoryData(rowSubcategoryBuckets, COL_CATEGORY, colMap, colCount, stageFilter);
 
         // Update the row key mechanism.
         rowKeys[matrixRow] = rowCategoryBucket.key;
@@ -448,7 +427,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             filteredRowSubcategoryBuckets = visibleRowSubcategoryBuckets;
         }
 
-        const categoryNameQuery = encoding.encodedURIComponentOLD(rowCategoryBucket.key);
+        const categoryNameQuery = encoding.encodedURIComponent(rowCategoryBucket.key);
 
         // Generate one classification's rows of term names.
         const cells = Array(colCount);
@@ -558,7 +537,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: (rowSum > 0) ? rowCategoryColor : zeroRowColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${!(colCategoryNames[subCategorySumIndex].includes('|')) ? `${COL_CATEGORY}=${encoding.encodedURIComponent(colCategoryNames[subCategorySumIndex])}` : `${COL_SUBCATEGORY}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex].split('|')[1])}`}`}>
+                                <a style={{ backgroundColor: (rowSum > 0) ? rowCategoryColor : zeroRowColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${!(colCategoryNames[subCategorySumIndex].includes('|')) ? `${COL_CATEGORY}=${encoding.encodedURIComponent(colCategoryNames[subCategorySumIndex])}` : `${COL_SUBCATEGORY}=${encoding.encodedURIComponent(colCategoryNames[subCategorySumIndex].split('|')[1])}`}`}>
                                     {subCategorySum}
                                 </a>
                             :
@@ -601,18 +580,16 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
 /**
  * Render the area above the facets and matrix content.
  */
-const MatrixHeader = ({ context }) => {
-    return (
-        <div className="matrix-header">
-            <div className="matrix-header__title">
-                <h1>{context.title}</h1>
-                <div className="matrix-tags">
-                    <MatrixInternalTags context={context} />
-                </div>
+const MatrixHeader = ({ context }) => (
+    <div className="matrix-header">
+        <div className="matrix-header__title">
+            <h1>{context.title}</h1>
+            <div className="matrix-tags">
+                <MatrixInternalTags context={context} />
             </div>
         </div>
-    );
-};
+    </div>
+);
 
 MatrixHeader.propTypes = {
     /** Matrix search result object */
@@ -677,7 +654,6 @@ class MatrixPresentation extends React.Component {
         this.expanderClickHandler = this.expanderClickHandler.bind(this);
         this.handleOnScroll = this.handleOnScroll.bind(this);
         this.handleScrollIndicator = this.handleScrollIndicator.bind(this);
-        this.getClearClassificationsLink = this.getClearClassificationsLink.bind(this);
         this.selectMouseDevelopmentStage = this.selectMouseDevelopmentStage.bind(this);
         this.hasRequestedClassifications = filteredClassifications.length > 0;
         this.clearFilters = this.clearFilters.bind(this);
@@ -687,7 +663,7 @@ class MatrixPresentation extends React.Component {
     componentDidMount() {
         this.handleScrollIndicator(this.scrollElement);
         this.updateWindowWidth();
-        window.addEventListener("resize", this.updateWindowWidth);
+        window.addEventListener('resize', this.updateWindowWidth);
     }
 
     componentDidUpdate(prevProps) {
@@ -697,12 +673,6 @@ class MatrixPresentation extends React.Component {
             this.handleScrollIndicator(this.scrollElement);
             this.setState({ expandedRowCategories: [] });
         }
-    }
-
-    updateWindowWidth() {
-        this.setState({
-          windowWidth: window.innerWidth,
-        });
     }
 
     /**
@@ -715,22 +685,10 @@ class MatrixPresentation extends React.Component {
         return this.query.getKeyValues(key);
     }
 
-    /**
-     * Get the URL to clear the currently selected classification in the query string, if any.
-     *
-     * @return {string} URL used to clear classifications from the query string.
-     */
-    getClearClassificationsLink() {
-        if (this.hasRequestedClassifications) {
-            const parsedUrl = url.parse(this.props.context['@id']);
-            const query = new QueryString(parsedUrl.query);
-            query.deleteKeyValue(ROW_CATEGORY);
-            parsedUrl.search = null;
-            parsedUrl.query = null;
-            const baseMatrixUrl = url.format(parsedUrl);
-            return `${baseMatrixUrl}?${query.format()}`;
-        }
-        return null;
+    updateWindowWidth() {
+        this.setState({
+            windowWidth: window.innerWidth,
+        });
     }
 
     /**
@@ -840,9 +798,8 @@ class MatrixPresentation extends React.Component {
     }
 
     render() {
-        const { context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries } = this.props;
+        const { context, rowCategoryGetter, mapRowCategoryQueries } = this.props;
         const { scrolledRight } = this.state;
-        const clearClassifications = this.getClearClassificationsLink();
 
         // Apply filter from buttons
         let stageFilter = null;
@@ -851,13 +808,13 @@ class MatrixPresentation extends React.Component {
         }
 
         // Convert matrix data to a DataTable object.
-        const { dataTable, rowKeys } = convertExperimentToDataTable(context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries, this.state.expandedRowCategories, this.expanderClickHandler, clearClassifications, stageFilter);
+        const { dataTable, rowKeys } = convertExperimentToDataTable(context, rowCategoryGetter, mapRowCategoryQueries, this.state.expandedRowCategories, this.expanderClickHandler, stageFilter);
         // If we have a wide window, split the table in two
         let matrixConfig;
         let matrixConfig2;
         if (this.state.windowWidth > 1160) {
             // Determining best index for splitting the matrix
-            const spacerRowIndices = dataTable.map((d, i) => d.css === "matrix__row-spacer" ? i : '').filter(String);
+            const spacerRowIndices = dataTable.map((d, i) => (d.css === 'matrix__row-spacer' ? i : '')).filter(String);
             const distanceFromCenter = spacerRowIndices.map(d => Math.abs(d - (dataTable.length / 2)));
             const bestCenter = spacerRowIndices[distanceFromCenter.findIndex(d => d === Math.min(...distanceFromCenter))];
             matrixConfig = {
@@ -866,7 +823,7 @@ class MatrixPresentation extends React.Component {
                 tableCss: 'matrix',
             };
             matrixConfig2 = {
-                rows: [dataTable[0], ...dataTable.slice(bestCenter,dataTable.length)],
+                rows: [dataTable[0], ...dataTable.slice(bestCenter, dataTable.length)],
                 rowKeys,
                 tableCss: 'matrix',
             };
@@ -912,13 +869,13 @@ class MatrixPresentation extends React.Component {
         let embryoSecondRowWidth = 0;
         let countEmbryoFirstRow;
         let countEmbryoSecondRow;
-        let embryoFirstRow
+        let embryoFirstRow;
         let embryoSecondRow;
         // 40 is container padding
         if ((embryoWidth + 40) > this.state.windowWidth) {
             embryoSplitRows = true;
             countEmbryoFirstRow = Math.floor((this.state.windowWidth - 40) / (embryoDefault + 2));
-            embryoFirstRow = mouseAgeObject.embryo.slice(0,countEmbryoFirstRow);
+            embryoFirstRow = mouseAgeObject.embryo.slice(0, countEmbryoFirstRow);
             embryoFirstRowWidth = (countEmbryoFirstRow * (embryoDefault + 2)) - 2;
             countEmbryoSecondRow = mouseAgeObject.embryo.length - countEmbryoFirstRow;
             embryoSecondRow = mouseAgeObject.embryo.slice(countEmbryoFirstRow, mouseAgeObject.embryo.length);
@@ -1036,12 +993,8 @@ MatrixPresentation.propTypes = {
     context: PropTypes.object.isRequired,
     /** Callback to retrieve row categories */
     rowCategoryGetter: PropTypes.func.isRequired,
-    /** Callback to retrieve subcategories */
-    rowSubCategoryGetter: PropTypes.func.isRequired,
     /** Callback to map row category query values */
     mapRowCategoryQueries: PropTypes.func.isRequired,
-    /** Callback to map subcategory query values */
-    mapSubCategoryQueries: PropTypes.func.isRequired,
 };
 
 MatrixPresentation.contextTypes = {
@@ -1052,9 +1005,9 @@ MatrixPresentation.contextTypes = {
 /**
  * Render the vertical facets and the matrix itself.
  */
-const MatrixContent = ({ context, rowCategoryGetter, rowSubCategoryGetter, mapRowCategoryQueries, mapSubCategoryQueries }) => (
+const MatrixContent = ({ context, rowCategoryGetter, mapRowCategoryQueries }) => (
     <div className="matrix__content">
-        <MatrixPresentation context={context} rowCategoryGetter={rowCategoryGetter} rowSubCategoryGetter={rowSubCategoryGetter} mapRowCategoryQueries={mapRowCategoryQueries} mapSubCategoryQueries={mapSubCategoryQueries} />
+        <MatrixPresentation context={context} rowCategoryGetter={rowCategoryGetter} mapRowCategoryQueries={mapRowCategoryQueries} />
     </div>
 );
 
@@ -1063,12 +1016,8 @@ MatrixContent.propTypes = {
     context: PropTypes.object.isRequired,
     /** Callback to retrieve row categories from matrix data */
     rowCategoryGetter: PropTypes.func.isRequired,
-    /** Callback to retrieve subcategories from matrix data */
-    rowSubCategoryGetter: PropTypes.func.isRequired,
     /** Callback to map row category query values */
     mapRowCategoryQueries: PropTypes.func.isRequired,
-    /** Callback to map subcategory query values */
-    mapSubCategoryQueries: PropTypes.func.isRequired,
 };
 
 
@@ -1081,7 +1030,7 @@ MatrixContent.propTypes = {
  * @return {string} mapped row category query
  */
 const mapRowCategoryQueriesExperiment = (rowCategory, rowCategoryBucket) => (
-    `${rowCategory}=${encoding.encodedURIComponentOLD(rowCategoryBucket.key)}`
+    `${rowCategory}=${encoding.encodedURIComponent(rowCategoryBucket.key)}`
 );
 
 
@@ -1095,7 +1044,7 @@ const mapRowCategoryQueriesExperiment = (rowCategory, rowCategoryBucket) => (
  * @return {string} mapped subcategory query
  */
 const mapSubCategoryQueriesExperiment = (subCategory, subCategoryQuery) => (
-    `${subCategory}=${encoding.encodedURIComponentOLD(subCategoryQuery)}`
+    `${subCategory}=${encoding.encodedURIComponent(subCategoryQuery)}`
 );
 
 
