@@ -32,6 +32,7 @@ const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryStrin
                 relevantFilters={relevantFilters}
                 pathname={pathname}
                 queryString={queryString}
+                allowNegation={false}
             />
         );
     }

@@ -569,7 +569,7 @@ DefaultTermName.propTypes = {
 /**
  * Default component to render a single term within the default facet.
  */
-export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathname, queryString, onFilter }) => {
+export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
     const TermNameComponent = FacetRegistry.TermName.lookup(facet.field);
     let href;
     let negHref;
@@ -637,7 +637,11 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
                 {(selectedTermFilter || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
             </a>
             <div className="facet-term__negator">
-                {selectedTermFilter ? null : <a href={negHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
+                {allowNegation ?
+                    <React.Fragment>
+                        {selectedTermFilter ? null : <a href={negHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
+                    </React.Fragment>
+                : null}
             </div>
         </li>
     );
@@ -660,12 +664,15 @@ DefaultTerm.propTypes = {
     queryString: PropTypes.string,
     /** Special search-result click handler */
     onFilter: PropTypes.func,
+    /** True to display negation control */
+    allowNegation: PropTypes.bool,
 };
 
 DefaultTerm.defaultProps = {
     mode: '',
     queryString: '',
     onFilter: null,
+    allowNegation: true,
 };
 
 
@@ -729,7 +736,7 @@ SelectedFilters.propTypes = {
  * This component gets memoized so it only renders when the facet data unequivocally changes,
  * avoiding needless rerenders when a different facet needs to rerender.
  */
-const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter }) => {
+const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname, queryString, filteredTerms, onFilter, allowNegation }) => {
     const TermComponent = FacetRegistry.Term.lookup(facet.field);
     const facetTitle = facet.title.replace(/\s+/g, '');
     return (
@@ -745,6 +752,7 @@ const FacetTerms = React.memo(({ facet, results, mode, relevantFilters, pathname
                     pathname={pathname}
                     queryString={queryString}
                     onFilter={onFilter}
+                    allowNegation={allowNegation}
                 />
             ))}
         </div>
@@ -768,19 +776,22 @@ FacetTerms.propTypes = {
     filteredTerms: PropTypes.array.isRequired,
     /** Special search-result click handler */
     onFilter: PropTypes.func,
+    /** True to display negation control */
+    allowNegation: PropTypes.bool,
 };
 
 FacetTerms.defaultProps = {
     mode: '',
     queryString: '',
     onFilter: null,
+    allowNegation: true,
 };
 
 
 /**
  * Display the default text facet with optional typeahead field.
  */
-export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter }) => {
+export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
     const [initialState, setInitialState] = React.useState(true);
     const [topShadingVisible, setTopShadingVisible] = React.useState(false);
     const [bottomShadingVisible, setBottomShadingVisible] = React.useState(false);
@@ -892,6 +903,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                                 queryString={queryString}
                                 filteredTerms={filteredTerms}
                                 onFilter={onFilter}
+                                allowNegation={allowNegation}
                             />
                             <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
                             <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
@@ -918,10 +930,13 @@ DefaultFacet.propTypes = {
     queryString: PropTypes.string,
     /** Special search-result click handler */
     onFilter: PropTypes.func,
+    /** True to display negation control */
+    allowNegation: PropTypes.bool,
 };
 
 DefaultFacet.defaultProps = {
     mode: '',
     queryString: '',
     onFilter: null,
+    allowNegation: true,
 };

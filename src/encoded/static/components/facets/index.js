@@ -65,6 +65,8 @@ export default FacetRegistry;
  *
  *   onFilter (optional) - Special term click handler, used for facets on edit forms.
  *
+ *   allowNegation (optional) - Allow facet terms to have negation controls. Defaults to true.
+ *
  *   Registration method:
  *   FacetRegistry.Facet.register(<facet field>, <React component to render this facet>);
  *
@@ -110,6 +112,8 @@ export default FacetRegistry;
  *   e.g. "type=Experiment&status=released".
  *
  *   onFilter (optional) - Special term click handler, used for facets on edit forms.
+ *
+ *   allowNegation (optional) - Allow facet terms to have negation controls. Defaults to true.
  *
  *   Registration method:
  *   FacetRegistry.Term.register(<facet field>, <React component to render this term>);
