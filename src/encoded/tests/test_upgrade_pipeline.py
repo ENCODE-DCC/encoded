@@ -2,50 +2,6 @@ import pytest
 from unittest import TestCase
 
 
-@pytest.fixture
-def pipeline_1():
-    return {
-        'schema_version': '1',
-        'status': 'active',
-        'title': 'Test pipeline',
-    }
-
-
-@pytest.fixture
-def pipeline_2(award, lab):
-    return {
-        'schema_version': '2',
-        'status': 'active',
-        'title': 'Test pipeline',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-
-
-@pytest.fixture
-def pipeline_7(award, lab):
-    return {
-        'assay_term_name': 'MNase-seq',
-        'schema_version': '7',
-        'status': 'active',
-        'title': 'Test pipeline',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-
-
-@pytest.fixture
-def pipeline_8(award, lab):
-    return {
-        'assay_term_names': ['MNase-seq'],
-        'schema_version': '8',
-        'status': 'active',
-        'title': 'Test pipeline',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-
-
 def test_pipeline_upgrade_1_2(upgrader, pipeline_1):
     value = upgrader.upgrade('pipeline', pipeline_1, target_version='2')
     assert value['schema_version'] == '2'

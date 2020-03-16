@@ -5,26 +5,10 @@ from moto import (
 )
 
 
-@pytest.fixture
-def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'uploading',
-    }
-    return item
-
-
 @mock_sts
-def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
+def test_uploading_file_credentials(testapp, uploading_file_0, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    res = testapp.post_json('/file', uploading_file)
+    res = testapp.post_json('/file', uploading_file_0)
     posted_file = res.json['@graph'][0]
     assert 'upload_credentials' in posted_file
     res = testapp.patch_json(posted_file['@id'], {'status': 'in progress'})
@@ -34,9 +18,9 @@ def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
 
 @mock_sts
 @mock_s3
-def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
+def test_file_download_view_redirect(testapp, uploading_file_0, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    res = testapp.post_json('/file', uploading_file)
+    res = testapp.post_json('/file', uploading_file_0)
     posted_file = res.json['@graph'][0]
     res = testapp.get(
         posted_file['href'],
@@ -49,9 +33,9 @@ def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
 
 @mock_sts
 @mock_s3
-def test_file_download_view_proxy_range(testapp, uploading_file, dummy_request):
+def test_file_download_view_proxy_range(testapp, uploading_file_0, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    res = testapp.post_json('/file', uploading_file)
+    res = testapp.post_json('/file', uploading_file_0)
     posted_file = res.json['@graph'][0]
     res = testapp.get(
         posted_file['href'],
@@ -64,9 +48,9 @@ def test_file_download_view_proxy_range(testapp, uploading_file, dummy_request):
 
 @mock_sts
 @mock_s3
-def test_file_download_view_soft_redirect(testapp, uploading_file, dummy_request):
+def test_file_download_view_soft_redirect(testapp, uploading_file_0, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    res = testapp.post_json('/file', uploading_file)
+    res = testapp.post_json('/file', uploading_file_0)
     posted_file = res.json['@graph'][0]
     res = testapp.get(
         posted_file['href'] + '?soft=True',
@@ -76,9 +60,9 @@ def test_file_download_view_soft_redirect(testapp, uploading_file, dummy_request
 
 
 @mock_sts
-def test_regen_creds_uploading_file_not_found(testapp, uploading_file, dummy_request, root):
+def test_regen_creds_uploading_file_not_found(testapp, uploading_file_0, dummy_request, root):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    res = testapp.post_json('/file', uploading_file)
+    res = testapp.post_json('/file', uploading_file_0)
     posted_file = res.json['@graph'][0]
     item = root.get_by_uuid(posted_file['uuid'])
     properties = item.upgrade_properties()
@@ -89,9 +73,9 @@ def test_regen_creds_uploading_file_not_found(testapp, uploading_file, dummy_req
 
 @mock_sts
 @mock_s3
-def test_download_file_not_found(testapp, uploading_file, dummy_request, root):
+def test_download_file_not_found(testapp, uploading_file_0, dummy_request, root):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
-    res = testapp.post_json('/file', uploading_file)
+    res = testapp.post_json('/file', uploading_file_0)
     posted_file = res.json['@graph'][0]
     item = root.get_by_uuid(posted_file['uuid'])
     properties = item.upgrade_properties()

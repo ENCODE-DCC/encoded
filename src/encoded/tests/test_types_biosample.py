@@ -1,26 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def human_donor(testapp, award, lab, human):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': human['@id'],
-    }
-    return testapp.post_json('/human_donor', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_donor(testapp, award, lab, mouse):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': mouse['@id'],
-    }
-    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
-
-
 def test_undefined_sex_model_organism(testapp, biosample, mouse):
     testapp.patch_json(biosample['@id'], {'organism': mouse['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
@@ -80,17 +60,17 @@ def test_undefined_age_units_mouse_with_model_organism_age_field(testapp, biosam
     assert res.json['object']['age_units'] == 'day'
 
 
-def test_defined_life_stage_human(testapp, biosample, human, human_donor):
+def test_defined_life_stage_human(testapp, biosample, human, human_donor_1):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(human_donor['@id'], {'life_stage': 'embryonic'})
-    testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
+    testapp.patch_json(human_donor_1['@id'], {'life_stage': 'embryonic'})
+    testapp.patch_json(biosample['@id'], {'donor': human_donor_1['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['life_stage'] == 'embryonic'
 
 
-def test_undefined_life_stage_human(testapp, biosample, human, human_donor):
+def test_undefined_life_stage_human(testapp, biosample, human, human_donor_1):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
+    testapp.patch_json(biosample['@id'], {'donor': human_donor_1['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['life_stage'] == 'unknown'
 
@@ -108,10 +88,10 @@ def test_undefined_life_stage_mouse(testapp, biosample, mouse):
     assert res.json['object']['life_stage'] == 'unknown'
 
 
-def test_defined_health_status_human(testapp, biosample, human, human_donor):
+def test_defined_health_status_human(testapp, biosample, human, human_donor_1):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(human_donor['@id'], {'health_status': 'healthy'})
-    testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
+    testapp.patch_json(human_donor_1['@id'], {'health_status': 'healthy'})
+    testapp.patch_json(biosample['@id'], {'donor': human_donor_1['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['health_status'] == 'healthy'
 
@@ -131,12 +111,12 @@ def test_undefined_health_status_mouse(testapp, biosample, mouse):
 
 def test_biosample_summary(testapp,
                            donor_1,
-                           biosample_1, treatment, liver):
+                           biosample_1, treatment_5, liver):
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             "biosample_ontology": liver['uuid'],
                                             "preservation_method": "cryopreservation",
-                                            'treatments': [treatment['@id']]})
+                                            'treatments': [treatment_5['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
         'Homo sapiens male child (10 days) liver tissue treated with ethanol, preserved by cryopreservation')
@@ -166,18 +146,18 @@ def test_biosample_summary_construct(testapp,
 def test_biosample_summary_construct_2(
     testapp,
     human,
-    human_donor,
+    human_donor_1,
     biosample_1,
     liver
 ):
-    testapp.patch_json(human_donor['@id'], {
+    testapp.patch_json(human_donor_1['@id'], {
         'age': '31',
         'age_units': 'year',
         'life_stage': 'adult',
         'sex': 'female'
         })
     testapp.patch_json(biosample_1['@id'], {
-        'donor': human_donor['@id'],
+        'donor': human_donor_1['@id'],
         'biosample_ontology': liver['uuid'],
         'organism': human['@id']
         })
@@ -189,18 +169,18 @@ def test_biosample_summary_construct_2(
 def test_biosample_summary_construct_3(
     testapp,
     human,
-    human_donor,
+    human_donor_1,
     biosample_1,
     liver
 ):
-    testapp.patch_json(human_donor['@id'], {
+    testapp.patch_json(human_donor_1['@id'], {
         'age': '1',
         'age_units': 'month',
         'life_stage': 'child',
         'sex': 'female'
         })
     testapp.patch_json(biosample_1['@id'], {
-        'donor': human_donor['@id'],
+        'donor': human_donor_1['@id'],
         'biosample_ontology': liver['uuid'],
         'organism': human['@id']
         })
@@ -227,12 +207,12 @@ def test_perturbed_gm(
 def test_perturbed_treatment(
     testapp,
     biosample_1,
-    treatment,
+    treatment_5,
 ):
     testapp.patch_json(
         biosample_1['@id'],
         {
-            'treatments': [treatment['@id']],
+            'treatments': [treatment_5['@id']],
         }
     )
     res = testapp.get(biosample_1['@id'] + '@@index-data')
@@ -243,12 +223,12 @@ def test_perturbed_treatment_gm(
     testapp,
     biosample_1,
     interference_genetic_modification,
-    treatment,
+    treatment_5,
 ):
     testapp.patch_json(
         biosample_1['@id'],
         {
-            'treatments': [treatment['@id']],
+            'treatments': [treatment_5['@id']],
             'genetic_modifications': [interference_genetic_modification['@id']],
         }
     )

@@ -10,34 +10,6 @@ def basic_auth(username, password):
 def auth_header(access_key):
     return basic_auth(access_key['access_key_id'], access_key['secret_access_key'])
 
-
-@pytest.fixture
-def no_login_submitter(testapp, lab, award):
-    item = {
-        'first_name': 'ENCODE',
-        'last_name': 'Submitter',
-        'email': 'no_login_submitter@example.org',
-        'submits_for': [lab['@id']],
-        'status': 'disabled',
-    }
-    # User @@object view has keys omitted.
-    res = testapp.post_json('/user', item)
-    return testapp.get(res.location).json
-
-
-@pytest.fixture
-def no_login_access_key(testapp, no_login_submitter):
-    description = 'My programmatic key'
-    item = {
-        'user': no_login_submitter['@id'],
-        'description': description,
-    }
-    res = testapp.post_json('/access_key', item)
-    result = res.json['@graph'][0].copy()
-    result['secret_access_key'] = res.json['secret_access_key']
-    return result
-
-
 def test_access_key_get(anontestapp, access_key):
     headers = {'Authorization': auth_header(access_key)}
     anontestapp.get('/', headers=headers)
@@ -161,3 +133,16 @@ def test_access_key_uses_edw_hash(app, access_key):
     obj = root.by_item_type['access_key'][access_key['access_key_id']]
     pwhash = obj.properties['secret_access_key_hash']
     assert EDWHash.hash(access_key['secret_access_key']) == pwhash
+
+
+@pytest.fixture
+def access_key(testapp, submitter):
+    description = 'My programmatic key'
+    item = {
+        'user': submitter['@id'],
+        'description': description,
+    }
+    res = testapp.post_json('/access_key', item)
+    result = res.json['@graph'][0].copy()
+    result['secret_access_key'] = res.json['secret_access_key']
+    return result
