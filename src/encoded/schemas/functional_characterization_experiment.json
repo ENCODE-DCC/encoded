@@ -257,7 +257,7 @@
                     },
                     "expression_percentile": {
                         "title": "Gene expression percentile",
-                        "description": "Gene expression read-out expressed as percentile.",
+                        "description": "Gene expression read-out expressed as a percentile.",
                         "type": "integer",
                         "minimum": 0,
                         "maximum": 100
@@ -282,10 +282,10 @@
                     "expression_range_maximum": ["expression_range_minimum"],
                     "expression_percentile": {
                         "not": {
-                            "required": {
-                                "expression_range_minimum": "integer",
-                                "expression_range_maximum": "integer"
-                            }
+                            "anyOf": [
+                                {"required": ["expression_range_minimum"]},
+                                {"required": ["expression_range_maximum"]}
+                            ]
                         }
                     }
                 }
