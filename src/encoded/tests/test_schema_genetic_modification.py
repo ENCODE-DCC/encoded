@@ -422,11 +422,13 @@ def test_introduced_elements_properties(testapp, introduced_elements, mouse_dono
 
 
 def test_crispr_knockout(testapp, crispr_knockout):
-    # Category of CRISPR characterization GMs must be one of ["interference", "activation", "disruption", "inhibition", "knockout"]
+    # Category of CRISPR characterization GMs must be one of ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
     crispr_knockout.update({'category': 'disruption'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
     crispr_knockout.update({'category': 'inhibition'})
+    testapp.post_json('/genetic_modification', crispr_knockout, status=201)
+    crispr_knockout.update({'category': 'deletion'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=201)
     crispr_knockout.update({'category': 'expression'})
     testapp.post_json('/genetic_modification', crispr_knockout, status=422)

@@ -72,6 +72,16 @@
                         "purpose": {
                                 "enum": ["repression", "characterization"]
                         }
+                    },
+                    "not": {
+                        "properties": {
+                            "method": {
+                                "enum": ["CRISPR"]
+                            },
+                            "purpose": {
+                                "enum": ["characterization"]
+                            }
+                        }
                     }
                 },
                 {
@@ -87,7 +97,7 @@
                             "enum": ["characterization"]
                         },
                         "category": {
-                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout"]
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -185,21 +195,34 @@
                 {
                     "oneOf": [
                         {
-                             "required": ["modified_site_by_coordinates"]
+                            "required": ["modified_site_by_coordinates"]
                         },
                         {
-                             "required": ["modified_site_by_target_id"]
+                            "required": ["modified_site_by_target_id"]
                         },
                         {
-                             "required": ["modified_site_by_sequence"]
+                            "required": ["modified_site_by_sequence"]
                         },
                         {
                             "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
                         }
                     ],
                     "properties": {
                         "category": {
                             "enum": ["deletion"]
+                        }
+                    },
+                    "not": {
+                        "properties": {
+                            "method": {
+                                "enum": ["CRISPR"]
+                            },
+                            "purpose": {
+                                "enum": ["characterization"]
+                            }
                         }
                     }
                 },
@@ -230,7 +253,7 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout"]
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
