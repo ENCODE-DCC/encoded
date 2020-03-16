@@ -282,6 +282,10 @@ const experimentTableColumns = {
         title: <div>Replicated Peak count<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
         getValue: (experiment, meta) => {
             // ENCODE3 TF and histone ChIP-seq quality metrics modeling
+            // Skip peakCount if the experiment has less than 1 replicate
+            if (!experiment.replicates || experiment.replicates.length <= 1) {
+                return '';
+            }
             const optimalPeakCounts = getQualityMetricsByReplicate(experiment, 'N_optimal')[meta.bioRepNum] || getQualityMetricsByReplicate(experiment, 'npeak_overlap')[meta.bioRepNum] || [];
             if (optimalPeakCounts.length === 0) {
                 // ENCODE4 ChIP-seq quality metrics modeling
