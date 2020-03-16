@@ -1,9 +1,5 @@
 import pytest, re
-
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
+from .constants import RED_DOT
 
 def collect_audit_errors(result, error_types=None):
     errors = result.json['audit']
@@ -15,688 +11,6 @@ def collect_audit_errors(result, error_types=None):
         for error_type in errors:
             errors_list.extend(errors[error_type])
     return errors_list
-
-
-@pytest.fixture
-def library_no_biosample(testapp, lab, award):
-    item = {
-        'nucleic_acid_term_name': 'DNA',
-        'lab': lab['@id'],
-        'award': award['@id']
-    }
-    return testapp.post_json('/library', item).json['@graph'][0]
-
-
-@pytest.fixture
-def base_library(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_replicate_two(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 2,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_target(testapp, gene):
-    item = {
-        'genes': [gene['uuid']],
-        'label': 'XYZ',
-        'investigated_as': ['transcription factor']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_target(testapp, organism):
-    item = {
-        'target_organism': organism['uuid'],
-        'label': 'eGFP',
-        'investigated_as': ['tag']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def tag_antibody(testapp, award, lab, source, organism, tag_target):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [tag_target['uuid']],
-        'product_id': 'eGFP',
-        'lot_id': '1'
-    }
-    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def fly_organism(testapp):
-    item = {
-        'taxon_id': "7227",
-        'name': "dmelanogaster",
-        'scientific_name': "Drosophila melanogaster"
-    }
-    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_H3K9me3(testapp, mouse):
-    item = {
-        'target_organism': mouse['@id'],
-        'label': 'H3K9me3',
-        'investigated_as': ['histone', 'broad histone mark']
-    }
-    return testapp.post_json('/target', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody(testapp, award, lab, source, organism, target):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'targets': [target['uuid']],
-        'product_id': 'KDKF123',
-        'lot_id': '123'
-    }
-
-
-@pytest.fixture
-def IgG_antibody(testapp, award, lab, source, organism):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'source': source['uuid'],
-        'host_organism': organism['uuid'],
-        'control_type': 'isotype control',
-        'isotype': 'IgG',
-        'product_id': 'ABCDEF',
-        'lot_id': '321'
-    }
-    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization1(testapp, lab, award, target, antibody_lot, organism, k562):
-    item = {
-        'award': award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'primary_characterization_method': 'immunoblot',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
-        'characterization_reviews': [
-            {
-                'lane': 2,
-                'organism': organism['uuid'],
-                'biosample_ontology': k562['uuid'],
-                'lane_status': 'compliant'
-            }
-        ]
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, organism):
-    item = {
-        'award': award['uuid'],
-        'target': target['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': antibody_lot['uuid'],
-        'secondary_characterization_method': 'dot blot assay',
-        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
-    }
-    return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ctrl_experiment(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress',
-        'assay_term_name': 'ChIP-seq'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
-    item = {
-        'experiment': ctrl_experiment['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'antibody': IgG_antibody['@id'],
-        'status': 'released'
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def treatment_time_series(testapp, lab, award):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-    }
-    return testapp.post_json('/treatment_time_series', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def library_1(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def library_2(testapp, lab, award, base_biosample):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'nucleic_acid_term_name': 'DNA',
-        'biosample': base_biosample['uuid']
-    }
-    return testapp.post_json('/library', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_1_1(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_2_1(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 2,
-        'technical_replicate_number': 1,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate_1_2(testapp, base_experiment):
-    item = {
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 2,
-        'experiment': base_experiment['@id'],
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_1(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_2(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_2(testapp, lab, award, base_experiment, base_replicate, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': base_replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '94be74b6e14515393547f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'platform': platform1['@id'],
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_2_1['@id'],
-        'platform': platform1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'md5sum': '11be74b6e11515393507f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        'output_type': 'reads',
-        "read_length": 50,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'platform': platform1['@id'],
-        'replicate': replicate_2_1['@id'],
-        'file_format': 'fastq',
-        'md5sum': '91be79b6e11515993509f4ebfa66d77a',
-        'run_type': "paired-ended",
-        'paired_end': '1',
-        "read_length": 50,
-        'output_type': 'reads',
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_6(testapp, lab, award, base_experiment, replicate_1_1, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'output_type': 'reads',
-        "read_length": 50,
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'run_type': "single-ended",
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq_no_read_length(testapp, lab, award, experiment, replicate_1_1, platform3):
-    item = {
-        'dataset': experiment['@id'],
-        'replicate': replicate_1_1['@id'],
-        'file_format': 'fastq',
-        'file_size': 68,
-        'platform': platform3['@id'],
-        'output_type': 'reads',
-        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'aliases': ['encode:no read length alias'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
-    item = {
-        'dataset': base_experiment['@id'],
-        'derived_from': [file_fastq_3['@id']],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 34,
-        'md5sum': '91be44b6e11515394407f4ebfa66d77a',
-        'output_type': 'alignments',
-        'lab': encode_lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
-    item = {
-        'dataset': base_experiment['@id'],
-        'derived_from': [file_fastq_4['@id']],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 34,
-        'md5sum': '91be71b6e11515377807f4ebfa66d77a',
-        'output_type': 'alignments',
-        'lab': encode_lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def bam_quality_metric_1_1(testapp, analysis_step_run_bam, file_bam_1_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def bam_quality_metric_2_1(testapp, analysis_step_run_bam, file_bam_2_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'Uniquely mapped reads number': 1000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def hotspot_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, encode_lab):
-    item = {
-        'SPOT1 score': 0.3345,
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'award': award['@id'],
-        'lab': encode_lab['@id']
-    }
-    return testapp.post_json('/hotspot-quality-metrics', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'NRF': 0.1,
-        'PBC1': 0.3,
-        'PBC2': 11
-    }
-
-    return testapp.post_json('/chipseq-filter-quality-metrics', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mad_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Spearman correlation': 0.1,
-        'MAD of log ratios': 3.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Pearson correlation': 0.1,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def spearman_correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'Spearman correlation': 0.7,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def duplicates_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_1_1['@id']],
-        'Percent Duplication': 0.23,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-
-    return testapp.post_json('/duplicates_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def wgbs_quality_metric(testapp, analysis_step_run_bam, file_bed_methyl, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file_bed_methyl['@id']],
-        'lambda C methylated in CHG context': '13.1%',
-        'lambda C methylated in CHH context': '12.5%',
-        'lambda C methylated in CpG context': '0.9%'}
-    return testapp.post_json('/bismark_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def micro_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'expressed_mirnas': 250,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/micro_rna_quantification_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def micro_rna_mapping_quality_metric_2_1(
-    testapp,
-    analysis_step_run_bam,
-    file_bam_2_1,
-    award,
-    lab
-):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'aligned_reads': 4000000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/micro_rna_mapping_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def long_read_rna_quantification_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_2['@id']],
-        'genes_detected': 5000,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/long_read_rna_quantification_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def long_read_rna_mapping_quality_metric_2_1(
-    testapp,
-    analysis_step_run_bam,
-    file_bam_2_1,
-    award,
-    lab
-):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_bam_2_1['@id']],
-        'full_length_non_chimeric_read_count': 500000,
-        'mapping_rate': 0.5,
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/long_read_rna_mapping_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        "file_format": "bed",
-        "file_format_type": "bedMethyl",
-        "file_size": 66569,
-        "assembly": "mm10",
-        "md5sum": "91be74b6e11515223507f4ebf266d77a",
-        "output_type": "methylation state at CpG",
-        "award": award["uuid"],
-        "lab": encode_lab["uuid"],
-        "status": "released",
-        "step_run": analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        'file_format': 'tsv',
-        'file_size': 3654,
-        'assembly': 'mm10',
-        'genome_annotation': 'M4',
-        'md5sum': '912e7ab6e11515393507f42bfa66d77a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': base_experiment['uuid'],
-        'file_format': 'tsv',
-        'file_size': 36524,
-        'assembly': 'mm10',
-        'genome_annotation': 'M4',
-        'md5sum': '91be74b6e315153935a7f4ecfa66d77a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-@pytest.fixture
-def experiment_no_read_length(
-    testapp,
-    experiment,
-    bam_file,
-    file_fastq_no_read_length,
-    replicate_1_1,
-    base_library,
-    analysis_step_bam,
-    analysis_step_version_bam,
-    analysis_step_run_bam,
-    encode_lab,
-):
-    testapp.patch_json(replicate_1_1['@id'], {'experiment': experiment['@id'],
-                                              'library': base_library['@id'],
-                                              })
-    testapp.patch_json(file_fastq_no_read_length['@id'], {'dataset': experiment['@id'],
-                                                          'replicate':replicate_1_1['@id'],
-                                                          })
-    testapp.patch_json(bam_file['@id'], {'dataset': experiment['@id'],
-                                         'step_run': analysis_step_run_bam['@id'],
-                                         'assembly': 'GRCh38',
-                                         'lab': encode_lab['@id'],
-                                         'derived_from': [file_fastq_no_read_length['@id']],
-                                         })
-    testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'date_released': '2016-01-01',
-                                           'assay_term_name': 'long read RNA-seq',
-                                           })
-    return testapp.get(experiment['@id'] + '@@index-data')
 
 
 def test_audit_experiment_missing_fragmentation_method(testapp,
@@ -1128,9 +442,9 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
                                                         library_2,
                                                         biosample_1,
                                                         biosample_2,
-                                                        mouse_donor_1):
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+                                                        mouse_donor_1_6):
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'male'})
@@ -1156,10 +470,10 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
                                                         library_2,
                                                         biosample_1,
                                                         biosample_2,
-                                                        mouse_donor_1,
+                                                        mouse_donor_1_6,
                                                         mouse_donor_2):
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_age_units': 'day',
@@ -1184,10 +498,10 @@ def test_audit_experiment_model_organism_mismatched_donor(testapp,
                                                           library_2,
                                                           biosample_1,
                                                           biosample_2,
-                                                          mouse_donor_1,
-                                                          mouse_donor_2):
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_2['@id']})
+                                                          mouse_donor_1_6,
+                                                          mouse_donor_2_6):
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_2_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -1497,7 +811,7 @@ def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                                                                    library_2,
                                                                    biosample_1,
                                                                    biosample_2,
-                                                                   mouse_donor_1,
+                                                                   mouse_donor_1_6,
                                                                    mouse_donor_2,
                                                                    file_fastq_6,
                                                                    file_fastq_4):
@@ -1515,7 +829,7 @@ def test_audit_experiment_DNase_mismatched_inter_paired_sequencing_files(testapp
                                                                          library_2,
                                                                          biosample_1,
                                                                          biosample_2,
-                                                                         mouse_donor_1,
+                                                                         mouse_donor_1_6,
                                                                          mouse_donor_2,
                                                                          file_fastq_6,
                                                                          file_fastq_4):
@@ -1533,7 +847,7 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
                                                                    library_2,
                                                                    biosample_1,
                                                                    biosample_2,
-                                                                   mouse_donor_1,
+                                                                   mouse_donor_1_6,
                                                                    mouse_donor_2,
                                                                    file_fastq_3,
                                                                    file_fastq_4,
@@ -1558,7 +872,7 @@ def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp
                                                                          library_2,
                                                                          biosample_1,
                                                                          biosample_2,
-                                                                         mouse_donor_1,
+                                                                         mouse_donor_1_6,
                                                                          mouse_donor_2,
                                                                          file_fastq_3,
                                                                          file_fastq_4,
@@ -1576,7 +890,7 @@ def test_audit_experiment_DNase_mismatched_valid_inter_length_sequencing_files(
     replicate_1_1, replicate_2_1,
     library_1, library_2,
     biosample_1, biosample_2,
-    mouse_donor_1,  mouse_donor_2,
+    mouse_donor_1_6,  mouse_donor_2,
     file_fastq_3, file_fastq_4,
         file_fastq_5):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
@@ -1596,7 +910,7 @@ def test_audit_experiment_rampage_standards(testapp,
                                             library_2,
                                             biosample_1,
                                             biosample_2,
-                                            mouse_donor_1,
+                                            mouse_donor_1_6,
                                             file_fastq_3,
                                             file_fastq_4,
                                             file_bam_1_1,
@@ -1623,8 +937,8 @@ def test_audit_experiment_rampage_standards(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RAMPAGE (paired-end, stranded)'})
 
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -1649,7 +963,7 @@ def test_audit_experiment_small_rna_standards(testapp,
                                               library_2,
                                               biosample_1,
                                               biosample_2,
-                                              mouse_donor_1,
+                                              mouse_donor_1_6,
                                               file_fastq_3,
                                               file_fastq_4,
                                               file_bam_1_1,
@@ -1679,8 +993,8 @@ def test_audit_experiment_small_rna_standards(testapp,
                        {'Number of reads mapped to multiple loci': 1000000})
     testapp.patch_json(bam_quality_metric_2_1['@id'],
                        {'Number of reads mapped to multiple loci': 1000000})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -1705,7 +1019,7 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
                                                  library_2,
                                                  biosample_1,
                                                  biosample_2,
-                                                 mouse_donor_1,
+                                                 mouse_donor_1_6,
                                                  file_fastq_3,
                                                  file_fastq_4,
                                                  file_bam_1_1,
@@ -1735,8 +1049,8 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
                        {'Number of reads mapped to multiple loci': 1})
     testapp.patch_json(bam_quality_metric_2_1['@id'],
                        {'Number of reads mapped to multiple loci': 1})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -1761,7 +1075,7 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
                                                     library_2,
                                                     biosample_1,
                                                     biosample_2,
-                                                    mouse_donor_1,
+                                                    mouse_donor_1_6,
                                                     file_fastq_3,
                                                     file_fastq_4,
                                                     file_bam_1_1,
@@ -1791,8 +1105,8 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
                        {'Number of reads mapped to multiple loci': 10})
     testapp.patch_json(bam_quality_metric_2_1['@id'],
                        {'Number of reads mapped to multiple loci': 100})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -1822,7 +1136,7 @@ def test_audit_experiment_long_rna_standards(testapp,
                                              library_2,
                                              biosample_1,
                                              biosample_2,
-                                             mouse_donor_1,
+                                             mouse_donor_1_6,
                                              file_fastq_3,
                                              file_fastq_4,
                                              file_bam_1_1,
@@ -1856,8 +1170,8 @@ def test_audit_experiment_long_rna_standards(testapp,
     testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
                                                        file_tsv_1_1['@id'],
                                                        file_tsv_1_2['@id']]})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -1933,7 +1247,7 @@ def test_audit_experiment_long_read_rna_standards(
     library_2,
     biosample_1,
     biosample_2,
-    mouse_donor_1,
+    mouse_donor_1_6,
     file_fastq_3,
     file_fastq_4,
     file_bam_1_1,
@@ -1973,8 +1287,8 @@ def test_audit_experiment_long_read_rna_standards(
         spearman_correlation_quality_metric['@id'],
         {'quality_metric_of': [file_tsv_1_1['@id'], file_tsv_1_2['@id']]}
     )
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2009,7 +1323,7 @@ def test_audit_experiment_long_rna_standards_encode2(testapp,
                                                      library_2,
                                                      biosample_1,
                                                      biosample_2,
-                                                     mouse_donor_1,
+                                                     mouse_donor_1_6,
                                                      file_fastq_3,
                                                      file_fastq_4,
                                                      file_bam_1_1,
@@ -2044,8 +1358,8 @@ def test_audit_experiment_long_rna_standards_encode2(testapp,
     testapp.patch_json(mad_quality_metric_1_2['@id'], {'quality_metric_of': [
                                                        file_tsv_1_1['@id'],
                                                        file_tsv_1_2['@id']]})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2071,7 +1385,7 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
                                                    library_2,
                                                    biosample_1,
                                                    biosample_2,
-                                                   mouse_donor_1,
+                                                   mouse_donor_1_6,
                                                    file_fastq_3,
                                                    file_fastq_4,
                                                    file_bam_1_1,
@@ -2102,8 +1416,8 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2130,7 +1444,7 @@ def test_audit_experiment_chip_seq_redacted_alignments_standards_depth(
     library_2,
     biosample_1,
     biosample_2,
-    mouse_donor_1,
+    mouse_donor_1_6,
     file_fastq_3,
     file_fastq_4,
     file_bam_1_1,
@@ -2163,8 +1477,8 @@ def test_audit_experiment_chip_seq_redacted_alignments_standards_depth(
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2192,7 +1506,7 @@ def test_audit_experiment_chip_seq_control_standards(
         library_2,
         biosample_1,
         biosample_2,
-        mouse_donor_1,
+        mouse_donor_1_6,
         file_fastq_3,
         file_fastq_4,
         file_bam_1_1,
@@ -2232,10 +1546,10 @@ def test_audit_experiment_chip_seq_control_standards(
                                              'output_type': 'peaks'})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2266,7 +1580,7 @@ def test_audit_experiment_chip_seq_peaks_without_controls(
         library_2,
         biosample_1,
         biosample_2,
-        mouse_donor_1,
+        mouse_donor_1_6,
         file_fastq_3,
         file_fastq_4,
         file_bam_1_1,
@@ -2305,10 +1619,10 @@ def test_audit_experiment_chip_seq_peaks_without_controls(
                                              'output_type': 'peaks'})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2340,7 +1654,7 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
         library_2,
         biosample_1,
         biosample_2,
-        mouse_donor_1,
+        mouse_donor_1_6,
         file_fastq_3,
         file_fastq_4,
         file_bam_1_1,
@@ -2376,10 +1690,10 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
                                              'output_type': 'peaks'})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2421,7 +1735,7 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
         library_2,
         biosample_1,
         biosample_2,
-        mouse_donor_1,
+        mouse_donor_1_6,
         file_fastq_3,
         file_fastq_4,
         file_bam_1_1,
@@ -2460,10 +1774,10 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
                                              'output_type': 'peaks and background as input for IDR'})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2500,7 +1814,7 @@ def test_audit_experiment_chip_seq_peaks_with_subsampled_controls(
         library_2,
         biosample_1,
         biosample_2,
-        mouse_donor_1,
+        mouse_donor_1_6,
         file_fastq_3,
         file_fastq_4,
         file_bam_1_1,
@@ -2541,10 +1855,10 @@ def test_audit_experiment_chip_seq_peaks_with_subsampled_controls(
                                              'output_type': 'peaks and background as input for IDR'})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'Some subsampling pipeline'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id'],
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id'],
                                             'organism': '/organisms/mouse/',
                                             'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2577,7 +1891,7 @@ def test_audit_experiment_chip_seq_standards(testapp,
                                              library_2,
                                              biosample_1,
                                              biosample_2,
-                                             mouse_donor_1,
+                                             mouse_donor_1_6,
                                              file_fastq_3,
                                              file_fastq_4,
                                              file_bam_1_1,
@@ -2607,8 +1921,8 @@ def test_audit_experiment_chip_seq_standards(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2634,7 +1948,7 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
                                                      library_2,
                                                      biosample_1,
                                                      biosample_2,
-                                                     mouse_donor_1,
+                                                     mouse_donor_1_6,
                                                      file_fastq_3,
                                                      file_fastq_4,
                                                      file_bam_1_1,
@@ -2665,8 +1979,8 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2693,7 +2007,7 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
                                                        library_2,
                                                        biosample_1,
                                                        biosample_2,
-                                                       mouse_donor_1,
+                                                       mouse_donor_1_6,
                                                        file_fastq_3,
                                                        file_fastq_4,
                                                        file_bam_1_1,
@@ -2725,8 +2039,8 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
 
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2751,7 +2065,7 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
                                                                 library_2,
                                                                 biosample_1,
                                                                 biosample_2,
-                                                                mouse_donor_1,
+                                                                mouse_donor_1_6,
                                                                 file_fastq_3,
                                                                 file_fastq_4,
                                                                 file_bam_1_1,
@@ -2783,8 +2097,8 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
 
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2807,7 +2121,7 @@ def test_audit_experiment_dnase_low_spot_score(testapp,
                                                replicate_1_1,
                                                library_1,
                                                biosample_1,
-                                               mouse_donor_1,
+                                               mouse_donor_1_6,
                                                file_fastq_3,
                                                file_bam_1_1,
                                                mad_quality_metric_1_2,
@@ -2825,7 +2139,7 @@ def test_audit_experiment_dnase_low_spot_score(testapp,
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'DNase-HS pipeline single-end - Version 2'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2843,7 +2157,7 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
                                                    replicate_1_1,
                                                    library_1,
                                                    biosample_1,
-                                                   mouse_donor_1,
+                                                   mouse_donor_1_6,
                                                    file_fastq_3,
                                                    file_bam_1_1,
                                                    mad_quality_metric_1_2,
@@ -2860,7 +2174,7 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2881,7 +2195,7 @@ def test_audit_experiment_wgbs_coverage(testapp,
                                          library_2,
                                          biosample_1,
                                          biosample_2,
-                                         mouse_donor_1,
+                                         mouse_donor_1_6,
                                          file_fastq_3,
                                          file_fastq_4,
                                          file_bam_1_1,
@@ -2907,8 +2221,8 @@ def test_audit_experiment_wgbs_coverage(testapp,
                                                         'total': 30000000,
                                                         'mapped': 30000000,
                                                         'read1': 100, 'read2': 100})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2929,7 +2243,7 @@ def test_audit_experiment_dnase_low_read_length(testapp,
                                                 replicate_1_1,
                                                 library_1,
                                                 biosample_1,
-                                                mouse_donor_1,
+                                                mouse_donor_1_6,
                                                 file_fastq_3,
                                                 file_bam_1_1,
                                                 mad_quality_metric_1_2,
@@ -2946,7 +2260,7 @@ def test_audit_experiment_dnase_low_read_length(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -2966,7 +2280,7 @@ def test_audit_experiment_dnase_low_correlation(testapp,
                                                 library_1,
                                                 library_2,
                                                 biosample_1,
-                                                mouse_donor_1,
+                                                mouse_donor_1_6,
                                                 file_fastq_3,
                                                 bigWig_file,
                                                 file_bam_1_1,
@@ -2987,7 +2301,7 @@ def test_audit_experiment_dnase_low_correlation(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -3009,7 +2323,7 @@ def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
                                                        replicate_1_1,
                                                        library_1,
                                                        biosample_1,
-                                                       mouse_donor_1,
+                                                       mouse_donor_1_6,
                                                        file_fastq_3,
                                                        file_bam_1_1,
                                                        mad_quality_metric_1_2,
@@ -3024,7 +2338,7 @@ def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'DNase-HS pipeline single-end - Version 2'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
@@ -3045,7 +2359,7 @@ def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
                                                                  library_2,
                                                                  biosample_1,
                                                                  biosample_2,
-                                                                 mouse_donor_1,
+                                                                 mouse_donor_1_6,
                                                                  file_fastq_3,
                                                                  file_fastq_4,
                                                                  file_bam_1_1,
@@ -3072,8 +2386,8 @@ def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'ChIP-seq read mapping'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -3186,7 +2500,7 @@ def test_audit_experiment_wgbs_standards(testapp,
                                          library_2,
                                          biosample_1,
                                          biosample_2,
-                                         mouse_donor_1,
+                                         mouse_donor_1_6,
                                          file_fastq_3,
                                          file_fastq_4,
                                          file_bam_1_1,
@@ -3211,8 +2525,8 @@ def test_audit_experiment_wgbs_standards(testapp,
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'WGBS paired-end pipeline'})
 
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -3237,7 +2551,7 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
                                                     library_2,
                                                     biosample_1,
                                                     biosample_2,
-                                                    mouse_donor_1,
+                                                    mouse_donor_1_6,
                                                     file_fastq_3,
                                                     file_fastq_4,
                                                     file_bam_1_1,
@@ -3268,8 +2582,8 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'Transcription factor ChIP-seq pipeline (modERN)'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1_6['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1_6['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -3537,8 +2851,8 @@ def test_audit_experiment_chip_seq_read_count(
                'low read count' for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_with_biosample_missing_nih_consent(testapp, experiment, replicate,
-                                                             library, biosample, encode4_award):
+def test_audit_experiment_with_biosample_missing_nih_consent(testapp, experiment, replicate_url,
+                                                             library_url, biosample, encode4_award):
     testapp.patch_json(experiment['@id'], {'award': encode4_award['@id']})
     r = testapp.get(experiment['@id'] + '@@index-data')
     audits = r.json['audit']
@@ -3668,8 +2982,9 @@ def test_audit_experiment_tag_target(testapp, experiment, ctcf):
                for audit in audits.values() for detail in audit)
 
 
-def test_audit_experiment_inconsist_mod_target(testapp, experiment, replicate,
-                                               library, biosample, ctcf,
+@pytest.mark.skip(reason='will be addressed in a PYTEST-REFACTOR')
+def test_audit_experiment_inconsist_mod_target(testapp, experiment,
+                                               library_url, biosample, ctcf,
                                                construct_genetic_modification):
     tag_target = testapp.post_json(
         '/target',

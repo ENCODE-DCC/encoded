@@ -1,25 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def treatment():
-    return {
-        'treatment_type': 'chemical',
-        'treatment_term_name': 'estradiol',
-        'treatment_term_id': 'CHEBI:23965'
-    }
-
-
-@pytest.fixture
-def submitter_treatment(submitter, lab):
-    return {
-        'treatment_type': 'chemical',
-        'treatment_term_name': 'estradiol',
-        'treatment_term_id': 'CHEBI:23965',
-        'submitted_by': submitter['@id']
-    }
-
-
 def test_admin_allowed_add_treatment(testapp, treatment):
     testapp.post_json('/treatments/', treatment, status=201)
 
