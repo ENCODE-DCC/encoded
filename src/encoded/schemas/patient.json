@@ -122,7 +122,7 @@
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
-        "surgery.pathology_report.t_stage": {
+        "surgery.pathology_report.ajcc_p_stage": {
             "title": " Pathological T stage"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {

@@ -452,7 +452,11 @@
         "tumor_size": {
             "title": "Tumor Size"
         },
-        "t_stage": {
+        "tumor_size_range": {
+            "title": "Tumor Size"
+        },
+       
+        "ajcc_p_stage": {
             "title": "Pathological T stage"
         },
         "ajcc_tnm_stage": {
@@ -516,6 +520,9 @@
         },
         "tumor_size": {
             "title": "Tumor Size"
+        },
+        "tumor_size_units": {
+            "title": "Tumor Size units"
         },
         "t_stage": {
             "title": "Pathological T stage"
