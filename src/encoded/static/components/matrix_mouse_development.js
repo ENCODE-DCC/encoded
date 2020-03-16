@@ -68,8 +68,8 @@ const mouseMatrixColors = {
  */
 function updateColumnCount(value, colMap, subCategorySums) {
     let colIndex = 0;
-    if (value && value.COL_SUBCATEGORY && value.COL_SUBCATEGORY.buckets.length > 1) {
-        value.COL_SUBCATEGORY.buckets.forEach((bucket) => {
+    if (value && value['target.label'] && value['target.label'].buckets.length > 1) {
+        value['target.label'].buckets.forEach((bucket) => {
             const newKey = `${value.key}|${bucket.key}`;
             if (bucket.key && colMap[newKey]) {
                 colIndex = colMap[newKey].col || 0;
