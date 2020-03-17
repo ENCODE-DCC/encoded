@@ -104,3 +104,9 @@ def test_library_upgrade_9_to_10b(upgrader, library_schema_9b):
     assert value['lysis_method'] == 'other'
     assert 'test' in value['notes']
     assert 'extraction_method' not in value
+
+
+def test_library_upgrade_10_to_11(upgrader, library_schema_10):
+    value = upgrader.upgrade('library', library_schema_10, target_version='11')
+    assert value['schema_version'] == '11'
+    assert value['strand_specificity'] == 'strand-specific'

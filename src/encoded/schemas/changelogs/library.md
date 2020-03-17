@@ -1,5 +1,9 @@
 ## Changelog for library.json
 
+### Schema version 11
+
+The boolean property *strand_specificity* has been converted to enum; this now allows strandedness to be specified as forward or reverse.
+
 ### Schema version 10
 
 The properties *extraction_method*, *lysis_method*, and *library_size_selection_method* were converted to enum, and multiple descriptions or wordings of a specific category were collapsed into single entries. Entries that didn't add substantive information (e.g., "see document" or "n/a") were removed. 

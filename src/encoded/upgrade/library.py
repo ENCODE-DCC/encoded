@@ -223,3 +223,13 @@ def library_9_10(value, system):
             else:
                 value['notes'] = value['library_size_selection_method']
             value['library_size_selection_method'] = 'other'
+
+
+@upgrade_step('library', '10', '11')
+def library_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5080
+    if 'strand_specificity' in value:
+        if value['strand_specificity'] == False:
+            value.pop('strand_specificity')
+        elif value['strand_specificity'] == True:
+            value['strand_specificity'] = 'strand-specific'
