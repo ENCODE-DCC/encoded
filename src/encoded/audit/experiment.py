@@ -2776,11 +2776,6 @@ def audit_experiment_replicated(value, system, excluded_types):
     if value['status'] not in ['released', 'submitted']:
         return
     '''
-    Excluding single cell experiments
-    '''
-    if value['biosample_ontology']['classification'] == 'single cell':
-        return
-    '''
     Excluding single cell isolation experiments from the replication requirement
     Excluding RNA-bind-and-Seq from the replication requirment
     Excluding genetic modification followed by DNase-seq from the replication requirement
@@ -2802,11 +2797,25 @@ def audit_experiment_replicated(value, system, excluded_types):
     for rep in value['replicates']:
         num_bio_reps.add(rep['biological_replicate_number'])
 
-    if len(num_bio_reps) <= 1:
-        # different levels of severity for different rfas
+    if len(num_bio_reps) == 0:
         detail = ('This experiment is expected to be replicated, but '
-            'contains only one listed biological replicate.')
+            'currently does not have any replicates associated with it.')
         yield AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+
+    if len(num_bio_reps) == 1:
+        '''
+        Excluding single cell experiments
+        '''
+        if value['biosample_ontology']['classification'] == 'single cell':
+            return
+        # different levels of severity for different biosample classifications
+        else:
+            detail = ('This experiment is expected to be replicated, but '
+                'contains only one listed biological replicate.')
+            level='NOT_COMPLIANT'
+            if value['biosample_ontology']['classification'] in ['tissue', 'primary cell']:
+                level='INTERNAL_ACTION'
+            yield AuditFailure('unreplicated experiment', detail, level)
     return
 
 
