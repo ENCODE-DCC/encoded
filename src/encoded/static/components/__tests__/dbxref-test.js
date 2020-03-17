@@ -680,8 +680,8 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links', () => {
             expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://factorbook.beta.wenglab.org/experiment/ENCSR343RJH');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://factorbook.beta.wenglab.org/experiment/ENCSR614HHL');
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR343RJH');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR614HHL');
         });
     });
 });
