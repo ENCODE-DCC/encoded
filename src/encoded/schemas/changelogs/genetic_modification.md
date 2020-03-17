@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 9
+
+* Dependencies were altered to allow insertions (category) for expression (purpose) via transduction or transient transfection (method) to be specified. This combination is meant to allow the introduction of guide RNAs and CRISPR machinery to cells. *modified_site_nonspecific* and *introduced_elements* properties are also required.
+
 ### Schema version 9
 
 * Several underused *purpose* enum were combined: *activation* and *overexpression* are remapped to *expression*, and *analysis* and *screening* are remapped to *characterization*.

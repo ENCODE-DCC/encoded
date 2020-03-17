@@ -146,6 +146,19 @@ def introduced_elements(lab, award):
     }
 
 
+@pytest.fixture
+def insert_gRNAs_genetic_modification(testapp, lab, award):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'method': 'transduction',
+        'modified_site_nonspecific': 'random',
+        'introduced_elements': 'synthesized DNA'
+    }
+
+
 def test_crispr_deletion_missing_site(testapp, crispr_deletion):
     # modified_site_(by_target_id|by_coordinates|by_sequence) must be specified for deletions
     res = testapp.post_json('/genetic_modification', crispr_deletion, expect_errors=True)
@@ -392,3 +405,10 @@ def test_introduced_elements_properties(testapp, introduced_elements, mouse_dono
     testapp.post_json('/genetic_modification', introduced_elements, status=422)
     introduced_elements.update({'donor': mouse_donor['@id']})
     testapp.post_json('/genetic_modification', introduced_elements, status=201)
+
+
+def test_CRISPR_part_1_properties(testapp, insert_gRNAs_genetic_modification):
+    # ENCD-5146, category: insertion, purpose: expression, method: transient transfection or
+    # transduction should be allowed to insert gRRNAs/CRISPR machinery. modified_site_nonspecific
+    # and introduced_elements also required.
+    testapp.post_json('/genetic_modification', insert_gRNAs_genetic_modification, status=201)

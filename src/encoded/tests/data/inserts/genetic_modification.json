@@ -265,5 +265,21 @@
             "TGGGCTAACATTAGCCAGA"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant"
+    },
+        {
+        "accession": "ENCGM359GRN",
+        "status": "released",
+        "award": "/awards/U54HG006997/",
+        "lab": "/labs/bing-ren/",
+        "uuid": "78b475d5-efd5-43d5-9212-c4e95737cc2d",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "aliases": [
+            "bing-ren:introduceCRISPR"
+        ],
+        "category": "insertion",
+        "purpose": "expression",
+        "introduced_elements": "synthesized DNA",
+        "modified_site_nonspecific": "random",
+        "method": "transduction"
     }
 ]

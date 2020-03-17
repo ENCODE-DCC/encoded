@@ -106,6 +106,9 @@
                         },
                         {
                             "required": ["introduced_gene"]
+                        },
+                        {
+                            "required": ["introduced_elements"]
                         }
                     ]
                 },
@@ -306,7 +309,7 @@
                                     "enum": ["insertion"]
                                 },
                                 "purpose": {
-                                    "enum": ["characterization"]
+                                    "enum": ["characterization", "expression"]
                                 }
                             }
                         }
