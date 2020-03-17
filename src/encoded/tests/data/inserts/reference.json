@@ -93,5 +93,17 @@
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "in progress",
         "accession": "ENCSR819DEL"
+    },
+    {
+        "_test": "reference genome dataset",
+        "accession": "ENCSR001GEN",
+        "award": "ENCODE2",
+        "reference_type": "genome",
+        "description": "Dataset for Reference Genome (linked to Donor)",
+        "lab": "/labs/j-michael-cherry/",
+        "status": "released",
+        "date_released": "2020-03-11",
+        "uuid": "9bd36e84-f20e-48d3-8c03-c99df8be7c3c",
+        "donor": "ENCDO845WKR"
     }
 ]

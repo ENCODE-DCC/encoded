@@ -41,6 +41,15 @@
                     }
                 }
             ]
+        },
+        "donor": {
+            "comment": "Genome references (such as those from the ENTEx project) may specify a donor.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["genome"]
+                    }
+            }
         }
     },
     "properties": {
@@ -65,6 +74,13 @@
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
+        },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the biosample was originated from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Donor"
         },
         "software_used": {
             "title": "Software used",
@@ -148,6 +164,7 @@
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "donor.accession": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
         "award.name": 1.0,
