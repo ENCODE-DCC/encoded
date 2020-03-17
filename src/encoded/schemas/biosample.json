@@ -101,6 +101,14 @@
             "required":["post_differentiation_time"],
             "comment": "Biosample with a specified post_differentiation_time_units requires post_differentiation_time specification."
         },
+        "post_nucleic_acid_delivery_time": {
+            "required":["post_nucleic_acid_delivery_time_units"],
+            "comment": "Biosample with a specified post_nucleic_acid_delivery_time requires post_nucleic_acid_delivery_time_units specification."
+        },
+        "post_nucleic_acid_delivery_time_units": {
+            "required":["post_nucleic_acid_delivery_time"],
+            "comment": "Biosample with a specified post_nucleic_acid_delivery_time_units requires post_nucleic_acid_delivery_time specification."
+        },
         "pooled_from": {
             "comment": "Biosample with a specified pooled_from list requires at least two entries in the list.",
             "properties":{
@@ -778,6 +786,25 @@
             "description": "Institutional certification given by the NIH for human biosamples.",
             "comment": "Required for ENCODE4 human biosamples.",
             "pattern": "^NIC[A-Z0-9]+$"
+        },
+        "post_nucleic_acid_delivery_time": {
+            "title": "Post-nucleic acid delivery time",
+            "description": "The time that elapsed past the point when nucleic acid was introduced into the biosample.",
+            "comment": "Use in conjunction with post_nucleic_acid_delivery_time_units to specify time elapsed post-nucleic acid delivery. Use of this property requires post_nucleic_acid_delivery_time_units specification.",
+            "type": "integer"
+        },
+        "post_nucleic_acid_delivery_time_units": {
+            "title": "Post-nucleic acid delivery time units",
+            "description": "The units of time that elapsed past the point when nucleic acid was introduced into the biosample.",
+            "comment": "Use in conjunction with post_nucleic_acid_delivery_time to specify time elapsed post-nucleic acid delivery. Use of this property requires post_nucleic_acid_delivery_time specification.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month"
+            ]
         }
     },
     "facets": {
