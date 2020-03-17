@@ -122,11 +122,14 @@
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
-        "surgery.pathology_report.t_stage": {
-            "title": " Pathological T stage"
+        "surgery.pathology_report.ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " AJCC TNM Stage"
+            "title": " TNM Stage"
         },
         "medications.name":{
             "title":"Medication Name"
@@ -216,11 +219,14 @@
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
-        "surgery.pathology_report.t_stage": {
-            "title": " Pathological T stage"
+        "surgery.pathology_report.ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " AJCC TNM Stage"
+            "title": " TNM Stage"
         }
     },
     "boost_values": {
@@ -234,7 +240,10 @@
         "radiation.treatment_intention": 1.0,
         "ihc.antibody":1.0,
         "ihc.result":1.0,
-        "medications.name":1.0
+        "medications.name":1.0,
+        "surgery.pathology_report.ajcc_p_stage": 1.0,
+        "surgery.pathology_report.n_stage": 1.0,
+        "surgery.pathology_report.ajcc_tnm_stage": 1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
 }

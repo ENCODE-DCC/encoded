@@ -115,7 +115,7 @@
                     "Tubulocystic RCC",
                     "Unclassified",
                     "Nephroblastoma(Wilms tumor)",
-                    "Soft tissue neoplasm, NOS",
+                    "Soft tissue neoplasm,NOS",
                     "SDH deficient RCC"
                 ]
         },
@@ -133,7 +133,7 @@
         "sarcomatoid_percentage": {
             "title": "Sarcomatoid Percentage",
             "description": "Percentage of tumor that was sarcomatoid. ",
-            "type": "number"
+            "type": "string"
         },
         "rhabdoid": {
             "title": "Rhabdoid",
@@ -305,7 +305,7 @@
       },
       "examined_lymph_nodes": {
           "title": "Examined Lymph Nodes",
-          "description": "Number of lymph nodes examined",
+          "description": "Number of lymph  nodes examined",
           "type": "number"
       },
       "positive_lymph_nodes": {
@@ -366,8 +366,8 @@
         "description":"The report comes from",
         "type": "string",
         "enum": [
-                "Pathology report",
-                "Tumor registery"
+                "Pathology Report",
+                "Tumor Registery"
             ]
       },
       "tumor_sequence_number": {
@@ -420,12 +420,17 @@
             "title": "Tumor Size"
         },
 
-        "t_stage": {
-            "title": "Pathological T stage"
+        "ajcc_p_stage": {
+            "title": "pT stage"
         },
+        "n_stage": {
+            "title": "pN stage"
+        },
+        
         "ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "TNM Stage"
         } ,
+
         "ajcc_version": {
             "title": "AJCC Version"
         },
@@ -476,8 +481,14 @@
         "tumor_size": {
             "title": "Tumor Size"
         },
-        "t_stage": {
-            "title": "Pathological T stage"
+        "tumor_size_units": {
+            "title": "Tumor Size Units"
+        },
+        "ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "n_stage": {
+            "title": "pN stage"
         },
         "ajcc_tnm_stage": {
             "title": "AJCC TNM Stage"
@@ -522,6 +533,10 @@
         }
     },
     "boost_values": {
+        "ajcc_p_stage": 1.0,
+        "n_stage": 1.0,
+        "ajcc_tnm_stage": 1.0,
+        "ajcc_version": 1.0,
         "laterality":1.0,
         "histology": 1.0,
         "focality": 1.0,
